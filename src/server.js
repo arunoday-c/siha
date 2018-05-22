@@ -1,0 +1,128 @@
+import http from "http";
+import express from "express";
+import bodyParser from "body-parser";
+import config from "./keys/keys";
+import routes from "./routes";
+import passport from "passport";
+import cors from "cors";
+const LocalStrategy = require("passport-local").Strategy;
+import morgan from "morgan";
+import fs from "fs";
+import path from "path";
+import keys from "./keys/keys";
+import rfs from "rotating-file-stream";
+import httpStatus from "./utils/httpStatus";
+import { logger, debugLog, debugFunction } from "./utils/logging";
+import jwtDecode from "jwt-decode";
+import { debuglog } from "util";
+
+let app = express();
+
+if (process.env.NODE_ENV === "production") {
+  console.log("Running prod....");
+  console.log(process.env.NODE_ENV);
+  app.use(express.static("client/build"));
+}
+
+app.server = http.createServer(app);
+app.use(cors());
+//parse application json
+app.use(
+  bodyParser.json({
+    limit: config.bodyLimit
+  })
+);
+
+//passport config
+app.use(passport.initialize());
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "username",
+      passwordField: "password"
+    },
+    (username, password, done) => {
+      return done(null, username);
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+passport.deserializeUser((id, done) => {
+  done(null, { msg: "done" });
+});
+
+app.use((req, res, next) => {
+  // let reBody = req.body;
+  // if (reBody != null && reBody["password"] != null) {
+  //   reBody["password"] = String(reBody["password"]).replace(
+  //     reBody["password"],
+  //     "*******"
+  //   );
+  // }
+
+  let reqH = req.headers;
+  let reqUser = "";
+  if (req.url != "/api/v1/apiAuth") reqUser = jwtDecode(reqH["x-api-key"]).id;
+
+  logger.log("info", "%j", {
+    requestClient: req.ip,
+    requestUser: reqUser,
+    requestUrl: req.originalUrl,
+    requestHeader: {
+      host: reqH.host,
+      "user-agent": reqH["user-agent"],
+      "cache-control": reqH["cache-control"],
+      origin: reqH.origin
+    },
+    requestMethod: req.method
+  });
+
+  // debugLog("Request Data :", {
+  //   requestBody: req.body,
+  //   requestQuery: req.query
+  // });
+
+  next();
+});
+
+let logdir = path.join(__dirname, "../" + keys.logpath);
+if (!fs.existsSync(logdir)) {
+  fs.mkdirSync(logdir);
+}
+
+// var accessLogStream = fs.createWriteStream(path.join(logdir, "access.log"), {
+//   flags: "a"
+// });
+
+var accessLogStream = rfs("access.log", {
+  size: "5M",
+  path: logdir
+});
+
+app.use(morgan("combined", { streamexceptionHandlers: accessLogStream }));
+app.set("trust proxy", true);
+
+//api routeres v1
+app.use("/api/v1", routes);
+
+process.on("warning", warning => {
+  logger.log("warn", warning);
+});
+//Error Handling MiddleWare
+app.use((error, req, res, next) => {
+  error.status = error.status || httpStatus.internalServer;
+  res.status(error.status).json({
+    success: false,
+    message: error.message
+  });
+  logger.log("error", "%j", error);
+});
+
+app.server.listen(config.port);
+console.log(`started on port ${app.server.address().port}`);
+
+export default app;
+module.exports = app;

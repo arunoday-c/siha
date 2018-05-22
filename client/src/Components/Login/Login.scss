@@ -1,0 +1,24 @@
+
+.login {
+	text-align: center;
+	font-family: "Roboto", sans-serif;
+	min-width: 100%;
+	min-height: 100%;	
+}
+.bg {
+	background-image: url("../../assets/images/login_bg.jpeg");
+	position: absolute;
+	height: 100%;	
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+.margintop15{
+	margin-top: 15%;
+}
+.row-eq-height {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display:         flex;
+  }

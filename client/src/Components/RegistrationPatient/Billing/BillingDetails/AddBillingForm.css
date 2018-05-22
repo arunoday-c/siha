@@ -1,0 +1,46 @@
+.hptl-phase1-billing-form {
+  background: #fff;
+  border-radius: 5px;
+  padding: 5px; }
+
+.hptl-phase1-add-billing-form label {
+  font-weight: 400;
+  font-size: 11px; }
+
+.hptl-phase1-add-billing-form .boderlabel {
+  border-bottom: 1px dashed #000; }
+
+.hptl-phase1-add-billing-form mark {
+  background: none;
+  color: red; }
+
+.hptl-phase1-add-billing-form .form-details {
+  padding: 5px;
+  padding-bottom: 0px; }
+
+.hptl-phase1-add-billing-form .radio-design {
+  position: absolute;
+  top: 5px;
+  left: 36px; }
+
+.hptl-phase1-add-billing-form .refactor-design {
+  min-height: 28px;
+  background-color: #fbfbfb;
+  border: 0px; }
+
+.hptl-phase1-add-billing-form .file-name-upload {
+  margin-left: 4%;
+  margin-top: 2%; }
+
+.hptl-phase1-add-billing-form .table-detail {
+  background: "#b4e2df"; }
+
+.hptl-phase1-add-billing-form th, .hptl-phase1-add-billing-form td {
+  border-right: 1px solid #e6e6e6;
+  font-size: 11px; }
+
+.hptl-phase1-add-billing-form .header-details {
+  padding: 5px;
+  padding-bottom: 0px;
+  border-radius: 5px;
+  border: 1px solid #d3d3d3; }

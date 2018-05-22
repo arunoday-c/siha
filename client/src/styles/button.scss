@@ -1,0 +1,57 @@
+
+.htpl1-phase1-btn-primary {
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 2px;
+    background-color: #68509f; 
+    border: solid 1px #584c74;
+    color: #fff;
+    padding: 2px 20px;
+    cursor: pointer;
+
+    &:hover {
+        background-color:#7850dd;
+    }
+
+    &:active {
+        background-color: #7850dd;
+        box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
+        border: solid 1px #68509f;
+    }
+
+    &:disabled {
+        background-color: #d0d8dc;
+        color: rgba(72, 90, 99, 0.26);
+        border: none;
+        cursor: not-allowed;
+    }
+}
+
+.htpl1-phase1-btn-secondary {
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 2px;
+    background-color: #fff; 
+    border: solid 1px #68509f;
+    color: #68509f;
+    padding: 2px 20px;
+    cursor: pointer;
+
+    &:hover {
+        color: #7850dd;
+        border: solid 1px #7850dd;
+    }
+
+    &:active {
+        color: #68509f;
+        border: solid 1px #68509f;
+        box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    &:disabled {
+        background-color: #d0d8dc;
+        color: rgba(72, 90, 99, 0.26);
+        border: none;
+        cursor: not-allowed;
+    }
+}

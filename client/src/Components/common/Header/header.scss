@@ -1,0 +1,40 @@
+.hptl-phase1-header{
+	box-shadow: 0ch;	
+	.menuBar-title{
+	    display: flex;
+    	justify-content: center;
+	}
+	.drawer_color{
+		background-color: #292929;
+	}
+	
+	.close-menu{
+	    padding-top: 5px;
+		cursor: pointer;
+		color: #fff;
+	}
+	.title-section{
+		height: 50px;
+		width: 100%;
+		position: absolute;
+		top: 0px;
+		background: #fff;
+		z-index: 100000;
+	}
+	.drawerPaper{
+		background: #292929;
+	}
+
+	.app_bar {
+		background: #3BB3B7;
+		box-shadow: none;
+	}
+
+	.notification {
+		text-align: right;		
+	}
+
+	.Typography{
+		padding-left: 10px;
+	}
+}

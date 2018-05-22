@@ -1,2 +1,2 @@
-# hims-app-merged
+# hims-app
 

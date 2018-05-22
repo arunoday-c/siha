@@ -1,0 +1,353 @@
+import pad from "node-string-pad";
+import config from "../keys/keys";
+import fileBase64 from "file-base64";
+import extend from "extend";
+import path from "path";
+import mkdirp from "mkdirp";
+import { logger, debugFunction, debugLog } from "./logging";
+
+let paging = options => {
+  let pageLimit = options.paging.pageNo * options.paging.pageSize;
+  return {
+    pageNo: pageLimit,
+    pageSize: options.paging.pageSize
+  };
+};
+let whereCondition = options => {
+  let condition = "";
+  let values = [];
+  let total = Object.keys(options).length;
+  let i = 0;
+  Object.keys(options).forEach(key => {
+    condition += "(" + key + '=? or "ALL"=?)';
+    if (i != total - 1) condition += " AND ";
+    values.push(options[key]);
+    values.push(options[key]);
+    i = i + 1;
+  });
+  return {
+    condition: condition,
+    values: values
+  };
+};
+
+let selectStatement = (
+  options,
+  successCallback,
+  errorCallback,
+  isreleaseConnection
+) => {
+  isreleaseConnection = isreleaseConnection || false;
+  if (options == null) {
+    if (typeof errorCallback == "function") {
+      errorCallback({
+        success: false,
+        message: "Options can not null"
+      });
+    }
+  }
+  let db = options.db;
+  options.values = options.values || [];
+  db.getConnection((error, connection) => {
+    connection.query(options.query, options.values, (error, result) => {
+      if (isreleaseConnection) releaseDBConnection(db, connection);
+      if (error) {
+        if (typeof errorCallback == "function") {
+          errorCallback(error);
+        }
+      }
+      if (typeof successCallback == "function") successCallback(result);
+    });
+  });
+};
+let deleteRecord = (
+  options,
+  successCallback,
+  errorCallback,
+  isreleaseConnection
+) => {
+  isreleaseConnection = isreleaseConnection || false;
+  let db = options.db;
+  db.getConnection((error, connection) => {
+    let sqlQuery =
+      "select distinct table_name,column_name from information_schema.KEY_COLUMN_USAGE \
+      where constraint_schema=? \
+      and REFERENCED_TABLE_NAME=?";
+    connection.query(
+      sqlQuery,
+      [config.mysqlDb.database, options.tableName],
+      (error, tables) => {
+        if (error) {
+          if (isreleaseConnection) connection.release();
+          if (typeof errorCallback == "function") {
+            errorCallback(error);
+            return;
+          }
+        }
+        let records = "";
+        let values = [];
+        for (var i = 0; i < tables.length; i++) {
+          records +=
+            "SELECT COUNT(*) CNT FROM " +
+            tables[i]["table_name"] +
+            " WHERE \
+           " +
+            tables[i]["column_name"] +
+            "=?;";
+          values.push(options.id);
+        }
+        connection.query(records, values, (error, result) => {
+          if (error) {
+            if (isreleaseConnection) connection.release();
+            if (typeof errorCallback == "function") {
+              errorCallback(error);
+              return;
+            }
+          } else {
+            var hasRecords = false;
+            for (var c = 0; c < result.length; c++) {
+              if (result[c][0] != null && result[c][0]["CNT"] == 1) {
+                hasRecords = true;
+                break;
+              }
+            }
+            if (hasRecords == true) {
+              result = {
+                success: false,
+                message: "Record already exists.."
+              };
+              if (isreleaseConnection) connection.release();
+              if (typeof successCallback == "function") {
+                successCallback(result);
+              }
+            } else {
+              connection.query(
+                options.query,
+                options.values,
+                (error, deleteRecord) => {
+                  if (error) {
+                    if (isreleaseConnection) connection.release();
+                    if (typeof errorCallback == "function") {
+                      errorCallback(error);
+                      return;
+                    }
+                  }
+
+                  result = {
+                    success: true,
+                    records: deleteRecord
+                  };
+                  if (isreleaseConnection) connection.release();
+                  if (typeof successCallback == "function") {
+                    successCallback(result);
+                  }
+                }
+              );
+            }
+          }
+        });
+      }
+    );
+  });
+};
+let releaseConnection = req => {
+  if (req.db != null) {
+    delete req.db;
+  }
+  if (req.records != null) {
+    delete req.records;
+  }
+};
+let checkIsNull = (input, defaultType) => {
+  return input == null || input == "" ? defaultType : input;
+};
+
+let runningNumber = (
+  db,
+  numgenId,
+  paramName,
+  callBack,
+  isreleaseConnection
+) => {
+  isreleaseConnection = isreleaseConnection || false;
+  db.query(
+    "SELECT  `prefix`, `intermediate_series`, `postfix`\
+  , `length`, `increment_by`, `numgen_seperator`, `postfix_start`\
+  ,`postfix_end`, `current_num`, `pervious_num` FROM `hims_f_app_numgen`\
+   WHERE record_status='A' AND hims_f_app_numgen_id=?",
+    [numgenId],
+    (error, result) => {
+      if (error) {
+        throw error;
+      }
+      result = result[0];
+      let prefix = result["prefix"];
+      let intermediate_series = result["intermediate_series"];
+      let postfix = result["postfix"];
+      let length = parseInt(result["length"]) - parseInt(prefix.length);
+      let increment_by = result["increment_by"];
+      let numgen_seperator = result["numgen_seperator"];
+      let postfix_start = result["postfix_start"];
+      let postfix_end = result["postfix_end"];
+
+      let newNumber = parseInt(postfix) + parseInt(increment_by);
+
+      if (
+        parseInt(postfix_start) <= newNumber &&
+        parseInt(postfix_end) >= newNumber
+      ) {
+        let paddedNumber = padString(String(newNumber), length, "0");
+        let queryAtt =
+          "UPDATE `hims_f_app_numgen` \
+        SET `current_num`=?, `pervious_num`=?,postfix=? \
+        WHERE  `record_status`='A' AND `hims_f_app_numgen_id`=?";
+        db.query(
+          queryAtt,
+          [paddedNumber, postfix, paddedNumber, numgenId],
+          (error, numUpdate) => {
+            if (error) {
+              throw error;
+            }
+
+            let completeNumber =
+              prefix +
+              numgen_seperator +
+              intermediate_series +
+              numgen_seperator +
+              paddedNumber;
+
+            if (typeof callBack == "function") {
+              callBack(error, numUpdate, completeNumber);
+            }
+          }
+        );
+      } else {
+        db.query(
+          "select  param_value from algaeh_d_app_config where \
+        param_name =? and param_sequence =(\
+        select param_sequence from algaeh_d_app_config \
+        where param_name=? and param_value=? \
+        )+1",
+          [paramName, paramName, intermediate_series],
+          (error, resultSeries) => {
+            if (error) {
+              throw error;
+            }
+            newNumber = parseInt(postfix_start) + parseInt(increment_by);
+            paddedNumber = padString(newNumber, length, "0");
+
+            let interSeries = resultSeries[0]["param_value"];
+            let queryGen =
+              "UPDATE `hims_f_app_numgen` SET `intermediate_series`=?,\
+            `current_num`=?,`pervious_num`=?,postfix=? \
+            WHERE  `record_status`='A' AND `hims_f_app_numgen_id`=?";
+            db.query(
+              queryGen,
+              [interSeries, paddedNumber, postfix, paddedNumber, numgenId],
+              (error, updateResult) => {
+                if (error) {
+                  throw error;
+                }
+
+                let completeNumber =
+                  prefix +
+                  numgen_seperator +
+                  interSeries +
+                  numgen_seperator +
+                  paddedNumber;
+
+                if (typeof callBack == "function") {
+                  callBack(error, updateResult, completeNumber);
+                }
+              }
+            );
+          }
+        );
+      }
+    }
+  );
+};
+
+let padString = (newNumber, length, paddCharacter) => {
+  return pad(newNumber.toString(), length, "LEFT", paddCharacter);
+};
+
+let releaseDBConnection = (pool, connection) => {
+  if (pool._freeConnections.indexOf(connection) == -1) {
+    connection.release();
+  }
+};
+//from base64 decode to a file
+let base64DecodeToFile = options => {
+  debugFunction("base64DecodeToFile");
+  let settings = extend(
+    {
+      isPatient: true,
+      code: "",
+      file: "",
+      base64String: "",
+      callBack: null
+    },
+    options
+  );
+  var appendFolder = "/Patients/";
+  if (!settings.isPatient) appendFolder = "/Employees/";
+  let folderDir = (
+    config.documentFolderPath +
+    appendFolder +
+    settings.code
+  ).trim();
+  debugLog(folderDir);
+  //logger,debugFunction,debugLog
+
+  let fullDocPath = path.join(__dirname, folderDir);
+  debugLog("DocumentPath" + fullDocPath);
+  mkdirp(fullDocPath, error => {
+    if (error) logger.log("error %j", error);
+    else {
+      debugLog("Document folder created successfully");
+      fileBase64.decode(
+        settings.base64String,
+        fullDocPath + "/" + settings.file,
+        (error, output) => {
+          if (typeof settings.callBack == "function")
+            settings.callBack(error, output);
+        }
+      );
+    }
+  });
+};
+//from base64 encode to a file
+let base64EncodeToFile = options => {
+  let settings = extend(
+    {
+      file: "",
+      callBack: null
+    },
+    options
+  );
+  let fullDocPath = path.join(
+    __dirname,
+    config.documentFolderPath + "/" + settings.file
+  );
+  fileBase64.encode(fullDocPath, (error, output) => {
+    if (typeof settings.callBack == "function")
+      settings.callBack(error, output);
+  });
+};
+let updateApplicationObject = (key, value) => {
+  applicationObject;
+};
+
+module.exports = {
+  selectStatement,
+  paging,
+  whereCondition,
+  releaseConnection,
+  checkIsNull,
+  runningNumber,
+  deleteRecord,
+  releaseDBConnection,
+  base64DecodeToFile,
+  base64EncodeToFile
+};

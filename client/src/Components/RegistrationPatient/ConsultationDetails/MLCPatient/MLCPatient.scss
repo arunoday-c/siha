@@ -1,0 +1,47 @@
+.hptl-phase1-add-mlcpatient-form{
+    background: #fff;
+	border-radius: 5px;
+	.primary-details{
+		padding: 5px;
+		border-right: 1px solid #000;
+		@media only screen and (max-width: 904px) {
+			padding: 10px;
+	    }
+	   	.primary-box-container{
+			padding: 10px;
+		}
+	}
+	mark{
+		background: none;
+		color: red;
+	}
+	label{
+		font-weight: 400;
+		font-size: 11px;
+	}
+
+	.secondary-details{
+		padding: 10px;
+		.secondary-box-container{
+			padding: 5px;
+			.attach-design{
+			    background: #8c8c8c;
+    			min-height: 30px;
+    			color: #fff;
+    			padding: 5px;
+    			position: relative;
+    			top: 105px;
+    			cursor: pointer;
+    			margin-left: -1px;
+    			margin-right: -1px;
+    			font-size: 11px;
+			}
+			.preview-image{
+				position: absolute;
+			    top: -1px;
+			    left: 15px;
+			}
+		}
+	}
+
+}
