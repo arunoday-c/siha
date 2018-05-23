@@ -4,7 +4,7 @@ import "./dept.css";
 import IconButton from "material-ui/IconButton";
 import { MuiThemeProvider, createMuiTheme, DatePicker } from "material-ui";
 import { Button } from "material-ui";
-import SelectField from "../commons/SelectField";
+import SelectField from "../../common/Inputs/SelectField.js";
 import moment from "moment";
 import { algaehApiCall, SelectFiledData } from "../../../utils/algaehApiCall";
 import {
@@ -234,9 +234,7 @@ class DeptMaster extends Component {
       console.log("myState", this.state);
       algaehApiCall({
         uri: "/department/add",
-        data: this.state,
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjUwNjk5NjcsImV4cCI6MTUyNzY2MTk2N30.7jVtM39kz3hPVAdX82v1JSQpgREJjQCFnVmDpvPN17g",
+        data: this.state,       
         onSuccess: response => {
           console.log("Res Data", response.data);
         },
@@ -250,9 +248,7 @@ class DeptMaster extends Component {
     ) {
       algaehApiCall({
         uri: "/department/add/subdepartment",
-        data: this.state,
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjUwNjk5NjcsImV4cCI6MTUyNzY2MTk2N30.7jVtM39kz3hPVAdX82v1JSQpgREJjQCFnVmDpvPN17g",
+        data: this.state,        
         onSuccess: response => {
           console.log("Res Data", response.data);
         },
@@ -264,9 +260,7 @@ class DeptMaster extends Component {
       console.log("myState", this.state);
       algaehApiCall({
         uri: "/department/update",
-        data: this.state,
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjUwNjk5NjcsImV4cCI6MTUyNzY2MTk2N30.7jVtM39kz3hPVAdX82v1JSQpgREJjQCFnVmDpvPN17g",
+        data: this.state,        
         onSuccess: response => {
           console.log("Update Data", response.data);
         },
@@ -303,10 +297,7 @@ class DeptMaster extends Component {
 
   loadSubDeps(dep_id) {
     algaehApiCall({
-      uri: "/department/get/subdepartment?department_id=" + dep_id,
-      token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjU3ODI5MzcsImV4cCI6MTUyODM3NDkzN30.GwmNV2vAIi2N6HWGhhjAxAg0vUrnpb1vgmArwceUi34",
-      //token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjU3ODM1MTQsImV4cCI6MTUyODM3NTUxNH0.7j3qmIAm9e_GwTbOfPv9wNKKS2BY4V56SsAWokTmr18",
+      uri: "/department/get/subdepartment?department_id=" + dep_id,      
       method: "GET",
       onSuccess: response => {
         if (response.data.success == true) {

@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-//import SelectFieldDrop from "./common/SelectField.js";
 import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
 import TextField from 'material-ui/TextField';
-import styles from "./PatientForm.scss";
+//import styles from "./PatientForm.scss";
 import Dropzone from 'react-dropzone';
 import { getTitles } from "../../../../actions/Masters/Title.js";
 import { getCountries } from "../../../../actions/Masters/Country.js";
@@ -17,7 +16,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { SelectFiledData } from "../../../../utils/algaehApiCall.js";
 import extend from 'extend';
-import moment from 'moment';
+//import moment from 'moment';
 import { AddPatientHandlers } from "./AddPatientDetails.js";
 
 const FORMAT_MARTIALSTS = [
@@ -41,7 +40,7 @@ class AddPatientForm extends Component{
 		let dataExists = window.localStorage.getItem("Patient Details");
 		let InputOutput = this.props.PatRegIOputs;
 
-		if(dataExists!=null && dataExists!=""){
+		if(dataExists!==null && dataExists!==""){
 			InputOutput = JSON.parse(dataExists);
 		}
 		
@@ -69,39 +68,39 @@ class AddPatientForm extends Component{
 	}
 
 	componentDidMount(){		
-		if(this.props.titles.length == 0)
+		if(this.props.titles.length === 0)
 		{
 			this.props.getTitles();
 		}
-		if(this.props.nationalities.length == 0)
+		if(this.props.nationalities.length === 0)
 		{
 			this.props.getNationalities();
 		}
-		if(this.props.idtypes.length == 0)
+		if(this.props.idtypes.length === 0)
 		{
 			this.props.getIDTypes();
 		}
-		if(this.props.visatypes.length == 0)
+		if(this.props.visatypes.length === 0)
 		{
 			this.props.getVisatypes();
 		}
-		if(this.props.relegions.length == 0)
+		if(this.props.relegions.length === 0)
 		{
 			this.props.getRelegion();
 		}
-		if(this.props.cities.length == 0)
+		if(this.props.cities.length === 0)
 		{
 			this.props.getCities();
 		}
-		if(this.props.countries.length == 0)
+		if(this.props.countries.length === 0)
 		{
 			this.props.getCountries();
 		}
-		if(this.props.countrystates.length == 0)
+		if(this.props.countrystates.length === 0)
 		{
 			this.props.getStates();
 		}
-		if(this.state.first_name.length != null && this.state.first_name.length != "")
+		if(this.state.first_name.length !== null && this.state.first_name.length !== "")
 		{
 			this.setState({});
 		}

@@ -3,7 +3,7 @@ import { Paper, TextField, LinearProgress } from "material-ui";
 import "./visatype.css";
 import { MuiThemeProvider, createMuiTheme } from "material-ui";
 import { Button } from "material-ui";
-import SelectField from "../commons/SelectField";
+import SelectField from "../../common/Inputs/SelectField.js";
 import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { getVisatypes } from "../../../actions/CommonSetup/Visatype.js";
@@ -79,9 +79,7 @@ class VisaType extends Component {
       }
 
       algaehApiCall({
-        uri: uri,
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjUwNjk5NjcsImV4cCI6MTUyNzY2MTk2N30.7jVtM39kz3hPVAdX82v1JSQpgREJjQCFnVmDpvPN17g",
+        uri: uri,        
         data: this.state,
         onSuccess: response => {
           console.log("Res Visa", response.data.success);

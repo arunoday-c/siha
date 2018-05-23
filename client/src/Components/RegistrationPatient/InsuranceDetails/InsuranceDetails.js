@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import InsuranceForm from "./InsuranceForm/InsuranceForm.js";
 import SecondaryInsurance from "./SecondaryInsurance/SecondaryInsurance.js";
 import InsuranceList from "./InsuranceList/InsuranceList.js";
-import styles from "./InsuranceDetails.css";
-import style from "./../../../styles/site.css";
+// import styles from "./InsuranceDetails.css";
+// import style from "./../../../styles/site.css";
 
 export default class InsuranceDetails extends Component{
 	

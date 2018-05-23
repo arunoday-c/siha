@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-//import SelectFieldDrop from "../common/SelectField.js";
 import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
 //import TextFieldData from "./common/TextField.js";
 import TextField from 'material-ui/TextField';
-import styles from "./ConsultationForm.css";
-import style from "./../../../../styles/site.css";
+// import styles from "./ConsultationForm.css";
+// import style from "./../../../../styles/site.css";
 import extend from 'extend';
 import { getSubDepartments } from "../../../../actions/CommonSetup/Department.js";
 import { getVisittypes } from "../../../../actions/CommonSetup/VisitTypeactions.js";
@@ -29,7 +28,7 @@ class AddConsultationForm extends Component{
 		let dataExists = window.localStorage.getItem("Patient Details");
 		let InputOutput = this.props.PatRegIOputs;
 
-		if(dataExists!=null && dataExists!=""){
+		if(dataExists!==null && dataExists!==""){
 			InputOutput = JSON.parse(dataExists);
 		}
 		this.state = extend({

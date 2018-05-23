@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import styles from "./MLCPatient.css";
-//import SelectFieldDrop from "../common/SelectField.js";
 import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
-import TextFieldData from "../common/TextField.js";
+import TextField from 'material-ui/TextField';
 import Checkbox from "material-ui/Checkbox";
 
 export default class MLCPatient extends Component {
@@ -45,7 +44,7 @@ export default class MLCPatient extends Component {
                 ACCIDENT REGISTRATION NUMBER<mark>*</mark>
               </label>
               <br />
-              <TextFieldData disabled={this.state.MLCPATIENT} />
+              <TextField disabled={this.state.MLCPATIENT} />
             </div>
 
             <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
@@ -53,7 +52,7 @@ export default class MLCPatient extends Component {
                 POLICE STATION NAME<mark>*</mark>
               </label>
               <br />
-              <TextFieldData disabled={this.state.MLCPATIENT} />
+              <TextField disabled={this.state.MLCPATIENT} />
             </div>
 
             <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
@@ -61,7 +60,7 @@ export default class MLCPatient extends Component {
                 WOUND CERTIFIED DATE<mark>*</mark>
               </label>
               <br />
-              <TextFieldData type="date" disabled={this.state.MLCPATIENT} />
+              <TextField type="date" disabled={this.state.MLCPATIENT} />
             </div>
           </div>
           <br />

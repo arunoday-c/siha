@@ -66,9 +66,7 @@ class IDType extends Component {
     //console.log("myState", this.state);
     algaehApiCall({
       uri: "/identity/add",
-      data: this.state,
-      token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjUwNjk5NjcsImV4cCI6MTUyNzY2MTk2N30.7jVtM39kz3hPVAdX82v1JSQpgREJjQCFnVmDpvPN17g",
+      data: this.state,      
       onSuccess: response => {
         console.log("Id Types", response.data);
         window.location.reload();

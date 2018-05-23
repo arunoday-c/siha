@@ -6,7 +6,7 @@ import PatientDetails from "./PatientDetails/PatientDetails.js";
 import ConsultationDetails from "./ConsultationDetails/ConsultationDetails.js";
 import InsuranceDetails from "./InsuranceDetails/InsuranceDetails.js";
 import Billing from "./Billing/BillingDetails";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+//import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Paper from "material-ui/Paper";
 import styles from "./registration.css";
 import PatRegIOputs from "../../Models/RegistrationPatient.js";
@@ -134,8 +134,7 @@ class RegistrationPatient extends Component {
     // });
   }
 
-  render() {
-    let addcls = "";
+  render() {    
     let margin = this.state.sidBarOpen ? "200px" : "";
     return (
       <div id="attach" style={{ overflow: "visible" }}>

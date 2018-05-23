@@ -69,8 +69,7 @@ class PatientDetails extends Component{
 		if (this.state.patient_code) {
 			debugger;
 			algaehApiCall({				
-				uri: datavalue!=null && datavalue!=""? ("v1/frontDesk/get?patient_code="+datavalue) : "v1/frontDesk/get" ,
-				token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjU5NDYzNzksImV4cCI6MTUyODUzODM3OX0.lsaxoGo5NxcUrFMsrv_D3zCC1BaZ6m97PxCbysgP698",
+				uri: datavalue!=null && datavalue!=""? ("v1/frontDesk/get?patient_code="+datavalue) : "v1/frontDesk/get" ,				
 				method: "GET",
 		
 				onSuccess: response => {
@@ -78,7 +77,7 @@ class PatientDetails extends Component{
 				  	console.log("Res", response.data.success);
 				  	console.log("Res Data", response.data);
 		
-					if (response.data.success == true) {
+					if (response.data.success === true) {
 						debugger;						
 						localStorage.setItem('Patient Details', JSON.stringify(response.data.records.patientRegistration));						
 						let Date = localStorage.getItem('Patient Details')[75] + localStorage.getItem('Patient Details')[76] + localStorage.getItem('Patient Details')[77] + localStorage.getItem('Patient Details')[78]+

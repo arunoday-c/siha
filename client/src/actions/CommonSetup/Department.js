@@ -36,9 +36,7 @@ export function getSubDepartments(datavalue) {
         debugger;
 
         algaehApiCall({
-            uri: datavalue!=null && datavalue!=""? ("/department/get/subdepartment?department_id="+datavalue) : "/department/get/subdepartment" ,            
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjU3ODI5MzcsImV4cCI6MTUyODM3NDkzN30.GwmNV2vAIi2N6HWGhhjAxAg0vUrnpb1vgmArwceUi34",
-            //token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjU3ODM1MTQsImV4cCI6MTUyODM3NTUxNH0.7j3qmIAm9e_GwTbOfPv9wNKKS2BY4V56SsAWokTmr18",
+            uri: datavalue!=null && datavalue!=""? ("/department/get/subdepartment?department_id="+datavalue) : "/department/get/subdepartment" ,
             method:"GET",
             onSuccess: response => {
               if (response.data.success == true) {

@@ -9,8 +9,7 @@ export function getOptions() {
         debugger;
 
         algaehApiCall({
-            uri: "/masters/get/autogen",            
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjUxNzE1MDEsImV4cCI6MTUyNzc2MzUwMX0.LRONS36lgHljVOHbZr6A7cJ0Jb_CBA88JCaoCTRBPaQ",
+            uri: "/masters/get/autogen",
             method:"GET",
             onSuccess: response => {
               if (response.data.success == true) {

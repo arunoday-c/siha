@@ -16,14 +16,12 @@ export function getTokenDetals() {
       url: auth_url,
       headers: { Authorization: basicAuth }
     })
-      .then(response => {
-        console.log("Response :" + response.data.token);
+      .then(response => {        
         setToken(response.data.token);
         dispatch({
           type: "GET_DATA",
           payload: response.data.token
-        });
-        console.log("Get Token: ", getToken());
+        });       
       })
       .catch(err => {
         dispatch({

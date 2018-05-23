@@ -3,9 +3,9 @@ import { Paper, TextField } from "material-ui";
 import "./accident_type.css";
 import { MuiThemeProvider, createMuiTheme } from "material-ui";
 import { Button } from "material-ui";
-import SelectField from "../commons/SelectField";
+//import SelectField from "../../common/Inputs/SelectField.js";
 import moment from "moment";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+//import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 const theme = createMuiTheme({
   palette: {

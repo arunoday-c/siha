@@ -4,7 +4,6 @@ import SideMenuBar from "../common/SideMenuBar/SideMenuBar.js";
 import "./dashboard.css";
 import { Bar } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
-import { Paper } from "material-ui";
 import { Line } from "react-chartjs-2";
 
 const BarData = {
