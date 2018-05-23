@@ -4,8 +4,7 @@
   "description": "Hospital Information Management System",
   "main": "dist",
   "scripts": {
-    "server":
-      "cross-env NODE_ENV=development nodemon -w src --exec \"babel-node src/server.js --presets es2015,stage-0\"",
+    "server": "cross-env NODE_ENV=development nodemon -w src --exec \"babel-node src/server.js --presets es2015,stage-0\"",
     "build": "babel src -s -D -d dist --presets es2015,stage-0",
     "client": "npm run start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
@@ -13,8 +12,7 @@
     "npminstall": "npm install && npm install --prefix",
     "prod_build": "npm run build --prefix client && npm run build",
     "lint": "eslint src && eslint test",
-    "test":
-      "export NODE_ENV=test npm run build && mocha --require babel-core/register --timeout=10000000"
+    "test": "export NODE_ENV=test npm run build && mocha --require babel-core/register --timeout=10000000"
   },
   "eslintConfig": {
     "parserOptions": {
