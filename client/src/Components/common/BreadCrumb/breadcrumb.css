@@ -16,7 +16,13 @@
   z-Index: 100000; }
 
 #pageHeader {
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); }
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  
+}
+
+#pageHeader1 {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  
+  background: #fff;
+}
 
 .hdg_bredcrump {
   background-color: #fff;
@@ -33,6 +39,16 @@
 
 .hdg_actions {
   background: #f8f8f8; }
+
+.hdg_actions1 {
+    background: #fff; }
+
+.hdg_actions1 .form-group {
+  margin-bottom: 0;
+  margin-top: 4px;
+  padding: 0;
+  padding-top: 20px;
+  cursor: pointer; }
 
 .hdg_actions label {
   text-transform: uppercase;

@@ -7,24 +7,24 @@
 			{
 				"name": "Dashbord",
 				"label": "Dashbord",
-				"path": "/"
+				"path": "/Dashboard"
 			}
 		]
 	},
 	{
-		"name": "MASTERS",
-		"label": "MASTERS",
+		"name": "MASTERS SETUP",
+		"label": "MASTERS SETUP",
 		"path": "/appointment/",
 		"subMenu" : [
 			{
 				"name": "Business Setup",
 				"label": "Business Setup",
-				"path": "/RegistrationPatient"
+				"path": "/BusinessSetup"
 			},
 			{
 				"name": "Common Setup",
 				"label": "Common Setup",
-				"path": "/RegistrationPatient"
+				"path": "/CommonSetup"
 			}
 		]
 	},

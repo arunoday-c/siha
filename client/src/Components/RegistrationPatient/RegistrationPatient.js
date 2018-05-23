@@ -152,7 +152,8 @@ class RegistrationPatient extends Component {
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
           />
           
-          <BreadCrumb title="Patient Registration"  ctrlName="Patient Code" screenName="Front Desk" dateLabel="Registration" />
+          <BreadCrumb title="Patient Registration"  ctrlName="Patient Code" 
+          screenName="Front Desk" dateLabel="Registration" HideHalfbread = {true}/>
           {/* <br/> <br/><br/> <br/> */}
           <div id="main">
             <FrontDeskContext.Provider>
