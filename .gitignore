@@ -88,6 +88,9 @@ jspm_packages/
 # log directories
 logs/
 
+# server dist directiory
+dist/
+
 # Typescript v1 declaration files
 typings/
 
