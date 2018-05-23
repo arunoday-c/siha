@@ -16,13 +16,8 @@
   z-Index: 100000; }
 
 #pageHeader {
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  
-}
-
-#pageHeader1 {
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  
-  background: #fff;
-}
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  background: #fff; }
 
 .hdg_bredcrump {
   background-color: #fff;
@@ -41,7 +36,7 @@
   background: #f8f8f8; }
 
 .hdg_actions1 {
-    background: #fff; }
+  background: #ffff; }
 
 .hdg_actions1 .form-group {
   margin-bottom: 0;
