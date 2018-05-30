@@ -8,10 +8,10 @@ export default {
   // Dev db
   mysqlDb: {
     connectionLimit: 20,
-    host: "159.89.163.148",
+    host: "him-app-db-server.cue9pqguf30s.ap-south-1.rds.amazonaws.com",
     port: 3306,
-    user: "devteam",
-    password: "devteam",
+    user: "root",
+    password: "algaeh2018",
     database: "algaeh_hims_db",
     multipleStatements: true
   },
