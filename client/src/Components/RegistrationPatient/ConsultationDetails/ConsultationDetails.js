@@ -30,7 +30,7 @@ export default class ConsultationDetails extends Component{
 	}
 
 	componentWillReceiveProps(nextProps){
-		debugger;
+		//debugger;
 		console.log("Visit Code", nextProps.visitcode);
 		this.setState({
 			visitcode:nextProps.visitcode
@@ -42,28 +42,27 @@ export default class ConsultationDetails extends Component{
 		let ConsultationDetails = (this.state.actionConsultationDetails) ? "active" : "";
 		let MlcDesign = (this.state.actionMlcDesign) ? "" : "active";
 
-		return (
-			
-				<div className="hptl-phase1-consultation-details">
-			 		<div className="tab-container toggle-section">
+		return (			
+			<div className="hptl-phase1-consultation-details">
+				<div className="tab-container toggle-section">
 					<ul className="nav">
-					  <li className={"nav-item tab-button " + ConsultationDetails} onClick={this.openTab.bind(this, "Consultation-details")}>
-					    Consultation Details
-					  </li>
-					  <li className={"nav-item tab-button " + MlcDesign} onClick={this.openTab.bind(this, "Mlc-details")}>
-					    MLC Patient
-					  </li>
+						<li className={"nav-item tab-button " + ConsultationDetails} onClick={this.openTab.bind(this, "Consultation-details")}>
+							Consultation Details
+						</li>
+						<li className={"nav-item tab-button " + MlcDesign} onClick={this.openTab.bind(this, "Mlc-details")}>
+							MLC Patient
+						</li>
 					</ul>
-					</div>
-    				<div className="consultation-section">
-		                {(this.state.actionConsultationDetails)?
-		                <ConsultationForm visitcode = {this.state.visitcode}/>:
-		                null}
-		                {(this.state.actionMlcDesign)?
-		                null:
-		                 <MLCPatient />}
-	                </div>
-		    	</div>
+				</div>
+				<div className="consultation-section">
+					{(this.state.actionConsultationDetails)?
+					<ConsultationForm visitcode = {this.state.visitcode}/>:
+					null}
+					{(this.state.actionMlcDesign)?
+					null:
+						<MLCPatient />}
+				</div>
+			</div>
 		);
 	}
 }

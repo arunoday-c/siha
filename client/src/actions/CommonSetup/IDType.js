@@ -4,7 +4,6 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getIDTypes() {
 	return function(dispatch) {
-        //debugger;
 
         algaehApiCall({
             uri: "/identity/get",
@@ -30,7 +29,6 @@ export function getIDTypes() {
 
 export function addIDType(data) {
 	return function(dispatch) {
-        debugger;
 
         algaehApiCall({
             uri: "/department/get",

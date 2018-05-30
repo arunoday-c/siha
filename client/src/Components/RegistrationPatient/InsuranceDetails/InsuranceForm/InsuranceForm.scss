@@ -1,20 +1,33 @@
 .hptl-phase1-insurance-form{
 	background: #ffff;
 	border-radius: 5px;
-	// padding: 10px;
 }
-.htpl-phase1-primary-insurance-form{
-	label{
-		font-weight: 400;
-		font-size: 11px;
-	}
+
+.htpl-phase1-primary-insurance-form{	
 	mark{
 		background: none;
 		color: red;
 	}
+	label{
+		font-weight: 400;
+		font-size: 11px;
+	}
+
+	.centerAlign{
+		text-align: center,
+	}
+
+	.text_field{
+		width: 100% !important;
+		background-color: #FBFBFB; 
+		font-size: "12px"; 
+		margin-right: "5px";		
+	}
+
 	.form-details{
 		padding: 5px;
 		padding-bottom: 0px;
+		margin-top: 0px;
 	}
 	.radio-design{
 		position: absolute;
@@ -30,11 +43,11 @@
 		margin-left: 4%;
 		margin-top: 2%;
 	}
-	.table-detail{
-		
-	}
+	
 	th, td{
 		border-right: 1px solid #e6e6e6;
 		font-size: 11px;
 	}
+	
+
 }

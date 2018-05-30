@@ -7,6 +7,7 @@ import {
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Button from "material-ui/Button";
 
 class Experiment extends Component {
   constructor(props) {

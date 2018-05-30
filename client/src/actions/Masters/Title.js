@@ -6,7 +6,6 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getTitles() {    
 	return function(dispatch) {
-        //debugger;
 
         algaehApiCall({
             uri: "/masters/get/title",                        

@@ -5,8 +5,7 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 
 export function getNationalities() {
-	return function(dispatch) {
-        //debugger;
+	return function(dispatch) {        
         algaehApiCall({
             uri: "/masters/get/nationality",                        
             method:"GET",

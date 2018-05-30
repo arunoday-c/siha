@@ -5,8 +5,7 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 
 export function getCities() {
-	return function(dispatch) {
-        //debugger;
+	return function(dispatch) {        
 
         algaehApiCall({
             uri: "/masters/get/city",                            

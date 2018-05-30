@@ -10,7 +10,9 @@ class BreadCrumb extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      createNew: true
+      createNew: true,
+      ctrlCode:"",
+      ctrlDate:0
     };
   }
 
@@ -21,6 +23,23 @@ class BreadCrumb extends PureComponent {
     });
   }
 
+  componentWillReceiveProps(nextProps){
+		debugger;
+		this.setState({
+      ctrlCode:nextProps.ctrlCode,
+      ctrlDate:nextProps.ctrlDate
+		});		
+  }
+
+  Handle(e){
+    debugger;
+    this.props.ControlCode(e.target.value);
+    this.setState({
+      ctrlCode: e.target.value
+    })
+  }
+
+  
   render() {
     let NewCreate = this.state.createNew ? "*** NEW ***" : "";
     return (
@@ -92,11 +111,13 @@ class BreadCrumb extends PureComponent {
                           <div className="form-group col-lg-8">
                             <label>{this.props.ctrlName}</label>
                             <input
-                              type="email"
+                              type="text"
                               className="form-control"
                               id="exampleInputEmail1"
                               aria-describedby="emailHelp"
                               placeholder={NewCreate}
+                              value={this.state.ctrlCode}
+                              onChange={this.Handle.bind(this)}
                             />
                           </div>
                           <div className="form-group previous_actions">
@@ -111,9 +132,12 @@ class BreadCrumb extends PureComponent {
                       <div className="col-lg-3">
                         <div className="form-group">
                           <label>{this.props.dateLabel} Date</label>
-                          <p>
-                            <small>19/04/2018</small>
-                          </p>
+                          <input
+                              type="date"
+                              className="form-control"
+                              value={this.state.ctrlDate}
+                              disabled="true"                              
+                            />
                         </div>
                       </div>
                       <div className="col-lg-1">

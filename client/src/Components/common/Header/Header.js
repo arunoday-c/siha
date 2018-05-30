@@ -45,7 +45,7 @@ class Header extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: true
     };
   }
 
@@ -74,12 +74,13 @@ class Header extends PureComponent {
           style={{ color: "primary" }}
         >
           <Toolbar>
-            <IconButton
+            <IconButton    
+              className="focus"          
               onClick={this.toggleDrawer.bind(this)}
               color="inherit"
               aria-label="Menu"
+              // style = {{outline: "none"}}
             >
-              {/* <i className="fas fa-bars"></i> */}
               <MenuIcon />
             </IconButton>
 

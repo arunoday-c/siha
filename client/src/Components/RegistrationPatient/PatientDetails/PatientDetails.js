@@ -10,24 +10,17 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import moment from 'moment';
-import { algaehApiCall } from "../../../utils/algaehApiCall.js";
 
 var intervalId;
 
 class PatientDetails extends Component{
 	constructor(props){
 		super(props);		
-		debugger;
-		let dataExists = window.localStorage.getItem("Patient Details");
-		let InputOutput = this.props.PatRegIOputs;
-		if(dataExists!=null && dataExists!=""){
-			InputOutput = JSON.parse(dataExists);
-		}
-
-		this.state = extend({
+		
+		this.state = {
 			actionPatientDesign: true,
 			actionInformationDesign: true
-		}, InputOutput);
+		};
 	}
 
 	openTab(dataValue){
@@ -64,61 +57,20 @@ class PatientDetails extends Component{
 		);
 	}
 
-	getSinglePatientDetails(e){
-		let datavalue = this.state.patient_code;
-		if (this.state.patient_code) {
-			debugger;
-			algaehApiCall({				
-				uri: datavalue!=null && datavalue!=""? ("v1/frontDesk/get?patient_code="+datavalue) : "v1/frontDesk/get" ,				
-				method: "GET",
-		
-				onSuccess: response => {
-				
-				  	console.log("Res", response.data.success);
-				  	console.log("Res Data", response.data);
-		
-					if (response.data.success === true) {
-						debugger;						
-						localStorage.setItem('Patient Details', JSON.stringify(response.data.records.patientRegistration));						
-						let Date = localStorage.getItem('Patient Details')[75] + localStorage.getItem('Patient Details')[76] + localStorage.getItem('Patient Details')[77] + localStorage.getItem('Patient Details')[78]+
-						localStorage.getItem('Patient Details')[79]+localStorage.getItem('Patient Details')[80]
-
-						document.getElementById("OtherInfo").click();
-						document.getElementById("PatientForm").click();
-						this.props.vistDetails(response.data.records.visitDetails);
-						//console.log("", this.state);
-					}
-					else {
-						//Handle unsuccessful Login here.
-					}
-				},
-				onFailure: error => {
-				  	console.log(error);
-				  	// Handle network error here.
-				}
-			  });     
-		  }
-		  
-	}
-
-	componentWillReceiveProps(nextProps){
-		debugger;
-		this.setState({
-			patient_code:nextProps.patientcode
-		});
-		console.log("Patient Code", nextProps.patientcode);
-	}
-	
-	PatRegIOputs(value){
-		debugger;
-		console.log("Details", value);
-	}
+	// componentWillReceiveProps(nextProps){
+	// 	debugger;
+	// 	if(nextProps.patCode !== null)
+	// 	{
+	// 		this.setState({...this.state,nextProps})
+	// 	}
+	// }
 
 	render() {
 		let patientSelect = (this.state.actionPatientDesign) ? "active" : "";
 		let informationSelect = (this.state.actionInformationDesign) ? "" : "active";
 		return (	
 			<div className="hptl-phase1-patient-details">
+				
 				{/* <div className="row">
 					<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
 						<label>PATIENT CODE</label><br />
@@ -149,19 +101,21 @@ class PatientDetails extends Component{
 						</li>
 					</ul>
 				</div>
-				<div className="patient-section">
+				<div className="patient-section">					
 					{(this.state.actionPatientDesign)?
 						<PatientForm PatRegIOputs={this.props.PatRegIOputs}/>:
 						null}
 					{(this.state.actionInformationDesign)?
 						null:
-						<OtherInfo PatRegIOputs={this.props.PatRegIOputs}/>}
+						<OtherInfo PatRegIOputs={this.props.PatRegIOputs}/>}					
 				</div>
 			</div>		
 
 		);
 	}
 }
+
+
 
 function mapStateToProps(state) {
 	return {

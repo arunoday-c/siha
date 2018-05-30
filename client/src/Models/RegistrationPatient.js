@@ -10,6 +10,7 @@ export default
         isSend =isSend||false;
 
         if(param!=null){
+            // debugger;
             if(param.registration_date!=0)
             {
                 param.registration_date= PatRegIOputs.isDateFormat({date:param.registration_date},isSend);
@@ -17,14 +18,14 @@ export default
             if(param.date_of_birth!=0)
             {
                 param.date_of_birth = PatRegIOputs.isDateFormat({date:param.date_of_birth},isSend)    
-            }
-          
-         }
+            }          
+        }
 
         var output;
         var CurrentDate = new Date();        
-        
+        // debugger;
         output = extend({
+            
             patient_code:"",
             registration_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
             title_id: 0,
@@ -34,6 +35,7 @@ export default
             gender: "",
             religion_id: 1,
             date_of_birth: 0,
+            hijiri_date:0,
             age: 0,
             marital_status: "",
             address1: "",
@@ -71,6 +73,7 @@ export default
             mlc_wound_certified_date: "",
             visit_code:""
         },param);
+        // debugger;
         return output;
     }
 }

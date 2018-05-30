@@ -12,7 +12,7 @@ import styles from "./registration.css";
 import PatRegIOputs from "../../Models/RegistrationPatient.js";
 import Button from "material-ui/Button";
 import extend from "extend";
-import { postPatientDetails } from "../../actions/RegistrationPatient/Registrationactions.js";
+import { postPatientDetails, getPatientDetails } from "../../actions/RegistrationPatient/Registrationactions.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -23,6 +23,10 @@ import VisitDetails from "../../Models/VisitDetails.js";
 import IconButton from "material-ui/IconButton";
 import Close from "@material-ui/icons/Close";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
+import MyContext from "../../utils/MyContext.js";
+import { algaehApiCall } from "../../utils/algaehApiCall.js";
+import AHSnackbar from "../common/Inputs/AHSnackbar.js";
+import {Validations} from "./FrontdeskValidation.js";
 
 import Dialog, {
   DialogActions,
@@ -36,20 +40,11 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-
-const FrontDeskContext = React.createContext();
-
+// const FrontDeskContext = React.createContext();
+var intervalId;
 class RegistrationPatient extends Component {
   constructor(props) {
-    super(props);
-    debugger;
-    localStorage.clear();
-    let dataExists = window.localStorage.getItem("Patient Details");
-    let InputOutput = PatRegIOputs.inputParam();
-
-    if (dataExists != null && dataExists != "") {
-      InputOutput = JSON.parse(dataExists);
-    }
+    super(props);    
 
     this.state = extend(
       {
@@ -59,7 +54,7 @@ class RegistrationPatient extends Component {
         horizontal: null,
         DialogOpen: false,
         sideBarOpen: false,
-        sidBarOpen: false
+        sidBarOpen: true,        
       },
       PatRegIOputs.inputParam()
     );
@@ -73,34 +68,17 @@ class RegistrationPatient extends Component {
     });
   }
 
-  Validations = () => {
-    let isError = false;
-    let frontDeskDetails = JSON.parse(localStorage.getItem("Patient Details"));
-    if (frontDeskDetails.first_name.length <= 0) {
-      isError = true;
-      this.setState({
-        open: true,
-        MandatoryMsg: "Invalid. First Name Cannot be blank."
-      });
-    }
-    return isError;
-  };
-
   ClearData(e) {
     debugger;
-    localStorage.clear();
+    this.setState (PatRegIOputs.inputParam());
   }
+
   SavePatientDetails(e) {
     debugger;
-
-    console.log("", FrontDeskContext);
-    return
-    
-    const err = this.Validations();
-    console.log(err);
+    const err = Validations(this);
+    console.log(err);    
     if (!err) {
-      this.props.postPatientDetails(
-        JSON.parse(localStorage.getItem("Patient Details")),
+      this.props.postPatientDetails(this.state,
         data => {
           this.setState({
             patient_code: data.patient_code,
@@ -126,15 +104,50 @@ class RegistrationPatient extends Component {
       sidBarOpen: sidOpen
     });
   }
-  PatRegIOputs(value){
+
+  getCtrlCode(data) {
     debugger;
-    console.log("", value);
-    // this.setState({
-    //   state: value
-    // });
+    this.setState({
+      patient_code: data
+    },()=>{
+      clearInterval(intervalId);
+        intervalId = setInterval(()=> {
+          this.props.getPatientDetails(this.state.patient_code);
+          clearInterval(intervalId);
+        } , 500);      
+    });
   }
 
-  render() {    
+  // getSinglePatientDetails(e){
+	// 	let datavalue = this.state.patient_code;
+	// 	if (this.state.patient_code) {
+	// 		debugger;
+	// 		algaehApiCall({
+	// 			uri: datavalue!=null && datavalue!=""? ("/frontDesk/get?patient_code="+datavalue) : "/frontDesk/get" ,				
+	// 			method: "GET",
+		
+	// 			onSuccess: response => {
+	// 				if (response.data.success === true) {
+  //           debugger;				
+  //           this.setState(PatRegIOputs.inputParam(response.data.records.patientRegistration))
+            
+	// 					// this.props.vistDetails(response.data.records.visitDetails);
+	// 					//console.log("", this.state);
+	// 				}
+	// 				else {
+	// 					//Handle unsuccessful Login here.
+	// 				}
+	// 			},
+	// 			onFailure: error => {
+	// 			  	console.log(error);
+	// 			  	// Handle network error here.
+	// 			}
+	// 		  });     
+	// 	}		  
+	//   }
+
+  
+  render() {
     let margin = this.state.sidBarOpen ? "200px" : "";
     return (
       <div id="attach" style={{ overflow: "visible" }}>
@@ -150,24 +163,32 @@ class RegistrationPatient extends Component {
             title="Front Desk"
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
           />
-          
-          <BreadCrumb title="Patient Registration"  ctrlName="Patient Code" 
-          screenName="Front Desk" dateLabel="Registration" HideHalfbread = {true}/>
-          {/* <br/> <br/><br/> <br/> */}
-          <div id="main">
-            <FrontDeskContext.Provider>
-              <PatientDetails
-                PatRegIOputs={PatRegIOputs.inputParam()}
-                patientcode={this.state.patient_code}
-              />
-              <ConsultationDetails
-                PatRegIOputs={PatRegIOputs.inputParam()}
-                visitcode={this.state.visit_code}
-              />
+
+          <BreadCrumb
+            title="Patient Registration"
+            ctrlName="Patient Code"
+            screenName="Front Desk"
+            dateLabel="Registration"
+            HideHalfbread={true}
+            ctrlCode={this.state.patient_code}
+            ctrlDate = {this.state.registration_date}
+            ControlCode = {this.getCtrlCode.bind(this)}
+          />
+          <div>
+            <MyContext.Provider value
+              value={{
+                state: this.state,
+                updateState: (obj) => {
+                  debugger;
+                  this.setState(obj);                  
+                }
+              }}>
+              <PatientDetails PatRegIOputs={this.state} patCode = {this.state.patient_code}/>
+              <ConsultationDetails PatRegIOputs={this.state} visitcode={this.state.visit_code}/>
               <InsuranceDetails />
               <Billing />
               <div className="hptl-phase1-footer">
-                <br/> <br/>
+                <br /> <br />
                 <AppBar position="static" className="main">
                   <div className="container-fluid">
                     <div className="row">
@@ -190,28 +211,22 @@ class RegistrationPatient extends Component {
                           Save
                         </button>
 
-                        <Snackbar                          
+                        <AHSnackbar                          
                           open={this.state.open}
-                          onClose={this.handleClose}
-                          ContentProps={{
-                            "aria-describedby": "message-id"
-                          }}
-                          message={
-                            <span id="message-id" style={{ color: "red" }}>
-                              {this.state.MandatoryMsg}
-                            </span>
-                          }
+                          handleClose={this.handleClose}
+                          MandatoryMsg= {this.state.MandatoryMsg}
                         />
                       </div>
                     </div>
                   </div>
                 </AppBar>
               </div>
-              </FrontDeskContext.Provider>
-            </div>          
+            </MyContext.Provider>
+          </div>
         </div>
+
         <div>
-          <Dialog
+          <Dialog            
             open={this.state.DialogOpen}
             TransitionComponent={Transition}
             keepMounted
@@ -235,6 +250,10 @@ class RegistrationPatient extends Component {
   }
 }
 
+function TransitionUp(props) {
+  return <Slide {...props} direction="up" />;
+}
+
 function mapStateToProps(state) {
   return {
     patients: state.patients.patients
@@ -243,7 +262,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { postPatientDetails: postPatientDetails },
+    { postPatientDetails: postPatientDetails, getPatientDetails: getPatientDetails },
     dispatch
   );
 }

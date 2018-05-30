@@ -4,7 +4,7 @@ export function CountriesDetails (state = { countries:[] } , action) {
 		
 	
 	case "CTRYGET_DATA":
-		debugger;
+		
 		return Object.assign({}, state, { countries: action.payload} );
 		break;		
 	}

@@ -1,0 +1,69 @@
+{
+  "patient_code": "Patient Code",
+  "registration_date": "Registration Date",
+  "title_id": "Title",
+  "first_name": "First Name",
+  "middle_name": "Middle Name",
+  "last_name": "Last Name",
+  "gender": "Gender",
+  "religion_id": "Relegion",
+  "date_of_birth": "Date Of Birth",
+  "age": "Age",
+  "marital_status": "Marital Status",
+  "address1": "Address1",
+  "address2": "Address2",
+  "contact_number": "Mobile Number",
+  "email": "Email Address",
+  "visa_type_id": "Visa Type",
+  "nationality_id": "Nationality",
+  "postal_code": "Postal Code",
+  "country_id": "Country",
+  "state_id": "State",
+  "city_id": "City",
+  "primary_identity_id": "Primary ID",
+  "primary_id_no": "Number",
+  "secondary_identity_id": "Secondary ID",
+
+  "secondary_id_no": "Number",
+  "secondary_contact_number": "Secondary Contact Number",
+
+  "emergency_contact_name": "Emergency Contact Name",
+
+  "emergency_contact_number": "Emergency Contact Number",
+
+  "relationship_with_patient": "Relationship With Patient",
+
+  "visit_type": "Visit Type",
+  "visit_date": "Visit Date",
+  "department_id": "Department",
+  "doctor_id": "Doctor",
+  "maternity_patient": "Maternity Patient",
+
+  "mlc_accident_reg_no": "Accident Registration Number",
+
+  "mlc_police_station": "Police Station Name",
+
+  "mlc_wound_certified_date": "Wound Certified Date",
+
+  "visit_code": "Visit Code",
+  "btn_save": "save",
+  "btn_clear": "clear",
+  "tab_patdtls": "Patient Details",
+  "tab_othinf": "Other Information",
+  "tab_condtls": "Consultation Details",
+
+  "tab_mlcpat": "MLC Patient",
+  "tab_primaryins": "Primary Insurance Details",
+
+  "tab_secondaryins": "Secondary Insurance Details",
+
+  "tab_billdtls": "Billing Details",
+  "tab_recipts": "Recipts",
+  "form_patregister": "Patient Registration",
+
+  "form_name": "Front Desk",
+  "form_home": "Home",
+  "form_create": "Create New",
+  "form_yes": "Yes",
+  "form_no": "No"
+}

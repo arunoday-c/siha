@@ -5,8 +5,7 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 
 export function getRelegion() {
-	return function(dispatch) {
-        //debugger;
+	return function(dispatch) {        
         algaehApiCall({
             uri: "/masters/get/relegion",                        
             method:"GET",

@@ -12,8 +12,8 @@
 		]
 	},
 	{
-		"name": "MASTERS SETUP",
-		"label": "MASTERS SETUP",
+		"name": "MASTERS",
+		"label": "MASTERS",
 		"path": "/appointment/",
 		"subMenu" : [
 			{

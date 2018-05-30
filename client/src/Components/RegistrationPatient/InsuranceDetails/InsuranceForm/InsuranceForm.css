@@ -2,17 +2,27 @@
   background: #ffff;
   border-radius: 5px; }
 
-.htpl-phase1-primary-insurance-form label {
-  font-weight: 400;
-  font-size: 11px; }
-
 .htpl-phase1-primary-insurance-form mark {
   background: none;
   color: red; }
 
+.htpl-phase1-primary-insurance-form label {
+  font-weight: 400;
+  font-size: 11px; }
+
+.htpl-phase1-primary-insurance-form .centerAlign {
+  text-align: center; }
+
+.htpl-phase1-primary-insurance-form .text_field {
+  width: 100% !important;
+  background-color: #FBFBFB;
+  font-size: "12px";
+  margin-right: "5px"; }
+
 .htpl-phase1-primary-insurance-form .form-details {
   padding: 5px;
-  padding-bottom: 0px; }
+  padding-bottom: 0px;
+  margin-top: 0px; }
 
 .htpl-phase1-primary-insurance-form .radio-design {
   position: absolute;
