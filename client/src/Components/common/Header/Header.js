@@ -1,28 +1,31 @@
 import React, { Component, PureComponent } from "react";
 import { withStyles } from "material-ui/styles";
-import AppBar from "material-ui/AppBar";
-import Toolbar from "material-ui/Toolbar";
-import Typography from "material-ui/Typography";
-import IconButton from "material-ui/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import SwipeableDrawer from "material-ui/SwipeableDrawer";
-import Button from "material-ui/Button";
-import List from "material-ui/List";
-import Divider from "material-ui/Divider";
 import SideMenuBar from "./../SideMenuBar/SideMenuBar.js";
 import style from "./header.css";
-import Paper from "material-ui/Paper";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import Close from "@material-ui/icons/Close";
-import {setCookie} from "../../../utils/algaehApiCall.js"
+import MenuIcon from "@material-ui/icons/Menu";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Close,
+  SwipeableDrawer,
+  Button,
+  List,
+  Divider,
+  Paper,
+  ChevronLeftIcon,
+  Menu,
+  MenuItem
+} from "material-ui";
+
+import { setCookie, getCookie } from "../../../utils/algaehApiCall.js";
 // var noScroll = require('no-scroll');
 // noScroll.off();
 
 const appColor = {
   background: "#292929"
 };
-
-
 
 const paper_style = {
   height: 1350,
@@ -48,12 +51,13 @@ class Header extends PureComponent {
     super(props);
     this.state = {
       open: true,
-      selectedLang:"lang_en",
+      selectedLang: "lang_en",
+      anchorEl: null,
+      languageName: "English"
     };
   }
 
   toggleDrawer() {
-    debugger;
     this.setState(
       {
         open: !this.state.open
@@ -67,35 +71,44 @@ class Header extends PureComponent {
       }
     );
   }
-
-  Languaue(secLang, e){
-    debugger;
-    if(secLang === "En")
-    {
-      setCookie("Language", "lang_en", 30);
-      this.props.SelectLanguage("lang_en");
+  componentWillMount() {
+    let lang = getCookie("Language");
+    if (lang != null) {
+      this.setState({ languageName: lang == "lang_ar" ? "عربي" : "English" });
     }
-    else if(secLang === "Ar"){      
-      this.props.SelectLanguage("lang_ar");
-      setCookie("Language", "lang_ar", 30);      
-    }    
   }
+  Languaue(secLang, e) {
+    if (secLang === "En") {
+      setCookie("Language", "lang_en", 30);
+      this.setState({ languageName: "English" });
+      this.props.SelectLanguage("lang_en");
+    } else if (secLang === "Ar") {
+      this.props.SelectLanguage("lang_ar");
+      setCookie("Language", "lang_ar", 30);
+      this.setState({ languageName: "عربي" });
+    }
+  }
+  handleClick = event => {
+    debugger;
+    this.setState({ anchorEl: event.currentTarget });
+  };
 
+  handleClose = (seLang, e) => {
+    this.setState({ anchorEl: null });
+    if (seLang != null) this.Languaue(seLang, e);
+  };
   render() {
     return (
-        
-        <div className="row hptl-phase1-header sticky-top">         
-          <AppBar
-            className="app_bar"
-            position="static"
-            style={{ color: "primary" }}
-          >
-            
+      <div className="row hptl-phase1-header sticky-top">
+        <AppBar
+          className="app_bar"
+          position="static"
+          style={{ color: "primary" }}
+        >
           <Toolbar>
-            
             <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-              <IconButton    
-                className="focus"          
+              <IconButton
+                className="focus"
                 onClick={this.toggleDrawer.bind(this)}
                 color="inherit"
                 aria-label="Menu"
@@ -103,26 +116,54 @@ class Header extends PureComponent {
               >
                 <MenuIcon />
               </IconButton>
-              
             </div>
             <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-              <Typography className="Typography" variant="title" color="inherit">
-                  {this.props.title}
+              <Typography
+                className="Typography"
+                variant="title"
+                color="inherit"
+              >
+                {this.props.title}
               </Typography>
             </div>
-
-            <div className="col-lg-1">
+            <div className="col-lg-5">
+              <Button
+                style={{ color: "#fff" }}
+                aria-haspopup="true"
+                className="float-right"
+                onClick={this.handleClick}
+              >
+                {this.state.languageName}
+                &nbsp;&nbsp;{" "}
+                <i
+                  class="fa fa-language"
+                  aria-hidden="true"
+                  style={{ fontSize: 18 }}
+                />
+              </Button>
+              <Menu
+                id="simple-menu"
+                anchorEl={this.state.anchorEl}
+                open={Boolean(this.state.anchorEl)}
+                onClose={this.handleClose}
+              >
+                <MenuItem onClick={this.handleClose.bind(this, "En")}>
+                  English
+                </MenuItem>
+                <MenuItem onClick={this.handleClose.bind(this, "Ar")}>
+                  Arabic
+                </MenuItem>
+              </Menu>
+            </div>
+            {/* <div className="col-lg-1">
               <i className="fas fa-flag" onClick={this.Languaue.bind(this, "En")}></i>
             </div>
             <div className="col-lg-1">
               <i className="fas fa-flag" onClick={this.Languaue.bind(this, "Ar")}></i>
-            </div>
-          </Toolbar>          
-            
-          </AppBar>
-        </div>
-        
-      
+            </div> */}
+          </Toolbar>
+        </AppBar>
+      </div>
     );
   }
 }
