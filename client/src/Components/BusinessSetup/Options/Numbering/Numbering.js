@@ -65,40 +65,38 @@ class Numbering extends Component {
     e.preventDefault();
     console.log("State", this.state);
 
-    if (this.state.numgen_code.length == 0) {
+    if (this.state.numgen_code.length === 0) {
       this.setState({ numgen_code_error: true });
-    } else if (this.state.module_desc.length == 0) {
+    } else if (this.state.module_desc.length === 0) {
       this.setState({ module_desc_error: true });
-    } else if (this.state.prefix.length == 0) {
+    } else if (this.state.prefix.length === 0) {
       this.setState({ prefix_error: true });
-    } else if (this.state.intermediate_series.length == 0) {
+    } else if (this.state.intermediate_series.length === 0) {
       this.setState({ intermediate_series_error: true });
-    } else if (this.state.postfix.length == 0) {
+    } else if (this.state.postfix.length === 0) {
       this.setState({ postfix_error: true });
-    } else if (this.state.length.length == 0) {
+    } else if (this.state.length.length === 0) {
       this.setState({ length_error: true });
-    } else if (this.state.increment_by.length == 0) {
+    } else if (this.state.increment_by.length === 0) {
       this.setState({ increment_by_error: true });
-    } else if (this.state.numgen_seperator.length == 0) {
+    } else if (this.state.numgen_seperator.length === 0) {
       this.setState({ numgen_seperator_error: true });
-    } else if (this.state.postfix_start.length == 0) {
+    } else if (this.state.postfix_start.length === 0) {
       this.setState({ postfix_start_error: true });
-    } else if (this.state.postfix_end.length == 0) {
+    } else if (this.state.postfix_end.length === 0) {
       this.setState({ postfix_end_error: true });
-    } else if (this.state.current_num.length == 0) {
+    } else if (this.state.current_num.length === 0) {
       this.setState({ current_num_error: true });
     } 
       algaehApiCall({
-        uri: "/masters/set/autogen",
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjUwNjk5NjcsImV4cCI6MTUyNzY2MTk2N30.7jVtM39kz3hPVAdX82v1JSQpgREJjQCFnVmDpvPN17g",
+        uri: "/masters/set/autogen",        
         data: this.state,
 
         onSuccess: response => {
           console.log("Res", response.data.success);
           console.log("Res Data", response.data);
 
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             window.location.reload();
 
           } else {

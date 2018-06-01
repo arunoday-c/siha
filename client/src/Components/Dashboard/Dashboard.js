@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import Header from "../common/Header/Header.js";
+import SideMenuBar from "../common/SideMenuBar/SideMenuBar.js";
 import "./dashboard.css";
 import { Bar } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
-import { Paper } from "material-ui";
 import { Line } from "react-chartjs-2";
-
 
 const BarData = {
   labels: [
@@ -19,7 +18,7 @@ const BarData = {
   ],
   datasets: [
     {
-      data: [0, 40 ,60 ,60 ,80 ,90 ,80 ],
+      data: [0, 40, 60, 60, 80, 90, 80],
       label: "Patients Count Weekly",
       backgroundColor: "#DCAC66",
       hoverBackgroundColor: "#00BCB0"
@@ -75,67 +74,92 @@ const LineData = {
 };
 
 class Dashboard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sidBarOpen: true
+    };
+  }
+
+  SideMenuBarOpen(sidOpen) {
+    debugger;
+    this.setState({
+      sidBarOpen: sidOpen
+    });
+  }
+
   render() {
+    let margin = this.state.sidBarOpen ? "200px" : "";
     return (
       <div className="dashboard ">
-        <Header title="Dashboard" />
-
-        <div className="row card-deck" style={{ margin: 40 }}>
-          {/* Bar Graph Start */}
-
-          <div className="col-lg-4 card">
-            <Bar
-              width={100}
-              height={70}
-              data={BarData}
-              options={{
-                maintainAspectRatio: true
-              }}
-            />
+        {this.state.sidBarOpen === true ? (
+          <div>
+            <SideMenuBar />
           </div>
+        ) : null}
+        <div style={{ marginLeft: margin }}>
+          <Header
+            title="Dashboard"
+            SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
+          />
 
-          {/* Bar Graph End */}
+          <div className="row card-deck" style={{ margin: 40 }}>
+            {/* Bar Graph Start */}
 
-          {/* Pie Chart Start */}
-          <div className="col-lg-4 card">
-            <Doughnut
-              data={PieData}
-              width={100}
-              height={50}
-              options={{
-                maintainAspectRatio: true
-              }}
-            />
+            <div className="col-lg-4 card">
+              <Bar
+                width={100}
+                height={70}
+                data={BarData}
+                options={{
+                  maintainAspectRatio: true
+                }}
+              />
+            </div>
+
+            {/* Bar Graph End */}
+
+            {/* Pie Chart Start */}
+            <div className="col-lg-4 card">
+              <Doughnut
+                data={PieData}
+                width={100}
+                height={50}
+                options={{
+                  maintainAspectRatio: true
+                }}
+              />
+            </div>
+
+            {/* Pie Chart End */}
+
+            {/* Score Card Start */}
+            <div className="col-lg-4 card">
+              <label> TOTAL PATIENTS REGISTERED TODAY</label>
+              <h5> 72 </h5>
+              <hr />
+              <label> CASH PATIENTS TODAY</label>
+              <h5> 38 </h5>
+              <hr />
+              <label> INSURANCE REGISTERED TODAY</label>
+              <h5> 34 </h5>
+            </div>
+
+            {/* Score Card End */}
           </div>
-
-          {/* Pie Chart End */}
-
-          {/* Score Card Start */}
-          <div className="col-lg-4 card">
-            <label> TOTAL PATIENTS REGISTERED TODAY</label>
-            <h5> 72 </h5>
-            <hr />
-            <label> CASH PATIENTS TODAY</label>
-            <h5> 38 </h5>
-            <hr />
-            <label> INSURANCE REGISTERED TODAY</label>
-            <h5> 34 </h5>
-          </div>
-
-          {/* Score Card End */}
-        </div>
-        <div className="row" style={{ margin: 40 }}>
-          <div className="col card" style={{ margin: "auto" }}>
-            <label> Month Wise Patient Visits</label>
-            <br />
-            <Line
-              height={60}
-              options={{
-                maintainAspectRatio: true,
-                legend: false
-              }}
-              data={LineData}
-            />
+          <div className="row" style={{ margin: 40 }}>
+            <div className="col card" style={{ margin: "auto" }}>
+              <label> Month Wise Patient Visits</label>
+              <br />
+              <Line
+                height={60}
+                options={{
+                  maintainAspectRatio: true,
+                  legend: false
+                }}
+                data={LineData}
+              />
+            </div>
           </div>
         </div>
       </div>

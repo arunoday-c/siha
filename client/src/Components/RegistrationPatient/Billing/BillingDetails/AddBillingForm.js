@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-//import SelectFieldDrop from "../../common/SelectField.js";
 import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
-import TextFieldData from "../../common/TextField.js";
+import TextField from 'material-ui/TextField';
 import Dropzone from 'react-dropzone';
 import styles from "./AddBillingForm.css";
 import style from "./../../../../styles/site.css";
@@ -39,7 +38,12 @@ export default class AddBillingForm extends Component{
 					<div className="row">
 						<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
 							<label>BILL NUMBER<mark>*</mark></label><br />
-							<TextFieldData disabled={true}/>
+							<TextField disabled={true}/>
+						</div>
+
+						<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
+							<label>BILL DATE<mark>*</mark></label><br />
+							<TextField type="date" disabled={true}/>
 						</div>
 					</div>
 					<div className="row form-details">
@@ -52,8 +56,7 @@ export default class AddBillingForm extends Component{
 										<th scope="col">SERVICE TYPE</th>
 										<th scope="col">BILL NO.</th>
 										<th scope="col">DEPARTMENT</th>
-										<th scope="col">IN-CHARGE/PROVIDER</th>										
-										<th scope="col">BILL DATE</th>
+										<th scope="col">IN-CHARGE/PROVIDER</th>
 										<th scope="col">ADV. FEE</th>	
 										<th scope="col">CONSULT FEE</th>
 										<th scope="col">DISCOUNT%</th>
@@ -229,7 +232,7 @@ export default class AddBillingForm extends Component{
 						</div>
 
 						<div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">							
-							<TextFieldData type="number" InputAdornment="%"/>						
+							<TextField type="number" InputAdornment="%"/>						
 						</div>
 
 						<div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 boderlabel">							
@@ -283,7 +286,7 @@ export default class AddBillingForm extends Component{
 						</div>
 
 						<div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">							
-							<TextFieldData type="number" />
+							<TextField type="number" />
 						</div>
 					</div>
 

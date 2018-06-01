@@ -4,12 +4,9 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getIDTypes() {
 	return function(dispatch) {
-        //debugger;
 
         algaehApiCall({
-            uri: "/identity/get",            
-            //token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjU3ODI5MzcsImV4cCI6MTUyODM3NDkzN30.GwmNV2vAIi2N6HWGhhjAxAg0vUrnpb1vgmArwceUi34",
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjU3ODI5MzcsImV4cCI6MTUyODM3NDkzN30.GwmNV2vAIi2N6HWGhhjAxAg0vUrnpb1vgmArwceUi34",
+            uri: "/identity/get",
             method:"GET",
             onSuccess: response => {
               if (response.data.success == true) {
@@ -32,11 +29,9 @@ export function getIDTypes() {
 
 export function addIDType(data) {
 	return function(dispatch) {
-        debugger;
 
         algaehApiCall({
-            uri: "/department/get",            
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjU5NDYzNzksImV4cCI6MTUyODUzODM3OX0.lsaxoGo5NxcUrFMsrv_D3zCC1BaZ6m97PxCbysgP698",
+            uri: "/department/get",
             method:"POST",
             data : data,
             onSuccess: response => {

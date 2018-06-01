@@ -97,14 +97,17 @@ _passport2.default.deserializeUser(function (id, done) {
 });
 
 app.use(function (req, res, next) {
-  var reBody = req.body;
-  if (reBody != null && reBody["password"] != null) {
-    reBody["password"] = String(reBody["password"]).replace(reBody["password"], "*******");
-  }
+  // let reBody = req.body;
+  // if (reBody != null && reBody["password"] != null) {
+  //   reBody["password"] = String(reBody["password"]).replace(
+  //     reBody["password"],
+  //     "*******"
+  //   );
+  // }
 
   var reqH = req.headers;
   var reqUser = "";
-  if (req.url != "/apiAuth") reqUser = (0, _jwtDecode2.default)(reqH["x-api-key"]).id;
+  if (req.url != "/api/v1/apiAuth") reqUser = (0, _jwtDecode2.default)(reqH["x-api-key"]).id;
 
   _logging.logger.log("info", "%j", {
     requestClient: req.ip,

@@ -11,7 +11,7 @@ export default class ConsultationForm extends Component{
 	}
 
 	componentWillReceiveProps(nextProps){
-		debugger;
+		// debugger;
 		console.log("Visit Code", nextProps.visitcode);
 		this.setState({
 			visitcode:nextProps.visitcode
@@ -21,7 +21,7 @@ export default class ConsultationForm extends Component{
 	render() {
 		return (
 			<div className="hptl-phase1-patient-form">
-				<AddConsultationForm visitcode = {this.state.visitcode}/>
+				<AddConsultationForm PatRegIOputs={this.props.PatRegIOputs}/>
 			</div>
 		);
 	}

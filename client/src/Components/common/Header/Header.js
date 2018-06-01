@@ -14,13 +14,15 @@ import style from "./header.css";
 import Paper from "material-ui/Paper";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import Close from "@material-ui/icons/Close";
-
+import {setCookie} from "../../../utils/algaehApiCall.js"
 // var noScroll = require('no-scroll');
 // noScroll.off();
 
 const appColor = {
   background: "#292929"
 };
+
+
 
 const paper_style = {
   height: 1350,
@@ -45,7 +47,8 @@ class Header extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: true,
+      selectedLang:"lang_en",
     };
   }
 
@@ -65,30 +68,61 @@ class Header extends PureComponent {
     );
   }
 
+  Languaue(secLang, e){
+    debugger;
+    if(secLang === "En")
+    {
+      setCookie("Language", "lang_en", 30);
+      this.props.SelectLanguage("lang_en");
+    }
+    else if(secLang === "Ar"){      
+      this.props.SelectLanguage("lang_ar");
+      setCookie("Language", "lang_ar", 30);      
+    }    
+  }
+
   render() {
     return (
-      <div className="row hptl-phase1-header sticky-top">
-        <AppBar
-          className="app_bar"
-          position="static"
-          style={{ color: "primary" }}
-        >
+        
+        <div className="row hptl-phase1-header sticky-top">         
+          <AppBar
+            className="app_bar"
+            position="static"
+            style={{ color: "primary" }}
+          >
+            
           <Toolbar>
-            <IconButton
-              onClick={this.toggleDrawer.bind(this)}
-              color="inherit"
-              aria-label="Menu"
-            >
-              {/* <i className="fas fa-bars"></i> */}
-              <MenuIcon />
-            </IconButton>
+            
+            <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+              <IconButton    
+                className="focus"          
+                onClick={this.toggleDrawer.bind(this)}
+                color="inherit"
+                aria-label="Menu"
+                // style = {{outline: "none"}}
+              >
+                <MenuIcon />
+              </IconButton>
+              
+            </div>
+            <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              <Typography className="Typography" variant="title" color="inherit">
+                  {this.props.title}
+              </Typography>
+            </div>
 
-            <Typography className="Typography" variant="title" color="inherit">
-              {this.props.title}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </div>
+            <div className="col-lg-1">
+              <i className="fas fa-flag" onClick={this.Languaue.bind(this, "En")}></i>
+            </div>
+            <div className="col-lg-1">
+              <i className="fas fa-flag" onClick={this.Languaue.bind(this, "Ar")}></i>
+            </div>
+          </Toolbar>          
+            
+          </AppBar>
+        </div>
+        
+      
     );
   }
 }

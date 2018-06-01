@@ -25,3 +25,5 @@
     text-align: right; }
   .hptl-phase1-header .Typography {
     padding-left: 10px; }
+  .hptl-phase1-header .focus {
+    outline: none; }

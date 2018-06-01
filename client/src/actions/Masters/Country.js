@@ -6,18 +6,15 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getCountries() {
 	return function(dispatch) {
-        //debugger;
         algaehApiCall({
-            uri: "/masters/get/country",            
-            // token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjU5NDYzNzksImV4cCI6MTUyODUzODM3OX0.lsaxoGo5NxcUrFMsrv_D3zCC1BaZ6m97PxCbysgP698",
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjU3ODI5MzcsImV4cCI6MTUyODM3NDkzN30.GwmNV2vAIi2N6HWGhhjAxAg0vUrnpb1vgmArwceUi34",
+            uri: "/masters/get/country",                        
             method:"GET",
             onSuccess: response => {
               if (response.data.success == true) {
                 dispatch({
                     type: "CTRYGET_DATA", payload: response.data.records
                 })
-                console.log("Take me to Home");
+                
                 //window.location.hash("/DeptMaster");
               } else {
                 console.log("No not now");

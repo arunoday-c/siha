@@ -1,6 +1,5 @@
 
-export function PatRegistrationDetails (state = { patients:[] } , action) {
-    debugger;
+export function PatRegistrationDetails (state = { patients:[] } , action) {    
     switch(action.type) {
     
     case "PAT_GET_DATA":

@@ -2,7 +2,7 @@
 
 "use strict";
 import axios from "axios";
-import { setToken, getToken } from "../../utils/algaehApiCall";
+import { setToken, getToken, setCookie } from "../../utils/algaehApiCall";
 
 export function getTokenDetals() {
   var auth_url = "/api/v1/apiAuth";
@@ -16,14 +16,13 @@ export function getTokenDetals() {
       url: auth_url,
       headers: { Authorization: basicAuth }
     })
-      .then(response => {
-        console.log("Response :" + response.data.token);
+      .then(response => {        
         setToken(response.data.token);
+        setCookie("Language", "lang_en", 30);
         dispatch({
           type: "GET_DATA",
           payload: response.data.token
-        });
-        console.log("Get Token: ", getToken());
+        });       
       })
       .catch(err => {
         dispatch({

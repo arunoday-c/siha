@@ -5,26 +5,23 @@ import PatRegIOputs from '../utils/GlobalFunctions.js'
 export default 
 { 
     
-    inputParam : function(param,isSend)   {
-        param = param||null;
-        isSend =isSend||false;
+    inputParam : function(param)   {
 
-        if(param!=null){
-            if(param.registration_date!=0)
-            {
-                param.registration_date= PatRegIOputs.isDateFormat({date:param.registration_date},isSend);
-            }  
-            if(param.date_of_birth!=0)
-            {
-                param.date_of_birth = PatRegIOputs.isDateFormat({date:param.date_of_birth},isSend)    
-            }
-          
-         }
-
-        var output;
-        var CurrentDate = new Date();        
+        // if(param!=null){
+        //     if(param.registration_date !== 0)
+        //     {
+        //         param.registration_date= PatRegIOputs.isDateFormat({date:param.registration_date});
+        //     }  
+        //     if(param.date_of_birth !== 0)
+        //     {
+        //         param.date_of_birth = PatRegIOputs.isDateFormat({date:param.date_of_birth})    
+        //     }          
+        // }
         
+        var output;
+        var CurrentDate = new Date();
         output = extend({
+            
             patient_code:"",
             registration_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
             title_id: 0,
@@ -33,7 +30,8 @@ export default
             last_name: "",
             gender: "",
             religion_id: 1,
-            date_of_birth: 0,
+            date_of_birth: null,
+            hijiri_date:null,
             age: 0,
             marital_status: "",
             address1: "",
@@ -71,6 +69,7 @@ export default
             mlc_wound_certified_date: "",
             visit_code:""
         },param);
+        // debugger;
         return output;
     }
 }

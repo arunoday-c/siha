@@ -83,10 +83,10 @@ class OptionsTabs extends Component {
         </div>
         <div className="business-section">
           {
-            this.state.pageDisplay == "Transaction" ? (
+            this.state.pageDisplay === "Transaction" ? (
               <Transaction />
             ) :
-            this.state.pageDisplay == "Numbering" ? (
+            this.state.pageDisplay === "Numbering" ? (
             <Numbering />
           )  :  null}
         </div>

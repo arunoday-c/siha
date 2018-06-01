@@ -7,12 +7,14 @@ import Header from "../../Components/common/Header/Header.js";
 import OptionsTabs from "./Options/OptionsTabs.js";
 import Counter from "./Counter/Counter.js";
 import Shift from "./Shift/Shift.js";
+import SideMenuBar from "../common/SideMenuBar/SideMenuBar.js";
+import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 
 class BusinessSetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "DeptMaster" };
+    this.state = { pageDisplay: "DeptMaster" , sidBarOpen: true};
   }
 
   openTab(e) {
@@ -27,70 +29,88 @@ class BusinessSetup extends Component {
     });
   }
 
+  SideMenuBarOpen(sidOpen) {
+    debugger;
+    this.setState({
+      sidBarOpen: sidOpen
+    });
+  }
+
   render() {
+    let margin = this.state.sidBarOpen ? "200px" : "";
     return (
       <div className="business_setup">
-        <Header title="Business Setup" height={this.state.widthImg} />
+        {this.state.sidBarOpen === true ? (
+          <div>
+            <SideMenuBar />
+          </div>
+        ) : null}
+        <div style={{ marginLeft: margin }}>
+          <Header title="Business Setup" 
+            height={this.state.widthImg} 
+            SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
+            />
 
-        <br />
+          <BreadCrumb title="Business Setup" screenName="Master Setup" HideHalfbread = {false}/>
 
-        <div className="tab-container toggle-section">
-          <ul className="nav">
-            <li
-              alagehtabs={"DeptMaster"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button active"}
-              onClick={this.openTab.bind(this)}
-            >
-              DEPARTMENTS
-            </li>
-            <li
-              alagehtabs={"OptionsTabs"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              OPTIONS
-            </li>
-            <li
-              alagehtabs={"Holiday"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              HOLIDAYS LIST
-            </li>
-            <li
-              alagehtabs={"Shift"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              SHIFT
-            </li>
-            <li
-              alagehtabs={"Counter"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              COUNTER
-            </li>
-          </ul>
-        </div>
+          <div className="tab-container toggle-section">
+            <ul className="nav">
+              <li
+                alagehtabs={"DeptMaster"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                DEPARTMENTS
+              </li>
+              <li
+                alagehtabs={"OptionsTabs"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                OPTIONS
+              </li>
+              <li
+                alagehtabs={"Holiday"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                HOLIDAYS LIST
+              </li>
+              <li
+                alagehtabs={"Shift"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                SHIFT
+              </li>
+              <li
+                alagehtabs={"Counter"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                COUNTER
+              </li>
+            </ul>
+          </div>
 
-        <div className="business-section">
-          {this.state.pageDisplay == "DeptMaster" ? (
-            <DeptMaster />
-          ) : this.state.pageDisplay == "OptionsTabs" ? (
-            <OptionsTabs />
-          ) : this.state.pageDisplay == "Holiday" ? (
-            <HolidayList />
-          ) : this.state.pageDisplay == "Counter" ? (
-            <Counter />
-          ) : this.state.pageDisplay == "Shift" ? (
-            <Shift />
-          ) : null}
+          <div className="business-section">
+            {this.state.pageDisplay == "DeptMaster" ? (
+              <DeptMaster />
+            ) : this.state.pageDisplay == "OptionsTabs" ? (
+              <OptionsTabs />
+            ) : this.state.pageDisplay == "Holiday" ? (
+              <HolidayList />
+            ) : this.state.pageDisplay == "Counter" ? (
+              <Counter />
+            ) : this.state.pageDisplay == "Shift" ? (
+              <Shift />
+            ) : null}
+          </div>
         </div>
       </div>
     );

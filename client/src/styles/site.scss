@@ -5,9 +5,9 @@
             font-weight: normal;
             border-radius: 0px;        
             background-color: #f3f3f3;
-            border: solid 1px #d0d8dc;
+            // border: solid 1px #d0d8dc;
             color: #7c909b;
-            padding: 6px 10px;
+            padding: 5px 15px;
             cursor: pointer;
             border-top-right-radius: 5px;
             border-top-left-radius: 5px;
@@ -23,7 +23,7 @@
             &.active {
                 background-color: #DBAD64;
                 color: #fff;                
-                pointer-events: none;
+                pointer-events: none;                
 
                 &:hover {
                     background-color: #DBAD64 !important;
@@ -53,7 +53,7 @@
     }
     .image-drop-area {
         border: 1px solid #93a4ad;
-        min-height: 111px;
+        min-height: 137px;
         position: relative;
         background-color: #eaeaea;
         .dropzone {

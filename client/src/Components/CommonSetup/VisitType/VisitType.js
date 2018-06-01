@@ -4,7 +4,7 @@ import "./visit_type.css";
 import { MuiThemeProvider, createMuiTheme } from "material-ui";
 import { Button } from "material-ui";
 import moment from "moment";
-import SelectField from "../commons/SelectField.js";
+import SelectField from "../../common/Inputs/SelectField.js";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { getVisittypes } from "../../../actions/CommonSetup/VisitTypeactions.js";
 import { withRouter } from "react-router-dom";
@@ -66,9 +66,7 @@ class VisitType extends Component {
     algaehApiCall({
       uri: "/visitType/delete",
       data: data,
-      method: "DELETE",
-      token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjUwNjk5NjcsImV4cCI6MTUyNzY2MTk2N30.7jVtM39kz3hPVAdX82v1JSQpgREJjQCFnVmDpvPN17g",
+      method: "DELETE",      
       onSuccess: response => {
         console.log("DELETED RESPONSE", response.data);
         this.setState({open : false})
@@ -137,9 +135,7 @@ class VisitType extends Component {
       }
 
       algaehApiCall({
-        uri: uri,
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjUwNjk5NjcsImV4cCI6MTUyNzY2MTk2N30.7jVtM39kz3hPVAdX82v1JSQpgREJjQCFnVmDpvPN17g",
+        uri: uri,        
         data: this.state,
         onSuccess: response => {
           console.log("Res Visit", response.data.success);

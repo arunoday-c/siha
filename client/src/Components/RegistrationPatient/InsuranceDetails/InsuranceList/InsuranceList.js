@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Dropzone from 'react-dropzone';
-import styles from "./InsuranceList.css";
-import style from "./../../../../styles/site.css";
+import "./InsuranceList.css";
+import "./../../../../styles/site.css";
 
 export default class InsuranceList extends Component{
 		constructor(props){

@@ -26,8 +26,7 @@ class SideMenuBar extends PureComponent {
 			searchValue: "",
 			sideMenuDetails: sideMenu,
 			toggleSubMenu: false,
-			menuSelected: "",
-			tooggleUpmenu:true,
+			menuSelected: "",			
 		};
 	}
 
@@ -51,7 +50,7 @@ class SideMenuBar extends PureComponent {
 		debugger;
 		const path=e.currentTarget.getAttribute("path");
 		this.setState({			
-			toggleSubMenu: false				
+			toggleSubMenu: true				
 		},()=>{			
 			window.location.hash = path
 		})
@@ -68,7 +67,7 @@ class SideMenuBar extends PureComponent {
 								<div className="col-xs-3 col-sm-3 col-md-3 text-right">
 									<span className="fas fa-th-large side-menu-title"></span>
 								</div>
-								<div className="col-xs-5 col-sm-5 col-md-5 side-menu-title">{data.label}</div>
+								<div className="col-xs-5 col-sm-5 col-md-5 side-menu-title" onClick={this.openSubMenuSelection.bind(this, data)}>{data.label}</div>
 							
 								<div className="col-xs-4 col-sm-4 col-md-4 side-menu-arrow text-right">
 									{(this.state.menuSelected === data.name && this.state.toggleSubMenu === false) ?
@@ -97,8 +96,8 @@ class SideMenuBar extends PureComponent {
 										{data.subMenu.map((title, idx) => {
 											return (
 												<div key={"sub_title" + idx}>
-													<ul style={{marginBottom: "2px"}}>
-														<li onClick={this.TriggerPath.bind(this)} path={title.path}>{title.label}</li>
+													<ul style={{marginBottom: "0px"}}>
+														<li onClick={this.TriggerPath.bind(this)} path={title.path}>{title.label} </li>
 													</ul>
 												</div>
 											);

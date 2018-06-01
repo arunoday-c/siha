@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styles from "./AddReciptForm.css";
 //import SelectFieldDrop from "../../common/SelectField.js";
 import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
-import TextFieldData from "../../common/TextField.js";
+import TextField from 'material-ui/TextField';
 
 
 const FORMAT_DEFAULT = [
@@ -27,7 +27,7 @@ export default class AddReciptForm extends Component{
 
 						<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
 							<label>RECEIPT NUMBER<mark>*</mark></label><br />
-							<TextFieldData disabled={true}/>
+							<TextField disabled={true}/>
 						</div>
 
 						<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
@@ -68,10 +68,10 @@ export default class AddReciptForm extends Component{
 										</td>
 										<td></td>
 										<td><SelectFieldDrop children={FORMAT_DEFAULT} width="130px"/></td>
-										<td><TextFieldData/></td>										
-										<td><TextFieldData type="date"/></td>
-										<td><TextFieldData/></td>
-										<td><TextFieldData/></td>
+										<td><TextField/></td>										
+										<td><TextField type="date"/></td>
+										<td><TextField/></td>
+										<td><TextField/></td>
 
 									</tr>							       
 								</tbody>

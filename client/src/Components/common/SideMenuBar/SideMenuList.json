@@ -7,7 +7,7 @@
 			{
 				"name": "Dashbord",
 				"label": "Dashbord",
-				"path": "/"
+				"path": "/Dashboard"
 			}
 		]
 	},
@@ -19,12 +19,12 @@
 			{
 				"name": "Business Setup",
 				"label": "Business Setup",
-				"path": "/RegistrationPatient"
+				"path": "/BusinessSetup"
 			},
 			{
 				"name": "Common Setup",
 				"label": "Common Setup",
-				"path": "/RegistrationPatient"
+				"path": "/CommonSetup"
 			}
 		]
 	},
