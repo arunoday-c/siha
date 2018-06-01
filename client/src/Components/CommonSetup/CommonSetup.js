@@ -46,11 +46,17 @@ class CommonSetup extends Component {
           </div>
         ) : null}
         <div style={{ marginLeft: margin }}>
-          <Header title="Common Setup" 
-          SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
-          height={this.state.widthImg} />
-          <BreadCrumb title="Common Setup" screenName="Master Setup" HideHalfbread = {false}/>
-          
+          <Header
+            title="Common Setup"
+            SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
+            height={this.state.widthImg}
+          />
+          <BreadCrumb
+            title="Common Setup"
+            screenName="Master Setup"
+            HideHalfbread={false}
+          />
+
           <div className="tab-container toggle-section">
             <ul className="nav">
               <li
@@ -105,8 +111,7 @@ class CommonSetup extends Component {
           </div>
 
           <div className="common-section">
-          {/*  {<this.state.pageDisplay />} */}
-            
+            {/*  {<this.state.pageDisplay />} */}
 
             {this.state.pageDisplay === "PatientType" ? (
               <PatientType />

@@ -1,8 +1,8 @@
-import React, { Component, Fragment, PureComponent } from "react";
-import { Paper, TextField, TableBody } from "material-ui";
+import React, { Component } from "react";
+import { Paper, TextField } from "material-ui";
 import "./dept.css";
 import IconButton from "material-ui/IconButton";
-import { MuiThemeProvider, createMuiTheme, DatePicker } from "material-ui";
+import { MuiThemeProvider, createMuiTheme } from "material-ui";
 import { Button } from "material-ui";
 import SelectField from "../../common/Inputs/SelectField.js";
 import moment from "moment";
@@ -202,9 +202,9 @@ class DeptMaster extends Component {
   }
 
   getFullStatusText({ value }) {
-    if (value == "A") {
+    if (value === "A") {
       return "Active";
-    } else if (value == "I") {
+    } else if (value === "I") {
       return "Inactive";
     }
   }
@@ -214,9 +214,9 @@ class DeptMaster extends Component {
       department_status: e.target.value,
       sub_department_status: e.target.value
     });
-    if (e.target.value == "A")
+    if (e.target.value === "A")
       this.setState({ checkedActive: true, effective_end_date: "9999-12-31" });
-    else if (e.target.value == "I") {
+    else if (e.target.value === "I") {
       this.setState({
         checkedInactive: true,
         effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
@@ -228,13 +228,13 @@ class DeptMaster extends Component {
     e.preventDefault();
 
     if (
-      this.state.buttonText == "ADD TO LIST" &&
-      this.state.department_id.length == 0
+      this.state.buttonText === "ADD TO LIST" &&
+      this.state.department_id.length === 0
     ) {
       console.log("myState", this.state);
       algaehApiCall({
         uri: "/department/add",
-        data: this.state,       
+        data: this.state,
         onSuccess: response => {
           console.log("Res Data", response.data);
         },
@@ -243,12 +243,12 @@ class DeptMaster extends Component {
         }
       });
     } else if (
-      this.state.buttonText == "ADD TO LIST" &&
-      this.state.department_id.length != 0
+      this.state.buttonText === "ADD TO LIST" &&
+      this.state.department_id.length !== 0
     ) {
       algaehApiCall({
         uri: "/department/add/subdepartment",
-        data: this.state,        
+        data: this.state,
         onSuccess: response => {
           console.log("Res Data", response.data);
         },
@@ -256,11 +256,11 @@ class DeptMaster extends Component {
           console.log(error);
         }
       });
-    } else if (this.state.buttonText == "UPDATE") {
+    } else if (this.state.buttonText === "UPDATE") {
       console.log("myState", this.state);
       algaehApiCall({
         uri: "/department/update",
-        data: this.state,        
+        data: this.state,
         onSuccess: response => {
           console.log("Update Data", response.data);
         },
@@ -276,7 +276,7 @@ class DeptMaster extends Component {
   }
 
   commitChanges(rowId) {
-    let rows = this.state;
+    // let rows = this.state;
   }
 
   commitSubdeptChanges({ added, changed, deleted }) {
@@ -297,13 +297,11 @@ class DeptMaster extends Component {
 
   loadSubDeps(dep_id) {
     algaehApiCall({
-      uri: "/department/get/subdepartment?department_id=" + dep_id,      
+      uri: "/department/get/subdepartment?department_id=" + dep_id,
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
-          {
-            this.setState({ subdeps: response.data.records });
-          }
+        if (response.data.success === true) {
+          this.setState({ subdeps: response.data.records });
         } else {
           this.setState({ subdeps: [] });
         }
@@ -314,17 +312,13 @@ class DeptMaster extends Component {
     return this.sd;
   }
 
-  RowDetail = ({ row }) => {
-
-    this.props.getSubDepartments(row.hims_d_department_id) 
-    this.setState({ subdeps: this.props.subdepartments});
-    console.log("subdeps : ", this.state.subdeps);
-
+  RowDetail = ({ row }) => (
     <div>
-      {console.log("in RowDetail")}
-      {this.state.subdeps}
+      {console.log("hello im here")}
+      {this.props.getSubDepartments(row.hims_d_department_id)}
       <label>SUB DEPARTMENT LIST</label>
       <Grid
+        rows={this.props.subdepartments}
         columns={[
           { name: "sub_department_code", title: "Sub Dept Code" },
           { name: "sub_department_name", title: "Sub Dept Name" },
@@ -332,26 +326,12 @@ class DeptMaster extends Component {
           { name: "effective_end_date", title: "Sub Dept End Date" },
           { name: "sub_department_status", title: "Sub Dept Status" }
         ]}
-        rows={this.state.subdeps}
       >
-        <DataTypeProvider
-          formatterComponent={this.dateFormater}
-          for={["effective_start_date"]}
-        />
-        <DataTypeProvider
-          formatterComponent={this.dateFormater}
-          for={["effective_end_date"]}
-        />
-        <DataTypeProvider
-          formatterComponent={this.getFullStatusText}
-          for={["sub_department_status"]}
-        />
         <Table />
         <TableHeaderRow />
-        <EditingState onCommitChanges={this.commitSubdeptChanges.bind(this)} />
 
+        <EditingState onCommitChanges={this.commitChanges.bind(this)} />
         <TableEditRow />
-
         <TableEditColumn
           width={120}
           showEditCommand
@@ -359,8 +339,8 @@ class DeptMaster extends Component {
           commandComponent={Command}
         />
       </Grid>
-    </div>;
-  };
+    </div>
+  );
 
   onDateChange = event => {
     console.log("date changed to ", event.target.value);
@@ -526,7 +506,6 @@ class DeptMaster extends Component {
               <div className="col">
                 <label> DEPARTMENT LIST</label>
                 <div className="col-lg-12">
-                  {console.log("Grid Called")}
                   <Grid
                     rows={this.props.departments}
                     columns={[
@@ -586,9 +565,7 @@ class DeptMaster extends Component {
                     />
                     <TableEditRow />
 
-                    <TableRowDetail
-                      contentComponent={this.RowDetail.bind(this)}
-                    />
+                    <TableRowDetail contentComponent={this.RowDetail} />
                     <TableFilterRow />
                     <TableEditColumn
                       width={120}

@@ -13,8 +13,7 @@ import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 class BusinessSetup extends Component {
   constructor(props) {
     super(props);
-
-    this.state = { pageDisplay: "DeptMaster" , sidBarOpen: false};
+    this.state = { pageDisplay: "DeptMaster", sidBarOpen: false };
   }
 
   openTab(e) {
@@ -46,12 +45,17 @@ class BusinessSetup extends Component {
           </div>
         ) : null}
         <div style={{ marginLeft: margin }}>
-          <Header title="Business Setup" 
-            height={this.state.widthImg} 
+          <Header
+            title="Business Setup"
+            height={this.state.widthImg}
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
-            />
+          />
 
-          <BreadCrumb title="Business Setup" screenName="Master Setup" HideHalfbread = {false}/>
+          <BreadCrumb
+            title="Business Setup"
+            screenName="Master Setup"
+            HideHalfbread={false}
+          />
 
           <div className="tab-container toggle-section">
             <ul className="nav">
@@ -99,15 +103,15 @@ class BusinessSetup extends Component {
           </div>
 
           <div className="business-section">
-            {this.state.pageDisplay == "DeptMaster" ? (
+            {this.state.pageDisplay === "DeptMaster" ? (
               <DeptMaster />
-            ) : this.state.pageDisplay == "OptionsTabs" ? (
+            ) : this.state.pageDisplay === "OptionsTabs" ? (
               <OptionsTabs />
-            ) : this.state.pageDisplay == "Holiday" ? (
+            ) : this.state.pageDisplay === "Holiday" ? (
               <HolidayList />
-            ) : this.state.pageDisplay == "Counter" ? (
+            ) : this.state.pageDisplay === "Counter" ? (
               <Counter />
-            ) : this.state.pageDisplay == "Shift" ? (
+            ) : this.state.pageDisplay === "Shift" ? (
               <Shift />
             ) : null}
           </div>

@@ -4,7 +4,7 @@ import moment from "moment";
 
 export function algaehApiCall(options) {
   // const baseUrl = "http://159.89.163.148:3000/api/";
-  // const baseUrl = "http://192.168.0.129:3000/api/";
+  // const baseUrl = "http://192.168.0.129:3000/api/v1";
   // const baseUrl = "http://localhost:3003/api/";
   const baseUrl = "/api/v1";
   var settings = extend(
@@ -18,7 +18,6 @@ export function algaehApiCall(options) {
     },
     options
   );
-  debugger;
   if (settings.uri != null || settings.uri != "") {
     axios({
       method: settings.method,
