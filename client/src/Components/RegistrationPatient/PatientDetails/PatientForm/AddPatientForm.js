@@ -21,16 +21,9 @@ const MobileFormat = "+91 (###)-## #####";
 class AddPatientForm extends Component {
   constructor(props) {
     super(props);    
-    let InputOutput;
+    
 
-    if (this.props.patients.length > 0) {
-      InputOutput = this.props.patients[0];      
-    }
-    else{
-      InputOutput = this.props.PatRegIOputs;
-    }
-
-    this.state = extend({
+    this.state = {
         value: "",
         file: {
           filePreview: null,
@@ -44,10 +37,7 @@ class AddPatientForm extends Component {
         DOBError: false,
         DOB: 0,
         CurrentDate: new Date(),
-      },
-      InputOutput
-    );
-    
+    };    
     this.widthImg = "";
     this.widthDate = "";
     this.innerContext = {};    
@@ -62,6 +52,7 @@ class AddPatientForm extends Component {
 
   componentDidMount() 
   {
+    debugger;
     if (this.props.titles.length === 0) {
       this.props.getTitles();
     }
@@ -84,7 +75,17 @@ class AddPatientForm extends Component {
     if (this.props.countrystates.length === 0) {
       this.props.getStates();
     }
-    this.setState({...this.state});
+
+    let InputOutput;
+
+    if (this.props.patients.length > 0) {
+      InputOutput = this.props.patients[0];      
+    }
+    else{
+      InputOutput = this.props.PatRegIOputs;
+    }
+    this.setState({...this.state, ...InputOutput})
+    // this.setState({...this.state});
   }
 
   componentWillReceiveProps(nextProps) {
@@ -94,7 +95,7 @@ class AddPatientForm extends Component {
     }
   }
 
-  numInput(e) {    
+  numInput(e) {
     var inputKeyCode = e.keyCode ? e.keyCode : e.which;
     console.log("Show my data-", inputKeyCode);
     if (inputKeyCode !== null) {
@@ -104,7 +105,6 @@ class AddPatientForm extends Component {
       }
     }
   }
-
 
   render() {
     return (

@@ -44,20 +44,17 @@ class RegistrationPatient extends Component {
   constructor(props) {
     super(props);    
 
-    this.state = extend(
-      {
-        widthImg: "",
-        open: false,
-        vertical: null,
-        horizontal: null,
-        DialogOpen: false,
-        sideBarOpen: false,
-        sidBarOpen: true,    
-        selectedLang: "lang_en",
-        chnageLang: false
-      },
-      PatRegIOputs.inputParam()
-    );
+    this.state = {
+      widthImg: "",
+      open: false,
+      vertical: null,
+      horizontal: null,
+      DialogOpen: false,
+      sideBarOpen: false,
+      sidBarOpen: true,    
+      selectedLang: "lang_en",
+      chnageLang: false
+    }
   }
 
   componentDidMount() {
@@ -65,6 +62,9 @@ class RegistrationPatient extends Component {
     this.setState({
       widthImg: width
     });
+    let IOputs = PatRegIOputs.inputParam()
+    this.setState({...this.state, ...IOputs})
+    debugger;
   }
 
   ClearData(e) {
@@ -119,9 +119,17 @@ class RegistrationPatient extends Component {
     },()=>{
       clearInterval(intervalId);
         intervalId = setInterval(()=> {
-          this.props.getPatientDetails(this.state.patient_code);
+          this.props.getPatientDetails(this.state.patient_code,
+            data => {
+              debugger;
+              this.setState({
+                patient_code: data.patient_code,
+                visit_code: data.visit_code,
+                DialogOpen: true
+              });
+            });
           clearInterval(intervalId);
-        } , 500);      
+        } , 500);
     });
   }
 

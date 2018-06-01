@@ -40,8 +40,9 @@ export function postPatientDetails(dataValue, callback) {
         
 }
 
-export function getPatientDetails(dataValue) {
-    debugger;
+export function getPatientDetails(dataValue, callback) {
+    
+    callback = callback || null;
     return function(dispatch) {
     algaehApiCall({
         //uri: "v1/frontDesk/get",
@@ -52,6 +53,10 @@ export function getPatientDetails(dataValue) {
             dispatch({
                 type: "PAT_GET_DATA", payload: response.data.records.patientRegistration
             })
+
+            if (typeof callback === "function") {
+                callback(response.data.records);
+            }
           }
         },
         onFailure: error => {

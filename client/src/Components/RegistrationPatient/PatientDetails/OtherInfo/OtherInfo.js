@@ -60,8 +60,7 @@ class OtherInfo extends Component{
 								<AlagehFormGroup
 									div={{ className: "col-lg-3" , id:"widthDate"}}
 									label={{
-										fieldName: "secondary_contact_number",                          
-										isImp: true,										
+										fieldName: "secondary_contact_number",
 									}}
 									textBox={{
 									value: this.state.secondary_contact_number,
@@ -79,8 +78,7 @@ class OtherInfo extends Component{
 								<AlagehFormGroup
 									div={{ className: "col-lg-3" , id:"widthDate"}}
 									label={{
-										fieldName: "emergency_contact_number",                          
-										isImp: true,																				
+										fieldName: "emergency_contact_number"
 									}}
 									textBox={{
 									value: this.state.emergency_contact_number,
@@ -90,7 +88,7 @@ class OtherInfo extends Component{
 										format:MobileFormat,
 									},
 									events: {
-										onChange: AddPatientOtherHandlers(this, context).texthandle.bind(this)
+										onChange: AddPatientOtherHandlers(this, context).numbertexthandle.bind(this)
 									}                            
 									}}								
 								/>
@@ -98,35 +96,27 @@ class OtherInfo extends Component{
 								<AlagehFormGroup
 									div={{ className: "col-lg-3" , id:"widthDate"}}
 									label={{
-										fieldName: "emergency_contact_name",                          
-										isImp: true,																				
+										fieldName: "emergency_contact_name",
 									}}
 									textBox={{
-									value: this.state.emergency_contact_name,
-									className: "txt-fld",
-									name: "emergency_contact_name",
-									mask: {
-										format:MobileFormat,
-									},
-									events: {
-										onChange: AddPatientOtherHandlers(this, context).texthandle.bind(this)
-									}                            
+										value: this.state.emergency_contact_name,
+										className: "txt-fld",
+										name: "emergency_contact_name",										
+										events: {
+											onChange: AddPatientOtherHandlers(this, context).texthandle.bind(this)
+										}
 									}}								
 								/>
 
 								<AlagehFormGroup
 									div={{ className: "col-lg-3" , id:"widthDate"}}
 									label={{
-										fieldName: "relationship_with_patient",                          
-										isImp: true,																				
+										fieldName: "relationship_with_patient",
 									}}
 									textBox={{
 									value: this.state.relationship_with_patient,
 									className: "txt-fld",
-									name: "relationship_with_patient",
-									mask: {
-										format:MobileFormat,
-									},
+									name: "relationship_with_patient",									
 									events: {
 										onChange: AddPatientOtherHandlers(this, context).texthandle.bind(this)
 									}                            
@@ -137,16 +127,12 @@ class OtherInfo extends Component{
 								<AlagehFormGroup
 									div={{ className: "col-lg-3" , id:"widthDate"}}
 									label={{
-										fieldName: "email",                          
-										isImp: true,																				
+										fieldName: "email",
 									}}
 									textBox={{
 									value: this.state.email,
 									className: "txt-fld",
-									name: "email",
-									mask: {
-										format:MobileFormat,
-									},
+									name: "email",									
 									events: {
 										onChange: AddPatientOtherHandlers(this, context).texthandle.bind(this)
 									}                            
@@ -156,8 +142,7 @@ class OtherInfo extends Component{
 								<AlgaehSelector
 									div={{ className: "col-lg-3" }}
 									label={{
-										fieldName: "visa_type_id",									
-										isImp: true,										
+										fieldName: "visa_type_id",
 									}}
 									selector={{
 									name: "visa_type_id",
