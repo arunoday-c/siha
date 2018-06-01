@@ -1,46 +1,65 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import "./PatientForm.css";
 import Dropzone from "react-dropzone";
-import { getTitles, getCountries, getNationalities,
-  getIDTypes, getRelegion, getCities, getStates } from "../../../../actions/masterActions";
+import {
+  getTitles,
+  getCountries,
+  getNationalities,
+  getIDTypes,
+  getRelegion,
+  getCities,
+  getStates
+} from "../../../../actions/masterActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import extend from "extend";
-import { AddPatientHandlers } from "./AddPatientDetails.js";
+import {
+  AddPatientHandlers,
+  texthandle,
+  titlehandle,
+  calculateAge,
+  setAge,
+  numberSet
+} from "./AddPatientDetails.js";
 import { createStore } from "redux";
 import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
 import MyContext from "../../../../utils/MyContext.js";
 import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
 import AHSnackbar from "../../../common/Inputs/AHSnackbar.js";
-import { AlgaehDateHandler,  AlagehFormGroup, AlgaehLabel, AlgaehSelector}  from "../../../Wrapper/algaehWrapper";
-import {FORMAT_MARTIALSTS, FORMAT_GENDER} from "../../../../utils/GlobalFunctions"
+import {
+  AlgaehDateHandler,
+  AlagehFormGroup,
+  AlgaehLabel,
+  AlgaehSelector
+} from "../../../Wrapper/algaehWrapper";
+import {
+  FORMAT_MARTIALSTS,
+  FORMAT_GENDER
+} from "../../../../utils/GlobalFunctions";
 
 const MobileFormat = "+91 (###)-## #####";
 
-class AddPatientForm extends Component {
+class AddPatientForm extends PureComponent {
   constructor(props) {
-    super(props);    
-    
+    super(props);
 
     this.state = {
-        value: "",
-        file: {
-          filePreview: null,
-          filePrimaryPreview: null,
-          fileSecPreview: null
-        },
+      value: "",
+      file: {
         filePreview: null,
-        AGEMM: 0,
-        AGEDD: 0,
-        DOBErrorMsg: "",
-        DOBError: false,
-        DOB: 0,
-        CurrentDate: new Date(),
-    };    
+        filePrimaryPreview: null,
+        fileSecPreview: null
+      },
+      filePreview: null,
+      DOBErrorMsg: "",
+      DOBError: false,
+      DOB: 0,
+      CurrentDate: new Date()
+    };
     this.widthImg = "";
     this.widthDate = "";
-    this.innerContext = {};    
+    this.innerContext = {};
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -50,8 +69,7 @@ class AddPatientForm extends Component {
     // this.widthDate = widthDate;
   }
 
-  componentDidMount() 
-  {
+  componentDidMount() {
     debugger;
     if (this.props.titles.length === 0) {
       this.props.getTitles();
@@ -79,12 +97,11 @@ class AddPatientForm extends Component {
     let InputOutput;
 
     if (this.props.patients.length > 0) {
-      InputOutput = this.props.patients[0];      
-    }
-    else{
+      InputOutput = this.props.patients[0];
+    } else {
       InputOutput = this.props.PatRegIOputs;
     }
-    this.setState({...this.state, ...InputOutput})
+    this.setState({ ...this.state, ...InputOutput });
     // this.setState({...this.state});
   }
 
@@ -110,17 +127,17 @@ class AddPatientForm extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (            
-            <div className="hptl-phase1-add-patient-form">              
+          {context => (
+            <div className="hptl-phase1-add-patient-form">
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 primary-details">
-                    <div className="row primary-box-container">                      
+                    <div className="row primary-box-container">
                       <AlgaehSelector
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "title_id",                          
-                          isImp: true,
+                          fieldName: "title_id",
+                          isImp: true
                         }}
                         selector={{
                           name: "title_id",
@@ -130,8 +147,8 @@ class AddPatientForm extends Component {
                             textField: "title",
                             valueField: "his_d_title_id",
                             data: this.props.titles
-                          },                          
-                          onChange: AddPatientHandlers(this,context).titlehandle.bind(this)
+                          },
+                          onChange: titlehandle.bind(this, context)
                         }}
                       />
 
@@ -139,14 +156,14 @@ class AddPatientForm extends Component {
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "first_name",
-                          isImp: true,                          
+                          isImp: true
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "first_name",
                           value: this.state.first_name,
                           events: {
-                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                            onChange: texthandle.bind(this, context)
                           }
                         }}
                       />
@@ -155,14 +172,14 @@ class AddPatientForm extends Component {
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "middle_name",
-                          isImp: true,                          
+                          isImp: true
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "middle_name",
                           value: this.state.middle_name,
                           events: {
-                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                            onChange: texthandle.bind(this, context)
                           }
                         }}
                       />
@@ -171,14 +188,14 @@ class AddPatientForm extends Component {
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "last_name",
-                          isImp: true,                          
+                          isImp: true
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "last_name",
                           value: this.state.last_name,
                           events: {
-                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                            onChange: texthandle.bind(this, context)
                           }
                         }}
                       />
@@ -187,8 +204,8 @@ class AddPatientForm extends Component {
                       <AlgaehSelector
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "gender",                          
-                          isImp: true,
+                          fieldName: "gender",
+                          isImp: true
                         }}
                         selector={{
                           name: "gender",
@@ -199,14 +216,14 @@ class AddPatientForm extends Component {
                             valueField: "value",
                             data: FORMAT_GENDER
                           },
-                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                          onChange: texthandle.bind(this, context)
                         }}
                       />
                       <AlagehFormGroup
                         div={{ className: "col-lg-1", id: "widthDate" }}
                         label={{
                           fieldName: "age",
-                          isImp: true,                          
+                          isImp: true
                         }}
                         textBox={{
                           value: this.state.age,
@@ -216,7 +233,7 @@ class AddPatientForm extends Component {
                             thousandSeparator: ","
                           },
                           events: {
-                            onChange: AddPatientHandlers(this,context).SetAge.bind(this)
+                            onChange: setAge.bind(this, context)
                           }
                         }}
                       />
@@ -226,7 +243,7 @@ class AddPatientForm extends Component {
                         label={{
                           fieldName: "AGEMM",
                           forceLabel: "&nbsp;",
-                          isImp: false,                          
+                          isImp: false
                         }}
                         textBox={{
                           value: this.state.AGEMM,
@@ -236,7 +253,7 @@ class AddPatientForm extends Component {
                             thousandSeparator: ","
                           },
                           events: {
-                            onChange: AddPatientHandlers(this,context).SetAge.bind(this)
+                            onChange: setAge.bind(this, context)
                           }
                         }}
                       />
@@ -246,7 +263,7 @@ class AddPatientForm extends Component {
                         label={{
                           fieldName: "AGEDD",
                           forceLabel: "&nbsp;",
-                          isImp: false,                          
+                          isImp: false
                         }}
                         textBox={{
                           value: this.state.AGEDD,
@@ -256,7 +273,7 @@ class AddPatientForm extends Component {
                             thousandSeparator: ","
                           },
                           events: {
-                            onChange: AddPatientHandlers(this,context).SetAge.bind(this)
+                            onChange: setAge.bind(this, context)
                           }
                         }}
                       />
@@ -267,7 +284,7 @@ class AddPatientForm extends Component {
                             "col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3"
                         }}
                         label={{
-                          fieldName: "marital_status",                        
+                          fieldName: "marital_status",
                           isImp: false
                         }}
                         selector={{
@@ -279,14 +296,14 @@ class AddPatientForm extends Component {
                             valueField: "value",
                             data: FORMAT_MARTIALSTS
                           },
-                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                          onChange: texthandle.bind(this, context)
                         }}
                       />
 
                       <AlgaehSelector
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "religion_id",                          
+                          fieldName: "religion_id",
                           isImp: false
                         }}
                         selector={{
@@ -298,7 +315,7 @@ class AddPatientForm extends Component {
                             valueField: "hims_d_religion_id",
                             data: this.props.relegions
                           },
-                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                          onChange: texthandle.bind(this, context)
                         }}
                       />
                     </div>
@@ -308,7 +325,7 @@ class AddPatientForm extends Component {
                         div={{ className: "col-lg-3", id: "widthDate" }}
                         label={{
                           fieldName: "contact_number",
-                          isImp: true,                        
+                          isImp: true
                         }}
                         textBox={{
                           value: this.state.contact_number,
@@ -318,7 +335,7 @@ class AddPatientForm extends Component {
                             format: MobileFormat
                           },
                           events: {
-                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                            onChange: numberSet.bind(this, context)
                           }
                         }}
                       />
@@ -326,8 +343,8 @@ class AddPatientForm extends Component {
                       <AlgaehSelector
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "nationality_id",                          
-                          isImp: true,
+                          fieldName: "nationality_id",
+                          isImp: true
                         }}
                         selector={{
                           name: "nationality_id",
@@ -338,20 +355,20 @@ class AddPatientForm extends Component {
                             valueField: "hims_d_nationality_id",
                             data: this.props.nationalities
                           },
-                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                          onChange: texthandle.bind(this, context)
                         }}
                       />
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "address1",                          
+                          fieldName: "address1"
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "address1",
                           value: this.state.address1,
                           events: {
-                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                            onChange: texthandle.bind(this, context)
                           }
                         }}
                       />
@@ -359,14 +376,14 @@ class AddPatientForm extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "address2",                          
+                          fieldName: "address2"
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "address2",
                           value: this.state.address2,
                           events: {
-                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                            onChange: texthandle.bind(this, context)
                           }
                         }}
                       />
@@ -375,14 +392,14 @@ class AddPatientForm extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "postal_code",                          
+                          fieldName: "postal_code"
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "postal_code",
                           value: this.state.postal_code,
                           events: {
-                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                            onChange: texthandle.bind(this, context)
                           }
                         }}
                       />
@@ -390,8 +407,8 @@ class AddPatientForm extends Component {
                       <AlgaehSelector
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "country_id",                          
-                          isImp: true,
+                          fieldName: "country_id",
+                          isImp: true
                         }}
                         selector={{
                           name: "country_id",
@@ -402,14 +419,14 @@ class AddPatientForm extends Component {
                             valueField: "hims_d_country_id",
                             data: this.props.countries
                           },
-                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                          onChange: texthandle.bind(this, context)
                         }}
                       />
 
                       <AlgaehSelector
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "state_id",                          
+                          fieldName: "state_id",
                           isImp: false
                         }}
                         selector={{
@@ -421,14 +438,14 @@ class AddPatientForm extends Component {
                             valueField: "hims_d_state_id",
                             data: this.props.countrystates
                           },
-                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                          onChange: texthandle.bind(this, context)
                         }}
                       />
 
                       <AlgaehSelector
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "city_id",                        
+                          fieldName: "city_id",
                           isImp: false
                         }}
                         selector={{
@@ -440,35 +457,36 @@ class AddPatientForm extends Component {
                             valueField: "hims_d_city_id",
                             data: this.props.cities
                           },
-                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                          onChange: texthandle.bind(this, context)
                         }}
                       />
-
                     </div>
                   </div>
                   <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 secondary-details">
                     <div className="row secondary-box-container">
                       <AlgaehDateHandler
-                        div={{className: "col-lg-6"}}
-                        label={{fieldName: "date_of_birth", isImp: true}}
-                        textBox={{className: "txt-fld"}}
-                        maxDate={this.state.CurrentDate}                        
-                        events={{onChange: AddPatientHandlers(this,context).CalculateAge.bind(this)}}
+                        div={{ className: "col-lg-6" }}
+                        label={{ fieldName: "date_of_birth", isImp: true }}
+                        textBox={{ className: "txt-fld" }}
+                        maxDate={this.state.CurrentDate}
+                        events={{
+                          onChange: calculateAge.bind(this, context)
+                        }}
                         value={this.state.date_of_birth}
                       />
-                      
+
                       <AlgaehDateHandler
-                        div={{className: "col-lg-6"}}
-                        label={{fieldName: "hijiri_date", isImp: true}}
-                        textBox={{className: "txt-fld"}}
-                        maxDate={this.state.CurrentDate}                        
+                        div={{ className: "col-lg-6" }}
+                        label={{ fieldName: "hijiri_date", isImp: true }}
+                        textBox={{ className: "txt-fld" }}
+                        maxDate={this.state.CurrentDate}
                         // events={{onChange: AddPatientHandlers(this,context).CalculateAge.bind(this)}}
                         value={this.state.hijiri_date}
                       />
-                      {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "hijiri_date",
+                      {/* <div className="col-xs-6 col-sm-6 col-AddPatientHandlersmd-6 col-lg-6 col-xl-6">
+                        <AlgaehLabelAddPatientHandlers
+                          label={{AddPatientHandlers
+                            fieldName: "hijiri_date",AddPatientHandlers
                             isImp: false,                            
                           }}
                         />
@@ -487,7 +505,7 @@ class AddPatientForm extends Component {
                       <AlgaehSelector
                         div={{ className: "col-lg-6" }}
                         label={{
-                          fieldName: "primary_identity_id",                          
+                          fieldName: "primary_identity_id",
                           isImp: true
                         }}
                         selector={{
@@ -499,22 +517,22 @@ class AddPatientForm extends Component {
                             valueField: "hims_d_identity_document_id",
                             data: this.props.idtypes
                           },
-                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                          onChange: texthandle.bind(this, context)
                         }}
-                      />                      
+                      />
 
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
                           fieldName: "primary_id_no",
-                          isImp: true,                          
+                          isImp: true
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "primary_id_no",
                           value: this.state.primary_id_no,
                           events: {
-                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                            onChange: texthandle.bind(this, context)
                           }
                         }}
                       />
@@ -523,7 +541,7 @@ class AddPatientForm extends Component {
                       <AlgaehSelector
                         div={{ className: "col-lg-6" }}
                         label={{
-                          fieldName: "secondary_identity_id",                          
+                          fieldName: "secondary_identity_id",
                           isImp: false
                         }}
                         selector={{
@@ -535,21 +553,21 @@ class AddPatientForm extends Component {
                             valueField: "hims_d_identity_document_id",
                             data: this.props.idtypes
                           },
-                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                          onChange: texthandle.bind(this, context)
                         }}
                       />
 
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
-                          fieldName: "secondary_id_no",                          
+                          fieldName: "secondary_id_no"
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "secondary_id_no",
                           value: this.state.secondary_id_no,
                           events: {
-                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                            onChange: texthandle.bind(this, context)
                           }
                         }}
                       />
@@ -558,7 +576,10 @@ class AddPatientForm extends Component {
                       <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
                         <div className="image-drop-area">
                           <Dropzone
-                            onDrop={AddPatientHandlers(this,context).onDrop.bind(this, "filePreview")}
+                            onDrop={AddPatientHandlers(
+                              this,
+                              context
+                            ).onDrop.bind(this, "filePreview")}
                             id="attach-width"
                             className="dropzone"
                             accept="image/*"
@@ -568,12 +589,12 @@ class AddPatientForm extends Component {
                             <div
                               className="attach-design text-center"
                               id="attach-width"
-                            >                            
-                            <AlgaehLabel
-                              label={{
-                                fieldName: "attach_photo",
-                              }}
-                            />
+                            >
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "attach_photo"
+                                }}
+                              />
                             </div>
                           </Dropzone>
                         </div>
@@ -589,7 +610,10 @@ class AddPatientForm extends Component {
                         <div className="image-drop-area">
                           <Dropzone
                             className="dropzone"
-                            onDrop={AddPatientHandlers(this,context).onDrop.bind(this, "filePrimaryPreview")}
+                            onDrop={AddPatientHandlers(
+                              this,
+                              context
+                            ).onDrop.bind(this, "filePrimaryPreview")}
                             id="attach-primary-id"
                             accept="image/*"
                             multiple={false}
@@ -615,7 +639,10 @@ class AddPatientForm extends Component {
                         <div className="image-drop-area">
                           <Dropzone
                             className="dropzone"
-                            onDrop={AddPatientHandlers(this,context).onDrop.bind(this, "fileSecPreview")}
+                            onDrop={AddPatientHandlers(
+                              this,
+                              context
+                            ).onDrop.bind(this, "fileSecPreview")}
                             id="attach-sec-id"
                             accept="image/*"
                             multiple={false}

@@ -27,7 +27,7 @@ class Experiment extends Component {
     return (
       <div>
         {/* Dialog */}
-        <div>
+        {/* <div>
           <Dialog
             open={this.state.openDialog}
             TransitionComponent={Transition}
@@ -54,7 +54,7 @@ class Experiment extends Component {
               </Button>
             </DialogActions>
           </Dialog>
-        </div>
+        </div> */}
         {/* Dialog End */}
       </div>
     );
