@@ -1,5 +1,6 @@
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
+import { debugLog, debugFunction, logger } from "../utils/logging";
 let visitDetails = {
   hims_f_patient_visit_id: null,
   patient_id: null,
@@ -25,6 +26,7 @@ let visitDetails = {
 };
 let addVisit = (req, res, next) => {
   try {
+    debugFunction("addVisit");
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
@@ -63,7 +65,8 @@ let addVisit = (req, res, next) => {
 };
 let insertVisitData = (dataBase, req, res, callBack) => {
   try {
-    let inputParam = extend(visitDetails, req.body);
+    debugFunction("insertVisitData");
+    let inputParam = extend(visitDetails, req.query);
 
     dataBase.query(
       "INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
@@ -91,28 +94,31 @@ let insertVisitData = (dataBase, req, res, callBack) => {
         if (error) {
           dataBase.rollback(() => {
             dataBase.release();
-            next(error);
+            logger.logger("error", "Add new visit %j", error);
           });
         }
         let patient_visit_id = result.insertId;
-        dataBase.query(
-          "INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
+        debugLog("patient_visit_id : " + patient_visit_id);
+        if (patient_visit_id != null) {
+          dataBase.query(
+            "INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
       , `patient_message`, `is_critical_message`, `message_active_till`, `created_by`, `created_date`\
       ) VALUES ( ?, ?, ?, ?, ?, ?);",
-          [
-            patient_visit_id,
-            inputParam.patient_message,
-            inputParam.is_critical_message,
-            inputParam.message_active_till,
-            inputParam.created_by,
-            new Date()
-          ],
-          (error, resultData) => {
-            if (typeof callBack == "function") {
-              callBack(error, resultData);
+            [
+              patient_visit_id,
+              inputParam.patient_message,
+              inputParam.is_critical_message,
+              inputParam.message_active_till,
+              inputParam.created_by,
+              new Date()
+            ],
+            (error, resultData) => {
+              if (typeof callBack == "function") {
+                callBack(error, resultData);
+              }
             }
-          }
-        );
+          );
+        }
       }
     );
   } catch (e) {

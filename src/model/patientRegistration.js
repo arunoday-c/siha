@@ -1,5 +1,5 @@
 import extend from "extend";
-import { whereCondition, checkIsNull, base64DecodeToFile } from "../utils";
+import { whereCondition, checkIsNull, uploadFile } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { logger, debugLog, debugFunction } from "../utils/logging";
 let patientModel = {
@@ -96,6 +96,7 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
   try {
     debugFunction("Insert Patient Registration");
     let inputparam = extend(patientModel, req.body);
+    inputparam.registration_date = new Date();
     dataBase.query(
       "INSERT INTO `hims_f_patient` (`patient_code`, `registration_date`\
     , `title_id`, `first_name`, `middle_name`, `last_name`, `gender`, `religion_id`\
@@ -152,11 +153,9 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
         if (result) {
           let insertId = result.insertId;
           debugLog("insertId : " + insertId);
-          let optionString = "";
-          //Accessing global object
-          if (applicationObject.documentsPath == null)
-            optionString =
-              "SELECT `algaeh_d_app_config_id`, `param_name`, `param_value` FROM `algaeh_d_app_config` WHERE `record_status` ='A' AND param_category='DOCUMENTS';";
+          let optionString =
+            "SELECT `algaeh_d_app_config_id`, `param_name`, `param_value` FROM `algaeh_d_app_config` WHERE `record_status` ='A' AND \
+             param_category='DOCUMENTS' AND param_name='PATIENT_DOC_PATH';";
           dataBase.query(
             "SELECT `hims_d_patient_id`, `patient_code`, `registration_date`\
       , `title_id`, `first_name`, `middle_name`, `last_name`, `gender`, `religion_id`\
@@ -170,90 +169,96 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
             [insertId],
             (error, records) => {
               if (!error) {
-                if (inputparam.documents != null) {
-                  if (inputparam.documents.patientImage != null) {
-                    if (inputparam.documents.patientImage.base64String != "") {
-                      base64DecodeToFile({
-                        code: records[0]["patient_code"],
-                        file:
-                          records[0]["patient_code"] +
-                          "_Image_" +
-                          inputparam.documents.patientImage.fileExtention,
-                        base64String:
-                          inputparam.documents.patientImage.base64String,
-                        callBack: function(error, output) {
-                          if (error) {
-                            logger.log(
-                              "error",
-                              "Patient Image insertion Error \n %s",
-                              JSON.stringify(error)
-                            );
-                          }
-                          debugLog(
-                            "Patient Image is created " + JSON.stringify(output)
-                          );
-                        }
-                      });
-                    }
-                  }
-                  if (inputparam.documents.patientPrimaryID != null) {
-                    if (
-                      inputparam.documents.patientPrimaryID.base64String != ""
-                    ) {
-                      base64DecodeToFile({
-                        code: records[0]["patient_code"],
-                        file:
-                          records[0]["patient_code"] +
-                          "_PrimaryID_" +
-                          inputparam.documents.patientPrimaryID.fileExtention,
-                        base64String:
-                          inputparam.documents.patientPrimaryID.base64String,
-                        callBack: function(error, output) {
-                          if (error) {
-                            logger.log(
-                              "error",
-                              "Patient Primary Id insertion Error \n %s",
-                              JSON.stringify(error)
-                            );
-                          }
-                          debugLog(
-                            "Patient Primary ID is created " +
-                              JSON.stringify(output)
-                          );
-                        }
-                      });
-                    }
-                  }
+                req["folderPath"] =
+                  records[1][0]["param_value"] +
+                  "/" +
+                  records[0][0]["patient_code"];
+                req["fileName"] = records[0][0]["patient_code"];
 
-                  if (inputparam.documents.patientSecondaryID != null) {
-                    if (
-                      inputparam.documents.patientSecondaryID.base64String != ""
-                    ) {
-                      base64DecodeToFile({
-                        code: records[0]["patient_code"],
-                        file:
-                          records[0]["patient_code"] +
-                          "_SecondaryID_" +
-                          inputparam.documents.patientSecondaryID.fileExtention,
-                        base64String:
-                          inputparam.documents.patientSecondaryID.base64String,
-                        callBack: function(error, output) {
-                          if (error) {
-                            logger.log(
-                              "error",
-                              "Patient Secondary Id insertion Error \n %s",
-                              JSON.stringify(error)
-                            );
-                          }
-                          debugLog(
-                            "Patient Secondary ID is created " +
-                              JSON.stringify(output)
-                          );
-                        }
-                      });
-                    }
-                  }
-                }
+                // if (inputparam.documents != null) {
+                //   if (inputparam.documents.patientImage != null) {
+                //     if (inputparam.documents.patientImage.base64String != "") {
+                //       base64DecodeToFile({
+                //         code: records[0]["patient_code"],
+                //         file:
+                //           records[0]["patient_code"] +
+                //           "_Image_" +
+                //           inputparam.documents.patientImage.fileExtention,
+                //         base64String:
+                //           inputparam.documents.patientImage.base64String,
+                //         callBack: function(error, output) {
+                //           if (error) {
+                //             logger.log(
+                //               "error",
+                //               "Patient Image insertion Error \n %s",
+                //               JSON.stringify(error)
+                //             );
+                //           }
+                //           debugLog(
+                //             "Patient Image is created " + JSON.stringify(output)
+                //           );
+                //         }
+                //       });
+                //     }
+                //   }
+                //   if (inputparam.documents.patientPrimaryID != null) {
+                //     if (
+                //       inputparam.documents.patientPrimaryID.base64String != ""
+                //     ) {
+                //       base64DecodeToFile({
+                //         code: records[0]["patient_code"],
+                //         file:
+                //           records[0]["patient_code"] +
+                //           "_PrimaryID_" +
+                //           inputparam.documents.patientPrimaryID.fileExtention,
+                //         base64String:
+                //           inputparam.documents.patientPrimaryID.base64String,
+                //         callBack: function(error, output) {
+                //           if (error) {
+                //             logger.log(
+                //               "error",
+                //               "Patient Primary Id insertion Error \n %s",
+                //               JSON.stringify(error)
+                //             );
+                //           }
+                //           debugLog(
+                //             "Patient Primary ID is created " +
+                //               JSON.stringify(output)
+                //           );
+                //         }
+                //       });
+                //     }
+                //   }
+
+                //   if (inputparam.documents.patientSecondaryID != null) {
+                //     if (
+                //       inputparam.documents.patientSecondaryID.base64String != ""
+                //     ) {
+                //       base64DecodeToFile({
+                //         code: records[0]["patient_code"],
+                //         file:
+                //           records[0]["patient_code"] +
+                //           "_SecondaryID_" +
+                //           inputparam.documents.patientSecondaryID.fileExtention,
+                //         base64String:
+                //           inputparam.documents.patientSecondaryID.base64String,
+                //         callBack: function(error, output) {
+                //           if (error) {
+                //             logger.log(
+                //               "error",
+                //               "Patient Secondary Id insertion Error \n %s",
+                //               JSON.stringify(error)
+                //             );
+                //           }
+                //           debugLog(
+                //             "Patient Secondary ID is created " +
+                //               JSON.stringify(output)
+                //           );
+                //         }
+                //       });
+                //     }
+                //   }
+                // }
               }
               if (typeof callBack == "function") {
                 callBack(error, records);
