@@ -1,6 +1,11 @@
 import { insertData } from "../model/patientRegistration";
 import { insertVisitData } from "../model/visit";
-import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
+import {
+  whereCondition,
+  runningNumber,
+  releaseDBConnection,
+  createFolder
+} from "../utils";
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction } from "../utils/logging";
@@ -11,6 +16,10 @@ let addFrontDesk = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+    if (req.query != null) {
+      req.query = JSON.parse(req.query["data"]);
+      req.body = req.query;
+    }
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -42,6 +51,7 @@ let addFrontDesk = (req, res, next) => {
                     next(error);
                   });
                 }
+                req.query.patient_code = newNumber;
                 req.body.patient_code = newNumber;
                 insertData(
                   connection,
@@ -55,9 +65,11 @@ let addFrontDesk = (req, res, next) => {
                       });
                     }
                     if (result != null && result.length != 0) {
-                      req.body.patient_id = result[0]["hims_d_patient_id"];
+                      req.query.patient_id = result[0][0]["hims_d_patient_id"];
+                      req.body.patient_id = result[0][0]["hims_d_patient_id"];
                       debugLog(
-                        "req.body.patient_id:" + result[0]["hims_d_patient_id"]
+                        "req.body.patient_id:" +
+                          result[0][0]["hims_d_patient_id"]
                       );
                       runningNumber(
                         connection,
@@ -70,6 +82,7 @@ let addFrontDesk = (req, res, next) => {
                               next(error);
                             });
                           }
+                          req.query.visit_code = completeNum;
                           req.body.visit_code = completeNum;
                           debugLog("req.body.visit_code : " + completeNum);
                           insertVisitData(
@@ -97,6 +110,8 @@ let addFrontDesk = (req, res, next) => {
                                   req.body.patient_code;
                                 resultdata["visit_code"] = req.body.visit_code;
                                 req.records = resultdata;
+                                //Upload Images to server.
+                                createFolder(req, res);
                                 next();
                                 return;
                               });

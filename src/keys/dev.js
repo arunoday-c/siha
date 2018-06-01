@@ -25,5 +25,15 @@ export default {
  1 warn:{warning,error};
  0 error:{error},
  4 debug:{debug,error,warning,information}
- */
+ */,
+  /* AWS Translator api settings */
+  AWSCredentials: {
+    accessKeyId: "AKIAI3LBOY7VFNGLQFWA",
+    secretAccessKey: "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",
+    region: "us-east-1",
+    endpoint: "https://translate.us-east-1.amazonaws.com"
+  },
+  /* folder path for language changing */
+  languageFolderPath:
+    "/media/syed/Office/ALGAEH/PRACTICE/UI/context/src/language"
 };

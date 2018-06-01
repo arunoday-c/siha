@@ -1,63 +1,162 @@
 import React, { Component } from "react";
 import { Paper, TextField, LinearProgress } from "material-ui";
 import "./visatype.css";
-import { MuiThemeProvider, createMuiTheme } from "material-ui";
 import { Button } from "material-ui";
-import SelectField from "../../common/Inputs/SelectField.js";
 import moment from "moment";
+import { SearchState, IntegratedFiltering } from "@devexpress/dx-react-grid";
+import { withStyles } from "material-ui/styles";
+import { EditingState, DataTypeProvider } from "@devexpress/dx-react-grid";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
+import DeleteDialog from "../../../utils/DeleteDialog";
+import {
+  Grid,
+  Table,
+  Toolbar,
+  SearchPanel,
+  TableHeaderRow,
+  TableEditRow,
+  TableEditColumn,
+  VirtualTable
+} from "@devexpress/dx-react-grid-material-ui";
+
 import { getVisatypes } from "../../../actions/CommonSetup/Visatype.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import IconButton from "material-ui/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import Done from "@material-ui/icons/Done";
+import CancelIcon from "@material-ui/icons/Cancel";
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: "#00BCB0",
-      main: "#00BCB0",
-      dark: "#00BFC2",
-      contrastText: "#fff"
+let sel_id = "";
+let openDialog = false;
+let startDate = "";
+
+const TableRow = ({ row, ...restProps }) => (
+  <Table.Row
+    {...restProps}
+    onClick={control => {
+      sel_id = JSON.stringify(row.hims_d_visa_type_id);
+    }}
+    style={{
+      cursor: "pointer"
+    }}
+  />
+);
+
+const styles = theme => ({
+  tableStriped: {
+    "& tbody tr:nth-of-type(odd)": {
+      backgroundColor: "#fbfbfb"
     }
   }
 });
+
+const TableComponentBase = ({ classes, ...restProps }) => (
+  <Table.Table {...restProps} className={classes.tableStriped} />
+);
+
+export const TableComponent = withStyles(styles, { name: "TableComponent" })(
+  TableComponentBase
+);
+
+const EditButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="edit" title="Edit row">
+    <EditIcon />
+  </IconButton>
+);
+
+const DeleteButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="delete" title="Delete row">
+    <DeleteIcon />
+  </IconButton>
+);
+
+const CommitButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="submit" title="Save changes">
+    <Done />
+  </IconButton>
+);
+
+const CancelButton = ({ onExecute }) => (
+  <IconButton
+    color="secondary"
+    algaeh-command="cancel"
+    onClick={onExecute}
+    title="Cancel changes"
+  >
+    <CancelIcon />
+  </IconButton>
+);
+
+const commandComponents = {
+  edit: EditButton,
+  delete: DeleteButton,
+  commit: CommitButton,
+  cancel: CancelButton
+};
+
+const Command = ({ id, onExecute }) => {
+  const CommandButton = commandComponents[id];
+  return <CommandButton onExecute={onExecute} />;
+};
+
+const DateEditor = ({ value, onValueChange }) => (
+  <TextField
+    value={moment(value).format("YYYY-MM-DD")}
+    type="date"
+    onChange={e => onValueChange(e.target.value === value)}
+  />
+);
+
+class Date extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { startDate: moment(this.props.value).format("YYYY-MM-DD") };
+  }
+  handleChange(event) {
+    this.setState({
+      startDate: moment(event.target.value).format("YYYY-MM-DD")
+    });
+
+    startDate = this.state.startDate;
+  }
+  render() {
+    return (
+      <div>
+        <TextField
+          onChange={this.handleChange.bind(this)}
+          //onChange={e => onValueChange(e.target.value)}
+          value={this.state.startDate}
+          type="date"
+        />
+      </div>
+    );
+  }
+}
 
 class VisaType extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      visa_type_code: "",
+      hims_d_visa_type_id: "",
+      visa_type: "",
       visa_type_code_error: false,
       visa_type_code_error_txt: "",
-      visa_type: "",
       visa_type_error: false,
       visa_type_error_txt: "",
-      visa_type_desc: "",
-      hims_d_visa_type_id: "",
+      visa_type_code: "",
+      visa_desc: "",
+      record_Status: "",
+      row: [],
+      id: "",
+      openDialog: false,
       buttonText: "ADD TO LIST"
     };
   }
 
-  componentDidMount() {
-    this.props.getVisatypes();
-  }
-
-  changeTexts(e) {
-    this.setState({ [e.target.name]: e.target.value });
-  }
-
-  editVisaTypes(e) {
-    const data = JSON.parse(e.currentTarget.getAttribute("current_edit"));
-
-    this.setState({
-      visa_type: data.visa_type,
-      visa_type_code: data.visa_type_code,
-      visa_type_desc: data.visa_type,
-      hims_d_visa_type_id: data.hims_d_visa_type_id,
-      buttonText: "UPDATE"
-    });
-  }
   addVisaType(e) {
     e.preventDefault();
     if (this.state.visa_type_code.length == 0) {
@@ -79,7 +178,7 @@ class VisaType extends Component {
       }
 
       algaehApiCall({
-        uri: uri,        
+        uri: uri,
         data: this.state,
         onSuccess: response => {
           console.log("Res Visa", response.data.success);
@@ -100,109 +199,189 @@ class VisaType extends Component {
     }
   }
 
-  getFormatedDate(date) {
-    return String(moment(date).format("DD-MM-YYYY"));
+  changeTexts(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
+  componentDidMount() {
+    this.props.getVisatypes();
+  }
+
+  commitChanges({ added, changed, deleted }) {
+    if (added) {
+      console.log("commitChanges Added");
+    }
+
+    if (changed) {
+      console.log("commit Changes changed for sel_id: ", sel_id);
+      console.log("Changed: ", changed);
+      console.log("Date: " + startDate);
+
+      //Get all the details here and hit the api for changes.
+      // Isuse 1 : changed details are getting in the form of an array
+      // Solution : Disable multiple editing, and get the data of changed items.
+
+      //  /api/v1/masters/set/update/visa
+    }
+
+    if (deleted) {
+      this.setState({ openDialog: true });
+      console.log("commit changes Deleted for sel_id: ", sel_id);
+    }
+  }
+
+  componentWillReceiveProps() {}
+
+  btnClick() {
+    console.log("sel_id", sel_id);
+  }
+
+  changeStatus(e) {
+    this.setState({ patient_type_status: e.target.value });
+
+    if (e.target.value == "A")
+      this.setState({ effective_end_date: "9999-12-31" });
+    else if (e.target.value == "I") {
+      this.setState({
+        effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
+      });
+    }
+  }
+
+  dateFormater({ value }) {
+    return String(moment(value).format("DD-MM-YYYY"));
+  }
+
+  handleConfirmDelete() {
+    const data = { hims_d_visa_type_id: sel_id, updated_by: 1 };
+    this.setState({ openDialog: false });
+    algaehApiCall({
+      uri: "/masters/set/delete/visa",
+      data: data,
+      method: "DELETE",
+      onSuccess: response => {
+        this.setState({ open: false });
+        window.location.reload();
+      },
+      onFailure: error => {
+        console.log(error);
+        this.setState({ open: false });
+      }
+    });
+  }
+
+  handleDialogClose() {
+    this.setState({ openDialog: false });
   }
 
   render() {
     return (
-      <MuiThemeProvider theme={theme}>
-        <div className="visa_type">
-          <LinearProgress id="myProg" style={{ display: "none" }} />
-          <Paper className="container-fluid">
-            <form>
-              <div
-                className="row"
-                style={{
-                  padding: 20,
-                  marginLeft: "auto",
-                  marginRight: "auto"
-                }}
-              >
-                <div className="col-lg-3">
-                  <label>
-                    VISA TYPE CODE <span className="imp">*</span>
-                  </label>
-                  <br />
-                  <TextField
-                    error={this.state.visa_type_code_error}
-                    helperText={this.state.visa_type_code_error_txt}
-                    name="visa_type_code"
-                    value={this.state.visa_type_code}
-                    onChange={this.changeTexts.bind(this)}
-                    className="txt-fld"
-                  />
-                </div>
+      <div className="visa_type">
+        <DeleteDialog
+          handleConfirmDelete={this.handleConfirmDelete.bind(this)}
+          handleDialogClose={this.handleDialogClose.bind(this)}
+          openDialog={this.state.openDialog}
+        />
 
-                <div className="col-lg-3">
-                  <label>
-                    VISA TYPE NAME <span className="imp">*</span>
-                  </label>
-                  <br />
-                  <TextField
-                    error={this.state.visa_type_error}
-                    helperText={this.state.visa_type_error_txt}
-                    name="visa_type"
-                    value={this.state.visa_type}
-                    onChange={this.changeTexts.bind(this)}
-                    className="txt-fld"
-                  />
-                </div>
-
-                <div className="col-lg-3 align-middle">
-                  <br />
-                  <Button
-                    onClick={this.addVisaType.bind(this)}
-                    variant="raised"
-                    color="primary"
-                  >
-                    {this.state.buttonText}
-                  </Button>
-                </div>
+        <LinearProgress id="myProg" style={{ display: "none" }} />
+        <Paper className="container-fluid">
+          <form>
+            <div
+              className="row"
+              style={{
+                padding: 20,
+                marginLeft: "auto",
+                marginRight: "auto"
+              }}
+            >
+              <div className="col-lg-3">
+                <label>
+                  VISA TYPE CODE <span className="imp">*</span>
+                </label>
+                <br />
+                <TextField
+                  error={this.state.visa_type_code_error}
+                  helperText={this.state.visa_type_code_error_txt}
+                  name="visa_type_code"
+                  value={this.state.visa_type_code}
+                  onChange={this.changeTexts.bind(this)}
+                  className="txt-fld"
+                />
               </div>
-            </form>
 
-            <div className="row form-details">
-              <div className="col">
-                <label> PATIENT TYPE LIST</label>
-                <table className="table table-striped table-details table-hover">
-                  <thead style={{ background: "#A9E5E0" }}>
-                    <tr>
-                      <td scope="col">ACTION</td>
-                      <td scope="col">#</td>
-                      <td scope="col">VISA TYPE CODE</td>
-                      <td scope="col">VISA TYPE NAME</td>
-                      <td scope="col">ADDED DATE</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.props.visatypes.map((row, index) => (
-                      <tr key={index}>
-                        <td>
-                          <span
-                            onClick={this.handleDel}
-                            className="fas fa-trash-alt"
-                            style={{ paddingRight: "24px" }}
-                          />
-                          <span
-                            current_edit={JSON.stringify(row)}
-                            onClick={this.editVisaTypes.bind(this)}
-                            className="fas fa-pencil-alt"
-                          />
-                        </td>
-                        <td> {index + 1}</td>
-                        <td> {row.visa_type_code}</td>
-                        <td> {row.visa_type}</td>
-                        <td> {this.getFormatedDate(row.created_date)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="col-lg-3">
+                <label>
+                  VISA TYPE NAME <span className="imp">*</span>
+                </label>
+                <br />
+                <TextField
+                  error={this.state.visa_type_error}
+                  helperText={this.state.visa_type_error_txt}
+                  name="visa_type"
+                  value={this.state.visa_type}
+                  onChange={this.changeTexts.bind(this)}
+                  className="txt-fld"
+                />
+              </div>
+
+              <div className="col-lg-3 align-middle">
+                <br />
+                <Button
+                  onClick={this.addVisaType.bind(this)}
+                  variant="raised"
+                  color="primary"
+                >
+                  {this.state.buttonText}
+                </Button>
               </div>
             </div>
-          </Paper>
-        </div>
-      </MuiThemeProvider>
+          </form>
+
+          <div className="row form-details">
+            <div className="col">
+              <Paper>
+                <Grid
+                  rows={this.props.visatypes}
+                  key={["{name : hims_d_visa_type_id}"]}
+                  columns={[
+                    { name: "visa_type_code", title: "Visa Type Code" },
+                    { name: "visa_type", title: "Visa Type" },
+                    { name: "created_date", title: "Added Date" }
+                  ]}
+                >
+                  <DataTypeProvider
+                    formatterComponent={this.dateFormater}
+                    editorComponent={({ value }) => (
+                      <DateEditor value={value} />
+                    )}
+                    for={["created_date"]}
+                  />
+                  <SearchState />
+                  <IntegratedFiltering />
+                  <VirtualTable
+                    tableComponent={TableComponent}
+                    rowComponent={TableRow}
+                    height={400}
+                  />
+                  <TableHeaderRow />
+                  <Toolbar />
+                  <SearchPanel />
+                  <EditingState
+                    onCommitChanges={this.commitChanges.bind(this)}
+                  />
+                  <TableEditRow />
+                  <TableEditColumn
+                    width={120}
+                    showEditCommand
+                    showDeleteCommand
+                    commandComponent={Command}
+                  />
+                </Grid>
+              </Paper>
+            </div>
+          </div>
+        </Paper>
+      </div>
     );
   }
 }

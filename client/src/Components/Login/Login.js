@@ -9,8 +9,6 @@ import {
 } from "material-ui";
 import { MuiThemeProvider } from "material-ui/styles";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
-import axios from "axios";
-import { Link, Redirect } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -112,7 +110,7 @@ class Login extends Component {
           console.log("Res", response.data.success);
           console.log("Res Data", response.data);
 
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             window.location.hash = "/Dashboard";
           } else {
             //Handle unsuccessful Login here.

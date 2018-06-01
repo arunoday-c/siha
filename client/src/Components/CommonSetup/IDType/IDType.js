@@ -1,25 +1,109 @@
 import React, { Component } from "react";
 import { Paper, TextField } from "material-ui";
 import "./id_type.css";
-import { MuiThemeProvider, createMuiTheme } from "material-ui";
 import { Button } from "material-ui";
 import moment from "moment";
 import { getIDTypes } from "../../../actions/CommonSetup/IDType.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import {algaehApiCall} from '../../../utils/algaehApiCall'
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import IconButton from "material-ui/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import Done from "@material-ui/icons/Done";
+import CancelIcon from "@material-ui/icons/Cancel";
+import {
+  EditingState,
+  DataTypeProvider,
+  SearchState,
+  IntegratedFiltering
+} from "@devexpress/dx-react-grid";
+import { withStyles } from "material-ui/styles";
+import {
+  Grid,
+  Table,
+  Toolbar,
+  SearchPanel,
+  TableHeaderRow,
+  TableEditRow,
+  TableEditColumn,
+  VirtualTable
+} from "@devexpress/dx-react-grid-material-ui";
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: "#00BCB0",
-      main: "#00BCB0",
-      dark: "#00BFC2",
-      contrastText: "#fff"
+//Grid Logic Start here
+let sel_id = "";
+
+const TableRow = ({ row, ...restProps }) => (
+  <Table.Row
+    {...restProps}
+    onClick={control => {
+      sel_id = JSON.stringify(row.hims_d_identity_document_id);
+    }}
+    style={{
+      cursor: "pointer"
+    }}
+  />
+);
+
+const styles = theme => ({
+  tableStriped: {
+    "& tbody tr:nth-of-type(odd)": {
+      backgroundColor: "#fbfbfb"
     }
   }
 });
+
+const TableComponentBase = ({ classes, ...restProps }) => (
+  <Table.Table {...restProps} className={classes.tableStriped} />
+);
+
+export const TableComponent = withStyles(styles, { name: "TableComponent" })(
+  TableComponentBase
+);
+
+const EditButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="edit" title="Edit row">
+    <EditIcon />
+  </IconButton>
+);
+
+const DeleteButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="delete" title="Delete row">
+    <DeleteIcon />
+  </IconButton>
+);
+
+const CommitButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="submit" title="Save changes">
+    <Done />
+  </IconButton>
+);
+
+const CancelButton = ({ onExecute }) => (
+  <IconButton
+    color="secondary"
+    algaeh-command="cancel"
+    onClick={onExecute}
+    title="Cancel changes"
+  >
+    <CancelIcon />
+  </IconButton>
+);
+
+const commandComponents = {
+  edit: EditButton,
+  delete: DeleteButton,
+  commit: CommitButton,
+  cancel: CancelButton
+};
+
+const Command = ({ id, onExecute }) => {
+  const CommandButton = commandComponents[id];
+  return <CommandButton onExecute={onExecute} />;
+};
+
+//Grid Logic Ends here
 
 class IDType extends Component {
   constructor(props) {
@@ -55,18 +139,13 @@ class IDType extends Component {
     }
   }
 
-
-
   addIDType(e) {
     e.preventDefault();
-
-
-
 
     //console.log("myState", this.state);
     algaehApiCall({
       uri: "/identity/add",
-      data: this.state,      
+      data: this.state,
       onSuccess: response => {
         console.log("Id Types", response.data);
         window.location.reload();
@@ -75,136 +154,145 @@ class IDType extends Component {
         console.log(error);
       }
     });
-
-
   }
 
   componentDidMount() {
     this.props.getIDTypes();
   }
 
+  onCommitChanges({ added, changed, deleted }) {
+    if (added) {
+      console.log("Added: ", added);
+    }
+    if (changed) {
+      console.log("Changed: ", changed);
+    }
+    if (deleted) {
+      console.log("Deleted: ", deleted);
+    }
+  }
+
   render() {
     return (
-      <MuiThemeProvider theme={theme}>
-        <div className="id_type">
-          <Paper className="container-fluid">
-            <form>
-              <div
-                className="row"
-                style={{
-                  padding: 20,
-                  marginLeft: "auto",
-                  marginRight: "auto"
-                }}
-              >
-                <div className="col-lg-3">
-                  <label>
-                    Status <span className="imp">*</span>
-                  </label>
-                  <br />
-                  <input
-                    onChange={this.changeStatus.bind(this)}
-                    style={{
-                      padding: 8,
-                      margin: 8
-                    }}
-                    type="radio"
-                    name="status"
-                    value="A"
-                  />
-                  <label className="center">Active </label>
+      <div className="id_type">
+        <Paper className="container-fluid">
+          <form>
+            <div
+              className="row"
+              style={{
+                padding: 20,
+                marginLeft: "auto",
+                marginRight: "auto"
+              }}
+            >
+              <div className="col-lg-3">
+                <label>
+                  Status <span className="imp">*</span>
+                </label>
+                <br />
+                <input
+                  onChange={this.changeStatus.bind(this)}
+                  style={{
+                    padding: 8,
+                    margin: 8
+                  }}
+                  type="radio"
+                  name="status"
+                  value="A"
+                />
+                <label className="center">Active </label>
 
-                  <input
-                    onChange={this.changeStatus.bind(this)}
-                    style={{
-                      padding: 8,
-                      margin: 8
-                    }}
-                    type="radio"
-                    name="status"
-                    value="I"
-                  />
-                  <label className="center">Inactive </label>
-                </div>
-
-                <div className="col-lg-3">
-                  <label>
-                    ID TYPE CODE <span className="imp">*</span>
-                  </label>
-                  <br />
-                  <TextField
-                    name="identity_document_code"
-                    value={this.state.identity_document_code}
-                    onChange={this.changeTexts.bind(this)}
-                    className="txt-fld"
-                  />
-                </div>
-
-                <div className="col-lg-3">
-                  <label>
-                    ID TYPE NAME <span className="imp">*</span>
-                  </label>
-                  <br />
-                  <TextField
-                    name="identity_document_name"
-                    value={this.state.identity_document_name}
-                    onChange={this.changeTexts.bind(this)}
-                    className="txt-fld"
-                  />
-                </div>
-
-                <div className="col-lg-3 align-middle">
-                  <br />
-                  <Button
-                    onClick={this.addIDType.bind(this)}
-                    variant="raised"
-                    color="primary"
-                  >
-                    ADD TO LIST
-                  </Button>
-                </div>
+                <input
+                  onChange={this.changeStatus.bind(this)}
+                  style={{
+                    padding: 8,
+                    margin: 8
+                  }}
+                  type="radio"
+                  name="status"
+                  value="I"
+                />
+                <label className="center">Inactive </label>
               </div>
-            </form>
 
-            <div className="row form-details">
-              <div className="col">
-                <label> ID TYPE LIST</label>
-                <table className="table table-striped table-details table-hover">
-                  <thead style={{ background: "#A9E5E0" }}>
-                    <tr>
-                      <td scope="col">ACTION</td>
-                      <td scope="col">#</td>
-                      <td scope="col">ID TYPE CODE</td>
-                      <td scope="col">ID TYPE NAME</td>
+              <div className="col-lg-3">
+                <label>
+                  ID TYPE CODE <span className="imp">*</span>
+                </label>
+                <br />
+                <TextField
+                  name="identity_document_code"
+                  value={this.state.identity_document_code}
+                  onChange={this.changeTexts.bind(this)}
+                  className="txt-fld"
+                />
+              </div>
 
-                      <td scope="col">STATUS</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.props.idtypes.map((row, index) => (
-                      <tr key={index} onClick={this.handleDel}>
-                        <td>
-                          <span
-                            onClick={this.handleDel}
-                            className="fas fa-trash-alt"
-                            style={{ paddingRight: "24px" }}
-                          />
-                          <span className="fas fa-pencil-alt" />
-                        </td>
-                        <td> {index + 1}</td>
-                        <td> {row.identity_document_code}</td>
-                        <td> {row.identity_document_name}</td>
+              <div className="col-lg-3">
+                <label>
+                  ID TYPE NAME <span className="imp">*</span>
+                </label>
+                <br />
+                <TextField
+                  name="identity_document_name"
+                  value={this.state.identity_document_name}
+                  onChange={this.changeTexts.bind(this)}
+                  className="txt-fld"
+                />
+              </div>
 
-                        <td> ACTIVE</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="col-lg-3 align-middle">
+                <br />
+                <Button
+                  onClick={this.addIDType.bind(this)}
+                  variant="raised"
+                  color="primary"
+                >
+                  ADD TO LIST
+                </Button>
               </div>
             </div>
-          </Paper>
-        </div>
-      </MuiThemeProvider>
+          </form>
+
+          <div className="row form-details">
+            <div className="col">
+              <Paper>
+                <Grid
+                  rows={this.props.idtypes}
+                  columns={[
+                    { name: "identity_document_code", title: "ID CODE" },
+                    {
+                      name: "identity_document_name",
+                      title: "ID NAME"
+                    }
+                  ]}
+                >
+                  <SearchState />
+                  <IntegratedFiltering />
+                  <Toolbar />
+                  <SearchPanel />
+                  <VirtualTable
+                    tableComponent={TableComponent}
+                    rowComponent={TableRow}
+                    height={400}
+                  />
+                  <TableHeaderRow />
+                  <EditingState
+                    onCommitChanges={this.onCommitChanges.bind(this)}
+                  />
+                  <TableEditRow />
+                  <TableEditColumn
+                    width={120}
+                    showEditCommand
+                    showDeleteCommand
+                    commandComponent={Command}
+                  />
+                </Grid>
+              </Paper>
+            </div>
+          </div>
+        </Paper>
+      </div>
     );
   }
 }

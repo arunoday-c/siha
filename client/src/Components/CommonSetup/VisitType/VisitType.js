@@ -10,28 +10,110 @@ import { getVisittypes } from "../../../actions/CommonSetup/VisitTypeactions.js"
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from "material-ui/Dialog";
-import Slide from "material-ui/transitions/Slide";
+import IconButton from "material-ui/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import Done from "@material-ui/icons/Done";
+import CancelIcon from "@material-ui/icons/Cancel";
+import {
+  EditingState,
+  DataTypeProvider,
+  SearchState,
+  IntegratedFiltering
+} from "@devexpress/dx-react-grid";
+import { withStyles } from "material-ui/styles";
+import {
+  Grid,
+  Table,
+  Toolbar,
+  SearchPanel,
+  TableHeaderRow,
+  TableEditRow,
+  TableEditColumn,
+  VirtualTable
+} from "@devexpress/dx-react-grid-material-ui";
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
+//Grid Logic Start here
+let sel_id = "";
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: "#00BCB0",
-      main: "#00BCB0",
-      dark: "#00BFC2",
-      contrastText: "#fff"
+const TableRow = ({ row, ...restProps }) => (
+  <Table.Row
+    {...restProps}
+    onClick={control => {
+      sel_id = JSON.stringify(row.hims_d_identity_document_id);
+    }}
+    style={{
+      cursor: "pointer"
+    }}
+  />
+);
+
+const DateEditor = ({ value, onValueChange }) => (
+  <TextField
+    value={moment(value).format("YYYY-MM-DD")}
+    type="date"
+    onChange={e => onValueChange(e.target.value === value)}
+  />
+);
+
+const styles = theme => ({
+  tableStriped: {
+    "& tbody tr:nth-of-type(odd)": {
+      backgroundColor: "#fbfbfb"
     }
   }
 });
+
+const TableComponentBase = ({ classes, ...restProps }) => (
+  <Table.Table {...restProps} className={classes.tableStriped} />
+);
+
+export const TableComponent = withStyles(styles, { name: "TableComponent" })(
+  TableComponentBase
+);
+
+const EditButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="edit" title="Edit row">
+    <EditIcon />
+  </IconButton>
+);
+
+const DeleteButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="delete" title="Delete row">
+    <DeleteIcon />
+  </IconButton>
+);
+
+const CommitButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="submit" title="Save changes">
+    <Done />
+  </IconButton>
+);
+
+const CancelButton = ({ onExecute }) => (
+  <IconButton
+    color="secondary"
+    algaeh-command="cancel"
+    onClick={onExecute}
+    title="Cancel changes"
+  >
+    <CancelIcon />
+  </IconButton>
+);
+
+const commandComponents = {
+  edit: EditButton,
+  delete: DeleteButton,
+  commit: CommitButton,
+  cancel: CancelButton
+};
+
+const Command = ({ id, onExecute }) => {
+  const CommandButton = commandComponents[id];
+  return <CommandButton onExecute={onExecute} />;
+};
+
+//Grid Logic Ends here
 
 const VISIT_TYPE = [
   { name: "CONSULTATION", value: "CONSULTATION", key: "cn" },
@@ -60,21 +142,33 @@ class VisitType extends Component {
     };
   }
 
+  onCommitChanges({ added, changed, deleted }) {
+    if (added) {
+      console.log("Added:", added);
+    }
+    if (changed) {
+      console.log("Changed:", changed);
+    }
+    if (deleted) {
+      console.log("Deleted: ", deleted);
+    }
+  }
+
   handleConfirmDelete() {
     const data = { hims_d_visit_type_id: this.state.deleteId };
 
     algaehApiCall({
       uri: "/visitType/delete",
       data: data,
-      method: "DELETE",      
+      method: "DELETE",
       onSuccess: response => {
         console.log("DELETED RESPONSE", response.data);
-        this.setState({open : false})
+        this.setState({ open: false });
         window.location.reload();
       },
       onFailure: error => {
         console.log(error);
-        this.setState({open : false})
+        this.setState({ open: false });
       }
     });
   }
@@ -85,7 +179,7 @@ class VisitType extends Component {
 
   handleDelete(e) {
     const visit_id = JSON.parse(e.currentTarget.getAttribute("sltd_id"));
-    this.setState({ open: true ,deleteId : visit_id});
+    this.setState({ open: true, deleteId: visit_id });
   }
 
   changeTexts(e) {
@@ -98,6 +192,10 @@ class VisitType extends Component {
 
   componentDidMount() {
     this.props.getVisittypes();
+  }
+
+  dateFormater({ value }) {
+    return String(moment(value).format("DD-MM-YYYY"));
   }
 
   addVisit(e) {
@@ -120,7 +218,6 @@ class VisitType extends Component {
         visit_type_error_txt: ""
       });
 
-
       let uri = "";
       if (
         this.state.buttonText == "ADD TO LIST" &&
@@ -135,7 +232,7 @@ class VisitType extends Component {
       }
 
       algaehApiCall({
-        uri: uri,        
+        uri: uri,
         data: this.state,
         onSuccess: response => {
           console.log("Res Visit", response.data.success);
@@ -176,36 +273,7 @@ class VisitType extends Component {
 
   render() {
     return (
-      <MuiThemeProvider theme={theme}>
-{/* Dialog */}
-        <div>
-          <Dialog
-            open={this.state.open}
-            TransitionComponent={Transition}
-            keepMounted
-            onClose={this.handleClose}
-            aria-labelledby="alert-dialog-slide-title"
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogTitle id="alert-dialog-slide-title">
-              Are you Sure you want to delete this Department?
-            </DialogTitle>
-
-            <DialogActions>
-              <Button onClick={this.handleClose} color="primary">
-                NO
-              </Button>
-              <Button
-                onClick={this.handleConfirmDelete.bind(this)}
-                color="primary"
-              >
-                YES
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-        {/* Dialog End */}
-
+      <div>
         <div className="visit_type">
           <Paper className="container-fluid">
             <form>
@@ -274,48 +342,53 @@ class VisitType extends Component {
 
             <div className="row form-details">
               <div className="col">
-                <label> VISIT TYPE LIST</label>
-                <table className="table table-striped table-details table-hover">
-                  <thead style={{ background: "#A9E5E0" }}>
-                    <tr>
-                      <td scope="col">ACTION</td>
-                      <td scope="col">#</td>
-                      <td scope="col">VISIT CODE</td>
-                      <td scope="col">VISIT NAME</td>
-                      <td scope="col">VISIT TYPE</td>
-                      <td scope="col">ADDED DATE</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.props.visittypes.map((row, index) => (
-                      <tr key={index} >
-                        <td>
-                          <span
-                          sltd_id = {row.hims_d_visit_type_id}
-                            onClick={this.handleDelete.bind(this)}
-                            className="fas fa-trash-alt"
-                            style={{ paddingRight: "24px" }}
-                          />
-                          <span
-                            current_edit={JSON.stringify(row)}
-                            onClick={this.editVisitTypes.bind(this)}
-                            className="fas fa-pencil-alt"
-                          />
-                        </td>
-                        <td> {index + 1}</td>
-                        <td> {row.visit_type_code}</td>
-                        <td> {row.visit_type}</td>
-                        <td> {row.hims_d_visit_type}</td>
-                        <td> {this.getFormatedDate(row.created_date)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <Paper>
+                  <Grid
+                    rows={this.props.visittypes}
+                    columns={[
+                      { name: "visit_type_code", title: "VISIT CODE" },
+                      {
+                        name: "visit_type",
+                        title: "VISIT NAME"
+                      },
+                      { name: "hims_d_visit_type", title: "VISIT TYPE" },
+                      { name: "created_date", title: "ADDED DATE" }
+                    ]}
+                  >
+                    <DataTypeProvider
+                      formatterComponent={this.dateFormater}
+                      editorComponent={({ value }) => (
+                        <DateEditor value={value} />
+                      )}
+                      for={["created_date"]}
+                    />
+                    <SearchState />
+                    <IntegratedFiltering />
+                    <Toolbar />
+                    <SearchPanel />
+                    <VirtualTable
+                      tableComponent={TableComponent}
+                      rowComponent={TableRow}
+                      height={400}
+                    />
+                    <TableHeaderRow />
+                    <EditingState
+                      onCommitChanges={this.onCommitChanges.bind(this)}
+                    />
+                    <TableEditRow />
+                    <TableEditColumn
+                      width={120}
+                      showEditCommand
+                      showDeleteCommand
+                      commandComponent={Command}
+                    />
+                  </Grid>
+                </Paper>
               </div>
             </div>
           </Paper>
         </div>
-      </MuiThemeProvider>
+      </div>
     );
   }
 }

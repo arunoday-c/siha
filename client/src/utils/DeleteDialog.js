@@ -1,15 +1,17 @@
 import React, { Component } from "react";
-import ReactDataGrid from "react-data-grid";
-import {
-  getDepartments,
-  getSubDepartments
-} from "../actions/CommonSetup/Department.js";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import Button from "material-ui/Button";
+import Dialog, {
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from "material-ui/Dialog";
+import Slide from "material-ui/transitions/Slide";
+import { Button } from "material-ui";
+function Transition(props) {
+  return <Slide direction="up" {...props} />;
+}
 
-class Experiment extends Component {
+class DeleteDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,7 +31,7 @@ class Experiment extends Component {
         {/* Dialog */}
         <div>
           <Dialog
-            open={this.state.openDialog}
+            open={this.props.openDialog}
             TransitionComponent={Transition}
             keepMounted
             aria-labelledby="alert-dialog-slide-title"
@@ -40,16 +42,8 @@ class Experiment extends Component {
             </DialogTitle>
 
             <DialogActions>
-              <Button
-                onClick={this.handleDialogClose.bind(this)}
-                color="primary"
-              >
-                NO
-              </Button>
-              <Button
-                onClick={this.handleConfirmDelete.bind(this)}
-                color="primary"
-              >
+              <Button onClick={this.props.handleDialogClose}>NO</Button>
+              <Button onClick={this.props.handleConfirmDelete} color="primary">
                 YES
               </Button>
             </DialogActions>
@@ -60,4 +54,5 @@ class Experiment extends Component {
     );
   }
 }
-export default Experiment;
+
+export default DeleteDialog;

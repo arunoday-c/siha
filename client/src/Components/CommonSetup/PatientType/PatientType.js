@@ -1,33 +1,190 @@
 import React, { Component } from "react";
 import { Paper, TextField } from "material-ui";
 import "./patient_type.css";
-import { MuiThemeProvider, createMuiTheme } from "material-ui";
 import { Button } from "material-ui";
 import moment from "moment";
+import { SearchState, IntegratedFiltering } from "@devexpress/dx-react-grid";
+import { withStyles } from "material-ui/styles";
+import { EditingState, DataTypeProvider } from "@devexpress/dx-react-grid";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import DeleteDialog from "../../../utils/DeleteDialog";
+import {
+  Grid,
+  Table,
+  Toolbar,
+  SearchPanel,
+  TableHeaderRow,
+  TableEditRow,
+  TableEditColumn,
+  VirtualTable
+} from "@devexpress/dx-react-grid-material-ui";
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: "#00BCB0",
-      main: "#00BCB0",
-      dark: "#00BFC2",
-      contrastText: "#fff"
+import { getVisatypes } from "../../../actions/CommonSetup/Visatype.js";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import IconButton from "material-ui/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import Done from "@material-ui/icons/Done";
+import CancelIcon from "@material-ui/icons/Cancel";
+
+let sel_id = "";
+let openDialog = false;
+let startDate = "";
+
+const TableRow = ({ row, ...restProps }) => (
+  <Table.Row
+    {...restProps}
+    onClick={control => {
+      sel_id = JSON.stringify(row.hims_d_visa_type_id);
+    }}
+    style={{
+      cursor: "pointer"
+    }}
+  />
+);
+
+const styles = theme => ({
+  tableStriped: {
+    "& tbody tr:nth-of-type(odd)": {
+      backgroundColor: "#fbfbfb"
     }
   }
 });
+
+const TableComponentBase = ({ classes, ...restProps }) => (
+  <Table.Table {...restProps} className={classes.tableStriped} />
+);
+
+export const TableComponent = withStyles(styles, { name: "TableComponent" })(
+  TableComponentBase
+);
+
+const EditButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="edit" title="Edit row">
+    <EditIcon />
+  </IconButton>
+);
+
+const DeleteButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="delete" title="Delete row">
+    <DeleteIcon />
+  </IconButton>
+);
+
+const CommitButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} algaeh-command="submit" title="Save changes">
+    <Done />
+  </IconButton>
+);
+
+const CancelButton = ({ onExecute }) => (
+  <IconButton
+    color="secondary"
+    algaeh-command="cancel"
+    onClick={onExecute}
+    title="Cancel changes"
+  >
+    <CancelIcon />
+  </IconButton>
+);
+
+const commandComponents = {
+  edit: EditButton,
+  delete: DeleteButton,
+  commit: CommitButton,
+  cancel: CancelButton
+};
+
+const Command = ({ id, onExecute }) => {
+  const CommandButton = commandComponents[id];
+  return <CommandButton onExecute={onExecute} />;
+};
+
+const DateEditor = ({ value, onValueChange }) => (
+  <TextField
+    value={moment(value).format("YYYY-MM-DD")}
+    type="date"
+    onChange={e => onValueChange(e.target.value === value)}
+  />
+);
+
+class Date extends Component {
+  constructor(props) {
+    super(props);
+    this.setState = {
+      startDate: moment(this.props.value).format("YYYY-MM-DD")
+    };
+  }
+  handleChange(event) {
+    this.setState({
+      startDate: moment(event.target.value).format("YYYY-MM-DD")
+    });
+
+    startDate = this.state.startDate;
+  }
+  render() {
+    return (
+      <div>
+        <TextField
+          onChange={this.handleChange.bind(this)}
+          //onChange={e => onValueChange(e.target.value)}
+          value={this.state.startDate}
+          type="date"
+        />
+      </div>
+    );
+  }
+}
 
 class PatientType extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      patient_type_status: "",
-      effective_end_date: ""
+      hims_d_visa_type_id: "",
+      visa_type: "",
+      visa_type_code: "",
+      visa_desc: "",
+      record_Status: "",
+      row: [],
+      id: "",
+      openDialog: false
     };
   }
 
-  handleDel() {
-    alert("CLicked");
+  componentDidMount() {
+    this.props.getVisatypes();
+  }
+
+  commitChanges({ added, changed, deleted }) {
+    if (added) {
+      console.log("commitChanges Added");
+    }
+
+    if (changed) {
+      console.log("commit Changes changed for sel_id: ", sel_id);
+      console.log("Changed: ", changed);
+      console.log("Date: " + startDate);
+
+      //Get all the details here and hit the api for changes.
+      // Isuse 1 : changed details are getting in the form of an array
+      // Solution : Disable multiple editing, and get the data of changed items.
+
+      //  /api/v1/masters/set/update/visa
+    }
+
+    if (deleted) {
+      this.setState({ openDialog: true });
+      console.log("commit changes Deleted for sel_id: ", sel_id);
+    }
+  }
+
+  componentWillReceiveProps() {}
+
+  btnClick() {
+    console.log("sel_id", sel_id);
   }
 
   changeStatus(e) {
@@ -42,9 +199,41 @@ class PatientType extends Component {
     }
   }
 
+  dateFormater({ value }) {
+    return String(moment(value).format("DD-MM-YYYY"));
+  }
+
+  handleConfirmDelete() {
+    const data = { hims_d_visa_type_id: sel_id, updated_by: 1 };
+    this.setState({ openDialog: false });
+    algaehApiCall({
+      uri: "/masters/set/delete/visa",
+      data: data,
+      method: "DELETE",
+      onSuccess: response => {
+        debugger;
+        this.setState({ open: false });
+        window.location.reload();
+      },
+      onFailure: error => {
+        console.log(error);
+        this.setState({ open: false });
+      }
+    });
+  }
+
+  handleDialogClose() {
+    this.setState({ openDialog: false });
+  }
+
   render() {
     return (
-      <MuiThemeProvider theme={theme}>
+      <div>
+        <DeleteDialog
+          handleConfirmDelete={this.handleConfirmDelete.bind(this)}
+          handleDialogClose={this.handleDialogClose.bind(this)}
+          openDialog={this.state.openDialog}
+        />
         <div className="patient_type">
           <Paper className="container-fluid">
             <form>
@@ -104,90 +293,82 @@ class PatientType extends Component {
 
                 <div className="col-lg-3 align-middle">
                   <br />
-                  <Button variant="raised" color="primary">
+                  <Button
+                    onClick={this.btnClick.bind(this)}
+                    variant="raised"
+                    color="primary"
+                  >
                     ADD TO LIST
                   </Button>
                 </div>
               </div>
-
-              {/* <div
-                className="row"
-                style={{
-                  marginTop: 20,
-                  marginLeft: "auto",
-                  marginRight: "auto"
-                }}
-              >
-                <div className="col-lg-3">
-                  <label>
-                    TAX DESCRIPTION <span className="imp"> *</span>
-                  </label>
-                  <br />
-                  <TextField className="txt-fld" />
-                </div>
-
-                
-              </div> */}
             </form>
 
             <div className="row form-details">
               <div className="col">
-                <label> PATIENT TYPE LIST</label>
-                <table className="table table-striped table-details table-hover">
-                  <thead style={{ background: "#A9E5E0" }}>
-                    <tr>
-                      <td scope="col">ACTION</td>
-                      <td scope="col">#</td>
-                      <td scope="col">PATIENT TYPE CODE</td>
-                      <td scope="col">PATIENT TYPE NAME</td>
-
-                      <td scope="col">ADDED DATE</td>
-                      <td scope="col">MODIFIED DATE</td>
-                      <td scope="col">STATUS</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr onClick={this.handleDel}>
-                      <td>
-                        <span
-                          onClick={this.handleDel}
-                          className="fas fa-trash-alt"
-                          style={{ paddingRight: "24px" }}
-                        />
-                        <span className="fas fa-pencil-alt" />
-                      </td>
-                      <td> 1</td>
-                      <td> 0001</td>
-                      <td> General</td>
-                      <td> 06-04-2018</td>
-                      <td> 06-04-2018</td>
-                      <td> ACTIVE</td>
-                    </tr>
-                    <tr onClick={this.handleDel}>
-                      <td>
-                        <span
-                          onClick={this.handleDel}
-                          className="fas fa-trash-alt"
-                          style={{ paddingRight: "24px" }}
-                        />
-                        <span className="fas fa-pencil-alt" />
-                      </td>
-                      <td> 1</td>
-                      <td> 0001</td>
-                      <td> General</td>
-                      <td> 06-04-2018</td>
-                      <td> 06-04-2018</td>
-                      <td> ACTIVE</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <Paper>
+                  <Grid
+                    rows={this.props.visatypes}
+                    key={["{name : hims_d_visa_type_id}"]}
+                    columns={[
+                      { name: "visa_type_code", title: "Visa Type Code" },
+                      { name: "visa_type", title: "Visa Type" },
+                      { name: "created_date", title: "Added Date" }
+                    ]}
+                  >
+                    <DataTypeProvider
+                      formatterComponent={this.dateFormater}
+                      editorComponent={({ value }) => (
+                        <DateEditor value={value} />
+                      )}
+                      for={["created_date"]}
+                    />
+                    <SearchState />
+                    <IntegratedFiltering />
+                    <VirtualTable
+                      tableComponent={TableComponent}
+                      rowComponent={TableRow}
+                      height={400}
+                    />
+                    <TableHeaderRow />
+                    <Toolbar />
+                    <SearchPanel />
+                    <EditingState
+                      onCommitChanges={this.commitChanges.bind(this)}
+                    />
+                    <TableEditRow />
+                    <TableEditColumn
+                      width={120}
+                      showEditCommand
+                      showDeleteCommand
+                      commandComponent={Command}
+                    />
+                  </Grid>
+                </Paper>
               </div>
             </div>
           </Paper>
         </div>
-      </MuiThemeProvider>
+      </div>
     );
   }
 }
 
-export default PatientType;
+function mapStateToProps(state) {
+  return {
+    visatypes: state.visatypes.visatypes
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getVisatypes: getVisatypes
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(PatientType)
+);

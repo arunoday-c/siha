@@ -11,6 +11,7 @@ import patientRegisteration from "../controller/patientRegistration";
 import frontDesk from "../controller/frontDesk";
 import getMasters from "../controller/masters";
 import updateMaster from "../controller/updateMasters";
+import languageTranslator from "../controller/languageTranslator";
 
 let router = express();
 
@@ -28,6 +29,7 @@ initializedDb(db => {
   router.use("/frontDesk", frontDesk({ config, db }));
   router.use("/masters/get", getMasters());
   router.use("/masters/set", updateMaster());
+  router.use("/translator", languageTranslator());
 });
 
 export default router;
