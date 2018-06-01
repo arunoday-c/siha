@@ -13,7 +13,8 @@ import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 class BusinessSetup extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageDisplay: "DeptMaster", sidBarOpen: false };
+
+    this.state = { pageDisplay: "DeptMaster", sidBarOpen: true };
   }
 
   openTab(e) {

@@ -1,11 +1,11 @@
 import pad from "node-string-pad";
 import config from "../keys/keys";
-import fileBase64 from "file-base64";
+import multer from "multer";
 import extend from "extend";
 import path from "path";
 import mkdirp from "mkdirp";
 import { logger, debugFunction, debugLog } from "./logging";
-
+import { LINQ } from "node-linq";
 let paging = options => {
   let pageLimit = options.paging.pageNo * options.paging.pageSize;
   return {
@@ -67,12 +67,14 @@ let deleteRecord = (
   isreleaseConnection
 ) => {
   isreleaseConnection = isreleaseConnection || false;
+  debugFunction("deleteRecord");
   let db = options.db;
   db.getConnection((error, connection) => {
     let sqlQuery =
       "select distinct table_name,column_name from information_schema.KEY_COLUMN_USAGE \
       where constraint_schema=? \
       and REFERENCED_TABLE_NAME=?";
+    debugLog("Sql Query : " + sqlQuery);
     connection.query(
       sqlQuery,
       [config.mysqlDb.database, options.tableName],
@@ -86,6 +88,7 @@ let deleteRecord = (
         }
         let records = "";
         let values = [];
+        debugLog("Existing table length : " + tables.length);
         for (var i = 0; i < tables.length; i++) {
           records +=
             "SELECT COUNT(*) CNT FROM " +
@@ -96,6 +99,7 @@ let deleteRecord = (
             "=?;";
           values.push(options.id);
         }
+        debugLog("rexords Query : " + records);
         connection.query(records, values, (error, result) => {
           if (error) {
             if (isreleaseConnection) connection.release();
@@ -277,66 +281,61 @@ let releaseDBConnection = (pool, connection) => {
     connection.release();
   }
 };
-//from base64 decode to a file
-let base64DecodeToFile = options => {
-  debugFunction("base64DecodeToFile");
-  let settings = extend(
-    {
-      isPatient: true,
-      code: "",
-      file: "",
-      base64String: "",
-      callBack: null
-    },
-    options
-  );
-  var appendFolder = "/Patients/";
-  if (!settings.isPatient) appendFolder = "/Employees/";
-  let folderDir = (
-    config.documentFolderPath +
-    appendFolder +
-    settings.code
-  ).trim();
-  debugLog(folderDir);
-  //logger,debugFunction,debugLog
-
-  let fullDocPath = path.join(__dirname, folderDir);
-  debugLog("DocumentPath" + fullDocPath);
-  mkdirp(fullDocPath, error => {
-    if (error) logger.log("error %j", error);
-    else {
-      debugLog("Document folder created successfully");
-      fileBase64.decode(
-        settings.base64String,
-        fullDocPath + "/" + settings.file,
-        (error, output) => {
-          if (typeof settings.callBack == "function")
-            settings.callBack(error, output);
-        }
-      );
+//Upload and Downloading files via multer Configuration
+var storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    let fullFolderName = req.folderPath;
+    let fileName = "";
+    logger.log("info", "after Split %s", file.fieldname);
+    let splitFiledName = file.fieldname.split("_");
+    if (splitFiledName != null) {
+      logger.log("info", "after Split %j", splitFiledName);
+      if (splitFiledName.length > 1) {
+        fullFolderName += "/" + splitFiledName[1];
+        fileName = "_" + splitFiledName[splitFiledName.length - 1];
+      }
+    } else {
+      fileName = "_" + file.fieldname;
     }
+    debugLog("Field Name : " + file.fieldname + " File Name : " + fileName);
+    req.fullFolderPath = fullFolderName;
+    req.newFileName = req.fileName + fileName;
+    mkdirp(req.fullFolderPath, error => {
+      if (error) logger.log("error", "Directory creation error: %j ", error);
+      else {
+        debugLog("Path setting in multer " + req.fullFolderPath);
+        cb(null, req.fullFolderPath);
+      }
+    });
+  },
+  filename: function(req, file, cb) {
+    const pathDeclare = require("path");
+    debugLog(
+      "File Name : " + req.newFileName + pathDeclare.extname(file.originalname)
+    );
+    cb(null, req.newFileName + pathDeclare.extname(file.originalname));
+  }
+});
+var upload = multer({ storage: storage });
+//End multer configuration.
+//Upload file via multer
+let uploadFile = (req, res, callBack) => {
+  debugFunction("Inside File Uplaod");
+  upload(req, res, error => {
+    if (error) {
+      logger.log("error", "%j", error);
+    }
+    callBack(error, req);
   });
 };
-//from base64 encode to a file
-let base64EncodeToFile = options => {
-  let settings = extend(
-    {
-      file: "",
-      callBack: null
-    },
-    options
-  );
-  let fullDocPath = path.join(
-    __dirname,
-    config.documentFolderPath + "/" + settings.file
-  );
-  fileBase64.encode(fullDocPath, (error, output) => {
-    if (typeof settings.callBack == "function")
-      settings.callBack(error, output);
+//Download file via multer
+let downloadFile = (req, res, callBack) => {
+  upload(req, res, error => {
+    if (error) {
+      logger.log("error", "Image getting error : %j", error);
+    }
+    callBack(error, req);
   });
-};
-let updateApplicationObject = (key, value) => {
-  applicationObject;
 };
 
 module.exports = {
@@ -348,6 +347,6 @@ module.exports = {
   runningNumber,
   deleteRecord,
   releaseDBConnection,
-  base64DecodeToFile,
-  base64EncodeToFile
+  uploadFile,
+  downloadFile
 };

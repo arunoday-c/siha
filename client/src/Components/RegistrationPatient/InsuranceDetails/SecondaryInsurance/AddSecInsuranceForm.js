@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
 import TextField from 'material-ui/TextField';
 import Dropzone from 'react-dropzone';
-// import styles from "./SecondaryInsurance.css";
-// import style from "./../../../../styles/site.css";
+import "./SecondaryInsurance.css";
+import "./../../../../styles/site.css";
 
 const FORMAT_DEFAULT = [
     { name: 'CSV', value: 0 },

@@ -40,6 +40,11 @@ export default class AddBillingForm extends Component{
 							<label>BILL NUMBER<mark>*</mark></label><br />
 							<TextField disabled={true}/>
 						</div>
+
+						<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
+							<label>BILL DATE<mark>*</mark></label><br />
+							<TextField type="date" disabled={true}/>
+						</div>
 					</div>
 					<div className="row form-details">
 						<div className="table-responsive">
@@ -51,8 +56,7 @@ export default class AddBillingForm extends Component{
 										<th scope="col">SERVICE TYPE</th>
 										<th scope="col">BILL NO.</th>
 										<th scope="col">DEPARTMENT</th>
-										<th scope="col">IN-CHARGE/PROVIDER</th>										
-										<th scope="col">BILL DATE</th>
+										<th scope="col">IN-CHARGE/PROVIDER</th>
 										<th scope="col">ADV. FEE</th>	
 										<th scope="col">CONSULT FEE</th>
 										<th scope="col">DISCOUNT%</th>

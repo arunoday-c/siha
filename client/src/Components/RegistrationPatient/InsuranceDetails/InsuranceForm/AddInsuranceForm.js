@@ -3,8 +3,8 @@ import React, { Component } from "react";
 import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
 import TextField from 'material-ui/TextField';
 import Dropzone from 'react-dropzone';
-// import styles from "./InsuranceForm.css";
-// import style from "./../../../../styles/site.css";
+import "./InsuranceForm.css";
+import "./../../../../styles/site.css";
 
 const FORMAT_DEFAULT = [
     { name: 'CSV', value: 0 },
@@ -44,7 +44,7 @@ export default class AddInsuranceForm extends Component{
 		return (
 			<div className="htpl-phase1-primary-insurance-form">
 				<div className="container-fluid">
-						<div className="row form-details">
+						<div className="row">
 							<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 ">
 							<label>INSURANCE<mark>*</mark></label><br />
 							<div className="row">
@@ -85,7 +85,7 @@ export default class AddInsuranceForm extends Component{
 							</div>
 						</div>
 
-						<div className="row form-details">
+						<div className="row">
 							<div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
 								<label>STRAT DATE<mark>*</mark></label><br />
 								<TextField

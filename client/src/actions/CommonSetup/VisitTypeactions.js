@@ -6,7 +6,6 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getVisittypes() {
 	return function(dispatch) {
-        //debugger;
 
         algaehApiCall({
             uri: "/visitType/get",                        

@@ -5,8 +5,9 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 
 export function getStates() {
-	return function(dispatch) {
-        //debugger;
+    // debugger;
+	return function(dispatch, getState) {
+        
         algaehApiCall({
             uri: "/masters/get/state",                        
             method:"GET",
@@ -27,5 +28,6 @@ export function getStates() {
                 })
             }
         });		
+        console.log("State",getState());
 	}
 }

@@ -14,7 +14,7 @@ class CommonSetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "PatientType", sidBarOpen: false };
+    this.state = { pageDisplay: "PatientType", sidBarOpen: true };
   }
 
   openTab(e) {

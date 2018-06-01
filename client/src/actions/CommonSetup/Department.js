@@ -6,7 +6,6 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getDepartments() {
 	return function(dispatch) {
-        //debugger;
 
         algaehApiCall({
             uri: "/department/get",            
@@ -33,8 +32,7 @@ export function getDepartments() {
 
 export function getSubDepartments(datavalue) {
 	return function(dispatch) {
-        debugger;
-
+        
         algaehApiCall({
             uri: datavalue!=null && datavalue!=""? ("/department/get/subdepartment?department_id="+datavalue) : "/department/get/subdepartment" ,
             method:"GET",

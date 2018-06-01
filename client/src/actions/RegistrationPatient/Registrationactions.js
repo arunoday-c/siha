@@ -6,29 +6,38 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function postPatientDetails(dataValue, callback) {
     callback = callback || null;
-	return function(dispatch) {
+    
+    return function(dispatch) {
         debugger;
-
-        algaehApiCall({
-            uri: "/frontDesk/add",                    
-            method:"POST",
-            data : dataValue,
-            onSuccess: response => {
-              if (response.data.success === true) {
-                console.log("Id Types", response.data);
-               
-              } else {
-                console.log("Id Types", response.data);
-              }
-              if (typeof callback === "function") {
-                callback(response.data.records);
-              }
-            },
-            onFailure: error => {
-                console.log(error);
-            }
-        });
-	}
+        if(callback === null)
+        {
+            dispatch({
+                type: "PAT_GET_DATA", payload: dataValue
+            })
+        }
+        else{
+            algaehApiCall({
+                uri: "/frontDesk/add",                    
+                method:"POST",
+                data : dataValue,
+                onSuccess: response => {
+                if (response.data.success === true) {
+                    console.log("Id Types", response.data);
+                
+                } else {
+                    console.log("Id Types", response.data);
+                }
+                if (typeof callback === "function") {
+                    callback(response.data.records);
+                }
+                },
+                onFailure: error => {
+                    console.log(error);
+                }
+            });
+        }
+    }    
+        
 }
 
 export function getPatientDetails(dataValue) {

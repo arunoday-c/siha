@@ -18,6 +18,7 @@ export function algaehApiCall(options) {
     },
     options
   );
+  // debugger;
   if (settings.uri != null || settings.uri != "") {
     axios({
       method: settings.method,
@@ -61,7 +62,7 @@ export function SelectFiledData(options) {
 }
 
 export function isDateFormat(options, isSend) {
-  debugger;
+  // debugger;
   isSend = isSend || false;
   var returnString = "";
   var defOpt = defaultOptions();

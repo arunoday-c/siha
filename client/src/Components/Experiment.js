@@ -7,18 +7,7 @@ import {
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from "material-ui/Dialog";
-import Slide from "material-ui/transitions/Slide";
-import { Button } from "material-ui";
-
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
+import Button from "material-ui/Button";
 
 class Experiment extends Component {
   constructor(props) {

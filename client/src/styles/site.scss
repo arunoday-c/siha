@@ -5,9 +5,9 @@
       font-weight: normal;
       border-radius: 0px;
       background-color: #f3f3f3;
-      border: solid 1px #d0d8dc;
+      // border: solid 1px #d0d8dc;
       color: #7c909b;
-      padding: 6px 10px;
+      padding: 5px 15px;
       cursor: pointer;
       border-top-right-radius: 5px;
       border-top-left-radius: 5px;
@@ -25,28 +25,30 @@
         color: #fff;
         pointer-events: none;
 
-        &:hover {
-          background-color: #dbad64 !important;
-          color: #fff !important;
+        &.active {
+          background-color: #dbad64;
+          color: #fff;
+          pointer-events: none;
+
+          &:hover {
+            background-color: #dbad64 !important;
+            color: #fff !important;
+          }
         }
       }
-    }
 
-    .tab {
-      margin-right: -30px;
-      &:last-child {
-        .tab-button {
-          //border-radius: 0px;
-          //border-top-right-radius: 4px;
+      .tab {
+        margin-right: -30px;
+        &:last-child {
+          .tab-button {
+            //border-radius: 0px;
+            //border-top-right-radius: 4px;
+          }
         }
       }
-    }
-    .tab-content {
-      padding: 10px 20px;
-      background-color: #fcfcfc;
-      border: solid 1px #eceff1;
-
-      .tab-item {
+      .image-drop-area {
+        border: 1px solid #93a4ad;
+        min-height: 137px;
         position: relative;
       }
     }
