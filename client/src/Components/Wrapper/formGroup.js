@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { TextField } from "material-ui";
 import NumberFormat from "react-number-format";
-import $ from "jquery";
 import "./wrapper.css";
+import Label from "../Wrapper/label";
 export default class FormGroup extends Component {
   constructor(props) {
     super(props);
@@ -13,18 +13,6 @@ export default class FormGroup extends Component {
     };
   }
 
-  getTargetLanguage = (fieldName, callBack) => {
-    if (fieldName != null && fieldName != "") {
-      let fileImport = "./languages/" + this.props.language.fileName + ".json";
-
-      $.getJSON(fileImport, data => {
-        callBack(data[fieldName]);
-        return;
-      });
-    } else {
-      console.error("Label is missing with 'fieldName'");
-    }
-  };
   important = () => {
     if (this.props.label.isImp != null && this.props.label.isImp == true) {
       return <span className="imp">&nbsp;*</span>;
@@ -32,17 +20,13 @@ export default class FormGroup extends Component {
       return null;
     }
   };
+
   labelRender = () => {
-    if (this.props.label != null) {
-      return (
-        <label>
-          {this.state.languageBind}
-          {this.important()}
-        </label>
-      );
-    } else {
-      return null;
-    }
+    return (
+      <Label
+        label={this.props.label}
+      />
+    );
   };
 
   textBoxRender = () => {
@@ -50,6 +34,7 @@ export default class FormGroup extends Component {
       if (this.props.textBox.decimal != null) {
         return (
           <NumberFormat
+            name={this.props.textBox.name}
             customInput={TextField}
             thousandSeparator={
               this.props.textBox.decimal.thousandSeparator == null
@@ -87,6 +72,7 @@ export default class FormGroup extends Component {
       } else if (this.props.textBox.number != null) {
         return (
           <NumberFormat
+            name={this.props.textBox.name}
             customInput={TextField}
             thousandSeparator={
               this.props.textBox.number.thousandSeparator == null
@@ -114,6 +100,7 @@ export default class FormGroup extends Component {
       } else if (this.props.textBox.mask != null) {
         return (
           <NumberFormat
+            name={this.props.textBox.name}
             customInput={TextField}
             onValueChange={
               this.props.textBox.events != null
@@ -129,6 +116,7 @@ export default class FormGroup extends Component {
       } else {
         return (
           <TextField
+            name={this.props.textBox.name}
             className={this.props.textBox.className}
             value={this.props.textBox.value}
             label={this.state.textLanguageBind}
@@ -145,19 +133,6 @@ export default class FormGroup extends Component {
       return null;
     }
   };
-  componentWillMount() {
-    if (this.props.label != null) {
-      this.getTargetLanguage(this.props.label.fieldName, data => {
-        this.setState({ languageBind: data });
-      });
-    } else {
-      if (this.props.textBox.label != null) {
-        this.getTargetLanguage(this.props.textBox.label.fieldName, data => {
-          this.setState({ textLanguageBind: data });
-        });
-      }
-    }
-  }
   render() {
     return (
       <div className={this.props.div.className}>

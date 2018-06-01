@@ -138,6 +138,10 @@
       "english": "Maternity Patient",
       "target": "مريض الولادة"
     },
+    "is_mlc":{
+        "english": "Is MLC",
+        "target": "هو MLC"
+    },
     "mlc_accident_reg_no": {
       "english": "Accident Registration Number",
       "target": "رقم تسجيل الحوادث"
@@ -218,6 +222,11 @@
     "form_no": { 
         "english": "No", 
         "target": "لا" 
+    },
+
+    "attach_photo":{
+        "english": "Attach Photo", 
+        "target":"إرفاق صورة"
     }
 
 }

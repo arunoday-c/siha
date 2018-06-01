@@ -33,6 +33,7 @@
   "department_id": "قسم الإدارة",
   "doctor_id": "دكتور",
   "maternity_patient": "مريض الولادة",
+  "is_mlc": "هو MLC",
   "mlc_accident_reg_no": "رقم تسجيل الحوادث",
   "mlc_police_station": "اسم مركز الشرطة",
   "mlc_wound_certified_date": "تاريخ معتمد للجرح",
@@ -52,5 +53,7 @@
   "form_home": "الصفحة الرئيسية",
   "form_create": "خلق جديد إبداع جديد",
   "form_yes": "نعم فعلا",
-  "form_no": "لا"
+  "form_no": "لا",
+  "hijiri_date":"التاريخ الهجري",
+  "attach_photo":"إرفاق صورة"
 }

@@ -4,6 +4,8 @@ import React, { Component } from "react";
 import Paper from 'material-ui/Paper';
 import ConsultationForm from "./ConsultationForm/ConsultationForm.js";
 import MLCPatient from "./MLCPatient/MLCPatient.js";
+import AlgaehLabel from "../../Wrapper/label.js";
+
 export default class ConsultationDetails extends Component{
 		constructor(props){
 		super(props);
@@ -47,20 +49,28 @@ export default class ConsultationDetails extends Component{
 				<div className="tab-container toggle-section">
 					<ul className="nav">
 						<li className={"nav-item tab-button " + ConsultationDetails} onClick={this.openTab.bind(this, "Consultation-details")}>
-							Consultation Details
+							{<AlgaehLabel
+								label={{
+									fieldName: "tab_condtls",
+								}}
+							/>}
 						</li>
 						<li className={"nav-item tab-button " + MlcDesign} onClick={this.openTab.bind(this, "Mlc-details")}>
-							MLC Patient
+							{<AlgaehLabel
+								label={{
+									fieldName: "tab_mlcpat",
+								}}
+							/>}
 						</li>
 					</ul>
 				</div>
 				<div className="consultation-section">
 					{(this.state.actionConsultationDetails)?
-					<ConsultationForm visitcode = {this.state.visitcode}/>:
+						<ConsultationForm PatRegIOputs={this.props.PatRegIOputs}/>:
 					null}
 					{(this.state.actionMlcDesign)?
 					null:
-						<MLCPatient />}
+						<MLCPatient PatRegIOputs={this.props.PatRegIOputs}/>}
 				</div>
 			</div>
 		);

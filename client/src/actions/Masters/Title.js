@@ -14,11 +14,9 @@ export function getTitles() {
               if (response.data.success == true) {
                 dispatch({
                     type: "TITLE_GET_DATA", payload: response.data.records
-                })               
-                console.log("Take me to Home");
-                //window.location.hash("/DeptMaster");
+                })                
               } else {
-                console.log("No not now");
+                // console.log("No not now");
               }
             },
             onFailure: error => {

@@ -1,5 +1,6 @@
 import React, { Component, PureComponent } from "react";
 import "./breadcrumb.css";
+import AlgaehLabel from "../../Wrapper/label.js";
 
 const CREATE_PATIENT = [
   { label: "Yes", value: "Y" },
@@ -24,7 +25,7 @@ class BreadCrumb extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps){
-		debugger;
+		// debugger;
 		this.setState({
       ctrlCode:nextProps.ctrlCode,
       ctrlDate:nextProps.ctrlDate
@@ -53,7 +54,11 @@ class BreadCrumb extends PureComponent {
                   <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                       <li className="breadcrumb-item">
-                        <a href="#">Home</a>
+                        <a href="#">{<AlgaehLabel
+                                      label={{
+                                        fieldName: "form_home",
+                                      }}
+                                    />}</a>
                       </li>
                       <li
                         className="breadcrumb-item active"
@@ -70,7 +75,11 @@ class BreadCrumb extends PureComponent {
                     <div className="row">
                       <div className="col-lg-2">
                         <div className="form-group">
-                          <label>Create New</label>
+                          {<AlgaehLabel
+                            label={{
+                              fieldName: "form_create",
+                            }}
+                          />}
                           <div>
                             <div className="row">
                               {CREATE_PATIENT.map((data, idx) => {
@@ -84,13 +93,8 @@ class BreadCrumb extends PureComponent {
                                       name="CREATE_PATIENT"
                                       className="htpl-phase1-radio-btn"
                                       value={data.value}
-                                      onChange={this.selectedValue.bind(
-                                        this,
-                                        data.value
-                                      )}
-                                      defaultChecked={
-                                        data.value === "Y" ? true : false
-                                      }
+                                      onChange={this.selectedValue.bind(this,data.value)}
+                                      defaultChecked={data.value === "Y" ? true : false}
                                     />
                                     <label className="radio-design">
                                       {data.label}
@@ -131,7 +135,7 @@ class BreadCrumb extends PureComponent {
                       </div>
                       <div className="col-lg-3">
                         <div className="form-group">
-                          <label>{this.props.dateLabel} Date</label>
+                          <label>{this.props.dateLabel}</label>
                           <input
                               type="date"
                               className="form-control"

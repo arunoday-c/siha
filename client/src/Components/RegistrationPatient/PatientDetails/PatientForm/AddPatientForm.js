@@ -1,52 +1,35 @@
 import React, { Component } from "react";
-import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
-import TextField from "material-ui/TextField";
-import  "./PatientForm.css";
+import "./PatientForm.css";
 import Dropzone from "react-dropzone";
-import { getTitles } from "../../../../actions/Masters/Title.js";
-import { getCountries } from "../../../../actions/Masters/Country.js";
-import { getNationalities } from "../../../../actions/Masters/Nationality.js";
-import { getIDTypes } from "../../../../actions/CommonSetup/IDType.js";
-import { getRelegion } from "../../../../actions/Masters/Relegion.js";
-import { getCities } from "../../../../actions/Masters/City.js";
-import { getStates } from "../../../../actions/Masters/State.js";
+import { getTitles, getCountries, getNationalities,
+  getIDTypes, getRelegion, getCities, getStates } from "../../../../actions/masterActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { SelectFiledData } from "../../../../utils/algaehApiCall.js";
 import extend from "extend";
 import { AddPatientHandlers } from "./AddPatientDetails.js";
 import { createStore } from "redux";
 import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
-import Button from "material-ui/Button";
 import MyContext from "../../../../utils/MyContext.js";
-import frontLanguage from "../../Language.json";
 import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
 import AHSnackbar from "../../../common/Inputs/AHSnackbar.js";
+import { AlgaehDateHandler,  AlagehFormGroup, AlgaehLabel, AlgaehSelector}  from "../../../Wrapper/algaehWrapper";
+import {FORMAT_MARTIALSTS, FORMAT_GENDER} from "../../../../utils/GlobalFunctions"
 
-const FORMAT_MARTIALSTS = [
-  { name: "Married", value: "Married" },
-  { name: "Single", value: "Single" },
-  { name: "Divorced", value: "Divorced" },
-  { name: "Widowed", value: "Widowed" }
-];
-
-const FORMAT_GENDER = [
-  { name: "Male", value: "Male" },
-  { name: "Female", value: "Female" },
-  { name: "Others", value: "Others" }
-];
+const MobileFormat = "+91 (###)-## #####";
 
 class AddPatientForm extends Component {
   constructor(props) {
-    super(props);   
-    // debugger; 
-    let InputOutput = this.props.PatRegIOputs;
+    super(props);    
+    let InputOutput;
 
-		if(this.props.patients.length > 0){
-			InputOutput = PatRegIOputs.inputParam(this.props.patients[0]);
+    if (this.props.patients.length > 0) {
+      InputOutput = this.props.patients[0];      
     }
-    
+    else{
+      InputOutput = this.props.PatRegIOputs;
+    }
+
     this.state = extend({
         value: "",
         file: {
@@ -60,10 +43,11 @@ class AddPatientForm extends Component {
         DOBErrorMsg: "",
         DOBError: false,
         DOB: 0,
-        targetLanguage: "English",
+        CurrentDate: new Date(),
       },
       InputOutput
     );
+    
     this.widthImg = "";
     this.widthDate = "";
     this.innerContext = {};    
@@ -72,11 +56,12 @@ class AddPatientForm extends Component {
   componentWillUpdate(nextProps, nextState) {
     var width = document.getElementById("attach-width").offsetWidth;
     this.widthImg = width + 1;
-    var widthDate = document.getElementById("widthDate").offsetWidth;
-    this.widthDate = widthDate;	
+    // var widthDate = document.getElementById("widthDate").offsetWidth;
+    // this.widthDate = widthDate;
   }
 
-  componentDidMount() {
+  componentDidMount() 
+  {
     if (this.props.titles.length === 0) {
       this.props.getTitles();
     }
@@ -86,7 +71,7 @@ class AddPatientForm extends Component {
     if (this.props.idtypes.length === 0) {
       this.props.getIDTypes();
     }
-    
+
     if (this.props.relegions.length === 0) {
       this.props.getRelegion();
     }
@@ -99,469 +84,481 @@ class AddPatientForm extends Component {
     if (this.props.countrystates.length === 0) {
       this.props.getStates();
     }
-    // debugger;
-    // if(this.props.patients.length > 0){
-		// 	this.setState(PatRegIOputs.inputParam(this.props.patients[0]));
-    // }
+    this.setState({...this.state});
   }
 
-  componentWillReceiveProps(nextProps){    
-    if(nextProps.patients.length >0 )
-    {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.patients.length > 0) {
+      this.setState(nextProps.PatRegIOputs);
       this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
-    }		  
+    }
   }
-  
-  numInput(e) {
-    // debugger;     
+
+  numInput(e) {    
     var inputKeyCode = e.keyCode ? e.keyCode : e.which;
     console.log("Show my data-", inputKeyCode);
     if (inputKeyCode !== null) {
-        if (inputKeyCode >= 48 && inputKeyCode <= 57)
-        {
-          
-        }
-        else{
-          e.preventDefault();
-        } 
-    }    
+      if (inputKeyCode >= 48 && inputKeyCode <= 57) {
+      } else {
+        e.preventDefault();
+      }
+    }
   }
+
 
   render() {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (			
-            <div className="hptl-phase1-add-patient-form">				
+          {context => (            
+            <div className="hptl-phase1-add-patient-form">              
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 primary-details">
-                    <div className="row primary-box-container">
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          {this.state.targetLanguage == "English"
-                          ? frontLanguage.title_id.english
-                          : frontLanguage.title_id.target}<mark>*</mark>
-                        </label>
-                        <br />
-                        <SelectFieldDrop
-                          children={SelectFiledData({
+                    <div className="row primary-box-container">                      
+                      <AlgaehSelector
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "title_id",                          
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "title_id",
+                          className: "select-fld",
+                          value: this.state.title_id,
+                          dataSource: {
                             textField: "title",
                             valueField: "his_d_title_id",
-                            payload: this.props.titles
-                          })}
-                          selected={AddPatientHandlers(this, context).titlehandle.bind(this)}
-                          displayValue={this.state.title_id}
-                          width="100%"
-                        />
-                      </div>
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          {this.state.targetLanguage == "English"
-                          ? frontLanguage.first_name.english
-                          : frontLanguage.first_name.target}<mark>*</mark>
-                        </label>
-                        <br />
-                        <TextField
-                          className="text_field"
-                          name="first_name"
-                          onChange={AddPatientHandlers(this, context).texthandle.bind(this) }						  
-                          value={this.state.first_name}
-                          ref = {(value)=>{this.first_name=value}}                          
-                        />
-                      </div>
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          MIDDLE NAME<mark>*</mark>
-                        </label>
-                        <br />
-                        <TextField
-                          className="text_field"
-                          name="middle_name"
-                          onChange={AddPatientHandlers(this, context).texthandle.bind(
-                            this
-                          )}
-                          value={this.state.middle_name}
-                        />
-                      </div>
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          LAST NAME<mark>*</mark>
-                        </label>
-                        <br />
-                        <TextField
-                          className="text_field"
-                          name="last_name"
-                          onChange={AddPatientHandlers(this, context).texthandle.bind(
-                            this
-                          )}
-                          value={this.state.last_name}
-                        />
-                      </div>
+                            data: this.props.titles
+                          },                          
+                          onChange: AddPatientHandlers(this,context).titlehandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "first_name",
+                          isImp: true,                          
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "first_name",
+                          value: this.state.first_name,
+                          events: {
+                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                          }
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "middle_name",
+                          isImp: true,                          
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "middle_name",
+                          value: this.state.middle_name,
+                          events: {
+                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                          }
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "last_name",
+                          isImp: true,                          
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "last_name",
+                          value: this.state.last_name,
+                          events: {
+                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                          }
+                        }}
+                      />
                     </div>
                     <div className="row primary-box-container">
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          GENDER<mark>*</mark>
-                        </label>
-                        <br />
-                        <SelectFieldDrop
-                          children={FORMAT_GENDER}
-                          selected={AddPatientHandlers(this, context).genderhandle.bind(
-                            this
-                          )}
-                          displayValue={this.state.gender}
-                          width="180px"
-                        />
-                      </div>
+                      <AlgaehSelector
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "gender",                          
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "gender",
+                          className: "select-fld",
+                          value: this.state.gender,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: FORMAT_GENDER
+                          },
+                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-1", id: "widthDate" }}
+                        label={{
+                          fieldName: "age",
+                          isImp: true,                          
+                        }}
+                        textBox={{
+                          value: this.state.age,
+                          className: "txt-fld",
+                          name: "age",
+                          number: {
+                            thousandSeparator: ","
+                          },
+                          events: {
+                            onChange: AddPatientHandlers(this,context).SetAge.bind(this)
+                          }
+                        }}
+                      />
 
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 row">
-                        <div
-                          className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4"
-                          id="widthDate"
-                        >
-                          <label>
-                            AGE<mark>*</mark>
-                          </label>
-                          <br />
-                          <TextField
-                            className="text_field centerAlign"
-                            placeholder="YYYY"
-                            value={this.state.age}
-                            style={{ width: "100%" }}
-                            name="age"
-                            onChange={AddPatientHandlers(this, context).SetAge.bind(
-                              this
-                            )}
-                            onKeyPress={this.numInput.bind(this)}
-                            // type="number"
-                          />
-                        </div>
-                        <div
-                          className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4"
-                          id="widthDate"
-                          style={{ position: "relative", top: "29px" }}
-                        >
-                          <TextField
-                            className="text_field centerAlign"
-                            placeholder="MM"
-                            value={this.state.AGEMM}
-                            style={{ width: "100%" }}
-                            name="AGEMM"
-                            onChange={AddPatientHandlers(this, context).SetAge.bind(
-                              this
-                            )}
-                            onKeyPress={this.numInput.bind(this)}
-                            // type="number"
-                          />
-                        </div>
-                        <div
-                          className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4"
-                          id="widthDate"
-                          style={{ position: "relative", top: "29px" }}
-                        >
-                          <TextField
-                            className="text_field centerAlign"
-                            placeholder="DD"
-                            value={this.state.AGEDD}
-                            style={{ width: "100%" }}
-                            name="AGEDD"
-                            onChange={AddPatientHandlers(this, context).SetAge.bind(
-                              this
-                            )}
-                            onKeyPress={this.numInput.bind(this)}
-                            // type="number"
-                          />
-                        </div>
-                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-1", id: "widthDate" }}
+                        label={{
+                          fieldName: "AGEMM",
+                          forceLabel: "&nbsp;",
+                          isImp: false,                          
+                        }}
+                        textBox={{
+                          value: this.state.AGEMM,
+                          className: "txt-fld",
+                          name: "AGEMM",
+                          number: {
+                            thousandSeparator: ","
+                          },
+                          events: {
+                            onChange: AddPatientHandlers(this,context).SetAge.bind(this)
+                          }
+                        }}
+                      />
 
-                      <div
-                        className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3"
-                        style={{ position: "relative", left: "29px" }}
-                      >
-                        <label>
-                          MARTIAL STATUS<mark>*</mark>
-                        </label>
-                        <br />
-                        <SelectFieldDrop
-                          children={FORMAT_MARTIALSTS}
-                          selected={AddPatientHandlers(this, context).martialhandle.bind(
-                            this
-                          )}
-                          displayValue={this.state.marital_status}
-                          width="180px"
-                        />
-                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-1", id: "widthDate" }}
+                        label={{
+                          fieldName: "AGEDD",
+                          forceLabel: "&nbsp;",
+                          isImp: false,                          
+                        }}
+                        textBox={{
+                          value: this.state.AGEDD,
+                          className: "txt-fld",
+                          name: "AGEDD",
+                          number: {
+                            thousandSeparator: ","
+                          },
+                          events: {
+                            onChange: AddPatientHandlers(this,context).SetAge.bind(this)
+                          }
+                        }}
+                      />
 
-                      <div
-                        className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3"
-                        style={{ position: "relative", left: "29px" }}
-                      >
-                        <label>
-                          RELIGION<mark>*</mark>
-                        </label>
-                        <br />
-                        <SelectFieldDrop
-                          children={SelectFiledData({
+                      <AlgaehSelector
+                        div={{
+                          className:
+                            "col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3"
+                        }}
+                        label={{
+                          fieldName: "marital_status",                        
+                          isImp: false
+                        }}
+                        selector={{
+                          name: "marital_status",
+                          className: "select-fld",
+                          value: this.state.marital_status,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: FORMAT_MARTIALSTS
+                          },
+                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                        }}
+                      />
+
+                      <AlgaehSelector
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "religion_id",                          
+                          isImp: false
+                        }}
+                        selector={{
+                          name: "religion_id",
+                          className: "select-fld",
+                          value: this.state.religion_id,
+                          dataSource: {
                             textField: "religion_name",
                             valueField: "hims_d_religion_id",
-                            payload: this.props.relegions
-                          })}
-                          selected={AddPatientHandlers(this, context).relegionshandle.bind(this)}
-                          displayValue={this.state.religion_id}
-                          width="180px"
-                        />
-                      </div>
+                            data: this.props.relegions
+                          },
+                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                        }}
+                      />
                     </div>
+
                     <div className="row primary-box-container">
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          MOBILE NUMBER<mark>*</mark>
-                        </label>
-                        <br />
-                        <TextField
-                          className="text_field"
-                          name="contact_number"
-                          onChange={AddPatientHandlers(this, context).texthandle.bind(
-                            this
-                          )}
-                          value={this.state.contact_number}
-                          onKeyPress={this.numInput.bind(this)}                          
-                        />
-                      </div>
-                      
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          NATIONALITY<mark>*</mark>
-                        </label>
-                        <br />
-                        <SelectFieldDrop
-                          children={SelectFiledData({
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3", id: "widthDate" }}
+                        label={{
+                          fieldName: "contact_number",
+                          isImp: true,                        
+                        }}
+                        textBox={{
+                          value: this.state.contact_number,
+                          className: "txt-fld",
+                          name: "contact_number",
+                          mask: {
+                            format: MobileFormat
+                          },
+                          events: {
+                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                          }
+                        }}
+                      />
+
+                      <AlgaehSelector
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "nationality_id",                          
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "nationality_id",
+                          className: "select-fld",
+                          value: this.state.nationality_id,
+                          dataSource: {
                             textField: "nationality",
                             valueField: "hims_d_nationality_id",
-                            payload: this.props.nationalities
-                          })}
-                          selected={AddPatientHandlers(this, context).nationalityhandle.bind(this)}
-                          displayValue={this.state.nationality_id}
-                          width="180px"
-                        />
-                      </div>
+                            data: this.props.nationalities
+                          },
+                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "address1",                          
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "address1",
+                          value: this.state.address1,
+                          events: {
+                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                          }
+                        }}
+                      />
 
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          ADDRESS1<mark>*</mark>
-                        </label>
-                        <br />
-                        <TextField
-                          className="text_field"
-                          name="address1"
-                          onChange={AddPatientHandlers(this, context).texthandle.bind(
-                            this
-                          )}
-                          value={this.state.address1}
-                        />
-                      </div>
-
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          ADDRESS2<mark>*</mark>
-                        </label>
-                        <br />
-                        <TextField
-                          className="text_field"
-                          name="address2"
-                          onChange={AddPatientHandlers(this, context).texthandle.bind(
-                            this
-                          )}
-                          value={this.state.address2}
-                        />
-                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "address2",                          
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "address2",
+                          value: this.state.address2,
+                          events: {
+                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                          }
+                        }}
+                      />
                     </div>
-                    <div className="row primary-box-container">                    
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          POSTAL CODE<mark>*</mark>
-                        </label>
-                        <br />
-                        <TextField
-                          className="text_field"
-                          name="postal_code"
-                          onChange={AddPatientHandlers(this, context).texthandle.bind(
-                            this
-                          )}
-                          value={this.state.postal_code}
-                        />
-                      </div>
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          COUNTRY<mark>*</mark>
-                        </label>
-                        <br />
-                        <SelectFieldDrop
-                          children={SelectFiledData({
+                    <div className="row primary-box-container">
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "postal_code",                          
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "postal_code",
+                          value: this.state.postal_code,
+                          events: {
+                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                          }
+                        }}
+                      />
+
+                      <AlgaehSelector
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "country_id",                          
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "country_id",
+                          className: "select-fld",
+                          value: this.state.country_id,
+                          dataSource: {
                             textField: "country_name",
                             valueField: "hims_d_country_id",
-                            payload: this.props.countries,
-                            selectedFiled: this.state.titlelist
-                          })}
-                          selected={AddPatientHandlers(this, context).countrieshandle.bind(this)}
-                          displayValue={this.state.country_id}
-                          width="100%"
-                        />
-                      </div>
+                            data: this.props.countries
+                          },
+                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                        }}
+                      />
 
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          STATE<mark>*</mark>
-                        </label>
-                        <br />
-                        <SelectFieldDrop
-                          children={SelectFiledData({
+                      <AlgaehSelector
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "state_id",                          
+                          isImp: false
+                        }}
+                        selector={{
+                          name: "state_id",
+                          className: "select-fld",
+                          value: this.state.state_id,
+                          dataSource: {
                             textField: "state_name",
                             valueField: "hims_d_state_id",
-                            payload: this.props.countrystates,
-                            selectedFiled: this.state.titlelist
-                          })}
-                          selected={AddPatientHandlers(this, context).statehandle.bind(
-                            this
-                          )}
-                          displayValue={this.state.state_id}
-                          width="100%"
-                        />
-                      </div>
+                            data: this.props.countrystates
+                          },
+                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                        }}
+                      />
 
-                      <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                        <label>
-                          CITY<mark>*</mark>
-                        </label>
-                        <br />
-                        <SelectFieldDrop
-                          children={SelectFiledData({
+                      <AlgaehSelector
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "city_id",                        
+                          isImp: false
+                        }}
+                        selector={{
+                          name: "city_id",
+                          className: "select-fld",
+                          value: this.state.city_id,
+                          dataSource: {
                             textField: "city_name",
                             valueField: "hims_d_city_id",
-                            payload: this.props.cities,
-                            selectedFiled: this.state.titlelist
-                          })}
-                          selected={AddPatientHandlers(this, context).cityhandle.bind(
-                            this
-                          )}
-                          displayValue={this.state.city_id}
-                          width="100%"
-                        />
-                      </div>
+                            data: this.props.cities
+                          },
+                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                        }}
+                      />
+
                     </div>
                   </div>
                   <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 secondary-details">
                     <div className="row secondary-box-container">
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <label>
-                          DATE OF BIRTH<mark>*</mark>
-                        </label>
-                        <br />
-                        <TextField
-                          id="date"
-                          type="date"
-                          onChange={AddPatientHandlers(this, context).CalculateAge.bind(
-                            this
-                          )}
-                          className="text_field"
-                          value={this.state.date_of_birth}                          
+                      <AlgaehDateHandler
+                        div={{className: "col-lg-6"}}
+                        label={{fieldName: "date_of_birth", isImp: true}}
+                        textBox={{className: "txt-fld"}}
+                        maxDate={this.state.CurrentDate}                        
+                        events={{onChange: AddPatientHandlers(this,context).CalculateAge.bind(this)}}
+                        value={this.state.date_of_birth}
+                      />
+                      
+                      <AlgaehDateHandler
+                        div={{className: "col-lg-6"}}
+                        label={{fieldName: "hijiri_date", isImp: true}}
+                        textBox={{className: "txt-fld"}}
+                        maxDate={this.state.CurrentDate}                        
+                        // events={{onChange: AddPatientHandlers(this,context).CalculateAge.bind(this)}}
+                        value={this.state.hijiri_date}
+                      />
+                      {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "hijiri_date",
+                            isImp: false,                            
+                          }}
                         />
-                      </div>
-
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <label>
-                          HIJIRI DATE<mark>*</mark>
-                        </label>
                         <br />
                         <TextField
                           id="date"
                           type="date"
-                          onChange={AddPatientHandlers(this, context).CalculateAge.bind(
-                            this
-                          )}
+                          onChange={AddPatientHandlers(this,context).CalculateAge.bind(this)}
                           className="text_field"
                           value={this.state.date_of_birth}
-                          // error={this.state.DOBError}
-                          // helperText={this.state.DOBErrorMsg}
                         />
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="row secondary-box-container">
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <label>
-                          PRIMARY ID TYPE<mark>*</mark>
-                        </label>
-                        <br />
-                        <SelectFieldDrop
-                          children={SelectFiledData({
+                      <AlgaehSelector
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          fieldName: "primary_identity_id",                          
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "primary_identity_id",
+                          className: "select-fld",
+                          value: this.state.primary_identity_id,
+                          dataSource: {
                             textField: "identity_document_name",
                             valueField: "hims_d_identity_document_id",
-                            payload: this.props.idtypes
-                          })}
-                          selected={AddPatientHandlers(this, context).primaryidhandle.bind(this)}
-                          displayValue={this.state.primary_identity_id}
-                          width="180px"
-                        />
-                      </div>
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <label>
-                          PRIMARY ID NO<mark>*</mark>
-                        </label>
-                        <br />
-                        <TextField
-                          className="text_field"
-                          name="primary_id_no"
-                          onChange={AddPatientHandlers(this, context).texthandle.bind(
-                            this
-                          )}
-                          value={this.state.primary_id_no}
-                        />
-                      </div>
+                            data: this.props.idtypes
+                          },
+                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                        }}
+                      />                      
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          fieldName: "primary_id_no",
+                          isImp: true,                          
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "primary_id_no",
+                          value: this.state.primary_id_no,
+                          events: {
+                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                          }
+                        }}
+                      />
                     </div>
                     <div className="row secondary-box-container">
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <label>
-                          SEC. ID TYPE<mark>*</mark>
-                        </label>
-                        <br />
-                        <SelectFieldDrop
-                          children={SelectFiledData({
+                      <AlgaehSelector
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          fieldName: "secondary_identity_id",                          
+                          isImp: false
+                        }}
+                        selector={{
+                          name: "secondary_identity_id",
+                          className: "select-fld",
+                          value: this.state.secondary_identity_id,
+                          dataSource: {
                             textField: "identity_document_name",
                             valueField: "hims_d_identity_document_id",
-                            payload: this.props.idtypes
-                          })}
-                          selected={AddPatientHandlers(
-                            this
-                          ).secondryidhandle.bind(this)}
-                          displayValue={this.state.secondary_identity_id}
-                          width="180px"
-                        />
-                      </div>
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <label>
-                          SEC. ID NO<mark>*</mark>
-                        </label>
-                        <br />
-                        <TextField
-                          className="text_field"
-                          name="secondary_id_no"
-                          onChange={AddPatientHandlers(this, context).texthandle.bind(
-                            this
-                          )}
-                          value={this.state.secondary_id_no}
-                        />
-                      </div>
+                            data: this.props.idtypes
+                          },
+                          onChange: AddPatientHandlers(this, context).selectedHandeler.bind(this)
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          fieldName: "secondary_id_no",                          
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "secondary_id_no",
+                          value: this.state.secondary_id_no,
+                          events: {
+                            onChange: AddPatientHandlers(this,context).texthandle.bind(this)
+                          }
+                        }}
+                      />
                     </div>
                     <div className="row secondary-box-container">
                       <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
                         <div className="image-drop-area">
                           <Dropzone
-                            onDrop={AddPatientHandlers(this, context).onDrop.bind(
-                              this,
-                              "filePreview"
-                            )}
+                            onDrop={AddPatientHandlers(this,context).onDrop.bind(this, "filePreview")}
                             id="attach-width"
                             className="dropzone"
                             accept="image/*"
@@ -571,8 +568,12 @@ class AddPatientForm extends Component {
                             <div
                               className="attach-design text-center"
                               id="attach-width"
-                            >
-                              ATTACH PHOTO
+                            >                            
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "attach_photo",
+                              }}
+                            />
                             </div>
                           </Dropzone>
                         </div>
@@ -588,10 +589,7 @@ class AddPatientForm extends Component {
                         <div className="image-drop-area">
                           <Dropzone
                             className="dropzone"
-                            onDrop={AddPatientHandlers(this, context).onDrop.bind(
-                              this,
-                              "filePrimaryPreview"
-                            )}
+                            onDrop={AddPatientHandlers(this,context).onDrop.bind(this, "filePrimaryPreview")}
                             id="attach-primary-id"
                             accept="image/*"
                             multiple={false}
@@ -617,10 +615,7 @@ class AddPatientForm extends Component {
                         <div className="image-drop-area">
                           <Dropzone
                             className="dropzone"
-                            onDrop={AddPatientHandlers(this, context).onDrop.bind(
-                              this,
-                              "fileSecPreview"
-                            )}
+                            onDrop={AddPatientHandlers(this,context).onDrop.bind(this, "fileSecPreview")}
                             id="attach-sec-id"
                             accept="image/*"
                             multiple={false}
@@ -646,10 +641,10 @@ class AddPatientForm extends Component {
                   </div>
                 </div>
               </div>
-              <AHSnackbar                
+              <AHSnackbar
                 open={this.state.DOBError}
                 handleClose={this.handleClose}
-                MandatoryMsg= {this.state.DOBErrorMsg}
+                MandatoryMsg={this.state.DOBErrorMsg}
               />
             </div>
           )}
@@ -663,7 +658,7 @@ function mapStateToProps(state) {
   return {
     titles: state.titles.titles,
     nationalities: state.nationalities.nationalities,
-    idtypes: state.idtypes.idtypes,    
+    idtypes: state.idtypes.idtypes,
     relegions: state.relegions.relegions,
     cities: state.cities.cities,
     countries: state.countries.countries,
@@ -677,7 +672,7 @@ function mapDispatchToProps(dispatch) {
     {
       getTitles: getTitles,
       getNationalities: getNationalities,
-      getIDTypes: getIDTypes,      
+      getIDTypes: getIDTypes,
       getRelegion: getRelegion,
       getCities: getCities,
       getCountries: getCountries,

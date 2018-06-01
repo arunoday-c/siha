@@ -5,36 +5,59 @@ export default class Selector extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: []
+      value: [],
+      display: ""
     };
   }
   algaehChangeEvent = e => {
-    debugger;
+    let getKeyArray = Object.keys(e.target);
+    let getKey = getKeyArray[1];
+    this.props.selector.onChange({
+      selected: e.target[getKey]["data"],
+      value: e.target.value,
+      selectedIndex: e.target[getKey]["index"],
+      name: e.target.name
+    });
     this.setState({ value: e.target.value });
-    this.props.selector.onChange(e);
+  };
+
+  plotTemplate = (row, textField, valueField) => {
+    if (this.props.selector.template == null) {
+      return row[textField];
+    } else {
+      return this.props.selector.template(row);
+    }
   };
 
   generateMenu = () => {
-    if (this.props.selector.template == null) {
-      let getData = this.props.selector.dataSource;
-      return getData.data.map((row, index) => (
-        <MenuItem value={row[getData["valueField"]]} key={index}>
-          {row[getData["textField"]]}
-        </MenuItem>
-      ));
-    } else {
-      return this.props.selector.template;
-    }
+    let getData = this.props.selector.dataSource;
+
+    return getData.data.map((row, index) => (
+      <MenuItem
+        value={row[getData["valueField"]]}
+        key={index}
+        data={row}
+        index={index}
+      >
+        {this.plotTemplate(row, getData["textField"], getData["valueField"])}
+      </MenuItem>
+    ));
   };
+  componentWillReceiveProps(nextProps) {
+    // debugger;
+    this.setState({ value: nextProps.selector.value });
+  }
 
   generateSelect = () => {
     if (this.props.selector != null) {
       return (
         <Select
-          {...this.props.selector.other}
           className={this.props.selector.className}
           value={this.state.value}
           onChange={this.algaehChangeEvent.bind(this)}
+          inputProps={{
+            name: this.props.selector.name
+          }}
         >
           {this.generateMenu()}
         </Select>
@@ -45,19 +68,11 @@ export default class Selector extends Component {
     if (this.props.label != null) {
       return (
         <Label
-          label={{
-            fieldName: this.props.label.fieldName,
-            language: { fileName: this.props.label.language.fileName },
-            isImp: this.props.label.isImp
-          }}
+          label={this.props.label}
         />
       );
     }
   };
-  componentWillReceiveProps(nextProps) {
-    debugger;
-    this.setState({ value: nextProps.selector.value });
-  }
 
   render() {
     return (

@@ -10,8 +10,10 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import moment from 'moment';
+import AlgaehLabel from "../../Wrapper/label.js";
 
 var intervalId;
+
 
 class PatientDetails extends Component{
 	constructor(props){
@@ -56,15 +58,7 @@ class PatientDetails extends Component{
 		  }
 		);
 	}
-
-	// componentWillReceiveProps(nextProps){
-	// 	debugger;
-	// 	if(nextProps.patCode !== null)
-	// 	{
-	// 		this.setState({...this.state,nextProps})
-	// 	}
-	// }
-
+	
 	render() {
 		let patientSelect = (this.state.actionPatientDesign) ? "active" : "";
 		let informationSelect = (this.state.actionInformationDesign) ? "" : "active";
@@ -93,17 +87,25 @@ class PatientDetails extends Component{
 					<ul className="nav">
 						<li className={"nav-item tab-button " + patientSelect} 
 							id="PatientForm" onClick={this.openTab.bind(this, "patient-details")}>
-							PATIENT DETAILS
+							{<AlgaehLabel
+                  label={{
+                    fieldName: "tab_patdtls",
+                  }}
+                />}
 						</li>
 						<li className={"nav-item tab-button " + informationSelect} 
 							id="OtherInfo" onClick={this.openTab.bind(this, "other-information")}>
-							OTHER INFORMATION
+							{<AlgaehLabel
+                  label={{
+                    fieldName: "tab_othinf",
+                  }}
+                />}
 						</li>
 					</ul>
 				</div>
 				<div className="patient-section">					
 					{(this.state.actionPatientDesign)?
-						<PatientForm PatRegIOputs={this.props.PatRegIOputs}/>:
+						<PatientForm PatRegIOputs={this.props.PatRegIOputs} />:
 						null}
 					{(this.state.actionInformationDesign)?
 						null:

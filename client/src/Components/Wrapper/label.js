@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import $ from "jquery";
+import { getCookie } from "../../utils/algaehApiCall.js";
 export default class Label extends Component {
   constructor(props) {
     super(props);
@@ -10,8 +11,12 @@ export default class Label extends Component {
   }
   getTargetLanguage = (fieldName, callBack) => {
     if (fieldName != null && fieldName != "") {
-      let fileImport =
-        "./languages/" + this.props.label.language.fileName + ".json";
+      let Language = getCookie("Language");
+      if (this.props.label.language != null) {
+        Language = this.props.label.language.fileName;
+      }
+
+      let fileImport = "./languages/" + Language + ".json";
 
       $.getJSON(fileImport, data => {
         callBack(data[fieldName]);
@@ -30,30 +35,46 @@ export default class Label extends Component {
   };
   labelRender = () => {
     if (this.props.label != null) {
-      return (
-        <label>
-          {this.state.languageBind}
-          {this.important()}
-        </label>
-      );
+      if (this.state.languageBind != "&nbsp;") {
+        return (
+          <label>
+            {this.state.languageBind}
+            {this.important()}
+          </label>
+        );
+      } else {
+        return <label>&nbsp;</label>;
+      }
     } else {
       return null;
     }
   };
   componentWillMount() {
     if (this.props.label != null) {
-      this.getTargetLanguage(this.props.label.fieldName, data => {
-        this.setState({ languageBind: data });
-      });
+      if (this.props.label.forceLabel == null) {
+        this.getTargetLanguage(this.props.label.fieldName, data => {
+          this.setState({ languageBind: data });
+        });
+      } else {
+        this.setState({ languageBind: this.props.label.forceLabel });
+      }
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps != null && nextProps != "") {
+      if (this.props.label != null) {
+        if (this.props.label.forceLabel == null) {
+          this.getTargetLanguage(this.props.label.fieldName, data => {
+            this.setState({ languageBind: data });
+          });
+        } else {
+          this.setState({ languageBind: this.props.label.forceLabel });
+        }
+      }
     }
   }
   render() {
-    return (
-      <React.Fragment>
-        {this.labelRender()}
-        {this.important()}
-      </React.Fragment>
-    );
+    return <React.Fragment>{this.labelRender()}</React.Fragment>;
   }
 }
 Label.propTypes = {

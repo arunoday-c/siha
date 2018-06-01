@@ -11,7 +11,7 @@ export default {
     host: "him-app-db-server.cue9pqguf30s.ap-south-1.rds.amazonaws.com",
     port: 3306,
     user: "root",
-    password: "algaeh2018",
+    password: "medteam2013",
     database: "algaeh_hims_db",
     multipleStatements: true
   },

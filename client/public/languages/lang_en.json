@@ -23,47 +23,37 @@
   "primary_identity_id": "Primary ID",
   "primary_id_no": "Number",
   "secondary_identity_id": "Secondary ID",
-
   "secondary_id_no": "Number",
   "secondary_contact_number": "Secondary Contact Number",
-
   "emergency_contact_name": "Emergency Contact Name",
-
   "emergency_contact_number": "Emergency Contact Number",
-
   "relationship_with_patient": "Relationship With Patient",
-
   "visit_type": "Visit Type",
   "visit_date": "Visit Date",
   "department_id": "Department",
   "doctor_id": "Doctor",
   "maternity_patient": "Maternity Patient",
-
+  "is_mlc": "Is MLC",
   "mlc_accident_reg_no": "Accident Registration Number",
-
   "mlc_police_station": "Police Station Name",
-
   "mlc_wound_certified_date": "Wound Certified Date",
-
   "visit_code": "Visit Code",
   "btn_save": "save",
   "btn_clear": "clear",
   "tab_patdtls": "Patient Details",
   "tab_othinf": "Other Information",
   "tab_condtls": "Consultation Details",
-
   "tab_mlcpat": "MLC Patient",
   "tab_primaryins": "Primary Insurance Details",
-
   "tab_secondaryins": "Secondary Insurance Details",
-
   "tab_billdtls": "Billing Details",
   "tab_recipts": "Recipts",
   "form_patregister": "Patient Registration",
-
   "form_name": "Front Desk",
   "form_home": "Home",
   "form_create": "Create New",
   "form_yes": "Yes",
-  "form_no": "No"
+  "form_no": "No",
+  "hijiri_date":"Hijiri Date",
+  "attach_photo":"Attach Photo"
 }

@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import Header from "./../common/Header/Header.js";
 import SideMenuBar from "./../common/SideMenuBar/SideMenuBar.js";
-// import Footer from "./../common/Footer/Footer.js";
 import PatientDetails from "./PatientDetails/PatientDetails.js";
 import ConsultationDetails from "./ConsultationDetails/ConsultationDetails.js";
 import InsuranceDetails from "./InsuranceDetails/InsuranceDetails.js";
 import Billing from "./Billing/BillingDetails";
-//import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Paper from "material-ui/Paper";
 import styles from "./registration.css";
 import PatRegIOputs from "../../Models/RegistrationPatient.js";
@@ -27,6 +25,7 @@ import MyContext from "../../utils/MyContext.js";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import {Validations} from "./FrontdeskValidation.js";
+import AlgaehLabel from "../Wrapper/label.js";
 
 import Dialog, {
   DialogActions,
@@ -40,7 +39,6 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-// const FrontDeskContext = React.createContext();
 var intervalId;
 class RegistrationPatient extends Component {
   constructor(props) {
@@ -54,22 +52,22 @@ class RegistrationPatient extends Component {
         horizontal: null,
         DialogOpen: false,
         sideBarOpen: false,
-        sidBarOpen: true,        
+        sidBarOpen: true,    
+        selectedLang: "lang_en",
+        chnageLang: false
       },
       PatRegIOputs.inputParam()
     );
   }
 
   componentDidMount() {
-    var width = document.getElementById("attach").offsetHeight;
-    console.log("width", width);
+    var width = document.getElementById("attach").offsetHeight;    
     this.setState({
       widthImg: width
     });
   }
 
   ClearData(e) {
-    debugger;
     this.setState (PatRegIOputs.inputParam());
   }
 
@@ -105,6 +103,15 @@ class RegistrationPatient extends Component {
     });
   }
 
+  SelectLanguage(secLang){
+    debugger;
+    this.setState({
+      selectedLang: secLang,
+      chnageLang: !this.state.chnageLang
+    });
+    // this.forceUpdate();
+  }
+
   getCtrlCode(data) {
     debugger;
     this.setState({
@@ -117,34 +124,6 @@ class RegistrationPatient extends Component {
         } , 500);      
     });
   }
-
-  // getSinglePatientDetails(e){
-	// 	let datavalue = this.state.patient_code;
-	// 	if (this.state.patient_code) {
-	// 		debugger;
-	// 		algaehApiCall({
-	// 			uri: datavalue!=null && datavalue!=""? ("/frontDesk/get?patient_code="+datavalue) : "/frontDesk/get" ,				
-	// 			method: "GET",
-		
-	// 			onSuccess: response => {
-	// 				if (response.data.success === true) {
-  //           debugger;				
-  //           this.setState(PatRegIOputs.inputParam(response.data.records.patientRegistration))
-            
-	// 					// this.props.vistDetails(response.data.records.visitDetails);
-	// 					//console.log("", this.state);
-	// 				}
-	// 				else {
-	// 					//Handle unsuccessful Login here.
-	// 				}
-	// 			},
-	// 			onFailure: error => {
-	// 			  	console.log(error);
-	// 			  	// Handle network error here.
-	// 			}
-	// 		  });     
-	// 	}		  
-	//   }
 
   
   render() {
@@ -160,22 +139,23 @@ class RegistrationPatient extends Component {
         <div style={{ marginLeft: margin }}>
           <Header
             height={this.state.widthImg}
-            title="Front Desk"
+            title={<AlgaehLabel label={{fieldName: "form_name"}}/>}
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
+            SelectLanguage = {this.SelectLanguage.bind(this)}
           />
-
+          
           <BreadCrumb
-            title="Patient Registration"
-            ctrlName="Patient Code"
-            screenName="Front Desk"
-            dateLabel="Registration"
+            title={<AlgaehLabel label={{fieldName: "form_patregister",}}/>}
+            ctrlName={<AlgaehLabel label={{fieldName: "patient_code",}}/>}                    
+            screenName={<AlgaehLabel label={{fieldName: "form_name",}}/>}
+            dateLabel={<AlgaehLabel label={{fieldName: "registration_date",}}/>}
             HideHalfbread={true}
             ctrlCode={this.state.patient_code}
             ctrlDate = {this.state.registration_date}
             ControlCode = {this.getCtrlCode.bind(this)}
           />
           <div>
-            <MyContext.Provider value
+            <MyContext.Provider
               value={{
                 state: this.state,
                 updateState: (obj) => {
@@ -183,10 +163,10 @@ class RegistrationPatient extends Component {
                   this.setState(obj);                  
                 }
               }}>
-              <PatientDetails PatRegIOputs={this.state} patCode = {this.state.patient_code}/>
-              <ConsultationDetails PatRegIOputs={this.state} visitcode={this.state.visit_code}/>
-              <InsuranceDetails />
-              <Billing />
+              <PatientDetails PatRegIOputs={this.state} />
+              <ConsultationDetails PatRegIOputs={this.state} />
+              <InsuranceDetails PatRegIOputs={this.state}/>
+              <Billing PatRegIOputs={this.state}/>
               <div className="hptl-phase1-footer">
                 <br /> <br />
                 <AppBar position="static" className="main">

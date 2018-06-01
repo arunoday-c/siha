@@ -11,13 +11,17 @@ import MyContext from "../../../../utils/MyContext.js";
 import frontLanguage from "../../Language.json";
 import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
 import { getVisatypes } from "../../../../actions/CommonSetup/Visatype.js";
+import AlagehFormGroup from "../../../Wrapper/formGroup.js";
+import AlgaehLabel from "../../../Wrapper/label.js";
+import AlgaehSelector from "../../../Wrapper/selector.js";
+
 
 const FORMAT_DEFAULT = [
     { name: 'CSV', value: "CSV" },
     { name: 'XML', value: "XML" },
     { name: 'XLS', value: "XLS" }
 ];
-
+const MobileFormat = "+91 (###)-## #####";
 class OtherInfo extends Component{
 		constructor(props){
 		super(props);	
@@ -31,15 +35,15 @@ class OtherInfo extends Component{
 		this.state = InputOutput;
 	}
 	
-	componentDidMount(){
-		debugger;
+	componentDidMount(){		
 		if (this.props.visatypes.length === 0) {
 			this.props.getVisatypes();
 		}
+		this.setState({...this.state});
 	}
 
 	componentWillReceiveProps(nextProps){    
-		debugger;
+		// debugger;
 		if(nextProps.patients.length >0 )
 		{
 		  this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
@@ -53,73 +57,123 @@ class OtherInfo extends Component{
 					<div className="hptl-phase1-add-other-form">
 						<div className="container-fluid">
 							<div className="row">
-								<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-									<label>Secondary Contact Number<mark>*</mark></label><br />
-									<TextField className="text_field" 
-										name="secondary_contact_number" 
-										onChange={AddPatientOtherHandlers(this, context).texthandle.bind(this)} 
-										value={this.state.secondary_contact_number}
-										style={{width:"100%"}}
-									/>							
-								</div>
+								<AlagehFormGroup
+									div={{ className: "col-lg-3" , id:"widthDate"}}
+									label={{
+										fieldName: "secondary_contact_number",                          
+										isImp: true,										
+									}}
+									textBox={{
+									value: this.state.secondary_contact_number,
+									className: "txt-fld",
+									name: "secondary_contact_number",
+									mask: {
+										format:MobileFormat,
+									},
+									events: {
+										onChange: AddPatientOtherHandlers(this, context).numbertexthandle.bind(this)
+									}                            
+									}}									
+								/>								
+								
+								<AlagehFormGroup
+									div={{ className: "col-lg-3" , id:"widthDate"}}
+									label={{
+										fieldName: "emergency_contact_number",                          
+										isImp: true,																				
+									}}
+									textBox={{
+									value: this.state.emergency_contact_number,
+									className: "txt-fld",
+									name: "emergency_contact_number",
+									mask: {
+										format:MobileFormat,
+									},
+									events: {
+										onChange: AddPatientOtherHandlers(this, context).texthandle.bind(this)
+									}                            
+									}}								
+								/>
 
-								<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-									<label>EMERG.CONTACT NO<mark>*</mark></label><br />
-									<TextField className="text_field" 
-										name="emergency_contact_number" 
-										onChange={AddPatientOtherHandlers(this, context).texthandle.bind(this)} 
-										value={this.state.emergency_contact_number}
-										style={{width:"100%"}}
-									/>
-								</div>
+								<AlagehFormGroup
+									div={{ className: "col-lg-3" , id:"widthDate"}}
+									label={{
+										fieldName: "emergency_contact_name",                          
+										isImp: true,																				
+									}}
+									textBox={{
+									value: this.state.emergency_contact_name,
+									className: "txt-fld",
+									name: "emergency_contact_name",
+									mask: {
+										format:MobileFormat,
+									},
+									events: {
+										onChange: AddPatientOtherHandlers(this, context).texthandle.bind(this)
+									}                            
+									}}								
+								/>
 
-								<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-									<label>EMERG.CONTACT PERSON<mark>*</mark></label><br />
-									<TextField className="text_field" 
-										name="emergency_contact_name" 
-										onChange={AddPatientOtherHandlers(this, context).texthandle.bind(this)} 
-										value={this.state.emergency_contact_name}
-										style={{width:"100%"}}
-									/>
-								</div>
-								<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-									<label>RELATION WITH PATIENT<mark>*</mark></label><br />
-									<TextField className="text_field" 
-										name="relationship_with_patient" 
-										onChange={AddPatientOtherHandlers(this, context).texthandle.bind(this)} 
-										value={this.state.relationship_with_patient}
-										style={{width:"100%"}}
-									/>
-								</div>
+								<AlagehFormGroup
+									div={{ className: "col-lg-3" , id:"widthDate"}}
+									label={{
+										fieldName: "relationship_with_patient",                          
+										isImp: true,																				
+									}}
+									textBox={{
+									value: this.state.relationship_with_patient,
+									className: "txt-fld",
+									name: "relationship_with_patient",
+									mask: {
+										format:MobileFormat,
+									},
+									events: {
+										onChange: AddPatientOtherHandlers(this, context).texthandle.bind(this)
+									}                            
+									}}									
+								/>								
 							</div>
 							<div className = "row">
-								<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-									<label>EMAIL ADDRESS</label>
-									<br />
-									<TextField
-									className="text_field"
-									name="email"
-									onChange={AddPatientOtherHandlers(this, context).texthandle.bind(this)}
-									value={this.state.email}
-									/>
-								</div>
+								<AlagehFormGroup
+									div={{ className: "col-lg-3" , id:"widthDate"}}
+									label={{
+										fieldName: "email",                          
+										isImp: true,																				
+									}}
+									textBox={{
+									value: this.state.email,
+									className: "txt-fld",
+									name: "email",
+									mask: {
+										format:MobileFormat,
+									},
+									events: {
+										onChange: AddPatientOtherHandlers(this, context).texthandle.bind(this)
+									}                            
+									}}								
+								/>
 
-								<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-									<label>VISA TYPE</label>
-									<br />
-									<SelectFieldDrop
-									children={SelectFiledData({
+								<AlgaehSelector
+									div={{ className: "col-lg-3" }}
+									label={{
+										fieldName: "visa_type_id",									
+										isImp: true,										
+									}}
+									selector={{
+									name: "visa_type_id",
+									className: "select-fld",
+									value: "0",
+									dataSource: {
 										textField: "visa_desc",
 										valueField: "hims_d_visa_type_id",
-										payload: this.props.visatypes
-									})}
-									selected={AddPatientOtherHandlers(this, context).visatyphandle.bind(
-										this
-									)}
-									displayValue={this.state.visa_type_id}
-									width="180px"
-									/>
-								</div>
+										data: this.props.visatypes
+									},									
+									onChange: AddPatientOtherHandlers(
+										this,
+										context
+									).selectedHandeler.bind(this)
+									}}
+								/>																
 							</div>
 							<br />							
 						</div>
@@ -141,7 +195,18 @@ function AddPatientOtherHandlers(state,context){
 			})		
 		},
 
-	
+		numbertexthandle: (ctrl, e)=>  {
+            debugger;            
+            state.setState({
+                [e.target.name]: e.target.value
+            });
+
+            if(context!=null){
+                context.updateState({[e.target.name]: e.target.value});
+            }            
+        },
+
+		
 		texthandle:(e)=>{
 			debugger;
 			state.setState({
@@ -153,15 +218,15 @@ function AddPatientOtherHandlers(state,context){
 			}   
 		},
 
-		visatyphandle: (selectval)=>{
-			state.setState({
-				visa_type_id: selectval
-			}, () =>{
-				if(context!=null){
-					context.updateState({"visa_type_id": selectval});
-				}
-			});
-		}
+		selectedHandeler:(e)=>{
+            debugger;            
+            state.setState({
+                [e.name]: e.value
+            });            
+            if(context!=null){
+                context.updateState({[e.name]: e.value});
+            }   
+        }
 	}
 }
 
