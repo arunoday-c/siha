@@ -16,7 +16,8 @@ import {
   Paper,
   ChevronLeftIcon,
   Menu,
-  MenuItem
+  MenuItem,
+  Radio
 } from "material-ui";
 
 import { setCookie, getCookie } from "../../../utils/algaehApiCall.js";
@@ -88,14 +89,16 @@ class Header extends PureComponent {
       this.setState({ languageName: "عربي" });
     }
   }
-  handleClick = event => {
-    debugger;
+  handleOpenClick = event => {
     this.setState({ anchorEl: event.currentTarget });
   };
 
   handleClose = (seLang, e) => {
     this.setState({ anchorEl: null });
     if (seLang != null) this.Languaue(seLang, e);
+  };
+  renderCheck = () => {
+    return <span> &#10004;</span>;
   };
   render() {
     return (
@@ -131,7 +134,7 @@ class Header extends PureComponent {
                 style={{ color: "#fff" }}
                 aria-haspopup="true"
                 className="float-right"
-                onClick={this.handleClick}
+                onClick={this.handleOpenClick}
               >
                 {this.state.languageName}
                 &nbsp;&nbsp;{" "}
@@ -148,10 +151,14 @@ class Header extends PureComponent {
                 onClose={this.handleClose}
               >
                 <MenuItem onClick={this.handleClose.bind(this, "En")}>
-                  English
+                  {this.state.languageName == "English"
+                    ? this.renderCheck()
+                    : null}&nbsp; English
                 </MenuItem>
                 <MenuItem onClick={this.handleClose.bind(this, "Ar")}>
-                  Arabic
+                  {this.state.languageName == "عربي"
+                    ? this.renderCheck()
+                    : null}&nbsp; Arabic
                 </MenuItem>
               </Menu>
             </div>
