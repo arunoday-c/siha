@@ -10,7 +10,10 @@ import styles from "./registration.css";
 import PatRegIOputs from "../../Models/RegistrationPatient.js";
 import Button from "material-ui/Button";
 import extend from "extend";
-import { postPatientDetails, getPatientDetails } from "../../actions/RegistrationPatient/Registrationactions.js";
+import {
+  postPatientDetails,
+  getPatientDetails
+} from "../../actions/RegistrationPatient/Registrationactions.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -24,7 +27,7 @@ import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
-import {Validations} from "./FrontdeskValidation.js";
+import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
 
 import Dialog, {
@@ -42,7 +45,7 @@ function Transition(props) {
 var intervalId;
 class RegistrationPatient extends Component {
   constructor(props) {
-    super(props);    
+    super(props);
 
     this.state = {
       widthImg: "",
@@ -51,40 +54,40 @@ class RegistrationPatient extends Component {
       horizontal: null,
       DialogOpen: false,
       sideBarOpen: false,
-      sidBarOpen: true,    
+      sidBarOpen: true,
       selectedLang: "lang_en",
-      chnageLang: false
-    }
+      chnageLang: false,
+      AGEMM: 0,
+      AGEDD: 0
+    };
   }
 
   componentDidMount() {
-    var width = document.getElementById("attach").offsetHeight;    
+    var width = document.getElementById("attach").offsetHeight;
     this.setState({
       widthImg: width
     });
-    let IOputs = PatRegIOputs.inputParam()
-    this.setState({...this.state, ...IOputs})
+    let IOputs = PatRegIOputs.inputParam();
+    this.setState({ ...this.state, ...IOputs });
     debugger;
   }
 
   ClearData(e) {
-    this.setState (PatRegIOputs.inputParam());
+    this.setState(PatRegIOputs.inputParam());
   }
 
   SavePatientDetails(e) {
     debugger;
     const err = Validations(this);
-    console.log(err);    
+    console.log(err);
     if (!err) {
-      this.props.postPatientDetails(this.state,
-        data => {
-          this.setState({
-            patient_code: data.patient_code,
-            visit_code: data.visit_code,
-            DialogOpen: true
-          });
-        }
-      );
+      this.props.postPatientDetails(this.state, data => {
+        this.setState({
+          patient_code: data.patient_code,
+          visit_code: data.visit_code,
+          DialogOpen: true
+        });
+      });
     }
   }
 
@@ -103,7 +106,7 @@ class RegistrationPatient extends Component {
     });
   }
 
-  SelectLanguage(secLang){
+  SelectLanguage(secLang) {
     debugger;
     this.setState({
       selectedLang: secLang,
@@ -114,26 +117,27 @@ class RegistrationPatient extends Component {
 
   getCtrlCode(data) {
     debugger;
-    this.setState({
-      patient_code: data
-    },()=>{
-      clearInterval(intervalId);
-        intervalId = setInterval(()=> {
-          this.props.getPatientDetails(this.state.patient_code,
-            data => {
-              debugger;
-              this.setState({
-                patient_code: data.patient_code,
-                visit_code: data.visit_code,
-                DialogOpen: true
-              });
+    this.setState(
+      {
+        patient_code: data
+      },
+      () => {
+        clearInterval(intervalId);
+        intervalId = setInterval(() => {
+          this.props.getPatientDetails(this.state.patient_code, data => {
+            debugger;
+            this.setState({
+              patient_code: data.patient_code,
+              visit_code: data.visit_code,
+              DialogOpen: true
             });
+          });
           clearInterval(intervalId);
-        } , 500);
-    });
+        }, 500);
+      }
+    );
   }
 
-  
   render() {
     let margin = this.state.sidBarOpen ? "200px" : "";
     return (
@@ -147,34 +151,38 @@ class RegistrationPatient extends Component {
         <div style={{ marginLeft: margin }}>
           <Header
             height={this.state.widthImg}
-            title={<AlgaehLabel label={{fieldName: "form_name"}}/>}
+            title={<AlgaehLabel label={{ fieldName: "form_name" }} />}
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
-            SelectLanguage = {this.SelectLanguage.bind(this)}
+            SelectLanguage={this.SelectLanguage.bind(this)}
           />
-          
+
           <BreadCrumb
-            title={<AlgaehLabel label={{fieldName: "form_patregister",}}/>}
-            ctrlName={<AlgaehLabel label={{fieldName: "patient_code",}}/>}                    
-            screenName={<AlgaehLabel label={{fieldName: "form_name",}}/>}
-            dateLabel={<AlgaehLabel label={{fieldName: "registration_date",}}/>}
+            title={<AlgaehLabel label={{ fieldName: "form_patregister" }} />}
+            ctrlName={<AlgaehLabel label={{ fieldName: "patient_code" }} />}
+            screenName={<AlgaehLabel label={{ fieldName: "form_name" }} />}
+            dateLabel={
+              <AlgaehLabel label={{ fieldName: "registration_date" }} />
+            }
             HideHalfbread={true}
             ctrlCode={this.state.patient_code}
-            ctrlDate = {this.state.registration_date}
-            ControlCode = {this.getCtrlCode.bind(this)}
+            ctrlDate={this.state.registration_date}
+            ControlCode={this.getCtrlCode.bind(this)}
           />
           <div>
             <MyContext.Provider
               value={{
                 state: this.state,
-                updateState: (obj) => {
+                updateState: obj => {
                   debugger;
-                  this.setState(obj);                  
+                  extend(this.state, obj);
+                  // this.setState({ ...this.state, obj });
                 }
-              }}>
+              }}
+            >
               <PatientDetails PatRegIOputs={this.state} />
               <ConsultationDetails PatRegIOputs={this.state} />
-              <InsuranceDetails PatRegIOputs={this.state}/>
-              <Billing PatRegIOputs={this.state}/>
+              <InsuranceDetails PatRegIOputs={this.state} />
+              <Billing PatRegIOputs={this.state} />
               <div className="hptl-phase1-footer">
                 <br /> <br />
                 <AppBar position="static" className="main">
@@ -199,10 +207,10 @@ class RegistrationPatient extends Component {
                           Save
                         </button>
 
-                        <AHSnackbar                          
+                        <AHSnackbar
                           open={this.state.open}
                           handleClose={this.handleClose}
-                          MandatoryMsg= {this.state.MandatoryMsg}
+                          MandatoryMsg={this.state.MandatoryMsg}
                         />
                       </div>
                     </div>
@@ -214,7 +222,7 @@ class RegistrationPatient extends Component {
         </div>
 
         <div>
-          <Dialog            
+          <Dialog
             open={this.state.DialogOpen}
             TransitionComponent={Transition}
             keepMounted
@@ -250,7 +258,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { postPatientDetails: postPatientDetails, getPatientDetails: getPatientDetails },
+    {
+      postPatientDetails: postPatientDetails,
+      getPatientDetails: getPatientDetails
+    },
     dispatch
   );
 }

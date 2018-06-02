@@ -12,11 +12,7 @@ import moment from "moment";
 export default class DateHandler extends Component {
   generateLabel = () => {
     if (this.props.label != null) {
-      return (
-        <Label
-          label={this.props.label}
-        />
-      );
+      return <Label label={this.props.label} />;
     }
   };
 
@@ -71,7 +67,7 @@ export default class DateHandler extends Component {
       return selectedDate.valueOf() <= date.valueOf();
     }
     if (this.props.maxDate != null) {
-      date = moment(this.props.maxDate);
+      date = moment(this.props.maxDate).add(1, "days");
       return selectedDate.valueOf() >= date.valueOf();
     }
   };
@@ -94,7 +90,9 @@ export default class DateHandler extends Component {
               disabled={this.props.textBox.disabled}
               name={this.props.textBox.name}
               className={this.props.textBox.className}
-              value={value != null ? value.format(this.formator()) : this.props.value}
+              value={
+                value != null ? value.format(this.formator()) : this.props.value
+              }
               label={this.props.textBox.label}
               placeholder={this.formator()}
             />

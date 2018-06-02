@@ -30,9 +30,8 @@ class Experiment extends Component {
     return (
       <div>
         {/* Dialog */}
-        <div>
-          <Button onClick={this.handleDialogClose}>Clik</Button>
-          {/* <Dialog
+        {/* <div>
+          <Dialog
             open={this.state.openDialog}
             TransitionComponent={Transition}
             keepMounted
@@ -57,8 +56,8 @@ class Experiment extends Component {
                 YES
               </Button>
             </DialogActions>
-          </Dialog> */}
-        </div>
+          </Dialog>
+        </div> */}
         {/* Dialog End */}
       </div>
     );
