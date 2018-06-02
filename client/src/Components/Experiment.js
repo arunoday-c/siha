@@ -8,6 +8,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Button from "material-ui/Button";
+import SuccessDialog from "../utils/SuccessDialog.js";
 
 class Experiment extends Component {
   constructor(props) {
@@ -18,7 +19,9 @@ class Experiment extends Component {
   }
 
   handleDialogClose() {
-    this.setState({ openDialog: false });
+    debugger;
+    //    this.setState({ openDialog: false });
+    <SuccessDialog />;
   }
 
   handleConfirmDelete() {}
@@ -28,7 +31,8 @@ class Experiment extends Component {
       <div>
         {/* Dialog */}
         <div>
-          <Dialog
+          <Button onClick={this.handleDialogClose}>Clik</Button>
+          {/* <Dialog
             open={this.state.openDialog}
             TransitionComponent={Transition}
             keepMounted
@@ -53,7 +57,7 @@ class Experiment extends Component {
                 YES
               </Button>
             </DialogActions>
-          </Dialog>
+          </Dialog> */}
         </div>
         {/* Dialog End */}
       </div>

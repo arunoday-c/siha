@@ -23,8 +23,6 @@ class DeleteDialog extends Component {
     this.setState({ openDialog: false });
   }
 
-  handleConfirmDelete() {}
-
   render() {
     return (
       <div>

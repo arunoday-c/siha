@@ -181,11 +181,9 @@ class VisaType extends Component {
         uri: uri,
         data: this.state,
         onSuccess: response => {
-          console.log("Res Visa", response.data.success);
-          console.log("Res Visa Data", response.data);
-          window.location.reload();
           if (response.data.success == true) {
             //Handle Successful Add here
+            this.props.getVisatypes();
           } else {
             //Handle unsuccessful Add here.
           }
@@ -230,10 +228,15 @@ class VisaType extends Component {
     }
   }
 
-  componentWillReceiveProps() {}
-
   btnClick() {
     console.log("sel_id", sel_id);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.visatypes !== nextProps.visatypes) {
+      return true;
+    }
+    return true;
   }
 
   changeStatus(e) {
@@ -261,7 +264,7 @@ class VisaType extends Component {
       method: "DELETE",
       onSuccess: response => {
         this.setState({ open: false });
-        window.location.reload();
+        this.props.getVisatypes();
       },
       onFailure: error => {
         console.log(error);

@@ -25,9 +25,10 @@ import {
   IntegratedPaging,
   RowDetailState,
   FilteringState,
-  DataTypeProvider
+  DataTypeProvider,
+  SearchState
 } from "@devexpress/dx-react-grid";
-
+import { withStyles } from "material-ui/styles";
 import {
   Grid,
   Table,
@@ -36,19 +37,43 @@ import {
   TableRowDetail,
   TableFilterRow,
   TableEditRow,
-  TableEditColumn
+  TableEditColumn,
+  VirtualTable,
+  Toolbar,
+  SearchPanel
 } from "@devexpress/dx-react-grid-material-ui";
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: "#00BCB0",
-      main: "#00BCB0",
-      dark: "#00BFC2",
-      contrastText: "#fff"
+let sel_id = "";
+let row_id = "";
+
+const TableRow = ({ row, ...restProps }) => (
+  <Table.Row
+    {...restProps}
+    onClick={control => {
+      sel_id = JSON.stringify(row.hims_d_identity_document_id);
+      row_id = row.id;
+    }}
+    style={{
+      cursor: "pointer"
+    }}
+  />
+);
+
+const styles = theme => ({
+  tableStriped: {
+    "& tbody tr:nth-of-type(odd)": {
+      backgroundColor: "#fbfbfb"
     }
   }
 });
+
+const TableComponentBase = ({ classes, ...restProps }) => (
+  <Table.Table {...restProps} className={classes.tableStriped} />
+);
+
+export const TableComponent = withStyles(styles, { name: "TableComponent" })(
+  TableComponentBase
+);
 
 const AddButton = ({ onExecute }) => (
   <div style={{ textAlign: "center" }}>
@@ -237,6 +262,7 @@ class DeptMaster extends Component {
         data: this.state,
         onSuccess: response => {
           console.log("Res Data", response.data);
+          window.location.reload();
         },
         onFailure: error => {
           console.log(error);
@@ -251,6 +277,7 @@ class DeptMaster extends Component {
         data: this.state,
         onSuccess: response => {
           console.log("Res Data", response.data);
+          window.location.reload();
         },
         onFailure: error => {
           console.log(error);
@@ -314,31 +341,47 @@ class DeptMaster extends Component {
 
   RowDetail = ({ row }) => (
     <div>
-      {console.log("hello im here")}
       {this.props.getSubDepartments(row.hims_d_department_id)}
       <label>SUB DEPARTMENT LIST</label>
-      <Grid
-        rows={this.props.subdepartments}
-        columns={[
-          { name: "sub_department_code", title: "Sub Dept Code" },
-          { name: "sub_department_name", title: "Sub Dept Name" },
-          { name: "effective_start_date", title: "Sub Dept Start Date" },
-          { name: "effective_end_date", title: "Sub Dept End Date" },
-          { name: "sub_department_status", title: "Sub Dept Status" }
-        ]}
-      >
-        <Table />
-        <TableHeaderRow />
+      <Paper>
+        <Grid
+          rows={this.props.subdepartments}
+          columns={[
+            { name: "sub_department_code", title: "Sub Dept Code" },
+            { name: "sub_department_name", title: "Sub Dept Name" },
+            { name: "effective_start_date", title: "Sub Dept Start Date" },
+            { name: "effective_end_date", title: "Sub Dept End Date" },
+            { name: "sub_department_status", title: "Sub Dept Status" }
+          ]}
+        >
+          <DataTypeProvider
+            formatterComponent={this.dateFormater}
+            for={["effective_start_date"]}
+          />
 
-        <EditingState onCommitChanges={this.commitChanges.bind(this)} />
-        <TableEditRow />
-        <TableEditColumn
-          width={120}
-          showEditCommand
-          showDeleteCommand
-          commandComponent={Command}
-        />
-      </Grid>
+          <DataTypeProvider
+            formatterComponent={this.dateFormater}
+            for={["effective_end_date"]}
+          />
+
+          <DataTypeProvider
+            formatterComponent={this.getFullStatusText}
+            for={["sub_department_status"]}
+          />
+
+          <Table />
+          <TableHeaderRow />
+
+          <EditingState onCommitChanges={this.commitChanges.bind(this)} />
+          <TableEditRow />
+          <TableEditColumn
+            width={120}
+            showEditCommand
+            showDeleteCommand
+            commandComponent={Command}
+          />
+        </Grid>
+      </Paper>
     </div>
   );
 
@@ -366,146 +409,145 @@ class DeptMaster extends Component {
 
   render() {
     return (
-      <MuiThemeProvider theme={theme}>
-        <div className="dept">
-          <Paper className="container-fluid">
-            <div>
-              <div
-                className="row"
-                style={{
-                  padding: 20,
-                  marginLeft: "auto",
-                  marginRight: "auto"
-                }}
-              >
-                <div className="col-lg-3">
-                  <label>
-                    Status <span className="imp">*</span>
-                  </label>
-                  <br />
-                  <input
-                    checked={this.state.checkedActive}
-                    onChange={this.changeStatus.bind(this)}
-                    style={{
-                      padding: 8,
-                      margin: 8
-                    }}
-                    type="radio"
-                    name="status"
-                    value="A"
-                  />
-                  <label className="center">Active </label>
+      <div className="dept">
+        <Paper className="container-fluid">
+          <div>
+            <div
+              className="row"
+              style={{
+                padding: 20,
+                marginLeft: "auto",
+                marginRight: "auto"
+              }}
+            >
+              <div className="col-lg-3">
+                <label>
+                  Status <span className="imp">*</span>
+                </label>
+                <br />
+                <input
+                  checked={this.state.checkedActive}
+                  onChange={this.changeStatus.bind(this)}
+                  style={{
+                    padding: 8,
+                    margin: 8
+                  }}
+                  type="radio"
+                  name="status"
+                  value="A"
+                />
+                <label className="center">Active </label>
 
-                  <input
-                    checked={this.state.checkedInactive}
-                    onChange={this.changeStatus.bind(this)}
-                    style={{
-                      padding: 8,
-                      margin: 8
-                    }}
-                    type="radio"
-                    name="status"
-                    value="I"
-                  />
-                  <label className="center">Inactive </label>
-                </div>
-
-                <div className="col-lg-3">
-                  <label>
-                    DEPARTMENT CODE <span className="imp">*</span>
-                  </label>
-                  <br />
-                  <TextField
-                    onChange={this.changeDeptCode.bind(this)}
-                    value={this.state.department_code}
-                    className="txt-fld"
-                  />
-                </div>
-
-                <div className="col-lg-3">
-                  <label>
-                    DEPARTMENT NAME <span className="imp">*</span>
-                  </label>
-                  <br />
-                  <TextField
-                    onChange={this.changeDeptName.bind(this)}
-                    value={this.state.department_name}
-                    className="txt-fld"
-                  />
-                </div>
-                <div className="col-lg-3">
-                  <label>
-                    DEPARTMENT NAME
-                    <span style={{ fontSize: 16 }}>(عربى) </span>
-                  </label>
-                  <br />
-                  <TextField
-                    // onChange={this.changeDeptName.bind(this)}
-                    // value={this.state.department_name}
-                    className="txt-fld"
-                  />
-                </div>
+                <input
+                  checked={this.state.checkedInactive}
+                  onChange={this.changeStatus.bind(this)}
+                  style={{
+                    padding: 8,
+                    margin: 8
+                  }}
+                  type="radio"
+                  name="status"
+                  value="I"
+                />
+                <label className="center">Inactive </label>
               </div>
 
-              <div
-                className="row"
-                style={{
-                  marginTop: 20,
-                  marginLeft: "auto",
-                  marginRight: "auto"
-                }}
-              >
-                <div className="col-lg-3">
-                  <label>
-                    EFFECTIVE START DATE<span className="imp"> *</span>
-                  </label>
-                  <br />
-                  <TextField
-                    className="txt-fld"
-                    type="date"
-                    value={this.state.effective_start_date}
-                    onChange={this.changeEST.bind(this)}
-                  />
-                </div>
-                <div className="col-lg-3">
-                  <label>
-                    DEPARTMENT TYPE <span className="imp"> *</span>
-                  </label>
-                  <br />
-                  <SelectField
-                    selected={this.selectedDeptType.bind(this)}
-                    children={DEPT_TYPE}
-                  />
-                </div>
-                <div className="col-lg-3">
-                  <label>HEAD DEPARTMENT</label>
-                  <br />
-                  <SelectField
-                    children={SelectFiledData({
-                      textField: "department_name",
-                      valueField: "hims_d_department_id",
-                      payload: this.props.departments
-                    })}
-                    selected={this.selectedHeadDept.bind(this)}
-                  />
-                </div>
-                <div className="col-lg-3 align-middle">
-                  <br />
-                  <Button
-                    onClick={this.addBtnClick.bind(this)}
-                    variant="raised"
-                    color="primary"
-                  >
-                    {this.state.buttonText}
-                  </Button>
-                </div>
+              <div className="col-lg-3">
+                <label>
+                  DEPARTMENT CODE <span className="imp">*</span>
+                </label>
+                <br />
+                <TextField
+                  onChange={this.changeDeptCode.bind(this)}
+                  value={this.state.department_code}
+                  className="txt-fld"
+                />
+              </div>
+
+              <div className="col-lg-3">
+                <label>
+                  DEPARTMENT NAME <span className="imp">*</span>
+                </label>
+                <br />
+                <TextField
+                  onChange={this.changeDeptName.bind(this)}
+                  value={this.state.department_name}
+                  className="txt-fld"
+                />
+              </div>
+              <div className="col-lg-3">
+                <label>
+                  DEPARTMENT NAME
+                  <span style={{ fontSize: 16 }}>(عربى) </span>
+                </label>
+                <br />
+                <TextField
+                  // onChange={this.changeDeptName.bind(this)}
+                  // value={this.state.department_name}
+                  className="txt-fld"
+                />
               </div>
             </div>
 
-            <div className="row form-details">
-              <div className="col">
-                <label> DEPARTMENT LIST</label>
-                <div className="col-lg-12">
+            <div
+              className="row"
+              style={{
+                marginTop: 20,
+                marginLeft: "auto",
+                marginRight: "auto"
+              }}
+            >
+              <div className="col-lg-3">
+                <label>
+                  EFFECTIVE START DATE<span className="imp"> *</span>
+                </label>
+                <br />
+                <TextField
+                  className="txt-fld"
+                  type="date"
+                  value={this.state.effective_start_date}
+                  onChange={this.changeEST.bind(this)}
+                />
+              </div>
+              <div className="col-lg-3">
+                <label>
+                  DEPARTMENT TYPE <span className="imp"> *</span>
+                </label>
+                <br />
+                <SelectField
+                  selected={this.selectedDeptType.bind(this)}
+                  children={DEPT_TYPE}
+                />
+              </div>
+              <div className="col-lg-3">
+                <label>HEAD DEPARTMENT</label>
+                <br />
+                <SelectField
+                  children={SelectFiledData({
+                    textField: "department_name",
+                    valueField: "hims_d_department_id",
+                    payload: this.props.departments
+                  })}
+                  selected={this.selectedHeadDept.bind(this)}
+                />
+              </div>
+              <div className="col-lg-3 align-middle">
+                <br />
+                <Button
+                  onClick={this.addBtnClick.bind(this)}
+                  variant="raised"
+                  color="primary"
+                >
+                  {this.state.buttonText}
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="row form-details">
+            <div className="col">
+              <div className="col-lg-12">
+                <Paper>
                   <Grid
                     rows={this.props.departments}
                     columns={[
@@ -524,11 +566,13 @@ class DeptMaster extends Component {
                       { name: "department_status", title: "STATUS" }
                     ]}
                   >
-                    <PagingState currentPage={0} pageSize={4} />
+                    {/* <PagingState currentPage={0} pageSize={4} /> */}
                     <FilteringState defaultFilters={[]} />
-                    <IntegratedPaging />
+                    {/* <IntegratedPaging /> */}
+                    <SearchState />
                     <IntegratedFiltering />
-
+                    <Toolbar />
+                    <SearchPanel />
                     <DataTypeProvider
                       formatterComponent={this.dateFormater}
                       editorComponent={({ value }) => <ExDate value={value} />}
@@ -555,7 +599,11 @@ class DeptMaster extends Component {
                       )}
                       for={["department_status"]}
                     />
-                    <Table />
+                    <VirtualTable
+                      tableComponent={TableComponent}
+                      rowComponent={TableRow}
+                      height={300}
+                    />
 
                     <TableHeaderRow />
                     <RowDetailState />
@@ -566,21 +614,20 @@ class DeptMaster extends Component {
                     <TableEditRow />
 
                     <TableRowDetail contentComponent={this.RowDetail} />
-                    <TableFilterRow />
                     <TableEditColumn
                       width={120}
                       showEditCommand
                       showDeleteCommand
                       commandComponent={Command}
                     />
-                    <PagingPanel />
+                    {/* <PagingPanel /> */}
                   </Grid>
-                </div>
+                </Paper>
               </div>
             </div>
-          </Paper>
-        </div>
-      </MuiThemeProvider>
+          </div>
+        </Paper>
+      </div>
     );
   }
 }
