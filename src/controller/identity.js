@@ -1,9 +1,26 @@
 import { Router } from "express";
 import { releaseConnection } from "../utils";
-import { addIdentity, updateIdentity, selectIdentity } from "../model/identity";
+import {
+  addIdentity,
+  updateIdentity,
+  selectIdentity,
+  deleteIdentity
+} from "../model/identity";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
   let api = Router();
+
+  api.delete(
+    "/delete",
+    deleteIdentity,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json(result);
+      next();
+    },
+    releaseConnection
+  );
+
   api.post(
     "/add",
     addIdentity,

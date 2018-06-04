@@ -13,6 +13,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
+import DeleteDialog from "../../../utils/DeleteDialog";
 import {
   EditingState,
   DataTypeProvider,
@@ -31,14 +32,19 @@ import {
   VirtualTable
 } from "@devexpress/dx-react-grid-material-ui";
 
+// TODO
+// Testing the New Plugin
+
 //Grid Logic Start here
 let sel_id = "";
+let row_id = "";
 
 const TableRow = ({ row, ...restProps }) => (
   <Table.Row
     {...restProps}
     onClick={control => {
       sel_id = JSON.stringify(row.hims_d_identity_document_id);
+      row_id = row.id;
     }}
     style={{
       cursor: "pointer"
@@ -115,7 +121,7 @@ class IDType extends Component {
       identity_document_code: "",
       identity_document_name: "",
       created_by: "1",
-      idtypes: []
+      currentRowID: ""
     };
   }
 
@@ -147,11 +153,43 @@ class IDType extends Component {
       uri: "/identity/add",
       data: this.state,
       onSuccess: response => {
-        console.log("Id Types", response.data);
-        window.location.reload();
+        this.props.getIDTypes();
+        this.setState({
+          effective_end_date: "",
+          identity_document_code: "",
+          identity_document_name: "",
+          openDialog: false
+        });
       },
       onFailure: error => {
         console.log(error);
+      }
+    });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.idtypes !== nextProps.idtypes) {
+      return true;
+    }
+
+    return true;
+  }
+
+  handleConfirmDelete() {
+    const data = { hims_d_identity_document_id: sel_id, updated_by: 1 };
+    this.setState({ openDialog: false });
+    console.log("Data Delete ID:", data + row_id);
+    algaehApiCall({
+      uri: "/identity/delete",
+      data: data,
+      method: "DELETE",
+      onSuccess: response => {
+        this.setState({ open: false });
+        this.props.getIDTypes();
+      },
+      onFailure: error => {
+        console.log("Delete Error: ", error);
+        this.setState({ open: false });
       }
     });
   }
@@ -165,16 +203,27 @@ class IDType extends Component {
       console.log("Added: ", added);
     }
     if (changed) {
-      console.log("Changed: ", changed);
+      console.log("Changed: ", JSON.stringify(changed));
     }
     if (deleted) {
+      this.setState({ openDialog: true });
       console.log("Deleted: ", deleted);
     }
+  }
+
+  handleDialogClose() {
+    this.setState({ openDialog: false });
   }
 
   render() {
     return (
       <div className="id_type">
+        <DeleteDialog
+          handleConfirmDelete={this.handleConfirmDelete.bind(this)}
+          handleDialogClose={this.handleDialogClose.bind(this)}
+          openDialog={this.state.openDialog}
+        />
+
         <Paper className="container-fluid">
           <form>
             <div
