@@ -22,10 +22,7 @@ import MyContext from "../../utils/MyContext.js";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
-import Dialog, {
-  DialogActions,  
-  DialogTitle
-} from "material-ui/Dialog";
+import Dialog, { DialogActions, DialogTitle } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
 
 function Transition(props) {
@@ -53,7 +50,7 @@ class RegistrationPatient extends Component {
     };
   }
 
-  componentWillMount(){
+  componentWillMount() {
     let IOputs = PatRegIOputs.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
@@ -61,7 +58,7 @@ class RegistrationPatient extends Component {
     var width = document.getElementById("attach").offsetHeight;
     this.setState({
       widthImg: width
-    });    
+    });
   }
 
   ClearData(e) {
@@ -134,7 +131,7 @@ class RegistrationPatient extends Component {
   render() {
     let margin = this.state.sidBarOpen ? "200px" : "";
     return (
-      <div id="attach" style={{ overflow: "visible" }}>
+      <div id="attach">
         {this.state.sidBarOpen === true ? (
           <div>
             <SideMenuBar />
@@ -148,7 +145,7 @@ class RegistrationPatient extends Component {
               <AlgaehLabel label={{ fieldName: "form_name", align: "ltl" }} />
             }
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
-            SelectLanguage={this.SelectLanguage.bind(this)}            
+            SelectLanguage={this.SelectLanguage.bind(this)}
           />
 
           <BreadCrumb

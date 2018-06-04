@@ -14,8 +14,14 @@ import Dashboard from "./Components/Dashboard/Dashboard.js";
 import DeptMaster from "./Components/BusinessSetup/DeptMaster/DeptMaster.js";
 import BusinessSetup from "./Components/BusinessSetup/BusinessSetup.js";
 import CommonSetup from "./Components/CommonSetup/CommonSetup.js";
-import Experiment from './Components/Experiment.js';
+import Experiment from "./Components/Experiment.js";
 
+function height() {
+  let height =
+    window.innerHeight * (window.innerHeight / document.body.offsetHeight);
+  console.log("Height : = ", height);
+  return height;
+}
 const appRoutes = [
   {
     path: "/",
@@ -23,9 +29,9 @@ const appRoutes = [
     component: <Login />
   },
   {
-	path: "/FrontDesk",
+    path: "/FrontDesk",
     isExactPath: true,
-    component: <FrontDesk />	
+    component: <FrontDesk />
   },
   {
     path: "/BusinessSetup",
@@ -36,14 +42,16 @@ const appRoutes = [
     path: "/CommonSetup",
     isExactPath: true,
     component: <CommonSetup />
-  }, {
-    path : "/Experiment",
-    isExactPath : true,
-    component:<Experiment/>
-  }, {
-    path : "/Dashboard",
-    isExactPath : true,
-    component : <Dashboard />
+  },
+  {
+    path: "/Experiment",
+    isExactPath: true,
+    component: <Experiment />
+  },
+  {
+    path: "/Dashboard",
+    isExactPath: true,
+    component: <Dashboard />
   }
 ];
 
