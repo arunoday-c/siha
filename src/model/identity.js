@@ -1,5 +1,10 @@
 import extend from "extend";
-import { selectStatement, whereCondition, releaseDBConnection } from "../utils";
+import {
+  selectStatement,
+  whereCondition,
+  releaseDBConnection,
+  deleteRecord
+} from "../utils";
 import httpStatus from "../utils/httpStatus";
 let identityDoc = {
   hims_d_identity_document_id: null,
@@ -131,8 +136,41 @@ let selectIdentity = (req, res, next) => {
   }
 };
 
+let deleteIdentity = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_d_identity_document",
+        id: req.body.hims_d_identity_document_id,
+        query:
+          "UPDATE hims_d_identity_document SET  record_status='I', \
+          updated_by=?,updated_date=? WHERE hims_d_identity_document_id=?",
+        values: [
+          req.body.updated_by,
+          new Date(),
+          req.body.hims_d_identity_document_id
+        ]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      }
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addIdentity,
   updateIdentity,
-  selectIdentity
+  selectIdentity,
+  deleteIdentity
 };

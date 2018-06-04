@@ -48,7 +48,8 @@ class RegistrationPatient extends Component {
       selectedLang: "lang_en",
       chnageLang: false,
       AGEMM: 0,
-      AGEDD: 0
+      AGEDD: 0,
+      breadCrumbWidth: null
     };
   }
 
@@ -93,7 +94,8 @@ class RegistrationPatient extends Component {
   SideMenuBarOpen(sidOpen) {
     debugger;
     this.setState({
-      sidBarOpen: sidOpen
+      sidBarOpen: sidOpen,
+      breadCrumbWidth: sidOpen == true ? null : "98%"
     });
   }
 
@@ -142,15 +144,24 @@ class RegistrationPatient extends Component {
         <div style={{ marginLeft: margin }}>
           <Header
             height={this.state.widthImg}
-            title={<AlgaehLabel label={{ fieldName: "form_name" }} />}
+            title={
+              <AlgaehLabel label={{ fieldName: "form_name", align: "ltl" }} />
+            }
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
             SelectLanguage={this.SelectLanguage.bind(this)}            
           />
 
           <BreadCrumb
-            title={<AlgaehLabel label={{ fieldName: "form_patregister" }} />}
+            width={this.state.breadCrumbWidth}
+            title={
+              <AlgaehLabel
+                label={{ fieldName: "form_patregister", align: "ltr" }}
+              />
+            }
             ctrlName={<AlgaehLabel label={{ fieldName: "patient_code" }} />}
-            screenName={<AlgaehLabel label={{ fieldName: "form_name" }} />}
+            screenName={
+              <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+            }
             dateLabel={
               <AlgaehLabel label={{ fieldName: "registration_date" }} />
             }
@@ -159,7 +170,7 @@ class RegistrationPatient extends Component {
             ctrlDate={this.state.registration_date}
             ControlCode={this.getCtrlCode.bind(this)}
           />
-          <div>
+          <div className="spacing-push">
             <MyContext.Provider
               value={{
                 state: this.state,

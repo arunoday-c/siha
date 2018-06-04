@@ -14,8 +14,6 @@ import {PatRegistrationDetails} from "./RegistrationPatient/Registrationreducers
 import {VisatypeDetails} from "./CommonSetup/Visatype";
 import {VisittypeDetails} from "./CommonSetup/VisitTypereducers";
 import {OptionsDetails} from './BusinessSetup/Options';
-import {ENLanguageDetails} from './Common/LanguageENreducers';
-import {ARLanguageDetails} from './Common/LanguageARreducers';
 
 export default combineReducers({
 	tokensDtl: TokenDetails,
@@ -31,7 +29,5 @@ export default combineReducers({
 	patients:PatRegistrationDetails,
 	visatypes:VisatypeDetails,
 	visittypes:VisittypeDetails,
-	options : OptionsDetails,
-	disENlanguage : ENLanguageDetails,
-	disARlanguage : ARLanguageDetails,
+	options : OptionsDetails,	
 });

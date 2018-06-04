@@ -1,27 +1,39 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
+import { readFiles } from "../Wrapper/languageIndexDB";
+import { getCookie, setCookie } from "../../utils/algaehApiCall.js";
 import $ from "jquery";
-import { getCookie } from "../../utils/algaehApiCall.js";
-export default class Label extends Component {
+import { connct } from "react-redux";
+
+class Label extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      languageBind: ""
+      languageBind: "",
+      Language: ""
     };
   }
   getTargetLanguage = (fieldName, callBack) => {
     if (fieldName != null && fieldName != "") {
-      let Language = getCookie("Language");
-      if (this.props.label.language != null) {
-        Language = this.props.label.language.fileName;
-      }
+      let langua = getCookie("Language");
+      let screenName = getCookie("ScreenName") + "_";
+      let fileName =
+        screenName + ((langua == null || langua) == "" ? "en" : langua);
+      let fileImport = "./languages/" + fileName + ".json";
 
-      let fileImport = "./languages/" + Language + ".json";
-
-      $.getJSON(fileImport, data => {
-        callBack(data[fieldName]);
+      let savePage = window.localStorage.getItem(fileName);
+      if (savePage != null && savePage != "") {
+        let getLanguageLables = JSON.parse(savePage);
+        callBack(getLanguageLables[fieldName]);
         return;
-      });
+      } else {
+        $.getJSON(fileImport, data => {
+          window.localStorage.removeItem(fileName);
+          window.localStorage.setItem(fileName, JSON.stringify(data));
+          callBack(data[fieldName]);
+          return;
+        });
+      }
     } else {
       console.error("Label is missing with 'fieldName'");
     }
@@ -37,7 +49,19 @@ export default class Label extends Component {
     if (this.props.label != null) {
       if (this.state.languageBind != "&nbsp;") {
         return (
-          <label>
+          <label
+            className={
+              this.props.label.align == null
+                ? this.state.Language == "ar"
+                  ? "float-right"
+                  : this.props.label.align == "rtl"
+                    ? "float-right"
+                    : this.props.label.align == "ltl"
+                      ? "float-left"
+                      : null
+                : null
+            }
+          >
             {this.state.languageBind}
             {this.important()}
           </label>
@@ -51,6 +75,12 @@ export default class Label extends Component {
   };
   componentWillMount() {
     if (this.props.label != null) {
+      if (this.props.label.language != null) {
+        this.setState({ Language: this.props.label.language.fileName });
+      } else {
+        this.setState({ Language: getCookie("Language") });
+      }
+
       if (this.props.label.forceLabel == null) {
         this.getTargetLanguage(this.props.label.fieldName, data => {
           this.setState({ languageBind: data });
@@ -62,21 +92,38 @@ export default class Label extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps != null && nextProps != "") {
-      if (this.props.label != null) {
-        if (this.props.label.forceLabel == null) {
-          this.getTargetLanguage(this.props.label.fieldName, data => {
-            this.setState({ languageBind: data });
-          });
-        } else {
-          this.setState({ languageBind: this.props.label.forceLabel });
+      if (this.currentPageCanRender()) {
+        if (this.props.label != null) {
+          if (this.props.label.forceLabel == null) {
+            this.getTargetLanguage(this.props.label.fieldName, data => {
+              this.setState({ languageBind: data });
+            });
+          } else {
+            this.setState({ languageBind: this.props.label.forceLabel });
+          }
         }
       }
+      this.setState({ Language: getCookie("Language") });
     }
   }
+
+  currentPageCanRender = () => {
+    let currLang = getCookie("Language");
+    let prevLang = getCookie("prevLanguage");
+    if (currLang != prevLang) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   render() {
     return <React.Fragment>{this.labelRender()}</React.Fragment>;
   }
 }
+
 Label.propTypes = {
   label: PropTypes.object.isRequired
 };
+
+export default Label;

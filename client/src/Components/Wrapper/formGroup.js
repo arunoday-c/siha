@@ -22,11 +22,7 @@ export default class FormGroup extends Component {
   };
 
   labelRender = () => {
-    return (
-      <Label
-        label={this.props.label}
-      />
-    );
+    return <Label label={this.props.label} />;
   };
 
   textBoxRender = () => {
@@ -67,6 +63,18 @@ export default class FormGroup extends Component {
             prefix={this.props.textBox.decimal.prefix}
             suffix={this.props.textBox.decimal.suffix}
             value={this.props.textBox.value}
+            disabled={
+              this.props.textBox.disabled != null
+                ? this.props.textBox.disabled
+                : null
+            }
+            ref={
+              this.props.textBox.ref != null
+                ? ele => {
+                    return this.props.textBox.ref(ele);
+                  }
+                : null
+            }
           />
         );
       } else if (this.props.textBox.number != null) {
@@ -95,6 +103,18 @@ export default class FormGroup extends Component {
             value={this.props.textBox.value}
             prefix={this.props.textBox.number.prefix}
             suffix={this.props.textBox.number.suffix}
+            ref={
+              this.props.textBox.ref != null
+                ? ele => {
+                    return this.props.textBox.ref(ele);
+                  }
+                : null
+            }
+            disabled={
+              this.props.textBox.disabled != null
+                ? this.props.textBox.disabled
+                : null
+            }
           />
         );
       } else if (this.props.textBox.mask != null) {
@@ -111,6 +131,18 @@ export default class FormGroup extends Component {
             className={this.props.textBox.className}
             value={this.props.textBox.value}
             format={this.props.textBox.mask.format}
+            disabled={
+              this.props.textBox.disabled != null
+                ? this.props.textBox.disabled
+                : null
+            }
+            ref={
+              this.props.textBox.ref != null
+                ? ele => {
+                    return this.props.textBox.ref(ele);
+                  }
+                : null
+            }
           />
         );
       } else {
@@ -126,6 +158,18 @@ export default class FormGroup extends Component {
             onKeyPress={this.props.textBox.events.onKeyPress}
             onKeyDown={this.props.textBox.events.onKeyDown}
             onKeyUp={this.props.textBox.events.onKeyUp}
+            disabled={
+              this.props.textBox.disabled != null
+                ? this.props.textBox.disabled
+                : null
+            }
+            ref={
+              this.props.textBox.ref != null
+                ? ele => {
+                    return this.props.textBox.ref(ele);
+                  }
+                : null
+            }
           />
         );
       }

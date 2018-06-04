@@ -31,7 +31,8 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlgaehSelector
+  AlgaehSelector,
+  AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import {
   FORMAT_MARTIALSTS,
@@ -136,6 +137,7 @@ class AddPatientForm extends PureComponent {
                 <div className="row">
                   <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 primary-details">
                     <div className="row primary-box-container">
+                      {/* <AlagehAutoComplete classes="" other="" /> */}
                       <AlgaehSelector
                         div={{ className: "col-lg-3" }}
                         label={{
