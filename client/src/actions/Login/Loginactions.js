@@ -16,13 +16,13 @@ export function getTokenDetals() {
       url: auth_url,
       headers: { Authorization: basicAuth }
     })
-      .then(response => {        
+      .then(response => {
         setToken(response.data.token);
-        setCookie("Language", "lang_en", 30);
+        setCookie("Language", "en", 30);
         dispatch({
           type: "GET_DATA",
           payload: response.data.token
-        });       
+        });
       })
       .catch(err => {
         dispatch({

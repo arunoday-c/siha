@@ -75,19 +75,21 @@ class Header extends PureComponent {
   componentWillMount() {
     let lang = getCookie("Language");
     if (lang != null) {
-      this.setState({ languageName: lang == "lang_ar" ? "عربي" : "English" });
+      this.setState({ languageName: lang == "ar" ? "عربي" : "English" });
     }
   }
   Languaue(secLang, e) {
-    if (secLang === "En") {
-      setCookie("Language", "lang_en", 30);
+    debugger;
+    let prevLang = getCookie("Language");
+    setCookie("Language", secLang, 30);
+    setCookie("prevLanguage", prevLang, 30);
+    if (secLang === "en") {
       this.setState({ languageName: "English" });
-      this.props.SelectLanguage("lang_en");
-    } else if (secLang === "Ar") {
-      this.props.SelectLanguage("lang_ar");
-      setCookie("Language", "lang_ar", 30);
+    } else if (secLang === "ar") {
+      //this.props.SelectLanguage("lang_ar");
       this.setState({ languageName: "عربي" });
     }
+    this.props.SelectLanguage(secLang);
   }
   handleOpenClick = event => {
     this.setState({ anchorEl: event.currentTarget });
@@ -150,15 +152,15 @@ class Header extends PureComponent {
                 open={Boolean(this.state.anchorEl)}
                 onClose={this.handleClose}
               >
-                <MenuItem onClick={this.handleClose.bind(this, "En")}>
+                <MenuItem onClick={this.handleClose.bind(this, "en")}>
                   {this.state.languageName == "English"
                     ? this.renderCheck()
                     : null}&nbsp; English
                 </MenuItem>
-                <MenuItem onClick={this.handleClose.bind(this, "Ar")}>
+                <MenuItem onClick={this.handleClose.bind(this, "ar")}>
                   {this.state.languageName == "عربي"
                     ? this.renderCheck()
-                    : null}&nbsp; Arabic
+                    : null}&nbsp; عربي
                 </MenuItem>
               </Menu>
             </div>
