@@ -481,11 +481,7 @@ class DeptMaster extends Component {
                   <span style={{ fontSize: 16 }}>(عربى) </span>
                 </label>
                 <br />
-                <TextField
-                  // onChange={this.changeDeptName.bind(this)}
-                  // value={this.state.department_name}
-                  className="txt-fld"
-                />
+                <TextField className="txt-fld" />
               </div>
             </div>
 
@@ -566,9 +562,8 @@ class DeptMaster extends Component {
                       { name: "department_status", title: "STATUS" }
                     ]}
                   >
-                    {/* <PagingState currentPage={0} pageSize={4} /> */}
                     <FilteringState defaultFilters={[]} />
-                    {/* <IntegratedPaging /> */}
+
                     <SearchState />
                     <IntegratedFiltering />
                     <Toolbar />
@@ -602,7 +597,7 @@ class DeptMaster extends Component {
                     <VirtualTable
                       tableComponent={TableComponent}
                       rowComponent={TableRow}
-                      height={300}
+                      height={350}
                     />
 
                     <TableHeaderRow />
@@ -620,7 +615,6 @@ class DeptMaster extends Component {
                       showDeleteCommand
                       commandComponent={Command}
                     />
-                    {/* <PagingPanel /> */}
                   </Grid>
                 </Paper>
               </div>

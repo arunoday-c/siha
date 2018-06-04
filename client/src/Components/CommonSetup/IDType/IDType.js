@@ -32,9 +32,6 @@ import {
   VirtualTable
 } from "@devexpress/dx-react-grid-material-ui";
 
-// TODO
-// Testing the New Plugin
-
 //Grid Logic Start here
 let sel_id = "";
 let row_id = "";
@@ -44,7 +41,7 @@ const TableRow = ({ row, ...restProps }) => (
     {...restProps}
     onClick={control => {
       sel_id = JSON.stringify(row.hims_d_identity_document_id);
-      row_id = row.id;
+      console.log("Row id:", JSON.stringify(row));
     }}
     style={{
       cursor: "pointer"
@@ -69,19 +66,19 @@ export const TableComponent = withStyles(styles, { name: "TableComponent" })(
 );
 
 const EditButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} algaeh-command="edit" title="Edit row">
+  <IconButton onClick={onExecute} title="Edit row">
     <EditIcon />
   </IconButton>
 );
 
 const DeleteButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} algaeh-command="delete" title="Delete row">
+  <IconButton onClick={onExecute} title="Delete row">
     <DeleteIcon />
   </IconButton>
 );
 
 const CommitButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} algaeh-command="submit" title="Save changes">
+  <IconButton onClick={onExecute} title="Save changes">
     <Done />
   </IconButton>
 );
@@ -204,6 +201,11 @@ class IDType extends Component {
     }
     if (changed) {
       console.log("Changed: ", JSON.stringify(changed));
+      let _key = Object.keys(changed);
+      console.log("Selected ID", sel_id);
+      if (changed[_key[0]] !== undefined) {
+        console.log("visa type code", changed[_key[0]].identity_document_code);
+      }
     }
     if (deleted) {
       this.setState({ openDialog: true });
