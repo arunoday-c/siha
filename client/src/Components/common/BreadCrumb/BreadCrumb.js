@@ -12,8 +12,8 @@ class BreadCrumb extends PureComponent {
     super(props);
     this.state = {
       createNew: true,
-      ctrlCode:"",
-      ctrlDate:0
+      ctrlCode: "",
+      ctrlDate: 0
     };
   }
 
@@ -24,41 +24,48 @@ class BreadCrumb extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(nextProps){
-		// debugger;
-		this.setState({
-      ctrlCode:nextProps.ctrlCode,
-      ctrlDate:nextProps.ctrlDate
-		});		
+  componentWillReceiveProps(nextProps) {
+    // debugger;
+    this.setState({
+      ctrlCode: nextProps.ctrlCode,
+      ctrlDate: nextProps.ctrlDate
+    });
   }
 
-  Handle(e){
+  Handle(e) {
     debugger;
     this.props.ControlCode(e.target.value);
     this.setState({
       ctrlCode: e.target.value
-    })
+    });
   }
 
-  
   render() {
     let NewCreate = this.state.createNew ? "*** NEW ***" : "";
     return (
       <div className="container-fluid">
         <div className="row">
-          {this.props.HideHalfbread == true ? (            
+          {this.props.HideHalfbread == true ? (
             <div id="pageHeader" className="col-lg-12">
-              <div className="row">
+              <div
+                className="row breadcrumb-fixed"
+                style={{ width: this.props.width }}
+              >
                 <div className="col-lg-3 hdg_bredcrump">
                   <h5>{this.props.title}</h5>
                   <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                       <li className="breadcrumb-item">
-                        <a href="#">{<AlgaehLabel
-                                      label={{
-                                        fieldName: "form_home",
-                                      }}
-                                    />}</a>
+                        <a href="#">
+                          {
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "form_home",
+                                align: "ltr"
+                              }}
+                            />
+                          }
+                        </a>
                       </li>
                       <li
                         className="breadcrumb-item active"
@@ -75,11 +82,14 @@ class BreadCrumb extends PureComponent {
                     <div className="row">
                       <div className="col-lg-2">
                         <div className="form-group">
-                          {<AlgaehLabel
-                            label={{
-                              fieldName: "form_create",
-                            }}
-                          />}
+                          {
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "form_create",
+                                align: "ltl"
+                              }}
+                            />
+                          }
                           <div>
                             <div className="row">
                               {CREATE_PATIENT.map((data, idx) => {
@@ -93,8 +103,13 @@ class BreadCrumb extends PureComponent {
                                       name="CREATE_PATIENT"
                                       className="htpl-phase1-radio-btn"
                                       value={data.value}
-                                      onChange={this.selectedValue.bind(this,data.value)}
-                                      defaultChecked={data.value === "Y" ? true : false}
+                                      onChange={this.selectedValue.bind(
+                                        this,
+                                        data.value
+                                      )}
+                                      defaultChecked={
+                                        data.value === "Y" ? true : false
+                                      }
                                     />
                                     <label className="radio-design">
                                       {data.label}
@@ -113,7 +128,7 @@ class BreadCrumb extends PureComponent {
                             <i className="fas fa-chevron-left" />
                           </div>
                           <div className="form-group col-lg-8">
-                            <label>{this.props.ctrlName}</label>
+                            {this.props.ctrlName}
                             <input
                               type="text"
                               className="form-control"
@@ -135,13 +150,13 @@ class BreadCrumb extends PureComponent {
                       </div>
                       <div className="col-lg-3">
                         <div className="form-group">
-                          <label>{this.props.dateLabel}</label>
+                          {this.props.dateLabel}
                           <input
-                              type="date"
-                              className="form-control"
-                              value={this.state.ctrlDate}
-                              disabled="true"                              
-                            />
+                            type="date"
+                            className="form-control"
+                            value={this.state.ctrlDate}
+                            disabled="true"
+                          />
                         </div>
                       </div>
                       <div className="col-lg-1">
@@ -153,10 +168,10 @@ class BreadCrumb extends PureComponent {
                   </form>
                 </div>
               </div>
-            </div>            
+            </div>
           ) : (
             <div id="pageHeader1" className="col-lg-12">
-              <div className="row">
+              <div className="row breadcrumb-fixed">
                 <div className="col-lg-3 hdg_bredcrump">
                   <h5>{this.props.title}</h5>
                   <nav aria-label="breadcrumb">
@@ -177,9 +192,7 @@ class BreadCrumb extends PureComponent {
                 <div className="col-lg-9 hdg_actions1">
                   <form>
                     <div className="row">
-                      <div className="col-lg-11">
-                        &nbsp;
-                      </div>
+                      <div className="col-lg-11">&nbsp;</div>
                       <div className="col-lg-1">
                         <div className="form-group print_actions">
                           <i className="fas fa-print fa-2x" />

@@ -14,13 +14,13 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import extend from "extend";
-import {
-  AddPatientHandlers,
+import {  
   texthandle,
   titlehandle,
   calculateAge,
   setAge,
-  numberSet
+  numberSet,
+  onDrop
 } from "./AddPatientDetails.js";
 import { createStore } from "redux";
 import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
@@ -31,7 +31,8 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlgaehSelector
+  AlgaehSelector,
+  AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import {
   FORMAT_MARTIALSTS,
@@ -69,6 +70,16 @@ class AddPatientForm extends PureComponent {
     // this.widthDate = widthDate;
   }
 
+  componentWillMount(){
+    let InputOutput;
+
+    if (this.props.patients.length > 0) {
+      InputOutput = this.props.patients[0];
+    } else {
+      InputOutput = this.props.PatRegIOputs;
+    }
+    this.setState({ ...this.state, ...InputOutput });
+  }
   componentDidMount() {
     debugger;
     if (this.props.titles.length === 0) {
@@ -94,14 +105,7 @@ class AddPatientForm extends PureComponent {
       this.props.getStates();
     }
 
-    let InputOutput;
-
-    if (this.props.patients.length > 0) {
-      InputOutput = this.props.patients[0];
-    } else {
-      InputOutput = this.props.PatRegIOputs;
-    }
-    this.setState({ ...this.state, ...InputOutput });
+    
     // this.setState({...this.state});
   }
 
@@ -133,6 +137,7 @@ class AddPatientForm extends PureComponent {
                 <div className="row">
                   <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 primary-details">
                     <div className="row primary-box-container">
+                      {/* <AlagehAutoComplete classes="" other="" /> */}
                       <AlgaehSelector
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -148,7 +153,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "his_d_title_id",
                             data: this.props.titles
                           },
-                          onChange: titlehandle.bind(this, context)
+                          onChange: titlehandle.bind(this, this, context)
                         }}
                       />
 
@@ -233,7 +238,7 @@ class AddPatientForm extends PureComponent {
                             thousandSeparator: ","
                           },
                           events: {
-                            onChange: setAge.bind(this, context)
+                            onChange: setAge.bind(this, this, context)
                           }
                         }}
                       />
@@ -253,7 +258,7 @@ class AddPatientForm extends PureComponent {
                             thousandSeparator: ","
                           },
                           events: {
-                            onChange: setAge.bind(this, context)
+                            onChange: setAge.bind(this, this, context)
                           }
                         }}
                       />
@@ -273,7 +278,7 @@ class AddPatientForm extends PureComponent {
                             thousandSeparator: ","
                           },
                           events: {
-                            onChange: setAge.bind(this, context)
+                            onChange: setAge.bind(this, this, context)
                           }
                         }}
                       />
@@ -470,7 +475,7 @@ class AddPatientForm extends PureComponent {
                         textBox={{ className: "txt-fld" }}
                         maxDate={this.state.CurrentDate}
                         events={{
-                          onChange: calculateAge.bind(this, context)
+                          onChange: calculateAge.bind(this, this, context)
                         }}
                         value={this.state.date_of_birth}
                       />
@@ -576,10 +581,7 @@ class AddPatientForm extends PureComponent {
                       <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
                         <div className="image-drop-area">
                           <Dropzone
-                            onDrop={AddPatientHandlers(
-                              this,
-                              context
-                            ).onDrop.bind(this, "filePreview")}
+                            onDrop={onDrop.bind(this, "filePreview")}
                             id="attach-width"
                             className="dropzone"
                             accept="image/*"
@@ -610,10 +612,7 @@ class AddPatientForm extends PureComponent {
                         <div className="image-drop-area">
                           <Dropzone
                             className="dropzone"
-                            onDrop={AddPatientHandlers(
-                              this,
-                              context
-                            ).onDrop.bind(this, "filePrimaryPreview")}
+                            onDrop={onDrop.bind(this, "filePrimaryPreview")}
                             id="attach-primary-id"
                             accept="image/*"
                             multiple={false}
@@ -639,10 +638,7 @@ class AddPatientForm extends PureComponent {
                         <div className="image-drop-area">
                           <Dropzone
                             className="dropzone"
-                            onDrop={AddPatientHandlers(
-                              this,
-                              context
-                            ).onDrop.bind(this, "fileSecPreview")}
+                            onDrop={onDrop.bind(this, "fileSecPreview")}
                             id="attach-sec-id"
                             accept="image/*"
                             multiple={false}
@@ -670,7 +666,7 @@ class AddPatientForm extends PureComponent {
               </div>
               <AHSnackbar
                 open={this.state.DOBError}
-                handleClose={this.handleClose}
+                // handleClose={this.handleClose}
                 MandatoryMsg={this.state.DOBErrorMsg}
               />
             </div>

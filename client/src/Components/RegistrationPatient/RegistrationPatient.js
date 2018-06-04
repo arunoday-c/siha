@@ -5,8 +5,7 @@ import PatientDetails from "./PatientDetails/PatientDetails.js";
 import ConsultationDetails from "./ConsultationDetails/ConsultationDetails.js";
 import InsuranceDetails from "./InsuranceDetails/InsuranceDetails.js";
 import Billing from "./Billing/BillingDetails";
-import Paper from "material-ui/Paper";
-import styles from "./registration.css";
+import "./registration.css";
 import PatRegIOputs from "../../Models/RegistrationPatient.js";
 import Button from "material-ui/Button";
 import extend from "extend";
@@ -18,24 +17,12 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import AppBar from "material-ui/AppBar";
-import Toolbar from "material-ui/Toolbar";
-import Snackbar from "material-ui/Snackbar";
-import VisitDetails from "../../Models/VisitDetails.js";
-import IconButton from "material-ui/IconButton";
-import Close from "@material-ui/icons/Close";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
-import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
-
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from "material-ui/Dialog";
+import Dialog, { DialogActions, DialogTitle } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
 
 function Transition(props) {
@@ -58,18 +45,20 @@ class RegistrationPatient extends Component {
       selectedLang: "lang_en",
       chnageLang: false,
       AGEMM: 0,
-      AGEDD: 0
+      AGEDD: 0,
+      breadCrumbWidth: null
     };
   }
 
+  componentWillMount() {
+    let IOputs = PatRegIOputs.inputParam();
+    this.setState({ ...this.state, ...IOputs });
+  }
   componentDidMount() {
     var width = document.getElementById("attach").offsetHeight;
     this.setState({
       widthImg: width
     });
-    let IOputs = PatRegIOputs.inputParam();
-    this.setState({ ...this.state, ...IOputs });
-    debugger;
   }
 
   ClearData(e) {
@@ -102,7 +91,8 @@ class RegistrationPatient extends Component {
   SideMenuBarOpen(sidOpen) {
     debugger;
     this.setState({
-      sidBarOpen: sidOpen
+      sidBarOpen: sidOpen,
+      breadCrumbWidth: sidOpen == true ? null : "98%"
     });
   }
 
@@ -141,7 +131,7 @@ class RegistrationPatient extends Component {
   render() {
     let margin = this.state.sidBarOpen ? "200px" : "";
     return (
-      <div id="attach" style={{ overflow: "visible" }}>
+      <div id="attach">
         {this.state.sidBarOpen === true ? (
           <div>
             <SideMenuBar />
@@ -151,15 +141,24 @@ class RegistrationPatient extends Component {
         <div style={{ marginLeft: margin }}>
           <Header
             height={this.state.widthImg}
-            title={<AlgaehLabel label={{ fieldName: "form_name" }} />}
+            title={
+              <AlgaehLabel label={{ fieldName: "form_name", align: "ltl" }} />
+            }
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
             SelectLanguage={this.SelectLanguage.bind(this)}
           />
 
           <BreadCrumb
-            title={<AlgaehLabel label={{ fieldName: "form_patregister" }} />}
+            width={this.state.breadCrumbWidth}
+            title={
+              <AlgaehLabel
+                label={{ fieldName: "form_patregister", align: "ltr" }}
+              />
+            }
             ctrlName={<AlgaehLabel label={{ fieldName: "patient_code" }} />}
-            screenName={<AlgaehLabel label={{ fieldName: "form_name" }} />}
+            screenName={
+              <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+            }
             dateLabel={
               <AlgaehLabel label={{ fieldName: "registration_date" }} />
             }
@@ -168,7 +167,7 @@ class RegistrationPatient extends Component {
             ctrlDate={this.state.registration_date}
             ControlCode={this.getCtrlCode.bind(this)}
           />
-          <div>
+          <div className="spacing-push">
             <MyContext.Provider
               value={{
                 state: this.state,

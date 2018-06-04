@@ -1,8 +1,9 @@
 import React, { PureComponent } from "react";
 import BillingForm from "./BillingDetails/BillingForm";
 import ReciptForm from "./ReciptDetails/ReciptForm";
-import styles from "./BillingDetails.css";
-import style from "./../../../styles/site.css";
+import "./BillingDetails.css";
+import "./../../../styles/site.css";
+import AlgaehLabel from "../../Wrapper/label.js";
 
 export default class BillingDetails extends PureComponent {
   constructor(props) {
@@ -39,24 +40,27 @@ export default class BillingDetails extends PureComponent {
               className={"nav-item tab-button " + BillingDetails}
               onClick={this.openTab.bind(this, "Billing-details")}
             >
-              BILLING DETAILS
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "tab_billdtls"
+                  }}
+                />
+              }
             </li>
             <li
               className={"nav-item tab-button " + ReciptDetails}
               onClick={this.openTab.bind(this, "Recipts-details")}
             >
-              RECIPTS
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "tab_recipts"
+                  }}
+                />
+              }
             </li>
-          </ul>
-          {/* <div className="row">
-						<div className="col-xs-4 col-sm-3 col-md-3 col-lg-2 tab">
-							<button className={"tab-button " + BillingDetails} onClick={this.openTab.bind(this, "Billing-details")}>Billing Details</button>
-						</div>
-
-						<div className="col-xs-4 col-sm-3 col-md-3 col-lg-2 tab">
-							<button className={"tab-button " + ReciptDetails}  onClick={this.openTab.bind(this, "Recipts-details")}>Recipts</button>
-						</div>
-					</div> */}
+          </ul>          
         </div>
         <div className="billing-section">
           {this.state.actionBillingDetails ? <BillingForm /> : null}

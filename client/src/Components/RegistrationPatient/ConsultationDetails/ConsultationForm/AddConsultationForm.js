@@ -29,15 +29,26 @@ class AddConsultationForm extends Component{
 		constructor(props){
 		super(props);
 		debugger;
-		this.state = extend({
+		this.state = {
 			value: ""
-		}, this.props.PatRegIOputs);
+		};
 	}
 
-
+	componentWillMount(){
+		let InputOutput;
+		
+		InputOutput = this.props.PatRegIOputs;
+		this.setState({ ...this.state, ...InputOutput });
+	}
+	
 	componentDidMount() {
-		this.props.getSubDepartments();
-		this.props.getVisittypes();
+		if(this.props.subdepartments.length === 0){
+			this.props.getSubDepartments();
+		}		
+		if (this.props.visittypes.length ===0 ){
+			this.props.getVisittypes();
+		}
+		
 	}
 
 	componentWillReceiveProps(nextProps){				
@@ -82,7 +93,7 @@ class AddConsultationForm extends Component{
 											selector={{
 												name: "department_id",
 												className: "select-fld",
-												value: this.state.visit_type,
+												value: this.state.department_id,
 												dataSource: {
 													textField: "sub_department_name",
 													valueField: "hims_d_sub_department_id",
@@ -114,7 +125,7 @@ class AddConsultationForm extends Component{
 											selector={{
 												name: "doctor_id",
 												className: "select-fld",
-												value: this.state.visit_type,
+												value: this.state.doctor_id,
 												dataSource: {
 													textField: "name",
 													valueField: "value",

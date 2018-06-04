@@ -15,7 +15,7 @@
         "target": "العنوان" 
     },
     "first_name": { 
-        "english": "First Name", 
+        "english": "First Name",
         "target": "الاسم الاول"
      },
     "middle_name": { 
@@ -227,6 +227,16 @@
     "attach_photo":{
         "english": "Attach Photo", 
         "target":"إرفاق صورة"
+    },
+
+    "attach_PrimaryID":{
+        "english": "Attach Prim. ID", 
+        "target":"إرفاق المعرف الأساسي"
+    },
+
+    "attach_SecondaryId":{
+        "english": "Attach Sec. ID", 
+        "target":"إرفاق معرف ثانوي"
     }
 
 }
