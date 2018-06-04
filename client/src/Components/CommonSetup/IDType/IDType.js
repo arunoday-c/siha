@@ -133,9 +133,9 @@ class IDType extends Component {
   changeStatus(e) {
     this.setState({ id_type_status: e.target.value });
 
-    if (e.target.value == "A")
+    if (e.target.value === "A")
       this.setState({ effective_end_date: "9999-12-31" });
-    else if (e.target.value == "I") {
+    else if (e.target.value === "I") {
       this.setState({
         effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
       });
@@ -349,7 +349,6 @@ class IDType extends Component {
 }
 
 function mapStateToProps(state) {
-  debugger;
   return {
     idtypes: state.idtypes.idtypes
   };
@@ -364,4 +363,9 @@ function mapDispatchToProps(dispatch) {
   );
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(IDType));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(IDType)
+);

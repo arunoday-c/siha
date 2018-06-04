@@ -19,7 +19,7 @@ import Experiment from "./Components/Experiment.js";
 function height() {
   let height =
     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
-  console.log("Height : = ", height);
+
   return height;
 }
 const appRoutes = [

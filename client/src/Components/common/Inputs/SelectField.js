@@ -42,7 +42,6 @@ export default class SelectFieldDrop extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    // debugger;
     if (this.props.displayValue != nextProps.displayValue) {
       this.setState({ SelectVal: nextProps.displayValue });
     }

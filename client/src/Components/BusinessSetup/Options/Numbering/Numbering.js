@@ -144,9 +144,7 @@ class Numbering extends Component {
   }
 
   add(e) {
-    debugger;
     e.preventDefault();
-    console.log("State", this.state);
 
     if (this.state.numgen_code.length === 0) {
       this.setState({ numgen_code_error: true });
@@ -176,9 +174,6 @@ class Numbering extends Component {
       data: this.state,
 
       onSuccess: response => {
-        console.log("Res", response.data.success);
-        console.log("Res Data", response.data);
-
         if (response.data.success === true) {
           window.location.reload();
         } else {
@@ -199,13 +194,10 @@ class Numbering extends Component {
 
   onCommitChanges({ added, changed, deleted }) {
     if (added) {
-      console.log("Added: ", added);
     }
     if (changed) {
-      console.log("Changed: ", changed);
     }
     if (deleted) {
-      console.log("Deleted: ", deleted);
     }
   }
 
@@ -466,7 +458,6 @@ class Numbering extends Component {
 }
 
 function mapStateToProps(state) {
-  debugger;
   return {
     options: state.options.options
   };
@@ -482,5 +473,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(Numbering)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Numbering)
 );

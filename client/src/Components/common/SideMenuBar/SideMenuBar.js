@@ -43,7 +43,6 @@ class SideMenuBar extends PureComponent {
         toggleSubMenu: false
       });
     }
-    console.log("state", this.state.menuSelected);
   }
   TriggerPath(e) {
     const path = e.currentTarget.getAttribute("path");
