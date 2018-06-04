@@ -8,7 +8,7 @@ import {
   ReactRouter
 } from "react-router-dom";
 
-import RegistrationPatient from "./Components/RegistrationPatient/RegistrationPatient.js";
+import FrontDesk from "./Components/RegistrationPatient/RegistrationPatient.js";
 import Login from "./Components/Login/Login.js";
 import Dashboard from "./Components/Dashboard/Dashboard.js";
 import DeptMaster from "./Components/BusinessSetup/DeptMaster/DeptMaster.js";
@@ -23,9 +23,9 @@ const appRoutes = [
     component: <Login />
   },
   {
-	path: "/RegistrationPatient",
+	path: "/FrontDesk",
     isExactPath: true,
-    component: <RegistrationPatient />	
+    component: <FrontDesk />	
   },
   {
     path: "/BusinessSetup",

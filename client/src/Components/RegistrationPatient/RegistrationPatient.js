@@ -5,8 +5,7 @@ import PatientDetails from "./PatientDetails/PatientDetails.js";
 import ConsultationDetails from "./ConsultationDetails/ConsultationDetails.js";
 import InsuranceDetails from "./InsuranceDetails/InsuranceDetails.js";
 import Billing from "./Billing/BillingDetails";
-import Paper from "material-ui/Paper";
-import styles from "./registration.css";
+import "./registration.css";
 import PatRegIOputs from "../../Models/RegistrationPatient.js";
 import Button from "material-ui/Button";
 import extend from "extend";
@@ -18,22 +17,13 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import AppBar from "material-ui/AppBar";
-import Toolbar from "material-ui/Toolbar";
-import Snackbar from "material-ui/Snackbar";
-import VisitDetails from "../../Models/VisitDetails.js";
-import IconButton from "material-ui/IconButton";
-import Close from "@material-ui/icons/Close";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
-import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
-
 import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
+  DialogActions,  
   DialogTitle
 } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
@@ -62,14 +52,15 @@ class RegistrationPatient extends Component {
     };
   }
 
+  componentWillMount(){
+    let IOputs = PatRegIOputs.inputParam();
+    this.setState({ ...this.state, ...IOputs });
+  }
   componentDidMount() {
     var width = document.getElementById("attach").offsetHeight;
     this.setState({
       widthImg: width
-    });
-    let IOputs = PatRegIOputs.inputParam();
-    this.setState({ ...this.state, ...IOputs });
-    debugger;
+    });    
   }
 
   ClearData(e) {
@@ -153,7 +144,7 @@ class RegistrationPatient extends Component {
             height={this.state.widthImg}
             title={<AlgaehLabel label={{ fieldName: "form_name" }} />}
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
-            SelectLanguage={this.SelectLanguage.bind(this)}
+            SelectLanguage={this.SelectLanguage.bind(this)}            
           />
 
           <BreadCrumb

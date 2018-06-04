@@ -55,5 +55,6 @@
   "form_yes": "نعم فعلا",
   "form_no": "لا",
   "hijiri_date":"التاريخ الهجري",
-  "attach_photo":"إرفاق صورة"
+  "attach_photo":"إرفاق صورة",
+  "attach_PrimaryID":"إرفاق المعرف الأساسي"
 }

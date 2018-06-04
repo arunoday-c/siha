@@ -4,6 +4,7 @@ import SecondaryInsurance from "./SecondaryInsurance/SecondaryInsurance.js";
 import InsuranceList from "./InsuranceList/InsuranceList.js";
 import "./InsuranceDetails.css";
 import "./../../../styles/site.css";
+import AlgaehLabel from "../../Wrapper/label.js";
 
 export default class InsuranceDetails extends PureComponent {
   constructor(props) {
@@ -39,13 +40,25 @@ export default class InsuranceDetails extends PureComponent {
               className={"nav-item tab-button " + primaryInsurance}
               onClick={this.openTab.bind(this, "primary-insurance")}
             >
-              PRIMARY INSURANCE DETAILS
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "tab_primaryins"
+                  }}
+                />
+              }
             </li>
             <li
               className={"nav-item tab-button " + secondaryInsurance}
               onClick={this.openTab.bind(this, "secondary-insurance")}
             >
-              SECONDARY INSURANCE DETAILS
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "tab_secondaryins"
+                  }}
+                />
+              }
             </li>
           </ul>
         </div>
@@ -54,9 +67,9 @@ export default class InsuranceDetails extends PureComponent {
           {this.state.actionPrimaryDesign ? <InsuranceForm /> : null}
           {this.state.actionSecondaryDesign ? null : <SecondaryInsurance />}
         </div>
-        <div>
+        {/* <div>
           <InsuranceList />
-        </div>
+        </div> */}
       </div>
     );
   }

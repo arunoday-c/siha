@@ -7,7 +7,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Drawer from 'material-ui/Drawer';
 import Paper from 'material-ui/Paper';
-
+import { setCookie, getCookie } from "../../../utils/algaehApiCall.js";
 
 const paper_style = {
 	height: "100%",
@@ -48,11 +48,14 @@ class SideMenuBar extends PureComponent {
 	}
 	TriggerPath(e){
 		debugger;
+		let lang = getCookie("Language");
 		const path=e.currentTarget.getAttribute("path");
+		const ScreenName = path.split("/");		
+		setCookie("ScreenName", ScreenName[1], 30);
 		this.setState({			
 			toggleSubMenu: true				
 		},()=>{			
-			window.location.hash = path
+			window.location.hash = path			
 		})
 	}
 

@@ -80,6 +80,7 @@ class Header extends PureComponent {
   }
   Languaue(secLang, e) {
     if (secLang === "En") {
+      // ScreenName = this.props.ScreenName
       setCookie("Language", "lang_en", 30);
       this.setState({ languageName: "English" });
       this.props.SelectLanguage("lang_en");

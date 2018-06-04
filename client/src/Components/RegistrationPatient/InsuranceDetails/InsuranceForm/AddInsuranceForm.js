@@ -46,17 +46,17 @@ export default class AddInsuranceForm extends Component{
 				<div className="container-fluid">
 						<div className="row">
 							<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 ">
-							<label>INSURANCE<mark>*</mark></label><br />
+								<label>INSURANCE<mark>*</mark></label><br />
 							<div className="row">
 								{INSURANCE_DECISION.map((data, idx) => {
 									return (
-										<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3	" key={"index_value" + idx}>
+										<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3" key={"index_value" + idx}>
 											 <input type="radio" name="INSURANCE_DECISION"
 	        		                            className="htpl-phase1-radio-btn"
 	        		                            value={data.value}
 	        		                            onChange={this.selectedValueInsurance.bind(this, data.value)}
 	        		                            defaultChecked={(data.value === "No") ? true : false} 
-											/>										   
+											/>
 										   <label className="radio-design">{data.label}</label>
 		                        		</div>
 									);
@@ -81,7 +81,7 @@ export default class AddInsuranceForm extends Component{
 							</div>
 							<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
 								<label>POLICY NO<mark>*</mark></label><br />
-									<TextField />
+								<TextField />
 							</div>
 						</div>
 
