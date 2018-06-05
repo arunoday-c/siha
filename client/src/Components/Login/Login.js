@@ -11,6 +11,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { getTokenDetals } from "../../actions/Login/Loginactions.js";
+import swal from "sweetalert";
 
 const styles = {
   root: {
@@ -92,21 +93,39 @@ class Login extends Component {
         uri: "/apiAuth/authUser",
         token: this.props.tokensDtl,
         data: this.state,
-
+        timeout: 10,
         onSuccess: response => {
+          console.log("Response, ", response);
           if (response.data.success === true) {
+            x.style.display = "none";
             window.location.hash = "/Dashboard";
           } else {
-            //Handle unsuccessful Login here.
+            console.log("Unsuccessful Response", response.data);
           }
         },
         onFailure: error => {
-          console.log(error);
-
-          // Handle network error here.
+          // console.log("Error Status: ", error.response.status);
+          x.style.display = "none";
+          if (error.response.status !== null && error.response.status === 404) {
+            this.unsuccessfulSignIn();
+          }
         }
       });
     }
+  }
+
+  unsuccessfulSignIn() {
+    swal({
+      title: "Failed",
+      text:
+        "User Name or Password doesn't match.\n Please check and login again",
+      icon: "error",
+      button: false,
+      timer: 2500
+    });
+
+    this.setState({ password: "", username: "" });
+    document.getElementById("username").focus();
   }
 
   changeUserName(e) {
@@ -119,11 +138,6 @@ class Login extends Component {
 
   componentDidMount() {
     this.props.getTokenDetals();
-  }
-
-  componentWillUnmount() {
-    let x = document.getElementById("myProg");
-    x.style.display = "none";
   }
 
   render() {
@@ -172,6 +186,7 @@ class Login extends Component {
                   error={this.state.userError}
                   helperText={this.state.userErrorText}
                   label="User Name"
+                  id="username"
                 />
 
                 <br />

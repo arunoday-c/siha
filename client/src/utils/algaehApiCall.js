@@ -24,13 +24,14 @@ export function algaehApiCall(options) {
       method: settings.method,
       url: baseUrl + settings.uri,
       headers: { "x-api-key": getToken() },
-      data: settings.data
+      data: settings.data,
+      timeout: settings.timeout
     })
       .then(response => {
         if (typeof settings.onSuccess == "function")
           settings.onSuccess(response);
       })
-      .catch(err => {
+      .catch(function(err) {
         if (typeof settings.onFailure == "function") settings.onFailure(err);
       });
   }

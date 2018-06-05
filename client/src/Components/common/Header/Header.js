@@ -141,7 +141,7 @@ class Header extends PureComponent {
                 {this.state.languageName}
                 &nbsp;&nbsp;{" "}
                 <i
-                  class="fa fa-language"
+                  className="fa fa-language"
                   aria-hidden="true"
                   style={{ fontSize: 18 }}
                 />
