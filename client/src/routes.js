@@ -8,13 +8,14 @@ import {
   ReactRouter
 } from "react-router-dom";
 
-import FrontDesk from "./Components/RegistrationPatient/RegistrationPatient.js";
-import Login from "./Components/Login/Login.js";
-import Dashboard from "./Components/Dashboard/Dashboard.js";
-import DeptMaster from "./Components/BusinessSetup/DeptMaster/DeptMaster.js";
-import BusinessSetup from "./Components/BusinessSetup/BusinessSetup.js";
-import CommonSetup from "./Components/CommonSetup/CommonSetup.js";
-import Experiment from "./Components/Experiment.js";
+import FrontDesk from "./Components/RegistrationPatient/RegistrationPatient";
+import Login from "./Components/Login/Login";
+import Dashboard from "./Components/Dashboard/Dashboard";
+import DeptMaster from "./Components/BusinessSetup/DeptMaster/DeptMaster";
+import BusinessSetup from "./Components/BusinessSetup/BusinessSetup";
+import CommonSetup from "./Components/CommonSetup/CommonSetup";
+import Experiment from "./Components/Experiment";
+import AlgaehMainpg from "./Components/common/AlgaehmainPage/AlgaehmainPage";
 
 function height() {
   let height =
@@ -27,6 +28,11 @@ const appRoutes = [
     path: "/",
     isExactPath: true,
     component: <Login />
+  },
+  {
+    path: "/Home",
+    isExactPath: true,
+    component: <AlgaehMainpg />
   },
   {
     path: "/FrontDesk",
@@ -58,7 +64,9 @@ const appRoutes = [
 const routes = (
   <HashRouter>
     <Switch>
+      
       {appRoutes.map((routeItem, idx) => {
+        debugger;
         return (
           <Route
             key={routeItem.path}
@@ -75,3 +83,4 @@ const routes = (
 );
 
 export default routes;
+

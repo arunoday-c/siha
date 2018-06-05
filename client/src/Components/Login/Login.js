@@ -111,7 +111,8 @@ class Login extends Component {
           console.log("Res Data", response.data);
 
           if (response.data.success === true) {
-            window.location.hash = "/Dashboard";
+            // window.location.hash = "/Dashboard";
+            window.location.hash = "/Home";
           } else {
             //Handle unsuccessful Login here.
           }
@@ -167,8 +168,7 @@ class Login extends Component {
                 id="emptyDiv"
                 className="col-lg-5 offset-2"
                 style={{ backgroundColor: "#007379CC" }}
-              >
-                {/* Add Client's Logo and other details here */}
+              >                
               </div>
 
               <div

@@ -4,7 +4,6 @@
   border-radius: 0px;
   background-color: #f3f3f3;
   color: #7c909b;
-  padding: 5px 15px;
   cursor: pointer;
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
@@ -426,3 +425,10 @@
 
 body {
   background-color: #f2f2f2; }
+
+.tab-container nav li
+label {
+  padding-top: "2px"; }
+
+.style_Label {
+  margin-bottom: "0px !important"; }

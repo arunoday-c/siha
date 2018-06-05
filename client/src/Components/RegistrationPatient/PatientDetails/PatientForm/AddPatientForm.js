@@ -95,9 +95,7 @@ class AddPatientForm extends PureComponent {
     if (this.props.relegions.length === 0) {
       this.props.getRelegion();
     }
-    if (this.props.cities.length === 0) {
-      this.props.getCities();
-    }
+    
     if (this.props.countries.length === 0) {
       this.props.getCountries();
     }
@@ -105,6 +103,9 @@ class AddPatientForm extends PureComponent {
       this.props.getStates();
     }
 
+    // if (this.props.cities.length === 0) {
+    //   this.props.getCities();
+    // }
     
     // this.setState({...this.state});
   }
@@ -168,7 +169,7 @@ class AddPatientForm extends PureComponent {
                           name: "first_name",
                           value: this.state.first_name,
                           events: {
-                            onChange: texthandle.bind(this, context)
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
@@ -184,7 +185,7 @@ class AddPatientForm extends PureComponent {
                           name: "middle_name",
                           value: this.state.middle_name,
                           events: {
-                            onChange: texthandle.bind(this, context)
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
@@ -200,7 +201,7 @@ class AddPatientForm extends PureComponent {
                           name: "last_name",
                           value: this.state.last_name,
                           events: {
-                            onChange: texthandle.bind(this, context)
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
@@ -221,7 +222,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "value",
                             data: FORMAT_GENDER
                           },
-                          onChange: texthandle.bind(this, context)
+                          onChange: texthandle.bind(this, this, context)
                         }}
                       />
                       <AlagehFormGroup
@@ -301,7 +302,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "value",
                             data: FORMAT_MARTIALSTS
                           },
-                          onChange: texthandle.bind(this, context)
+                          onChange: texthandle.bind(this, this, context)
                         }}
                       />
 
@@ -320,7 +321,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_religion_id",
                             data: this.props.relegions
                           },
-                          onChange: texthandle.bind(this, context)
+                          onChange: texthandle.bind(this, this, context)
                         }}
                       />
                     </div>
@@ -340,7 +341,7 @@ class AddPatientForm extends PureComponent {
                             format: MobileFormat
                           },
                           events: {
-                            onChange: numberSet.bind(this, context)
+                            onChange: numberSet.bind(this, this, context)
                           }
                         }}
                       />
@@ -360,7 +361,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_nationality_id",
                             data: this.props.nationalities
                           },
-                          onChange: texthandle.bind(this, context)
+                          onChange: texthandle.bind(this, this, context)
                         }}
                       />
                       <AlagehFormGroup
@@ -373,7 +374,7 @@ class AddPatientForm extends PureComponent {
                           name: "address1",
                           value: this.state.address1,
                           events: {
-                            onChange: texthandle.bind(this, context)
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
@@ -388,7 +389,7 @@ class AddPatientForm extends PureComponent {
                           name: "address2",
                           value: this.state.address2,
                           events: {
-                            onChange: texthandle.bind(this, context)
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
@@ -404,7 +405,7 @@ class AddPatientForm extends PureComponent {
                           name: "postal_code",
                           value: this.state.postal_code,
                           events: {
-                            onChange: texthandle.bind(this, context)
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
@@ -424,7 +425,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_country_id",
                             data: this.props.countries
                           },
-                          onChange: texthandle.bind(this, context)
+                          onChange: texthandle.bind(this, this, context)
                         }}
                       />
 
@@ -443,7 +444,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_state_id",
                             data: this.props.countrystates
                           },
-                          onChange: texthandle.bind(this, context)
+                          onChange: texthandle.bind(this, this, context)
                         }}
                       />
 
@@ -462,7 +463,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_city_id",
                             data: this.props.cities
                           },
-                          onChange: texthandle.bind(this, context)
+                          onChange: texthandle.bind(this, this, context)
                         }}
                       />
                     </div>
@@ -522,7 +523,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_identity_document_id",
                             data: this.props.idtypes
                           },
-                          onChange: texthandle.bind(this, context)
+                          onChange: texthandle.bind(this, this, context)
                         }}
                       />
 
@@ -537,7 +538,7 @@ class AddPatientForm extends PureComponent {
                           name: "primary_id_no",
                           value: this.state.primary_id_no,
                           events: {
-                            onChange: texthandle.bind(this, context)
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
@@ -558,7 +559,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_identity_document_id",
                             data: this.props.idtypes
                           },
-                          onChange: texthandle.bind(this, context)
+                          onChange: texthandle.bind(this, this, context)
                         }}
                       />
 
@@ -572,7 +573,7 @@ class AddPatientForm extends PureComponent {
                           name: "secondary_id_no",
                           value: this.state.secondary_id_no,
                           events: {
-                            onChange: texthandle.bind(this, context)
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
