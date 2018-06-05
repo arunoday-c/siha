@@ -31,7 +31,7 @@ export default class ConsultationDetails extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    //debugger;
+
     console.log("Visit Code", nextProps.visitcode);
     this.setState({
       visitcode: nextProps.visitcode

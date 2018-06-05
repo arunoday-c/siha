@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./common_setup.css";
+import "../../index.css";
 import PatientType from "./PatientType/PatientType.js";
 import AccidentType from "./AccidentType/AccidentType.js";
 import VisaType from "./VisaType/VisaType.js";
@@ -14,7 +15,11 @@ class CommonSetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "PatientType", sidBarOpen: true };
+    this.state = {
+      pageDisplay: "PatientType",
+      sidBarOpen: true,
+      breadCrumbWidth: null
+    };
   }
 
   openTab(e) {
@@ -30,9 +35,9 @@ class CommonSetup extends Component {
   }
 
   SideMenuBarOpen(sidOpen) {
-    debugger;
     this.setState({
-      sidBarOpen: sidOpen
+      sidBarOpen: sidOpen,
+      breadCrumbWidth: sidOpen == true ? null : "98%"
     });
   }
 
@@ -52,12 +57,13 @@ class CommonSetup extends Component {
             height={this.state.widthImg}
           />
           <BreadCrumb
+            width={this.state.breadCrumbWidth}
             title="Common Setup"
             screenName="Master Setup"
             HideHalfbread={false}
           />
 
-          <div className="tab-container toggle-section">
+          <div className="tab-container toggle-section spacing-push">
             <ul className="nav">
               <li
                 alagehtabs={"PatientType"}

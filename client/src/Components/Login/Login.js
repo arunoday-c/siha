@@ -3,11 +3,9 @@ import "./Login.css";
 import {
   TextField,
   Button,
-  createMuiTheme,
   CircularProgress,
   LinearProgress
 } from "material-ui";
-import { MuiThemeProvider } from "material-ui/styles";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -29,17 +27,6 @@ const styles = {
     backgroundColor: "#3A95AA"
   }
 };
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: "#3A95AA",
-      main: "#3A95AA",
-      dark: "#3A95AA",
-      contrastText: "#fff"
-    }
-  }
-});
 
 class Login extends Component {
   constructor(props) {
@@ -107,9 +94,6 @@ class Login extends Component {
         data: this.state,
 
         onSuccess: response => {
-          console.log("Res", response.data.success);
-          console.log("Res Data", response.data);
-
           if (response.data.success === true) {
             window.location.hash = "/Dashboard";
           } else {
@@ -143,88 +127,83 @@ class Login extends Component {
   }
 
   render() {
-    console.log("Length--", this.props.tokensDtl.length);
     if (this.props.tokensDtl === 0 || this.props.tokensDtl.length === 0) {
       return (
-        <MuiThemeProvider theme={theme}>
-          <div className="container">
-            <div className="row" style={{ marginTop: "30%" }}>
-              <div className="col-lg-1 offset-5">
-                <CircularProgress size={100} />
-              </div>
+        <div className="container">
+          <div className="row" style={{ marginTop: "30%" }}>
+            <div className="col-lg-1 offset-5">
+              <CircularProgress size={100} />
             </div>
           </div>
-        </MuiThemeProvider>
+        </div>
       );
     }
 
     return (
-      <MuiThemeProvider theme={theme}>
-        <div className="login bg">
-          <div className="container margintop15">
-            <div className="row-eq-height">
-              <div
-                id="emptyDiv"
-                className="col-lg-5 offset-2"
-                style={{ backgroundColor: "#007379CC" }}
-              >
-                {/* Add Client's Logo and other details here */}
-              </div>
+      <div className="login bg">
+        <div className="container margintop15">
+          <div className="row-eq-height">
+            <div
+              id="emptyDiv"
+              className="col-lg-5 offset-2"
+              style={{ backgroundColor: "#007379CC" }}
+            >
+              {/* Add Client's Logo and other details here */}
+            </div>
 
-              <div
-                id="loginForm"
-                className="col-lg-4"
-                style={{
-                  backgroundColor: "#EDEDED"
-                }}
-              >
-                <LinearProgress id="myProg" style={{ display: "none" }} />
+            <div
+              id="loginForm"
+              className="col-lg-4"
+              style={{
+                backgroundColor: "#EDEDED"
+              }}
+            >
+              <LinearProgress id="myProg" style={{ display: "none" }} />
 
-                <h3 style={{ marginTop: 40 }}>
-                  <span style={{ color: "#3A95AA" }}> ALGAEH</span> ERP
-                </h3>
+              <h3 style={{ marginTop: 40 }}>
+                <span style={{ color: "#3A95AA" }}> ALGAEH</span> ERP
+              </h3>
 
-                <form onSubmit={this.handleLogin.bind(this)}>
-                  <TextField
-                    onChange={this.changeUserName.bind(this)}
-                    value={this.state.username}
-                    style={styles.textField}
-                    error={this.state.userError}
-                    helperText={this.state.userErrorText}
-                    label="User Name"
-                  />
+              <form onSubmit={this.handleLogin.bind(this)}>
+                <TextField
+                  onChange={this.changeUserName.bind(this)}
+                  value={this.state.username}
+                  style={styles.textField}
+                  error={this.state.userError}
+                  helperText={this.state.userErrorText}
+                  label="User Name"
+                />
 
-                  <br />
-                  <TextField
-                    onChange={this.changePwd.bind(this)}
-                    value={this.state.password}
-                    error={this.state.pwdError}
-                    helperText={this.state.pwdErrorText}
-                    style={styles.textField}
-                    label="Password"
-                    type="password"
-                  />
+                <br />
+                <TextField
+                  onChange={this.changePwd.bind(this)}
+                  value={this.state.password}
+                  error={this.state.pwdError}
+                  helperText={this.state.pwdErrorText}
+                  style={styles.textField}
+                  label="Password"
+                  type="password"
+                />
 
-                  <br />
+                <br />
 
-                  {/* <Link to="#"> */}
-                  <Button
-                    type="submit"
-                    style={styles.login_btn}
-                    variant="raised"
-                    color="primary"
-                  >
-                    Log In
-                  </Button>
-                  {/* </Link> */}
+                {/* <Link to="#"> */}
+                <Button
+                  type="submit"
+                  style={styles.login_btn}
+                  variant="raised"
+                  color="primary"
+                >
+                  Log In
+                </Button>
+                {/* </Link> */}
 
-                  <br />
-                </form>
-              </div>
+                <br />
+              </form>
             </div>
           </div>
         </div>
-      </MuiThemeProvider>
+      </div>
     );
   }
 }
@@ -239,4 +218,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({ getTokenDetals: getTokenDetals }, dispatch);
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Login)
+);
