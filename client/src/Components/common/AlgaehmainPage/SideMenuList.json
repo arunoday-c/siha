@@ -1,0 +1,73 @@
+[
+	{
+		"name": "GENERAL",
+		"label": "GENERAL",
+		"path": "/",
+		"subMenu" : [
+			{
+				"name": "Dashboard",
+				"label": "Dashboard",
+				"path": "/Dashboard"
+			}
+		]
+	},
+	{
+		"name": "MASTERS",
+		"label": "MASTERS",
+		"path": "/appointment/",
+		"subMenu" : [
+			{
+				"name": "Business Setup",
+				"label": "Business Setup",
+				"path": "/BusinessSetup"
+			},
+			{
+				"name": "Common Setup",
+				"label": "Common Setup",
+				"path": "/CommonSetup"
+			}
+		]
+	},
+	{
+		"name": "FRONTDESK",
+		"label": "FRONTDESK",
+		"path": "/registration/",
+		"subMenu": [
+			{
+				"name": "Front Desk",
+				"label": "Front Desk",
+				"path": "/FrontDesk"
+			},
+			{
+				"name": "Billing",
+				"label": "Billing",
+				"path": "/registration/our-patient"
+			},			
+			{
+				"name": "OP List",
+				"label": "OP List",
+				"path": "/registration/op-list"
+			},
+			{
+				"name": "Patient List",
+				"label": "Patient List",
+				"path": "/registration/registration-list"
+			}			
+		]
+	},
+	{
+		"name": "ADMISSION",
+		"label": "ADMISSION",
+		"path": "/admission/",
+		"subMenu" : []
+
+	},
+	{
+		"name": "OP BILL",
+		"label": "OP BILL",
+		"path": "/op-bill/",
+		"subMenu" : []
+
+	}
+
+]

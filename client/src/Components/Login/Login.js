@@ -95,7 +95,8 @@ class Login extends Component {
 
         onSuccess: response => {
           if (response.data.success === true) {
-            window.location.hash = "/Dashboard";
+            // window.location.hash = "/Dashboard";
+            window.location.hash = "/Home";
           } else {
             //Handle unsuccessful Login here.
           }

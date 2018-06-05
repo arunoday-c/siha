@@ -35,6 +35,7 @@ class AddConsultationForm extends Component{
 	}
 
 	componentWillMount(){
+		debugger;
 		let InputOutput;
 		
 		InputOutput = this.props.PatRegIOputs;

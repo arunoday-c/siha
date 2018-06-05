@@ -1,6 +1,6 @@
 import moment from "moment";
 
-const texthandle = (context, e) => {
+const texthandle = ($this, context, e) => {
   debugger;
   let name;
   let value;
@@ -11,6 +11,10 @@ const texthandle = (context, e) => {
     name = e.target.name;
     value = e.target.value;
   }
+
+  $this.setState({
+    [name]: value
+  })
 
   if (context != null) {
     context.updateState({ [name]: value });
@@ -88,8 +92,12 @@ const setAge = ($this, context, ctrl, e) => {
   }
 };
 
-const numberSet = (context, cntrl, e) => {
+const numberSet = ($this, context, cntrl, e) => {
   debugger;
+
+  $this.setState({
+    [e.target.name]: e.target.value
+  })
   if (context != null) {
     context.updateState({ [e.target.name]: e.target.value });
   }

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./common_setup.css";
-import "../../index.css";
 import PatientType from "./PatientType/PatientType.js";
 import AccidentType from "./AccidentType/AccidentType.js";
 import VisaType from "./VisaType/VisaType.js";
@@ -15,11 +14,7 @@ class CommonSetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      pageDisplay: "PatientType",
-      sidBarOpen: true,
-      breadCrumbWidth: null
-    };
+    this.state = { pageDisplay: "PatientType", sidBarOpen: true };
   }
 
   openTab(e) {
@@ -35,9 +30,9 @@ class CommonSetup extends Component {
   }
 
   SideMenuBarOpen(sidOpen) {
+    debugger;
     this.setState({
-      sidBarOpen: sidOpen,
-      breadCrumbWidth: sidOpen == true ? null : "98%"
+      sidBarOpen: sidOpen
     });
   }
 
@@ -45,7 +40,7 @@ class CommonSetup extends Component {
     let margin = this.state.sidBarOpen ? "200px" : "";
     return (
       <div className="common_setup">
-        {this.state.sidBarOpen === true ? (
+        {/* {this.state.sidBarOpen === true ? (
           <div>
             <SideMenuBar />
           </div>
@@ -55,15 +50,14 @@ class CommonSetup extends Component {
             title="Common Setup"
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
             height={this.state.widthImg}
-          />
+          /> */}
           <BreadCrumb
-            width={this.state.breadCrumbWidth}
             title="Common Setup"
             screenName="Master Setup"
             HideHalfbread={false}
           />
 
-          <div className="tab-container toggle-section spacing-push">
+          <div className="tab-container toggle-section">
             <ul className="nav">
               <li
                 alagehtabs={"PatientType"}
@@ -132,8 +126,7 @@ class CommonSetup extends Component {
             ) : this.state.pageDisplay === "EquipmentType" ? (
               <EquipmentType />
             ) : null}
-          </div>
-        </div>
+          </div>        
       </div>
     );
   }

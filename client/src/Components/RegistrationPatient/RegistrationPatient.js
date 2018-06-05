@@ -32,6 +32,7 @@ function Transition(props) {
 var intervalId;
 class RegistrationPatient extends Component {
   constructor(props) {
+    debugger;
     super(props);
 
     this.state = {
@@ -92,10 +93,13 @@ class RegistrationPatient extends Component {
     debugger;
     this.setState({
       sidBarOpen: sidOpen,
-      breadCrumbWidth: sidOpen == true ? null : "98%"
+      breadCrumbWidth: sidOpen === true ? null : "98%"
     });
   }
 
+  componentWillReceiveProps(nextProps){
+    debugger;
+  }
   SelectLanguage(secLang) {
     debugger;
     this.setState({
@@ -129,10 +133,10 @@ class RegistrationPatient extends Component {
   }
 
   render() {
-    let margin = this.state.sidBarOpen ? "200px" : "";
+    // let margin = this.state.sidBarOpen ? "200px" : "";
     return (
       <div id="attach">
-        {this.state.sidBarOpen === true ? (
+        {/* {this.state.sidBarOpen === true ? (
           <div>
             <SideMenuBar />
           </div>
@@ -146,79 +150,78 @@ class RegistrationPatient extends Component {
             }
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
             SelectLanguage={this.SelectLanguage.bind(this)}
-          />
+          /> */}
 
-          <BreadCrumb
-            width={this.state.breadCrumbWidth}
-            title={
-              <AlgaehLabel
-                label={{ fieldName: "form_patregister", align: "ltr" }}
-              />
-            }
-            ctrlName={<AlgaehLabel label={{ fieldName: "patient_code" }} />}
-            screenName={
-              <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-            }
-            dateLabel={
-              <AlgaehLabel label={{ fieldName: "registration_date" }} />
-            }
-            HideHalfbread={true}
-            ctrlCode={this.state.patient_code}
-            ctrlDate={this.state.registration_date}
-            ControlCode={this.getCtrlCode.bind(this)}
-          />
-          <div className="spacing-push">
-            <MyContext.Provider
-              value={{
-                state: this.state,
-                updateState: obj => {
-                  debugger;
-                  extend(this.state, obj);
-                  // this.setState({ ...this.state, obj });
-                }
-              }}
-            >
-              <PatientDetails PatRegIOputs={this.state} />
-              <ConsultationDetails PatRegIOputs={this.state} />
-              <InsuranceDetails PatRegIOputs={this.state} />
-              <Billing PatRegIOputs={this.state} />
-              <div className="hptl-phase1-footer">
-                <br /> <br />
-                <AppBar position="static" className="main">
-                  <div className="container-fluid">
-                    <div className="row">
-                      <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
-                        &nbsp;
-                      </div>
-                      <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-11">
-                        <button
-                          className="htpl1-phase1-btn-secondary"
-                          onClick={this.ClearData}
-                        >
-                          Clear
-                        </button>
-                      </div>
-                      <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-12">
-                        <button
-                          className="htpl1-phase1-btn-primary"
-                          onClick={this.SavePatientDetails.bind(this)}
-                        >
-                          Save
-                        </button>
+        <BreadCrumb
+          width={this.state.breadCrumbWidth}
+          title={
+            <AlgaehLabel
+              label={{ fieldName: "form_patregister", align: "ltr" }}
+            />
+          }
+          ctrlName={<AlgaehLabel label={{ fieldName: "patient_code" }} />}
+          screenName={
+            <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+          }
+          dateLabel={
+            <AlgaehLabel label={{ fieldName: "registration_date" }} />
+          }
+          HideHalfbread={true}
+          ctrlCode={this.state.patient_code}
+          ctrlDate={this.state.registration_date}
+          ControlCode={this.getCtrlCode.bind(this)}
+        />
+        <div className="spacing-push">
+          <MyContext.Provider
+            value={{
+              state: this.state,
+              updateState: obj => {
+                debugger;
+                extend(this.state, obj);
+                // this.setState({ ...this.state, obj });
+              }
+            }}
+          >
+            <PatientDetails PatRegIOputs={this.state} />
+            <ConsultationDetails PatRegIOputs={this.state} />
+            <InsuranceDetails PatRegIOputs={this.state} />
+            <Billing PatRegIOputs={this.state} />
+            <div className="hptl-phase1-footer">
+              <br /> <br />
+              <AppBar position="static" className="main">
+                <div className="container-fluid">
+                  <div className="row">
+                    <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
+                      &nbsp;
+                    </div>
+                    <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-11">
+                      <button
+                        className="htpl1-phase1-btn-secondary"
+                        onClick={this.ClearData}
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-12">
+                      <button
+                        className="htpl1-phase1-btn-primary"
+                        onClick={this.SavePatientDetails.bind(this)}
+                      >
+                        Save
+                      </button>
 
-                        <AHSnackbar
-                          open={this.state.open}
-                          handleClose={this.handleClose}
-                          MandatoryMsg={this.state.MandatoryMsg}
-                        />
-                      </div>
+                      <AHSnackbar
+                        open={this.state.open}
+                        handleClose={this.handleClose}
+                        MandatoryMsg={this.state.MandatoryMsg}
+                      />
                     </div>
                   </div>
-                </AppBar>
-              </div>
-            </MyContext.Provider>
-          </div>
-        </div>
+                </div>
+              </AppBar>
+            </div>
+          </MyContext.Provider>
+        </div>        
 
         <div>
           <Dialog
@@ -245,9 +248,9 @@ class RegistrationPatient extends Component {
   }
 }
 
-function TransitionUp(props) {
-  return <Slide {...props} direction="up" />;
-}
+// function TransitionUp(props) {
+//   return <Slide {...props} direction="up" />;
+// }
 
 function mapStateToProps(state) {
   return {
