@@ -15,12 +15,12 @@
   :global .tab-container .tab-button:focus {
     outline: none; }
   :global .tab-container .tab-button.active {
-    background-color: #DBAD64;
+    background-color: #dbad64;
     color: #fff;
     border: solid 1px #ffffff;
     pointer-events: none; }
     :global .tab-container .tab-button.active:hover {
-      background-color: #DBAD64 !important;
+      background-color: #dbad64 !important;
       color: #fff !important; }
 
 :global .tab-container .tab {
@@ -84,7 +84,7 @@
     :global .htpl-phase1-radio-btn:checked:focus {
       outline: none; }
     :global .htpl-phase1-radio-btn:checked::before {
-      content: '';
+      content: "";
       background: #44b6ae;
       display: block;
       position: absolute;
@@ -155,12 +155,12 @@
   :global .ins-tab-container .tab-button:focus {
     outline: none; }
   :global .ins-tab-container .tab-button.active {
-    background-color: #F7F7F7;
+    background-color: #f7f7f7;
     color: #000;
     border: solid 1px #000;
     pointer-events: none; }
     :global .ins-tab-container .tab-button.active:hover {
-      background-color: #F7F7F7 !important;
+      background-color: #f7f7f7 !important;
       color: #fff !important; }
 
 :global .ins-tab-container .tab {
@@ -188,3 +188,6 @@
     margin: 8px 0px;
     min-width: 130px;
     padding-left: 0px; }
+
+:global .spacing-push {
+  margin-top: 6em !important; }

@@ -51,82 +51,82 @@ class CommonSetup extends Component {
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
             height={this.state.widthImg}
           /> */}
-        <BreadCrumb
-          title="Common Setup"
-          screenName="Master Setup"
-          HideHalfbread={false}
-        />
+          <BreadCrumb
+            title="Common Setup"
+            screenName="Master Setup"
+            HideHalfbread={false}
+          />
 
-        <div className="tab-container toggle-section">
-          <ul className="nav">
-            <li
-              alagehtabs={"PatientType"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button active"}
-              onClick={this.openTab.bind(this)}
-            >
-              PATIENT TYPE
-            </li>
-            <li
-              alagehtabs={"AccidentType"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              ACCIDENT TYPE
-            </li>
-            <li
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              alagehtabs={"EquipmentType"}
-              onClick={this.openTab.bind(this)}
-            >
-              EQUIPMENT TYPE
-            </li>
-            <li
-              alagehtabs={"VisitType"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              VISIT TYPE
-            </li>
-            <li
-              style={{ marginRight: 2 }}
-              alagehtabs={"VisaType"}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              VISA TYPE
-            </li>
-            <li
-              style={{ marginRight: 2 }}
-              alagehtabs={"IDType"}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              IDENTIFICATION TYPE
-            </li>
-          </ul>
-        </div>
+          <div className="tab-container toggle-section">
+            <ul className="nav">
+              <li
+                alagehtabs={"PatientType"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                PATIENT TYPE
+              </li>
+              <li
+                alagehtabs={"AccidentType"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                ACCIDENT TYPE
+              </li>
+              <li
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button "}
+                alagehtabs={"EquipmentType"}
+                onClick={this.openTab.bind(this)}
+              >
+                EQUIPMENT TYPE
+              </li>
+              <li
+                alagehtabs={"VisitType"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                VISIT TYPE
+              </li>
+              <li
+                style={{ marginRight: 2 }}
+                alagehtabs={"VisaType"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                VISA TYPE
+              </li>
+              <li
+                style={{ marginRight: 2 }}
+                alagehtabs={"IDType"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                IDENTIFICATION TYPE
+              </li>
+            </ul>
+          </div>
 
-        <div className="common-section">
-          {/*  {<this.state.pageDisplay />} */}
+          <div className="common-section">
+            {/*  {<this.state.pageDisplay />} */}
 
-          {this.state.pageDisplay === "PatientType" ? (
-            <PatientType />
-          ) : this.state.pageDisplay === "AccidentType" ? (
-            <AccidentType />
-          ) : this.state.pageDisplay === "VisaType" ? (
-            <VisaType />
-          ) : this.state.pageDisplay === "IDType" ? (
-            <IDType />
-          ) : this.state.pageDisplay === "VisitType" ? (
-            <VisitType />
-          ) : this.state.pageDisplay === "EquipmentType" ? (
-            <EquipmentType />
-          ) : null}
-        </div>        
+            {this.state.pageDisplay === "PatientType" ? (
+              <PatientType />
+            ) : this.state.pageDisplay === "AccidentType" ? (
+              <AccidentType />
+            ) : this.state.pageDisplay === "VisaType" ? (
+              <VisaType />
+            ) : this.state.pageDisplay === "IDType" ? (
+              <IDType />
+            ) : this.state.pageDisplay === "VisitType" ? (
+              <VisitType />
+            ) : this.state.pageDisplay === "EquipmentType" ? (
+              <EquipmentType />
+            ) : null}
+          </div>        
       </div>
     );
   }

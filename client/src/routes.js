@@ -20,7 +20,7 @@ import AlgaehMainpg from "./Components/common/AlgaehmainPage/AlgaehmainPage";
 function height() {
   let height =
     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
-  console.log("Height : = ", height);
+
   return height;
 }
 const appRoutes = [
