@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Paper, TextField } from "material-ui";
 import "./id_type.css";
 import { Button } from "material-ui";
@@ -31,22 +31,42 @@ import {
   TableEditColumn,
   VirtualTable
 } from "@devexpress/dx-react-grid-material-ui";
+import extend from "extend";
 
 //Grid Logic Start here
 let sel_id = "";
 let row_id = "";
 
+let rowelements = new Object();
 const TableRow = ({ row, ...restProps }) => (
-  <Table.Row
-    {...restProps}
-    onClick={control => {
-      sel_id = JSON.stringify(row.hims_d_identity_document_id);
-      console.log("Row id:", JSON.stringify(row));
-    }}
-    style={{
-      cursor: "pointer"
-    }}
-  />
+  <Fragment>
+    <Table.Row
+      {...restProps}
+      data-algaeh-reference={JSON.stringify({
+        hims_d_identity_document_id: row.hims_d_identity_document_id
+      })}
+      onClick={control => {
+        debugger;
+        sel_id = JSON.stringify(row.hims_d_identity_document_id);
+
+        let getattr = control.currentTarget.getAttribute(
+          "data-algaeh-reference"
+        );
+        let rowId = control.currentTarget.rowIndex;
+        let JsonParse = JSON.parse(getattr);
+        let obj = { [rowId]: JsonParse };
+        extend(rowelements, obj);
+        // console.log("Row id:", JSON.stringify(counter));
+        // rowArray.push({
+        //   rowId: rowId,
+        //   hims_d_identity_document_id: row.hims_d_identity_document_id
+        // });
+      }}
+      style={{
+        cursor: "pointer"
+      }}
+    />
+  </Fragment>
 );
 
 const styles = theme => ({
@@ -200,17 +220,39 @@ class IDType extends Component {
       console.log("Added: ", added);
     }
     if (changed) {
-      console.log("Changed: ", JSON.stringify(changed));
+      console.log("Changed: ", JSON.stringify(rowelements));
+      debugger;
       let _key = Object.keys(changed);
-      console.log("Selected ID", sel_id);
-      if (changed[_key[0]] !== undefined) {
-        console.log("visa type code", changed[_key[0]].identity_document_code);
+      // console.log("Selected ID", sel_id);
+      let getKey = changed[_key[0]];
+      if (getKey !== undefined) {
+        console.log(
+          "hims_d_identity_document_id",
+          rowelements[_key[0]].hims_d_identity_document_id
+        );
+
+        let data = new Object();
+
+        data = {
+          hims_d_identity_document_id:
+            rowelements[_key[0]].hims_d_identity_document_id,
+          ...getKey
+        };
+
+        this.updateIDtypes(data);
       }
+
+      console.log("key", String(_key[0]));
+      delete rowelements[String(_key[0])];
+      console.log("deleted: ", JSON.stringify(rowelements));
     }
     if (deleted) {
       this.setState({ openDialog: true });
-      console.log("Deleted: ", deleted);
     }
+  }
+
+  updateIDtypes(data) {
+    console.log("DATA", data);
   }
 
   handleDialogClose() {

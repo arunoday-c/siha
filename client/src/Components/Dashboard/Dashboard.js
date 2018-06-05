@@ -89,20 +89,20 @@ class Dashboard extends Component {
   }
 
   render() {
-    let margin = this.state.sidBarOpen ? "200px" : "";
+    let margin = this.state.sidBarOpen ? "" : "";
     return (
       <div className="dashboard ">
-        {this.state.sidBarOpen === true ? (
+        {/* {this.state.sidBarOpen === true ? (
           <div>
             <SideMenuBar />
           </div>
-        ) : null}
+        ) : null} */}
+        {/* <SideBar title="Dashboard"/> */}
         <div style={{ marginLeft: margin }}>
-          <Header
+          {/* <Header
             title="Dashboard"
             SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
-          />
-
+          /> */}
           <div className="row card-deck" style={{ margin: 40 }}>
             {/* Bar Graph Start */}
 

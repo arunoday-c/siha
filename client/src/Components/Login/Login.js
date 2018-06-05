@@ -97,8 +97,13 @@ class Login extends Component {
         onSuccess: response => {
           console.log("Response, ", response);
           if (response.data.success === true) {
+<<<<<<< HEAD
             x.style.display = "none";
             window.location.hash = "/Dashboard";
+=======
+            // window.location.hash = "/Dashboard";
+            window.location.hash = "/Home";
+>>>>>>> 26c25da8f5ddc4d4fce77e7254ac9831cfd28449
           } else {
             console.log("Unsuccessful Response", response.data);
           }
