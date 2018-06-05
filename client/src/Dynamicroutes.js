@@ -32,7 +32,7 @@ const componts =(selectedLang)=>{return{
 }}
 
 const directRoutes = ((componet, selectedLang)=>{
-    debugger;
+
     const  MyComponet = componts(selectedLang)[componet];
     return(MyComponet);
 });

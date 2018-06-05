@@ -160,13 +160,11 @@ class PatientType extends Component {
 
   commitChanges({ added, changed, deleted }) {
     if (added) {
-      console.log("commitChanges Added");
+
     }
 
     if (changed) {
-      console.log("commit Changes changed for sel_id: ", sel_id);
-      console.log("Changed: ", changed);
-      console.log("Date: " + startDate);
+   
 
       //Get all the details here and hit the api for changes.
       // Isuse 1 : changed details are getting in the form of an array
@@ -177,14 +175,14 @@ class PatientType extends Component {
 
     if (deleted) {
       this.setState({ openDialog: true });
-      console.log("commit changes Deleted for sel_id: ", sel_id);
+
     }
   }
 
   componentWillReceiveProps() {}
 
   btnClick() {
-    console.log("sel_id", sel_id);
+
   }
 
   changeStatus(e) {
@@ -211,12 +209,12 @@ class PatientType extends Component {
       data: data,
       method: "DELETE",
       onSuccess: response => {
-        debugger;
+
         this.setState({ open: false });
         window.location.reload();
       },
       onFailure: error => {
-        console.log(error);
+
         this.setState({ open: false });
       }
     });

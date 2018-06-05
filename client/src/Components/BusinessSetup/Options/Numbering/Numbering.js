@@ -181,7 +181,7 @@ class Numbering extends Component {
         }
       },
       onFailure: error => {
-        console.log(error);
+
 
         // Handle network error here.
       }

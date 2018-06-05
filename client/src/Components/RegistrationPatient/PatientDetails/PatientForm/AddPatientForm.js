@@ -81,7 +81,7 @@ class AddPatientForm extends PureComponent {
     this.setState({ ...this.state, ...InputOutput });
   }
   componentDidMount() {
-    debugger;
+
     if (this.props.titles.length === 0) {
       this.props.getTitles();
     }
@@ -119,7 +119,7 @@ class AddPatientForm extends PureComponent {
 
   numInput(e) {
     var inputKeyCode = e.keyCode ? e.keyCode : e.which;
-    console.log("Show my data-", inputKeyCode);
+
     if (inputKeyCode !== null) {
       if (inputKeyCode >= 48 && inputKeyCode <= 57) {
       } else {

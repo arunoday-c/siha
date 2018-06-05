@@ -93,18 +93,18 @@ class Login extends Component {
         uri: "/apiAuth/authUser",
         token: this.props.tokensDtl,
         data: this.state,
-        timeout: 10,
+        timeout: 10000,
         onSuccess: response => {
-          console.log("Response, ", response);
+
           if (response.data.success === true) {
-            // window.location.hash = "/Dashboard";
+
             window.location.hash = "/Home";
           } else {
-            console.log("Unsuccessful Response", response.data);
+
           }
         },
         onFailure: error => {
-          // console.log("Error Status: ", error.response.status);
+
           x.style.display = "none";
           if (error.response.status !== null && error.response.status === 404) {
             this.unsuccessfulSignIn();

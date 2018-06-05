@@ -44,7 +44,7 @@ export default class Selector extends Component {
     ));
   };
   componentWillReceiveProps(nextProps) {
-    // debugger;
+
     this.setState({ value: nextProps.selector.value });
   }
 

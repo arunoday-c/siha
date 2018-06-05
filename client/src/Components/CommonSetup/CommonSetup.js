@@ -30,7 +30,7 @@ class CommonSetup extends Component {
   }
 
   SideMenuBarOpen(sidOpen) {
-    debugger;
+
     this.setState({
       sidBarOpen: sidOpen
     });

@@ -66,7 +66,7 @@ const routes = (
     <Switch>
       
       {appRoutes.map((routeItem, idx) => {
-        debugger;
+
         return (
           <Route
             key={routeItem.path}

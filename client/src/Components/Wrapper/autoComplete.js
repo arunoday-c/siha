@@ -157,7 +157,7 @@ class AutoComplete extends Component {
     this.props.onSelect(this.props.option, event);
   };
   handleChange = value => {
-    debugger;
+
     this.setState({
       single: value
     });

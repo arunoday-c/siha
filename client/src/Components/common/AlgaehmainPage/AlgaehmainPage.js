@@ -156,7 +156,7 @@ class PersistentDrawer extends React.Component {
 
 
   Languaue(secLang, e) {
-    debugger;
+
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
@@ -209,18 +209,18 @@ class PersistentDrawer extends React.Component {
         toggleSubMenu: false
       });
     }
-    console.log("state", this.state.menuSelected);
+
   }
   
 
   TriggerPath(e) {
-    debugger;
+
     const path = e.currentTarget.getAttribute("path");
     const name = e.currentTarget.getAttribute("name");
     let screenName = e.currentTarget.innerText.replace(/\s/g, "");
     setCookie("ScreenName", path, 30);
     
-    console.log("Child", this.props.children);
+
     this.setState(
       {
         toggleSubMenu: true,

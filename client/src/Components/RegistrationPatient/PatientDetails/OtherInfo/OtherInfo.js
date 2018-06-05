@@ -43,7 +43,7 @@ class OtherInfo extends Component{
 	}
 
 	componentWillReceiveProps(nextProps){    
-		// debugger;
+
 		if(nextProps.patients.length >0 )
 		{
 		  this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
@@ -171,17 +171,17 @@ class OtherInfo extends Component{
 
 function AddPatientOtherHandlers(state,context){
 	context = context || null;
-	debugger;
+
 	return{
 		handle:(val)=>{
-			debugger;
+
 			state.setState({
 				value: val
 			})		
 		},
 
 		numbertexthandle: (ctrl, e)=>  {
-            debugger;            
+          
             state.setState({
                 [e.target.name]: e.target.value
             });
@@ -193,7 +193,7 @@ function AddPatientOtherHandlers(state,context){
 
 		
 		texthandle:(e)=>{
-			debugger;
+
 			state.setState({
 				[e.target.name]: e.target.value
 			});
@@ -204,7 +204,7 @@ function AddPatientOtherHandlers(state,context){
 		},
 
 		selectedHandeler:(e)=>{
-            debugger;            
+        
             state.setState({
                 [e.name]: e.value
             });            
