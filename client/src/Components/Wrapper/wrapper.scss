@@ -4,6 +4,7 @@ div[numberbox="true"] {
   }
 }
 .DayPickerInput {
+  z-index: 2 !important;
   input {
     font: inherit;
     color: currentColor;
