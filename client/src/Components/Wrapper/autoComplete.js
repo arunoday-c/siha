@@ -171,7 +171,7 @@ class AutoComplete extends PureComponent {
 
   render() {
     return (
-      <div className={this.props.div.className}>
+      <div className={this.props.div.className} {...this.props.div.others}>
         {this.renderLabel()}
         {this.renderAutoComplete()}
       </div>

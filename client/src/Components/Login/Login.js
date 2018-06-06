@@ -229,7 +229,8 @@ class Login extends Component {
                     value: this.state.password,
                     events: {
                       onChange: this.texthandle.bind(this)
-                    }
+                    },
+                    others: { type: "password" }
                   }}
                 />
 

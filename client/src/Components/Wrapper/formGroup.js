@@ -88,6 +88,7 @@ export default class FormGroup extends PureComponent {
                   }
                 : null
             }
+            {...this.props.textBox.others}
           />
         );
       } else if (this.props.textBox.number != null) {
@@ -128,6 +129,7 @@ export default class FormGroup extends PureComponent {
                 ? this.props.textBox.disabled
                 : null
             }
+            {...this.props.textBox.others}
           />
         );
       } else if (this.props.textBox.mask != null) {
@@ -156,6 +158,7 @@ export default class FormGroup extends PureComponent {
                   }
                 : null
             }
+            {...this.props.textBox.others}
           />
         );
       } else {
@@ -183,6 +186,7 @@ export default class FormGroup extends PureComponent {
                   }
                 : null
             }
+            {...this.props.textBox.others}
           />
         );
       }
@@ -192,7 +196,7 @@ export default class FormGroup extends PureComponent {
   };
   render() {
     return (
-      <div className={this.props.div.className}>
+      <div className={this.props.div.className} {...this.props.div.others}>
         {this.labelRender()}
         {this.textBoxRender()}
       </div>

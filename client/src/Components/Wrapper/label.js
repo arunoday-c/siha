@@ -62,6 +62,7 @@ class Label extends PureComponent {
                       : "style_Label"
                 : null
             }
+            {...this.props.label.others}
           >
             {this.state.languageBind}
             {this.important()}

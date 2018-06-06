@@ -155,7 +155,8 @@ class AddPatientForm extends PureComponent {
                             valueField: "his_d_title_id",
                             data: this.props.titles
                           },
-                          onChange: titlehandle.bind(this, this, context)
+                          onChange: titlehandle.bind(this, this, context),
+                          others: { name: "title_id" }
                         }}
                       />
 
