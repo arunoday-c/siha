@@ -82,10 +82,6 @@ class AddPatientForm extends PureComponent {
     this.setState({ ...this.state, ...InputOutput });
   }
   componentDidMount() {
-<<<<<<< HEAD
-=======
-
->>>>>>> 52e24f91802c0ef1d2496298d64ebcecd9917b5b
     if (this.props.titles.length === 0) {
       this.props.getTitles();
     }

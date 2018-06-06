@@ -106,23 +106,8 @@ const styles = theme => ({
 });
 class AutoComplete extends Component {
   handleChange = value => {
-<<<<<<< HEAD
-    debugger;
-    this.props.selector.onChange({
-      selected: value,
-      value: !this.props.selector.multi
-        ? value[this.props.selector.dataSource.valueField]
-        : () => {
-            return value.map(row => {
-              return row[this.props.selector.dataSource.valueField];
-            });
-          },
-      name: this.props.selector.name
-=======
-
     this.setState({
       single: value
->>>>>>> 52e24f91802c0ef1d2496298d64ebcecd9917b5b
     });
   };
   constructor(props) {
