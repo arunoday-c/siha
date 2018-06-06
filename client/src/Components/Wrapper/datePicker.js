@@ -15,31 +15,6 @@ export default class DateHandler extends Component {
     }
   };
 
-  // timePicker = () => {
-  //   if (this.props.timePicker != null && this.props.timePicker.enable == true) {
-  //     return <TimePickerPanel defaultValue={moment("00:00:00", "HH:mm:ss")} />;
-  //   } else {
-  //     return null;
-  //   }
-  // };
-  // formator = () => {
-  //   return this.props.format != null ? this.props.format : "DD-MM-YYYY";
-  // };
-
-  // calendar = () => {
-  //   return (
-  //     <Calendar
-  //       format={this.formator()}
-  //       onChange={this.dateHandlerOnChange.bind(this)}
-  //       dateInputPlaceholder={this.formator()}
-  //       disabledDate={this.disabledStartDate.bind(this)}
-  //       timePicker={this.timePicker()}
-  //     />
-  //   );
-  // };
-  // dateHandlerOnChange = value => {
-  //   if (this.props.events != null) this.props.events.onChange(value);
-  // };
   disabledStartDate = selectedDate => {
     if (selectedDate != null) {
       if (this.props.minDate != null && this.props.maxDate != null) {
@@ -70,45 +45,6 @@ export default class DateHandler extends Component {
       return selectedDate.valueOf() >= date.valueOf();
     }
   };
-
-  // renderDatePicker = () => {
-  //   return (
-  //     <DatePicker
-  //       animation="slide-up"
-  //       disabled={this.props.textBox.disabled}
-  //       calendar={this.calendar()}
-  //       defaultValue={
-  //         this.props.value != null
-  //           ? moment(this.props.value).format(this.formator())
-  //           : null
-  //       }
-  //     >
-  //       {({ value }) => {
-  //         return (
-  //           <TextField
-  //             disabled={this.props.textBox.disabled}
-  //             name={this.props.textBox.name}
-  //             className={this.props.textBox.className}
-  //             value={
-  //               value != null ? value.format(this.formator()) : this.props.value
-  //             }
-  //             label={this.props.textBox.label}
-  //             placeholder={this.formator()}
-  //           />
-  //         );
-  //       }}
-  //     </DatePicker>
-  //   );
-  // };
-
-  // render() {
-  //   return (
-  //     <div className={this.props.div.className}>
-  //       {this.generateLabel()}
-  //       {this.renderDatePicker()}
-  //     </div>
-  //   );
-  // }
 
   constructor(props) {
     super(props);
@@ -162,6 +98,7 @@ export default class DateHandler extends Component {
                   locale: this.state.language,
                   disabledDays: this.disabledStartDate.bind(this)
                 }}
+                {...this.props.textBox.others}
               />
             );
           }
@@ -171,7 +108,7 @@ export default class DateHandler extends Component {
   };
   render() {
     return (
-      <div className={this.props.div.className}>
+      <div className={this.props.div.className} {...this.props.div.others}>
         {this.generateLabel()}
         {this.renderDatePicker()}
       </div>

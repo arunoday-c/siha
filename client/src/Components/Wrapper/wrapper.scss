@@ -5,6 +5,7 @@ div[numberbox="true"] {
 }
 .DayPickerInput {
   z-index: 2 !important;
+
   input {
     font: inherit;
     color: currentColor;
@@ -19,7 +20,7 @@ div[numberbox="true"] {
     vertical-align: middle;
     -webkit-tap-highlight-color: transparent;
     background-color: #fbfbfb;
-    width: 100%;
+    width: 100% !important;
   }
 }
 
