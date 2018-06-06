@@ -175,7 +175,7 @@ class Login extends Component {
             >
               <LinearProgress id="myProg" style={{ display: "none" }} />
 
-              <h3 style={{ marginTop: 40 }}>
+              <h3 style={{ marginTop: 40, textAlign: "center" }}>
                 <span style={{ color: "#3A95AA" }}> ALGAEH</span> ERP
               </h3>
 

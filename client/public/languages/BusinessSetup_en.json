@@ -6,6 +6,7 @@
   "inactive": "Inactive",
   "department_code": "Department Code",
   "department_name": "Department Name",
+  "department_name_arabic": "Department Name(عربى)",
   "effective_start_date": "Effective Start Date",
   "department_type": "Department Type",
   "head_department": "Head Department",

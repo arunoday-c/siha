@@ -24,6 +24,6 @@
   "visa_type_code": "Visa Type Code",
   "visa_type_name": "Visa Type Name",
   "identification_type": "Identification Type",
-  "id_code": "ID Code",
-  "id_name": "ID Name"
+  "identity_document_code": "ID Code",
+  "identity_document_name": "ID Name"
 }

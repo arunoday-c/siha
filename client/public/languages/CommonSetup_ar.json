@@ -24,6 +24,6 @@
   "visa_type_code": "رمز نوع التأشيرة",
   "visa_type_name": "اسم نوع التأشيرة",
   "identification_type": "نوع الهوية",
-  "id_code": "رمز هوية",
-  "id_name": "اسم المعرّف"
+  "identity_document_code": "رمز هوية",
+  "identity_document_name": "اسم المعرّف"
 }

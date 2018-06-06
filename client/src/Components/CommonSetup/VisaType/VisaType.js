@@ -8,6 +8,7 @@ import { withStyles } from "material-ui/styles";
 import { EditingState, DataTypeProvider } from "@devexpress/dx-react-grid";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import DeleteDialog from "../../../utils/DeleteDialog";
+import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import {
   Grid,
   Table,
@@ -189,8 +190,6 @@ class VisaType extends Component {
           }
         },
         onFailure: error => {
-
-
           // Handle network error here.
         }
       });
@@ -207,28 +206,21 @@ class VisaType extends Component {
 
   commitChanges({ added, changed, deleted }) {
     if (added) {
-
     }
 
     if (changed) {
-     
-
       //Get all the details here and hit the api for changes.
       // Isuse 1 : changed details are getting in the form of an array
       // Solution : Disable multiple editing, and get the data of changed items.
-
       //  /api/v1/masters/set/update/visa
     }
 
     if (deleted) {
       this.setState({ openDialog: true });
-
     }
   }
 
-  btnClick() {
-
-  }
+  btnClick() {}
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.visatypes !== nextProps.visatypes) {
@@ -265,7 +257,6 @@ class VisaType extends Component {
         this.props.getVisatypes();
       },
       onFailure: error => {
-
         this.setState({ open: false });
       }
     });
@@ -295,7 +286,7 @@ class VisaType extends Component {
                 marginRight: "auto"
               }}
             >
-              <div className="col-lg-3">
+              {/* <div className="col-lg-3">
                 <label>
                   VISA TYPE CODE <span className="imp">*</span>
                 </label>
@@ -308,9 +299,25 @@ class VisaType extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
+              </div> */}
 
-              <div className="col-lg-3">
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "visa_type_code",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "visa_type_code",
+                  value: this.state.visa_type_code,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+
+              {/* <div className="col-lg-3">
                 <label>
                   VISA TYPE NAME <span className="imp">*</span>
                 </label>
@@ -323,7 +330,23 @@ class VisaType extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "visa_type",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "visa_type",
+                  value: this.state.visa_type,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
 
               <div className="col-lg-3 align-middle">
                 <br />

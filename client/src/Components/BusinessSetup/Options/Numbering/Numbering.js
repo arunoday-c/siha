@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Paper, TextField } from "material-ui";
 import "./numbering.css";
 import { MuiThemeProvider, createMuiTheme } from "material-ui";
+import { AlagehFormGroup } from "../../../Wrapper/algaehWrapper";
 import { Button } from "material-ui";
 import { algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import { getOptions } from "../../../../actions/BusinessSetup/Options.js";
@@ -181,8 +182,6 @@ class Numbering extends Component {
         }
       },
       onFailure: error => {
-
-
         // Handle network error here.
       }
     });
@@ -214,7 +213,7 @@ class Numbering extends Component {
                 marginRight: "auto"
               }}
             >
-              <div className="col-lg-3">
+              {/* <div className="col-lg-3">
                 <label>
                   OPTIONS CODE <span className="imp">*</span>
                 </label>
@@ -227,9 +226,24 @@ class Numbering extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
+              </div> */}
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "options_code",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "options_code",
+                  value: this.state.numgen_code,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
 
-              <div className="col-lg-3">
+              {/* <div className="col-lg-3">
                 <label>
                   MODULE NAME <span className="imp">*</span>
                 </label>
@@ -242,8 +256,25 @@ class Numbering extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "module_name",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "module_name",
+                  value: this.state.module_desc,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
             </div>
+
             <br />
             <div
               className="row"
@@ -252,7 +283,7 @@ class Numbering extends Component {
                 marginRight: "auto"
               }}
             >
-              <div className="col-lg-3">
+              {/* <div className="col-lg-3">
                 <label>
                   PREFIX <span className="imp">*</span>
                 </label>
@@ -265,8 +296,24 @@ class Numbering extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
-              <div className="col-lg-3">
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "prefix",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "prefix",
+                  value: this.state.prefix,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+              {/* <div className="col-lg-3">
                 <label>
                   INTERMEDIATE SERIES <span className="imp">*</span>
                 </label>
@@ -279,8 +326,25 @@ class Numbering extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
-              <div className="col-lg-3">
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "intermediate_series",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "intermediate_series",
+                  value: this.state.intermediate_series,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+
+              {/* <div className="col-lg-3">
                 <label>
                   POSTFIX <span className="imp">*</span>
                 </label>
@@ -293,7 +357,23 @@ class Numbering extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "postfix",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "postfix",
+                  value: this.state.postfix,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
             </div>
             <br />
             <div
@@ -303,7 +383,7 @@ class Numbering extends Component {
                 marginRight: "auto"
               }}
             >
-              <div className="col-lg-3">
+              {/* <div className="col-lg-3">
                 <label>
                   LENGTH <span className="imp">*</span>
                 </label>
@@ -316,8 +396,25 @@ class Numbering extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
-              <div className="col-lg-3">
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "length",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "length",
+                  value: this.state.length,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+
+              {/* <div className="col-lg-3">
                 <label>
                   INCREMENT BY <span className="imp">*</span>
                 </label>
@@ -330,8 +427,24 @@ class Numbering extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
-              <div className="col-lg-3">
+              </div> */}
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "increment_by",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "increment_by",
+                  value: this.state.increment_by,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+
+              {/* <div className="col-lg-3">
                 <label>
                   SEPERATOR <span className="imp">*</span>
                 </label>
@@ -344,7 +457,23 @@ class Numbering extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "numgen_seperator",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "numgen_seperator",
+                  value: this.state.numgen_seperator,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
             </div>
             <br />
             <div
@@ -354,7 +483,7 @@ class Numbering extends Component {
                 marginRight: "auto"
               }}
             >
-              <div className="col-lg-3">
+              {/* <div className="col-lg-3">
                 <label>
                   POSTFIX START <span className="imp">*</span>
                 </label>
@@ -367,8 +496,25 @@ class Numbering extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
-              <div className="col-lg-3">
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "postfix_start",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "postfix_start",
+                  value: this.state.postfix_start,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+
+              {/* <div className="col-lg-3">
                 <label>
                   POSTFIX END <span className="imp">*</span>
                 </label>
@@ -381,8 +527,24 @@ class Numbering extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
-              <div className="col-lg-3">
+              </div> */}
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "postfix_end",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "postfix_end",
+                  value: this.state.postfix_end,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+
+              {/* <div className="col-lg-3">
                 <label>
                   CURRENT NUMBER <span className="imp">*</span>
                 </label>
@@ -395,7 +557,24 @@ class Numbering extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "current_num",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "current_num",
+                  value: this.state.current_num,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+
               <div className="col-lg-3 align-middle">
                 <br />
                 <Button
