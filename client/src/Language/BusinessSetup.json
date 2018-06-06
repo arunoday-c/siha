@@ -1,0 +1,141 @@
+{
+  "targetLanguage": "ar",
+  "sourceLanguage": "en",
+  "forceChange": false,
+  "business_setup": {
+    "english": "Business Setup",
+    "target": ""
+  },
+  "departments": {
+    "english": "Departments",
+    "target": ""
+  },
+  "status": {
+    "english": "Status",
+    "target": ""
+  },
+  "active": {
+    "english": "Active",
+    "target": ""
+  },
+  "inactive": {
+    "english": "Inactive",
+    "target": ""
+  },
+  "department_code": {
+    "english": "Department Code",
+    "target": ""
+  },
+  "department_name": {
+    "english": "Department Name",
+    "target": ""
+  },
+  "effective_start_date": {
+    "english": "Effective Start Date",
+    "target": ""
+  },
+  "department_type": {
+    "english": "Department Type",
+    "target": ""
+  },
+  "head_department": {
+    "english": "Head Department",
+    "target": ""
+  },
+  "add_to_list": {
+    "english": "Add to List",
+    "target": ""
+  },
+  "options": {
+    "english": "Options",
+    "target": ""
+  },
+  "transaction": {
+    "english": "Transaction",
+    "target": ""
+  },
+  "numbering": {
+    "english": "Numbering",
+    "target": ""
+  },
+  "options_code": {
+    "english": "Options Code",
+    "target": ""
+  },
+  "module_name": {
+    "english": "Module Name",
+    "target": ""
+  },
+  "prefix": {
+    "english": "Prefix",
+    "target": ""
+  },
+  "intermediate_Series": {
+    "english": "Intermediate Series",
+    "target": ""
+  },
+  "postfix": {
+    "english": "Postfix",
+    "target": ""
+  },
+  "length": {
+    "english": "Length",
+    "target": ""
+  },
+  "increment_by": {
+    "english": "Increment By",
+    "target": ""
+  },
+  "seperator": {
+    "english": "Seperator",
+    "target": ""
+  },
+  "postfix_start": {
+    "english": "Postfix Start",
+    "target": ""
+  },
+  "postfix_end": {
+    "english": "Postfix End",
+    "target": ""
+  },
+  "current_number": {
+    "english": "Current Number",
+    "target": ""
+  },
+  "label_setup": {
+    "english": "Label Setup",
+    "target": ""
+  },
+  "episode_creation": {
+    "english": "Episode Creation",
+    "target": ""
+  },
+  "option": {
+    "english": "Option",
+    "target": ""
+  },
+  "queue_option": {
+    "english": "Queue Option",
+    "target": ""
+  },
+  "holidays_list": {
+    "english": "Holidays List",
+    "target": ""
+  },
+  "shift": {
+    "english": "Shift",
+    "target": ""
+  },
+  "counter": {
+    "english": "Counter",
+    "target": ""
+  },
+  "master_setup": {
+    "english": "Master Setup",
+    "target": ""
+  },
+  "home": {
+    "english": "Home",
+    "target": ""
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "targetLanguage": "ar",
+  "sourceLanguage": "en",
+  "forceChange": false,
+  "common_setup": {
+    "english": "Common Setup",
+    "target": ""
+  },
+  "home": {
+    "english": "Home",
+    "target": ""
+  },
+  "master_setup": {
+    "english": "Master Setup",
+    "target": ""
+  },
+  "patient_type": {
+    "english": "Patient Type",
+    "target": ""
+  },
+  "status": {
+    "english": "Status",
+    "target": ""
+  },
+  "active": {
+    "english": "Active",
+    "target": ""
+  },
+  "inactive": {
+    "english": "Inactive",
+    "target": ""
+  },
+  "added_date": {
+    "english": "Added Date",
+    "target": ""
+  },
+  "modified_date": {
+    "english": "Modified Date",
+    "target": ""
+  },
+  "patient_type_code": {
+    "english": "Patient Type Code",
+    "target": ""
+  },
+  "patient_type_name": {
+    "english": "Patient Type Name",
+    "target": ""
+  },
+  "add_to_list": {
+    "english": "Add to List",
+    "target": ""
+  },
+  "accident_type": {
+    "english": "Accident Type",
+    "target": ""
+  },
+  "accident_type_code": {
+    "english": "Accident Type Code",
+    "target": ""
+  },
+  "accident_type_name": {
+    "english": "Accident Type Name",
+    "target": ""
+  },
+  "equipment_type": {
+    "english": "Equipment Type",
+    "target": ""
+  },
+  "equipment_type_code": {
+    "english": "Equipment Type Code",
+    "target": ""
+  },
+  "equipment_type_name": {
+    "english": "Equipment Type Name",
+    "target": ""
+  },
+  "visit_type": {
+    "english": "Visit Type",
+    "target": ""
+  },
+  "visit_type_code": {
+    "english": "Visit Type Code",
+    "target": ""
+  },
+  "visit_type_name": {
+    "english": "Visit Type Name",
+    "target": ""
+  },
+  "visa_type": {
+    "english": "Visa Type",
+    "target": ""
+  },
+  "visa_type_code": {
+    "english": "Visa Type Code",
+    "target": ""
+  },
+  "visa_type_name": {
+    "english": "Visa Type Name",
+    "target": ""
+  },
+  "identification_type": {
+    "english": "Identification Type",
+    "target": ""
+  },
+  "id_code": {
+    "english": "ID Code",
+    "target": ""
+  },
+  "id_name": {
+    "english": "ID Name",
+    "target": ""
+  }
+}

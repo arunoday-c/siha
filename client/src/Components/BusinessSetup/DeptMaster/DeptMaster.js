@@ -139,7 +139,6 @@ class StatusPick extends Component {
   render() {
     return (
       <div>
-
         <SelectField children={STATUS} />
       </div>
     );
@@ -256,17 +255,13 @@ class DeptMaster extends Component {
       this.state.buttonText === "ADD TO LIST" &&
       this.state.department_id.length === 0
     ) {
-
       algaehApiCall({
         uri: "/department/add",
         data: this.state,
         onSuccess: response => {
-
           window.location.reload();
         },
-        onFailure: error => {
-
-        }
+        onFailure: error => {}
       });
     } else if (
       this.state.buttonText === "ADD TO LIST" &&
@@ -276,24 +271,16 @@ class DeptMaster extends Component {
         uri: "/department/add/subdepartment",
         data: this.state,
         onSuccess: response => {
-
           window.location.reload();
         },
-        onFailure: error => {
-
-        }
+        onFailure: error => {}
       });
     } else if (this.state.buttonText === "UPDATE") {
-
       algaehApiCall({
         uri: "/department/update",
         data: this.state,
-        onSuccess: response => {
-
-        },
-        onFailure: error => {
-
-        }
+        onSuccess: response => {},
+        onFailure: error => {}
       });
     }
   }
@@ -307,14 +294,9 @@ class DeptMaster extends Component {
   }
 
   commitSubdeptChanges({ added, changed, deleted }) {
-
-
     if (added) {
-
     } else if (changed) {
-
     } else if (deleted) {
-
     }
   }
 
@@ -385,13 +367,10 @@ class DeptMaster extends Component {
     </div>
   );
 
-  onDateChange = event => {
-
-  };
+  onDateChange = event => {};
 
   DatePickerEditor = ({ value, onchangeEvent }) => (
     <div>
-
       <TextField
         type="date"
         value={moment(value).format("YYYY-MM-DD")}
@@ -627,7 +606,6 @@ class DeptMaster extends Component {
 }
 
 function mapStateToProps(state) {
-
   return {
     departments: state.departments.departments,
     subdepartments: state.subdepartments.subdepartments
@@ -635,7 +613,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-
   return bindActionCreators(
     {
       getDepartments: getDepartments,
@@ -647,5 +624,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(DeptMaster)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(DeptMaster)
 );

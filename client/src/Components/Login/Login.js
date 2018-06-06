@@ -6,7 +6,11 @@ import {
   CircularProgress,
   LinearProgress
 } from "material-ui";
-import { algaehApiCall } from "../../utils/algaehApiCall.js";
+import {
+  algaehApiCall,
+  getCookie,
+  setCookie
+} from "../../utils/algaehApiCall.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -42,6 +46,10 @@ class Login extends Component {
       password: "",
       token: ""
     };
+  }
+
+  componentWillMount() {
+    setCookie("ScreenName", "Login", 30);
   }
 
   handleLogin(e) {
@@ -122,6 +130,7 @@ class Login extends Component {
 
     this.setState({ password: "", username: "" });
     //document.getElementById("username").focus();
+    document.querySelector("[name='username']").focus();
   }
 
   componentDidMount() {
@@ -175,8 +184,7 @@ class Login extends Component {
                   div={{ className: "col" }}
                   label={{
                     fieldName: "username",
-                    isImp: false,
-                    forceLabel: "User Name"
+                    isImp: true
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -213,8 +221,7 @@ class Login extends Component {
                   div={{ className: "col" }}
                   label={{
                     fieldName: "password",
-                    isImp: false,
-                    forceLabel: "Password"
+                    isImp: true
                   }}
                   textBox={{
                     className: "txt-fld",
