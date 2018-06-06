@@ -1,0 +1,13 @@
+{
+  "targetLanguage": "ar",
+  "sourceLanguage": "en",
+  "forceChange": false,
+  "username": {
+    "english": "User Name",
+    "target": "اسم المستخدم"
+  },
+  "password": {
+    "english": "Password",
+    "target": "كلمه السر"
+  }
+}

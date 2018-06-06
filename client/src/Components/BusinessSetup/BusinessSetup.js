@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./business_setup.css";
 import "../../styles/site.css";
+import "../../index.css";
 import DeptMaster from "./DeptMaster/DeptMaster.js";
 import HolidayList from "./HolidayList/HolidayList.js";
 import Header from "../../Components/common/Header/Header.js";
@@ -39,25 +40,13 @@ class BusinessSetup extends Component {
     let margin = this.state.sidBarOpen ? "0" : "";
     return (
       <div className="business_setup">
-        {/* {this.state.sidBarOpen === true ? (
-          <div>
-            <SideMenuBar />
-          </div>
-        ) : null}
-        <div style={{ marginLeft: margin }}>
-          <Header
-            title="Business Setup"
-            height={this.state.widthImg}
-            SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
-          /> */}
-
         <BreadCrumb
           title="Business Setup"
           screenName="Master Setup"
           HideHalfbread={false}
         />
 
-        <div className="tab-container toggle-section">
+        <div className="tab-container toggle-section spacing-push">
           <ul className="nav">
             <li
               alagehtabs={"DeptMaster"}
@@ -114,7 +103,7 @@ class BusinessSetup extends Component {
           ) : this.state.pageDisplay === "Shift" ? (
             <Shift />
           ) : null}
-        </div>        
+        </div>
       </div>
     );
   }

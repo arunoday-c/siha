@@ -6,12 +6,17 @@ import {
   CircularProgress,
   LinearProgress
 } from "material-ui";
-import { algaehApiCall } from "../../utils/algaehApiCall.js";
+import {
+  algaehApiCall,
+  getCookie,
+  setCookie
+} from "../../utils/algaehApiCall.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { getTokenDetals } from "../../actions/Login/Loginactions.js";
 import swal from "sweetalert";
+import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
 
 const styles = {
   root: {
@@ -32,7 +37,6 @@ const styles = {
 class Login extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       userErrorText: "",
       pwdErrorText: "",
@@ -42,6 +46,10 @@ class Login extends Component {
       password: "",
       token: ""
     };
+  }
+
+  componentWillMount() {
+    setCookie("ScreenName", "Login", 30);
   }
 
   handleLogin(e) {
@@ -121,21 +129,18 @@ class Login extends Component {
     });
 
     this.setState({ password: "", username: "" });
-    document.getElementById("username").focus();
-  }
-
-  changeUserName(e) {
-    this.setState({ username: e.target.value });
-  }
-
-  changePwd(e) {
-    this.setState({ password: e.target.value });
+    //document.getElementById("username").focus();
+    document.querySelector("[name='username']").focus();
   }
 
   componentDidMount() {
     this.props.getTokenDetals();
   }
-
+  texthandle(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
   render() {
     if (this.props.tokensDtl === 0 || this.props.tokensDtl.length === 0) {
       return (
@@ -175,7 +180,23 @@ class Login extends Component {
               </h3>
 
               <form onSubmit={this.handleLogin.bind(this)}>
-                <TextField
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "username",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "username",
+                    value: this.state.username,
+                    events: {
+                      onChange: this.texthandle.bind(this)
+                    }
+                  }}
+                />
+
+                {/* <TextField
                   onChange={this.changeUserName.bind(this)}
                   value={this.state.username}
                   style={styles.textField}
@@ -183,10 +204,10 @@ class Login extends Component {
                   helperText={this.state.userErrorText}
                   label="User Name"
                   id="username"
-                />
+                /> */}
 
                 <br />
-                <TextField
+                {/* <TextField
                   onChange={this.changePwd.bind(this)}
                   value={this.state.password}
                   error={this.state.pwdError}
@@ -194,6 +215,22 @@ class Login extends Component {
                   style={styles.textField}
                   label="Password"
                   type="password"
+                /> */}
+
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "password",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "password",
+                    value: this.state.password,
+                    events: {
+                      onChange: this.texthandle.bind(this)
+                    }
+                  }}
                 />
 
                 <br />
