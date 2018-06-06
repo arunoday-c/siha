@@ -46,7 +46,6 @@ const TableRow = ({ row, ...restProps }) => (
         hims_d_identity_document_id: row.hims_d_identity_document_id
       })}
       onClick={control => {
-
         sel_id = JSON.stringify(row.hims_d_identity_document_id);
 
         let getattr = control.currentTarget.getAttribute(
@@ -56,7 +55,6 @@ const TableRow = ({ row, ...restProps }) => (
         let JsonParse = JSON.parse(getattr);
         let obj = { [rowId]: JsonParse };
         extend(rowelements, obj);
-     
       }}
       style={{
         cursor: "pointer"
@@ -161,7 +159,6 @@ class IDType extends Component {
   addIDType(e) {
     e.preventDefault();
 
-
     algaehApiCall({
       uri: "/identity/add",
       data: this.state,
@@ -174,9 +171,7 @@ class IDType extends Component {
           openDialog: false
         });
       },
-      onFailure: error => {
-
-      }
+      onFailure: error => {}
     });
   }
 
@@ -184,7 +179,6 @@ class IDType extends Component {
     if (this.props.idtypes !== nextProps.idtypes) {
       return true;
     }
-
     return true;
   }
 
@@ -201,7 +195,6 @@ class IDType extends Component {
         this.props.getIDTypes();
       },
       onFailure: error => {
-
         this.setState({ open: false });
       }
     });
@@ -213,17 +206,12 @@ class IDType extends Component {
 
   onCommitChanges({ added, changed, deleted }) {
     if (added) {
-
     }
     if (changed) {
-
-
       let _key = Object.keys(changed);
 
       let getKey = changed[_key[0]];
       if (getKey !== undefined) {
-       
-
         let data = new Object();
 
         data = {
@@ -235,18 +223,14 @@ class IDType extends Component {
         this.updateIDtypes(data);
       }
 
-
       delete rowelements[String(_key[0])];
-
     }
     if (deleted) {
       this.setState({ openDialog: true });
     }
   }
 
-  updateIDtypes(data) {
-
-  }
+  updateIDtypes(data) {}
 
   handleDialogClose() {
     this.setState({ openDialog: false });
