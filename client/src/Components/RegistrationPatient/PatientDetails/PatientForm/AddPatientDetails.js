@@ -14,7 +14,7 @@ const texthandle = ($this, context, e) => {
 
   $this.setState({
     [name]: value
-  })
+  });
 
   if (context != null) {
     context.updateState({ [name]: value });
@@ -29,7 +29,6 @@ const titlehandle = ($this, context, e) => {
   } else if (e.value == 2) {
     setGender = "Female";
   }
-
   $this.setState({
     gender: setGender,
     title_id: e.value
@@ -97,7 +96,7 @@ const numberSet = ($this, context, cntrl, e) => {
 
   $this.setState({
     [e.target.name]: e.target.value
-  })
+  });
   if (context != null) {
     context.updateState({ [e.target.name]: e.target.value });
   }
