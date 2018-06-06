@@ -20,7 +20,8 @@ import {
   calculateAge,
   setAge,
   numberSet,
-  onDrop
+  onDrop,
+  texthandleFirstName
 } from "./AddPatientDetails.js";
 import { createStore } from "redux";
 import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
@@ -169,7 +170,11 @@ class AddPatientForm extends PureComponent {
                           name: "first_name",
                           value: this.state.first_name,
                           events: {
-                            onChange: texthandle.bind(this, this, context)
+                            onChange: texthandleFirstName.bind(
+                              this,
+                              this,
+                              context
+                            )
                           }
                         }}
                       />
@@ -474,7 +479,7 @@ class AddPatientForm extends PureComponent {
                         div={{ className: "col-lg-6" }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
                         textBox={{ className: "txt-fld" }}
-                        maxDate={this.state.CurrentDate}
+                        maxDate={new Date()}
                         events={{
                           onChange: calculateAge.bind(this, this, context)
                         }}

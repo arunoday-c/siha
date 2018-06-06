@@ -1,7 +1,6 @@
 import moment from "moment";
 
 const texthandle = ($this, context, e) => {
-
   let name;
   let value;
   if (e.name != null) {
@@ -20,9 +19,19 @@ const texthandle = ($this, context, e) => {
     context.updateState({ [name]: value });
   }
 };
+
+const texthandleFirstName = ($this, context, e) => {
+  $this.setState({
+    first_name: e.target.value
+  });
+
+  if (context != null) {
+    context.updateState({ first_name: e.target.value });
+  }
+};
+
 //Todo title and gender related chnage need to do
 const titlehandle = ($this, context, e) => {
-
   let setGender;
   if (e.value == 1) {
     setGender = "Male";
@@ -40,7 +49,6 @@ const titlehandle = ($this, context, e) => {
 };
 
 const calculateAge = ($this, context, e) => {
-
   let fromDate = moment(e._d);
   let toDate = new Date();
   let years = moment(toDate).diff(fromDate, "year");
@@ -92,8 +100,6 @@ const setAge = ($this, context, ctrl, e) => {
 };
 
 const numberSet = ($this, context, cntrl, e) => {
-
-
   $this.setState({
     [e.target.name]: e.target.value
   });
@@ -103,7 +109,6 @@ const numberSet = ($this, context, cntrl, e) => {
 };
 
 const onDrop = ($this, file, fileType) => {
-
   let obj = new Object();
   obj[file] = fileType[0].preview;
   $this.setState({
@@ -111,4 +116,12 @@ const onDrop = ($this, file, fileType) => {
   });
 };
 
-export { texthandle, titlehandle, calculateAge, setAge, numberSet, onDrop };
+export {
+  texthandle,
+  titlehandle,
+  calculateAge,
+  setAge,
+  numberSet,
+  onDrop,
+  texthandleFirstName
+};

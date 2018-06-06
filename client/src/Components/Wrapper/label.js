@@ -45,12 +45,12 @@ class Label extends PureComponent {
       return null;
     }
   };
+
   labelRender = () => {
     if (this.props.label != null) {
       if (this.state.languageBind != "&nbsp;") {
         return (
           <label
-            
             className={
               this.props.label.align == null
                 ? this.state.Language == "ar"
@@ -62,7 +62,6 @@ class Label extends PureComponent {
                       : "style_Label"
                 : null
             }
-            
           >
             {this.state.languageBind}
             {this.important()}

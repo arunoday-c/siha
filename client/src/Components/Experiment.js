@@ -9,43 +9,30 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Button from "material-ui/Button";
 import SuccessDialog from "../utils/SuccessDialog.js";
-import { AlagehAutoComplete } from "../Components/Wrapper/algaehWrapper";
+import { AlgaehDateHandler } from "../Components/Wrapper/algaehWrapper";
 class Experiment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openDialog: true,
-      title_id: ""
+      date_of_birth: null
     };
   }
 
-  titlehandle(x, c, e) {
+  calculateAge(x, c, e) {
     debugger;
   }
 
   render() {
     return (
-      <AlagehAutoComplete
-        div={{ className: "col-lg-3" }}
-        label={{
-          fieldName: "title_id",
-          isImp: true
+      <AlgaehDateHandler
+        div={{ className: "col-lg-6" }}
+        label={{ fieldName: "date_of_birth", isImp: true }}
+        textBox={{ className: "txt-fld" }}
+        maxDate={new Date()}
+        events={{
+          onChange: this.calculateAge.bind(this, this)
         }}
-        selector={{
-          name: "title_id",
-          className: "select-fld",
-          value: this.state.title_id,
-          dataSource: {
-            textField: "title",
-            valueField: "his_d_title_id",
-            data: [
-              { title: "Mr", his_d_title_id: 1 },
-              { title: "Mss", his_d_title_id: 2 },
-              { title: "Doctor", his_d_title_id: 3 }
-            ]
-          },
-          onChange: this.titlehandle.bind(this, this)
-        }}
+        value={this.state.date_of_birth}
       />
     );
   }
