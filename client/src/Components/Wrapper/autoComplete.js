@@ -1,58 +1,12 @@
 import React, { Component } from "react";
-import ClearIcon from "@material-ui/icons/Clear";
-import CancelIcon from "@material-ui/icons/Cancel";
-import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+// import ClearIcon from "@material-ui/icons/Clear";
+// import CancelIcon from "@material-ui/icons/Cancel";
+// import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+//import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import Select from "react-select";
-
+import Label from "../Wrapper/label";
 import "react-select/dist/react-select.css";
-import {
-  MenuItem,
-  Typography,
-  Chip,
-  Input,
-  withStyles,
-  TextField
-} from "material-ui";
-const suggestions = [
-  { label: "Afghanistan" },
-  { label: "Aland Islands" },
-  { label: "Albania" },
-  { label: "Algeria" },
-  { label: "American Samoa" },
-  { label: "Andorra" },
-  { label: "Angola" },
-  { label: "Anguilla" },
-  { label: "Antarctica" },
-  { label: "Antigua and Barbuda" },
-  { label: "Argentina" },
-  { label: "Armenia" },
-  { label: "Aruba" },
-  { label: "Australia" },
-  { label: "Austria" },
-  { label: "Azerbaijan" },
-  { label: "Bahamas" },
-  { label: "Bahrain" },
-  { label: "Bangladesh" },
-  { label: "Barbados" },
-  { label: "Belarus" },
-  { label: "Belgium" },
-  { label: "Belize" },
-  { label: "Benin" },
-  { label: "Bermuda" },
-  { label: "Bhutan" },
-  { label: "Bolivia, Plurinational State of" },
-  { label: "Bonaire, Sint Eustatius and Saba" },
-  { label: "Bosnia and Herzegovina" },
-  { label: "Botswana" },
-  { label: "Bouvet Island" },
-  { label: "Brazil" },
-  { label: "British Indian Ocean Territory" },
-  { label: "Brunei Darussalam" }
-].map(suggestion => ({
-  value: suggestion.label,
-  label: suggestion.label
-}));
+import { withStyles, TextField } from "material-ui";
 const ITEM_HEIGHT = 48;
 const styles = theme => ({
   root: {
@@ -101,7 +55,7 @@ const styles = theme => ({
       display: "flex",
       alignItems: "center",
       fontFamily: theme.typography.fontFamily,
-      fontSize: theme.typography.pxToRem(16),
+      // fontSize: theme.typography.pxToRem(16),
       padding: 0
     },
     ".Select-placeholder": {
@@ -145,19 +99,13 @@ const styles = theme => ({
       margin: -1
     },
     ".Select": {
-      width: "100%"
-    },
-    ".Select-input input": {
-      "background-color": "red"
+      width: "100%",
+      padding: 0
     }
   }
 });
 class AutoComplete extends Component {
-  handleClick = event => {
-    this.props.onSelect(this.props.option, event);
-  };
   handleChange = value => {
-
     this.setState({
       single: value
     });
@@ -168,53 +116,16 @@ class AutoComplete extends Component {
       single: ""
     };
   }
-  render() {
-    const { children, isFocused, isSelected, onFocus } = this.props;
 
-    function SelectWrapped() {
-      return (
-        <Select
-          optionComponent={Option}
-          noResultsText={<Typography>{"No results found"}</Typography>}
-          arrowRenderer={arrowProps => {
-            return arrowProps.isOpen ? (
-              <ArrowDropUpIcon />
-            ) : (
-              <ArrowDropDownIcon />
-            );
-          }}
-          clearRenderer={() => <ClearIcon />}
-          valueComponent={valueProps => {
-            const { value, children, onRemove } = valueProps;
-
-            const onDelete = event => {
-              event.preventDefault();
-              event.stopPropagation();
-              onRemove(value);
-            };
-
-            if (onRemove) {
-              return (
-                <Chip
-                  tabIndex={-1}
-                  //  label={children}
-                  //  className={classes.chip}
-                  deleteIcon={
-                    <CancelIcon
-                    //onTouchEnd={onDelete}
-                    />
-                  }
-                  //onDelete={onDelete}
-                />
-              );
-            }
-
-            return <div className="Select-value">{children}</div>;
-          }}
-        />
-      );
-    }
-
+  componentWillReceiveProps(props) {
+    this.setState({ single: props.selector.value });
+  }
+  componentWillMount() {
+    this.setState({
+      single: this.props.selector.value
+    });
+  }
+  renderAutoComplete = () => {
     return (
       <TextField
         fullWidth
@@ -229,21 +140,35 @@ class AutoComplete extends Component {
           inputComponent: () => {
             return (
               <Select
-                style={{ width: "100%" }}
-                name="single"
+                labelKey={this.props.selector.dataSource.textField}
+                valueKey={this.props.selector.dataSource.valueField}
+                name={this.props.selector.name}
                 onChange={this.handleChange.bind(this)}
                 value={this.state.single}
-                options={suggestions}
+                options={this.props.selector.dataSource.data}
+                multi={this.props.selector.multi}
+                valueComponent={this.props.selector.valueComponet}
+                optionComponent={this.props.selector.optionComponent}
+                selectedValue={this.props.selector.value}
+                {...this.props.selector.others}
               />
             );
-          },
-          inputProps: {
-            instanceId: "react-select-chip-label",
-            id: "react-select-chip-label",
-            simpleValue: true
           }
         }}
       />
+    );
+  };
+
+  renderLabel = () => {
+    return <Label label={this.props.label} />;
+  };
+
+  render() {
+    return (
+      <div className={this.props.div.className}>
+        {this.renderLabel()}
+        {this.renderAutoComplete()}
+      </div>
     );
   }
 }

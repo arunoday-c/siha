@@ -14,7 +14,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import extend from "extend";
-import {  
+import {
   texthandle,
   titlehandle,
   calculateAge,
@@ -47,6 +47,7 @@ class AddPatientForm extends PureComponent {
 
     this.state = {
       value: "",
+      his_d_title_id: "4",
       file: {
         filePreview: null,
         filePrimaryPreview: null,
@@ -70,7 +71,7 @@ class AddPatientForm extends PureComponent {
     // this.widthDate = widthDate;
   }
 
-  componentWillMount(){
+  componentWillMount() {
     let InputOutput;
 
     if (this.props.patients.length > 0) {
@@ -81,7 +82,6 @@ class AddPatientForm extends PureComponent {
     this.setState({ ...this.state, ...InputOutput });
   }
   componentDidMount() {
-
     if (this.props.titles.length === 0) {
       this.props.getTitles();
     }
@@ -95,7 +95,7 @@ class AddPatientForm extends PureComponent {
     if (this.props.relegions.length === 0) {
       this.props.getRelegion();
     }
-    
+
     if (this.props.countries.length === 0) {
       this.props.getCountries();
     }
@@ -106,7 +106,7 @@ class AddPatientForm extends PureComponent {
     // if (this.props.cities.length === 0) {
     //   this.props.getCities();
     // }
-    
+
     // this.setState({...this.state});
   }
 
@@ -139,7 +139,7 @@ class AddPatientForm extends PureComponent {
                   <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 primary-details">
                     <div className="row primary-box-container">
                       {/* <AlagehAutoComplete classes="" other="" /> */}
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "title_id",
@@ -148,7 +148,7 @@ class AddPatientForm extends PureComponent {
                         selector={{
                           name: "title_id",
                           className: "select-fld",
-                          value: this.state.title_id,
+                          value: this.state.his_d_title_id,
                           dataSource: {
                             textField: "title",
                             valueField: "his_d_title_id",
@@ -708,5 +708,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(AddPatientForm)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AddPatientForm)
 );
