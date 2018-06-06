@@ -69,7 +69,7 @@ export default
             mlc_wound_certified_date: "",
             visit_code:""
         },param);
-        // debugger;
+
         return output;
     }
 }

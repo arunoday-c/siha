@@ -139,7 +139,7 @@ class StatusPick extends Component {
   render() {
     return (
       <div>
-        {console.log("Select Editor Componet ", this.state.status)}
+
         <SelectField children={STATUS} />
       </div>
     );
@@ -256,16 +256,16 @@ class DeptMaster extends Component {
       this.state.buttonText === "ADD TO LIST" &&
       this.state.department_id.length === 0
     ) {
-      console.log("myState", this.state);
+
       algaehApiCall({
         uri: "/department/add",
         data: this.state,
         onSuccess: response => {
-          console.log("Res Data", response.data);
+
           window.location.reload();
         },
         onFailure: error => {
-          console.log(error);
+
         }
       });
     } else if (
@@ -276,23 +276,23 @@ class DeptMaster extends Component {
         uri: "/department/add/subdepartment",
         data: this.state,
         onSuccess: response => {
-          console.log("Res Data", response.data);
+
           window.location.reload();
         },
         onFailure: error => {
-          console.log(error);
+
         }
       });
     } else if (this.state.buttonText === "UPDATE") {
-      console.log("myState", this.state);
+
       algaehApiCall({
         uri: "/department/update",
         data: this.state,
         onSuccess: response => {
-          console.log("Update Data", response.data);
+
         },
         onFailure: error => {
-          console.log(error);
+
         }
       });
     }
@@ -307,14 +307,14 @@ class DeptMaster extends Component {
   }
 
   commitSubdeptChanges({ added, changed, deleted }) {
-    console.log("Inside commit sub deps");
+
 
     if (added) {
-      console.log("Added Clicked");
+
     } else if (changed) {
-      console.log("Changed");
+
     } else if (deleted) {
-      console.log("Deleted");
+
     }
   }
 
@@ -386,12 +386,12 @@ class DeptMaster extends Component {
   );
 
   onDateChange = event => {
-    console.log("date changed to ", event.target.value);
+
   };
 
   DatePickerEditor = ({ value, onchangeEvent }) => (
     <div>
-      {console.log("come in render")}
+
       <TextField
         type="date"
         value={moment(value).format("YYYY-MM-DD")}
@@ -627,7 +627,7 @@ class DeptMaster extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log("in mapStateToProps");
+
   return {
     departments: state.departments.departments,
     subdepartments: state.subdepartments.subdepartments
@@ -635,7 +635,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  console.log("in mapDispatchToProps");
+
   return bindActionCreators(
     {
       getDepartments: getDepartments,

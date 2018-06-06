@@ -28,14 +28,14 @@ const MATERNITY_PATIENT = [
 class AddConsultationForm extends Component{
 		constructor(props){
 		super(props);
-		debugger;
+
 		this.state = {
 			value: ""
 		};
 	}
 
 	componentWillMount(){
-		debugger;
+
 		let InputOutput;
 		
 		InputOutput = this.props.PatRegIOputs;
@@ -214,7 +214,7 @@ function AddVisitHandlers(state,context){
 	context = context || null;	
 	return{	
 		selectedHandeler:(e)=>{
-            debugger;            
+         
             state.setState({
                 [e.name]: e.value
             });            

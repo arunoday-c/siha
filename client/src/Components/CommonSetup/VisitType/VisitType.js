@@ -144,13 +144,13 @@ class VisitType extends Component {
 
   onCommitChanges({ added, changed, deleted }) {
     if (added) {
-      console.log("Added:", added);
+
     }
     if (changed) {
-      console.log("Changed:", changed);
+
     }
     if (deleted) {
-      console.log("Deleted: ", deleted);
+
     }
   }
 
@@ -162,12 +162,12 @@ class VisitType extends Component {
       data: data,
       method: "DELETE",
       onSuccess: response => {
-        console.log("DELETED RESPONSE", response.data);
+
         this.setState({ open: false });
         window.location.reload();
       },
       onFailure: error => {
-        console.log(error);
+
         this.setState({ open: false });
       }
     });
@@ -235,8 +235,7 @@ class VisitType extends Component {
         uri: uri,
         data: this.state,
         onSuccess: response => {
-          console.log("Res Visit", response.data.success);
-          console.log("Res Visit Data", response.data);
+         
           window.location.reload();
           if (response.data.success == true) {
             //Handle Successful Add here
@@ -245,7 +244,7 @@ class VisitType extends Component {
           }
         },
         onFailure: error => {
-          console.log(error);
+
 
           // Handle network error here.
         }
@@ -259,7 +258,7 @@ class VisitType extends Component {
 
   editVisitTypes(e) {
     const data = JSON.parse(e.currentTarget.getAttribute("current_edit"));
-    console.log("VISIT TYPES :", data);
+
     this.setState({
       visit_type_code: data.visit_type_code,
       visit_type: data.visit_type,
@@ -268,7 +267,7 @@ class VisitType extends Component {
       hims_d_visit_type_id: data.hims_d_visit_type_id
     });
 
-    console.log("State after push :", this.state);
+
   }
 
   render() {

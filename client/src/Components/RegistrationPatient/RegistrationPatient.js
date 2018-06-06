@@ -32,7 +32,7 @@ function Transition(props) {
 var intervalId;
 class RegistrationPatient extends Component {
   constructor(props) {
-    debugger;
+
     super(props);
 
     this.state = {
@@ -67,9 +67,9 @@ class RegistrationPatient extends Component {
   }
 
   SavePatientDetails(e) {
-    debugger;
+
     const err = Validations(this);
-    console.log(err);
+
     if (!err) {
       this.props.postPatientDetails(this.state, data => {
         this.setState({
@@ -90,7 +90,7 @@ class RegistrationPatient extends Component {
   };
 
   SideMenuBarOpen(sidOpen) {
-    debugger;
+
     this.setState({
       sidBarOpen: sidOpen,
       breadCrumbWidth: sidOpen === true ? null : "98%"
@@ -98,10 +98,10 @@ class RegistrationPatient extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    debugger;
+
   }
   SelectLanguage(secLang) {
-    debugger;
+
     this.setState({
       selectedLang: secLang,
       chnageLang: !this.state.chnageLang
@@ -110,7 +110,7 @@ class RegistrationPatient extends Component {
   }
 
   getCtrlCode(data) {
-    debugger;
+
     this.setState(
       {
         patient_code: data
@@ -119,7 +119,7 @@ class RegistrationPatient extends Component {
         clearInterval(intervalId);
         intervalId = setInterval(() => {
           this.props.getPatientDetails(this.state.patient_code, data => {
-            debugger;
+
             this.setState({
               patient_code: data.patient_code,
               visit_code: data.visit_code,
@@ -176,7 +176,7 @@ class RegistrationPatient extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-                debugger;
+
                 extend(this.state, obj);
                 // this.setState({ ...this.state, obj });
               }

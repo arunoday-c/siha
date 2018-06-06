@@ -46,7 +46,7 @@ const TableRow = ({ row, ...restProps }) => (
         hims_d_identity_document_id: row.hims_d_identity_document_id
       })}
       onClick={control => {
-        debugger;
+
         sel_id = JSON.stringify(row.hims_d_identity_document_id);
 
         let getattr = control.currentTarget.getAttribute(
@@ -56,11 +56,7 @@ const TableRow = ({ row, ...restProps }) => (
         let JsonParse = JSON.parse(getattr);
         let obj = { [rowId]: JsonParse };
         extend(rowelements, obj);
-        // console.log("Row id:", JSON.stringify(counter));
-        // rowArray.push({
-        //   rowId: rowId,
-        //   hims_d_identity_document_id: row.hims_d_identity_document_id
-        // });
+     
       }}
       style={{
         cursor: "pointer"
@@ -165,7 +161,7 @@ class IDType extends Component {
   addIDType(e) {
     e.preventDefault();
 
-    //console.log("myState", this.state);
+
     algaehApiCall({
       uri: "/identity/add",
       data: this.state,
@@ -179,7 +175,7 @@ class IDType extends Component {
         });
       },
       onFailure: error => {
-        console.log(error);
+
       }
     });
   }
@@ -195,7 +191,7 @@ class IDType extends Component {
   handleConfirmDelete() {
     const data = { hims_d_identity_document_id: sel_id, updated_by: 1 };
     this.setState({ openDialog: false });
-    console.log("Data Delete ID:", data + row_id);
+
     algaehApiCall({
       uri: "/identity/delete",
       data: data,
@@ -205,7 +201,7 @@ class IDType extends Component {
         this.props.getIDTypes();
       },
       onFailure: error => {
-        console.log("Delete Error: ", error);
+
         this.setState({ open: false });
       }
     });
@@ -217,19 +213,16 @@ class IDType extends Component {
 
   onCommitChanges({ added, changed, deleted }) {
     if (added) {
-      console.log("Added: ", added);
+
     }
     if (changed) {
-      console.log("Changed: ", JSON.stringify(rowelements));
-      debugger;
+
+
       let _key = Object.keys(changed);
-      // console.log("Selected ID", sel_id);
+
       let getKey = changed[_key[0]];
       if (getKey !== undefined) {
-        console.log(
-          "hims_d_identity_document_id",
-          rowelements[_key[0]].hims_d_identity_document_id
-        );
+       
 
         let data = new Object();
 
@@ -242,9 +235,9 @@ class IDType extends Component {
         this.updateIDtypes(data);
       }
 
-      console.log("key", String(_key[0]));
+
       delete rowelements[String(_key[0])];
-      console.log("deleted: ", JSON.stringify(rowelements));
+
     }
     if (deleted) {
       this.setState({ openDialog: true });
@@ -252,7 +245,7 @@ class IDType extends Component {
   }
 
   updateIDtypes(data) {
-    console.log("DATA", data);
+
   }
 
   handleDialogClose() {

@@ -1,7 +1,7 @@
 
 export function Validations (state) {
     let isError = false;  
-    debugger;  
+
     if (state.state.first_name.length <= 0) {
       isError = true;
       state.setState({

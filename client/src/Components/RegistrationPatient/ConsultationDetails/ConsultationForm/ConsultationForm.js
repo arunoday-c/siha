@@ -11,8 +11,8 @@ export default class ConsultationForm extends Component{
 	}
 
 	componentWillReceiveProps(nextProps){
-		// debugger;
-		console.log("Visit Code", nextProps.visitcode);
+
+
 		this.setState({
 			visitcode:nextProps.visitcode
 		});

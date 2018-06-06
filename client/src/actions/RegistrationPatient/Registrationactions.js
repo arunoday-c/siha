@@ -8,7 +8,7 @@ export function postPatientDetails(dataValue, callback) {
     callback = callback || null;
     
     return function(dispatch) {
-        debugger;
+
         if(callback === null)
         {
             dispatch({
@@ -22,17 +22,17 @@ export function postPatientDetails(dataValue, callback) {
                 data : dataValue,
                 onSuccess: response => {
                 if (response.data.success === true) {
-                    console.log("Id Types", response.data);
+
                 
                 } else {
-                    console.log("Id Types", response.data);
+
                 }
                 if (typeof callback === "function") {
                     callback(response.data.records);
                 }
                 },
                 onFailure: error => {
-                    console.log(error);
+
                 }
             });
         }

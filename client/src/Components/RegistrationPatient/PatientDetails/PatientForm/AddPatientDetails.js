@@ -1,7 +1,7 @@
 import moment from "moment";
 
 const texthandle = ($this, context, e) => {
-  debugger;
+
   let name;
   let value;
   if (e.name != null) {
@@ -22,7 +22,7 @@ const texthandle = ($this, context, e) => {
 };
 //Todo title and gender related chnage need to do
 const titlehandle = ($this, context, e) => {
-  debugger;
+
   let setGender;
   if (e.value == 1) {
     setGender = "Male";
@@ -40,7 +40,7 @@ const titlehandle = ($this, context, e) => {
 };
 
 const calculateAge = ($this, context, e) => {
-  debugger;
+
   let fromDate = moment(e._d);
   let toDate = new Date();
   let years = moment(toDate).diff(fromDate, "year");
@@ -92,7 +92,7 @@ const setAge = ($this, context, ctrl, e) => {
 };
 
 const numberSet = ($this, context, cntrl, e) => {
-  debugger;
+
 
   $this.setState({
     [e.target.name]: e.target.value
@@ -103,7 +103,7 @@ const numberSet = ($this, context, cntrl, e) => {
 };
 
 const onDrop = ($this, file, fileType) => {
-  debugger;
+
   let obj = new Object();
   obj[file] = fileType[0].preview;
   $this.setState({

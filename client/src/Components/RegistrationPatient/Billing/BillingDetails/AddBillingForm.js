@@ -24,7 +24,7 @@ export default class AddBillingForm extends Component{
 	}
 
 	onDrop(file){
-		console.log("!!!!!", file);
+
 		this.setState({
 			filePreview: file[0].name
 		})

@@ -36,7 +36,7 @@ const readFiles = options => {
       var tx = db.transaction(options.fileName, "readwrite");
       var store = tx.objectStore(options.fileName);
 
-      debugger;
+
       var cursor = store.openCursor();
       cursor.onsuccess = function(event) {
         var cursora = event.target.result;
@@ -44,7 +44,7 @@ const readFiles = options => {
           cursora.continue();
         } else {
           $.getJSON(fileImport, data => {
-            debugger;
+
             // var request = db
             //   .transaction(options.fileName, "readwrite")
             //   .objectStore(options.fileName)

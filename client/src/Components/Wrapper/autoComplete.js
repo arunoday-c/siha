@@ -106,6 +106,7 @@ const styles = theme => ({
 });
 class AutoComplete extends Component {
   handleChange = value => {
+<<<<<<< HEAD
     debugger;
     this.props.selector.onChange({
       selected: value,
@@ -117,6 +118,11 @@ class AutoComplete extends Component {
             });
           },
       name: this.props.selector.name
+=======
+
+    this.setState({
+      single: value
+>>>>>>> 52e24f91802c0ef1d2496298d64ebcecd9917b5b
     });
   };
   constructor(props) {

@@ -40,7 +40,7 @@ export default class Options extends Component {
     return { display: "inline" };
   };
   componentWillReceiveProps(nextProps) {
-    debugger;
+
     this.setState({
       value: nextProps.group.value,
       [nextProps.group.changedName]: nextProps.group.value

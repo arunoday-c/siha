@@ -79,7 +79,7 @@ class Header extends PureComponent {
     }
   }
   Languaue(secLang, e) {
-    debugger;
+
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
