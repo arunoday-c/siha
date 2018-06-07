@@ -188,7 +188,7 @@ class AddConsultationForm extends Component{
 										</tr>
 									</thead>
 									<tbody>
-									{/* {this.props.VisitDetails.map((row, index) => (
+									{this.props.visitdetls.map((row, index) => (
 										<tr key={index}>
 											<tr>{row.visit_date}</tr>
 											<tr>{row.visit_type}</tr>
@@ -197,7 +197,7 @@ class AddConsultationForm extends Component{
 											<tr>{row.sub_department_id}</tr>
 											<tr>{row.sub_department_id}</tr>									
 										</tr>
-										))} */}
+										))}
 									</tbody>
 									</table>
 								</div>
@@ -229,6 +229,7 @@ function mapStateToProps(state) {
     return {
 		subdepartments: state.subdepartments.subdepartments,
 		visittypes: state.visittypes.visittypes,
+		visitdetls: state.visitdetls.visitdetls,
     };  
 }
   

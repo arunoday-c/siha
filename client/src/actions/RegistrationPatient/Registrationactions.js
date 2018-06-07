@@ -52,16 +52,16 @@ export function getPatientDetails(dataValue, callback) {
           if (response.data.success == true) {
             dispatch({
                 type: "PAT_GET_DATA", payload: response.data.records.patientRegistration
+            }) 
+            
+            dispatch({
+                type: "PREVIST_GET_DATA", payload: response.data.records.patientRegistration
             })
-
-            if (typeof callback === "function") {
-                callback(response.data.records);
-            }
           }
         },
         onFailure: error => {
             // dispatch({
-            //     type: "PAT_GET_ERR_DATA", payload: err
+            //     type: "PAT_GET_ERR_DATA", payload: error
             // })
         }
     })
