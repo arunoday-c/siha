@@ -7,6 +7,7 @@ import { SearchState, IntegratedFiltering } from "@devexpress/dx-react-grid";
 import { withStyles } from "material-ui/styles";
 import { EditingState, DataTypeProvider } from "@devexpress/dx-react-grid";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import DeleteDialog from "../../../utils/DeleteDialog";
 import {
   Grid,
@@ -160,30 +161,23 @@ class PatientType extends Component {
 
   commitChanges({ added, changed, deleted }) {
     if (added) {
-
     }
 
     if (changed) {
-   
-
       //Get all the details here and hit the api for changes.
       // Isuse 1 : changed details are getting in the form of an array
       // Solution : Disable multiple editing, and get the data of changed items.
-
       //  /api/v1/masters/set/update/visa
     }
 
     if (deleted) {
       this.setState({ openDialog: true });
-
     }
   }
 
   componentWillReceiveProps() {}
 
-  btnClick() {
-
-  }
+  btnClick() {}
 
   changeStatus(e) {
     this.setState({ patient_type_status: e.target.value });
@@ -209,12 +203,10 @@ class PatientType extends Component {
       data: data,
       method: "DELETE",
       onSuccess: response => {
-
         this.setState({ open: false });
         window.location.reload();
       },
       onFailure: error => {
-
         this.setState({ open: false });
       }
     });
@@ -222,6 +214,10 @@ class PatientType extends Component {
 
   handleDialogClose() {
     this.setState({ openDialog: false });
+  }
+
+  changeTexts(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
 
   render() {
@@ -273,21 +269,52 @@ class PatientType extends Component {
                   <label className="center">Inactive </label>
                 </div>
 
-                <div className="col-lg-3">
+                {/* <div className="col-lg-3">
                   <label>
                     PATIENT TYPE CODE <span className="imp">*</span>
                   </label>
                   <br />
                   <TextField className="txt-fld" />
-                </div>
+                </div> */}
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "patient_type_code",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "patient_type_code",
+                    value: this.state.module_desc,
+                    events: {
+                      onChange: this.changeTexts.bind(this)
+                    }
+                  }}
+                />
 
-                <div className="col-lg-3">
+                {/* <div className="col-lg-3">
                   <label>
                     PATIENT TYPE NAME <span className="imp">*</span>
                   </label>
                   <br />
                   <TextField className="txt-fld" />
-                </div>
+                </div> */}
+
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "patient_type_name",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "patient_type_name",
+                    value: this.state.patien_type_name,
+                    events: {
+                      onChange: this.changeTexts.bind(this)
+                    }
+                  }}
+                />
 
                 <div className="col-lg-3 align-middle">
                   <br />
@@ -368,5 +395,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(PatientType)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PatientType)
 );

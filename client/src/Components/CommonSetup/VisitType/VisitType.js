@@ -15,6 +15,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
+import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import {
   EditingState,
   DataTypeProvider,
@@ -144,13 +145,10 @@ class VisitType extends Component {
 
   onCommitChanges({ added, changed, deleted }) {
     if (added) {
-
     }
     if (changed) {
-
     }
     if (deleted) {
-
     }
   }
 
@@ -162,12 +160,10 @@ class VisitType extends Component {
       data: data,
       method: "DELETE",
       onSuccess: response => {
-
         this.setState({ open: false });
         window.location.reload();
       },
       onFailure: error => {
-
         this.setState({ open: false });
       }
     });
@@ -235,7 +231,6 @@ class VisitType extends Component {
         uri: uri,
         data: this.state,
         onSuccess: response => {
-         
           window.location.reload();
           if (response.data.success == true) {
             //Handle Successful Add here
@@ -244,8 +239,6 @@ class VisitType extends Component {
           }
         },
         onFailure: error => {
-
-
           // Handle network error here.
         }
       });
@@ -266,8 +259,6 @@ class VisitType extends Component {
       buttonText: "UPDATE",
       hims_d_visit_type_id: data.hims_d_visit_type_id
     });
-
-
   }
 
   render() {
@@ -284,7 +275,7 @@ class VisitType extends Component {
                   marginRight: "auto"
                 }}
               >
-                <div className="col-lg-3">
+                {/* <div className="col-lg-3">
                   <label>
                     VISIT CODE <span className="imp">*</span>
                   </label>
@@ -297,9 +288,25 @@ class VisitType extends Component {
                     onChange={this.changeTexts.bind(this)}
                     className="txt-fld"
                   />
-                </div>
+                </div> */}
 
-                <div className="col-lg-3">
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "visit_type_code",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "visit_type_code",
+                    value: this.state.visit_type_code,
+                    events: {
+                      onChange: this.changeTexts.bind(this)
+                    }
+                  }}
+                />
+
+                {/* <div className="col-lg-3">
                   <label>
                     VISIT NAME <span className="imp">*</span>
                   </label>
@@ -312,7 +319,23 @@ class VisitType extends Component {
                     onChange={this.changeTexts.bind(this)}
                     className="txt-fld"
                   />
-                </div>
+                </div> */}
+
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "visit_type",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "visit_type",
+                    value: this.state.visit_type,
+                    events: {
+                      onChange: this.changeTexts.bind(this)
+                    }
+                  }}
+                />
 
                 <div className="col-lg-3">
                   <label>
@@ -408,5 +431,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(VisitType)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(VisitType)
 );

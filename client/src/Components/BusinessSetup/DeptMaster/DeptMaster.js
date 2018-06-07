@@ -42,7 +42,10 @@ import {
   Toolbar,
   SearchPanel
 } from "@devexpress/dx-react-grid-material-ui";
-import { AlgaehDateHandler } from "../../Wrapper/algaehWrapper";
+import {
+  AlgaehDateHandler,
+  AlagehFormGroup
+} from "../../Wrapper/algaehWrapper";
 let sel_id = "";
 let row_id = "";
 
@@ -431,37 +434,62 @@ class DeptMaster extends Component {
                 <label className="center">Inactive </label>
               </div>
 
-              <div className="col-lg-3">
-                <label>
-                  DEPARTMENT CODE <span className="imp">*</span>
-                </label>
-                <br />
-                <TextField
-                  onChange={this.changeDeptCode.bind(this)}
-                  value={this.state.department_code}
-                  className="txt-fld"
-                />
-              </div>
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "department_code",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "department_code",
+                  value: this.state.department_code,
+                  events: {
+                    onChange: this.changeDeptCode.bind(this)
+                  }
+                }}
+              />
 
-              <div className="col-lg-3">
-                <label>
-                  DEPARTMENT NAME <span className="imp">*</span>
-                </label>
-                <br />
-                <TextField
-                  onChange={this.changeDeptName.bind(this)}
-                  value={this.state.department_name}
-                  className="txt-fld"
-                />
-              </div>
-              <div className="col-lg-3">
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "department_name",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "department_name",
+                  value: this.state.department_name,
+                  events: {
+                    onChange: this.changeDeptName.bind(this)
+                  }
+                }}
+              />
+
+              {/* <div className="col-lg-3">
                 <label>
                   DEPARTMENT NAME
                   <span style={{ fontSize: 16 }}>(عربى) </span>
                 </label>
                 <br />
                 <TextField className="txt-fld" />
-              </div>
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "department_name",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "department_name",
+                  // value: this.state.department_name,
+                  events: {
+                    //  onChange: this.changeDeptName.bind(this)
+                  }
+                }}
+              />
             </div>
 
             <div
@@ -472,28 +500,29 @@ class DeptMaster extends Component {
                 marginRight: "auto"
               }}
             >
-              {/* <div className="col-lg-3">
+              <div className="col-lg-3">
                 <label>
                   EFFECTIVE START DATE<span className="imp"> *</span>
                 </label>
                 <br />
-                
+
                 <TextField
                   className="txt-fld"
                   type="date"
                   value={this.state.effective_start_date}
                   onChange={this.changeEST.bind(this)}
                 />
-              </div> */}
-              <AlgaehDateHandler
-                div={{ classNames: "col-lg-3" }}
-                label={{
-                  fieldName: "date_of_birth",
-                  isImp: true,
-                  forceLabel: "EFFECTIVE START DATE"
-                }}
+              </div>
+              {/* <AlgaehDateHandler
+                div={{ className: "col-lg-6" }}
+                label={{ fieldName: "effective_start_date", isImp: true }}
                 textBox={{ className: "txt-fld" }}
-              />
+                maxDate={new Date()}
+                events={{
+                  onChange: this.changeEST.bind(this)
+                }}
+                value={this.state.effective_start_date}
+              /> */}
               <div className="col-lg-3">
                 <label>
                   DEPARTMENT TYPE <span className="imp"> *</span>

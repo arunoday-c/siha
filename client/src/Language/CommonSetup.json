@@ -102,11 +102,11 @@
     "english": "Identification Type",
     "target": ""
   },
-  "id_code": {
+  "identity_document_code": {
     "english": "ID Code",
     "target": ""
   },
-  "id_name": {
+  "identity_document_name": {
     "english": "ID Name",
     "target": ""
   }

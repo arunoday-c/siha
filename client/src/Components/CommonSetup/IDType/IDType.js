@@ -14,6 +14,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
 import DeleteDialog from "../../../utils/DeleteDialog";
+import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import {
   EditingState,
   DataTypeProvider,
@@ -285,7 +286,7 @@ class IDType extends Component {
                 <label className="center">Inactive </label>
               </div>
 
-              <div className="col-lg-3">
+              {/* <div className="col-lg-3">
                 <label>
                   ID TYPE CODE <span className="imp">*</span>
                 </label>
@@ -296,9 +297,25 @@ class IDType extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
+              </div> */}
 
-              <div className="col-lg-3">
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "identity_document_code",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "identity_document_code",
+                  value: this.state.identity_document_code,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+
+              {/* <div className="col-lg-3">
                 <label>
                   ID TYPE NAME <span className="imp">*</span>
                 </label>
@@ -309,7 +326,23 @@ class IDType extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "identity_document_name",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "identity_document_name",
+                  value: this.state.identity_document_name,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
 
               <div className="col-lg-3 align-middle">
                 <br />
