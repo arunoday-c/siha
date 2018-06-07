@@ -215,7 +215,7 @@ class AddConsultationForm extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {/* {this.props.VisitDetails.map((row, index) => (
+                      {/* {this.props.visitdetls.map((row, index) => (
 										<tr key={index}>
 											<tr>{row.visit_date}</tr>
 											<tr>{row.visit_type}</tr>
@@ -254,7 +254,8 @@ function AddVisitHandlers(state, context) {
 function mapStateToProps(state) {
   return {
     subdepartments: state.subdepartments.subdepartments,
-    visittypes: state.visittypes.visittypes
+    visittypes: state.visittypes.visittypes,
+    visitdetls: state.visitdetls.visitdetls
   };
 }
 

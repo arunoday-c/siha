@@ -4,17 +4,6 @@ import PatRegIOputs from "../utils/GlobalFunctions.js";
 
 export default {
   inputParam: function(param) {
-    // if(param!=null){
-    //     if(param.registration_date !== 0)
-    //     {
-    //         param.registration_date= PatRegIOputs.isDateFormat({date:param.registration_date});
-    //     }
-    //     if(param.date_of_birth !== 0)
-    //     {
-    //         param.date_of_birth = PatRegIOputs.isDateFormat({date:param.date_of_birth})
-    //     }
-    // }
-
     var output;
     var CurrentDate = new Date();
     output = extend(
@@ -40,14 +29,14 @@ export default {
         emergency_contact_number: 0,
         relationship_with_patient: "",
         visa_type_id: 1,
-        nationality_id: 0,
+        nationality_id: null,
         postal_code: "",
-        country_id: 0,
-        state_id: 0,
-        city_id: 0,
-        primary_identity_id: 0,
+        country_id: null,
+        state_id: null,
+        city_id: 1,
+        primary_identity_id: null,
         primary_id_no: "",
-        secondary_identity_id: 0,
+        secondary_identity_id: null,
         secondary_id_no: "",
         photo_file: "",
         primary_id_file: "",
@@ -57,7 +46,7 @@ export default {
         visit_type: 1,
         visit_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
         department_id: null,
-        sub_department_id: null,
+        sub_department_id: 1,
         doctor_id: null,
         maternity_patient: "N",
         is_mlc: "N",
@@ -68,7 +57,7 @@ export default {
       },
       param
     );
-
+    // debugger;
     return output;
   }
 };

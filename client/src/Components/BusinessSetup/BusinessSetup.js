@@ -4,11 +4,9 @@ import "../../styles/site.css";
 import "../../index.css";
 import DeptMaster from "./DeptMaster/DeptMaster.js";
 import HolidayList from "./HolidayList/HolidayList.js";
-import Header from "../../Components/common/Header/Header.js";
 import OptionsTabs from "./Options/OptionsTabs.js";
 import Counter from "./Counter/Counter.js";
 import Shift from "./Shift/Shift.js";
-import SideMenuBar from "../common/SideMenuBar/SideMenuBar.js";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 
 class BusinessSetup extends Component {
@@ -37,7 +35,6 @@ class BusinessSetup extends Component {
   }
 
   render() {
-    let margin = this.state.sidBarOpen ? "0" : "";
     return (
       <div className="business_setup">
         <BreadCrumb

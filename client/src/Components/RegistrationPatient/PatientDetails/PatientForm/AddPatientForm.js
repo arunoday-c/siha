@@ -66,10 +66,15 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    // debugger;
     var width = document.getElementById("attach-width").offsetWidth;
     this.widthImg = width + 1;
     // var widthDate = document.getElementById("widthDate").offsetWidth;
     // this.widthDate = widthDate;
+  }
+
+  componentDidUpdate() {
+    debugger;
   }
 
   componentWillMount() {
@@ -155,8 +160,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "his_d_title_id",
                             data: this.props.titles
                           },
-                          onChange: titlehandle.bind(this, this, context),
-                          others: { name: "title_id" }
+                          onChange: titlehandle.bind(this, this, context)
                         }}
                       />
 
@@ -213,7 +217,7 @@ class AddPatientForm extends PureComponent {
                       />
                     </div>
                     <div className="row primary-box-container">
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "gender",
@@ -232,7 +236,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-1", id: "widthDate" }}
+                        div={{ className: "col-lg-1" }}
                         label={{
                           fieldName: "age",
                           isImp: true
@@ -251,7 +255,7 @@ class AddPatientForm extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-1", id: "widthDate" }}
+                        div={{ className: "col-lg-1" }}
                         label={{
                           fieldName: "AGEMM",
                           forceLabel: "&nbsp;",
@@ -271,7 +275,7 @@ class AddPatientForm extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-1", id: "widthDate" }}
+                        div={{ className: "col-lg-1" }}
                         label={{
                           fieldName: "AGEDD",
                           forceLabel: "&nbsp;",
@@ -290,7 +294,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{
                           className:
                             "col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3"
@@ -312,7 +316,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "religion_id",
@@ -352,7 +356,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "nationality_id",
@@ -416,7 +420,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "country_id",
@@ -435,7 +439,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "state_id",
@@ -454,7 +458,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "city_id",
@@ -514,7 +518,7 @@ class AddPatientForm extends PureComponent {
                     </div>
 
                     <div className="row secondary-box-container">
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-6" }}
                         label={{
                           fieldName: "primary_identity_id",
@@ -550,7 +554,7 @@ class AddPatientForm extends PureComponent {
                       />
                     </div>
                     <div className="row secondary-box-container">
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-6" }}
                         label={{
                           fieldName: "secondary_identity_id",

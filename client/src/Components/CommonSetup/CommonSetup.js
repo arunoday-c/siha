@@ -6,9 +6,7 @@ import AccidentType from "./AccidentType/AccidentType.js";
 import VisaType from "./VisaType/VisaType.js";
 import IDType from "./IDType/IDType";
 import VisitType from "./VisitType/VisitType";
-import Header from "../common/Header/Header";
 import EquipmentType from "./EquipmentType/EquipmentType";
-import SideMenuBar from "../common/SideMenuBar/SideMenuBar.js";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 
 class CommonSetup extends Component {
@@ -37,26 +35,13 @@ class CommonSetup extends Component {
   }
 
   render() {
-    let margin = this.state.sidBarOpen ? "200px" : "";
     return (
       <div className="common_setup">
-        {/* {this.state.sidBarOpen === true ? (
-          <div>
-            <SideMenuBar />
-          </div>
-        ) : null}
-        <div style={{ marginLeft: margin }}>
-          <Header
-            title="Common Setup"
-            SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
-            height={this.state.widthImg}
-          /> */}
         <BreadCrumb
           title="Common Setup"
           screenName="Master Setup"
           HideHalfbread={false}
         />
-
         <div className="tab-container toggle-section spacing-push">
           <ul className="nav">
             <li
