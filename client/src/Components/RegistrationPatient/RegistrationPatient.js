@@ -32,7 +32,6 @@ function Transition(props) {
 var intervalId;
 class RegistrationPatient extends Component {
   constructor(props) {
-
     super(props);
 
     this.state = {
@@ -67,7 +66,6 @@ class RegistrationPatient extends Component {
   }
 
   SavePatientDetails(e) {
-
     const err = Validations(this);
 
     if (!err) {
@@ -90,18 +88,14 @@ class RegistrationPatient extends Component {
   };
 
   SideMenuBarOpen(sidOpen) {
-
     this.setState({
       sidBarOpen: sidOpen,
       breadCrumbWidth: sidOpen === true ? null : "98%"
     });
   }
 
-  componentWillReceiveProps(nextProps){
-
-  }
+  componentWillReceiveProps(nextProps) {}
   SelectLanguage(secLang) {
-
     this.setState({
       selectedLang: secLang,
       chnageLang: !this.state.chnageLang
@@ -110,7 +104,6 @@ class RegistrationPatient extends Component {
   }
 
   getCtrlCode(data) {
-
     this.setState(
       {
         patient_code: data
@@ -119,7 +112,6 @@ class RegistrationPatient extends Component {
         clearInterval(intervalId);
         intervalId = setInterval(() => {
           this.props.getPatientDetails(this.state.patient_code, data => {
-
             this.setState({
               patient_code: data.patient_code,
               visit_code: data.visit_code,
@@ -163,9 +155,7 @@ class RegistrationPatient extends Component {
           screenName={
             <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
           }
-          dateLabel={
-            <AlgaehLabel label={{ fieldName: "registration_date" }} />
-          }
+          dateLabel={<AlgaehLabel label={{ fieldName: "registration_date" }} />}
           HideHalfbread={true}
           ctrlCode={this.state.patient_code}
           ctrlDate={this.state.registration_date}
@@ -176,9 +166,8 @@ class RegistrationPatient extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-
                 extend(this.state, obj);
-                // this.setState({ ...this.state, obj });
+                // this.setState({ ...this.state });
               }
             }}
           >
@@ -221,7 +210,7 @@ class RegistrationPatient extends Component {
               </AppBar>
             </div>
           </MyContext.Provider>
-        </div>        
+        </div>
 
         <div>
           <Dialog
