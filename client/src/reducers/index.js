@@ -14,6 +14,7 @@ import {PatRegistrationDetails} from "./RegistrationPatient/Registrationreducers
 import {VisatypeDetails} from "./CommonSetup/Visatype";
 import {VisittypeDetails} from "./CommonSetup/VisitTypereducers";
 import {OptionsDetails} from './BusinessSetup/Options';
+import {VisitDetails} from './RegistrationPatient/Visitdetailsreducers';
 
 export default combineReducers({
 	tokensDtl: TokenDetails,
@@ -30,4 +31,5 @@ export default combineReducers({
 	visatypes:VisatypeDetails,
 	visittypes:VisittypeDetails,
 	options : OptionsDetails,	
+	visitdetls : VisitDetails,
 });

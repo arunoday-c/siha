@@ -1,7 +1,7 @@
 [
 	{
 		"name": "GENERAL",
-		"label": "GENERAL",
+		"label": "General",
 		"path": "/",
 		"subMenu" : [
 			{
@@ -13,7 +13,7 @@
 	},
 	{
 		"name": "MASTERS",
-		"label": "MASTERS",
+		"label": "Master",
 		"path": "/appointment/",
 		"subMenu" : [
 			{
@@ -30,7 +30,7 @@
 	},
 	{
 		"name": "FRONTDESK",
-		"label": "FRONTDESK",
+		"label": "Front Desk",
 		"path": "/registration/",
 		"subMenu": [
 			{
@@ -57,14 +57,14 @@
 	},
 	{
 		"name": "ADMISSION",
-		"label": "ADMISSION",
+		"label": "Admission",
 		"path": "/admission/",
 		"subMenu" : []
 
 	},
 	{
 		"name": "OP BILL",
-		"label": "OP BILL",
+		"label": "OP Bill",
 		"path": "/op-bill/",
 		"subMenu" : []
 

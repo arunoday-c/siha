@@ -34,7 +34,8 @@
   position: relative;
   color: white;
   list-style-type: none;
-  cursor: pointer; }
+  cursor: pointer;
+  font-size: 14px; }
 
 .hptl-phase1-sideMenuBar li:before {
   content: "";
@@ -68,6 +69,9 @@
   display: flex;
   padding: 5px;
   font-size: 20px; }
+
+.hptl-phase1-sideMenuBar svg {
+  height: 23px; }
 
 .hptl-phase1-footer .main {
   background-color: #000000 !important;

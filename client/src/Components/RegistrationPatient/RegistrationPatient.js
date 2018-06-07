@@ -25,6 +25,8 @@ import AlgaehLabel from "../Wrapper/label.js";
 import Dialog, { DialogActions, DialogTitle } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
 
+// import Barcode from "../Experiment";
+
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
@@ -124,26 +126,10 @@ class RegistrationPatient extends Component {
     );
   }
 
-  render() {
-    // let margin = this.state.sidBarOpen ? "200px" : "";
+  render() {  
     return (
       <div id="attach">
-        {/* {this.state.sidBarOpen === true ? (
-          <div>
-            <SideMenuBar />
-          </div>
-        ) : null}
-
-        <div style={{ marginLeft: margin }}>
-          <Header
-            height={this.state.widthImg}
-            title={
-              <AlgaehLabel label={{ fieldName: "form_name", align: "ltl" }} />
-            }
-            SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
-            SelectLanguage={this.SelectLanguage.bind(this)}
-          /> */}
-
+        {/* <Barcode value='PAT-A-000017'/> */}
         <BreadCrumb
           width={this.state.breadCrumbWidth}
           title={
@@ -166,6 +152,10 @@ class RegistrationPatient extends Component {
             value={{
               state: this.state,
               updateState: obj => {
+<<<<<<< HEAD
+=======
+                // debugger;
+>>>>>>> 22608cf54eb9c1ce4f6d9afc729515de1860e20a
                 extend(this.state, obj);
                 // this.setState({ ...this.state });
               }

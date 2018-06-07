@@ -66,10 +66,15 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    // debugger;
     var width = document.getElementById("attach-width").offsetWidth;
     this.widthImg = width + 1;
     // var widthDate = document.getElementById("widthDate").offsetWidth;
     // this.widthDate = widthDate;
+  }
+
+  componentDidUpdate() {
+    debugger;
   }
 
   componentWillMount() {
@@ -231,7 +236,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-1", id: "widthDate" }}
+                        div={{ className: "col-lg-1" }}
                         label={{
                           fieldName: "age",
                           isImp: true
@@ -250,7 +255,7 @@ class AddPatientForm extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-1", id: "widthDate" }}
+                        div={{ className: "col-lg-1" }}
                         label={{
                           fieldName: "AGEMM",
                           forceLabel: "&nbsp;",
@@ -270,7 +275,7 @@ class AddPatientForm extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-1", id: "widthDate" }}
+                        div={{ className: "col-lg-1" }}
                         label={{
                           fieldName: "AGEDD",
                           forceLabel: "&nbsp;",

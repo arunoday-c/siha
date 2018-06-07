@@ -1,5 +1,6 @@
 
 .hptl-phase1-sideMenuBar{
+	// line-height: 1;
     .sideMenu-header{
     	color: white;
     }
@@ -43,6 +44,7 @@
 	    color: white;
 	    list-style-type: none;
 		cursor: pointer;
+		font-size: 14px;
 	}
 
 	li:before {
@@ -81,6 +83,10 @@
 		// justify-content: center;
 		padding:5px;
 		font-size: 20px;
+	}
+
+	svg{
+		height:23px,
 	}
 }
 

@@ -18,6 +18,7 @@ import directRoutes from "../../../Dynamicroutes";
 import { MuiThemeProvider } from "material-ui";
 import ReactDOM from "react-dom";
 import CancelIcon from "@material-ui/icons/Close";
+import BreadCrumb from "../BreadCrumb/BreadCrumb"
 
 import {
   AppBar,
@@ -42,7 +43,7 @@ import BusinessSetup from "../../BusinessSetup/BusinessSetup";
 import CommonSetup from "../../CommonSetup/CommonSetup";
 import Experiment from "../../Experiment";
 
-const drawerWidth = 240;
+const drawerWidth = 220;
 
 const paper_style = {
   height: "100%",
@@ -78,8 +79,14 @@ const styles = theme => ({
   appBar: {
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
+<<<<<<< HEAD
       duration: theme.transitions.duration.leavingScreen
     })
+=======
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    boxShadow: 'none',
+>>>>>>> 22608cf54eb9c1ce4f6d9afc729515de1860e20a
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -159,11 +166,9 @@ class PersistentDrawer extends React.Component {
     setCookie("prevLanguage", prevLang, 30);
     if (secLang === "en") {
       this.setState({ languageName: "English" });
-    } else if (secLang === "ar") {
-      //this.props.SelectLanguage("lang_ar");
+    } else if (secLang === "ar") {      
       this.setState({ languageName: "عربي" });
-    }
-    // this.props.SelectLanguage(secLang);
+    }   
   }
 
   handleOpenClick = event => {
@@ -228,6 +233,7 @@ class PersistentDrawer extends React.Component {
     var MenuListItems = sideMenu.map((data, idx) => {
       return (
         <div key={"side_menu_index" + idx}>
+<<<<<<< HEAD
           <div className="container-fluid">
             <div className="row clearfix">
               <div className="col-xs-3 col-sm-3 col-md-3 text-right">
@@ -256,6 +262,27 @@ class PersistentDrawer extends React.Component {
                     </IconButton>
                   </span>
                 ) : (
+=======
+        <div className="container-fluid">
+          <div className="row clearfix">
+            <div className="col-xs-2 col-sm-2 col-md-2 text-right">
+              <span className="fas fa-th-large side-menu-title" />
+            </div>
+            <div
+              className="col-xs-5 col-sm-5 col-md-5 side-menu-title"
+              onClick={this.openSubMenuSelection.bind(this, data)}
+            >
+              {data.label}
+            </div>
+  
+            <div className="col-xs-4 col-sm-4 col-md-4 side-menu-arrow text-right">
+              {this.state.menuSelected === data.name &&
+              this.state.toggleSubMenu === false ? (
+                <span
+                  className="side-menu-downIcon"
+                  onClick={this.openSubMenuSelection.bind(this, data)}
+                >
+>>>>>>> 22608cf54eb9c1ce4f6d9afc729515de1860e20a
                   <IconButton
                     onClick={this.openSubMenuSelection.bind(this, data)}
                   >
@@ -402,6 +429,7 @@ class PersistentDrawer extends React.Component {
               )}
             >
               <div className={classes.drawerHeader} />
+<<<<<<< HEAD
               <div className="container" style={{ minWidth: "100%" }}>
                 <Typography>
                   <div className="row" id="hisapp">
@@ -415,8 +443,21 @@ class PersistentDrawer extends React.Component {
                 </Typography>
               </div>
             </main>
+=======
+                <div className="container" style={{minWidth:"100%"}}>
+                  <Typography >  
+                    <div className="row" id = "hisapp">
+                      <div className="col-lg-12">                        
+                        {directRoutes(this.state.renderComponent, this.state.selectedLang)}                        
+                      </div>
+                    </div>                  
+                  </Typography>
+                </div>
+              </main>            
+>>>>>>> 22608cf54eb9c1ce4f6d9afc729515de1860e20a
           </div>
         </div>
+        
       </div>
     );
   }
