@@ -215,16 +215,16 @@ class AddConsultationForm extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {this.props.visitdetls.map((row, index) => (
-                        <tr key={index}>
-                          <tr>{row.visit_date}</tr>
-                          <tr>{row.visit_type}</tr>
-                          <tr />
-                          <tr>{row.sub_department_id}</tr>
-                          <tr>{row.sub_department_id}</tr>
-                          <tr>{row.sub_department_id}</tr>
-                        </tr>
-                      ))}
+                      {/* {this.props.visitdetls.map((row, index) => (
+										<tr key={index}>
+											<tr>{row.visit_date}</tr>
+											<tr>{row.visit_type}</tr>
+											<tr></tr>
+											<tr>{row.sub_department_id}</tr>
+											<tr>{row.sub_department_id}</tr>
+											<tr>{row.sub_department_id}</tr>									
+										</tr>
+										))} */}
                     </tbody>
                   </table>
                 </div>

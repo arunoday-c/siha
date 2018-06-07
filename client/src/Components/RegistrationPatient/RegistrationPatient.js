@@ -153,9 +153,13 @@ class RegistrationPatient extends Component {
               state: this.state,
               updateState: obj => {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                 // debugger;
 >>>>>>> 22608cf54eb9c1ce4f6d9afc729515de1860e20a
+=======
+                // debugger;
+>>>>>>> 5e207c8936cf23cb255445afd3b76931189eb008
                 extend(this.state, obj);
                 // this.setState({ ...this.state });
               }

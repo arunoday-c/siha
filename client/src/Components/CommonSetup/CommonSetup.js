@@ -42,8 +42,7 @@ class CommonSetup extends Component {
           screenName="Master Setup"
           HideHalfbread={false}
         />
-
-        <div className="tab-container toggle-section">
+        <div className="tab-container toggle-section spacing-push">
           <ul className="nav">
             <li
               alagehtabs={"PatientType"}
