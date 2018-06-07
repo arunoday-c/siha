@@ -18,14 +18,14 @@ class BreadCrumb extends PureComponent {
   }
 
   selectedValue(e) {
-    debugger;
+
     this.setState({
       createNew: !this.state.createNew
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    // debugger;
+
     this.setState({
       ctrlCode: nextProps.ctrlCode,
       ctrlDate: nextProps.ctrlDate
@@ -33,7 +33,7 @@ class BreadCrumb extends PureComponent {
   }
 
   Handle(e) {
-    debugger;
+
     this.props.ControlCode(e.target.value);
     this.setState({
       ctrlCode: e.target.value

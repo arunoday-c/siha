@@ -42,7 +42,10 @@ import {
   Toolbar,
   SearchPanel
 } from "@devexpress/dx-react-grid-material-ui";
-
+import {
+  AlgaehDateHandler,
+  AlagehFormGroup
+} from "../../Wrapper/algaehWrapper";
 let sel_id = "";
 let row_id = "";
 
@@ -139,7 +142,6 @@ class StatusPick extends Component {
   render() {
     return (
       <div>
-        {console.log("Select Editor Componet ", this.state.status)}
         <SelectField children={STATUS} />
       </div>
     );
@@ -256,17 +258,13 @@ class DeptMaster extends Component {
       this.state.buttonText === "ADD TO LIST" &&
       this.state.department_id.length === 0
     ) {
-      console.log("myState", this.state);
       algaehApiCall({
         uri: "/department/add",
         data: this.state,
         onSuccess: response => {
-          console.log("Res Data", response.data);
           window.location.reload();
         },
-        onFailure: error => {
-          console.log(error);
-        }
+        onFailure: error => {}
       });
     } else if (
       this.state.buttonText === "ADD TO LIST" &&
@@ -276,24 +274,16 @@ class DeptMaster extends Component {
         uri: "/department/add/subdepartment",
         data: this.state,
         onSuccess: response => {
-          console.log("Res Data", response.data);
           window.location.reload();
         },
-        onFailure: error => {
-          console.log(error);
-        }
+        onFailure: error => {}
       });
     } else if (this.state.buttonText === "UPDATE") {
-      console.log("myState", this.state);
       algaehApiCall({
         uri: "/department/update",
         data: this.state,
-        onSuccess: response => {
-          console.log("Update Data", response.data);
-        },
-        onFailure: error => {
-          console.log(error);
-        }
+        onSuccess: response => {},
+        onFailure: error => {}
       });
     }
   }
@@ -307,14 +297,9 @@ class DeptMaster extends Component {
   }
 
   commitSubdeptChanges({ added, changed, deleted }) {
-    console.log("Inside commit sub deps");
-
     if (added) {
-      console.log("Added Clicked");
     } else if (changed) {
-      console.log("Changed");
     } else if (deleted) {
-      console.log("Deleted");
     }
   }
 
@@ -385,13 +370,10 @@ class DeptMaster extends Component {
     </div>
   );
 
-  onDateChange = event => {
-    console.log("date changed to ", event.target.value);
-  };
+  onDateChange = event => {};
 
   DatePickerEditor = ({ value, onchangeEvent }) => (
     <div>
-      {console.log("come in render")}
       <TextField
         type="date"
         value={moment(value).format("YYYY-MM-DD")}
@@ -452,37 +434,62 @@ class DeptMaster extends Component {
                 <label className="center">Inactive </label>
               </div>
 
-              <div className="col-lg-3">
-                <label>
-                  DEPARTMENT CODE <span className="imp">*</span>
-                </label>
-                <br />
-                <TextField
-                  onChange={this.changeDeptCode.bind(this)}
-                  value={this.state.department_code}
-                  className="txt-fld"
-                />
-              </div>
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "department_code",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "department_code",
+                  value: this.state.department_code,
+                  events: {
+                    onChange: this.changeDeptCode.bind(this)
+                  }
+                }}
+              />
 
-              <div className="col-lg-3">
-                <label>
-                  DEPARTMENT NAME <span className="imp">*</span>
-                </label>
-                <br />
-                <TextField
-                  onChange={this.changeDeptName.bind(this)}
-                  value={this.state.department_name}
-                  className="txt-fld"
-                />
-              </div>
-              <div className="col-lg-3">
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "department_name",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "department_name",
+                  value: this.state.department_name,
+                  events: {
+                    onChange: this.changeDeptName.bind(this)
+                  }
+                }}
+              />
+
+              {/* <div className="col-lg-3">
                 <label>
                   DEPARTMENT NAME
                   <span style={{ fontSize: 16 }}>(عربى) </span>
                 </label>
                 <br />
                 <TextField className="txt-fld" />
-              </div>
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "department_name",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "department_name",
+                  // value: this.state.department_name,
+                  events: {
+                    //  onChange: this.changeDeptName.bind(this)
+                  }
+                }}
+              />
             </div>
 
             <div
@@ -498,6 +505,7 @@ class DeptMaster extends Component {
                   EFFECTIVE START DATE<span className="imp"> *</span>
                 </label>
                 <br />
+
                 <TextField
                   className="txt-fld"
                   type="date"
@@ -505,6 +513,16 @@ class DeptMaster extends Component {
                   onChange={this.changeEST.bind(this)}
                 />
               </div>
+              {/* <AlgaehDateHandler
+                div={{ className: "col-lg-6" }}
+                label={{ fieldName: "effective_start_date", isImp: true }}
+                textBox={{ className: "txt-fld" }}
+                maxDate={new Date()}
+                events={{
+                  onChange: this.changeEST.bind(this)
+                }}
+                value={this.state.effective_start_date}
+              /> */}
               <div className="col-lg-3">
                 <label>
                   DEPARTMENT TYPE <span className="imp"> *</span>
@@ -627,7 +645,6 @@ class DeptMaster extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log("in mapStateToProps");
   return {
     departments: state.departments.departments,
     subdepartments: state.subdepartments.subdepartments
@@ -635,7 +652,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  console.log("in mapDispatchToProps");
   return bindActionCreators(
     {
       getDepartments: getDepartments,
@@ -647,5 +663,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(DeptMaster)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(DeptMaster)
 );

@@ -23,11 +23,7 @@ export default class Options extends Component {
   };
   renderLabel = () => {
     if (this.props.label != null) {
-      return (
-        <Label
-          label={this.props.label}
-        />
-      );
+      return <Label label={this.props.label} />;
     }
   };
 
@@ -40,7 +36,6 @@ export default class Options extends Component {
     return { display: "inline" };
   };
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState({
       value: nextProps.group.value,
       [nextProps.group.changedName]: nextProps.group.value
@@ -55,6 +50,7 @@ export default class Options extends Component {
             control={<Radio color="primary" />}
             label={row.label}
             disabled={row.disabled == null ? false : true}
+            {...this.row.others}
           />
         );
       });
@@ -70,6 +66,7 @@ export default class Options extends Component {
         style={this.orientationHorizontalVertical()}
         value={this.state.value}
         onChange={this.handleChange.bind(this)}
+        {...this.props.group.others}
       >
         {this.renderOptions()}
       </RadioGroup>
@@ -88,6 +85,7 @@ export default class Options extends Component {
                 checked={row.checked}
                 color="primary"
                 onChange={row.events != null ? row.events.onChange : null}
+                {...row.others}
               />
             }
             label={row.label}
@@ -123,6 +121,7 @@ export default class Options extends Component {
                 name={this.props.group.name + "_" + index}
                 color="primary"
                 onChange={row.events != null ? row.events.onChange : null}
+                {...row.others}
               />
             }
             label={row.label}
@@ -142,7 +141,7 @@ export default class Options extends Component {
   };
   render() {
     return (
-      <div className={this.props.div.className}>
+      <div className={this.props.div.className} {...this.props.div.others}>
         {this.renderLabel()}
         <br />
         {this.renderControl()}

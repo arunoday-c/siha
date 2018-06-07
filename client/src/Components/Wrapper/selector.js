@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Select, MenuItem } from "material-ui";
 import Label from "../Wrapper/label";
-export default class Selector extends Component {
+export default class Selector extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,9 +43,20 @@ export default class Selector extends Component {
       </MenuItem>
     ));
   };
+
+  componentWillMount() {
+    this.setState({
+      value: this.props.selector.value === null ? [] : this.props.selector.value
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
-    // debugger;
     this.setState({ value: nextProps.selector.value });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.selector.value !== this.state.value) return true;
+    return false;
   }
 
   generateSelect = () => {
@@ -66,17 +77,13 @@ export default class Selector extends Component {
   };
   generateLabel = () => {
     if (this.props.label != null) {
-      return (
-        <Label
-          label={this.props.label}
-        />
-      );
+      return <Label label={this.props.label} />;
     }
   };
 
   render() {
     return (
-      <div className={this.props.div.className}>
+      <div className={this.props.div.className} {...this.props.div.others}>
         {this.generateLabel()}
         {this.generateSelect()}
       </div>

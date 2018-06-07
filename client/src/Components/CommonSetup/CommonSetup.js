@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./common_setup.css";
+import "../../index.css";
 import PatientType from "./PatientType/PatientType.js";
 import AccidentType from "./AccidentType/AccidentType.js";
 import VisaType from "./VisaType/VisaType.js";
@@ -28,7 +29,6 @@ class CommonSetup extends Component {
   }
 
   SideMenuBarOpen(sidOpen) {
-    debugger;
     this.setState({
       sidBarOpen: sidOpen
     });
@@ -42,8 +42,7 @@ class CommonSetup extends Component {
           screenName="Master Setup"
           HideHalfbread={false}
         />
-
-        <div className="tab-container toggle-section">
+        <div className="tab-container toggle-section spacing-push">
           <ul className="nav">
             <li
               alagehtabs={"PatientType"}

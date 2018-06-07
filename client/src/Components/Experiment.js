@@ -9,19 +9,32 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Button from "material-ui/Button";
 import SuccessDialog from "../utils/SuccessDialog.js";
-import { AlagehAutoComplete } from "../Components/Wrapper/algaehWrapper";
+import { AlgaehDateHandler } from "../Components/Wrapper/algaehWrapper";
 class Experiment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openDialog: true
+      date_of_birth: null
     };
   }
 
-  handleConfirmDelete() {}
+  calculateAge(x, c, e) {
+    debugger;
+  }
 
   render() {
-    return <AlagehAutoComplete />;
+    return (
+      <AlgaehDateHandler
+        div={{ className: "col-lg-6" }}
+        label={{ fieldName: "date_of_birth", isImp: true }}
+        textBox={{ className: "txt-fld" }}
+        maxDate={new Date()}
+        events={{
+          onChange: this.calculateAge.bind(this, this)
+        }}
+        value={this.state.date_of_birth}
+      />
+    );
   }
 }
 export default Experiment;

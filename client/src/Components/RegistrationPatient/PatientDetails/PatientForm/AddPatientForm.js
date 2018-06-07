@@ -14,13 +14,14 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import extend from "extend";
-import {  
+import {
   texthandle,
   titlehandle,
   calculateAge,
   setAge,
   numberSet,
-  onDrop
+  onDrop,
+  texthandleFirstName
 } from "./AddPatientDetails.js";
 import { createStore } from "redux";
 import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
@@ -47,6 +48,7 @@ class AddPatientForm extends PureComponent {
 
     this.state = {
       value: "",
+      his_d_title_id: "4",
       file: {
         filePreview: null,
         filePrimaryPreview: null,
@@ -86,7 +88,6 @@ class AddPatientForm extends PureComponent {
     this.setState({ ...this.state, ...InputOutput });
   }
   componentDidMount() {
-    debugger;
     if (this.props.titles.length === 0) {
       this.props.getTitles();
     }
@@ -100,7 +101,7 @@ class AddPatientForm extends PureComponent {
     if (this.props.relegions.length === 0) {
       this.props.getRelegion();
     }
-    
+
     if (this.props.countries.length === 0) {
       this.props.getCountries();
     }
@@ -111,7 +112,7 @@ class AddPatientForm extends PureComponent {
     // if (this.props.cities.length === 0) {
     //   this.props.getCities();
     // }
-    
+
     // this.setState({...this.state});
   }
 
@@ -124,7 +125,7 @@ class AddPatientForm extends PureComponent {
 
   numInput(e) {
     var inputKeyCode = e.keyCode ? e.keyCode : e.which;
-    console.log("Show my data-", inputKeyCode);
+
     if (inputKeyCode !== null) {
       if (inputKeyCode >= 48 && inputKeyCode <= 57) {
       } else {
@@ -144,7 +145,7 @@ class AddPatientForm extends PureComponent {
                   <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 primary-details">
                     <div className="row primary-box-container">
                       {/* <AlagehAutoComplete classes="" other="" /> */}
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "title_id",
@@ -153,7 +154,7 @@ class AddPatientForm extends PureComponent {
                         selector={{
                           name: "title_id",
                           className: "select-fld",
-                          value: this.state.title_id,
+                          value: this.state.his_d_title_id,
                           dataSource: {
                             textField: "title",
                             valueField: "his_d_title_id",
@@ -174,7 +175,11 @@ class AddPatientForm extends PureComponent {
                           name: "first_name",
                           value: this.state.first_name,
                           events: {
-                            onChange: texthandle.bind(this, this, context)
+                            onChange: texthandleFirstName.bind(
+                              this,
+                              this,
+                              context
+                            )
                           }
                         }}
                       />
@@ -212,7 +217,7 @@ class AddPatientForm extends PureComponent {
                       />
                     </div>
                     <div className="row primary-box-container">
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "gender",
@@ -289,7 +294,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{
                           className:
                             "col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3"
@@ -311,7 +316,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "religion_id",
@@ -351,7 +356,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "nationality_id",
@@ -415,7 +420,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "country_id",
@@ -434,7 +439,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "state_id",
@@ -453,7 +458,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "city_id",
@@ -479,7 +484,7 @@ class AddPatientForm extends PureComponent {
                         div={{ className: "col-lg-6" }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
                         textBox={{ className: "txt-fld" }}
-                        maxDate={this.state.CurrentDate}
+                        maxDate={new Date()}
                         events={{
                           onChange: calculateAge.bind(this, this, context)
                         }}
@@ -513,7 +518,7 @@ class AddPatientForm extends PureComponent {
                     </div>
 
                     <div className="row secondary-box-container">
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-6" }}
                         label={{
                           fieldName: "primary_identity_id",
@@ -549,7 +554,7 @@ class AddPatientForm extends PureComponent {
                       />
                     </div>
                     <div className="row secondary-box-container">
-                      <AlgaehSelector
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-6" }}
                         label={{
                           fieldName: "secondary_identity_id",
@@ -713,5 +718,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(AddPatientForm)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AddPatientForm)
 );

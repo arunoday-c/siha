@@ -34,6 +34,5 @@ export default {
     endpoint: "https://translate.us-east-1.amazonaws.com"
   },
   /* folder path for language changing */
-  languageFolderPath:
-    "/media/syed/Office/ALGAEH/PRACTICE/UI/context/src/language"
+  languageFolderPath: "/media/syed/Office/ALGAEH/DEV/HIMS/hims-app/logs"
 };

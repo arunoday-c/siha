@@ -29,7 +29,7 @@ export default class AddSecInsuranceForm extends Component{
 	}
 
 	onDrop(file){
-		console.log("!!!!!", file);
+
 		this.setState({
 			filePreview: file[0].name
 		})

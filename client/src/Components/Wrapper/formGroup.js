@@ -1,15 +1,16 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { TextField } from "material-ui";
 import NumberFormat from "react-number-format";
 import "./wrapper.css";
 import Label from "../Wrapper/label";
-export default class FormGroup extends Component {
+export default class FormGroup extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       languageBind: null,
-      textLanguageBind: null
+      textLanguageBind: null,
+      value: null
     };
   }
 
@@ -24,6 +25,18 @@ export default class FormGroup extends Component {
   labelRender = () => {
     return <Label label={this.props.label} />;
   };
+
+  componentWillMount() {
+    this.setState({ value: this.props.textBox.value });
+  }
+  componentWillReceiveProps(props) {
+    this.setState({ value: props.textBox.value });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.textBox.value !== this.state.value) return true;
+    return false;
+  }
 
   textBoxRender = () => {
     if (this.props.textBox != null) {
@@ -75,6 +88,7 @@ export default class FormGroup extends Component {
                   }
                 : null
             }
+            {...this.props.textBox.others}
           />
         );
       } else if (this.props.textBox.number != null) {
@@ -115,6 +129,7 @@ export default class FormGroup extends Component {
                 ? this.props.textBox.disabled
                 : null
             }
+            {...this.props.textBox.others}
           />
         );
       } else if (this.props.textBox.mask != null) {
@@ -143,6 +158,7 @@ export default class FormGroup extends Component {
                   }
                 : null
             }
+            {...this.props.textBox.others}
           />
         );
       } else {
@@ -150,7 +166,7 @@ export default class FormGroup extends Component {
           <TextField
             name={this.props.textBox.name}
             className={this.props.textBox.className}
-            value={this.props.textBox.value}
+            value={this.state.value}
             label={this.state.textLanguageBind}
             onChange={this.props.textBox.events.onChange}
             onBlur={this.props.textBox.events.onBlur}
@@ -170,6 +186,7 @@ export default class FormGroup extends Component {
                   }
                 : null
             }
+            {...this.props.textBox.others}
           />
         );
       }
@@ -179,7 +196,7 @@ export default class FormGroup extends Component {
   };
   render() {
     return (
-      <div className={this.props.div.className}>
+      <div className={this.props.div.className} {...this.props.div.others}>
         {this.labelRender()}
         {this.textBoxRender()}
       </div>

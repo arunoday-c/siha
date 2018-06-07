@@ -79,7 +79,7 @@ class Header extends PureComponent {
     }
   }
   Languaue(secLang, e) {
-    debugger;
+
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
@@ -141,7 +141,7 @@ class Header extends PureComponent {
                 {this.state.languageName}
                 &nbsp;&nbsp;{" "}
                 <i
-                  class="fa fa-language"
+                  className="fa fa-language"
                   aria-hidden="true"
                   style={{ fontSize: 18 }}
                 />

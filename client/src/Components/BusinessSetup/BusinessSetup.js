@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./business_setup.css";
 import "../../styles/site.css";
+import "../../index.css";
 import DeptMaster from "./DeptMaster/DeptMaster.js";
 import HolidayList from "./HolidayList/HolidayList.js";
 import OptionsTabs from "./Options/OptionsTabs.js";
@@ -35,14 +36,14 @@ class BusinessSetup extends Component {
 
   render() {    
     return (
-      <div className="business_setup">       
+      <div className="business_setup">
         <BreadCrumb
           title="Business Setup"
           screenName="Master Setup"
           HideHalfbread={false}
         />
 
-        <div className="tab-container toggle-section">
+        <div className="tab-container toggle-section spacing-push">
           <ul className="nav">
             <li
               alagehtabs={"DeptMaster"}
@@ -99,7 +100,7 @@ class BusinessSetup extends Component {
           ) : this.state.pageDisplay === "Shift" ? (
             <Shift />
           ) : null}
-        </div>        
+        </div>
       </div>
     );
   }

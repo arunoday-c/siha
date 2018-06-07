@@ -1,22 +1,9 @@
-import extend from 'extend';
-import moment from 'moment';
-import PatRegIOputs from '../utils/GlobalFunctions.js'
+import extend from "extend";
+import moment from "moment";
+import PatRegIOputs from "../utils/GlobalFunctions.js";
 
-export default 
-{ 
-    
-    inputParam : function(param)   {
-
-        // if(param!=null){
-        //     if(param.registration_date !== 0)
-        //     {
-        //         param.registration_date= PatRegIOputs.isDateFormat({date:param.registration_date});
-        //     }  
-        //     if(param.date_of_birth !== 0)
-        //     {
-        //         param.date_of_birth = PatRegIOputs.isDateFormat({date:param.date_of_birth})    
-        //     }          
-        // }
+export default {
+  inputParam: function(param) {
         
         var output;
         var CurrentDate = new Date();

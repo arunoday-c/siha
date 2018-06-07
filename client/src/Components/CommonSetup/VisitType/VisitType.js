@@ -15,6 +15,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
+import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import {
   EditingState,
   DataTypeProvider,
@@ -144,13 +145,10 @@ class VisitType extends Component {
 
   onCommitChanges({ added, changed, deleted }) {
     if (added) {
-      console.log("Added:", added);
     }
     if (changed) {
-      console.log("Changed:", changed);
     }
     if (deleted) {
-      console.log("Deleted: ", deleted);
     }
   }
 
@@ -162,12 +160,10 @@ class VisitType extends Component {
       data: data,
       method: "DELETE",
       onSuccess: response => {
-        console.log("DELETED RESPONSE", response.data);
         this.setState({ open: false });
         window.location.reload();
       },
       onFailure: error => {
-        console.log(error);
         this.setState({ open: false });
       }
     });
@@ -235,8 +231,6 @@ class VisitType extends Component {
         uri: uri,
         data: this.state,
         onSuccess: response => {
-          console.log("Res Visit", response.data.success);
-          console.log("Res Visit Data", response.data);
           window.location.reload();
           if (response.data.success == true) {
             //Handle Successful Add here
@@ -245,8 +239,6 @@ class VisitType extends Component {
           }
         },
         onFailure: error => {
-          console.log(error);
-
           // Handle network error here.
         }
       });
@@ -259,7 +251,7 @@ class VisitType extends Component {
 
   editVisitTypes(e) {
     const data = JSON.parse(e.currentTarget.getAttribute("current_edit"));
-    console.log("VISIT TYPES :", data);
+
     this.setState({
       visit_type_code: data.visit_type_code,
       visit_type: data.visit_type,
@@ -267,8 +259,6 @@ class VisitType extends Component {
       buttonText: "UPDATE",
       hims_d_visit_type_id: data.hims_d_visit_type_id
     });
-
-    console.log("State after push :", this.state);
   }
 
   render() {
@@ -285,7 +275,7 @@ class VisitType extends Component {
                   marginRight: "auto"
                 }}
               >
-                <div className="col-lg-3">
+                {/* <div className="col-lg-3">
                   <label>
                     VISIT CODE <span className="imp">*</span>
                   </label>
@@ -298,9 +288,25 @@ class VisitType extends Component {
                     onChange={this.changeTexts.bind(this)}
                     className="txt-fld"
                   />
-                </div>
+                </div> */}
 
-                <div className="col-lg-3">
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "visit_type_code",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "visit_type_code",
+                    value: this.state.visit_type_code,
+                    events: {
+                      onChange: this.changeTexts.bind(this)
+                    }
+                  }}
+                />
+
+                {/* <div className="col-lg-3">
                   <label>
                     VISIT NAME <span className="imp">*</span>
                   </label>
@@ -313,7 +319,23 @@ class VisitType extends Component {
                     onChange={this.changeTexts.bind(this)}
                     className="txt-fld"
                   />
-                </div>
+                </div> */}
+
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "visit_type",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "visit_type",
+                    value: this.state.visit_type,
+                    events: {
+                      onChange: this.changeTexts.bind(this)
+                    }
+                  }}
+                />
 
                 <div className="col-lg-3">
                   <label>
@@ -409,5 +431,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(VisitType)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(VisitType)
 );

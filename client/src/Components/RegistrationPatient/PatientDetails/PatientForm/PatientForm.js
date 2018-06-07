@@ -5,7 +5,7 @@ import "./PatientForm.css";
 export default class PatientForm extends Component{
 		constructor(props){
 		super(props);
-		// debugger;
+
 		this.state = {
 
 		};

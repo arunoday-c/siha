@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Paper, TextField } from "material-ui";
 import "./id_type.css";
 import { Button } from "material-ui";
@@ -14,6 +14,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
 import DeleteDialog from "../../../utils/DeleteDialog";
+import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import {
   EditingState,
   DataTypeProvider,
@@ -31,22 +32,36 @@ import {
   TableEditColumn,
   VirtualTable
 } from "@devexpress/dx-react-grid-material-ui";
+import extend from "extend";
 
 //Grid Logic Start here
 let sel_id = "";
 let row_id = "";
 
+let rowelements = new Object();
 const TableRow = ({ row, ...restProps }) => (
-  <Table.Row
-    {...restProps}
-    onClick={control => {
-      sel_id = JSON.stringify(row.hims_d_identity_document_id);
-      console.log("Row id:", JSON.stringify(row));
-    }}
-    style={{
-      cursor: "pointer"
-    }}
-  />
+  <Fragment>
+    <Table.Row
+      {...restProps}
+      data-algaeh-reference={JSON.stringify({
+        hims_d_identity_document_id: row.hims_d_identity_document_id
+      })}
+      onClick={control => {
+        sel_id = JSON.stringify(row.hims_d_identity_document_id);
+
+        let getattr = control.currentTarget.getAttribute(
+          "data-algaeh-reference"
+        );
+        let rowId = control.currentTarget.rowIndex;
+        let JsonParse = JSON.parse(getattr);
+        let obj = { [rowId]: JsonParse };
+        extend(rowelements, obj);
+      }}
+      style={{
+        cursor: "pointer"
+      }}
+    />
+  </Fragment>
 );
 
 const styles = theme => ({
@@ -145,7 +160,6 @@ class IDType extends Component {
   addIDType(e) {
     e.preventDefault();
 
-    //console.log("myState", this.state);
     algaehApiCall({
       uri: "/identity/add",
       data: this.state,
@@ -158,9 +172,7 @@ class IDType extends Component {
           openDialog: false
         });
       },
-      onFailure: error => {
-        console.log(error);
-      }
+      onFailure: error => {}
     });
   }
 
@@ -168,14 +180,13 @@ class IDType extends Component {
     if (this.props.idtypes !== nextProps.idtypes) {
       return true;
     }
-
     return true;
   }
 
   handleConfirmDelete() {
     const data = { hims_d_identity_document_id: sel_id, updated_by: 1 };
     this.setState({ openDialog: false });
-    console.log("Data Delete ID:", data + row_id);
+
     algaehApiCall({
       uri: "/identity/delete",
       data: data,
@@ -185,7 +196,6 @@ class IDType extends Component {
         this.props.getIDTypes();
       },
       onFailure: error => {
-        console.log("Delete Error: ", error);
         this.setState({ open: false });
       }
     });
@@ -197,21 +207,31 @@ class IDType extends Component {
 
   onCommitChanges({ added, changed, deleted }) {
     if (added) {
-      console.log("Added: ", added);
     }
     if (changed) {
-      console.log("Changed: ", JSON.stringify(changed));
       let _key = Object.keys(changed);
-      console.log("Selected ID", sel_id);
-      if (changed[_key[0]] !== undefined) {
-        console.log("visa type code", changed[_key[0]].identity_document_code);
+
+      let getKey = changed[_key[0]];
+      if (getKey !== undefined) {
+        let data = new Object();
+
+        data = {
+          hims_d_identity_document_id:
+            rowelements[_key[0]].hims_d_identity_document_id,
+          ...getKey
+        };
+
+        this.updateIDtypes(data);
       }
+
+      delete rowelements[String(_key[0])];
     }
     if (deleted) {
       this.setState({ openDialog: true });
-      console.log("Deleted: ", deleted);
     }
   }
+
+  updateIDtypes(data) {}
 
   handleDialogClose() {
     this.setState({ openDialog: false });
@@ -266,7 +286,7 @@ class IDType extends Component {
                 <label className="center">Inactive </label>
               </div>
 
-              <div className="col-lg-3">
+              {/* <div className="col-lg-3">
                 <label>
                   ID TYPE CODE <span className="imp">*</span>
                 </label>
@@ -277,9 +297,25 @@ class IDType extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
+              </div> */}
 
-              <div className="col-lg-3">
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "identity_document_code",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "identity_document_code",
+                  value: this.state.identity_document_code,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+
+              {/* <div className="col-lg-3">
                 <label>
                   ID TYPE NAME <span className="imp">*</span>
                 </label>
@@ -290,7 +326,23 @@ class IDType extends Component {
                   onChange={this.changeTexts.bind(this)}
                   className="txt-fld"
                 />
-              </div>
+              </div> */}
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "identity_document_name",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "identity_document_name",
+                  value: this.state.identity_document_name,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
 
               <div className="col-lg-3 align-middle">
                 <br />

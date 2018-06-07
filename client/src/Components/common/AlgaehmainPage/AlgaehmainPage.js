@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 import { withStyles } from "material-ui/styles";
 import Drawer from "material-ui/Drawer";
 import { MenuItem } from "material-ui/Menu";
 import ExpandMore from "@material-ui/icons/ExpandMore";
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 // import  {MenuListItems}  from './MenuItems';
 import sideMenu from "./SideMenuList.json";
 import Dashboard from "../../Dashboard/Dashboard";
 import "./AlgaehmainPage.css";
 import { setCookie, getCookie } from "../../../utils/algaehApiCall";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import directRoutes from "../../../Dynamicroutes";
 import { MuiThemeProvider } from "material-ui";
 import ReactDOM from "react-dom";
@@ -24,15 +24,15 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  IconButton,  
+  IconButton,
   SwipeableDrawer,
   Button,
   List,
   Divider,
-  Paper,  
-  Menu,  
+  Paper,
+  Menu,
   Radio,
-  TextField,  
+  TextField
 } from "material-ui";
 
 // import React from 'react';
@@ -54,30 +54,30 @@ const paper_style = {
 };
 
 const titleStyles = {
-	title: {
-    color: '#fff',    
-    padding:"5px",
-	},
-	organisation: {
+  title: {
+    color: "#fff",
+    padding: "5px"
+  },
+  organisation: {
     color: "#4CAF50",
-    padding:"5px",
-    }
+    padding: "5px"
+  }
 };
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
+    flexGrow: 1
   },
-  appFrame: {    
+  appFrame: {
     zIndex: 1,
-    overflow: 'hidden',
-    position: 'relative',
-    display: 'flex',
-    width: '100%',
-    height:'100%'
+    overflow: "hidden",
+    position: "relative",
+    display: "flex",
+    width: "100%",
+    height: "100%"
   },
-  appBar: {    
-    transition: theme.transitions.create(['margin', 'width'], {
+  appBar: {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -85,80 +85,77 @@ const styles = theme => ({
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
-  
+
   menuButton: {
     marginLeft: 12,
-    marginRight: 20,
+    marginRight: 20
   },
   hide: {
-    display: 'none',
+    display: "none"
   },
   drawerPaper: {
-    position: 'relative',
-    width: drawerWidth,
+    position: "relative",
+    width: drawerWidth
   },
   drawerHeader: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '0 7px',
-    minHeight:"20px",
-    background:"#292929",
-    ...theme.mixins.toolbar,
+    display: "flex",
+    justifyContent: "flex-end",
+    padding: "0 7px",
+    minHeight: "20px",
+    background: "#292929",
+    ...theme.mixins.toolbar
   },
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     // padding: theme.spacing.unit * 3,
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+      duration: theme.transitions.duration.leavingScreen
+    })
   },
-  'content-left': {
-    marginLeft: -drawerWidth,
+  "content-left": {
+    marginLeft: -drawerWidth
   },
-  'content-right': {
-    marginRight: -drawerWidth,
+  "content-right": {
+    marginRight: -drawerWidth
   },
   contentShift: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
-  'contentShift-left': {
-    marginLeft: 0,
+  "contentShift-left": {
+    marginLeft: 0
   },
-  'contentShift-right': {
-    marginRight: 0,
-  },
+  "contentShift-right": {
+    marginRight: 0
+  }
 });
 
-class PersistentDrawer extends React.Component {  
+class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,   
-      anchor: "left",  
+      open: false,
+      anchor: "left",
       toggleSubMenu: false,
       menuSelected: "",
-      renderComponent:"Dashboard",
-      title:"Dashboard",
+      renderComponent: "Dashboard",
+      title: "Dashboard",
       selectedLang: "lang_en",
       anchorEl: null,
-      languageName: "English",
-      
+      languageName: "English"
     };
   }
 
-
   Languaue(secLang, e) {
-    debugger;
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
@@ -192,7 +189,7 @@ class PersistentDrawer extends React.Component {
 
   handleChangeAnchor = event => {
     this.setState({
-      anchor: event.target.value,
+      anchor: event.target.value
     });
   };
 
@@ -209,121 +206,117 @@ class PersistentDrawer extends React.Component {
         toggleSubMenu: false
       });
     }
-    console.log("state", this.state.menuSelected);
   }
-  
 
   TriggerPath(e) {
-    debugger;
     const path = e.currentTarget.getAttribute("path");
     const name = e.currentTarget.getAttribute("name");
     let screenName = e.currentTarget.innerText.replace(/\s/g, "");
     setCookie("ScreenName", path, 30);
-    
-    console.log("Child", this.props.children);
-    this.setState(
-      {
-        toggleSubMenu: true,
-        title: name,
-        renderComponent:screenName,
-        menuSelected:""
-      });
-          
+
+    this.setState({
+      toggleSubMenu: true,
+      title: name,
+      renderComponent: screenName,
+      menuSelected: ""
+    });
   }
   render() {
     const { classes, theme } = this.props;
     const { anchor, open } = this.state;
 
-    var MenuListItems = sideMenu.map((data,idx)=>{
-      return(
+    var MenuListItems = sideMenu.map((data, idx) => {
+      return (
         <div key={"side_menu_index" + idx}>
-        <div className="container-fluid">
-          <div className="row clearfix">
-            <div className="col-xs-2 col-sm-2 col-md-2 text-right">
-              <span className="fas fa-th-large side-menu-title" />
-            </div>
-            <div
-              className="col-xs-5 col-sm-5 col-md-5 side-menu-title"
-              onClick={this.openSubMenuSelection.bind(this, data)}
-            >
-              {data.label}
-            </div>
-  
-            <div className="col-xs-4 col-sm-4 col-md-4 side-menu-arrow text-right">
-              {this.state.menuSelected === data.name &&
-              this.state.toggleSubMenu === false ? (
-                <span
-                  className="side-menu-downIcon"
-                  onClick={this.openSubMenuSelection.bind(this, data)}
-                >
+          <div className="container-fluid">
+            <div className="row clearfix">
+              <div className="col-xs-3 col-sm-3 col-md-3 text-right">
+                <span className="fas fa-th-large side-menu-title" />
+              </div>
+              <div
+                className="col-xs-5 col-sm-5 col-md-5 side-menu-title"
+                onClick={this.openSubMenuSelection.bind(this, data)}
+              >
+                {data.label}
+              </div>
+
+              <div className="col-xs-4 col-sm-4 col-md-4 side-menu-arrow text-right">
+                {this.state.menuSelected === data.name &&
+                this.state.toggleSubMenu === false ? (
+                  <span
+                    className="side-menu-downIcon"
+                    onClick={this.openSubMenuSelection.bind(this, data)}
+                  >
+                    <IconButton
+                      onClick={this.openSubMenuSelection.bind(this, data)}
+                    >
+                      <div className="close-menu">
+                        <ExpandMore />
+                      </div>
+                    </IconButton>
+                  </span>
+                ) : (
                   <IconButton
-                  onClick={this.openSubMenuSelection.bind(this, data)}
+                    onClick={this.openSubMenuSelection.bind(this, data)}
                   >
                     <div className="close-menu">
-                      <ExpandMore />
+                      <ChevronLeftIcon />
                     </div>
                   </IconButton>
-                </span>
-              ) : (
-                <IconButton
-                onClick={this.openSubMenuSelection.bind(this, data)}
-                >
-                  <div className="close-menu">
-                    <ChevronLeftIcon />
-                  </div>
-                </IconButton>
-              )}
-            </div>
-          </div>
-          {this.state.menuSelected === data.name &&
-          this.state.toggleSubMenu === false ? (
-            <div
-              className="row sub-menu-option"
-              style={{ paddingTop: "10px" }}
-            >
-              <div className="tree-structure-menu">
-                {data.subMenu.map((title, idx) => {
-                  return (
-                    <div key={"sub_title" + idx}>
-                      <ul style={{ marginBottom: "0px" }}>
-                        <li
-                          onClick={this.TriggerPath.bind(this)}
-                          path={title.path}
-                          name={title.name}
-                        >
-                          {title.label}{" "}
-                        </li>
-                      </ul>
-                    </div>
-                  );
-                })}
+                )}
               </div>
             </div>
-          ) : null}
+            {this.state.menuSelected === data.name &&
+            this.state.toggleSubMenu === false ? (
+              <div
+                className="row sub-menu-option"
+                style={{ paddingTop: "10px" }}
+              >
+                <div className="tree-structure-menu">
+                  {data.subMenu.map((title, idx) => {
+                    return (
+                      <div key={"sub_title" + idx}>
+                        <ul style={{ marginBottom: "0px" }}>
+                          <li
+                            onClick={this.TriggerPath.bind(this)}
+                            path={title.path}
+                            name={title.name}
+                          >
+                            {title.label}{" "}
+                          </li>
+                        </ul>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+          </div>
         </div>
-      </div>
-    )
-  })
+      );
+    });
     const drawer = (
       <Drawer
         variant="persistent"
         anchor={anchor}
         open={open}
         classes={{
-          paper: classes.drawerPaper,
+          paper: classes.drawerPaper
         }}
       >
         <div className={classes.drawerHeader}>
-        <div className="hptl-phase1-sideMenuBar">
+          <div className="hptl-phase1-sideMenuBar">
             <div className="menuBar-title">
               <span style={titleStyles.title}>ALGAEH</span>
-              <span style={titleStyles.organisation}>ERP</span>									
-              <IconButton onClick={this.handleDrawerClose} style={{color:"#fff"}}>              
+              <span style={titleStyles.organisation}>ERP</span>
+              <IconButton
+                onClick={this.handleDrawerClose}
+                style={{ color: "#fff" }}
+              >
                 <CancelIcon />
               </IconButton>
             </div>
-        
-        
+
             <Paper style={paper_style} className="paper" elevation={4}>
               <div className="sideMenu-header">{MenuListItems}</div>
             </Paper>
@@ -334,12 +327,12 @@ class PersistentDrawer extends React.Component {
 
     return (
       <div className="sticky-top">
-        <div className={classes.root}>        
+        <div className={classes.root}>
           <div className={classes.appFrame}>
             <AppBar
               className={classNames(classes.appBar, {
                 [classes.appBarShift]: open,
-                [classes[`appBarShift-${anchor}`]]: open,
+                [classes[`appBarShift-${anchor}`]]: open
               })}
             >
               <Toolbar disableGutters={!open}>
@@ -348,7 +341,10 @@ class PersistentDrawer extends React.Component {
                     color="inherit"
                     aria-label="open drawer"
                     onClick={this.handleDrawerOpen}
-                    className={classNames(classes.menuButton, open && classes.hide)}
+                    className={classNames(
+                      classes.menuButton,
+                      open && classes.hide
+                    )}
                   >
                     <MenuIcon />
                   </IconButton>
@@ -393,25 +389,32 @@ class PersistentDrawer extends React.Component {
                   </Menu>
                 </div>
               </Toolbar>
-            </AppBar>          
-            {drawer}          
+            </AppBar>
+            {drawer}
             <main
-              className={classNames(classes.content, classes[`content-${anchor}`], {
-                [classes.contentShift]: open,
-                [classes[`contentShift-${anchor}`]]: open,
-              })}
+              className={classNames(
+                classes.content,
+                classes[`content-${anchor}`],
+                {
+                  [classes.contentShift]: open,
+                  [classes[`contentShift-${anchor}`]]: open
+                }
+              )}
             >
               <div className={classes.drawerHeader} />
-                <div className="container" style={{minWidth:"100%"}}>
-                  <Typography >  
-                    <div className="row" id = "hisapp">
-                      <div className="col-lg-12">                        
-                        {directRoutes(this.state.renderComponent, this.state.selectedLang)}                        
-                      </div>
-                    </div>                  
-                  </Typography>
-                </div>
-              </main>            
+              <div className="container" style={{ minWidth: "100%" }}>
+                <Typography>
+                  <div className="row" id="hisapp">
+                    <div className="col-lg-12">
+                      {directRoutes(
+                        this.state.renderComponent,
+                        this.state.selectedLang
+                      )}
+                    </div>
+                  </div>
+                </Typography>
+              </div>
+            </main>
           </div>
         </div>
         
@@ -420,10 +423,9 @@ class PersistentDrawer extends React.Component {
   }
 }
 
-
 PersistentDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(PersistentDrawer);
