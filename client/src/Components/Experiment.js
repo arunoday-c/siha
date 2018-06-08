@@ -24,16 +24,27 @@ class Experiment extends Component {
 
   render() {
     return (
-      <AlgaehDateHandler
-        div={{ className: "col-lg-6" }}
-        label={{ fieldName: "date_of_birth", isImp: true }}
-        textBox={{ className: "txt-fld" }}
-        maxDate={new Date()}
-        events={{
-          onChange: this.calculateAge.bind(this, this)
-        }}
-        value={this.state.date_of_birth}
-      />
+      <div>
+        <div className="col-lg-3">
+          <ul>
+            <li />
+            <li />
+            <li />
+            <li />
+            <li />
+          </ul>
+        </div>
+        <AlgaehDateHandler
+          div={{ className: "col-lg-6" }}
+          label={{ fieldName: "date_of_birth", isImp: true }}
+          textBox={{ className: "txt-fld" }}
+          maxDate={new Date()}
+          events={{
+            onChange: this.calculateAge.bind(this, this)
+          }}
+          value={this.state.date_of_birth}
+        />
+      </div>
     );
   }
 }
