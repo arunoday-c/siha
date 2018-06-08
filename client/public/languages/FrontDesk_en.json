@@ -30,7 +30,7 @@
   "relationship_with_patient": "Relationship With Patient",
   "visit_type": "Visit Type",
   "visit_date": "Visit Date",
-  "sub_department_id": "Department",
+  "department_id": "Department",
   "doctor_id": "Doctor",
   "maternity_patient": "Maternity Patient",
   "is_mlc": "Is MLC",

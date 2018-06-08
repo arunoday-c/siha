@@ -106,7 +106,7 @@ class AddConsultationForm extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-6" }}
                       label={{
-                        fieldName: "sub_department_id",
+                        fieldName: "department_id",
                         isImp: true
                       }}
                       selector={{
@@ -184,7 +184,6 @@ class AddConsultationForm extends Component {
                                 name="MATERNITY_PATIENT"
                                 className="htpl-phase1-radio-btn"
                                 value={data.value}
-                                // onChange={this.selectedValue.bind(this, data.value)}
                                 defaultChecked={
                                   data.value === "N" ? true : false
                                 }

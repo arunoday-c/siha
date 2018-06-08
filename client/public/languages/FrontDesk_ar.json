@@ -30,7 +30,7 @@
   "relationship_with_patient": "العلاقة مع المريض",
   "visit_type": "نوع الزيارة",
   "visit_date": "تاريخ الزيارة",
-  "sub_department_id": "قسم الإدارة",
+  "department_id": "قسم الإدارة",
   "doctor_id": "دكتور",
   "maternity_patient": "مريض الولادة",
   "is_mlc": "هو MLC",

@@ -64,11 +64,21 @@ class RegistrationPatient extends Component {
     });
   }
 
+  componentWillReceiveProps() {
+    debugger;
+  }
+  UNSAFE_componentWillReceiveProps() {
+    debugger;
+  }
+
   ClearData(e) {
     debugger;
+    let data = this.state;
+
     this.props.initialStatePatientData();
     let IOputs = PatRegIOputs.inputParam();
-    this.setState(...IOputs);
+    extend(data, IOputs);
+    this.setState(data);
     debugger;
   }
 
