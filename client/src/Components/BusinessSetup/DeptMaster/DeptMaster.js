@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Paper, TextField } from "material-ui";
 import "./dept.css";
 import IconButton from "material-ui/IconButton";
-import { MuiThemeProvider, createMuiTheme } from "material-ui";
 import { Button } from "material-ui";
 import SelectField from "../../common/Inputs/SelectField.js";
 import moment from "moment";
@@ -20,9 +19,7 @@ import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
 import {
   EditingState,
-  PagingState,
   IntegratedFiltering,
-  IntegratedPaging,
   RowDetailState,
   FilteringState,
   DataTypeProvider,
@@ -33,9 +30,7 @@ import {
   Grid,
   Table,
   TableHeaderRow,
-  PagingPanel,
   TableRowDetail,
-  TableFilterRow,
   TableEditRow,
   TableEditColumn,
   VirtualTable,
@@ -46,16 +41,11 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
-let sel_id = "";
-let row_id = "";
 
 const TableRow = ({ row, ...restProps }) => (
   <Table.Row
     {...restProps}
-    onClick={control => {
-      sel_id = JSON.stringify(row.hims_d_identity_document_id);
-      row_id = row.id;
-    }}
+    onClick={control => {}}
     style={{
       cursor: "pointer"
     }}
@@ -178,12 +168,10 @@ class DeptMaster extends Component {
       department_desc: "",
       department_type: "",
       hospital_id: "1",
-      effective_start_date: "",
+      effective_start_date: null,
       effective_end_date: "9999-12-31",
       department_status: "",
       created_by: "1",
-      deptList: [],
-      subDeptList: [],
       buttonText: "ADD TO LIST",
       checkedActive: false,
       checkedInactive: false,
@@ -220,8 +208,8 @@ class DeptMaster extends Component {
     this.setState({ sub_department_desc: e.target.value });
   }
 
-  changeEST(e) {
-    this.setState({ effective_start_date: e.target.value });
+  changeEST(date) {
+    console.log(date);
   }
 
   sendDate(date) {
@@ -233,6 +221,8 @@ class DeptMaster extends Component {
       return "Active";
     } else if (value === "I") {
       return "Inactive";
+    } else {
+      return "";
     }
   }
 
@@ -304,7 +294,11 @@ class DeptMaster extends Component {
   }
 
   dateFormater({ value }) {
-    return String(moment(value).format("DD-MM-YYYY"));
+    if (value !== null) {
+      return String(moment(value).format("DD-MM-YYYY"));
+    } else {
+      return "";
+    }
   }
 
   loadSubDeps(dep_id) {
@@ -500,29 +494,15 @@ class DeptMaster extends Component {
                 marginRight: "auto"
               }}
             >
-              <div className="col-lg-3">
-                <label>
-                  EFFECTIVE START DATE<span className="imp"> *</span>
-                </label>
-                <br />
-
-                <TextField
-                  className="txt-fld"
-                  type="date"
-                  value={this.state.effective_start_date}
-                  onChange={this.changeEST.bind(this)}
-                />
-              </div>
-              {/* <AlgaehDateHandler
-                div={{ className: "col-lg-6" }}
+              <AlgaehDateHandler
+                div={{ className: "col-lg-3" }}
                 label={{ fieldName: "effective_start_date", isImp: true }}
                 textBox={{ className: "txt-fld" }}
                 maxDate={new Date()}
                 events={{
                   onChange: this.changeEST.bind(this)
                 }}
-                value={this.state.effective_start_date}
-              /> */}
+              />
               <div className="col-lg-3">
                 <label>
                   DEPARTMENT TYPE <span className="imp"> *</span>

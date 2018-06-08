@@ -66,7 +66,10 @@ let addVisit = (req, res, next) => {
 let insertVisitData = (dataBase, req, res, callBack) => {
   try {
     debugFunction("insertVisitData");
-    let inputParam = extend(visitDetails, req.query);
+    let inputParam = extend(
+      visitDetails,
+      req.query["data"] == null ? req.body : req.query
+    );
 
     dataBase.query(
       "INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \

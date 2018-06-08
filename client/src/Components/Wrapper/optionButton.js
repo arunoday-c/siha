@@ -19,7 +19,8 @@ export default class Options extends Component {
 
   handleChange = event => {
     this.setState({ value: event.target.value });
-    if (this.props.group.events != null) this.props.group.events.onChange(this);
+    if (this.props.group.events != null)
+      this.props.group.events.onChange(event);
   };
   renderLabel = () => {
     if (this.props.label != null) {
@@ -50,7 +51,6 @@ export default class Options extends Component {
             control={<Radio color="primary" />}
             label={row.label}
             disabled={row.disabled == null ? false : true}
-            {...this.row.others}
           />
         );
       });

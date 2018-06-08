@@ -230,12 +230,12 @@ class Numbering extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  fieldName: "options_code",
+                  fieldName: "numgen_code",
                   isImp: true
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "options_code",
+                  name: "numgen_code",
                   value: this.state.numgen_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
@@ -261,12 +261,12 @@ class Numbering extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  fieldName: "module_name",
+                  fieldName: "module_desc",
                   isImp: true
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "module_name",
+                  name: "module_desc",
                   value: this.state.module_desc,
                   events: {
                     onChange: this.changeTexts.bind(this)

@@ -1,10 +1,10 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { TextField } from "material-ui";
 import NumberFormat from "react-number-format";
 import "./wrapper.css";
 import Label from "../Wrapper/label";
-export default class FormGroup extends PureComponent {
+export default class FormGroup extends Component {
   constructor(props) {
     super(props);
     this.state = {

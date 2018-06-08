@@ -14,7 +14,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
 import DeleteDialog from "../../../utils/DeleteDialog";
-import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehOptions } from "../../Wrapper/algaehWrapper";
 import {
   EditingState,
   DataTypeProvider,
@@ -43,9 +43,7 @@ const TableRow = ({ row, ...restProps }) => (
   <Fragment>
     <Table.Row
       {...restProps}
-      data-algaeh-reference={JSON.stringify({
-        hims_d_identity_document_id: row.hims_d_identity_document_id
-      })}
+      data-algaeh-reference={JSON.stringify(row)}
       onClick={control => {
         sel_id = JSON.stringify(row.hims_d_identity_document_id);
 
@@ -133,12 +131,10 @@ class IDType extends Component {
       identity_document_code: "",
       identity_document_name: "",
       created_by: "1",
-      currentRowID: ""
+      currentRowID: "",
+      id_code_error: false,
+      id_code_error_txt: ""
     };
-  }
-
-  handleDel() {
-    alert("CLicked");
   }
 
   changeTexts(e) {
@@ -159,7 +155,6 @@ class IDType extends Component {
 
   addIDType(e) {
     e.preventDefault();
-
     algaehApiCall({
       uri: "/identity/add",
       data: this.state,
@@ -210,14 +205,12 @@ class IDType extends Component {
     }
     if (changed) {
       let _key = Object.keys(changed);
-
       let getKey = changed[_key[0]];
       if (getKey !== undefined) {
         let data = new Object();
 
         data = {
-          hims_d_identity_document_id:
-            rowelements[_key[0]].hims_d_identity_document_id,
+          ...rowelements[_key[0]],
           ...getKey
         };
 
@@ -231,7 +224,17 @@ class IDType extends Component {
     }
   }
 
-  updateIDtypes(data) {}
+  updateIDtypes(data) {
+    algaehApiCall({
+      uri: "/identity/update",
+      data: data,
+      method: "PUT",
+      onSuccess: response => {
+        this.props.getIDTypes();
+      },
+      onFailure: error => {}
+    });
+  }
 
   handleDialogClose() {
     this.setState({ openDialog: false });
@@ -241,6 +244,7 @@ class IDType extends Component {
     return (
       <div className="id_type">
         <DeleteDialog
+          dept_name={this.state.dept_name}
           handleConfirmDelete={this.handleConfirmDelete.bind(this)}
           handleDialogClose={this.handleDialogClose.bind(this)}
           openDialog={this.state.openDialog}
@@ -256,48 +260,23 @@ class IDType extends Component {
                 marginRight: "auto"
               }}
             >
-              <div className="col-lg-3">
-                <label>
-                  Status <span className="imp">*</span>
-                </label>
-                <br />
-                <input
-                  onChange={this.changeStatus.bind(this)}
-                  style={{
-                    padding: 8,
-                    margin: 8
-                  }}
-                  type="radio"
-                  name="status"
-                  value="A"
-                />
-                <label className="center">Active </label>
-
-                <input
-                  onChange={this.changeStatus.bind(this)}
-                  style={{
-                    padding: 8,
-                    margin: 8
-                  }}
-                  type="radio"
-                  name="status"
-                  value="I"
-                />
-                <label className="center">Inactive </label>
-              </div>
-
-              {/* <div className="col-lg-3">
-                <label>
-                  ID TYPE CODE <span className="imp">*</span>
-                </label>
-                <br />
-                <TextField
-                  name="identity_document_code"
-                  value={this.state.identity_document_code}
-                  onChange={this.changeTexts.bind(this)}
-                  className="txt-fld"
-                />
-              </div> */}
+              <AlgaehOptions
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "status",
+                  isImp: true
+                }}
+                optionsType="radio"
+                group={{
+                  name: "Active",
+                  value: "Active",
+                  controls: [
+                    { label: "Active", value: true },
+                    { label: "Inactive", value: false }
+                  ],
+                  events: { onChange: this.changeStatus.bind(this) }
+                }}
+              />
 
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
@@ -311,6 +290,10 @@ class IDType extends Component {
                   value: this.state.identity_document_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
+                  },
+                  others: {
+                    error: this.state.id_code_error,
+                    helperText: this.state.id_code_error_txt
                   }
                 }}
               />
@@ -367,6 +350,10 @@ class IDType extends Component {
                     {
                       name: "identity_document_name",
                       title: "ID NAME"
+                    },
+                    {
+                      name: "identity_status",
+                      title: "STATUS"
                     }
                   ]}
                 >

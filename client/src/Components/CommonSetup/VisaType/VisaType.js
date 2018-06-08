@@ -8,7 +8,7 @@ import { withStyles } from "material-ui/styles";
 import { EditingState, DataTypeProvider } from "@devexpress/dx-react-grid";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import DeleteDialog from "../../../utils/DeleteDialog";
-import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehOptions } from "../../Wrapper/algaehWrapper";
 import {
   Grid,
   Table,
@@ -286,6 +286,23 @@ class VisaType extends Component {
                 marginRight: "auto"
               }}
             >
+              <AlgaehOptions
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "status",
+                  isImp: true
+                }}
+                optionsType="radio"
+                group={{
+                  name: "Active",
+                  value: "Active",
+                  controls: [
+                    { label: "Active", value: true },
+                    { label: "Inactive", value: false }
+                  ],
+                  events: { onChange: this.changeStatus.bind(this) }
+                }}
+              />
               {/* <div className="col-lg-3">
                 <label>
                   VISA TYPE CODE <span className="imp">*</span>
@@ -370,7 +387,8 @@ class VisaType extends Component {
                   columns={[
                     { name: "visa_type_code", title: "Visa Type Code" },
                     { name: "visa_type", title: "Visa Type" },
-                    { name: "created_date", title: "Added Date" }
+                    { name: "created_date", title: "Added Date" },
+                    { name: "visa_status", title: "Status" }
                   ]}
                 >
                   <DataTypeProvider

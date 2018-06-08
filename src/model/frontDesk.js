@@ -16,10 +16,11 @@ let addFrontDesk = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    if (req.query != null) {
+    if (req.query["data"] != null) {
       req.query = JSON.parse(req.query["data"]);
       req.body = req.query;
     }
+
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -111,7 +112,7 @@ let addFrontDesk = (req, res, next) => {
                                 resultdata["visit_code"] = req.body.visit_code;
                                 req.records = resultdata;
                                 //Upload Images to server.
-                                createFolder(req, res);
+                                // createFolder(req, res);
                                 next();
                                 return;
                               });
