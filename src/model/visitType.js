@@ -4,7 +4,7 @@ import httpStatus from "../utils/httpStatus";
 let whereStatement = {
   hims_d_visit_type_id: "ALL",
   visit_type_code: "ALL",
-  visit_type: "ALL"
+  visit_type_desc: "ALL"
 };
 
 let selectStatement = (req, res, next) => {
@@ -40,7 +40,7 @@ let selectStatement = (req, res, next) => {
 let visitType = {
   hims_d_visit_type_id: null,
   visit_type_code: null,
-  visit_type: null,
+  visit_type_desc: null,
   hims_d_visit_type: null,
   created_by: null,
   created_date: null,
@@ -66,7 +66,7 @@ let addVisit = (req, res, next) => {
     VALUES ( ?, ?, ?, ?, ?,?)",
       [
         inputParam.visit_type_code,
-        inputParam.visit_type,
+        inputParam.visit_type_desc,
         inputParam.hims_d_visit_type,
         inputParam.created_by,
         new Date(),
@@ -96,10 +96,10 @@ let updateVisit = (req, res, next) => {
     let inputParam = extend(visitType, req.body);
     connection.query(
       "UPDATE `hims_d_visit_type` \
-      SET `visit_type`=?, `hims_d_visit_type`=?,  `updated_by`=?, `updated_date`=?,visit_status=? \
+      SET `visit_type_desc`=?, `hims_d_visit_type`=?,  `updated_by`=?, `updated_date`=?,visit_status=? \
       WHERE `record_status`='A' and `hims_d_visit_type_id`=?",
       [
-        inputParam.visit_type,
+        inputParam.visit_type_desc,
         inputParam.hims_d_visit_type,
         inputParam.updated_by,
         new Date(),

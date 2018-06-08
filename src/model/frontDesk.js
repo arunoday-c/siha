@@ -169,7 +169,7 @@ let selectFrontDesk = (req, res, next) => {
       , `emergency_contact_name`,`emergency_contact_number`, `relationship_with_patient`\
       , `visa_type_id`,`nationality_id`, `postal_code`, `primary_identity_id`\
       , `primary_id_no`,`secondary_identity_id`, `secondary_id_no`, `photo_file`\
-      , `primary_id_file`,`secondary_id_file` FROM `hims_f_patient` \
+      , `primary_id_file`,`secondary_id_file`,`city_id`,`state_id`,`country_id` FROM `hims_f_patient` \
        WHERE `record_status`='A' AND " +
           where.condition,
         where.values,
@@ -182,7 +182,7 @@ let selectFrontDesk = (req, res, next) => {
           if (result.length != 0) {
             let hims_d_patient_id = result[0]["hims_d_patient_id"];
             connection.query(
-              "SELECT `hims_f_patient_visit_id`, `patient_id`\
+              "SELECT `hims_f_patient_visit_id`, `patient_id`,`visit_code`\
             , `visit_type`, `visit_date`, `department_id`, `sub_department_id`\
             , `doctor_id`, `maternity_patient`, `is_mlc`, `mlc_accident_reg_no`\
             , `mlc_police_station`, `mlc_wound_certified_date`\
