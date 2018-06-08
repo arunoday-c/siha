@@ -350,6 +350,10 @@ class IDType extends Component {
                     {
                       name: "identity_document_name",
                       title: "ID NAME"
+                    },
+                    {
+                      name: "identity_status",
+                      title: "STATUS"
                     }
                   ]}
                 >
