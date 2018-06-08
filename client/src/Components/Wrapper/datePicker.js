@@ -6,7 +6,7 @@ import DayPickerInput from "react-day-picker/DayPickerInput";
 import MomentLocaleUtils from "react-day-picker/moment";
 import "react-day-picker/lib/style.css";
 import "../Wrapper/wrapper.css";
-import "moment/locale/ar";
+// import "moment/locale/ar";
 import { getCookie } from "../../utils/algaehApiCall.js";
 export default class DateHandler extends Component {
   generateLabel = () => {
@@ -94,8 +94,8 @@ export default class DateHandler extends Component {
                 className={this.props.textBox.className}
                 dayPickerProps={{
                   todayButton: "Today",
-                  localeUtils: MomentLocaleUtils,
-                  locale: this.state.language,
+                  // localeUtils: MomentLocaleUtils,
+                  // locale: this.state.language,
                   disabledDays: this.disabledStartDate.bind(this)
                 }}
                 {...this.props.textBox.others}

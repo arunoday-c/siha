@@ -126,7 +126,7 @@
     "english": "Visit Date",
     "target": "تاريخ الزيارة"
   },
-  "department_id": {
+  "sub_department_id": {
     "english": "Department",
     "target": "قسم الإدارة"
   },

@@ -12,8 +12,11 @@ import { bindActionCreators } from "redux";
 import { SelectFiledData } from "../../../../utils/algaehApiCall.js";
 import MyContext from "../../../../utils/MyContext.js";
 
-import AlgaehLabel from "../../../Wrapper/label.js";
-import AlgaehSelector from "../../../Wrapper/selector.js";
+import {
+  AlgaehLabel,
+  AlgaehSelector,
+  AlagehAutoComplete
+} from "../../../Wrapper/algaehWrapper";
 
 const FORMAT_DEFAULT = [
   { name: "Mohammed", value: 1 },
@@ -42,6 +45,7 @@ class AddConsultationForm extends Component {
   }
 
   componentDidMount() {
+    debugger;
     if (this.props.subdepartments.length === 0) {
       this.props.getSubDepartments();
     }
@@ -51,10 +55,24 @@ class AddConsultationForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
+    console.log("Visit Details", this.state);
     this.setState(nextProps.PatRegIOputs);
   }
 
   render() {
+    const vstDeatils =
+      this.state.visitDetails === null
+        ? [
+            {
+              visit_code: "",
+              visit_date: "",
+              visit_type: "",
+              department_id: "",
+              doctor_id: ""
+            }
+          ]
+        : this.state.visitDetails;
     return (
       <MyContext.Consumer>
         {context => (
@@ -63,7 +81,7 @@ class AddConsultationForm extends Component {
               <div className="row">
                 <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 primary-details">
                   <div className="row primary-box-container">
-                    <AlgaehSelector
+                    <AlagehAutoComplete
                       div={{ className: "col-lg-6" }}
                       label={{
                         fieldName: "visit_type",
@@ -85,16 +103,16 @@ class AddConsultationForm extends Component {
                       }}
                     />
 
-                    <AlgaehSelector
+                    <AlagehAutoComplete
                       div={{ className: "col-lg-6" }}
                       label={{
-                        fieldName: "department_id",
+                        fieldName: "sub_department_id",
                         isImp: true
                       }}
                       selector={{
-                        name: "department_id",
+                        name: "sub_department_id",
                         className: "select-fld",
-                        value: this.state.department_id,
+                        value: this.state.sub_department_id,
                         dataSource: {
                           textField: "sub_department_name",
                           valueField: "hims_d_sub_department_id",
@@ -103,23 +121,12 @@ class AddConsultationForm extends Component {
                         onChange: AddVisitHandlers(
                           this,
                           context
-                        ).selectedHandeler.bind(this)
+                        ).DeptselectedHandeler.bind(this)
                       }}
                     />
-                    {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-											<label>VISIT TYPE<mark>*</mark></label><br />
-
-											<SelectFieldDrop
-												children={SelectFiledData({textField:"visit_type", 
-												valueField:"hims_d_visit_type_id", payload:this.props.visittypes										
-												})}										
-												// selected={this.visittypehandle.bind(this, context)}				
-												selected={AddVisitHandlers(this, context).visittypehandle.bind(this)}																
-											/>
-										</div>								 */}
                   </div>
                   <div className="row primary-box-container">
-                    <AlgaehSelector
+                    <AlagehAutoComplete
                       div={{ className: "col-lg-6" }}
                       label={{
                         fieldName: "doctor_id",
@@ -215,16 +222,73 @@ class AddConsultationForm extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {/* {this.props.visitdetls.map((row, index) => (
-										<tr key={index}>
-											<tr>{row.visit_date}</tr>
-											<tr>{row.visit_type}</tr>
-											<tr></tr>
-											<tr>{row.sub_department_id}</tr>
-											<tr>{row.sub_department_id}</tr>
-											<tr>{row.sub_department_id}</tr>									
-										</tr>
-										))} */}
+                      {vstDeatils.map((row, index) => {
+                        debugger;
+                        return (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{row.visit_code}</td>
+                            <td>{row.visit_date}</td>
+                            <td>
+                              <AlagehAutoComplete
+                                div={{ className: "col-lg-6" }}
+                                selector={{
+                                  name: "visit_type",
+                                  className: "select-fld",
+                                  value: row.visit_type,
+                                  others: {
+                                    style: { width: "150px" },
+                                    disabled: true
+                                  },
+                                  dataSource: {
+                                    textField: "visit_type",
+                                    valueField: "hims_d_visit_type_id",
+                                    data: this.props.visittypes
+                                  }
+                                }}
+                              />
+                            </td>
+                            <td>
+                              <AlagehAutoComplete
+                                div={{ className: "col-lg-6" }}
+                                selector={{
+                                  name: "sub_department_id",
+                                  className: "select-fld",
+                                  value: row.sub_department_id,
+                                  others: {
+                                    style: { width: "150px" },
+                                    disabled: true
+                                  },
+                                  dataSource: {
+                                    textField: "sub_department_name",
+                                    valueField: "hims_d_sub_department_id",
+                                    data: this.props.subdepartments
+                                  }
+                                }}
+                              />
+                            </td>
+                            <td>
+                              <AlagehAutoComplete
+                                div={{ className: "col-lg-6" }}
+                                selector={{
+                                  name: "doctor_id",
+                                  className: "select-fld",
+                                  value: row.doctor_id,
+                                  others: {
+                                    style: { width: "150px" },
+                                    disabled: true
+                                  },
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: FORMAT_DEFAULT
+                                  }
+                                }}
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -240,7 +304,19 @@ class AddConsultationForm extends Component {
 function AddVisitHandlers(state, context) {
   context = context || null;
   return {
+    DeptselectedHandeler: e => {
+      debugger;
+      state.setState({
+        [e.name]: e.value,
+        department_id: e.selected.department_id
+      });
+      if (context != null) {
+        context.updateState({ [e.name]: e.value });
+      }
+    },
+
     selectedHandeler: e => {
+      debugger;
       state.setState({
         [e.name]: e.value
       });
@@ -254,8 +330,7 @@ function AddVisitHandlers(state, context) {
 function mapStateToProps(state) {
   return {
     subdepartments: state.subdepartments.subdepartments,
-    visittypes: state.visittypes.visittypes,
-    visitdetls: state.visitdetls.visitdetls
+    visittypes: state.visittypes.visittypes
   };
 }
 

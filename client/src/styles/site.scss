@@ -1,5 +1,5 @@
 :global {
-  .tab-container {    
+  .tab-container {
     .tab-button {
       font-size: 12px;
       font-weight: normal;
@@ -548,12 +548,14 @@ body {
   background-color: #f2f2f2;
 }
 
-.tab-container nav li 
-label{
+.DayPickerInput {
+  border-bottom: "1px solid #2020";
+}
+
+.tab-container nav li label {
   padding-top: "2px";
 }
 
-.style_Label
-{
-  margin-bottom: "0px !important"
+.style_Label {
+  margin-bottom: "0px !important";
 }

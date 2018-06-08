@@ -30,7 +30,7 @@
   "relationship_with_patient": "العلاقة مع المريض",
   "visit_type": "نوع الزيارة",
   "visit_date": "تاريخ الزيارة",
-  "department_id": "قسم الإدارة",
+  "sub_department_id": "قسم الإدارة",
   "doctor_id": "دكتور",
   "maternity_patient": "مريض الولادة",
   "is_mlc": "هو MLC",
@@ -54,7 +54,7 @@
   "form_create": "خلق جديد إبداع جديد",
   "form_yes": "نعم فعلا",
   "form_no": "لا",
-  "hijiri_date":"التاريخ الهجري",
-  "attach_photo":"إرفاق صورة",
-  "attach_PrimaryID":"إرفاق المعرف الأساسي"
+  "hijiri_date": "التاريخ الهجري",
+  "attach_photo": "إرفاق صورة",
+  "attach_PrimaryID": "إرفاق المعرف الأساسي"
 }

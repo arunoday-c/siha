@@ -30,7 +30,7 @@
   "relationship_with_patient": "Relationship With Patient",
   "visit_type": "Visit Type",
   "visit_date": "Visit Date",
-  "department_id": "Department",
+  "sub_department_id": "Department",
   "doctor_id": "Doctor",
   "maternity_patient": "Maternity Patient",
   "is_mlc": "Is MLC",
@@ -54,6 +54,6 @@
   "form_create": "Create New",
   "form_yes": "Yes",
   "form_no": "No",
-  "hijiri_date":"Hijiri Date",
-  "attach_photo":"Attach Photo"
+  "hijiri_date": "Hijiri Date",
+  "attach_photo": "Attach Photo"
 }

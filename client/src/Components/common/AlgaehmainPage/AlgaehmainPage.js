@@ -43,7 +43,7 @@ import BusinessSetup from "../../BusinessSetup/BusinessSetup";
 import CommonSetup from "../../CommonSetup/CommonSetup";
 import Experiment from "../../Experiment";
 
-const drawerWidth = 220;
+const drawerWidth = 240;
 
 const paper_style = {
   height: "100%",

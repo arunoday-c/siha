@@ -426,8 +426,10 @@
 body {
   background-color: #f2f2f2; }
 
-.tab-container nav li
-label {
+.DayPickerInput {
+  border-bottom: "1px solid #2020"; }
+
+.tab-container nav li label {
   padding-top: "2px"; }
 
 .style_Label {

@@ -11,7 +11,8 @@ import Button from "material-ui/Button";
 import extend from "extend";
 import {
   postPatientDetails,
-  getPatientDetails
+  getPatientDetails,
+  initialStatePatientData
 } from "../../actions/RegistrationPatient/Registrationactions.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -64,7 +65,11 @@ class RegistrationPatient extends Component {
   }
 
   ClearData(e) {
-    this.setState(PatRegIOputs.inputParam());
+    debugger;
+    this.props.initialStatePatientData();
+    let IOputs = PatRegIOputs.inputParam();
+    this.setState(...IOputs);
+    debugger;
   }
 
   SavePatientDetails(e) {
@@ -96,28 +101,34 @@ class RegistrationPatient extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {}
+  componentWillReceiveProps(nextProps) {
+    debugger;
+    // this.setState({
+    //   visitDetails: nextProps.visitdetls
+    // });
+  }
+
   SelectLanguage(secLang) {
     this.setState({
       selectedLang: secLang,
       chnageLang: !this.state.chnageLang
     });
-    // this.forceUpdate();
   }
 
   getCtrlCode(data) {
+    debugger;
     this.setState(
       {
         patient_code: data
       },
       () => {
+        // debugger;
         clearInterval(intervalId);
         intervalId = setInterval(() => {
           this.props.getPatientDetails(this.state.patient_code, data => {
+            debugger;
             this.setState({
-              patient_code: data.patient_code,
-              visit_code: data.visit_code,
-              DialogOpen: true
+              visitDetails: data.visitDetails
             });
           });
           clearInterval(intervalId);
@@ -126,7 +137,7 @@ class RegistrationPatient extends Component {
     );
   }
 
-  render() {  
+  render() {
     return (
       <div id="attach">
         {/* <Barcode value='PAT-A-000017'/> */}
@@ -152,16 +163,8 @@ class RegistrationPatient extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-                // debugger;
->>>>>>> 22608cf54eb9c1ce4f6d9afc729515de1860e20a
-=======
-                // debugger;
->>>>>>> 5e207c8936cf23cb255445afd3b76931189eb008
-                extend(this.state, obj);
-                // this.setState({ ...this.state });
+                // extend(this.state, obj);
+                this.setState({ ...this.state, ...obj });
               }
             }}
           >
@@ -180,7 +183,7 @@ class RegistrationPatient extends Component {
                     <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-11">
                       <button
                         className="htpl1-phase1-btn-secondary"
-                        onClick={this.ClearData}
+                        onClick={this.ClearData.bind(this)}
                       >
                         Clear
                       </button>
@@ -245,7 +248,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       postPatientDetails: postPatientDetails,
-      getPatientDetails: getPatientDetails
+      getPatientDetails: getPatientDetails,
+      initialStatePatientData: initialStatePatientData
     },
     dispatch
   );

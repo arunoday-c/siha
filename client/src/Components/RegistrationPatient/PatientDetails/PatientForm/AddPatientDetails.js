@@ -1,7 +1,7 @@
 import moment from "moment";
 
 const texthandle = ($this, context, e) => {
-  // debugger;
+  debugger;
   let name;
   let value;
   if (e.name != null) {
@@ -21,19 +21,9 @@ const texthandle = ($this, context, e) => {
   }
 };
 
-const texthandleFirstName = ($this, context, e) => {
-  $this.setState({
-    first_name: e.target.value
-  });
-
-  if (context != null) {
-    context.updateState({ first_name: e.target.value });
-  }
-};
-
 //Todo title and gender related chnage need to do
 const titlehandle = ($this, context, e) => {
-  // debugger;
+  debugger;
   let setGender;
   if (e.value == 1) {
     setGender = "Male";
@@ -42,17 +32,17 @@ const titlehandle = ($this, context, e) => {
   }
   $this.setState({
     gender: setGender,
-    title_id: e.value
+    [e.name]: e.value
   });
 
   if (context != null) {
-    context.updateState({ gender: setGender, title_id: e.value });
+    context.updateState({ gender: setGender, [e.name]: e.value });
   }
 };
 
 const calculateAge = ($this, context, e) => {
   // debugger;
-  let fromDate = moment(e._d);
+  let fromDate = moment(e);
   let toDate = new Date();
   let years = moment(toDate).diff(fromDate, "year");
   fromDate.add(years, "years");
@@ -67,7 +57,7 @@ const calculateAge = ($this, context, e) => {
   });
   if (context != null) {
     context.updateState({
-      date_of_birth: moment(e._d).format("DD-MM-YYYY"),
+      date_of_birth: moment(e).format("DD-MM-YYYY"),
       age: years,
       AGEMM: months,
       AGEDD: days
@@ -76,6 +66,7 @@ const calculateAge = ($this, context, e) => {
 };
 
 const setAge = ($this, context, ctrl, e) => {
+  debugger;
   if (e !== null) {
     let years = context.state.age;
     let months = context.state.AGEMM;
@@ -121,12 +112,4 @@ const onDrop = ($this, file, fileType) => {
   });
 };
 
-export {
-  texthandle,
-  titlehandle,
-  calculateAge,
-  setAge,
-  numberSet,
-  onDrop,
-  texthandleFirstName
-};
+export { texthandle, titlehandle, calculateAge, setAge, numberSet, onDrop };

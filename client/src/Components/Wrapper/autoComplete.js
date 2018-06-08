@@ -69,6 +69,7 @@ const styles = theme => ({
       left: 0,
       top: `calc(100% + ${theme.spacing.unit}px)`,
       width: "100%",
+      background: "#fbfbfb",
       zIndex: 2,
       maxHeight: ITEM_HEIGHT * 4.5
     },
@@ -106,9 +107,16 @@ const styles = theme => ({
 });
 class AutoComplete extends PureComponent {
   handleChange = value => {
-    this.setState({
-      single: value
-    });
+    debugger;
+    if (value !== null) {
+      this.props.selector.onChange({
+        selected: value,
+        value: value[this.props.selector.dataSource.valueField],
+        name: this.props.selector.name
+      });
+    } else {
+      this.setState({ single: null });
+    }
   };
   constructor(props) {
     super(props);
@@ -118,6 +126,7 @@ class AutoComplete extends PureComponent {
   }
 
   componentWillReceiveProps(props) {
+    // debugger;
     this.setState({ single: props.selector.value });
   }
 
@@ -136,7 +145,7 @@ class AutoComplete extends PureComponent {
       <TextField
         fullWidth
         placeholder="Select multiple countries"
-        name="react-select-chip-label"
+        // name="react-select-chip-label"
         // label="With label"
         // InputLabelProps={{
         //   shrink: true

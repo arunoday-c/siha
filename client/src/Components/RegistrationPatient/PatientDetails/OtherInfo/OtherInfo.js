@@ -11,9 +11,11 @@ import MyContext from "../../../../utils/MyContext.js";
 
 import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
 import { getVisatypes } from "../../../../actions/CommonSetup/Visatype.js";
-import AlagehFormGroup from "../../../Wrapper/formGroup.js";
-import AlgaehLabel from "../../../Wrapper/label.js";
-import AlgaehSelector from "../../../Wrapper/selector.js";
+import {
+  AlagehFormGroup,
+  AlagehAutoComplete,
+  AlgaehLabel
+} from "../../../Wrapper/algaehWrapper";
 
 const FORMAT_DEFAULT = [
   { name: "CSV", value: "CSV" },
@@ -35,6 +37,7 @@ class OtherInfo extends Component {
   }
 
   componentDidMount() {
+    debugger;
     if (this.props.visatypes.length === 0) {
       this.props.getVisatypes();
     }
@@ -151,7 +154,7 @@ class OtherInfo extends Component {
                   }}
                 />
 
-                <AlgaehSelector
+                <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
                   label={{
                     fieldName: "visa_type_id"
@@ -159,9 +162,9 @@ class OtherInfo extends Component {
                   selector={{
                     name: "visa_type_id",
                     className: "select-fld",
-                    value: "0",
+                    value: this.state.visa_type_id,
                     dataSource: {
-                      textField: "visa_desc",
+                      textField: "visa_type",
                       valueField: "hims_d_visa_type_id",
                       data: this.props.visatypes
                     },
@@ -212,6 +215,7 @@ function AddPatientOtherHandlers(state, context) {
     },
 
     selectedHandeler: e => {
+      debugger;
       state.setState({
         [e.name]: e.value
       });

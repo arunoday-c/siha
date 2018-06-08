@@ -20,8 +20,7 @@ import {
   calculateAge,
   setAge,
   numberSet,
-  onDrop,
-  texthandleFirstName
+  onDrop
 } from "./AddPatientDetails.js";
 import { createStore } from "redux";
 import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
@@ -48,7 +47,6 @@ class AddPatientForm extends PureComponent {
 
     this.state = {
       value: "",
-      his_d_title_id: "4",
       file: {
         filePreview: null,
         filePrimaryPreview: null,
@@ -72,11 +70,6 @@ class AddPatientForm extends PureComponent {
     // var widthDate = document.getElementById("widthDate").offsetWidth;
     // this.widthDate = widthDate;
   }
-
-  componentDidUpdate() {
-    debugger;
-  }
-
   componentWillMount() {
     let InputOutput;
 
@@ -87,6 +80,7 @@ class AddPatientForm extends PureComponent {
     }
     this.setState({ ...this.state, ...InputOutput });
   }
+
   componentDidMount() {
     if (this.props.titles.length === 0) {
       this.props.getTitles();
@@ -109,14 +103,15 @@ class AddPatientForm extends PureComponent {
       this.props.getStates();
     }
 
-    // if (this.props.cities.length === 0) {
-    //   this.props.getCities();
-    // }
+    if (this.props.cities.length === 0) {
+      this.props.getCities();
+    }
 
     // this.setState({...this.state});
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     if (nextProps.patients.length > 0) {
       this.setState(nextProps.PatRegIOputs);
       this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
@@ -154,7 +149,7 @@ class AddPatientForm extends PureComponent {
                         selector={{
                           name: "title_id",
                           className: "select-fld",
-                          value: this.state.his_d_title_id,
+                          value: this.state.title_id,
                           dataSource: {
                             textField: "title",
                             valueField: "his_d_title_id",
@@ -175,11 +170,7 @@ class AddPatientForm extends PureComponent {
                           name: "first_name",
                           value: this.state.first_name,
                           events: {
-                            onChange: texthandleFirstName.bind(
-                              this,
-                              this,
-                              context
-                            )
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
@@ -481,6 +472,7 @@ class AddPatientForm extends PureComponent {
                   <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 secondary-details">
                     <div className="row secondary-box-container">
                       <AlgaehDateHandler
+                        style={{ borderBottom: "1px solid #2020" }}
                         div={{ className: "col-lg-6" }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
                         textBox={{ className: "txt-fld" }}
