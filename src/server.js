@@ -109,6 +109,9 @@ app.use("/api/v1", routes);
 process.on("warning", warning => {
   logger.log("warn", warning);
 });
+process.on("uncaughtException", error => {
+  logger.log("error", error);
+});
 //Error Handling MiddleWare
 app.use((error, req, res, next) => {
   error.status = error.status || httpStatus.internalServer;

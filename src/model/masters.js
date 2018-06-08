@@ -122,7 +122,7 @@ let cityMaster = (req, res, next) => {
     let where = whereCondition(extend(cityWhere, req.query));
     db.getConnection((error, connection) => {
       if (error) {
-        nexxt(error);
+        next(error);
       }
       connection.query(
         "SELECT `hims_d_city_id`, `city_code`, `city_name`, `state_id` FROM `hims_d_city` WHERE `record_status`='A' AND " +
@@ -268,7 +268,7 @@ let visaMaster = (req, res, next) => {
       }
       connection.query(
         "SELECT `hims_d_visa_type_id`, `visa_type_code`, `visa_type`, `visa_desc`, `created_by`, \
-        `created_date`, `updated_by`, `updated_date`, `record_status` FROM `hims_d_visa_type` \
+        `created_date`, `updated_by`, `updated_date`, `visa_status` FROM `hims_d_visa_type` \
          WHERE `record_status`='A' AND " +
           where.condition,
         where.values,

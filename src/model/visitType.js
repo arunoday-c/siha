@@ -4,8 +4,7 @@ import httpStatus from "../utils/httpStatus";
 let whereStatement = {
   hims_d_visit_type_id: "ALL",
   visit_type_code: "ALL",
-  visit_type: "ALL",
-  hims_d_visit_type: "ALL"
+  visit_type: "ALL"
 };
 
 let selectStatement = (req, res, next) => {
@@ -20,7 +19,7 @@ let selectStatement = (req, res, next) => {
       }
       let where = whereCondition(extend(whereStatement, req.query));
       connection.query(
-        "SELECT `hims_d_visit_type_id`, `visit_type_code`, `visit_type`, `hims_d_visit_type` \
+        "SELECT `hims_d_visit_type_id`, `visit_type_code`, `visit_type_desc`,`visit_status`\
         , `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_visit_type`  WHERE record_status='A' AND " +
           where.condition,
         where.values,
@@ -47,7 +46,8 @@ let visitType = {
   created_date: null,
   updated_by: null,
   updated_date: null,
-  record_status: null
+  record_status: null,
+  visit_status: "A"
 };
 
 let addVisit = (req, res, next) => {
@@ -61,14 +61,16 @@ let addVisit = (req, res, next) => {
     }
     let inputParam = extend(visitType, req.body);
     connection.query(
-      "INSERT INTO `hims_d_visit_type` (`visit_type_code`, `visit_type`, `hims_d_visit_type`, `created_by`, `created_date`) \
-    VALUES ( ?, ?, ?, ?, ?)",
+      "INSERT INTO `hims_d_visit_type` (`visit_type_code`, `visit_type_desc`, `hims_d_visit_type`, `created_by` \
+      , `created_date`,`visit_status`) \
+    VALUES ( ?, ?, ?, ?, ?,?)",
       [
         inputParam.visit_type_code,
         inputParam.visit_type,
         inputParam.hims_d_visit_type,
         inputParam.created_by,
-        new Date()
+        new Date(),
+        inputParam.visit_status
       ],
       (error, result) => {
         releaseDBConnection(db, connection);
@@ -94,13 +96,14 @@ let updateVisit = (req, res, next) => {
     let inputParam = extend(visitType, req.body);
     connection.query(
       "UPDATE `hims_d_visit_type` \
-      SET `visit_type`=?, `hims_d_visit_type`=?,  `updated_by`=?, `updated_date`=? \
+      SET `visit_type`=?, `hims_d_visit_type`=?,  `updated_by`=?, `updated_date`=?,visit_status=? \
       WHERE `record_status`='A' and `hims_d_visit_type_id`=?",
       [
         inputParam.visit_type,
         inputParam.hims_d_visit_type,
         inputParam.updated_by,
         new Date(),
+        inputParam.visit_status,
         inputParam.hims_d_visit_type_id
       ],
       (error, result) => {

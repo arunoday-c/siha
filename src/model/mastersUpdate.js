@@ -127,7 +127,8 @@ let visaType = {
   created_date: null,
   updated_by: null,
   updated_date: null,
-  record_status: null
+  record_status: null,
+  visa_status: "A"
 };
 let addVisa = (req, res, next) => {
   try {
@@ -141,14 +142,15 @@ let addVisa = (req, res, next) => {
       }
       let inputParam = extend(visaType, req.body);
       connection.query(
-        "INSERT INTO `hims_d_visa_type` ( `visa_type_code`, `visa_type`, `visa_desc`, `created_by`, `created_date`) \
-     VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO `hims_d_visa_type` ( `visa_type_code`, `visa_type`, `visa_desc`, `created_by`, `created_date`,`visa_status`) \
+     VALUES (?, ?, ?, ?, ?,?)",
         [
           inputParam.visa_type_code,
           inputParam.visa_type,
           inputParam.visa_desc,
           inputParam.created_by,
-          new Date()
+          new Date(),
+          inputParam.visa_status
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -179,12 +181,14 @@ let updateVisa = (req, res, next) => {
       connection.query(
         "UPDATE `hims_d_visa_type` \
         SET `visa_type`=?, `visa_desc`=?, `updated_by`=?, `updated_date`=? \
+        `visa_status` =? \
         WHERE `record_status`='A' and `hims_d_visa_type_id`=?",
         [
           inputParam.visa_type,
           inputParam.visa_desc,
           inputParam.updated_by,
           new Date(),
+          inputParam.visa_status,
           inputParam.hims_d_visa_type_id
         ],
         (error, result) => {

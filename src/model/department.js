@@ -1,3 +1,4 @@
+"use strict";
 import extend from "extend";
 import {
   selectStatement,
@@ -7,6 +8,8 @@ import {
   releaseDBConnection
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
+// import $ from "jquery";
+import { logger, debugFunction, debugLog } from "../utils/logging";
 let department = {
   hims_d_department_id: null,
   department_code: null,
@@ -131,11 +134,14 @@ let addDepartment = (req, res, next) => {
 };
 let updateDepartment = (req, res, next) => {
   try {
+    debugFunction("updateDepartment");
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let departmentDetails = extend(department, req.body);
+    // let departmentDetails = extend(department, req.body);
+    // Dynamic query
+    debugLog("Input Data", req.body);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -149,10 +155,10 @@ let updateDepartment = (req, res, next) => {
         }
         let queryBuilder =
           "UPDATE `hims_d_department`\
-      SET   `department_name`=?, `department_desc`=?, `department_type`=?\
-      ,`hospital_id`=?, `effective_start_date`=?, `effective_end_date`=? \
-      ,`department_status`=?, `updated_date`=?, `updated_by`=?\
-      WHERE record_status='A' AND `hims_d_department_id`=?;";
+        SET   `department_name`=?, `department_desc`=?, `department_type`=?\
+        ,`hospital_id`=?, `effective_start_date`=?, `effective_end_date`=? \
+        ,`department_status`=?, `updated_date`=?, `updated_by`=?\
+        WHERE record_status='A' AND `hims_d_department_id`=?;";
         let inputs = [
           departmentDetails.department_name,
           departmentDetails.department_desc,
@@ -201,7 +207,7 @@ let updateDepartment = (req, res, next) => {
       });
     });
   } catch (e) {
-    next(error);
+    next(e);
   }
 };
 let deleteDepartment = (req, res, next) => {
