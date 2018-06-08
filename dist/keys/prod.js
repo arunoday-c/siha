@@ -9,14 +9,14 @@ exports.default = {
   TOKENTIME: 2592000, // 60 * 60 * 30 ,
   // Server port and request body limit
   port: 3000,
-  bodyLimit: "100kb",
+  bodyLimit: "900kb",
   // Dev db
   mysqlDb: {
-    connectionLimit: 50,
-    host: "159.89.163.148",
+    connectionLimit: 20,
+    host: "him-app-db-server.cue9pqguf30s.ap-south-1.rds.amazonaws.com",
     port: 3306,
-    user: "devteam",
-    password: "devteam",
+    user: "root",
+    password: "medteam2013",
     database: "algaeh_hims_db",
     multipleStatements: true
   },
@@ -24,11 +24,20 @@ exports.default = {
   logpath: "/logs", //log folder path
   logFileSize: "20m", //maximum size of log file.
   logFileDatePatter: "YYYYMMDD",
-  logLevel: "info" /*log printing based on parameters; 
-                   2 info:{Warning,infomation,error};
-                   1 warn:{warning,error};
-                   0 error:{error},
-                   4 debug:{debug,error,warning,information}
-                   */
+  logLevel: "debug" /*log printing based on parameters; 
+                    2 info:{Warning,infomation,error};
+                    1 warn:{warning,error};
+                    0 error:{error},
+                    4 debug:{debug,error,warning,information}
+                    */
+  , /* AWS Translator api settings */
+  AWSCredentials: {
+    accessKeyId: "AKIAI3LBOY7VFNGLQFWA",
+    secretAccessKey: "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",
+    region: "us-east-1",
+    endpoint: "https://translate.us-east-1.amazonaws.com"
+  },
+  /* folder path for language changing */
+  languageFolderPath: "/media/syed/Office/ALGAEH/DEV/HIMS/hims-app/logs"
 };
 //# sourceMappingURL=prod.js.map

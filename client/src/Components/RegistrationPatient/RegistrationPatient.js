@@ -152,7 +152,6 @@ class RegistrationPatient extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-                // debugger;
                 extend(this.state, obj);
                 // this.setState({ ...this.state });
               }

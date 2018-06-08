@@ -56,6 +56,10 @@ var _updateMasters = require("../controller/updateMasters");
 
 var _updateMasters2 = _interopRequireDefault(_updateMasters);
 
+var _languageTranslator = require("../controller/languageTranslator");
+
+var _languageTranslator2 = _interopRequireDefault(_languageTranslator);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = (0, _express2.default)();
@@ -74,6 +78,7 @@ var router = (0, _express2.default)();
   router.use("/frontDesk", (0, _frontDesk2.default)({ config: _keys2.default, db: db }));
   router.use("/masters/get", (0, _masters2.default)());
   router.use("/masters/set", (0, _updateMasters2.default)());
+  router.use("/translator", (0, _languageTranslator2.default)());
 });
 
 exports.default = router;

@@ -58,8 +58,6 @@ var _jwtDecode = require("jwt-decode");
 
 var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
-var _util = require("util");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var LocalStrategy = require("passport-local").Strategy;
@@ -104,7 +102,6 @@ app.use(function (req, res, next) {
   //     "*******"
   //   );
   // }
-
   var reqH = req.headers;
   var reqUser = "";
   if (req.url != "/api/v1/apiAuth") reqUser = (0, _jwtDecode2.default)(reqH["x-api-key"]).id;

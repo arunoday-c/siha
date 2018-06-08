@@ -21,6 +21,13 @@ exports.default = function (_ref) {
       db = _ref.db;
 
   var api = (0, _express.Router)();
+
+  api.delete("/delete", _identity.deleteIdentity, function (req, res, next) {
+    var result = req.records;
+    res.status(_httpStatus2.default.ok).json(result);
+    next();
+  }, _utils.releaseConnection);
+
   api.post("/add", _identity.addIdentity, function (req, res, next) {
     var result = req.records;
     if (result.length == 0) {

@@ -113,9 +113,33 @@ var selectIdentity = function selectIdentity(req, res, next) {
   }
 };
 
+var deleteIdentity = function deleteIdentity(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    (0, _utils.deleteRecord)({
+      db: req.db,
+      tableName: "hims_d_identity_document",
+      id: req.body.hims_d_identity_document_id,
+      query: "UPDATE hims_d_identity_document SET  record_status='I', \
+          updated_by=?,updated_date=? WHERE hims_d_identity_document_id=?",
+      values: [req.body.updated_by, new Date(), req.body.hims_d_identity_document_id]
+    }, function (result) {
+      req.records = result;
+      next();
+    }, function (error) {
+      next(error);
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addIdentity: addIdentity,
   updateIdentity: updateIdentity,
-  selectIdentity: selectIdentity
+  selectIdentity: selectIdentity,
+  deleteIdentity: deleteIdentity
 };
 //# sourceMappingURL=identity.js.map

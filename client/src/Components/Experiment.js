@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import ReactDataGrid from "react-data-grid";
 import {
   getDepartments,
@@ -18,22 +18,13 @@ class Experiment extends Component {
     };
   }
 
-  calculateAge(x, c, e) {
+  calculateAge(c, x) {
     debugger;
   }
 
   render() {
     return (
-      <div>
-        <div className="col-lg-3">
-          <ul>
-            <li />
-            <li />
-            <li />
-            <li />
-            <li />
-          </ul>
-        </div>
+      <Fragment>
         <AlgaehDateHandler
           div={{ className: "col-lg-6" }}
           label={{ fieldName: "date_of_birth", isImp: true }}
@@ -44,7 +35,8 @@ class Experiment extends Component {
           }}
           value={this.state.date_of_birth}
         />
-      </div>
+        <br />
+      </Fragment>
     );
   }
 }
