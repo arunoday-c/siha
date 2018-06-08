@@ -8,9 +8,9 @@ var _keys = require("../keys/keys");
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _fileBase = require("file-base64");
+var _multer = require("multer");
 
-var _fileBase2 = _interopRequireDefault(_fileBase);
+var _multer2 = _interopRequireDefault(_multer);
 
 var _extend = require("extend");
 
@@ -25,6 +25,8 @@ var _mkdirp = require("mkdirp");
 var _mkdirp2 = _interopRequireDefault(_mkdirp);
 
 var _logging = require("./logging");
+
+var _nodeLinq = require("node-linq");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -79,11 +81,13 @@ var selectStatement = function selectStatement(options, successCallback, errorCa
 };
 var deleteRecord = function deleteRecord(options, successCallback, errorCallback, isreleaseConnection) {
   isreleaseConnection = isreleaseConnection || false;
+  (0, _logging.debugFunction)("deleteRecord");
   var db = options.db;
   db.getConnection(function (error, connection) {
     var sqlQuery = "select distinct table_name,column_name from information_schema.KEY_COLUMN_USAGE \
       where constraint_schema=? \
       and REFERENCED_TABLE_NAME=?";
+    (0, _logging.debugLog)("Sql Query : " + sqlQuery);
     connection.query(sqlQuery, [_keys2.default.mysqlDb.database, options.tableName], function (error, tables) {
       if (error) {
         if (isreleaseConnection) connection.release();
@@ -94,11 +98,13 @@ var deleteRecord = function deleteRecord(options, successCallback, errorCallback
       }
       var records = "";
       var values = [];
+      (0, _logging.debugLog)("Existing table length : " + tables.length);
       for (var i = 0; i < tables.length; i++) {
         records += "SELECT COUNT(*) CNT FROM " + tables[i]["table_name"] + " WHERE \
            " + tables[i]["column_name"] + "=?;";
         values.push(options.id);
       }
+      (0, _logging.debugLog)("rexords Query : " + records);
       connection.query(records, values, function (error, result) {
         if (error) {
           if (isreleaseConnection) connection.release();
@@ -238,46 +244,58 @@ var releaseDBConnection = function releaseDBConnection(pool, connection) {
     connection.release();
   }
 };
-//from base64 decode to a file
-var base64DecodeToFile = function base64DecodeToFile(options) {
-  (0, _logging.debugFunction)("base64DecodeToFile");
-  var settings = (0, _extend2.default)({
-    isPatient: true,
-    code: "",
-    file: "",
-    base64String: "",
-    callBack: null
-  }, options);
-  var appendFolder = "/Patients/";
-  if (!settings.isPatient) appendFolder = "/Employees/";
-  var folderDir = (_keys2.default.documentFolderPath + appendFolder + settings.code).trim();
-  (0, _logging.debugLog)(folderDir);
-  //logger,debugFunction,debugLog
-
-  var fullDocPath = _path2.default.join(__dirname, folderDir);
-  (0, _logging.debugLog)("DocumentPath" + fullDocPath);
-  (0, _mkdirp2.default)(fullDocPath, function (error) {
-    if (error) _logging.logger.log("error %j", error);else {
-      (0, _logging.debugLog)("Document folder created successfully");
-      _fileBase2.default.decode(settings.base64String, fullDocPath + "/" + settings.file, function (error, output) {
-        if (typeof settings.callBack == "function") settings.callBack(error, output);
-      });
+//Upload and Downloading files via multer Configuration
+var storage = _multer2.default.diskStorage({
+  destination: function destination(req, file, cb) {
+    var fullFolderName = req.folderPath;
+    var fileName = "";
+    _logging.logger.log("info", "after Split %s", file.fieldname);
+    var splitFiledName = file.fieldname.split("_");
+    if (splitFiledName != null) {
+      _logging.logger.log("info", "after Split %j", splitFiledName);
+      if (splitFiledName.length > 1) {
+        fullFolderName += "/" + splitFiledName[1];
+        fileName = "_" + splitFiledName[splitFiledName.length - 1];
+      }
+    } else {
+      fileName = "_" + file.fieldname;
     }
+    (0, _logging.debugLog)("Field Name : " + file.fieldname + " File Name : " + fileName);
+    req.fullFolderPath = fullFolderName;
+    req.newFileName = req.fileName + fileName;
+    (0, _mkdirp2.default)(req.fullFolderPath, function (error) {
+      if (error) _logging.logger.log("error", "Directory creation error: %j ", error);else {
+        (0, _logging.debugLog)("Path setting in multer " + req.fullFolderPath);
+        cb(null, req.fullFolderPath);
+      }
+    });
+  },
+  filename: function filename(req, file, cb) {
+    var pathDeclare = require("path");
+    (0, _logging.debugLog)("File Name : " + req.newFileName + pathDeclare.extname(file.originalname));
+    cb(null, req.newFileName + pathDeclare.extname(file.originalname));
+  }
+});
+var upload = (0, _multer2.default)({ storage: storage });
+//End multer configuration.
+//Upload file via multer
+var uploadFile = function uploadFile(req, res, callBack) {
+  (0, _logging.debugFunction)("Inside File Uplaod");
+  upload(req, res, function (error) {
+    if (error) {
+      _logging.logger.log("error", "%j", error);
+    }
+    callBack(error, req);
   });
 };
-//from base64 encode to a file
-var base64EncodeToFile = function base64EncodeToFile(options) {
-  var settings = (0, _extend2.default)({
-    file: "",
-    callBack: null
-  }, options);
-  var fullDocPath = _path2.default.join(__dirname, _keys2.default.documentFolderPath + "/" + settings.file);
-  _fileBase2.default.encode(fullDocPath, function (error, output) {
-    if (typeof settings.callBack == "function") settings.callBack(error, output);
+//Download file via multer
+var downloadFile = function downloadFile(req, res, callBack) {
+  upload(req, res, function (error) {
+    if (error) {
+      _logging.logger.log("error", "Image getting error : %j", error);
+    }
+    callBack(error, req);
   });
-};
-var updateApplicationObject = function updateApplicationObject(key, value) {
-  applicationObject;
 };
 
 module.exports = {
@@ -289,7 +307,7 @@ module.exports = {
   runningNumber: runningNumber,
   deleteRecord: deleteRecord,
   releaseDBConnection: releaseDBConnection,
-  base64DecodeToFile: base64DecodeToFile,
-  base64EncodeToFile: base64EncodeToFile
+  uploadFile: uploadFile,
+  downloadFile: downloadFile
 };
 //# sourceMappingURL=index.js.map

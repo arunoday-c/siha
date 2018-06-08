@@ -25,6 +25,10 @@ var addFrontDesk = function addFrontDesk(req, res, next) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
     }
     var db = req.db;
+    if (req.query != null) {
+      req.query = JSON.parse(req.query["data"]);
+      req.body = req.query;
+    }
     db.getConnection(function (error, connection) {
       if (error) {
         next(error);
@@ -52,6 +56,7 @@ var addFrontDesk = function addFrontDesk(req, res, next) {
                   next(error);
                 });
               }
+              req.query.patient_code = newNumber;
               req.body.patient_code = newNumber;
               (0, _patientRegistration.insertData)(connection, req, res, function (error, result) {
                 if (error) {
@@ -61,8 +66,9 @@ var addFrontDesk = function addFrontDesk(req, res, next) {
                   });
                 }
                 if (result != null && result.length != 0) {
-                  req.body.patient_id = result[0]["hims_d_patient_id"];
-                  (0, _logging.debugLog)("req.body.patient_id:" + result[0]["hims_d_patient_id"]);
+                  req.query.patient_id = result[0][0]["hims_d_patient_id"];
+                  req.body.patient_id = result[0][0]["hims_d_patient_id"];
+                  (0, _logging.debugLog)("req.body.patient_id:" + result[0][0]["hims_d_patient_id"]);
                   (0, _utils.runningNumber)(connection, 2, "VISIT_NUMGEN", function (error, patResults, completeNum) {
                     if (error) {
                       connection.rollback(function () {
@@ -70,6 +76,7 @@ var addFrontDesk = function addFrontDesk(req, res, next) {
                         next(error);
                       });
                     }
+                    req.query.visit_code = completeNum;
                     req.body.visit_code = completeNum;
                     (0, _logging.debugLog)("req.body.visit_code : " + completeNum);
                     (0, _visit.insertVisitData)(connection, req, res, function (error, resultdata) {
@@ -90,6 +97,8 @@ var addFrontDesk = function addFrontDesk(req, res, next) {
                         resultdata["patient_code"] = req.body.patient_code;
                         resultdata["visit_code"] = req.body.visit_code;
                         req.records = resultdata;
+                        //Upload Images to server.
+                        (0, _utils.createFolder)(req, res);
                         next();
                         return;
                       });

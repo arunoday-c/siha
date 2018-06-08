@@ -8,6 +8,8 @@ var _httpStatus = require("../utils/httpStatus");
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
+var _logging = require("../utils/logging");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var visitDetails = {
@@ -35,6 +37,7 @@ var visitDetails = {
 };
 var addVisit = function addVisit(req, res, next) {
   try {
+    (0, _logging.debugFunction)("addVisit");
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
     }
@@ -73,7 +76,8 @@ var addVisit = function addVisit(req, res, next) {
 };
 var insertVisitData = function insertVisitData(dataBase, req, res, callBack) {
   try {
-    var inputParam = (0, _extend2.default)(visitDetails, req.body);
+    (0, _logging.debugFunction)("insertVisitData");
+    var inputParam = (0, _extend2.default)(visitDetails, req.query);
 
     dataBase.query("INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
         `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
@@ -84,17 +88,20 @@ var insertVisitData = function insertVisitData(dataBase, req, res, callBack) {
       if (error) {
         dataBase.rollback(function () {
           dataBase.release();
-          next(error);
+          _logging.logger.logger("error", "Add new visit %j", error);
         });
       }
       var patient_visit_id = result.insertId;
-      dataBase.query("INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
+      (0, _logging.debugLog)("patient_visit_id : " + patient_visit_id);
+      if (patient_visit_id != null) {
+        dataBase.query("INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
       , `patient_message`, `is_critical_message`, `message_active_till`, `created_by`, `created_date`\
       ) VALUES ( ?, ?, ?, ?, ?, ?);", [patient_visit_id, inputParam.patient_message, inputParam.is_critical_message, inputParam.message_active_till, inputParam.created_by, new Date()], function (error, resultData) {
-        if (typeof callBack == "function") {
-          callBack(error, resultData);
-        }
-      });
+          if (typeof callBack == "function") {
+            callBack(error, resultData);
+          }
+        });
+      }
     });
   } catch (e) {
     next(e);

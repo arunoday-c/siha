@@ -221,6 +221,8 @@ class DeptMaster extends Component {
       return "Active";
     } else if (value === "I") {
       return "Inactive";
+    } else {
+      return "";
     }
   }
 
@@ -292,7 +294,11 @@ class DeptMaster extends Component {
   }
 
   dateFormater({ value }) {
-    return String(moment(value).format("DD-MM-YYYY"));
+    if (value !== null) {
+      return String(moment(value).format("DD-MM-YYYY"));
+    } else {
+      return "";
+    }
   }
 
   loadSubDeps(dep_id) {

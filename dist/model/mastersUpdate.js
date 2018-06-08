@@ -165,7 +165,7 @@ var deleteVisa = function deleteVisa(req, res, next) {
       id: req.body.hims_d_visa_type_id,
       query: "UPDATE hims_d_visa_type SET  record_status='I', \
           updated_by=?,updated_date=? WHERE hims_d_visa_type_id=?",
-      values: [req.body.updated_by, new Date(), req.body.hims_d_visit_type_id]
+      values: [req.body.updated_by, new Date(), req.body.hims_d_visa_type_id]
     }, function (result) {
       req.records = result;
       next();
