@@ -20,7 +20,7 @@ let selectStatement = (req, res, next) => {
       let where = whereCondition(extend(whereStatement, req.query));
       connection.query(
         "SELECT `hims_d_visit_type_id`, `visit_type_code`, `visit_type_desc`,`visit_status`\
-        , `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_visit_type`  WHERE record_status='A' AND " +
+       , `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_visit_type`  WHERE record_status='A' AND " +
           where.condition,
         where.values,
         (error, result) => {
@@ -62,8 +62,8 @@ let addVisit = (req, res, next) => {
     let inputParam = extend(visitType, req.body);
     connection.query(
       "INSERT INTO `hims_d_visit_type` (`visit_type_code`, `visit_type_desc`, `hims_d_visit_type`, `created_by` \
-      , `created_date`,`visit_status`) \
-    VALUES ( ?, ?, ?, ?, ?,?)",
+     , `created_date`,`visit_status`) \
+   VALUES ( ?, ?, ?, ?, ?,?)",
       [
         inputParam.visit_type_code,
         inputParam.visit_type_desc,
@@ -96,8 +96,8 @@ let updateVisit = (req, res, next) => {
     let inputParam = extend(visitType, req.body);
     connection.query(
       "UPDATE `hims_d_visit_type` \
-      SET `visit_type_desc`=?, `hims_d_visit_type`=?,  `updated_by`=?, `updated_date`=?,visit_status=? \
-      WHERE `record_status`='A' and `hims_d_visit_type_id`=?",
+     SET `visit_type_desc`=?, `hims_d_visit_type`=?,  `updated_by`=?, `updated_date`=?,visit_status=? \
+     WHERE `record_status`='A' and `hims_d_visit_type_id`=?",
       [
         inputParam.visit_type_desc,
         inputParam.hims_d_visit_type,
@@ -129,7 +129,7 @@ let deleteVisitType = (req, res, next) => {
         id: req.body.hims_d_visit_type_id,
         query:
           "UPDATE hims_d_visit_type SET  record_status='I', \
-          updated_by=?,updated_date=? WHERE hims_d_visit_type_id=?",
+         updated_by=?,updated_date=? WHERE hims_d_visit_type_id=?",
         values: [req.body.updated_by, new Date(), req.body.hims_d_visit_type_id]
       },
       result => {
