@@ -100,6 +100,7 @@ export default class FormGroup extends Component {
                   }
                 : null
             }
+            style={{ fontSize: "14px" }}
             {...this.props.textBox.others}
           />
         );

@@ -34,7 +34,8 @@ const styles = theme => ({
     ".Select-multi-value-wrapper": {
       flexGrow: 1,
       display: "flex",
-      flexWrap: "wrap"
+      flexWrap: "wrap",
+      fontSize: "14px"
     },
     ".Select--multi .Select-input": {
       margin: 0
@@ -145,6 +146,7 @@ class AutoComplete extends PureComponent {
       <TextField
         fullWidth
         placeholder="Select multiple countries"
+        style={{ background: "#fbfbfb" }}
         // name="react-select-chip-label"
         // label="With label"
         // InputLabelProps={{

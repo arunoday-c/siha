@@ -26,7 +26,7 @@ const MobileFormat = "+91 (###)-## #####";
 class OtherInfo extends Component {
   constructor(props) {
     super(props);
-
+    debugger;
     let InputOutput = this.props.PatRegIOputs;
 
     if (this.props.patients.length > 0) {

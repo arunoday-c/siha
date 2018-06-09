@@ -6,11 +6,13 @@ import "./../../../../styles/site.css";
 import extend from "extend";
 import { getSubDepartments } from "../../../../actions/CommonSetup/Department.js";
 import { getVisittypes } from "../../../../actions/CommonSetup/VisitTypeactions.js";
+import { getProviderDetails } from "../../../../actions/serviceActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { SelectFiledData } from "../../../../utils/algaehApiCall.js";
 import MyContext from "../../../../utils/MyContext.js";
+import moment from "moment";
 
 import {
   AlgaehLabel,
@@ -52,27 +54,20 @@ class AddConsultationForm extends Component {
     if (this.props.visittypes.length === 0) {
       this.props.getVisittypes();
     }
+    if (this.props.providers.length === 0) {
+      this.props.getProviderDetails();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    // debugger;
     console.log("Visit Details", this.state);
     this.setState(nextProps.PatRegIOputs);
   }
 
   render() {
     const vstDeatils =
-      this.state.visitDetails === null
-        ? [
-            {
-              visit_code: "",
-              visit_date: "",
-              visit_type: "",
-              department_id: "",
-              doctor_id: ""
-            }
-          ]
-        : this.state.visitDetails;
+      this.state.visitDetails === null ? [{}] : this.state.visitDetails;
     return (
       <MyContext.Consumer>
         {context => (
@@ -92,7 +87,7 @@ class AddConsultationForm extends Component {
                         className: "select-fld",
                         value: this.state.visit_type,
                         dataSource: {
-                          textField: "visit_type",
+                          textField: "visit_type_desc",
                           valueField: "hims_d_visit_type_id",
                           data: this.props.visittypes
                         },
@@ -223,11 +218,17 @@ class AddConsultationForm extends Component {
                     <tbody>
                       {vstDeatils.map((row, index) => {
                         debugger;
+                        let vistDate = "";
+                        if (row.visit_date !== "" || row.visit_date !== null) {
+                          vistDate = moment(String(row.visit_date)).format(
+                            "YYYY-MM-DD"
+                          );
+                        }
                         return (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{row.visit_code}</td>
-                            <td>{row.visit_date}</td>
+                            <td>{vistDate}</td>
                             <td>
                               <AlagehAutoComplete
                                 div={{ className: "col-lg-6" }}
@@ -236,7 +237,7 @@ class AddConsultationForm extends Component {
                                   className: "select-fld",
                                   value: row.visit_type,
                                   others: {
-                                    style: { width: "150px" },
+                                    style: { width: "130px" },
                                     disabled: true
                                   },
                                   dataSource: {
@@ -255,7 +256,7 @@ class AddConsultationForm extends Component {
                                   className: "select-fld",
                                   value: row.sub_department_id,
                                   others: {
-                                    style: { width: "150px" },
+                                    style: { width: "130px" },
                                     disabled: true
                                   },
                                   dataSource: {
@@ -274,7 +275,7 @@ class AddConsultationForm extends Component {
                                   className: "select-fld",
                                   value: row.doctor_id,
                                   others: {
-                                    style: { width: "150px" },
+                                    style: { width: "130px" },
                                     disabled: true
                                   },
                                   dataSource: {
@@ -304,7 +305,7 @@ function AddVisitHandlers(state, context) {
   context = context || null;
   return {
     DeptselectedHandeler: e => {
-      debugger;
+      // debugger;
       state.setState({
         [e.name]: e.value,
         department_id: e.selected.department_id
@@ -315,7 +316,7 @@ function AddVisitHandlers(state, context) {
     },
 
     selectedHandeler: e => {
-      debugger;
+      // debugger;
       state.setState({
         [e.name]: e.value
       });
@@ -329,13 +330,18 @@ function AddVisitHandlers(state, context) {
 function mapStateToProps(state) {
   return {
     subdepartments: state.subdepartments.subdepartments,
-    visittypes: state.visittypes.visittypes
+    visittypes: state.visittypes.visittypes,
+    providers: state.providers.providers
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { getSubDepartments: getSubDepartments, getVisittypes: getVisittypes },
+    {
+      getSubDepartments: getSubDepartments,
+      getVisittypes: getVisittypes,
+      getProviderDetails: getProviderDetails
+    },
     dispatch
   );
 }

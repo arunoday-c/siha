@@ -151,8 +151,18 @@ class PersistentDrawer extends React.Component {
       title: "Dashboard",
       selectedLang: "lang_en",
       anchorEl: null,
-      languageName: "English"
+      languageName: "English",
+      Language: "en"
     };
+  }
+
+  componentDidMount() {
+    let prevLang = getCookie("Language");
+    if (prevLang !== "en") {
+      this.setState({
+        languageName: "عربي"
+      });
+    }
   }
 
   Languaue(secLang, e) {
@@ -160,10 +170,20 @@ class PersistentDrawer extends React.Component {
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
     if (secLang === "en") {
-      this.setState({ languageName: "English" });
+      this.setState({ languageName: "English", Language: "en" });
     } else if (secLang === "ar") {
-      this.setState({ languageName: "عربي" });
+      this.setState({ languageName: "عربي", Language: "ar" });
     }
+
+    let renderComp = this.state.renderComponent;
+    this.setState(
+      {
+        renderComponent: ""
+      },
+      () => {
+        this.setState({ renderComponent: renderComp });
+      }
+    );
   }
 
   handleOpenClick = event => {
