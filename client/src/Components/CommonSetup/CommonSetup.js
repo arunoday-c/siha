@@ -13,7 +13,7 @@ class CommonSetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "PatientType", sidBarOpen: true };
+    this.state = { pageDisplay: "VisitType", sidBarOpen: true };
   }
 
   openTab(e) {
@@ -45,33 +45,9 @@ class CommonSetup extends Component {
         <div className="tab-container toggle-section spacing-push">
           <ul className="nav">
             <li
-              alagehtabs={"PatientType"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button active"}
-              onClick={this.openTab.bind(this)}
-            >
-              PATIENT TYPE
-            </li>
-            <li
-              alagehtabs={"AccidentType"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              ACCIDENT TYPE
-            </li>
-            <li
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              alagehtabs={"EquipmentType"}
-              onClick={this.openTab.bind(this)}
-            >
-              EQUIPMENT TYPE
-            </li>
-            <li
               alagehtabs={"VisitType"}
               style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
+              className={"nav-item tab-button active"}
               onClick={this.openTab.bind(this)}
             >
               VISIT TYPE
@@ -91,6 +67,30 @@ class CommonSetup extends Component {
               onClick={this.openTab.bind(this)}
             >
               IDENTIFICATION TYPE
+            </li>
+            <li
+              alagehtabs={"PatientType"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button"}
+              onClick={this.openTab.bind(this)}
+            >
+              PATIENT TYPE
+            </li>
+            <li
+              alagehtabs={"AccidentType"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              onClick={this.openTab.bind(this)}
+            >
+              ACCIDENT TYPE
+            </li>
+            <li
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              alagehtabs={"EquipmentType"}
+              onClick={this.openTab.bind(this)}
+            >
+              EQUIPMENT TYPE
             </li>
           </ul>
         </div>
