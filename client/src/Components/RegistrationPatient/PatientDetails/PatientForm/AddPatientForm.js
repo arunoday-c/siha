@@ -339,9 +339,7 @@ class AddPatientForm extends PureComponent {
                           value: this.state.contact_number,
                           className: "txt-fld",
                           name: "contact_number",
-                          mask: {
-                            format: MobileFormat
-                          },
+
                           events: {
                             onChange: numberSet.bind(this, this, context)
                           }

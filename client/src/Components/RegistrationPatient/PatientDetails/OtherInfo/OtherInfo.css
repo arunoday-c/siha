@@ -1,6 +1,7 @@
 .hptl-phase1-add-other-form {
   background: #fff;
-  border-radius: 5px; }
+  border-radius: 5px;
+  padding-top: 10px; }
   .hptl-phase1-add-other-form .primary-details {
     padding: 5px;
     border-right: 1px solid #000; }
@@ -17,7 +18,7 @@
     font-size: 12px; }
   .hptl-phase1-add-other-form .text_field {
     width: 100% !important;
-    background-color: #FBFBFB;
+    background-color: #fbfbfb;
     font-size: "12px";
     margin-right: "5px"; }
   .hptl-phase1-add-other-form .secondary-details {

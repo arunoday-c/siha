@@ -9,7 +9,8 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 // import  {MenuListItems}  from './MenuItems';
-import sideMenu from "./SideMenuList.json";
+import sideMenuEn from "./SideMenuList.json";
+import sideMenuAr from "./SideMenuListAr.json";
 import Dashboard from "../../Dashboard/Dashboard";
 import "./AlgaehmainPage.css";
 import { setCookie, getCookie } from "../../../utils/algaehApiCall";
@@ -160,7 +161,9 @@ class PersistentDrawer extends React.Component {
     let prevLang = getCookie("Language");
     if (prevLang !== "en") {
       this.setState({
-        languageName: "عربي"
+        languageName: "عربي",
+        Language: "ar",
+        title: "لوحة القيادة"
       });
     }
   }
@@ -229,14 +232,16 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(e) {
+    debugger;
     const path = e.currentTarget.getAttribute("path");
     const name = e.currentTarget.getAttribute("name");
-    let screenName = e.currentTarget.innerText.replace(/\s/g, "");
+    // const name = e.currentTarget.getAttribute("name");
+    let screenName = name.replace(/\s/g, "");
     setCookie("ScreenName", path, 30);
 
     this.setState({
       toggleSubMenu: true,
-      title: name,
+      title: e.currentTarget.innerText,
       renderComponent: screenName,
       menuSelected: ""
     });
@@ -245,7 +250,15 @@ class PersistentDrawer extends React.Component {
     const { classes, theme } = this.props;
     const { anchor, open } = this.state;
 
-    var MenuListItems = sideMenu.map((data, idx) => {
+    let LangSideMenu = [];
+
+    if (this.state.Language === "en") {
+      LangSideMenu = sideMenuEn;
+    } else if (this.state.Language === "ar") {
+      LangSideMenu = sideMenuAr;
+    }
+    var MenuListItems = LangSideMenu.map((data, idx) => {
+      debugger;
       return (
         <div key={"side_menu_index" + idx}>
           <div className="container-fluid">

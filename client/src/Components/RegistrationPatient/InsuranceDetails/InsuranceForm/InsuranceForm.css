@@ -15,14 +15,13 @@
 
 .htpl-phase1-primary-insurance-form .text_field {
   width: 100% !important;
-  background-color: #FBFBFB;
+  background-color: #fbfbfb;
   font-size: "12px";
   margin-right: "5px"; }
 
 .htpl-phase1-primary-insurance-form .form-details {
   padding: 5px;
-  padding-bottom: 0px;
-  margin-top: 0px; }
+  padding-bottom: 0px; }
 
 .htpl-phase1-primary-insurance-form .radio-design {
   position: absolute;
@@ -38,6 +37,7 @@
   margin-left: 4%;
   margin-top: 2%; }
 
-.htpl-phase1-primary-insurance-form th, .htpl-phase1-primary-insurance-form td {
+.htpl-phase1-primary-insurance-form th,
+.htpl-phase1-primary-insurance-form td {
   border-right: 1px solid #e6e6e6;
   font-size: 11px; }

@@ -55,6 +55,7 @@ class OtherInfo extends Component {
       <MyContext.Consumer>
         {context => (
           <div className="hptl-phase1-add-other-form">
+            <div />
             <div className="container-fluid">
               <div className="row">
                 <AlagehFormGroup
@@ -66,9 +67,6 @@ class OtherInfo extends Component {
                     value: this.state.secondary_contact_number,
                     className: "txt-fld",
                     name: "secondary_contact_number",
-                    mask: {
-                      format: MobileFormat
-                    },
                     events: {
                       onChange: AddPatientOtherHandlers(
                         this,
