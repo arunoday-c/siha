@@ -370,7 +370,7 @@ class VisitType extends Component {
                     columns={[
                       { name: "visit_type_code", title: "VISIT CODE" },
                       {
-                        name: "visit_type",
+                        name: "visit_type_desc",
                         title: "VISIT NAME"
                       },
                       { name: "hims_d_visit_type", title: "VISIT TYPE" },
