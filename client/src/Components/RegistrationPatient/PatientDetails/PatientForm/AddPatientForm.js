@@ -71,6 +71,7 @@ class AddPatientForm extends PureComponent {
     // this.widthDate = widthDate;
   }
   componentWillMount() {
+    debugger;
     let InputOutput;
 
     if (this.props.patients.length > 0) {
@@ -111,7 +112,7 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    // debugger;
     if (nextProps.patients.length > 0) {
       this.setState(nextProps.PatRegIOputs);
       this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));

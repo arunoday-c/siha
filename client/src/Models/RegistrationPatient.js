@@ -8,6 +8,7 @@ export default {
     var CurrentDate = new Date();
     output = extend(
       {
+        hims_d_patient_id: 0,
         patient_code: "",
         registration_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
         title_id: null,
@@ -33,7 +34,7 @@ export default {
         postal_code: "",
         country_id: null,
         state_id: null,
-        city_id: 1,
+        city_id: null,
         primary_identity_id: null,
         primary_id_no: "",
         secondary_identity_id: null,
@@ -43,11 +44,11 @@ export default {
         secondary_id_file: "",
         created_by: 1,
         updated_by: 1,
-        visit_type: 10,
+        visit_type: null,
         visit_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
         department_id: null,
         sub_department_id: null,
-        doctor_id: 1,
+        doctor_id: null,
         maternity_patient: "N",
         is_mlc: "N",
         mlc_accident_reg_no: "",

@@ -49,7 +49,8 @@ class RegistrationPatient extends Component {
       chnageLang: false,
       AGEMM: 0,
       AGEDD: 0,
-      breadCrumbWidth: null
+      breadCrumbWidth: null,
+      saveEnable: false
     };
   }
 
@@ -62,11 +63,16 @@ class RegistrationPatient extends Component {
     this.setState({
       widthImg: width
     });
+    debugger;
+    if (this.state.saveEnable === false) {
+      this.props.initialStatePatientData();
+    }
   }
 
   componentWillReceiveProps() {
     debugger;
   }
+
   UNSAFE_componentWillReceiveProps() {
     debugger;
   }
@@ -79,6 +85,7 @@ class RegistrationPatient extends Component {
     let IOputs = PatRegIOputs.inputParam();
     extend(data, IOputs);
     this.setState(data);
+    this.setState({ saveEnable: false });
     debugger;
   }
 
@@ -90,7 +97,8 @@ class RegistrationPatient extends Component {
         this.setState({
           patient_code: data.patient_code,
           visit_code: data.visit_code,
-          DialogOpen: true
+          DialogOpen: true,
+          saveEnable: true
         });
       });
     }
@@ -113,9 +121,7 @@ class RegistrationPatient extends Component {
 
   componentWillReceiveProps(nextProps) {
     debugger;
-    // this.setState({
-    //   visitDetails: nextProps.visitdetls
-    // });
+    console.log("", this.props.SelectLanguage);
   }
 
   SelectLanguage(secLang) {
@@ -202,6 +208,7 @@ class RegistrationPatient extends Component {
                       <button
                         className="htpl1-phase1-btn-primary"
                         onClick={this.SavePatientDetails.bind(this)}
+                        disabled={this.state.saveEnable}
                       >
                         Save
                       </button>

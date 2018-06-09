@@ -426,11 +426,11 @@
 body {
   background-color: #f2f2f2; }
 
-.DayPickerInput {
-  border-bottom: "1px solid #2020"; }
-
 .tab-container nav li label {
   padding-top: "2px"; }
 
 .style_Label {
   margin-bottom: "0px !important"; }
+
+input[type="text"] {
+  font-size: 14px; }
