@@ -14,6 +14,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
 import DeleteDialog from "../../../utils/DeleteDialog";
+
 import { AlagehFormGroup, AlgaehOptions } from "../../Wrapper/algaehWrapper";
 import {
   EditingState,
@@ -119,6 +120,18 @@ const Command = ({ id, onExecute }) => {
   return <CommandButton onExecute={onExecute} />;
 };
 
+// const StatusEditor = ({ value, onValueChange }) => (
+//   <Select
+//     // input={<Input />}
+//     value={value ? "Active" : "Inactive"}
+//     onChange={event => onValueChange(event.target.value === "Active")}
+//     style={{ width: "100%" }}
+//   >
+//     <MenuItem value="Active">Active</MenuItem>
+//     <MenuItem value="Inactive">Inactive</MenuItem>
+//   </Select>
+// );
+
 //Grid Logic Ends here
 
 class IDType extends Component {
@@ -133,8 +146,20 @@ class IDType extends Component {
       created_by: "1",
       currentRowID: "",
       id_code_error: false,
-      id_code_error_txt: ""
+      id_code_error_txt: "",
+      id_name_error: false,
+      id_name_error_txt: ""
     };
+  }
+
+  getFullStatusText({ value }) {
+    if (value === "A") {
+      return "Active";
+    } else if (value === "I") {
+      return "Inactive";
+    } else {
+      return "";
+    }
   }
 
   changeTexts(e) {
@@ -155,20 +180,38 @@ class IDType extends Component {
 
   addIDType(e) {
     e.preventDefault();
-    algaehApiCall({
-      uri: "/identity/add",
-      data: this.state,
-      onSuccess: response => {
-        this.props.getIDTypes();
-        this.setState({
-          effective_end_date: "",
-          identity_document_code: "",
-          identity_document_name: "",
-          openDialog: false
-        });
-      },
-      onFailure: error => {}
-    });
+    if (this.state.identity_document_code.length == 0) {
+      this.setState({
+        id_code_error: true,
+        id_code_error_txt: "ID Code cannot be empty"
+      });
+    } else if (this.state.identity_document_name.length == 0) {
+      this.setState({
+        id_name_error: true,
+        id_name_error_txt: "ID Name cannot be empty"
+      });
+    } else {
+      algaehApiCall({
+        uri: "/identity/add",
+        data: this.state,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            this.props.getIDTypes();
+            this.setState({
+              effective_end_date: "",
+              identity_document_code: "",
+              identity_document_name: "",
+              openDialog: false,
+              id_code_error: false,
+              id_code_error_txt: "",
+              id_name_error: false,
+              id_name_error_txt: ""
+            });
+          }
+        },
+        onFailure: error => {}
+      });
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -268,11 +311,11 @@ class IDType extends Component {
                 }}
                 optionsType="radio"
                 group={{
-                  name: "Active",
-                  value: "Active",
+                  name: "Status",
+                  value: this.state.id_type_status,
                   controls: [
-                    { label: "Active", value: true },
-                    { label: "Inactive", value: false }
+                    { label: "Active", value: "A" },
+                    { label: "Inactive", value: "I" }
                   ],
                   events: { onChange: this.changeStatus.bind(this) }
                 }}
@@ -291,25 +334,11 @@ class IDType extends Component {
                   events: {
                     onChange: this.changeTexts.bind(this)
                   },
-                  others: {
-                    error: this.state.id_code_error,
-                    helperText: this.state.id_code_error_txt
-                  }
+
+                  error: this.state.id_code_error,
+                  helperText: this.state.id_code_error_txt
                 }}
               />
-
-              {/* <div className="col-lg-3">
-                <label>
-                  ID TYPE NAME <span className="imp">*</span>
-                </label>
-                <br />
-                <TextField
-                  name="identity_document_name"
-                  value={this.state.identity_document_name}
-                  onChange={this.changeTexts.bind(this)}
-                  className="txt-fld"
-                />
-              </div> */}
 
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
@@ -323,7 +352,9 @@ class IDType extends Component {
                   value: this.state.identity_document_name,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  }
+                  },
+                  error: this.state.id_name_error,
+                  helperText: this.state.id_name_error_txt
                 }}
               />
 
@@ -357,6 +388,12 @@ class IDType extends Component {
                     }
                   ]}
                 >
+                  <DataTypeProvider
+                    formatterComponent={this.getFullStatusText}
+                    // editorComponent={StatusEditor}
+                    for={["identity_status"]}
+                  />
+
                   <SearchState />
                   <IntegratedFiltering />
                   <Toolbar />

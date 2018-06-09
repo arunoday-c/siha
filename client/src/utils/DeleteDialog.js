@@ -36,9 +36,7 @@ class DeleteDialog extends Component {
             aria-describedby="alert-dialog-slide-description"
           >
             <DialogTitle id="alert-dialog-slide-title">
-              Are you Sure you want to delete this Department ({
-                this.props.dept_name
-              })?
+              Are you Sure you want to delete this?
             </DialogTitle>
 
             <DialogActions>

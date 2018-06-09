@@ -10,7 +10,9 @@ export default class FormGroup extends Component {
     this.state = {
       languageBind: null,
       textLanguageBind: null,
-      value: null
+      value: null,
+      error: false,
+      helperText: ""
     };
   }
 
@@ -30,11 +32,21 @@ export default class FormGroup extends Component {
     this.setState({ value: this.props.textBox.value });
   }
   componentWillReceiveProps(props) {
-    this.setState({ value: props.textBox.value });
+    debugger;
+    this.setState({
+      value: props.textBox.value,
+      error: props.textBox.error,
+      helperText: props.textBox.helperText
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.textBox.value !== this.state.value) return true;
+    if (
+      nextProps.textBox.value !== this.state.value ||
+      nextProps.textBox.error !== this.state.error ||
+      nextProps.textBox.helperText !== this.state.helperText
+    )
+      return true;
     return false;
   }
 
@@ -175,6 +187,8 @@ export default class FormGroup extends Component {
             onKeyPress={this.props.textBox.events.onKeyPress}
             onKeyDown={this.props.textBox.events.onKeyDown}
             onKeyUp={this.props.textBox.events.onKeyUp}
+            error={this.state.error}
+            helperText={this.state.helperText}
             disabled={
               this.props.textBox.disabled != null
                 ? this.props.textBox.disabled

@@ -15,7 +15,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehOptions } from "../../Wrapper/algaehWrapper";
 import {
   EditingState,
   DataTypeProvider,
@@ -53,7 +53,7 @@ const DateEditor = ({ value, onValueChange }) => (
   <TextField
     value={moment(value).format("YYYY-MM-DD")}
     type="date"
-    onChange={e => onValueChange(e.target.value === value)}
+    onChange={e => onValueChange(e.target.value === "12")}
   />
 );
 
@@ -127,6 +127,7 @@ class VisitType extends Component {
 
     this.state = {
       open: false,
+      visit_status: "A",
       visit_type_code: "",
       visit_type_code_error: false,
       visit_type_code_error_txt: "",
@@ -149,6 +150,17 @@ class VisitType extends Component {
     if (changed) {
     }
     if (deleted) {
+    }
+  }
+  changeStatus(e) {
+    this.setState({ visit_status: e.target.value });
+    console.log("Status:", this.state.visit_status);
+    if (e.target.value == "A")
+      this.setState({ effective_end_date: "9999-12-31" });
+    else if (e.target.value == "I") {
+      this.setState({
+        effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
+      });
     }
   }
 
@@ -261,6 +273,16 @@ class VisitType extends Component {
     });
   }
 
+  getFullStatusText({ value }) {
+    if (value === "A") {
+      return "Active";
+    } else if (value === "I") {
+      return "Inactive";
+    } else {
+      return "";
+    }
+  }
+
   render() {
     return (
       <div>
@@ -275,6 +297,24 @@ class VisitType extends Component {
                   marginRight: "auto"
                 }}
               >
+                <AlgaehOptions
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "status",
+                    isImp: true
+                  }}
+                  optionsType="radio"
+                  group={{
+                    name: "Status",
+                    value: this.state.visit_status,
+                    controls: [
+                      { label: "Active", value: "A" },
+                      { label: "Inactive", value: "I" }
+                    ],
+                    events: { onChange: this.changeStatus.bind(this) }
+                  }}
+                />
+
                 {/* <div className="col-lg-3">
                   <label>
                     VISIT CODE <span className="imp">*</span>
@@ -300,6 +340,8 @@ class VisitType extends Component {
                     className: "txt-fld",
                     name: "visit_type_code",
                     value: this.state.visit_type_code,
+                    error: this.state.visit_type_code_error,
+                    helperText: this.state.visit_type_code_error_txt,
                     events: {
                       onChange: this.changeTexts.bind(this)
                     }
@@ -331,13 +373,15 @@ class VisitType extends Component {
                     className: "txt-fld",
                     name: "visit_type",
                     value: this.state.visit_type,
+                    error: this.state.visit_type_error,
+                    helperText: this.state.visit_type_error_txt,
                     events: {
                       onChange: this.changeTexts.bind(this)
                     }
                   }}
                 />
 
-                <div className="col-lg-3">
+                {/* <div className="col-lg-3">
                   <label>
                     VISIT TYPE <span className="imp">*</span>
                   </label>
@@ -347,9 +391,12 @@ class VisitType extends Component {
                     selected={this.selectedVisitType.bind(this)}
                     children={VISIT_TYPE}
                   />
-                </div>
+                </div> */}
 
-                <div className="col-lg-3 align-middle">
+                <div
+                  className="col-lg-3 align-middle"
+                  style={{ marginBottom: "2px" }}
+                >
                   <br />
                   <Button
                     onClick={this.addVisit.bind(this)}
@@ -373,8 +420,9 @@ class VisitType extends Component {
                         name: "visit_type_desc",
                         title: "VISIT NAME"
                       },
-                      { name: "hims_d_visit_type", title: "VISIT TYPE" },
-                      { name: "created_date", title: "ADDED DATE" }
+                      // { name: "hims_d_visit_type", title: "VISIT TYPE" },
+                      { name: "created_date", title: "ADDED DATE" },
+                      { name: "visit_status", title: "Visit Status" }
                     ]}
                   >
                     <DataTypeProvider
@@ -384,6 +432,12 @@ class VisitType extends Component {
                       )}
                       for={["created_date"]}
                     />
+                    <DataTypeProvider
+                      formatterComponent={this.getFullStatusText}
+                      // editorComponent={StatusEditor}
+                      for={["visit_status"]}
+                    />
+
                     <SearchState />
                     <IntegratedFiltering />
                     <Toolbar />

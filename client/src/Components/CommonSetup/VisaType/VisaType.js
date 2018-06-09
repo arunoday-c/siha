@@ -107,35 +107,9 @@ const DateEditor = ({ value, onValueChange }) => (
   <TextField
     value={moment(value).format("YYYY-MM-DD")}
     type="date"
-    onChange={e => onValueChange(e.target.value === value)}
+    onChange={e => onValueChange(...value)}
   />
 );
-
-class Date extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { startDate: moment(this.props.value).format("YYYY-MM-DD") };
-  }
-  handleChange(event) {
-    this.setState({
-      startDate: moment(event.target.value).format("YYYY-MM-DD")
-    });
-
-    startDate = this.state.startDate;
-  }
-  render() {
-    return (
-      <div>
-        <TextField
-          onChange={this.handleChange.bind(this)}
-          //onChange={e => onValueChange(e.target.value)}
-          value={this.state.startDate}
-          type="date"
-        />
-      </div>
-    );
-  }
-}
 
 class VisaType extends Component {
   constructor(props) {
@@ -144,6 +118,7 @@ class VisaType extends Component {
     this.state = {
       hims_d_visa_type_id: "",
       visa_type: "",
+      visa_status: "A",
       visa_type_code_error: false,
       visa_type_code_error_txt: "",
       visa_type_error: false,
@@ -156,6 +131,16 @@ class VisaType extends Component {
       openDialog: false,
       buttonText: "ADD TO LIST"
     };
+  }
+
+  getFullStatusText({ value }) {
+    if (value === "A") {
+      return "Active";
+    } else if (value === "I") {
+      return "Inactive";
+    } else {
+      return "";
+    }
   }
 
   addVisaType(e) {
@@ -171,19 +156,20 @@ class VisaType extends Component {
         visa_type_error_txt: "Visa Type Code cannot be empty"
       });
     } else {
-      let uri = "";
-      if (this.state.buttonText == "ADD TO LIST") {
-        uri = "/masters/set/add/visa";
-      } else if (this.state.buttonText == "UPDATE") {
-        uri = "/masters/set/update/visa";
-      }
-
       algaehApiCall({
-        uri: uri,
+        uri: "/masters/set/add/visa",
         data: this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             //Handle Successful Add here
+            this.setState({
+              visa_desc: "",
+              visa_type: "",
+              visa_type_code_error: false,
+              visa_type_code_error_txt: "",
+              visa_type_error: false,
+              visa_type_error_txt: ""
+            });
             this.props.getVisatypes();
           } else {
             //Handle unsuccessful Add here.
@@ -209,10 +195,6 @@ class VisaType extends Component {
     }
 
     if (changed) {
-      //Get all the details here and hit the api for changes.
-      // Isuse 1 : changed details are getting in the form of an array
-      // Solution : Disable multiple editing, and get the data of changed items.
-      //  /api/v1/masters/set/update/visa
     }
 
     if (deleted) {
@@ -230,8 +212,8 @@ class VisaType extends Component {
   }
 
   changeStatus(e) {
-    this.setState({ patient_type_status: e.target.value });
-
+    this.setState({ visa_status: e.target.value });
+    console.log("Status:", this.state.visa_status);
     if (e.target.value == "A")
       this.setState({ effective_end_date: "9999-12-31" });
     else if (e.target.value == "I") {
@@ -254,7 +236,8 @@ class VisaType extends Component {
       method: "DELETE",
       onSuccess: response => {
         this.setState({ open: false });
-        this.props.getVisatypes();
+
+        if (response.data.success === true) this.props.getVisatypes();
       },
       onFailure: error => {
         this.setState({ open: false });
@@ -294,29 +277,15 @@ class VisaType extends Component {
                 }}
                 optionsType="radio"
                 group={{
-                  name: "Active",
-                  value: "Active",
+                  name: "Status",
+                  value: this.state.visa_status,
                   controls: [
-                    { label: "Active", value: true },
-                    { label: "Inactive", value: false }
+                    { label: "Active", value: "A" },
+                    { label: "Inactive", value: "I" }
                   ],
                   events: { onChange: this.changeStatus.bind(this) }
                 }}
               />
-              {/* <div className="col-lg-3">
-                <label>
-                  VISA TYPE CODE <span className="imp">*</span>
-                </label>
-                <br />
-                <TextField
-                  error={this.state.visa_type_code_error}
-                  helperText={this.state.visa_type_code_error_txt}
-                  name="visa_type_code"
-                  value={this.state.visa_type_code}
-                  onChange={this.changeTexts.bind(this)}
-                  className="txt-fld"
-                />
-              </div> */}
 
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
@@ -330,24 +299,11 @@ class VisaType extends Component {
                   value: this.state.visa_type_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  }
+                  },
+                  error: this.state.visa_type_code_error,
+                  helperText: this.state.visa_type_code_error_txt
                 }}
               />
-
-              {/* <div className="col-lg-3">
-                <label>
-                  VISA TYPE NAME <span className="imp">*</span>
-                </label>
-                <br />
-                <TextField
-                  error={this.state.visa_type_error}
-                  helperText={this.state.visa_type_error_txt}
-                  name="visa_type"
-                  value={this.state.visa_type}
-                  onChange={this.changeTexts.bind(this)}
-                  className="txt-fld"
-                />
-              </div> */}
 
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
@@ -361,7 +317,9 @@ class VisaType extends Component {
                   value: this.state.visa_type,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  }
+                  },
+                  error: this.state.visa_type_error,
+                  helperText: this.state.visa_type_error_txt
                 }}
               />
 
@@ -398,6 +356,12 @@ class VisaType extends Component {
                     )}
                     for={["created_date"]}
                   />
+                  <DataTypeProvider
+                    formatterComponent={this.getFullStatusText}
+                    // editorComponent={StatusEditor}
+                    for={["visa_status"]}
+                  />
+
                   <SearchState />
                   <IntegratedFiltering />
                   <VirtualTable

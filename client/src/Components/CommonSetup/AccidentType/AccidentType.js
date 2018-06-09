@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { Paper, TextField } from "material-ui";
 import "./accident_type.css";
-import { MuiThemeProvider, createMuiTheme } from "material-ui";
 import { Button } from "material-ui";
-import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehOptions } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 
 class AccidentType extends Component {
@@ -44,35 +43,22 @@ class AccidentType extends Component {
                 marginRight: "auto"
               }}
             >
-              <div className="col-lg-3">
-                <label>
-                  Status <span className="imp">*</span>
-                </label>
-                <br />
-                <input
-                  onChange={this.changeStatus.bind(this)}
-                  style={{
-                    padding: 8,
-                    margin: 8
-                  }}
-                  type="radio"
-                  name="status"
-                  value="A"
-                />
-                <label className="center">Active </label>
+              <AlgaehOptions
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "status",
+                  isImp: true
+                }}
+                optionsType="radio"
+                group={{
+                  name: "Status",
 
-                <input
-                  onChange={this.changeStatus.bind(this)}
-                  style={{
-                    padding: 8,
-                    margin: 8
-                  }}
-                  type="radio"
-                  name="status"
-                  value="I"
-                />
-                <label className="center">Inactive </label>
-              </div>
+                  controls: [
+                    { label: "Active", value: "A" },
+                    { label: "Inactive", value: "I" }
+                  ]
+                }}
+              />
 
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
