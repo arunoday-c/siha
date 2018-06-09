@@ -7,7 +7,7 @@ import { SearchState, IntegratedFiltering } from "@devexpress/dx-react-grid";
 import { withStyles } from "material-ui/styles";
 import { EditingState, DataTypeProvider } from "@devexpress/dx-react-grid";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehOptions } from "../../Wrapper/algaehWrapper";
 import DeleteDialog from "../../../utils/DeleteDialog";
 import {
   Grid,
@@ -239,35 +239,22 @@ class PatientType extends Component {
                   marginRight: "auto"
                 }}
               >
-                <div className="col-lg-3">
-                  <label>
-                    Status <span className="imp">*</span>
-                  </label>
-                  <br />
-                  <input
-                    onChange={this.changeStatus.bind(this)}
-                    style={{
-                      padding: 8,
-                      margin: 8
-                    }}
-                    type="radio"
-                    name="status"
-                    value="A"
-                  />
-                  <label className="center">Active </label>
+                <AlgaehOptions
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "status",
+                    isImp: true
+                  }}
+                  optionsType="radio"
+                  group={{
+                    name: "Status",
 
-                  <input
-                    onChange={this.changeStatus.bind(this)}
-                    style={{
-                      padding: 8,
-                      margin: 8
-                    }}
-                    type="radio"
-                    name="status"
-                    value="I"
-                  />
-                  <label className="center">Inactive </label>
-                </div>
+                    controls: [
+                      { label: "Active", value: "A" },
+                      { label: "Inactive", value: "I" }
+                    ]
+                  }}
+                />
 
                 {/* <div className="col-lg-3">
                   <label>
@@ -332,7 +319,7 @@ class PatientType extends Component {
             <div className="row form-details">
               <div className="col">
                 <Paper>
-                  <Grid
+                  {/* <Grid
                     rows={this.props.visatypes}
                     key={["{name : hims_d_visa_type_id}"]}
                     columns={[
@@ -368,7 +355,7 @@ class PatientType extends Component {
                       showDeleteCommand
                       commandComponent={Command}
                     />
-                  </Grid>
+                  </Grid> */}
                 </Paper>
               </div>
             </div>

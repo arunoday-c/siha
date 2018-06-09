@@ -1,16 +1,7 @@
 import React, { Component } from "react";
 import "./Login.css";
-import {
-  TextField,
-  Button,
-  CircularProgress,
-  LinearProgress
-} from "material-ui";
-import {
-  algaehApiCall,
-  getCookie,
-  setCookie
-} from "../../utils/algaehApiCall.js";
+import { Button, CircularProgress, LinearProgress } from "material-ui";
+import { algaehApiCall, setCookie } from "../../utils/algaehApiCall.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -192,7 +183,9 @@ class Login extends Component {
                     value: this.state.username,
                     events: {
                       onChange: this.texthandle.bind(this)
-                    }
+                    },
+                    error: this.state.userError,
+                    helperText: this.state.userErrorText
                   }}
                 />
 
@@ -230,13 +223,16 @@ class Login extends Component {
                     events: {
                       onChange: this.texthandle.bind(this)
                     },
-                    others: { type: "password" }
+                    others: {
+                      type: "password",
+                      error: this.state.pwdError,
+                      helperText: this.state.pwdErrorText
+                    }
                   }}
                 />
 
                 <br />
 
-                {/* <Link to="#"> */}
                 <Button
                   type="submit"
                   style={styles.login_btn}
@@ -245,7 +241,6 @@ class Login extends Component {
                 >
                   Log In
                 </Button>
-                {/* </Link> */}
 
                 <br />
               </form>
