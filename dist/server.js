@@ -150,6 +150,9 @@ app.use("/api/v1", _routes2.default);
 process.on("warning", function (warning) {
   _logging.logger.log("warn", warning);
 });
+process.on("uncaughtException", function (error) {
+  _logging.logger.log("error", error);
+});
 //Error Handling MiddleWare
 app.use(function (error, req, res, next) {
   error.status = error.status || _httpStatus2.default.internalServer;

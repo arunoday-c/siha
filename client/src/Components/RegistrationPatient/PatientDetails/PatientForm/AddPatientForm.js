@@ -341,7 +341,7 @@ class AddPatientForm extends PureComponent {
                           name: "contact_number",
 
                           events: {
-                            onChange: numberSet.bind(this, this, context)
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />

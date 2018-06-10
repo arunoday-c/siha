@@ -19,7 +19,8 @@ var identityDoc = {
   created_by: null,
   created_date: null,
   updated_by: null,
-  updated_date: null
+  updated_date: null,
+  identity_status: "A"
 };
 var addIdentity = function addIdentity(req, res, next) {
   try {
@@ -34,15 +35,16 @@ var addIdentity = function addIdentity(req, res, next) {
         next(error);
       }
       connection.query("INSERT INTO `hims_d_identity_document` \
-            (`identity_document_code`, `identity_document_name`, `created_by`, `created_date`)\
-            VALUE (?, ?, ?, ?)", [insertDoc.identity_document_code, insertDoc.identity_document_name, insertDoc.created_by, new Date()], function (error, result) {
+            (`identity_document_code`, `identity_document_name`, `created_by`\
+            , `created_date`,`identity_status`)\
+            VALUE (?, ?, ?, ?)", [insertDoc.identity_document_code, insertDoc.identity_document_name, insertDoc.created_by, new Date(), insertDoc.identity_status], function (error, result) {
         if (error) {
           (0, _utils.releaseDBConnection)(db, connection);
           next(error);
         }
         insertDoc.hims_d_identity_document_id = result.insertId;
         connection.query("SELECT `hims_d_identity_document_id`, `identity_document_code`,\
-         `identity_document_name` \
+         `identity_document_name`,`identity_status` \
          FROM `hims_d_identity_document` WHERE `record_status`='A' AND \
          `hims_d_identity_document_id`=? ", [insertDoc.hims_d_identity_document_id], function (error, resultData) {
           (0, _utils.releaseDBConnection)(db, connection);
@@ -71,8 +73,9 @@ var updateIdentity = function updateIdentity(req, res, next) {
         next(error);
       }
       connection.query("UPDATE `hims_d_identity_document`\
-    SET  `identity_document_name`=?, `updated_by`=?, `updated_date`=?\
-    WHERE `record_status`='A' AND `hims_d_identity_document_id`=?;", [updateIdentityDoc.identity_document_name, updateIdentityDoc.updated_by, new Date(), updateIdentityDoc.hims_d_identity_document_id], function (error, result) {
+    SET  `identity_document_name`=?, `updated_by`=?, `updated_date`=? \
+    ,`identity_status` = ? \
+    WHERE `record_status`='A' AND `hims_d_identity_document_id`=?;", [updateIdentityDoc.identity_document_name, updateIdentityDoc.updated_by, new Date(), updateIdentityDoc.identity_status, updateIdentityDoc.hims_d_identity_document_id], function (error, result) {
         (0, _utils.releaseDBConnection)(db, connection);
         if (error) {
           next(error);
@@ -99,8 +102,8 @@ var selectIdentity = function selectIdentity(req, res, next) {
     var condition = (0, _utils.whereCondition)((0, _extend2.default)(selectWhereCondition, req.query));
     (0, _utils.selectStatement)({
       db: req.db,
-      query: "SELECT `hims_d_identity_document_id`, `identity_document_code`, `identity_document_name`\
-          ,`created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_identity_document` WHERE record_status ='A' AND " + condition.condition,
+      query: "SELECT `hims_d_identity_document_id`, `identity_document_code`, `identity_document_name`,`identity_status`\
+          ,`created_by`, `created_date`, `updated_by`, `updated_date`,`identity_status` FROM `hims_d_identity_document` WHERE record_status ='A' AND " + condition.condition,
       values: condition.values
     }, function (result) {
       req.records = result;

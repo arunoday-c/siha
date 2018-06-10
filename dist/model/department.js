@@ -10,6 +10,8 @@ var _httpStatus = require("../utils/httpStatus");
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
+var _logging = require("../utils/logging");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var department = {
@@ -29,6 +31,8 @@ var department = {
   record_status: null,
   sub_department: [subDepartment]
 };
+// import $ from "jquery";
+
 var subDepartment = {
   hims_d_sub_department_id: null,
   sub_department_code: null,
@@ -50,7 +54,7 @@ var addDepartment = function addDepartment(req, res, next) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
     }
     var db = req.db;
-    var departmentDetails = (0, _extend2.default)(department, req.body);
+    var _departmentDetails = (0, _extend2.default)(department, req.body);
     db.getConnection(function (error, connection) {
       if (error) {
         next(error);
@@ -72,7 +76,7 @@ var addDepartment = function addDepartment(req, res, next) {
         ,department_status \
         ,created_date \
         ,created_by \
-        ) VALUE(?,?,?,?,?,?,?,?,?,?)", [departmentDetails.department_code, departmentDetails.department_name, departmentDetails.department_desc, departmentDetails.department_type, departmentDetails.hospital_id, departmentDetails.effective_start_date, departmentDetails.effective_end_date, departmentDetails.department_status, new Date(), departmentDetails.created_by], function (error, result) {
+        ) VALUE(?,?,?,?,?,?,?,?,?,?)", [_departmentDetails.department_code, _departmentDetails.department_name, _departmentDetails.department_desc, _departmentDetails.department_type, _departmentDetails.hospital_id, _departmentDetails.effective_start_date, _departmentDetails.effective_end_date, _departmentDetails.department_status, new Date(), _departmentDetails.created_by], function (error, result) {
           if (error) {
             connection.rollback(function () {
               (0, _utils.releaseDBConnection)(db, connection);
@@ -80,7 +84,7 @@ var addDepartment = function addDepartment(req, res, next) {
             });
           }
           if (result != null) {
-            departmentDetails.hims_d_department_id = result.insertId;
+            _departmentDetails.hims_d_department_id = result.insertId;
 
             connection.commit(function (error) {
               if (error) {
@@ -95,7 +99,7 @@ var addDepartment = function addDepartment(req, res, next) {
              FROM `hims_d_department` WHERE hims_d_department_id=?;\
              SELECT `hims_d_sub_department_id`, `sub_department_code`, `sub_department_name`\
              ,`sub_department_desc`, `department_id`, `effective_start_date`\
-             , `effective_end_date`, `sub_department_status` FROM `hims_d_sub_department` WHERE department_id=?;", [departmentDetails.hims_d_department_id, departmentDetails.hims_d_department_id], function (error, resultTables) {
+             , `effective_end_date`, `sub_department_status` FROM `hims_d_sub_department` WHERE department_id=?;", [_departmentDetails.hims_d_department_id, _departmentDetails.hims_d_department_id], function (error, resultTables) {
                 (0, _utils.releaseDBConnection)(db, connection);
                 if (error) {
                   next(error);
@@ -114,11 +118,14 @@ var addDepartment = function addDepartment(req, res, next) {
 };
 var updateDepartment = function updateDepartment(req, res, next) {
   try {
+    (0, _logging.debugFunction)("updateDepartment");
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
     }
     var db = req.db;
-    var departmentDetails = (0, _extend2.default)(department, req.body);
+    // let departmentDetails = extend(department, req.body);
+    // Dynamic query
+    (0, _logging.debugLog)("Input Data", req.body);
     db.getConnection(function (error, connection) {
       if (error) {
         next(error);
@@ -131,10 +138,10 @@ var updateDepartment = function updateDepartment(req, res, next) {
           });
         }
         var queryBuilder = "UPDATE `hims_d_department`\
-      SET   `department_name`=?, `department_desc`=?, `department_type`=?\
-      ,`hospital_id`=?, `effective_start_date`=?, `effective_end_date`=? \
-      ,`department_status`=?, `updated_date`=?, `updated_by`=?\
-      WHERE record_status='A' AND `hims_d_department_id`=?;";
+        SET   `department_name`=?, `department_desc`=?, `department_type`=?\
+        ,`hospital_id`=?, `effective_start_date`=?, `effective_end_date`=? \
+        ,`department_status`=?, `updated_date`=?, `updated_by`=?\
+        WHERE record_status='A' AND `hims_d_department_id`=?;";
         var inputs = [departmentDetails.department_name, departmentDetails.department_desc, departmentDetails.department_type, departmentDetails.hospital_id, departmentDetails.effective_start_date, departmentDetails.effective_end_date, department.department_status, new Date(), departmentDetails.updated_by, departmentDetails.hims_d_department_id];
 
         connection.query(queryBuilder, inputs, function (error, result) {
@@ -168,7 +175,7 @@ var updateDepartment = function updateDepartment(req, res, next) {
       });
     });
   } catch (e) {
-    next(error);
+    next(e);
   }
 };
 var deleteDepartment = function deleteDepartment(req, res, next) {

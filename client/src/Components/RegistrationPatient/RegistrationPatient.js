@@ -64,9 +64,9 @@ class RegistrationPatient extends Component {
       widthImg: width
     });
     debugger;
-    if (this.state.saveEnable === false) {
-      this.props.initialStatePatientData();
-    }
+    // if (this.state.saveEnable === false) {
+    //   this.props.initialStatePatientData();
+    // }
   }
 
   componentWillReceiveProps() {
