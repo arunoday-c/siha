@@ -4,6 +4,7 @@ import Selector from "../Wrapper/selector";
 import DateHandler from "../Wrapper/datePicker";
 import Options from "../Wrapper/optionButton";
 import AutoComplete from "../Wrapper/autoComplete";
+import DataGrid from "../Wrapper/grid";
 import "hijri-date";
 
 const AlgaehLabel = Label;
@@ -12,6 +13,7 @@ const AlgaehSelector = Selector;
 const AlgaehDateHandler = DateHandler;
 const AlgaehOptions = Options;
 const AlagehAutoComplete = AutoComplete;
+const AlgaehDataGrid = DataGrid;
 const AlgaehConvertToHijri = date => {
   if (date != null && date != "") {
     let nowGreg = new Date(date);
@@ -25,5 +27,6 @@ export {
   AlgaehDateHandler,
   AlgaehConvertToHijri,
   AlgaehOptions,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehDataGrid
 };
