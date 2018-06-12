@@ -65,7 +65,7 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    debugger;
+
     var width = document.getElementById("attach-width").offsetWidth;
     this.widthImg = width + 1;
     // var widthDate = document.getElementById("widthDate").offsetWidth;
@@ -112,7 +112,7 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+
     this.setState(nextProps.PatRegIOputs);
 
     if (nextProps.patients != null) {
