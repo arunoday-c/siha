@@ -22,7 +22,7 @@ class CommonSetup extends Component {
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
     }
-    e.target.classList.add("active");
+    e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
       pageDisplay: specified
