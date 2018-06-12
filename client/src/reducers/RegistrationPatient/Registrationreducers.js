@@ -16,8 +16,7 @@ export function PatRegistrationDetails(state = { patients: [] }, action) {
       break;
 
     case "INIT_PAT_DATA":
-      debugger;
-      return Object.assign({}, { patients: [action.payload] });
+      return [];
       break;
   }
 

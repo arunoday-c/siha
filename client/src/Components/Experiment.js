@@ -18,9 +18,7 @@ class Experiment extends Component {
     };
   }
 
-  calculateAge(c, x) {
-    debugger;
-  }
+  calculateAge(c, x) {}
 
   render() {
     return (

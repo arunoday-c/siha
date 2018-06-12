@@ -26,6 +26,14 @@
     "english": "Last Name",
     "target": "اسم العائلة"
   },
+  "full_name": {
+    "english": "Name",
+    "target": "اسم"
+  },
+  "arabic_name": {
+    "english": "Name in Arabic",
+    "target": "الاسم باللغة العربية"
+  },
   "gender": {
     "english": "Gender",
     "target": "الجنس"

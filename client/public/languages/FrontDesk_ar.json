@@ -5,6 +5,8 @@
   "first_name": "الاسم الاول",
   "middle_name": "الاسم الأوسط",
   "last_name": "اسم العائلة",
+  "full_name": "اسم",
+  "arabic_name": "الاسم باللغة العربية",
   "gender": "الجنس",
   "religion_id": "ريليج",
   "date_of_birth": "تاريخ الميلاد",
@@ -56,5 +58,5 @@
   "form_no": "لا",
   "hijiri_date": "التاريخ الهجري",
   "attach_photo": "إرفاق صورة",
-  "attach_PrimaryID": "إرفاق المعرف الأساسي"
+  "attach_idcard": "إرفاق بطاقة الهوية"
 }

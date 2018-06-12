@@ -8,7 +8,8 @@ import {
   getIDTypes,
   getRelegion,
   getCities,
-  getStates
+  getStates,
+  getVisatypes
 } from "../../../../actions/masterActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -64,14 +65,13 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    // debugger;
+    debugger;
     var width = document.getElementById("attach-width").offsetWidth;
     this.widthImg = width + 1;
     // var widthDate = document.getElementById("widthDate").offsetWidth;
     // this.widthDate = widthDate;
   }
   componentWillMount() {
-    debugger;
     let InputOutput;
 
     if (this.props.patients.length > 0) {
@@ -103,19 +103,22 @@ class AddPatientForm extends PureComponent {
     if (this.props.countrystates.length === 0) {
       this.props.getStates();
     }
-
     if (this.props.cities.length === 0) {
       this.props.getCities();
     }
-
-    // this.setState({...this.state});
+    if (this.props.visatypes.length === 0) {
+      this.props.getVisatypes();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    // debugger;
-    if (nextProps.patients.length > 0) {
-      this.setState(nextProps.PatRegIOputs);
-      this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
+    debugger;
+    this.setState(nextProps.PatRegIOputs);
+
+    if (nextProps.patients != null) {
+      if (nextProps.patients.length > 0) {
+        this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
+      }
     }
   }
 
@@ -163,13 +166,13 @@ class AddPatientForm extends PureComponent {
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "first_name",
+                          fieldName: "full_name",
                           isImp: true
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "first_name",
-                          value: this.state.first_name,
+                          name: "full_name",
+                          value: this.state.full_name,
                           events: {
                             onChange: texthandle.bind(this, this, context)
                           }
@@ -179,20 +182,20 @@ class AddPatientForm extends PureComponent {
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "middle_name",
+                          fieldName: "arabic_name",
                           isImp: true
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "middle_name",
-                          value: this.state.middle_name,
+                          name: "arabic_name",
+                          value: this.state.arabic_name,
                           events: {
                             onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
 
-                      <AlagehFormGroup
+                      {/* <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "last_name",
@@ -206,9 +209,7 @@ class AddPatientForm extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           }
                         }}
-                      />
-                    </div>
-                    <div className="row primary-box-container">
+                      /> */}
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -227,6 +228,8 @@ class AddPatientForm extends PureComponent {
                           onChange: texthandle.bind(this, this, context)
                         }}
                       />
+                    </div>
+                    <div className="row primary-box-container">
                       <AlagehFormGroup
                         div={{ className: "col-lg-1" }}
                         label={{
@@ -326,6 +329,24 @@ class AddPatientForm extends PureComponent {
                           onChange: texthandle.bind(this, this, context)
                         }}
                       />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "visa_type_id"
+                        }}
+                        selector={{
+                          name: "visa_type_id",
+                          className: "select-fld",
+                          value: this.state.visa_type_id,
+                          dataSource: {
+                            textField: "visa_type",
+                            valueField: "hims_d_visa_type_id",
+                            data: this.props.visatypes
+                          },
+                          onChange: texthandle.bind(this, this, context)
+                        }}
+                      />
                     </div>
 
                     <div className="row primary-box-container">
@@ -341,7 +362,7 @@ class AddPatientForm extends PureComponent {
                           name: "contact_number",
 
                           events: {
-                            onChange: numberSet.bind(this, this, context)
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
@@ -544,7 +565,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
                     </div>
-                    <div className="row secondary-box-container">
+                    {/* <div className="row secondary-box-container">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-6" }}
                         label={{
@@ -578,9 +599,9 @@ class AddPatientForm extends PureComponent {
                           }
                         }}
                       />
-                    </div>
+                    </div> */}
                     <div className="row secondary-box-container">
-                      <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                         <div className="image-drop-area">
                           <Dropzone
                             onDrop={onDrop.bind(this, "filePreview")}
@@ -606,11 +627,11 @@ class AddPatientForm extends PureComponent {
                           <img
                             className="preview-image"
                             src={this.state.file["filePreview"]}
-                            style={{ width: this.widthImg, height: "107px" }}
+                            style={{ width: this.widthImg }}
                           />
                         </div>
                       </div>
-                      <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                         <div className="image-drop-area">
                           <Dropzone
                             className="dropzone"
@@ -624,7 +645,11 @@ class AddPatientForm extends PureComponent {
                               className="attach-design text-center"
                               id="attach-primary-id"
                             >
-                              ATTACH PRIM. ID
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "attach_idcard"
+                                }}
+                              />
                             </div>
                           </Dropzone>
                         </div>
@@ -632,11 +657,11 @@ class AddPatientForm extends PureComponent {
                           <img
                             className="preview-image"
                             src={this.state.file["filePrimaryPreview"]}
-                            style={{ width: this.widthImg, height: "107px" }}
+                            style={{ width: this.widthImg }}
                           />
                         </div>
                       </div>
-                      <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                      {/* <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
                         <div className="image-drop-area">
                           <Dropzone
                             className="dropzone"
@@ -661,7 +686,7 @@ class AddPatientForm extends PureComponent {
                             style={{ width: this.widthImg, height: "107px" }}
                           />
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -688,7 +713,8 @@ function mapStateToProps(state) {
     cities: state.cities.cities,
     countries: state.countries.countries,
     countrystates: state.countrystates.countrystates,
-    patients: state.patients.patients
+    patients: state.patients.patients,
+    visatypes: state.visatypes.visatypes
   };
 }
 
@@ -702,7 +728,8 @@ function mapDispatchToProps(dispatch) {
       getCities: getCities,
       getCountries: getCountries,
       getStates: getStates,
-      postPatientDetails: postPatientDetails
+      postPatientDetails: postPatientDetails,
+      getVisatypes: getVisatypes
     },
     dispatch
   );

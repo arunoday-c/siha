@@ -102,7 +102,7 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
     inputparam.registration_date = new Date();
     dataBase.query(
       "INSERT INTO `hims_f_patient` (`patient_code`, `registration_date`\
-    , `title_id`, `first_name`, `middle_name`, `last_name`, `gender`, `religion_id`\
+    , `title_id`, `first_name`, `middle_name`, `last_name`, `full_name`, `arabic_name`, `gender`, `religion_id`\
     , `date_of_birth`, `age`, `marital_status`, `address1`, `address2`, `contact_number`\
     , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
     , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
@@ -117,6 +117,8 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
         inputparam.first_name,
         inputparam.middle_name,
         inputparam.last_name,
+        inputparam.full_name,
+        inputparam.arabic_name,
         inputparam.gender,
         inputparam.religion_id,
         inputparam.date_of_birth,
@@ -176,7 +178,7 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
              param_category='DOCUMENTS' AND param_name='PATIENT_DOC_PATH';";
           dataBase.query(
             "SELECT `hims_d_patient_id`, `patient_code`, `registration_date`\
-      , `title_id`, `first_name`, `middle_name`, `last_name`, `gender`, `religion_id`\
+      , `title_id`, `first_name`, `middle_name`, `last_name`, `full_name`, `arabic_name`, `gender`, `religion_id`\
       , `date_of_birth`, `age`, `marital_status`, `address1`, `address2`, `contact_number`\
       , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
       , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
@@ -210,8 +212,8 @@ let updateData = (dataBase, req, callBack) => {
     let inputparam = extend(patientModel, req.body);
     dataBase.query(
       "UPDATE `hims_f_patient`\
-  SET  `title_id`=?, `first_name`=?, `middle_name`=?, `last_name`=?, `gender`=?,\
-  `religion_id`=?, `date_of_birth`=?, `age`=?, `marital_status`=?, `address1`=?, \
+  SET  `title_id`=?, `first_name`=?, `middle_name`=?, `last_name`=?, `full_name`=?, `arabic_name`=?, \
+  `gender`=?, `religion_id`=?, `date_of_birth`=?, `age`=?, `marital_status`=?, `address1`=?, \
   `address2`=?, `contact_number`=?, `secondary_contact_number`=?, `email`=?, \
   `emergency_contact_name`=?, `emergency_contact_number`=?, `relationship_with_patient`=?,\
   `visa_type_id`=?, `nationality_id`=?, `postal_code`=?, `primary_identity_id`=?, \
@@ -223,6 +225,8 @@ let updateData = (dataBase, req, callBack) => {
         inputparam.first_name,
         inputparam.middle_name,
         inputparam.last_name,
+        inputparam.full_name,
+        inputparam.arabic_name,
         inputparam.gender,
         inputparam.religion_id,
         inputparam.date_of_birth,

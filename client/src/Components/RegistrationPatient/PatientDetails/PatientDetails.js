@@ -116,7 +116,10 @@ class PatientDetails extends PureComponent {
         </div>
         <div className="patient-section">
           {this.state.actionPatientDesign ? (
-            <PatientForm PatRegIOputs={this.props.PatRegIOputs} />
+            <PatientForm
+              PatRegIOputs={this.props.PatRegIOputs}
+              clearData={this.props.clearData}
+            />
           ) : null}
           {this.state.actionInformationDesign ? null : (
             <OtherInfo PatRegIOputs={this.props.PatRegIOputs} />
@@ -144,5 +147,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(PatientDetails)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PatientDetails)
 );
