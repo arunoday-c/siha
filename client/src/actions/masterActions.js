@@ -5,6 +5,7 @@ import { getIDTypes } from "./CommonSetup/IDType";
 import { getRelegion } from "./Masters/Relegion";
 import { getCities } from "./Masters/City";
 import { getStates } from "./Masters/State";
+import { getVisatypes } from "./CommonSetup/Visatype";
 
 export {
   getTitles,
@@ -13,5 +14,6 @@ export {
   getIDTypes,
   getRelegion,
   getCities,
-  getStates
+  getStates,
+  getVisatypes
 };

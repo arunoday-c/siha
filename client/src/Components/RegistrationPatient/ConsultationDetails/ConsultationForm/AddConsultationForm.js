@@ -47,7 +47,6 @@ class AddConsultationForm extends Component {
   }
 
   componentDidMount() {
-    debugger;
     if (this.props.subdepartments.length === 0) {
       this.props.getSubDepartments();
     }
@@ -60,7 +59,6 @@ class AddConsultationForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // debugger;
     console.log("Visit Details", this.state);
     this.setState(nextProps.PatRegIOputs);
   }
@@ -217,7 +215,6 @@ class AddConsultationForm extends Component {
                     </thead>
                     <tbody>
                       {vstDeatils.map((row, index) => {
-                        debugger;
                         let vistDate = "";
                         if (row.visit_date !== "" || row.visit_date !== null) {
                           vistDate = moment(String(row.visit_date)).format(
@@ -305,7 +302,6 @@ function AddVisitHandlers(state, context) {
   context = context || null;
   return {
     DeptselectedHandeler: e => {
-      // debugger;
       state.setState({
         [e.name]: e.value,
         department_id: e.selected.department_id
@@ -316,7 +312,6 @@ function AddVisitHandlers(state, context) {
     },
 
     selectedHandeler: e => {
-      // debugger;
       state.setState({
         [e.name]: e.value
       });

@@ -25,7 +25,6 @@ class BreadCrumb extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState({
       ctrlCode: nextProps.ctrlCode,
       ctrlDate: nextProps.ctrlDate

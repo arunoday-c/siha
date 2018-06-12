@@ -54,7 +54,7 @@
   }
   .image-drop-area {
     border: 1px solid #93a4ad;
-    min-height: 111px;
+    min-height: 101px;
     position: relative;
     background-color: #eaeaea;
     .dropzone {
@@ -186,7 +186,8 @@
   }
 
   .ins-tab-container {
-    .tab-button {
+    .tab-button,
+    label {
       width: 100%;
       font-size: 10px;
       font-weight: normal;

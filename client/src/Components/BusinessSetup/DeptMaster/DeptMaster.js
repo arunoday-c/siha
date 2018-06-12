@@ -39,7 +39,8 @@ import {
 } from "@devexpress/dx-react-grid-material-ui";
 import {
   AlgaehDateHandler,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlgaehOptions
 } from "../../Wrapper/algaehWrapper";
 
 const TableRow = ({ row, ...restProps }) => (
@@ -232,10 +233,9 @@ class DeptMaster extends Component {
       sub_department_status: e.target.value
     });
     if (e.target.value === "A")
-      this.setState({ checkedActive: true, effective_end_date: "9999-12-31" });
+      this.setState({ effective_end_date: "9999-12-31" });
     else if (e.target.value === "I") {
       this.setState({
-        checkedInactive: true,
         effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
       });
     }
@@ -396,37 +396,23 @@ class DeptMaster extends Component {
                 marginRight: "auto"
               }}
             >
-              <div className="col-lg-3">
-                <label>
-                  Status <span className="imp">*</span>
-                </label>
-                <br />
-                <input
-                  checked={this.state.checkedActive}
-                  onChange={this.changeStatus.bind(this)}
-                  style={{
-                    padding: 8,
-                    margin: 8
-                  }}
-                  type="radio"
-                  name="status"
-                  value="A"
-                />
-                <label className="center">Active </label>
-
-                <input
-                  checked={this.state.checkedInactive}
-                  onChange={this.changeStatus.bind(this)}
-                  style={{
-                    padding: 8,
-                    margin: 8
-                  }}
-                  type="radio"
-                  name="status"
-                  value="I"
-                />
-                <label className="center">Inactive </label>
-              </div>
+              <AlgaehOptions
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "status",
+                  isImp: true
+                }}
+                optionsType="radio"
+                group={{
+                  name: "Status",
+                  value: this.state.department_status,
+                  controls: [
+                    { label: "Active", value: "A" },
+                    { label: "Inactive", value: "I" }
+                  ],
+                  events: { onChange: this.changeStatus.bind(this) }
+                }}
+              />
 
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
@@ -472,7 +458,7 @@ class DeptMaster extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  fieldName: "department_name",
+                  fieldName: "department_name_arabic",
                   isImp: true
                 }}
                 textBox={{

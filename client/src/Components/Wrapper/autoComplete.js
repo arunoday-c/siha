@@ -108,7 +108,6 @@ const styles = theme => ({
 });
 class AutoComplete extends PureComponent {
   handleChange = value => {
-    debugger;
     if (value !== null) {
       this.props.selector.onChange({
         selected: value,
@@ -127,7 +126,6 @@ class AutoComplete extends PureComponent {
   }
 
   componentWillReceiveProps(props) {
-    // debugger;
     this.setState({ single: props.selector.value });
   }
 

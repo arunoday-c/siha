@@ -153,29 +153,43 @@ class PersistentDrawer extends React.Component {
       selectedLang: "lang_en",
       anchorEl: null,
       languageName: "English",
-      Language: "en"
+      Language: "en",
+      arlabl: "",
+      enlabl: ""
     };
   }
 
   componentDidMount() {
+
     let prevLang = getCookie("Language");
     if (prevLang !== "en") {
       this.setState({
         languageName: "عربي",
         Language: "ar",
-        title: "لوحة القيادة"
+        title: "لوحة القيادة",
+        arlabl: "لوحة القيادة",
+        enlabl: "Dashboard"
       });
     }
   }
 
   Languaue(secLang, e) {
+
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
     if (secLang === "en") {
-      this.setState({ languageName: "English", Language: "en" });
+      this.setState({
+        languageName: "English",
+        Language: "en",
+        title: this.state.enlabl
+      });
     } else if (secLang === "ar") {
-      this.setState({ languageName: "عربي", Language: "ar" });
+      this.setState({
+        languageName: "عربي",
+        Language: "ar",
+        title: this.state.arlabl
+      });
     }
 
     let renderComp = this.state.renderComponent;
@@ -184,7 +198,9 @@ class PersistentDrawer extends React.Component {
         renderComponent: ""
       },
       () => {
-        this.setState({ renderComponent: renderComp });
+        this.setState({
+          renderComponent: renderComp
+        });
       }
     );
   }
@@ -232,7 +248,7 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(e) {
-    debugger;
+
     const path = e.currentTarget.getAttribute("path");
     const name = e.currentTarget.getAttribute("name");
     // const name = e.currentTarget.getAttribute("name");
@@ -243,7 +259,9 @@ class PersistentDrawer extends React.Component {
       toggleSubMenu: true,
       title: e.currentTarget.innerText,
       renderComponent: screenName,
-      menuSelected: ""
+      menuSelected: "",
+      arlabl: e.currentTarget.getAttribute("arlabel"),
+      enlabl: e.currentTarget.getAttribute("label")
     });
   }
   render() {
@@ -258,7 +276,6 @@ class PersistentDrawer extends React.Component {
       LangSideMenu = sideMenuAr;
     }
     var MenuListItems = LangSideMenu.map((data, idx) => {
-      debugger;
       return (
         <div key={"side_menu_index" + idx}>
           <div className="container-fluid">
@@ -314,6 +331,8 @@ class PersistentDrawer extends React.Component {
                             onClick={this.TriggerPath.bind(this)}
                             path={title.path}
                             name={title.name}
+                            arlabel={title.arlabel}
+                            label={title.label}
                           >
                             {title.label}{" "}
                           </li>

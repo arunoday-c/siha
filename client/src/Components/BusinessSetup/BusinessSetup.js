@@ -8,6 +8,7 @@ import OptionsTabs from "./Options/OptionsTabs.js";
 import Counter from "./Counter/Counter.js";
 import Shift from "./Shift/Shift.js";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
+import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 class BusinessSetup extends Component {
   constructor(props) {
@@ -17,12 +18,12 @@ class BusinessSetup extends Component {
   }
 
   openTab(e) {
-    var element = document.querySelectorAll("[alagehtabs]");
+    var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
     }
     e.target.classList.add("active");
-    var specified = e.target.attributes["alagehtabs"].value;
+    var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
       pageDisplay: specified
     });
@@ -46,44 +47,76 @@ class BusinessSetup extends Component {
         <div className="tab-container toggle-section spacing-push">
           <ul className="nav">
             <li
-              alagehtabs={"DeptMaster"}
+              algaehtabs={"DeptMaster"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button active"}
               onClick={this.openTab.bind(this)}
             >
-              DEPARTMENTS
+              {/* DEPARTMENTS */}
+
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "departments"
+                  }}
+                />
+              }
             </li>
             <li
-              alagehtabs={"OptionsTabs"}
+              algaehtabs={"OptionsTabs"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button "}
               onClick={this.openTab.bind(this)}
             >
-              OPTIONS
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "options"
+                  }}
+                />
+              }
             </li>
             <li
-              alagehtabs={"Holiday"}
+              algaehtabs={"Holiday"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button "}
               onClick={this.openTab.bind(this)}
             >
-              HOLIDAYS LIST
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "holidays_list"
+                  }}
+                />
+              }
             </li>
             <li
-              alagehtabs={"Shift"}
+              algaehtabs={"Shift"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button "}
               onClick={this.openTab.bind(this)}
             >
-              SHIFT
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "shift"
+                  }}
+                />
+              }
             </li>
             <li
-              alagehtabs={"Counter"}
+              algaehtabs={"Counter"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button "}
               onClick={this.openTab.bind(this)}
             >
-              COUNTER
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "counter"
+                  }}
+                />
+              }
             </li>
           </ul>
         </div>

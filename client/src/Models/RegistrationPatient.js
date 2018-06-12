@@ -15,6 +15,8 @@ export default {
         first_name: "",
         middle_name: "",
         last_name: "",
+        full_name: "",
+        arabic_name: "",
         gender: "",
         religion_id: null,
         date_of_birth: null,
@@ -59,7 +61,6 @@ export default {
       },
       param
     );
-    // debugger;
     return output;
   }
 };

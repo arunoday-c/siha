@@ -50,7 +50,8 @@ class RegistrationPatient extends Component {
       AGEMM: 0,
       AGEDD: 0,
       breadCrumbWidth: null,
-      saveEnable: false
+      saveEnable: false,
+      clearData: ""
     };
   }
 
@@ -63,30 +64,19 @@ class RegistrationPatient extends Component {
     this.setState({
       widthImg: width
     });
-    debugger;
-    // if (this.state.saveEnable === false) {
-    //   this.props.initialStatePatientData();
-    // }
-  }
-
-  componentWillReceiveProps() {
-    debugger;
-  }
-
-  UNSAFE_componentWillReceiveProps() {
-    debugger;
+    if (this.state.saveEnable === "clear") {
+      this.props.initialStatePatientData();
+    }
   }
 
   ClearData(e) {
-    debugger;
+    this.setState({ saveEnable: false, clearData: true });
     let data = this.state;
 
     this.props.initialStatePatientData();
     let IOputs = PatRegIOputs.inputParam();
     extend(data, IOputs);
     this.setState(data);
-    this.setState({ saveEnable: false });
-    debugger;
   }
 
   SavePatientDetails(e) {
@@ -120,7 +110,6 @@ class RegistrationPatient extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     console.log("", this.props.SelectLanguage);
   }
 
@@ -132,17 +121,14 @@ class RegistrationPatient extends Component {
   }
 
   getCtrlCode(data) {
-    debugger;
     this.setState(
       {
         patient_code: data
       },
       () => {
-        // debugger;
         clearInterval(intervalId);
         intervalId = setInterval(() => {
           this.props.getPatientDetails(this.state.patient_code, data => {
-            debugger;
             this.setState({
               visitDetails: data.visitDetails
             });
@@ -184,7 +170,10 @@ class RegistrationPatient extends Component {
               }
             }}
           >
-            <PatientDetails PatRegIOputs={this.state} />
+            <PatientDetails
+              PatRegIOputs={this.state}
+              clearData={this.state.clearData}
+            />
             <ConsultationDetails PatRegIOputs={this.state} />
             <InsuranceDetails PatRegIOputs={this.state} />
             <Billing PatRegIOputs={this.state} />

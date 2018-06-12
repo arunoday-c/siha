@@ -4,7 +4,6 @@
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getVisatypes() {
-  debugger;
   return function(dispatch) {
     algaehApiCall({
       uri: "/masters/get/visa",

@@ -8,9 +8,7 @@ import { SelectFiledData } from "../../../../utils/algaehApiCall.js";
 import TextField from "material-ui/TextField";
 import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
 import MyContext from "../../../../utils/MyContext.js";
-
 import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
-import { getVisatypes } from "../../../../actions/CommonSetup/Visatype.js";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
@@ -26,7 +24,6 @@ const MobileFormat = "+91 (###)-## #####";
 class OtherInfo extends Component {
   constructor(props) {
     super(props);
-    debugger;
     let InputOutput = this.props.PatRegIOputs;
 
     if (this.props.patients.length > 0) {
@@ -37,10 +34,6 @@ class OtherInfo extends Component {
   }
 
   componentDidMount() {
-    debugger;
-    if (this.props.visatypes.length === 0) {
-      this.props.getVisatypes();
-    }
     this.setState({ ...this.state });
   }
 
@@ -151,27 +144,6 @@ class OtherInfo extends Component {
                     }
                   }}
                 />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "visa_type_id"
-                  }}
-                  selector={{
-                    name: "visa_type_id",
-                    className: "select-fld",
-                    value: this.state.visa_type_id,
-                    dataSource: {
-                      textField: "visa_type",
-                      valueField: "hims_d_visa_type_id",
-                      data: this.props.visatypes
-                    },
-                    onChange: AddPatientOtherHandlers(
-                      this,
-                      context
-                    ).selectedHandeler.bind(this)
-                  }}
-                />
               </div>
               <br />
             </div>
@@ -213,7 +185,6 @@ function AddPatientOtherHandlers(state, context) {
     },
 
     selectedHandeler: e => {
-      debugger;
       state.setState({
         [e.name]: e.value
       });
@@ -226,14 +197,13 @@ function AddPatientOtherHandlers(state, context) {
 
 function mapStateToProps(state) {
   return {
-    patients: state.patients.patients,
-    visatypes: state.visatypes.visatypes
+    patients: state.patients.patients
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { postPatientDetails: postPatientDetails, getVisatypes: getVisatypes },
+    { postPatientDetails: postPatientDetails },
     dispatch
   );
 }

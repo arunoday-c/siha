@@ -8,6 +8,7 @@ import IDType from "./IDType/IDType";
 import VisitType from "./VisitType/VisitType";
 import EquipmentType from "./EquipmentType/EquipmentType";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
+import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 class CommonSetup extends Component {
   constructor(props) {
@@ -17,12 +18,12 @@ class CommonSetup extends Component {
   }
 
   openTab(e) {
-    var element = document.querySelectorAll("[alagehtabs]");
+    var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
     }
     e.target.classList.add("active");
-    var specified = e.target.attributes["alagehtabs"].value;
+    var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
       pageDisplay: specified
     });
@@ -45,52 +46,88 @@ class CommonSetup extends Component {
         <div className="tab-container toggle-section spacing-push">
           <ul className="nav">
             <li
-              alagehtabs={"VisitType"}
+              algaehtabs={"VisitType"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button active"}
               onClick={this.openTab.bind(this)}
             >
-              VISIT TYPE
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "visit_type"
+                  }}
+                />
+              }
             </li>
             <li
               style={{ marginRight: 2 }}
-              alagehtabs={"VisaType"}
+              algaehtabs={"VisaType"}
               className={"nav-item tab-button "}
               onClick={this.openTab.bind(this)}
             >
-              VISA TYPE
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "visa_type"
+                  }}
+                />
+              }
             </li>
             <li
               style={{ marginRight: 2 }}
-              alagehtabs={"IDType"}
+              algaehtabs={"IDType"}
               className={"nav-item tab-button "}
               onClick={this.openTab.bind(this)}
             >
-              IDENTIFICATION TYPE
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "identification_type"
+                  }}
+                />
+              }
             </li>
             <li
-              alagehtabs={"PatientType"}
+              algaehtabs={"PatientType"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
-              PATIENT TYPE
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "patient_type"
+                  }}
+                />
+              }
             </li>
             <li
-              alagehtabs={"AccidentType"}
+              algaehtabs={"AccidentType"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button "}
               onClick={this.openTab.bind(this)}
             >
-              ACCIDENT TYPE
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "accident_type"
+                  }}
+                />
+              }
             </li>
             <li
               style={{ marginRight: 2 }}
               className={"nav-item tab-button "}
-              alagehtabs={"EquipmentType"}
+              algaehtabs={"EquipmentType"}
               onClick={this.openTab.bind(this)}
             >
-              EQUIPMENT TYPE
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "equipment_type"
+                  }}
+                />
+              }
             </li>
           </ul>
         </div>

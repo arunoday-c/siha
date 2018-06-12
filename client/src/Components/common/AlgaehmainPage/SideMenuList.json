@@ -7,6 +7,7 @@
       {
         "name": "Dashboard",
         "label": "Dashboard",
+        "arlabel": "لوحة القيادة",
         "path": "/Dashboard"
       }
     ]
@@ -19,11 +20,13 @@
       {
         "name": "Business Setup",
         "label": "Business Setup",
+        "arlabel": "إعداد الأعمال",
         "path": "/BusinessSetup"
       },
       {
         "name": "Common Setup",
         "label": "Common Setup",
+        "arlabel": "الإعداد المشترك",
         "path": "/CommonSetup"
       }
     ]
@@ -36,6 +39,7 @@
       {
         "name": "Front Desk",
         "label": "Front Desk",
+        "arlabel": "المقعدالامامي",
         "path": "/FrontDesk"
       },
       {

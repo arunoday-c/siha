@@ -112,7 +112,8 @@ typings/
 # dotenv environment variables file
 .env
 
-
+# production
+/dist
 
 ### VisualStudioCode ###
 .vscode/*

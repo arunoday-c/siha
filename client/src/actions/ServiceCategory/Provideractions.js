@@ -3,7 +3,6 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getProviderDetails() {
   let full_name = "";
-  debugger;
   return function(dispatch) {
     algaehApiCall({
       uri: "/employee/get",

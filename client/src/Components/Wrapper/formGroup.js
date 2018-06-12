@@ -32,7 +32,6 @@ export default class FormGroup extends Component {
     this.setState({ value: this.props.textBox.value });
   }
   componentWillReceiveProps(props) {
-    debugger;
     this.setState({
       value: props.textBox.value,
       error: props.textBox.error,

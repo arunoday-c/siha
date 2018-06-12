@@ -4,7 +4,6 @@
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function postPatientDetails(dataValue, callback) {
-  debugger;
   callback = callback || null;
 
   return function(dispatch) {
@@ -33,7 +32,6 @@ export function postPatientDetails(dataValue, callback) {
 }
 
 export function getPatientDetails(dataValue, callback) {
-  debugger;
   callback = callback || null;
   return function(dispatch) {
     algaehApiCall({
@@ -66,10 +64,9 @@ export function getPatientDetails(dataValue, callback) {
 
 export function initialStatePatientData() {
   return function(dispatch) {
-    debugger;
     dispatch({
       type: "INIT_PAT_DATA",
-      payload: undefined
+      payload: {}
     });
   };
 }

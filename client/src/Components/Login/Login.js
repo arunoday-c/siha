@@ -189,26 +189,7 @@ class Login extends Component {
                   }}
                 />
 
-                {/* <TextField
-                  onChange={this.changeUserName.bind(this)}
-                  value={this.state.username}
-                  style={styles.textField}
-                  error={this.state.userError}
-                  helperText={this.state.userErrorText}
-                  label="User Name"
-                  id="username"
-                /> */}
-
                 <br />
-                {/* <TextField
-                  onChange={this.changePwd.bind(this)}
-                  value={this.state.password}
-                  error={this.state.pwdError}
-                  helperText={this.state.pwdErrorText}
-                  style={styles.textField}
-                  label="Password"
-                  type="password"
-                /> */}
 
                 <AlagehFormGroup
                   div={{ className: "col" }}
@@ -224,10 +205,10 @@ class Login extends Component {
                       onChange: this.texthandle.bind(this)
                     },
                     others: {
-                      type: "password",
-                      error: this.state.pwdError,
-                      helperText: this.state.pwdErrorText
-                    }
+                      type: "password"
+                    },
+                    error: this.state.pwdError,
+                    helperText: this.state.pwdErrorText
                   }}
                 />
 
