@@ -14,7 +14,8 @@ div[numberbox="true"] input[type="text"] {
     vertical-align: middle;
     -webkit-tap-highlight-color: transparent;
     background-color: #fbfbfb;
-    min-width: 100% !important; }
+    width: 100 !important;
+    min-width: 100%; }
 
 .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
   background-color: #00bcb0 !important; }

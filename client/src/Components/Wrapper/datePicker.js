@@ -111,6 +111,7 @@ export default class DateHandler extends Component {
     return (
       <div className={this.props.div.className} {...this.props.div.others}>
         {this.generateLabel()}
+        <br />
         {this.renderDatePicker()}
       </div>
     );

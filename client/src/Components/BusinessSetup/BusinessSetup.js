@@ -53,7 +53,6 @@ class BusinessSetup extends Component {
               onClick={this.openTab.bind(this)}
             >
               {/* DEPARTMENTS */}
-
               {
                 <AlgaehLabel
                   label={{
