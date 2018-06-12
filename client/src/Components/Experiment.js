@@ -40,7 +40,8 @@ import {
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  AlagehAutoComplete
 } from "../Components/Wrapper/algaehWrapper";
 
 const TableRow = ({ row, ...restProps }) => (
@@ -383,27 +384,98 @@ class DeptMaster extends Component {
       children={DEPT_TYPE}
     />
   );
-
+  changeDateFormat = date => {
+    if (date != null) {
+      return moment(date).format("YYYY-MM-DD");
+    }
+  };
   render() {
     return (
       <div className="dept">
         <Paper>
           <AlgaehDataGrid
             columns={[
-              { fieldName: "sub_department_code", label: "Sub Dept Code" },
-              { fieldName: "sub_department_name", label: "Sub Dept Name" },
+              {
+                fieldName: "department_code",
+                label: "Dept Code",
+                disabled: true
+              },
+              { fieldName: "department_name", label: "Dept Name" },
               {
                 fieldName: "effective_start_date",
-                label: "Sub Dept Start Date"
+                label: "Sub Dept Start Date",
+                displayTemplate: row => {
+                  return (
+                    <span>
+                      {this.changeDateFormat(row.effective_start_date)}
+                    </span>
+                  );
+                },
+                editorTemplate: (row, callBack) => {
+                  return (
+                    <AlgaehDateHandler
+                      div={{ others: { style: { width: "100%" } } }}
+                      textBox={{ className: "txt-fld" }}
+                      value={row.effective_start_date}
+                      events={{
+                        onChange: (selected, mode) => {
+                          row["effective_start_date"] = selected;
+                          callBack(row);
+                        }
+                      }}
+                    />
+                  );
+                }
               },
-              { fieldName: "effective_end_date", label: "Sub Dept End Date" },
-              { fieldName: "sub_department_status", label: "Sub Dept Status" }
+              {
+                fieldName: "effective_end_date",
+                label: "Sub Dept End Date",
+                displayTemplate: row => {
+                  return (
+                    <span>{this.changeDateFormat(row.effective_end_date)}</span>
+                  );
+                }
+              },
+              {
+                fieldName: "department_status",
+                label: "Sub Dept Status",
+                displayTemplate: row => {
+                  return (
+                    <span>
+                      {row.department_status == "A" ? "Active" : "Inactive"}
+                    </span>
+                  );
+                },
+                editorTemplate: (row, callBack) => {
+                  return (
+                    <AlagehAutoComplete
+                      selector={{
+                        value: row.department_status,
+                        dataSource: {
+                          textField: "value",
+                          valueField: "key",
+                          data: STATUS
+                        },
+                        onChange: row => {
+                          callBack(row);
+                        }
+                      }}
+                    />
+                  );
+                }
+              }
             ]}
-            keyId="sub_department_code"
+            keyId="department_code"
             dataSource={{
               data: this.props.departments
             }}
+            isEditable={true}
             paging={{ page: 0, rowsPerPage: 5 }}
+            events={{
+              onDone: row => {
+                alert("done is raisedd");
+              }
+            }}
           />
         </Paper>
         <Paper className="container-fluid">

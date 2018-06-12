@@ -16,8 +16,8 @@ export default class DateHandler extends Component {
   };
 
   disabledStartDate = selectedDate => {
-    if (selectedDate !== null) {
-      if (this.props.minDate !== null && this.props.maxDate !== null) {
+    if (selectedDate != null) {
+      if (this.props.minDate != null && this.props.maxDate != null) {
         let val = moment(selectedDate._d).isBetween(
           moment(this.props.minDate),
           moment(this.props.maxDate)
@@ -30,8 +30,9 @@ export default class DateHandler extends Component {
         return val;
       }
     }
-    if (this.props.minDate === null && this.props.maxDate === null)
+    if (this.props.minDate == null && this.props.maxDate == null) {
       return false;
+    }
 
     let date = moment();
     if (!selectedDate) {
@@ -59,12 +60,20 @@ export default class DateHandler extends Component {
       value: this.props.value
     });
   }
-
+  componentWillMount() {
+    if (this.props.value != null)
+      this.setState({ value: moment(this.props.value).format("YYYY-MM-DD") });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== null) {
-      this.setState({
-        value: nextProps.value
-      });
+      this.setState(
+        {
+          value: nextProps.value
+        },
+        () => {
+          console.log("Date Picker", nextProps.value);
+        }
+      );
     }
     let lang = getCookie("Language");
     this.setState({
@@ -107,9 +116,17 @@ export default class DateHandler extends Component {
       />
     );
   };
+  renderOthers = () => {
+    if (this.props.div != null) {
+      return this.props.div.others;
+    }
+  };
   render() {
     return (
-      <div className={this.props.div.className} {...this.props.div.others}>
+      <div
+        className={this.props.div != null ? this.props.div.className : null}
+        {...this.renderOthers()}
+      >
         {this.generateLabel()}
         {this.renderDatePicker()}
       </div>
