@@ -50,8 +50,8 @@ class AddPatientForm extends PureComponent {
       value: "",
       file: {
         filePreview: null,
-        filePrimaryPreview: null,
-        fileSecPreview: null
+        filePrimaryPreview: null
+        // fileSecPreview: null
       },
       filePreview: null,
       DOBErrorMsg: "",
@@ -604,7 +604,7 @@ class AddPatientForm extends PureComponent {
                       <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                         <div className="image-drop-area">
                           <Dropzone
-                            onDrop={onDrop.bind(this, "filePreview")}
+                            onDrop={onDrop.bind(this, this, "filePreview")}
                             id="attach-width"
                             className="dropzone"
                             accept="image/*"
@@ -635,7 +635,11 @@ class AddPatientForm extends PureComponent {
                         <div className="image-drop-area">
                           <Dropzone
                             className="dropzone"
-                            onDrop={onDrop.bind(this, "filePrimaryPreview")}
+                            onDrop={onDrop.bind(
+                              this,
+                              this,
+                              "filePrimaryPreview"
+                            )}
                             id="attach-primary-id"
                             accept="image/*"
                             multiple={false}

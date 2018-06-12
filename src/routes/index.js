@@ -12,6 +12,7 @@ import frontDesk from "../controller/frontDesk";
 import getMasters from "../controller/masters";
 import updateMaster from "../controller/updateMasters";
 import languageTranslator from "../controller/languageTranslator";
+import visit from "../controller/visit";
 
 let router = express();
 
@@ -30,6 +31,7 @@ initializedDb(db => {
   router.use("/masters/get", getMasters());
   router.use("/masters/set", updateMaster());
   router.use("/translator", languageTranslator());
+  router.use("/visit", visit({ config, db }));
 });
 
 export default router;

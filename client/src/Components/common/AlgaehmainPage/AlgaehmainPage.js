@@ -160,7 +160,6 @@ class PersistentDrawer extends React.Component {
   }
 
   componentDidMount() {
-    debugger;
     let prevLang = getCookie("Language");
     if (prevLang !== "en") {
       this.setState({

@@ -98,6 +98,7 @@ const numberSet = ($this, context, cntrl, e) => {
 };
 
 const onDrop = ($this, file, fileType) => {
+  debugger;
   let obj = new Object();
   obj[file] = fileType[0].preview;
   $this.setState({
