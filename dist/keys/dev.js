@@ -18,7 +18,8 @@ exports.default = {
     user: "root",
     password: "medteam2013",
     database: "algaeh_hims_db",
-    multipleStatements: true
+    multipleStatements: true,
+    acquireTimeout: 20000
   },
 
   logpath: "/logs", //log folder path

@@ -77,7 +77,7 @@ var addVisit = function addVisit(req, res, next) {
 var insertVisitData = function insertVisitData(dataBase, req, res, callBack) {
   try {
     (0, _logging.debugFunction)("insertVisitData");
-    var inputParam = (0, _extend2.default)(visitDetails, req.query);
+    var inputParam = (0, _extend2.default)(visitDetails, req.query["data"] == null ? req.body : req.query);
 
     dataBase.query("INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
         `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\

@@ -137,7 +137,8 @@
     border: none;
     cursor: not-allowed; }
 
-:global .ins-tab-container .tab-button {
+:global .ins-tab-container .tab-button,
+:global .ins-tab-container label {
   width: 100%;
   font-size: 10px;
   font-weight: normal;
@@ -149,17 +150,21 @@
   cursor: pointer;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px; }
-  :global .ins-tab-container .tab-button:hover {
+  :global .ins-tab-container .tab-button:hover,
+  :global .ins-tab-container label:hover {
     background-color: #fff !important;
     color: #68509f !important; }
-  :global .ins-tab-container .tab-button:focus {
+  :global .ins-tab-container .tab-button:focus,
+  :global .ins-tab-container label:focus {
     outline: none; }
-  :global .ins-tab-container .tab-button.active {
+  :global .ins-tab-container .tab-button.active,
+  :global .ins-tab-container label.active {
     background-color: #f7f7f7;
     color: #000;
     border: solid 1px #000;
     pointer-events: none; }
-    :global .ins-tab-container .tab-button.active:hover {
+    :global .ins-tab-container .tab-button.active:hover,
+    :global .ins-tab-container label.active:hover {
       background-color: #f7f7f7 !important;
       color: #fff !important; }
 

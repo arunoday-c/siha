@@ -1,10 +1,10 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-import { readFiles } from "../Wrapper/languageIndexDB";
+//import { readFiles } from "../Wrapper/languageIndexDB";
 import { getCookie, setCookie } from "../../utils/algaehApiCall.js";
-import $ from "jquery";
-import { connct } from "react-redux";
+//import jQuery from "node-jquery";
 
+import { connct } from "react-redux";
 class Label extends PureComponent {
   constructor(props) {
     super(props);
@@ -27,17 +27,28 @@ class Label extends PureComponent {
         callBack(getLanguageLables[fieldName]);
         return;
       } else {
-        $.getJSON(fileImport, data => {
+        this.loadJSON(fileImport, data => {
           window.localStorage.removeItem(fileName);
           window.localStorage.setItem(fileName, JSON.stringify(data));
           callBack(data[fieldName]);
-          return;
         });
       }
     } else {
       console.error("Label is missing with 'fieldName'");
     }
   };
+  loadJSON = (file, callback) => {
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open("GET", file, true);
+    xobj.onreadystatechange = function() {
+      if (xobj.readyState == 4 && xobj.status == "200") {
+        callback(JSON.parse(xobj.responseText));
+      }
+    };
+    xobj.send(null);
+  };
+
   important = () => {
     if (this.props.label.isImp != null && this.props.label.isImp == true) {
       return <span className="imp">&nbsp;*</span>;
