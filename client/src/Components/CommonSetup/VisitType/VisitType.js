@@ -152,6 +152,7 @@ class VisitType extends Component {
     if (deleted) {
     }
   }
+
   changeStatus(e) {
     this.setState({ visit_status: e.target.value });
     console.log("Status:", this.state.visit_status);

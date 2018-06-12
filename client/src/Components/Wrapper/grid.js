@@ -66,7 +66,6 @@ export default class DataGrid extends Component {
   };
 
   handleExpandRow = event => {
-    debugger;
     let rowId = event.currentTarget.getAttribute("row-key");
     let target = event.currentTarget.getAttribute("thisIs");
     let _expandRows;
@@ -89,7 +88,6 @@ export default class DataGrid extends Component {
   expandButton = rowKey => {
     if (this.state.expanded) {
       if (this.state.expanded.multiExpand) {
-        debugger;
         let _expand = this.state.expanded.expandRows.filter(f => f == rowKey);
         if (_expand != null && _expand.length > 0) {
           expandInternalState = true;

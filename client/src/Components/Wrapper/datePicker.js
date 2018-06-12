@@ -10,14 +10,14 @@ import "../Wrapper/wrapper.css";
 import { getCookie } from "../../utils/algaehApiCall.js";
 export default class DateHandler extends Component {
   generateLabel = () => {
-    if (this.props.label != null) {
+    if (this.props.label !== null) {
       return <Label label={this.props.label} />;
     }
   };
 
   disabledStartDate = selectedDate => {
-    if (selectedDate != null) {
-      if (this.props.minDate != null && this.props.maxDate != null) {
+    if (selectedDate !== null) {
+      if (this.props.minDate !== null && this.props.maxDate !== null) {
         let val = moment(selectedDate._d).isBetween(
           moment(this.props.minDate),
           moment(this.props.maxDate)
@@ -30,7 +30,8 @@ export default class DateHandler extends Component {
         return val;
       }
     }
-    if (this.props.minDate == null && this.props.maxDate == null) return false;
+    if (this.props.minDate === null && this.props.maxDate === null)
+      return false;
 
     let date = moment();
     if (!selectedDate) {
