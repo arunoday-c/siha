@@ -176,7 +176,8 @@ export default class DataGrid extends Component {
       expanded: {
         multiExpand: true,
         expandRows: [],
-        detailTemplate: nextProps.expanded.detailTemplate
+        detailTemplate:
+          nextProps.expanded != null ? nextProps.expanded.detailTemplate : null
       }
     });
   }
