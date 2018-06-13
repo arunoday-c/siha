@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Paper, TextField } from "material-ui";
+import { Paper, TextField, withStyles } from "material-ui";
 import "../Components/BusinessSetup/DeptMaster/dept.css";
 import IconButton from "material-ui/IconButton";
 import { Button } from "material-ui";
@@ -25,7 +25,6 @@ import {
   DataTypeProvider,
   SearchState
 } from "@devexpress/dx-react-grid";
-import { withStyles } from "material-ui/styles";
 import {
   Grid,
   Table,
@@ -393,7 +392,7 @@ class DeptMaster extends Component {
   render() {
     return (
       <div className="dept">
-        <Paper>
+        <Paper Style={{ maxHeight: "200px" }}>
           <AlgaehDataGrid
             columns={[
               {
@@ -483,6 +482,9 @@ class DeptMaster extends Component {
                 return <p>Hello Mr Nowshadan...</p>;
               }
             }}
+            // others={{
+            //   className: "testingHeight"
+            // }}
           />
         </Paper>
         <Paper className="container-fluid">

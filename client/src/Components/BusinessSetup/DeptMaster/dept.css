@@ -34,3 +34,6 @@
   .dept .radio-gap [type="radio"]:checked + label:after {
     border-color: #00bcb0;
     background-color: #00bcb0; }
+
+.testingHeight {
+  max-height: 200px; }

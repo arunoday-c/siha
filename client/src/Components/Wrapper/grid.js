@@ -17,13 +17,7 @@ import IconButton from "material-ui/IconButton";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
 
-let id = 0;
-function createData(name, calories, fat, carbs, protein) {
-  id += 1;
-  return { id, name, calories, fat, carbs, protein };
-}
-let expandInternalState = false;
-export default class DataGrid extends Component {
+class DataGrid extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -52,7 +46,7 @@ export default class DataGrid extends Component {
     let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
     this.setState({ isEditable: true, rowToIndexEdit: rowId });
     let row = this.state.data[rowId];
-    this.setState({ selectedPreviousRow: row });
+    //this.setState({ selectedPreviousRow: row });
     if (this.props.events != null) {
       if (this.props.events.onEdit) {
         this.props.events.onEdit(row);
@@ -63,21 +57,19 @@ export default class DataGrid extends Component {
     this.setState({ rowToIndexEdit: -1 });
     let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
     let row = this.state.data[rowId];
-    let stateData = this.state.data;
+    // let stateData = this.state.data;
+    // debugger;
 
-    var index = stateData.indexOf(row);
-    if (index > -1) {
-      stateData.splice(index, 1);
-      stateData.splice(index, 0, this.state.selectedPreviousRow);
-      this.setState(
-        {
-          data: stateData
-        },
-        () => {
-          debugger;
-        }
-      );
-    }
+    // var index = stateData.indexOf(row);
+    // if (index > -1) {
+    //   const tes = this.props.dataSource.data[index];
+
+    //   stateData.splice(index, 1);
+    //   stateData.splice(index, 0, tes);
+    //   this.setState({
+    //     data: stateData
+    //   });
+    // }
 
     if (this.props.events != null) {
       if (this.props.events.onCancel) {
@@ -151,12 +143,15 @@ export default class DataGrid extends Component {
     }
   };
   renderDetailTemplate = (row, rowid) => {
-    debugger;
-    var index = this.state.expanded.expandRows.indexOf(String(rowid));
+    var index = this.state.expanded.expandRows.indexOf(
+      String(row[this.state.keyField])
+    );
     if (index > -1) {
+      let colSpan =
+        this.props.columns.length + 1 + (this.state.isEditable ? 1 : 0);
       return (
         <TableRow key={rowid + "_Expand"}>
-          <TableCell colSpan={this.props.columns.length}>
+          <TableCell colSpan={colSpan}>
             {this.props.expanded.detailTemplate(row)}
           </TableCell>
         </TableRow>
@@ -173,18 +168,24 @@ export default class DataGrid extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       data: nextProps.dataSource.data,
-      expanded: {
-        multiExpand: true,
-        expandRows: [],
-        detailTemplate:
-          nextProps.expanded != null ? nextProps.expanded.detailTemplate : null
-      }
+      expanded:
+        nextProps.expanded != null
+          ? {
+              multiExpand: true,
+              expandRows: [],
+              detailTemplate:
+                nextProps.expanded != null
+                  ? nextProps.expanded.detailTemplate
+                  : null
+            }
+          : null
     });
   }
   componentWillMount() {
     this.setState({
-      page: this.props.paging.page,
-      rowsPerPage: this.props.paging.rowsPerPage,
+      page: this.props.paging != null ? this.props.paging.page : 0,
+      rowsPerPage:
+        this.props.paging != null ? this.props.paging.rowsPerPage : 0,
       isEditable: this.props.isEditable,
       data: this.props.dataSource.data,
       expanded: this.props.expanded,
@@ -208,7 +209,7 @@ export default class DataGrid extends Component {
   };
   returnEditableColumn = () => {
     if (this.state.isEditable != null && this.state.isEditable) {
-      return <TableCell style={{ width: 70 }} />;
+      return <TableCell />;
     }
   };
   returnEditableButtons = rowId => {
@@ -230,9 +231,11 @@ export default class DataGrid extends Component {
     } else return null;
   };
   returnExpandButton = row => {
-    return (
-      <TableCell>{this.expandButton(row[[this.state.keyField]])}</TableCell>
-    );
+    if (this.state.expanded != null) {
+      return (
+        <TableCell>{this.expandButton(row[[this.state.keyField]])}</TableCell>
+      );
+    }
   };
 
   returnTableRowWithColumns = (row, index) => {
@@ -313,32 +316,24 @@ export default class DataGrid extends Component {
     );
   };
   renderDetailedTemplateRecords = (row, index) => {
-    debugger;
     if (this.state.expanded != null) {
       if (this.props.expanded.detailTemplate != null) {
-        return this.renderDetailTemplate(row, index);
+        return (
+          <React.Fragment>
+            {this.renderDetailTemplate(row, index)}
+          </React.Fragment>
+        );
       }
     }
   };
-  render() {
+  renderTableRows = () => {
     const { data, rowsPerPage, page, isEditable, rowToIndexEdit } = this.state;
-
-    // const emptyRows =
-    //   rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-    return (
-      <Table>
-        <TableHead>
-          <TableRow>
-            {this.returnEditableColumn()}
-            {this.returnExpandColumn()}
-            {this.returnTableHeaderColumns()}
-          </TableRow>
-        </TableHead>
-        <TableBody>
+    if (this.props.paging != null) {
+      return (
+        <React.Fragment>
           {data
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((n, i) => {
-              debugger;
               if (isEditable && i == rowToIndexEdit) {
                 return (
                   <React.Fragment>
@@ -355,20 +350,71 @@ export default class DataGrid extends Component {
                 );
               }
             })}
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                component="div"
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={this.handleChangePage}
-                onChangeRowsPerPage={this.handleChangeRowsPerPage}
-              />
-            </TableRow>
-          </TableFooter>
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <React.Fragment>
+          {data.map((n, i) => {
+            if (isEditable && i == rowToIndexEdit) {
+              return (
+                <React.Fragment>
+                  {this.returnEditableStateRow(n, i)}
+                  {this.renderDetailedTemplateRecords(n, i)}
+                </React.Fragment>
+              );
+            } else {
+              return (
+                <React.Fragment>
+                  {this.returnNonEditedStateRow(n, i)}
+                  {this.renderDetailedTemplateRecords(n, i)}
+                </React.Fragment>
+              );
+            }
+          })}
+        </React.Fragment>
+      );
+    }
+  };
+
+  renderFooter = () => {
+    if (this.props.paging != null) {
+      const { data, rowsPerPage, page } = this.state;
+      return (
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              component="div"
+              count={data.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            />
+          </TableRow>
+        </TableFooter>
+      );
+    } else null;
+  };
+
+  render() {
+    // const emptyRows =
+    //   rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    return (
+      <Table fixedHeader={true} {...this.props.others}>
+        <TableHead>
+          <TableRow>
+            {this.returnEditableColumn()}
+            {this.returnExpandColumn()}
+            {this.returnTableHeaderColumns()}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {this.renderTableRows()}
+          {this.renderFooter()}
         </TableBody>
       </Table>
     );
   }
 }
+export default DataGrid;
