@@ -15,7 +15,12 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { AlagehFormGroup, AlgaehOptions } from "../../Wrapper/algaehWrapper";
+import {
+  AlagehFormGroup,
+  AlgaehOptions,
+  AlgaehDataGrid,
+  AlgaehLabel
+} from "../../Wrapper/algaehWrapper";
 import {
   EditingState,
   DataTypeProvider,
@@ -192,6 +197,7 @@ class VisitType extends Component {
   }
 
   changeTexts(e) {
+    debugger;
     this.setState({ [e.target.name]: e.target.value });
   }
 
@@ -256,6 +262,12 @@ class VisitType extends Component {
         }
       });
     }
+  }
+
+  editTexts(a, b) {
+    debugger;
+    // row[e.target.name] = e.target.value;
+    // callback(row);
   }
 
   getFormatedDate(date) {
@@ -413,7 +425,7 @@ class VisitType extends Component {
             <div className="row form-details">
               <div className="col">
                 <Paper>
-                  <Grid
+                  {/* <Grid
                     rows={this.props.visittypes}
                     columns={[
                       { name: "visit_type_code", title: "VISIT CODE" },
@@ -459,7 +471,62 @@ class VisitType extends Component {
                       showDeleteCommand
                       commandComponent={Command}
                     />
-                  </Grid>
+                  </Grid> */}
+
+                  <AlgaehDataGrid
+                    columns={[
+                      {
+                        fieldName: "visit_type_code",
+                        label: "Visit Type Code",
+                        disabled: true
+                      },
+                      {
+                        fieldName: "visit_type_desc",
+                        label: "Visit Type Name",
+                        editorTemplate: (row, callback) => {
+                          return (
+                            <TextField
+                              name="visit_type_desc"
+                              value={row.visit_type_desc}
+                              onChange={control => {
+                                debugger;
+                                row["visit_type_desc"] = control.target.value;
+                                callback(row);
+                              }}
+                              // onChange={this.editTexts.bind(
+                              //   callback(row),
+                              //   this
+                              // )}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "created_date",
+                        label: "Added Date",
+                        displayTemplate: row => {
+                          return (
+                            <span>{this.dateFormater(row.created_date)}</span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "visit_status",
+                        label: "Visit Status"
+                      }
+                    ]}
+                    keyId="visit_type_code"
+                    dataSource={{
+                      data: this.props.visittypes
+                    }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 5 }}
+                    events={{
+                      onDone: row => {
+                        alert(JSON.stringify(row));
+                      }
+                    }}
+                  />
                 </Paper>
               </div>
             </div>

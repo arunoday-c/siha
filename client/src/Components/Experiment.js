@@ -389,6 +389,7 @@ class DeptMaster extends Component {
       return moment(date).format("YYYY-MM-DD");
     }
   };
+
   render() {
     return (
       <div className="dept">

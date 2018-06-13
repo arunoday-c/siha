@@ -81,9 +81,18 @@ export default class Selector extends PureComponent {
     }
   };
 
+  renderOthers = () => {
+    if (this.props.div != null) {
+      return this.props.div.others;
+    }
+  };
+
   render() {
     return (
-      <div className={this.props.div.className} {...this.props.div.others}>
+      <div
+        className={this.props.div != null ? this.props.div.className : null}
+        {...this.renderOthers()}
+      >
         {this.generateLabel()}
         {this.generateSelect()}
       </div>
