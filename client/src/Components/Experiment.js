@@ -465,7 +465,7 @@ class DeptMaster extends Component {
                 }
               }
             ]}
-            keyId="department_code"
+            keyField="department_code"
             dataSource={{
               data: this.props.departments
             }}
@@ -474,6 +474,12 @@ class DeptMaster extends Component {
             events={{
               onDone: row => {
                 alert("done is raisedd");
+              }
+            }}
+            expanded={{
+              multiExpand: true,
+              detailTemplate: row => {
+                return <p>Hello Mr Nowshadan...</p>;
               }
             }}
           />

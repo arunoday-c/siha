@@ -64,7 +64,7 @@ export default class DataGrid extends Component {
     let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
     let row = this.state.data[rowId];
     let stateData = this.state.data;
-    debugger;
+
     var index = stateData.indexOf(row);
     if (index > -1) {
       stateData.splice(index, 1);
@@ -118,9 +118,11 @@ export default class DataGrid extends Component {
   expandButton = rowKey => {
     if (this.state.expanded) {
       if (this.state.expanded.multiExpand) {
-        let _expand = this.state.expanded.expandRows.filter(
-          f => f == String(rowKey)
-        );
+        let _expand = this.state.expanded.expandRows;
+        if (_expand != null)
+          _expand = this.state.expanded.expandRows.filter(
+            f => f == String(rowKey)
+          );
         if (_expand != null && _expand.length > 0) {
           return (
             <IconButton
@@ -149,6 +151,7 @@ export default class DataGrid extends Component {
     }
   };
   renderDetailTemplate = (row, rowid) => {
+    debugger;
     var index = this.state.expanded.expandRows.indexOf(String(rowid));
     if (index > -1) {
       return (
@@ -168,7 +171,14 @@ export default class DataGrid extends Component {
     dataSource:{data:[]}
 */
   componentWillReceiveProps(nextProps) {
-    this.setState({ data: nextProps.dataSource.data });
+    this.setState({
+      data: nextProps.dataSource.data,
+      expanded: {
+        multiExpand: true,
+        expandRows: [],
+        detailTemplate: nextProps.expanded.detailTemplate
+      }
+    });
   }
   componentWillMount() {
     this.setState({
@@ -218,13 +228,14 @@ export default class DataGrid extends Component {
       );
     } else return null;
   };
-  returnExpandButton = rowId => {
-    <TableCell>{this.expandButton(rowId)}</TableCell>;
+  returnExpandButton = row => {
+    return (
+      <TableCell>{this.expandButton(row[[this.state.keyField]])}</TableCell>
+    );
   };
 
   returnTableRowWithColumns = (row, index) => {
     return this.props.columns.map(col => {
-      debugger;
       return (
         <TableCell>
           {col.editorTemplate != null ? (
@@ -232,7 +243,14 @@ export default class DataGrid extends Component {
               return;
             })
           ) : (
-            <TextField value={row[col.fieldName]} disabled={col.disabled} />
+            <TextField
+              value={row[col.fieldName]}
+              disabled={col.disabled}
+              onChange={control => {
+                row[col.fieldName] = control.target.value;
+                this.setState({ ...this.state });
+              }}
+            />
           )}
         </TableCell>
       );
@@ -287,12 +305,20 @@ export default class DataGrid extends Component {
       <React.Fragment>
         <TableRow key={row[this.state.keyField]}>
           {this.returnEditDeleteButtons(row)}
+          {this.returnExpandButton(row)}
           {this.returnTableRoNonEditWithColumns(row, index)}
         </TableRow>
       </React.Fragment>
     );
   };
-
+  renderDetailedTemplateRecords = (row, index) => {
+    debugger;
+    if (this.state.expanded != null) {
+      if (this.props.expanded.detailTemplate != null) {
+        return this.renderDetailTemplate(row, index);
+      }
+    }
+  };
   render() {
     const { data, rowsPerPage, page, isEditable, rowToIndexEdit } = this.state;
 
@@ -311,20 +337,19 @@ export default class DataGrid extends Component {
           {data
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((n, i) => {
+              debugger;
               if (isEditable && i == rowToIndexEdit) {
                 return (
                   <React.Fragment>
                     {this.returnEditableStateRow(n, i)}
-                    {this.state.expanded != null &&
-                    this.props.expanded.detailTemplate != null
-                      ? this.renderDetailTemplate(n, i)
-                      : null}
+                    {this.renderDetailedTemplateRecords(n, i)}
                   </React.Fragment>
                 );
               } else {
                 return (
                   <React.Fragment>
                     {this.returnNonEditedStateRow(n, i)}
+                    {this.renderDetailedTemplateRecords(n, i)}
                   </React.Fragment>
                 );
               }
