@@ -128,6 +128,7 @@ export default class DateHandler extends Component {
         {...this.renderOthers()}
       >
         {this.generateLabel()}
+        <br />
         {this.renderDatePicker()}
       </div>
     );

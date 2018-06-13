@@ -145,7 +145,7 @@ let getEmployee = (req, res, next) => {
         ,blood_group              	\
         ,employee_status          	\
         ,effective_start_date     	\
-        ,effective_end_date FROM hims_d_employee WHERE record_status ='A' AND " +
+        ,effective_end_date,CONCAT(first_name ,' ', middle_name,' ' ,last_name )as full_name FROM hims_d_employee WHERE record_status ='A' AND " +
           condition.condition +
           " " +
           pagePaging,

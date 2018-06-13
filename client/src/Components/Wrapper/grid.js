@@ -30,7 +30,7 @@ export default class DataGrid extends Component {
       data: [],
       page: 0,
       rowsPerPage: 5,
-      selectedRow: null,
+      selectedPreviousRow: null,
       isEditable: false,
       rowToIndexEdit: -1,
       expanded: null,
@@ -51,9 +51,10 @@ export default class DataGrid extends Component {
   handleEditRow = event => {
     let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
     this.setState({ isEditable: true, rowToIndexEdit: rowId });
+    let row = this.state.data[rowId];
+    this.setState({ selectedPreviousRow: row });
     if (this.props.events != null) {
       if (this.props.events.onEdit) {
-        let row = this.state.data[rowId];
         this.props.events.onEdit(row);
       }
     }
@@ -61,9 +62,25 @@ export default class DataGrid extends Component {
   handleCancelRow = event => {
     this.setState({ rowToIndexEdit: -1 });
     let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
+    let row = this.state.data[rowId];
+    let stateData = this.state.data;
+    debugger;
+    var index = stateData.indexOf(row);
+    if (index > -1) {
+      stateData.splice(index, 1);
+      stateData.splice(index, 0, this.state.selectedPreviousRow);
+      this.setState(
+        {
+          data: stateData
+        },
+        () => {
+          debugger;
+        }
+      );
+    }
+
     if (this.props.events != null) {
       if (this.props.events.onCancel) {
-        let row = this.state.data[rowId];
         this.props.events.onCancel(row);
       }
     }

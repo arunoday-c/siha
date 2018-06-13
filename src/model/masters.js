@@ -287,6 +287,52 @@ let visaMaster = (req, res, next) => {
   }
 };
 
+let inputClicnicalNonClinicalDept = {
+  department_type: "ALL"
+};
+
+let clinicalNonClinicalAll = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let where = extend(inputClicnicalNonClinicalDept, req.query);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let connectionString = "";
+      if (where.department_type == "CLINICAL") {
+        connectionString = " and hims_d_department.department_type='CLINICAL' ";
+      } else if (where.department_type == "NON-CLINICAL") {
+        connectionString =
+          " and hims_d_department.department_type='NON-CLINICAL' ";
+      }
+
+      connection.query(
+        "select hims_d_sub_department.hims_d_sub_department_id ,sub_department_code,sub_department_name\
+       ,sub_department_desc,hims_d_sub_department.department_id,hims_d_department.department_type \
+       from hims_d_sub_department,hims_d_department where \
+       hims_d_sub_department.department_id=hims_d_department.hims_d_department_id \
+       and hims_d_department.record_status='A' and sub_department_status='A' \
+       " +
+          connectionString,
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   titleMaster,
   countryMaster,
@@ -295,5 +341,6 @@ module.exports = {
   relegionMaster,
   nationalityMaster,
   autoGenMaster,
-  visaMaster
+  visaMaster,
+  clinicalNonClinicalAll
 };

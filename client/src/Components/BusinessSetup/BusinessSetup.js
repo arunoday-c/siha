@@ -13,7 +13,6 @@ import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 class BusinessSetup extends Component {
   constructor(props) {
     super(props);
-
     this.state = { pageDisplay: "DeptMaster", sidBarOpen: true };
   }
 
@@ -22,12 +21,24 @@ class BusinessSetup extends Component {
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
     }
-    e.target.classList.add("active");
+    e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
       pageDisplay: specified
     });
   }
+
+  // openTab(e) {
+  //   var element = document.querySelectorAll("[alagehtabs]");
+  //   for (var i = 0; i < element.length; i++) {
+  //     element[i].classList.remove("active");
+  //   }
+  //   e.target.classList.add("active");
+  //   var specified = e.target.attributes["alagehtabs"].value;
+  //   this.setState({
+  //     pageDisplay: specified
+  //   });
+  // }
 
   SideMenuBarOpen(sidOpen) {
     this.setState({
@@ -53,7 +64,6 @@ class BusinessSetup extends Component {
               onClick={this.openTab.bind(this)}
             >
               {/* DEPARTMENTS */}
-
               {
                 <AlgaehLabel
                   label={{
