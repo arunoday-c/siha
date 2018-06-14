@@ -13,7 +13,7 @@ import getMasters from "../controller/masters";
 import updateMaster from "../controller/updateMasters";
 import languageTranslator from "../controller/languageTranslator";
 import visit from "../controller/visit";
-
+import serviceType from "../controller/serviceType";
 let router = express();
 
 //connect to DB
@@ -32,6 +32,7 @@ initializedDb(db => {
   router.use("/masters/set", updateMaster());
   router.use("/translator", languageTranslator());
   router.use("/visit", visit({ config, db }));
+  router.use("/serviceType", serviceType({ config, db }));
 });
 
 export default router;

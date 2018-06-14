@@ -160,7 +160,7 @@ let nationalityMaster = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT `hims_d_nationality_id`, `nationality_code`, `nationality` FROM `hims_d_nationality` WHERE `record_status`='A' AND " +
+        "SELECT `hims_d_nationality_id`, `nationality_code`, `nationality`,`arabic_nationality` FROM `hims_d_nationality` WHERE `record_status`='A' AND " +
           where.condition,
         where.values,
         (error, result) => {
@@ -196,7 +196,7 @@ let relegionMaster = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "SELECT `hims_d_religion_id`, `religion_code`, `religion_name` FROM `hims_d_religion` WHERE `record_status`='A' AND " +
+        "SELECT `hims_d_religion_id`, `religion_code`, `religion_name`,`arabic_religion_name` FROM `hims_d_religion` WHERE `record_status`='A' AND " +
           where.condition,
         where.values,
         (error, result) => {
