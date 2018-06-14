@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { Paper, TextField } from "material-ui";
+import { Paper } from "material-ui";
 import "./id_type.css";
 import { Button } from "material-ui";
 import moment from "moment";
@@ -180,12 +180,12 @@ class IDType extends Component {
 
   addIDType(e) {
     e.preventDefault();
-    if (this.state.identity_document_code.length == 0) {
+    if (this.state.identity_document_code.length === 0) {
       this.setState({
         id_code_error: true,
         id_code_error_txt: "ID Code cannot be empty"
       });
-    } else if (this.state.identity_document_name.length == 0) {
+    } else if (this.state.identity_document_name.length === 0) {
       this.setState({
         id_name_error: true,
         id_name_error_txt: "ID Name cannot be empty"

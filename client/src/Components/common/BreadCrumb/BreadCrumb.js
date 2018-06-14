@@ -1,7 +1,6 @@
-import React, { Component, PureComponent } from "react";
+import React, { PureComponent } from "react";
 import "./breadcrumb.css";
 import AlgaehLabel from "../../Wrapper/label.js";
-import { Link } from "react-router-dom";
 
 const CREATE_PATIENT = [
   { label: "Yes", value: "Y" },

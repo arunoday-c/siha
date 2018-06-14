@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 // import ClearIcon from "@material-ui/icons/Clear";
 // import CancelIcon from "@material-ui/icons/Cancel";
 // import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
@@ -106,7 +106,7 @@ const styles = theme => ({
     }
   }
 });
-class AutoComplete extends PureComponent {
+class AutoComplete extends Component {
   handleChange = value => {
     if (value !== null) {
       this.props.selector.onChange({
