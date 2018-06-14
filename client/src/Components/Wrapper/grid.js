@@ -209,7 +209,7 @@ class DataGrid extends Component {
   };
   returnEditableColumn = () => {
     if (this.state.isEditable != null && this.state.isEditable) {
-      return <TableCell />;
+      return <TableCell style={{ width: "10px" }} />; // hi </TableCell>;
     }
   };
   returnEditableButtons = rowId => {

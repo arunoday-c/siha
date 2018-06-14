@@ -4,7 +4,7 @@ import TextField from "material-ui/TextField";
 import "./ConsultationForm.css";
 import "./../../../../styles/site.css";
 import extend from "extend";
-import { getSubDepartments } from "../../../../actions/CommonSetup/Department.js";
+import { getDepartmentsClinicalNon } from "../../../../actions/CommonSetup/Department.js";
 import { getVisittypes } from "../../../../actions/CommonSetup/VisitTypeactions.js";
 import { getProviderDetails } from "../../../../actions/serviceActions";
 import { withRouter } from "react-router-dom";
@@ -17,7 +17,8 @@ import moment from "moment";
 import {
   AlgaehLabel,
   AlgaehSelector,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 
 const FORMAT_DEFAULT = [
@@ -47,12 +48,13 @@ class AddConsultationForm extends Component {
   }
 
   componentDidMount() {
-    if (this.props.subdepartments.length === 0) {
-      this.props.getSubDepartments();
+    if (this.props.clndepartments.length === 0) {
+      this.props.getDepartmentsClinicalNon("CLINICAL");
     }
     if (this.props.visittypes.length === 0) {
       this.props.getVisittypes();
     }
+    debugger;
     if (this.props.providers.length === 0) {
       this.props.getProviderDetails();
     }
@@ -64,6 +66,7 @@ class AddConsultationForm extends Component {
   }
 
   render() {
+    // debugger;
     const vstDeatils =
       this.state.visitDetails === null ? [{}] : this.state.visitDetails;
     return (
@@ -109,7 +112,7 @@ class AddConsultationForm extends Component {
                         dataSource: {
                           textField: "sub_department_name",
                           valueField: "hims_d_sub_department_id",
-                          data: this.props.subdepartments
+                          data: this.props.clndepartments
                         },
                         onChange: AddVisitHandlers(
                           this,
@@ -129,10 +132,15 @@ class AddConsultationForm extends Component {
                         name: "doctor_id",
                         className: "select-fld",
                         value: this.state.doctor_id,
+                        // dataSource: {
+                        //   textField: "name",
+                        //   valueField: "value",
+                        //   data: FORMAT_DEFAULT
+                        // },
                         dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: FORMAT_DEFAULT
+                          textField: "full_name",
+                          valueField: "hims_d_employee_id",
+                          data: this.props.providers
                         },
                         onChange: AddVisitHandlers(
                           this,
@@ -192,7 +200,57 @@ class AddConsultationForm extends Component {
                   </div>
                 </div>
                 <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 secondary-details">
-                  <table className="table table-striped table-details table-hover">
+                  <AlgaehDataGrid
+                    columns={[
+                      {
+                        fieldName: "visit_code",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "visit_code" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "visit_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "visit_date" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "visit_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "visit_type" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "department_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "department_id" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "department_status",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "doctor_id" }} />
+                        ),
+                        disabled: true
+                      }
+                    ]}
+                    keyId="visit_code"
+                    dataSource={{
+                      data: vstDeatils
+                    }}
+                    // isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 5 }}
+                    events={{
+                      onDone: row => {
+                        alert("done is raisedd");
+                      }
+                    }}
+                  />
+                  {/* <table className="table table-striped table-details table-hover">
                     <thead style={{ background: "#B4E2DF" }}>
                       <tr>
                         <th scope="col">#</th>
@@ -259,7 +317,7 @@ class AddConsultationForm extends Component {
                                   dataSource: {
                                     textField: "sub_department_name",
                                     valueField: "hims_d_sub_department_id",
-                                    data: this.props.subdepartments
+                                    data: this.props.clndepartments
                                   }
                                 }}
                               />
@@ -276,9 +334,9 @@ class AddConsultationForm extends Component {
                                     disabled: true
                                   },
                                   dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: FORMAT_DEFAULT
+                                    textField: "full_name",
+                                    valueField: "hims_d_employee_id",
+                                    data: this.props.providers
                                   }
                                 }}
                               />
@@ -287,7 +345,7 @@ class AddConsultationForm extends Component {
                         );
                       })}
                     </tbody>
-                  </table>
+                  </table> */}
                 </div>
               </div>
             </div>
@@ -307,7 +365,10 @@ function AddVisitHandlers(state, context) {
         department_id: e.selected.department_id
       });
       if (context != null) {
-        context.updateState({ [e.name]: e.value });
+        context.updateState({
+          [e.name]: e.value,
+          department_id: e.selected.department_id
+        });
       }
     },
 
@@ -324,7 +385,7 @@ function AddVisitHandlers(state, context) {
 
 function mapStateToProps(state) {
   return {
-    subdepartments: state.subdepartments.subdepartments,
+    clndepartments: state.clndepartments.clndepartments,
     visittypes: state.visittypes.visittypes,
     providers: state.providers.providers
   };
@@ -333,7 +394,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getSubDepartments: getSubDepartments,
+      getDepartmentsClinicalNon: getDepartmentsClinicalNon,
       getVisittypes: getVisittypes,
       getProviderDetails: getProviderDetails
     },

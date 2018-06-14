@@ -32,6 +32,7 @@ export function postPatientDetails(dataValue, callback) {
 }
 
 export function getPatientDetails(dataValue, callback) {
+  debugger;
   callback = callback || null;
   return function(dispatch) {
     algaehApiCall({

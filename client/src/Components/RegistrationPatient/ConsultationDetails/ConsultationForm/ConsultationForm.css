@@ -40,6 +40,8 @@
   font-weight: 400;
   font-size: 12px; }
 
-.hptl-phase1-add-consultation-form th, .hptl-phase1-add-consultation-form td {
+.hptl-phase1-add-consultation-form th,
+.hptl-phase1-add-consultation-form td {
   border-right: 1px solid #e6e6e6;
-  font-size: 11px; }
+  font-size: 11px;
+  width: 10px; }

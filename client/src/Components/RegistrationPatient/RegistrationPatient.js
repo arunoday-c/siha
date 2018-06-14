@@ -13,7 +13,9 @@ import {
   postPatientDetails,
   getPatientDetails,
   initialStatePatientData
-} from "../../actions/RegistrationPatient/Registrationactions.js";
+} from "../../actions/RegistrationPatient/Registrationactions";
+
+import { postVisitDetails } from "../../actions/RegistrationPatient/Visitactions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -25,6 +27,7 @@ import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import Dialog, { DialogActions, DialogTitle } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
+import { getCookie } from "../../utils/algaehApiCall";
 
 // import Barcode from "../Experiment";
 
@@ -45,7 +48,7 @@ class RegistrationPatient extends Component {
       DialogOpen: false,
       sideBarOpen: false,
       sidBarOpen: true,
-      selectedLang: "lang_en",
+      selectedLang: "en",
       chnageLang: false,
       AGEMM: 0,
       AGEDD: 0,
@@ -67,6 +70,11 @@ class RegistrationPatient extends Component {
     if (this.state.saveEnable === "clear") {
       this.props.initialStatePatientData();
     }
+
+    let prevLang = getCookie("Language");
+    this.setState({
+      selectedLang: prevLang
+    });
   }
 
   ClearData(e) {
@@ -80,17 +88,28 @@ class RegistrationPatient extends Component {
   }
 
   SavePatientDetails(e) {
+    debugger;
     const err = Validations(this);
 
     if (!err) {
-      this.props.postPatientDetails(this.state, data => {
-        this.setState({
-          patient_code: data.patient_code,
-          visit_code: data.visit_code,
-          DialogOpen: true,
-          saveEnable: true
+      if (this.state.hims_d_patient_id <= 0) {
+        this.props.postPatientDetails(this.state, data => {
+          this.setState({
+            patient_code: data.patient_code,
+            visit_code: data.visit_code,
+            DialogOpen: true,
+            saveEnable: true
+          });
         });
-      });
+      } else {
+        this.props.postVisitDetails(this.state, data => {
+          this.setState({
+            visit_code: data.visit_code,
+            DialogOpen: true,
+            saveEnable: true
+          });
+        });
+      }
     }
   }
 
@@ -126,11 +145,14 @@ class RegistrationPatient extends Component {
         patient_code: data
       },
       () => {
+        debugger;
         clearInterval(intervalId);
         intervalId = setInterval(() => {
           this.props.getPatientDetails(this.state.patient_code, data => {
+            this.setState(PatRegIOputs.inputParam(data.patientRegistration));
             this.setState({
-              visitDetails: data.visitDetails
+              visitDetails: data.visitDetails,
+              patient_id: this.state.hims_d_patient_id
             });
           });
           clearInterval(intervalId);
@@ -255,7 +277,8 @@ function mapDispatchToProps(dispatch) {
     {
       postPatientDetails: postPatientDetails,
       getPatientDetails: getPatientDetails,
-      initialStatePatientData: initialStatePatientData
+      initialStatePatientData: initialStatePatientData,
+      postVisitDetails: postVisitDetails
     },
     dispatch
   );

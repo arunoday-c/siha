@@ -65,7 +65,6 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillUpdate(nextProps, nextState) {
-
     var width = document.getElementById("attach-width").offsetWidth;
     this.widthImg = width + 1;
     // var widthDate = document.getElementById("widthDate").offsetWidth;
@@ -106,20 +105,21 @@ class AddPatientForm extends PureComponent {
     if (this.props.cities.length === 0) {
       this.props.getCities();
     }
+    debugger;
     if (this.props.visatypes.length === 0) {
       this.props.getVisatypes();
     }
   }
 
   componentWillReceiveProps(nextProps) {
-
+    // debugger;
     this.setState(nextProps.PatRegIOputs);
 
-    if (nextProps.patients != null) {
-      if (nextProps.patients.length > 0) {
-        this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
-      }
-    }
+    // if (nextProps.patients != null) {
+    //   if (nextProps.patients.length > 0) {
+    //     this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
+    //   }
+    // }
   }
 
   numInput(e) {
@@ -134,6 +134,8 @@ class AddPatientForm extends PureComponent {
   }
 
   render() {
+    // const { selectedLang } = this.state;
+
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -175,7 +177,9 @@ class AddPatientForm extends PureComponent {
                           value: this.state.full_name,
                           events: {
                             onChange: texthandle.bind(this, this, context)
-                          }
+                          },
+                          error: this.state.open,
+                          helperText: this.state.userErrorText
                         }}
                       />
 
@@ -221,7 +225,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.gender,
                           dataSource: {
-                            textField: "name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "name"
+                                : "arabic_name",
                             valueField: "value",
                             data: FORMAT_GENDER
                           },
@@ -303,7 +310,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.marital_status,
                           dataSource: {
-                            textField: "name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "name"
+                                : "arabic_name",
                             valueField: "value",
                             data: FORMAT_MARTIALSTS
                           },
@@ -322,7 +332,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.religion_id,
                           dataSource: {
-                            textField: "religion_name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "religion_name"
+                                : "arabic_religion_name",
                             valueField: "hims_d_religion_id",
                             data: this.props.relegions
                           },
@@ -339,8 +352,12 @@ class AddPatientForm extends PureComponent {
                           name: "visa_type_id",
                           className: "select-fld",
                           value: this.state.visa_type_id,
+
                           dataSource: {
-                            textField: "visa_type",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "visa_type"
+                                : "arabic_visa_type",
                             valueField: "hims_d_visa_type_id",
                             data: this.props.visatypes
                           },
