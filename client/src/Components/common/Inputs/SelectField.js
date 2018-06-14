@@ -1,8 +1,6 @@
-import React, { Component, PureComponent } from "react";
+import React, { PureComponent } from "react";
 import { MenuItem } from "material-ui/Menu";
 import Select from "material-ui/Select";
-import Input, { InputLabel } from "material-ui/Input";
-import { FormControl, FormHelperText } from "material-ui/Form";
 
 const styles = theme => ({
   root: {

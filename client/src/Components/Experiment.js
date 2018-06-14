@@ -489,7 +489,7 @@ class DeptMaster extends Component {
             expanded={{
               multiExpand: true,
               detailTemplate: row => {
-                return <p>Hello Mr Nowshadan...</p>;
+                return "Hello Mr Nowshadan...";
               }
             }}
             // others={{
