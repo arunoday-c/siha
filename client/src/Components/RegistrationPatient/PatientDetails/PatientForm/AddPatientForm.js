@@ -105,7 +105,6 @@ class AddPatientForm extends PureComponent {
     if (this.props.cities.length === 0) {
       this.props.getCities();
     }
-    debugger;
     if (this.props.visatypes.length === 0) {
       this.props.getVisatypes();
     }
@@ -157,7 +156,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.title_id,
                           dataSource: {
-                            textField: "title",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "title"
+                                : "arabic_title",
                             valueField: "his_d_title_id",
                             data: this.props.titles
                           },
@@ -395,7 +397,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.nationality_id,
                           dataSource: {
-                            textField: "nationality",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "nationality"
+                                : "arabic_nationality",
                             valueField: "hims_d_nationality_id",
                             data: this.props.nationalities
                           },
@@ -459,7 +464,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.country_id,
                           dataSource: {
-                            textField: "country_name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "country_name"
+                                : "arabic_country_name",
                             valueField: "hims_d_country_id",
                             data: this.props.countries
                           },
@@ -478,7 +486,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.state_id,
                           dataSource: {
-                            textField: "state_name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "state_name"
+                                : "arabic_state_name",
                             valueField: "hims_d_state_id",
                             data: this.props.countrystates
                           },
@@ -497,7 +508,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.city_id,
                           dataSource: {
-                            textField: "city_name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "statecity_name_name"
+                                : "city_arabic_name",
                             valueField: "hims_d_city_id",
                             data: this.props.cities
                           },
@@ -558,7 +572,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.primary_identity_id,
                           dataSource: {
-                            textField: "identity_document_name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "identity_document_name"
+                                : "arabic_identity_document_name",
                             valueField: "hims_d_identity_document_id",
                             data: this.props.idtypes
                           },

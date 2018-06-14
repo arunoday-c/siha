@@ -88,7 +88,10 @@ class AddConsultationForm extends Component {
                         className: "select-fld",
                         value: this.state.visit_type,
                         dataSource: {
-                          textField: "visit_type_desc",
+                          textField:
+                            this.state.selectedLang == "en"
+                              ? "visit_type_desc"
+                              : "arabic_visit_type_desc",
                           valueField: "hims_d_visit_type_id",
                           data: this.props.visittypes
                         },
@@ -110,7 +113,11 @@ class AddConsultationForm extends Component {
                         className: "select-fld",
                         value: this.state.sub_department_id,
                         dataSource: {
-                          textField: "sub_department_name",
+                          // textField: "sub_department_name",
+                          textField:
+                            this.state.selectedLang == "en"
+                              ? "sub_department_name"
+                              : "arabic_sub_department_name",
                           valueField: "hims_d_sub_department_id",
                           data: this.props.clndepartments
                         },
@@ -138,7 +145,10 @@ class AddConsultationForm extends Component {
                         //   data: FORMAT_DEFAULT
                         // },
                         dataSource: {
-                          textField: "full_name",
+                          textField:
+                            this.state.selectedLang == "en"
+                              ? "full_name"
+                              : "arabic_name",
                           valueField: "hims_d_employee_id",
                           data: this.props.providers
                         },
@@ -221,17 +231,44 @@ class AddConsultationForm extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "visit_type" }} />
                         ),
+                        displayTemplate: row => {
+                          debugger;
+                          return (
+                            <span>{row.visit_type == "10" ? "Cons" : ""}</span>
+                          );
+                        },
+                        editorTemplate: (row, callBack) => {
+                          debugger;
+                          return (
+                            <AlagehAutoComplete
+                              selector={{
+                                value: row.visit_type,
+                                dataSource: {
+                                  textField:
+                                    this.state.selectedLang == "en"
+                                      ? "visit_type_desc"
+                                      : "arabic_visit_type_desc",
+                                  valueField: "hims_d_visit_type_id",
+                                  data: this.props.visittypes
+                                },
+                                onChange: row => {
+                                  callBack(row);
+                                }
+                              }}
+                            />
+                          );
+                        },
                         disabled: true
                       },
                       {
-                        fieldName: "department_id",
+                        fieldName: "sub_department_id",
                         label: (
                           <AlgaehLabel label={{ fieldName: "department_id" }} />
                         ),
                         disabled: true
                       },
                       {
-                        fieldName: "department_status",
+                        fieldName: "doctor_id",
                         label: (
                           <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                         ),
