@@ -197,7 +197,7 @@ class DataGrid extends Component {
     return this.props.columns.map((row, i) => {
       return (
         <TableCell numeric={row.numeric == null ? false : row.numeric}>
-          {row.label}
+          {typeof row.label == "function" ? row.label() : row.label}
         </TableCell>
       );
     });

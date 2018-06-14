@@ -40,7 +40,8 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehLabel
 } from "../Components/Wrapper/algaehWrapper";
 
 const TableRow = ({ row, ...restProps }) => (
@@ -397,7 +398,16 @@ class DeptMaster extends Component {
             columns={[
               {
                 fieldName: "department_code",
-                label: "Dept Code",
+                label: () => {
+                  return (
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "department_code",
+                        forceLabel: "Departmet Code"
+                      }}
+                    />
+                  );
+                },
                 disabled: true
               },
               { fieldName: "department_name", label: "Dept Name" },
