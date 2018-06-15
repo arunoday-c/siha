@@ -25,7 +25,12 @@ export function postPatientDetails(dataValue, callback) {
             callback(response.data.records);
           }
         },
-        onFailure: error => {}
+        onFailure: error => {
+          dispatch({
+            type: "GET_ERR_DATA",
+            departments: error
+          });
+        }
       });
     }
   };
@@ -55,9 +60,10 @@ export function getPatientDetails(dataValue, callback) {
         }
       },
       onFailure: error => {
-        // dispatch({
-        //     type: "PAT_GET_ERR_DATA", payload: error
-        // })
+        dispatch({
+          type: "PAT_GET_ERR_DATA",
+          payload: error
+        });
       }
     });
   };

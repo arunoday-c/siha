@@ -71,13 +71,14 @@ class AddPatientForm extends PureComponent {
     // this.widthDate = widthDate;
   }
   componentWillMount() {
-    let InputOutput;
+    debugger;
+    let InputOutput = this.props.PatRegIOputs;
 
-    if (this.props.patients.length > 0) {
-      InputOutput = this.props.patients[0];
-    } else {
-      InputOutput = this.props.PatRegIOputs;
-    }
+    // if (this.props.patients.length > 0) {
+    //   InputOutput = this.props.patients[0];
+    // } else {
+    //   InputOutput = this.props.PatRegIOputs;
+    // }
     this.setState({ ...this.state, ...InputOutput });
   }
 

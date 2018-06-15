@@ -153,9 +153,11 @@ class PersistentDrawer extends React.Component {
   }
 
   Languaue(secLang, e) {
+    debugger;
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
+    // let titlectrl = this.title;
     if (secLang === "en") {
       this.setState({
         languageName: "English",
@@ -188,8 +190,10 @@ class PersistentDrawer extends React.Component {
   };
 
   handleClose = (seLang, e) => {
+    debugger;
     this.setState({ anchorEl: null });
-    if (seLang != null) this.Languaue(seLang, e);
+
+    if (typeof e == "object") this.Languaue(seLang, e);
   };
 
   renderCheck = () => {
@@ -226,12 +230,19 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(e) {
+    debugger;
+
     const path = e.currentTarget.getAttribute("path");
     const name = e.currentTarget.getAttribute("name");
     // const name = e.currentTarget.getAttribute("name");
     let screenName = name.replace(/\s/g, "");
     setCookie("ScreenName", path, 30);
+    debugger;
 
+    // let titlectrl = this.title;
+    // titlectrl.setAttribute("data-algeahtitle", e.currentTarget.innerText);
+
+    // titlectrl.innerText = e.currentTarget.innerText;
     this.setState({
       toggleSubMenu: true,
       title: e.currentTarget.innerText,
@@ -381,6 +392,15 @@ class PersistentDrawer extends React.Component {
                 <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                   <Typography variant="title" color="inherit" noWrap>
                     {this.state.title}
+
+                    {/* <label
+                      ref={data => {
+                        return (this.title = data);
+                      }}
+                      data-algeahtitle="Dashboard"
+                    >
+                      Dashboard
+                    </label> */}
                   </Typography>
                 </div>
 

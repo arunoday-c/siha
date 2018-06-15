@@ -16,7 +16,14 @@ export function postVisitDetails(dataValue, callback) {
         } else {
         }
       },
-      onFailure: error => {}
+      onFailure: error => {
+        onFailure: error => {
+          dispatch({
+            type: "VISIT_GET_ERR_DATA",
+            payload: error
+          });
+        };
+      }
     });
   };
 }

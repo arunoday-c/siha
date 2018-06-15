@@ -10,13 +10,12 @@ import { getProviderDetails } from "../../../../actions/serviceActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { SelectFiledData } from "../../../../utils/algaehApiCall.js";
-import MyContext from "../../../../utils/MyContext.js";
+import MyContext from "../../../../utils/MyContext";
 import moment from "moment";
+import Options from "../../../../Options.json";
 
 import {
   AlgaehLabel,
-  AlgaehSelector,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
@@ -64,6 +63,13 @@ class AddConsultationForm extends Component {
     console.log("Visit Details", this.state);
     this.setState(nextProps.PatRegIOputs);
   }
+
+  changeDateFormat = date => {
+    if (date != null) {
+      return moment(date).format(Options.dateFormat);
+      // return moment(date).format(Options.dateFormat);
+    }
+  };
 
   render() {
     // debugger;
@@ -221,6 +227,11 @@ class AddConsultationForm extends Component {
                       },
                       {
                         fieldName: "visit_date",
+                        displayTemplate: row => {
+                          return (
+                            <span>{this.changeDateFormat(row.visit_date)}</span>
+                          );
+                        },
                         label: (
                           <AlgaehLabel label={{ fieldName: "visit_date" }} />
                         ),
@@ -232,30 +243,18 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "visit_type" }} />
                         ),
                         displayTemplate: row => {
-                          debugger;
-                          return (
-                            <span>{row.visit_type == "10" ? "Cons" : ""}</span>
+                          let display = this.props.visittypes.filter(
+                            f => f.hims_d_visit_type_id == row.visit_type
                           );
-                        },
-                        editorTemplate: (row, callBack) => {
-                          debugger;
+
                           return (
-                            <AlagehAutoComplete
-                              selector={{
-                                value: row.visit_type,
-                                dataSource: {
-                                  textField:
-                                    this.state.selectedLang == "en"
-                                      ? "visit_type_desc"
-                                      : "arabic_visit_type_desc",
-                                  valueField: "hims_d_visit_type_id",
-                                  data: this.props.visittypes
-                                },
-                                onChange: row => {
-                                  callBack(row);
-                                }
-                              }}
-                            />
+                            <span>
+                              {display != null && display.length != 0
+                                ? this.state.selectedLang == "en"
+                                  ? display[0].visit_type_desc
+                                  : display[0].arabic_visit_type_desc
+                                : ""}
+                            </span>
                           );
                         },
                         disabled: true
@@ -265,6 +264,23 @@ class AddConsultationForm extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "department_id" }} />
                         ),
+                        displayTemplate: row => {
+                          let display = this.props.clndepartments.filter(
+                            f =>
+                              f.hims_d_sub_department_id ==
+                              row.sub_department_id
+                          );
+
+                          return (
+                            <span>
+                              {display != null && display.length != 0
+                                ? this.state.selectedLang == "en"
+                                  ? display[0].sub_department_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        },
                         disabled: true
                       },
                       {
@@ -272,6 +288,21 @@ class AddConsultationForm extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                         ),
+                        displayTemplate: row => {
+                          let display = this.props.providers.filter(
+                            f => f.hims_d_employee_id == row.doctor_id
+                          );
+
+                          return (
+                            <span>
+                              {display != null && display.length != 0
+                                ? this.state.selectedLang == "en"
+                                  ? display[0].full_name
+                                  : display[0].arabic_name
+                                : ""}
+                            </span>
+                          );
+                        },
                         disabled: true
                       }
                     ]}
