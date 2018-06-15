@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { releaseConnection } from "../utils";
-import { addVisit } from "../model/visit";
+import { addVisit, checkVisitExists } from "../model/visit";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
   let api = Router();
@@ -17,5 +17,20 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.post(
+    "/checkVisitExists",
+    checkVisitExists,
+    (req, res, next) => {
+      res.status(httpStatus.ok).json({
+        success: req.records.length == 0 ? true : false,
+        message:
+          req.records.length != 0 ? "Visit already exists for same doctor" : ""
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };
