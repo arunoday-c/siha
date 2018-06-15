@@ -17,7 +17,7 @@ let titleMaster = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT `his_d_title_id`, `title` FROM `hims_d_title` WHERE `record_status`='A' AND " +
+        "SELECT `his_d_title_id`, `title`, `arabic_title` FROM `hims_d_title` WHERE `record_status`='A' AND " +
           where.condition,
         where.values,
         (error, result) => {
@@ -267,9 +267,9 @@ let visaMaster = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "SELECT `hims_d_visa_type_id`, `visa_type_code`, `visa_type`, `visa_desc`, `created_by`, \
-        `created_date`, `updated_by`, `updated_date`, `visa_status` FROM `hims_d_visa_type` \
-         WHERE `record_status`='A' AND " +
+        "SELECT `hims_d_visa_type_id`, `visa_type_code`, `visa_type`, `visa_desc`, `arabic_visa_type`, \
+         `created_by`, `created_date`, `updated_by`, `updated_date`, `visa_status` FROM \
+         `hims_d_visa_type` WHERE `record_status`='A' AND " +
           where.condition,
         where.values,
         (error, result) => {
@@ -312,7 +312,7 @@ let clinicalNonClinicalAll = (req, res, next) => {
 
       connection.query(
         "select hims_d_sub_department.hims_d_sub_department_id ,sub_department_code,sub_department_name\
-       ,sub_department_desc,hims_d_sub_department.department_id,hims_d_department.department_type \
+       ,sub_department_desc, arabic_sub_department_name, hims_d_sub_department.department_id,hims_d_department.department_type \
        from hims_d_sub_department,hims_d_department where \
        hims_d_sub_department.department_id=hims_d_department.hims_d_department_id \
        and hims_d_department.record_status='A' and sub_department_status='A' \

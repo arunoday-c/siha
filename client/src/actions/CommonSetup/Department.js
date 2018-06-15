@@ -53,3 +53,32 @@ export function getSubDepartments(datavalue) {
     });
   };
 }
+
+export function getDepartmentsClinicalNon(datavalue) {
+  debugger;
+  return function(dispatch) {
+    algaehApiCall({
+      uri:
+        datavalue != null && datavalue != ""
+          ? "/masters/get/subDeptClinicalNonClinicalAll?department_type=" +
+            datavalue
+          : "/masters/get/subDeptClinicalNonClinicalAll",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success == true) {
+          dispatch({
+            type: "SUBDEP_NCL_GET_DATA",
+            payload: response.data.records
+          });
+        } else {
+        }
+      },
+      onFailure: error => {
+        dispatch({
+          type: "GET_ERR_DATA",
+          subdepartments: error
+        });
+      }
+    });
+  };
+}

@@ -106,7 +106,7 @@ let addDepartment = (req, res, next) => {
             , `department_name`, `department_desc`, `department_type`, `hospital_id`\
             , `effective_start_date`, `effective_end_date`, `department_status`\
              FROM `hims_d_department` WHERE hims_d_department_id=?;\
-             SELECT `hims_d_sub_department_id`, `sub_department_code`, `sub_department_name`\
+             SELECT `hims_d_sub_department_id`, `sub_department_code`, `sub_department_name`,`arabic_sub_department_name`\
              ,`sub_department_desc`, `department_id`, `effective_start_date`\
              , `effective_end_date`, `sub_department_status` FROM `hims_d_sub_department` WHERE department_id=?;",
                   [
@@ -309,7 +309,7 @@ let selectSubDepartment = (req, res, next) => {
         db: req.db,
         query:
           "SELECT `hims_d_sub_department_id`, `sub_department_code`\
-        , `sub_department_name`, `sub_department_desc`, `department_id`\
+        , `sub_department_name`, `arabic_sub_department_name`, sub_department_desc`, `department_id`\
         , `effective_start_date`, `effective_end_date`, `sub_department_status`\
          FROM `hims_d_sub_department` WHERE record_status ='A' AND " +
           condition.condition,
