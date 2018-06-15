@@ -1,6 +1,7 @@
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction, logger } from "../utils/logging";
+import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 let visitDetails = {
   hims_f_patient_visit_id: null,
   patient_id: null,
@@ -41,28 +42,79 @@ let addVisit = (req, res, next) => {
             next(error);
           });
         }
-        insertVisitData(connection, req, res, (error, result) => {
-          if (error) {
-            connection.rollback(() => {
-              next(error);
-            });
-          }
-          connection.commit(error => {
+
+        let patient_id =
+          req.body.patient_id != null
+            ? req.body.patient_id
+            : req.query.patient_id;
+        let visit_code =
+          req.body.visit_code != null
+            ? req.body.visit_code
+            : req.query.visit_code;
+        if (visit_code != "" && patient_id != null) {
+          insertVisitData(connection, req, res, (error, result) => {
             if (error) {
               connection.rollback(() => {
                 next(error);
               });
             }
-            req.records = result;
-            next();
+            connection.commit(error => {
+              if (error) {
+                connection.rollback(() => {
+                  next(error);
+                });
+              }
+              req.records = result;
+              next();
+            });
           });
-        });
+        } else {
+          if (patient_id == null) {
+            next(
+              httpStatus.generateError(400, "Patient Code is not generated")
+            );
+          } else {
+            runningNumber(
+              connection,
+              2,
+              "VISIT_NUMGEN",
+              (error, numUpdate, completeNumber) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                req.query.visit_code = completeNumber;
+                req.body.visit_code = completeNumber;
+                debugLog("req.body.visit_code : " + completeNumber);
+                insertVisitData(connection, req, res, (error, result) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      next(error);
+                    });
+                  }
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        next(error);
+                      });
+                    }
+                    req.records = result;
+                    next();
+                  });
+                });
+              }
+            );
+          }
+        }
       });
     });
   } catch (e) {
     next(e);
   }
 };
+
 let insertVisitData = (dataBase, req, res, callBack) => {
   try {
     debugFunction("insertVisitData");
@@ -88,7 +140,7 @@ let insertVisitData = (dataBase, req, res, callBack) => {
         inputParam.is_mlc,
         inputParam.mlc_accident_reg_no,
         inputParam.mlc_police_station,
-        null, //inputParam.mlc_wound_certified_date
+        inputParam.mlc_wound_certified_date,
         inputParam.created_by,
         new Date(),
         inputParam.visit_code

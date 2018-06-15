@@ -333,6 +333,39 @@ let clinicalNonClinicalAll = (req, res, next) => {
   }
 };
 
+let countryStateCity = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "select hims_d_country_id,hims_d_state_id, \
+        hims_d_city_id,country_name,arabic_country_name, \
+        state_name, arabic_state_name,city_name,city_arabic_name \
+        from hims_d_country ,hims_d_state,hims_d_city \
+        where hims_d_country.record_status='A' and \
+        hims_d_country.hims_d_country_id = hims_d_state.country_id \
+        and hims_d_state.hims_d_state_id = hims_d_city.state_id ",
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   titleMaster,
   countryMaster,
@@ -342,5 +375,6 @@ module.exports = {
   nationalityMaster,
   autoGenMaster,
   visaMaster,
-  clinicalNonClinicalAll
+  clinicalNonClinicalAll,
+  countryStateCity
 };

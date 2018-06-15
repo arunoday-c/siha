@@ -7,11 +7,13 @@ import {
   nationalityMaster,
   autoGenMaster,
   visaMaster,
-  clinicalNonClinicalAll
+  clinicalNonClinicalAll,
+  countryStateCity
 } from "../model/masters";
 import { Router } from "express";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
+import _ from "underscore";
 export default () => {
   let api = Router();
 
@@ -97,7 +99,31 @@ export default () => {
     },
     releaseConnection
   );
+  api.get(
+    "/countryStateCity",
+    countryStateCity,
+    (req, res, next) => {
+      let result;
+      if (req.records != null) {
+        result = _.groupBy(
+          req.records,
+          item => {
+            return { country_name: item.country_name };
+          },
+          context => {
+            console.log("item", item);
+          }
+        );
 
+        res.status(httpStatus.ok).json({
+          records: result,
+          success: true
+        });
+        next();
+      }
+    },
+    releaseConnection
+  );
   api.get(
     "/relegion",
     relegionMaster,

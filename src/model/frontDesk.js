@@ -1,11 +1,6 @@
 import { insertData } from "../model/patientRegistration";
 import { insertVisitData } from "../model/visit";
-import {
-  whereCondition,
-  runningNumber,
-  releaseDBConnection,
-  createFolder
-} from "../utils";
+import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction } from "../utils/logging";

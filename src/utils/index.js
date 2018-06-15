@@ -5,7 +5,7 @@ import extend from "extend";
 import path from "path";
 import mkdirp from "mkdirp";
 import { logger, debugFunction, debugLog } from "./logging";
-import { LINQ } from "node-linq";
+//import { LINQ } from "node-linq";
 let paging = options => {
   let pageLimit = options.paging.pageNo * options.paging.pageSize;
   return {
