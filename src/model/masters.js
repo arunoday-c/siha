@@ -344,13 +344,9 @@ let countryStateCity = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "select hims_d_country_id,hims_d_state_id, \
-        hims_d_city_id,country_name,arabic_country_name, \
-        state_name, arabic_state_name,city_name,city_arabic_name \
-        from hims_d_country ,hims_d_state,hims_d_city \
-        where hims_d_country.record_status='A' and \
-        hims_d_country.hims_d_country_id = hims_d_state.country_id \
-        and hims_d_state.hims_d_state_id = hims_d_city.state_id ",
+        "select  hims_d_country_id,country_name,arabic_country_name  from hims_d_country where status='A';\
+        select hims_d_state_id,state_name,arabic_state_name,country_id  from hims_d_state where record_status='A';\
+        select  hims_d_city_id,city_name,city_arabic_name,state_id  from hims_d_city where record_status='A';",
         (error, result) => {
           connection.release();
           if (error) {

@@ -1,26 +1,22 @@
 import { Router } from "express";
+import { addBilling } from "../model/billing";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
-import { getServiceType, getServices } from "../model/serviceTypes";
+
 export default ({ config, db }) => {
   let api = Router();
-  api.get(
-    "/",
-    getServiceType,
+  api.post(
+    "/save",
+    addBilling,
     (req, res, next) => {
+      let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: req.records
+        records: result
       });
       next();
     },
     releaseConnection
   );
-  api.get("/getService", getServices, (req, res, next) => {
-    res.status(httpStatus.ok).json({
-      success: true,
-      records: req.records
-    });
-  });
   return api;
 };
