@@ -30,7 +30,7 @@ let addIdentity = (req, res, next) => {
       }
       connection.query(
         "INSERT INTO `hims_d_identity_document` \
-            (`identity_document_code`, `identity_document_name`, `created_by`\
+            (`identity_document_code`, `identity_document_name`, `arabic_identity_document_name`, `created_by`\
             , `created_date`,`identity_status`)\
             VALUE (?, ?, ?, ?)",
         [
@@ -48,7 +48,7 @@ let addIdentity = (req, res, next) => {
           insertDoc.hims_d_identity_document_id = result.insertId;
           connection.query(
             "SELECT `hims_d_identity_document_id`, `identity_document_code`,\
-         `identity_document_name`,`identity_status` \
+         `identity_document_name`, `arabic_identity_document_name`,`identity_status` \
          FROM `hims_d_identity_document` WHERE `record_status`='A' AND \
          `hims_d_identity_document_id`=? ",
             [insertDoc.hims_d_identity_document_id],
@@ -122,7 +122,7 @@ let selectIdentity = (req, res, next) => {
       {
         db: req.db,
         query:
-          "SELECT `hims_d_identity_document_id`, `identity_document_code`, `identity_document_name`,`identity_status`\
+          "SELECT `hims_d_identity_document_id`, `identity_document_code`, `identity_document_name`, `arabic_identity_document_name`, `identity_status`\
           ,`created_by`, `created_date`, `updated_by`, `updated_date`,`identity_status` FROM `hims_d_identity_document` WHERE record_status ='A' AND " +
           condition.condition,
         values: condition.values

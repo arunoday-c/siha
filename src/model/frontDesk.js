@@ -1,11 +1,6 @@
 import { insertData } from "../model/patientRegistration";
 import { insertVisitData } from "../model/visit";
-import {
-  whereCondition,
-  runningNumber,
-  releaseDBConnection,
-  createFolder
-} from "../utils";
+import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction } from "../utils/logging";
@@ -163,7 +158,7 @@ let selectFrontDesk = (req, res, next) => {
       let where = whereCondition(extend(selectWhere, req.query));
       connection.query(
         "SELECT `hims_d_patient_id`, `patient_code`\
-      , `registration_date`, `title_id`,`first_name`, `middle_name`, `last_name`\
+      , `registration_date`, `title_id`,`first_name`, `middle_name`, `last_name`,`full_name`, `arabic_name`\
       , `gender`, `religion_id`,`date_of_birth`, `age`, `marital_status`, `address1`\
       , `address2`,`contact_number`, `secondary_contact_number`, `email`\
       , `emergency_contact_name`,`emergency_contact_number`, `relationship_with_patient`\

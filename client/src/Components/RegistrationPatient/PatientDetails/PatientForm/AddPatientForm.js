@@ -65,20 +65,20 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillUpdate(nextProps, nextState) {
-
     var width = document.getElementById("attach-width").offsetWidth;
     this.widthImg = width + 1;
     // var widthDate = document.getElementById("widthDate").offsetWidth;
     // this.widthDate = widthDate;
   }
   componentWillMount() {
-    let InputOutput;
+    debugger;
+    let InputOutput = this.props.PatRegIOputs;
 
-    if (this.props.patients.length > 0) {
-      InputOutput = this.props.patients[0];
-    } else {
-      InputOutput = this.props.PatRegIOputs;
-    }
+    // if (this.props.patients.length > 0) {
+    //   InputOutput = this.props.patients[0];
+    // } else {
+    //   InputOutput = this.props.PatRegIOputs;
+    // }
     this.setState({ ...this.state, ...InputOutput });
   }
 
@@ -112,14 +112,14 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-
+    // debugger;
     this.setState(nextProps.PatRegIOputs);
 
-    if (nextProps.patients != null) {
-      if (nextProps.patients.length > 0) {
-        this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
-      }
-    }
+    // if (nextProps.patients != null) {
+    //   if (nextProps.patients.length > 0) {
+    //     this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
+    //   }
+    // }
   }
 
   numInput(e) {
@@ -134,6 +134,8 @@ class AddPatientForm extends PureComponent {
   }
 
   render() {
+    // const { selectedLang } = this.state;
+
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -155,7 +157,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.title_id,
                           dataSource: {
-                            textField: "title",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "title"
+                                : "arabic_title",
                             valueField: "his_d_title_id",
                             data: this.props.titles
                           },
@@ -175,7 +180,9 @@ class AddPatientForm extends PureComponent {
                           value: this.state.full_name,
                           events: {
                             onChange: texthandle.bind(this, this, context)
-                          }
+                          },
+                          error: this.state.open,
+                          helperText: this.state.userErrorText
                         }}
                       />
 
@@ -221,7 +228,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.gender,
                           dataSource: {
-                            textField: "name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "name"
+                                : "arabic_name",
                             valueField: "value",
                             data: FORMAT_GENDER
                           },
@@ -303,7 +313,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.marital_status,
                           dataSource: {
-                            textField: "name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "name"
+                                : "arabic_name",
                             valueField: "value",
                             data: FORMAT_MARTIALSTS
                           },
@@ -322,7 +335,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.religion_id,
                           dataSource: {
-                            textField: "religion_name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "religion_name"
+                                : "arabic_religion_name",
                             valueField: "hims_d_religion_id",
                             data: this.props.relegions
                           },
@@ -339,8 +355,12 @@ class AddPatientForm extends PureComponent {
                           name: "visa_type_id",
                           className: "select-fld",
                           value: this.state.visa_type_id,
+
                           dataSource: {
-                            textField: "visa_type",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "visa_type"
+                                : "arabic_visa_type",
                             valueField: "hims_d_visa_type_id",
                             data: this.props.visatypes
                           },
@@ -378,7 +398,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.nationality_id,
                           dataSource: {
-                            textField: "nationality",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "nationality"
+                                : "arabic_nationality",
                             valueField: "hims_d_nationality_id",
                             data: this.props.nationalities
                           },
@@ -442,7 +465,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.country_id,
                           dataSource: {
-                            textField: "country_name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "country_name"
+                                : "arabic_country_name",
                             valueField: "hims_d_country_id",
                             data: this.props.countries
                           },
@@ -461,7 +487,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.state_id,
                           dataSource: {
-                            textField: "state_name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "state_name"
+                                : "arabic_state_name",
                             valueField: "hims_d_state_id",
                             data: this.props.countrystates
                           },
@@ -480,7 +509,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.city_id,
                           dataSource: {
-                            textField: "city_name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "statecity_name_name"
+                                : "city_arabic_name",
                             valueField: "hims_d_city_id",
                             data: this.props.cities
                           },
@@ -541,7 +573,10 @@ class AddPatientForm extends PureComponent {
                           className: "select-fld",
                           value: this.state.primary_identity_id,
                           dataSource: {
-                            textField: "identity_document_name",
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "identity_document_name"
+                                : "arabic_identity_document_name",
                             valueField: "hims_d_identity_document_id",
                             data: this.props.idtypes
                           },

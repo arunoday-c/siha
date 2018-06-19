@@ -12,6 +12,7 @@ let employeeModel = {
   first_name: null,
   middle_name: null,
   last_name: null,
+  arabic_name: null,
   sex: "MALE",
   date_of_birth: null,
   date_of_joining: null,
@@ -57,16 +58,17 @@ let addEmployee = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT hims_d_employee(employee_code,first_name,middle_name,last_name, \
+        "INSERT hims_d_employee(employee_code,first_name,middle_name,last_name,arabic_name, \
             sex,date_of_birth,date_of_joining,date_of_leaving,address,primary_contact_no,\
             secondary_contact_no,email,emergancy_contact_person,emergancy_contact_no,\
             blood_group,effective_start_date,effective_end_date,created_date,created_by) \
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           employeeDetails.employee_code,
           employeeDetails.first_name,
           employeeDetails.middle_name,
           employeeDetails.last_name,
+          employeeDetails.arabic_name,
           employeeDetails.sex,
           employeeDetails.date_of_birth,
           employeeDetails.date_of_joining,
@@ -138,6 +140,7 @@ let getEmployee = (req, res, next) => {
         ,first_name               	\
         ,middle_name              	\
         ,last_name                	\
+        ,arabic_name \
         ,sex                      	\
         ,date_of_birth            	\
         ,date_of_joining          	\
@@ -187,7 +190,7 @@ let updateEmployee = (req, res, next) => {
       }
       connection.query(
         "UPDATE hims_d_employee SET first_name=?,middle_name=?\
-                     ,last_name=?,sex=?,date_of_birth=?,date_of_joining=?\
+                     ,last_name=?,arabic_name=?,sex=?,date_of_birth=?,date_of_joining=?\
                      ,date_of_leaving=?,address=?,primary_contact_no=?,secondary_contact_no=?\
                      ,email=?,emergancy_contact_person=?,emergancy_contact_no=?\
                      ,blood_group=?,employee_status=?,effective_start_date=?,effective_end_date=?\
@@ -196,6 +199,7 @@ let updateEmployee = (req, res, next) => {
           employeeDetails.first_name,
           employeeDetails.middle_name,
           employeeDetails.last_name,
+          employeeDetails.arabic_name,
           employeeDetails.sex,
           employeeDetails.date_of_birth,
           employeeDetails.date_of_joining,

@@ -17,7 +17,7 @@ let titleMaster = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT `his_d_title_id`, `title` FROM `hims_d_title` WHERE `record_status`='A' AND " +
+        "SELECT `his_d_title_id`, `title`, `arabic_title` FROM `hims_d_title` WHERE `record_status`='A' AND " +
           where.condition,
         where.values,
         (error, result) => {
@@ -160,7 +160,7 @@ let nationalityMaster = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT `hims_d_nationality_id`, `nationality_code`, `nationality` FROM `hims_d_nationality` WHERE `record_status`='A' AND " +
+        "SELECT `hims_d_nationality_id`, `nationality_code`, `nationality`,`arabic_nationality` FROM `hims_d_nationality` WHERE `record_status`='A' AND " +
           where.condition,
         where.values,
         (error, result) => {
@@ -196,7 +196,7 @@ let relegionMaster = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "SELECT `hims_d_religion_id`, `religion_code`, `religion_name` FROM `hims_d_religion` WHERE `record_status`='A' AND " +
+        "SELECT `hims_d_religion_id`, `religion_code`, `religion_name`,`arabic_religion_name` FROM `hims_d_religion` WHERE `record_status`='A' AND " +
           where.condition,
         where.values,
         (error, result) => {
@@ -267,9 +267,9 @@ let visaMaster = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "SELECT `hims_d_visa_type_id`, `visa_type_code`, `visa_type`, `visa_desc`, `created_by`, \
-        `created_date`, `updated_by`, `updated_date`, `visa_status` FROM `hims_d_visa_type` \
-         WHERE `record_status`='A' AND " +
+        "SELECT `hims_d_visa_type_id`, `visa_type_code`, `visa_type`, `visa_desc`, `arabic_visa_type`, \
+         `created_by`, `created_date`, `updated_by`, `updated_date`, `visa_status` FROM \
+         `hims_d_visa_type` WHERE `record_status`='A' AND " +
           where.condition,
         where.values,
         (error, result) => {
@@ -312,12 +312,41 @@ let clinicalNonClinicalAll = (req, res, next) => {
 
       connection.query(
         "select hims_d_sub_department.hims_d_sub_department_id ,sub_department_code,sub_department_name\
-       ,sub_department_desc,hims_d_sub_department.department_id,hims_d_department.department_type \
+       ,sub_department_desc, arabic_sub_department_name, hims_d_sub_department.department_id,hims_d_department.department_type \
        from hims_d_sub_department,hims_d_department where \
        hims_d_sub_department.department_id=hims_d_department.hims_d_department_id \
        and hims_d_department.record_status='A' and sub_department_status='A' \
        " +
           connectionString,
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let countryStateCity = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "select  hims_d_country_id,country_name,arabic_country_name  from hims_d_country where status='A';\
+        select hims_d_state_id,state_name,arabic_state_name,country_id  from hims_d_state where record_status='A';\
+        select  hims_d_city_id,city_name,city_arabic_name,state_id  from hims_d_city where record_status='A';",
         (error, result) => {
           connection.release();
           if (error) {
@@ -342,5 +371,6 @@ module.exports = {
   nationalityMaster,
   autoGenMaster,
   visaMaster,
-  clinicalNonClinicalAll
+  clinicalNonClinicalAll,
+  countryStateCity
 };

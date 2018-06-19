@@ -4,7 +4,7 @@ import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
 import TextField from "material-ui/TextField";
 import Checkbox from "material-ui/Checkbox";
 import MyContext from "../../../../utils/MyContext.js";
-
+import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
 import AlagehFormGroup from "../../../Wrapper/formGroup.js";
 import AlgaehLabel from "../../../Wrapper/label.js";
 import extend from "extend";
@@ -12,30 +12,20 @@ import extend from "extend";
 export default class MLCPatient extends Component {
   constructor(props) {
     super(props);
-    this.state = extend(
-      {
-        MLCPATIENT: true
-      },
-      this.props.PatRegIOputs
-    );
+    this.state = {
+      MLCPATIENT: true
+    };
   }
 
-  texthandle(val) {
-    this.setState({
-      value: val
-    });
+  componentWillMount() {
+    let InputOutput = this.props.PatRegIOputs;
+    this.setState({ ...this.state, ...InputOutput });
   }
 
-  CheckboxhandleChange(e) {
-    if (e.target.checked === true) {
-      this.setState({
-        MLCPATIENT: false
-      });
-    } else {
-      this.setState({
-        MLCPATIENT: true
-      });
-    }
+  componentWillReceiveProps(nextProps) {
+    // if (nextProps.patients.length > 0) {
+    //   this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
+    // }
   }
 
   render() {
@@ -127,6 +117,34 @@ function AddMlcHandlers(state, context) {
 
       if (context != null) {
         context.updateState({ [e.target.name]: e.target.value });
+      }
+    },
+
+    CheckboxhandleChange: e => {
+      if (e.target.checked === true) {
+        state.setState(
+          {
+            MLCPATIENT: false,
+            is_mlc: "N"
+          },
+          () => {
+            if (context != null) {
+              context.updateState({ is_mlc: this.state.is_mlc });
+            }
+          }
+        );
+      } else {
+        state.setState(
+          {
+            MLCPATIENT: true,
+            is_mlc: "Y"
+          },
+          () => {
+            if (context != null) {
+              context.updateState({ is_mlc: this.state.is_mlc });
+            }
+          }
+        );
       }
     }
   };

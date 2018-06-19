@@ -1,5 +1,4 @@
 import { Router } from "express";
-import extend from "extend";
 import {
   addDepartment,
   updateDepartment,

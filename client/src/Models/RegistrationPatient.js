@@ -57,7 +57,8 @@ export default {
         mlc_police_station: "",
         mlc_wound_certified_date: "",
         visit_code: "",
-        visitDetails: null
+        visitDetails: null,
+        patient_id: null
       },
       param
     );

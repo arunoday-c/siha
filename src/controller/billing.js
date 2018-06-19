@@ -1,36 +1,35 @@
 import { Router } from "express";
-
+import { addBilling, billingCalculations } from "../model/billing";
 import { releaseConnection } from "../utils";
-import { addVisit, checkVisitExists } from "../model/visit";
 import httpStatus from "../utils/httpStatus";
+
 export default ({ config, db }) => {
   let api = Router();
   api.post(
-    "/addVisit",
-    addVisit,
+    "/save",
+    addBilling,
     (req, res, next) => {
+      let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: req.records
+        records: result
       });
       next();
     },
     releaseConnection
   );
-
   api.post(
-    "/checkVisitExists",
-    checkVisitExists,
+    "/billingCalculations",
+    billingCalculations,
     (req, res, next) => {
+      let result = req.records;
       res.status(httpStatus.ok).json({
-        success: req.records.length == 0 ? true : false,
-        message:
-          req.records.length != 0 ? "Visit already exists for same doctor" : ""
+        success: true,
+        records: result
       });
       next();
     },
     releaseConnection
   );
-
   return api;
 };

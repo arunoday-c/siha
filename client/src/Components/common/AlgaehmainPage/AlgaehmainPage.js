@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { withStyles } from "material-ui/styles";
@@ -7,42 +7,22 @@ import { MenuItem } from "material-ui/Menu";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-// import  {MenuListItems}  from './MenuItems';
 import sideMenuEn from "./SideMenuList.json";
 import sideMenuAr from "./SideMenuListAr.json";
-import Dashboard from "../../Dashboard/Dashboard";
 import "./AlgaehmainPage.css";
 import { setCookie, getCookie } from "../../../utils/algaehApiCall";
-import { Link } from "react-router-dom";
 import directRoutes from "../../../Dynamicroutes";
-import { MuiThemeProvider } from "material-ui";
-import ReactDOM from "react-dom";
 import CancelIcon from "@material-ui/icons/Close";
-import BreadCrumb from "../BreadCrumb/BreadCrumb";
 
 import {
   AppBar,
   Toolbar,
   Typography,
   IconButton,
-  SwipeableDrawer,
   Button,
-  List,
-  Divider,
   Paper,
-  Menu,
-  Radio,
-  TextField
+  Menu
 } from "material-ui";
-
-// import React from 'react';
-import FrontDesk from "../../RegistrationPatient/RegistrationPatient";
-import Login from "../../Login/Login";
-import DeptMaster from "../../BusinessSetup/DeptMaster/DeptMaster";
-import BusinessSetup from "../../BusinessSetup/BusinessSetup";
-import CommonSetup from "../../CommonSetup/CommonSetup";
-import Experiment from "../../Experiment";
 
 const drawerWidth = 240;
 
@@ -173,10 +153,11 @@ class PersistentDrawer extends React.Component {
   }
 
   Languaue(secLang, e) {
-
+    debugger;
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
+    // let titlectrl = this.title;
     if (secLang === "en") {
       this.setState({
         languageName: "English",
@@ -209,8 +190,10 @@ class PersistentDrawer extends React.Component {
   };
 
   handleClose = (seLang, e) => {
+    debugger;
     this.setState({ anchorEl: null });
-    if (seLang != null) this.Languaue(seLang, e);
+
+    if (typeof e == "object") this.Languaue(seLang, e);
   };
 
   renderCheck = () => {
@@ -247,13 +230,19 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(e) {
+    debugger;
 
     const path = e.currentTarget.getAttribute("path");
     const name = e.currentTarget.getAttribute("name");
     // const name = e.currentTarget.getAttribute("name");
     let screenName = name.replace(/\s/g, "");
     setCookie("ScreenName", path, 30);
+    debugger;
 
+    // let titlectrl = this.title;
+    // titlectrl.setAttribute("data-algeahtitle", e.currentTarget.innerText);
+
+    // titlectrl.innerText = e.currentTarget.innerText;
     this.setState({
       toggleSubMenu: true,
       title: e.currentTarget.innerText,
@@ -403,6 +392,15 @@ class PersistentDrawer extends React.Component {
                 <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                   <Typography variant="title" color="inherit" noWrap>
                     {this.state.title}
+
+                    {/* <label
+                      ref={data => {
+                        return (this.title = data);
+                      }}
+                      data-algeahtitle="Dashboard"
+                    >
+                      Dashboard
+                    </label> */}
                   </Typography>
                 </div>
 

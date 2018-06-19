@@ -19,7 +19,7 @@ let selectStatement = (req, res, next) => {
       }
       let where = whereCondition(extend(whereStatement, req.query));
       connection.query(
-        "SELECT `hims_d_visit_type_id`, `visit_type_code`, `visit_type_desc`,`visit_status`\
+        "SELECT `hims_d_visit_type_id`, `visit_type_code`, `visit_type_desc`,`visit_status`,`arabic_visit_type_desc`\
        , `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_visit_type`  WHERE record_status='A' AND " +
           where.condition,
         where.values,
