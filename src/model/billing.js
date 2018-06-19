@@ -3,7 +3,7 @@ import extend from "extend";
 import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 import moment from "moment";
 import { debuglog, debugFunction } from "util";
-
+import { LINQ } from "node-linq";
 let billingHeaderModel = {
   hims_f_billing_header_id: null,
   patient_id: null,
@@ -14,15 +14,17 @@ let billingHeaderModel = {
   bill_date: null,
   advance_amount: null,
   discount_amount: null,
-  discount_percentage: null,
-  total_amount: null,
+  sub_total_amount: null,
   total_tax: null,
-  total_payable: null,
+  net_total: null,
   billing_status: null,
+  copay_amount: null,
+  deductable_amount: null,
+  gross_total: null,
   sheet_discount_amount: null,
   sheet_discount_percentage: null,
   net_amount: null,
-  patient_resp: null,
+  patient_res: null,
   company_res: null,
   sec_company_res: null,
   patient_payable: null,
@@ -38,46 +40,10 @@ let billingHeaderModel = {
   created_date: null,
   updated_by: null,
   updated_date: null,
-  copay_amount: null,
-  deductable_amount: null,
+  record_status: null,
   cancel_remarks: null,
-  cancel_by: null
-};
-let billingDetailModel = {
-  hims_f_billing_details_id: null,
-  hims_f_billing_header_id: null,
-  service_type_id: null,
-  services_id: null,
-  quantity: null,
-  unit_cost: null,
-  gross_amount: null,
-  discount_amout: null,
-  discount_percentage: null,
-  net_amout: null,
-  copay_percentage: null,
-  copay_amount: null,
-  deductable_amount: null,
-  deductable_percentage: null,
-  tax_inclusive: null,
-  patient_tax: null,
-  company_tax: null,
-  total_tax: null,
-  patient_resp: null,
-  patient_payable: null,
-  comapany_resp: null,
-  company_payble: null,
-  sec_company: null,
-  sec_deductable_percentage: null,
-  sec_deductable_amount: null,
-  sec_company_res: null,
-  sec_company_tax: null,
-  sec_company_paybale: null,
-  sec_copay_percntage: null,
-  sec_copay_amount: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null
+  cancel_by: null,
+  bill_comments: null
 };
 
 let addBilling = (req, res, next) => {
@@ -90,6 +56,13 @@ let addBilling = (req, res, next) => {
     }
 
     let inputParam = extend(billingHeaderModel, req.body);
+
+    if (inputParam.details == null && inputParam.details.length == 0) {
+      next(
+        httpStatus(httpStatus.badRequest, "Please select atleast one service.")
+      );
+    }
+
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -122,7 +95,7 @@ let addBilling = (req, res, next) => {
                 releaseDBConnection(db, connection);
                 next(
                   httpStatus.generateError(
-                    400,
+                    httpStatus.badRequest,
                     "Visit expired please create new visit to process"
                   )
                 );
@@ -142,10 +115,78 @@ let addBilling = (req, res, next) => {
                   debuglog("new Bill number : " + newNumber);
                   inputParam["bill_number"] = newNumber;
 
+                  inputParam.sub_total_amount = new LINQ(
+                    inputParam.details
+                  ).Sum(d => d.gross_amount);
+                  inputParam.net_total = new LINQ(inputParam.details).Sum(
+                    d => d.net_amount
+                  );
+                  inputParam.discount_amount = new LINQ(inputParam.details);
+                  Sum(d => d.discount_amout);
+
+                  inputParam.total_tax = new LINQ(inputParam.details).Sum(
+                    d => d.total_tax
+                  );
+                  inputParam.patient_tax = new LINQ(inputParam.details).Sum(
+                    d => d.patient_tax
+                  );
+                  inputParam.company_tax = new LINQ(inputParam.details).Sum(
+                    d => d.company_tax
+                  );
+                  inputParam.gross_total = new LINQ(inputParam.details).Sum(
+                    d => d.net_amount
+                  );
+                  inputParam.copay_amount = new LINQ(inputParam.details).Sum(
+                    d => d.copay_amount
+                  );
+
+                  inputParam.deductable_amount = new LINQ(
+                    inputParam.details
+                  ).Sum(d => d.deductable_amount);
+
+                  inputParam.patient_resp = new LINQ(inputParam.details).Sum(
+                    d => d.deductable_amount
+                  );
+                  inputParam.company_res = new LINQ(inputParam.details).Sum(
+                    d => d.comapany_resp
+                  );
+                  inputParam.company_res = new LINQ(inputParam.details).Sum(
+                    d => d.comapany_resp
+                  );
+                  inputParam.sec_company_res = new LINQ(inputParam.details).Sum(
+                    d => d.sec_company_res
+                  );
+                  inputParam.patient_payable = new LINQ(inputParam.details).Sum(
+                    d => d.patient_payable
+                  );
+                  inputParam.company_payable = new LINQ(inputParam.details).Sum(
+                    d => d.company_payable
+                  );
+                  inputParam.sec_company_payable = new LINQ(
+                    inputParam.details
+                  ).Sum(d => d.sec_company_payable);
+                  inputParam.sec_company_tax = new LINQ(inputParam.details).Sum(
+                    d => d.sec_company_tax
+                  );
+                  inputParam.sheet_discount_amount =
+                    inputParam.sheet_discount_percentage /
+                    100 /
+                    inputParam.gross_amount;
+                  inputParam.net_amount =
+                    inputParam.gross_total - inputParam.sheet_discount_amount;
+                  inputParam.receiveable_amount =
+                    inputParam.net_amount - inputParam.credit_amount;
+
                   if (
-                    inputParam.cancel_by != null &&
-                    inputParam.cancel_by != ""
+                    inputParam.sheet_discount_amount != 0 &&
+                    inputParam.bill_comments == ""
                   ) {
+                    next(
+                      httpStatus.generateError(
+                        httpStatus.badRequest,
+                        "Please enter sheet level discount comments. "
+                      )
+                    );
                   }
 
                   connection.query(
@@ -203,14 +244,57 @@ let addBilling = (req, res, next) => {
                           next(error);
                         });
                       }
-                      // if()
-                      headerResult.insertId;
+                      if (
+                        headerResult.insertId != nll &&
+                        headerResult.insertId != ""
+                      ) {
+                        let detailsInsert = [];
+                        for (let i = 0; i < inputParam.details.length; i++) {
+                          detailsInsert.push([inputParam.details[i]]);
+                        }
+
+                        connection.query(
+                          "insert into hims_f_billing_details (hims_f_billing_header_id, service_type_id,\
+                           services_id, quantity, unit_cost, gross_amount, discount_amout, \
+                           discount_percentage, net_amout, copay_percentage, copay_amount, \
+                           deductable_amount, deductable_percentage, tax_inclusive, patient_tax, \
+                           company_tax, total_tax, patient_resp, patient_payable, comapany_resp,\
+                           company_payble, sec_company, sec_deductable_percentage, sec_deductable_amount,\
+                           sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage, \
+                           sec_copay_amount, created_by, created_date, updated_by, updated_date) VALUES ? ",
+                          detailsInsert,
+                          (error, detailsRecords) => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+                            connection.commit(error => {
+                              releaseDBConnection(db, connection);
+                              if (error) {
+                                connection.rollback(() => {
+                                  next(error);
+                                });
+                              }
+                              req.records = result;
+                              next();
+                            });
+                          }
+                        );
+                      } else {
+                        debuglog("Data is not inerted to billing header");
+                        next(
+                          httpStatus.generateError(
+                            httpStatus.badRequest,
+                            "Technical issue while billis notinserted"
+                          )
+                        );
+                      }
                     }
                   );
                 }
               );
-
-              next();
             }
           }
         );
@@ -221,6 +305,71 @@ let addBilling = (req, res, next) => {
   }
 };
 
+let billingCalculations = (req, res, next) => {
+  try {
+    let inputParam = req.body;
+    if (inputParam.length == 0) {
+      next(
+        httpStatus.generateError(
+          httpStatus.badRequest,
+          "Please select atleast one service"
+        )
+      );
+    }
+    let sendingObject = {};
+    sendingObject.sub_total_amount = new LINQ(inputParam).Sum(
+      d => d.gross_amount
+    );
+    sendingObject.net_total = new LINQ(inputParam).Sum(d => d.net_amount);
+    sendingObject.discount_amount = new LINQ(inputParam);
+    Sum(d => d.discount_amout);
+
+    sendingObject.total_tax = new LINQ(inputParam).Sum(d => d.total_tax);
+    sendingObject.patient_tax = new LINQ(inputParam).Sum(d => d.patient_tax);
+    sendingObject.company_tax = new LINQ(inputParam).Sum(d => d.company_tax);
+    sendingObject.gross_total = new LINQ(inputParam).Sum(d => d.net_amount);
+    sendingObject.copay_amount = new LINQ(inputParam).Sum(d => d.copay_amount);
+
+    sendingObject.deductable_amount = new LINQ(inputParam).Sum(
+      d => d.deductable_amount
+    );
+
+    sendingObject.patient_resp = new LINQ(inputParam).Sum(
+      d => d.deductable_amount
+    );
+    sendingObject.company_res = new LINQ(inputParam).Sum(d => d.comapany_resp);
+    sendingObject.company_res = new LINQ(inputParam).Sum(d => d.comapany_resp);
+    sendingObject.sec_company_res = new LINQ(inputParam).Sum(
+      d => d.sec_company_res
+    );
+    sendingObject.patient_payable = new LINQ(inputParam).Sum(
+      d => d.patient_payable
+    );
+    sendingObject.company_payable = new LINQ(inputParam).Sum(
+      d => d.company_payable
+    );
+    sendingObject.sec_company_payable = new LINQ(inputParam).Sum(
+      d => d.sec_company_payable
+    );
+    sendingObject.sec_company_tax = new LINQ(inputParam).Sum(
+      d => d.sec_company_tax
+    );
+    sendingObject.sheet_discount_amount =
+      sendingObject.sheet_discount_percentage /
+      100 /
+      sendingObject.gross_amount;
+    sendingObject.net_amount =
+      sendingObject.gross_total - sendingObject.sheet_discount_amount;
+    sendingObject.receiveable_amount =
+      sendingObject.net_amount - sendingObject.credit_amount;
+    req.records = sendingObject;
+    next();
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
-  addBilling
+  addBilling,
+  billingCalculations
 };
