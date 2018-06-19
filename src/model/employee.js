@@ -108,6 +108,12 @@ let addEmployee = (req, res, next) => {
     next(e);
   }
 };
+
+
+
+
+
+
 let getEmployee = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -164,6 +170,10 @@ let getEmployee = (req, res, next) => {
     next(e);
   }
 };
+
+
+
+
 let updateEmployee = (req, res, next) => {
   try {
     if (req.db == null) {
