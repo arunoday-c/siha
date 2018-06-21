@@ -20,6 +20,53 @@ const texthandle = ($this, context, e) => {
   }
 };
 
+const countryStatehandle = ($this, context, e) => {
+  let name;
+  let value;
+  if (e.name != null) {
+    if (e.name == "country_id") {
+      name = e.name;
+      value = e.value;
+      $this.setState(
+        {
+          state_id: 0,
+          city_id: 0
+        },
+        () => {
+          console.log("State ID", $this.state.state_id);
+        }
+      );
+      if (context != null) {
+        context.updateState({
+          state_id: null,
+          city_id: null
+        });
+      }
+      $this.props.getStates(e.selected.states);
+    } else if (e.name == "state_id") {
+      name = e.name;
+      value = e.value;
+      $this.setState({
+        city_id: null
+      });
+      if (context != null) {
+        context.updateState({
+          city_id: null
+        });
+      }
+      $this.props.getCities(e.selected.cities);
+    }
+  }
+
+  $this.setState({
+    [name]: value
+  });
+
+  if (context != null) {
+    context.updateState({ [name]: value });
+  }
+};
+
 //Todo title and gender related chnage need to do
 const titlehandle = ($this, context, e) => {
   let setGender;
@@ -54,7 +101,7 @@ const calculateAge = ($this, context, e) => {
   });
   if (context != null) {
     context.updateState({
-      date_of_birth: moment(e).format("DD-MM-YYYY"),
+      date_of_birth: moment(e)._d,
       age: years,
       AGEMM: months,
       AGEDD: days
@@ -75,14 +122,14 @@ const setAge = ($this, context, ctrl, e) => {
     let d = m.add(-days, "days");
 
     $this.setState({
-      date_of_birth: d.format("DD-MM-YYYY"),
+      date_of_birth: d.format("YYYY-M-D"),
       [e.target.name]: e.target.value
     });
 
     if (context != null) {
       context.updateState({
         [e.target.name]: e.target.value,
-        date_of_birth: d.format("DD-MM-YYYY")
+        date_of_birth: d.format("YYYY-M-D")
       });
     }
   }
@@ -98,7 +145,6 @@ const numberSet = ($this, context, cntrl, e) => {
 };
 
 const onDrop = ($this, file, fileType) => {
-  debugger;
   let obj = new Object();
   obj[file] = fileType[0].preview;
   $this.setState({
@@ -106,4 +152,12 @@ const onDrop = ($this, file, fileType) => {
   });
 };
 
-export { texthandle, titlehandle, calculateAge, setAge, numberSet, onDrop };
+export {
+  texthandle,
+  titlehandle,
+  calculateAge,
+  setAge,
+  numberSet,
+  onDrop,
+  countryStatehandle
+};

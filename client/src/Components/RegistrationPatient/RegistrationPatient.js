@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import Header from "./../common/Header/Header.js";
-import SideMenuBar from "./../common/SideMenuBar/SideMenuBar.js";
 import PatientDetails from "./PatientDetails/PatientDetails.js";
 import ConsultationDetails from "./ConsultationDetails/ConsultationDetails.js";
 import InsuranceDetails from "./InsuranceDetails/InsuranceDetails.js";
 import Billing from "./Billing/BillingDetails";
 import "./registration.css";
-import PatRegIOputs from "../../Models/RegistrationPatient.js";
+import PatRegIOputs from "../../Models/RegistrationPatient";
+import BillingIOputs from "../../Models/Billing";
 import Button from "material-ui/Button";
 import extend from "extend";
 import {
@@ -28,6 +27,7 @@ import AlgaehLabel from "../Wrapper/label.js";
 import Dialog, { DialogActions, DialogTitle } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
 import { getCookie } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 
 // import Barcode from "../Experiment";
 
@@ -59,7 +59,7 @@ class RegistrationPatient extends Component {
   }
 
   componentWillMount() {
-    let IOputs = PatRegIOputs.inputParam();
+    let IOputs = extend(PatRegIOputs.inputParam(), BillingIOputs.inputParam());
     this.setState({ ...this.state, ...IOputs });
   }
   componentDidMount() {
@@ -88,11 +88,10 @@ class RegistrationPatient extends Component {
   }
 
   SavePatientDetails(e) {
-    debugger;
     const err = Validations(this);
 
     if (!err) {
-      if (this.state.hims_d_patient_id <= 0) {
+      if (this.state.hims_d_patient_id != null) {
         this.props.postPatientDetails(this.state, data => {
           this.setState({
             patient_code: data.patient_code,
@@ -102,12 +101,25 @@ class RegistrationPatient extends Component {
           });
         });
       } else {
-        this.props.postVisitDetails(this.state, data => {
-          this.setState({
-            visit_code: data.visit_code,
-            DialogOpen: true,
-            saveEnable: true
-          });
+        algaehApiCall({
+          uri: "/visit/checkVisitExists",
+          data: this.state,
+          onSuccess: response => {
+            if (response.data.success == true) {
+              this.props.postVisitDetails(this.state, data => {
+                this.setState({
+                  visit_code: data.visit_code,
+                  DialogOpen: true,
+                  saveEnable: true
+                });
+              });
+            } else {
+              this.setState({
+                MandatoryMsg: response.data.message,
+                open: true
+              });
+            }
+          }
         });
       }
     }
@@ -145,7 +157,6 @@ class RegistrationPatient extends Component {
         patient_code: data
       },
       () => {
-        debugger;
         clearInterval(intervalId);
         intervalId = setInterval(() => {
           this.props.getPatientDetails(this.state.patient_code, data => {

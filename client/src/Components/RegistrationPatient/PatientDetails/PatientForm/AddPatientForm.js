@@ -14,31 +14,29 @@ import {
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import extend from "extend";
 import {
   texthandle,
   titlehandle,
   calculateAge,
   setAge,
-  numberSet,
-  onDrop
+  onDrop,
+  countryStatehandle
 } from "./AddPatientDetails.js";
-import { createStore } from "redux";
 import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
 import MyContext from "../../../../utils/MyContext.js";
-import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
 import AHSnackbar from "../../../common/Inputs/AHSnackbar.js";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlgaehSelector,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import {
   FORMAT_MARTIALSTS,
   FORMAT_GENDER
 } from "../../../../utils/GlobalFunctions";
+import Enumerable from "linq";
+import moment from "moment";
 
 const MobileFormat = "+91 (###)-## #####";
 
@@ -67,18 +65,12 @@ class AddPatientForm extends PureComponent {
   componentWillUpdate(nextProps, nextState) {
     var width = document.getElementById("attach-width").offsetWidth;
     this.widthImg = width + 1;
+
     // var widthDate = document.getElementById("widthDate").offsetWidth;
     // this.widthDate = widthDate;
   }
   componentWillMount() {
-    debugger;
     let InputOutput = this.props.PatRegIOputs;
-
-    // if (this.props.patients.length > 0) {
-    //   InputOutput = this.props.patients[0];
-    // } else {
-    //   InputOutput = this.props.PatRegIOputs;
-    // }
     this.setState({ ...this.state, ...InputOutput });
   }
 
@@ -92,19 +84,11 @@ class AddPatientForm extends PureComponent {
     if (this.props.idtypes.length === 0) {
       this.props.getIDTypes();
     }
-
     if (this.props.relegions.length === 0) {
       this.props.getRelegion();
     }
-
     if (this.props.countries.length === 0) {
       this.props.getCountries();
-    }
-    if (this.props.countrystates.length === 0) {
-      this.props.getStates();
-    }
-    if (this.props.cities.length === 0) {
-      this.props.getCities();
     }
     if (this.props.visatypes.length === 0) {
       this.props.getVisatypes();
@@ -112,14 +96,25 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    // debugger;
     this.setState(nextProps.PatRegIOputs);
+    if (this.state.country_id != null) {
+      debugger;
+      let country = Enumerable.from(this.props.countries)
+        .where(w => w.hims_d_country_id == this.state.country_id)
+        .firstOrDefault();
+      let states = country != null ? country.states : [];
+      let cities = Enumerable.from(states)
+        .where(w => w.hims_d_state_id == this.state.state_id)
+        .firstOrDefault();
 
-    // if (nextProps.patients != null) {
-    //   if (nextProps.patients.length > 0) {
-    //     this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
-    //   }
-    // }
+      this.props.getStates(states, callback => {
+        this.setState({
+          state_id: this.state.state_id
+        });
+      });
+      debugger;
+      this.props.getCities(cities.cities);
+    }
   }
 
   numInput(e) {
@@ -134,8 +129,10 @@ class AddPatientForm extends PureComponent {
   }
 
   render() {
-    // const { selectedLang } = this.state;
-
+    // debugger;
+    const DateofBirth =
+      this.state.hims_d_patient_id != null ? this.state.date_of_birth : null;
+    // const DateofBirth = x._d;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -202,21 +199,6 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
 
-                      {/* <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "last_name",
-                          isImp: true
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "last_name",
-                          value: this.state.last_name,
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          }
-                        }}
-                      /> */}
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -472,7 +454,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_country_id",
                             data: this.props.countries
                           },
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: countryStatehandle.bind(this, this, context)
                         }}
                       />
 
@@ -494,7 +476,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_state_id",
                             data: this.props.countrystates
                           },
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: countryStatehandle.bind(this, this, context)
                         }}
                       />
 
@@ -511,7 +493,7 @@ class AddPatientForm extends PureComponent {
                           dataSource: {
                             textField:
                               this.state.selectedLang == "en"
-                                ? "statecity_name_name"
+                                ? "city_name"
                                 : "city_arabic_name",
                             valueField: "hims_d_city_id",
                             data: this.props.cities
@@ -532,7 +514,8 @@ class AddPatientForm extends PureComponent {
                         events={{
                           onChange: calculateAge.bind(this, this, context)
                         }}
-                        value={this.state.date_of_birth}
+                        value={DateofBirth}
+                        // value={this.state.date_of_birth}
                       />
 
                       <AlgaehDateHandler

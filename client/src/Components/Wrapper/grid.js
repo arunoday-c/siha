@@ -58,7 +58,6 @@ class DataGrid extends Component {
     let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
     let row = this.state.data[rowId];
     // let stateData = this.state.data;
-    // debugger;
 
     // var index = stateData.indexOf(row);
     // if (index > -1) {

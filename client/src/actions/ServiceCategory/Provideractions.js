@@ -2,7 +2,6 @@
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getProviderDetails() {
-  debugger;
   return function(dispatch) {
     algaehApiCall({
       uri: "/employee/get",
@@ -17,8 +16,9 @@ export function getProviderDetails() {
       },
       onFailure: error => {
         // dispatch({
-        //     type: "PAT_GET_ERR_DATA", payload: error
-        // })
+        //   type: "DOCT_GET_ERR_DATA",
+        //   payload: error
+        // });
       }
     });
   };

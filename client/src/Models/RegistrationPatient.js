@@ -1,6 +1,5 @@
 import extend from "extend";
 import moment from "moment";
-import PatRegIOputs from "../utils/GlobalFunctions.js";
 
 export default {
   inputParam: function(param) {
@@ -8,7 +7,7 @@ export default {
     var CurrentDate = new Date();
     output = extend(
       {
-        hims_d_patient_id: 0,
+        hims_d_patient_id: null,
         patient_code: "",
         registration_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
         title_id: null,

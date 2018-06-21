@@ -28,6 +28,34 @@ export default class MLCPatient extends Component {
     // }
   }
 
+  CheckboxhandleChange(context, e) {
+    if (e.target.checked === true) {
+      this.setState(
+        {
+          MLCPATIENT: false,
+          is_mlc: "N"
+        },
+        () => {
+          if (context != null) {
+            context.updateState({ is_mlc: this.state.is_mlc });
+          }
+        }
+      );
+    } else {
+      this.setState(
+        {
+          MLCPATIENT: true,
+          is_mlc: "Y"
+        },
+        () => {
+          if (context != null) {
+            context.updateState({ is_mlc: this.state.is_mlc });
+          }
+        }
+      );
+    }
+  }
+
   render() {
     return (
       <MyContext.Consumer>
@@ -36,7 +64,9 @@ export default class MLCPatient extends Component {
             <div className="container-fluid">
               <div className="row">
                 <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
-                  <Checkbox onChange={this.CheckboxhandleChange.bind(this)} />
+                  <Checkbox
+                    onChange={this.CheckboxhandleChange.bind(this, context)}
+                  />
                   <AlgaehLabel
                     label={{
                       fieldName: "is_mlc"
@@ -58,7 +88,8 @@ export default class MLCPatient extends Component {
                       onChange: AddMlcHandlers(this, context).texthandle.bind(
                         this
                       )
-                    }
+                    },
+                    disabled: this.state.MLCPATIENT
                   }}
                 />
 
@@ -76,7 +107,9 @@ export default class MLCPatient extends Component {
                       onChange: AddMlcHandlers(this, context).texthandle.bind(
                         this
                       )
-                    }
+                    },
+                    disabled: this.state.MLCPATIENT
+                    // disabled: this.state.MLCPATIENT
                   }}
                 />
 
@@ -93,8 +126,10 @@ export default class MLCPatient extends Component {
                     events: {
                       onChange: AddMlcHandlers(this, context).texthandle.bind(
                         this
-                      )
-                    }
+                      ),
+                      disabled: this.state.MLCPATIENT
+                    },
+                    disabled: this.state.MLCPATIENT
                   }}
                 />
               </div>
@@ -117,34 +152,6 @@ function AddMlcHandlers(state, context) {
 
       if (context != null) {
         context.updateState({ [e.target.name]: e.target.value });
-      }
-    },
-
-    CheckboxhandleChange: e => {
-      if (e.target.checked === true) {
-        state.setState(
-          {
-            MLCPATIENT: false,
-            is_mlc: "N"
-          },
-          () => {
-            if (context != null) {
-              context.updateState({ is_mlc: this.state.is_mlc });
-            }
-          }
-        );
-      } else {
-        state.setState(
-          {
-            MLCPATIENT: true,
-            is_mlc: "Y"
-          },
-          () => {
-            if (context != null) {
-              context.updateState({ is_mlc: this.state.is_mlc });
-            }
-          }
-        );
       }
     }
   };

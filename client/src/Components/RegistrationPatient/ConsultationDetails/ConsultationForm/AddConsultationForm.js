@@ -3,7 +3,6 @@ import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
 import TextField from "material-ui/TextField";
 import "./ConsultationForm.css";
 import "./../../../../styles/site.css";
-import extend from "extend";
 import { getDepartmentsClinicalNon } from "../../../../actions/CommonSetup/Department.js";
 import { getVisittypes } from "../../../../actions/CommonSetup/VisitTypeactions.js";
 import { getProviderDetails } from "../../../../actions/serviceActions";
@@ -13,7 +12,7 @@ import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
 import moment from "moment";
 import Options from "../../../../Options.json";
-
+import Enumerable from "linq";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
@@ -35,7 +34,8 @@ class AddConsultationForm extends Component {
     super(props);
 
     this.state = {
-      value: ""
+      value: "",
+      visittypeselect: true
     };
   }
 
@@ -53,14 +53,13 @@ class AddConsultationForm extends Component {
     if (this.props.visittypes.length === 0) {
       this.props.getVisittypes();
     }
-    debugger;
+
     if (this.props.providers.length === 0) {
       this.props.getProviderDetails();
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("Visit Details", this.state);
     this.setState(nextProps.PatRegIOputs);
   }
 
@@ -72,7 +71,6 @@ class AddConsultationForm extends Component {
   };
 
   render() {
-    // debugger;
     const vstDeatils =
       this.state.visitDetails === null ? [{}] : this.state.visitDetails;
     return (
@@ -105,6 +103,11 @@ class AddConsultationForm extends Component {
                           this,
                           context
                         ).selectedHandeler.bind(this)
+                        // others: {
+                        //   clearRenderer: e => {
+                        //     debugger;
+                        //   }
+                        // }
                       }}
                     />
 
@@ -119,13 +122,15 @@ class AddConsultationForm extends Component {
                         className: "select-fld",
                         value: this.state.sub_department_id,
                         dataSource: {
-                          // textField: "sub_department_name",
                           textField:
                             this.state.selectedLang == "en"
                               ? "sub_department_name"
                               : "arabic_sub_department_name",
                           valueField: "hims_d_sub_department_id",
                           data: this.props.clndepartments
+                        },
+                        others: {
+                          disabled: this.state.visittypeselect
                         },
                         onChange: AddVisitHandlers(
                           this,
@@ -145,11 +150,6 @@ class AddConsultationForm extends Component {
                         name: "doctor_id",
                         className: "select-fld",
                         value: this.state.doctor_id,
-                        // dataSource: {
-                        //   textField: "name",
-                        //   valueField: "value",
-                        //   data: FORMAT_DEFAULT
-                        // },
                         dataSource: {
                           textField:
                             this.state.selectedLang == "en"
@@ -157,6 +157,9 @@ class AddConsultationForm extends Component {
                               : "arabic_name",
                           valueField: "hims_d_employee_id",
                           data: this.props.providers
+                        },
+                        others: {
+                          disabled: this.state.visittypeselect
                         },
                         onChange: AddVisitHandlers(
                           this,
@@ -318,102 +321,6 @@ class AddConsultationForm extends Component {
                       }
                     }}
                   />
-                  {/* <table className="table table-striped table-details table-hover">
-                    <thead style={{ background: "#B4E2DF" }}>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">
-                          <AlgaehLabel label={{ fieldName: "visit_code" }} />
-                        </th>
-                        <th scope="col">
-                          <AlgaehLabel label={{ fieldName: "visit_date" }} />
-                        </th>
-                        <th scope="col">
-                          <AlgaehLabel label={{ fieldName: "visit_type" }} />
-                        </th>
-                        <th scope="col">
-                          <AlgaehLabel label={{ fieldName: "department_id" }} />
-                        </th>
-                        <th scope="col">
-                          <AlgaehLabel label={{ fieldName: "doctor_id" }} />
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {vstDeatils.map((row, index) => {
-                        let vistDate = "";
-                        if (row.visit_date !== "" || row.visit_date !== null) {
-                          vistDate = moment(String(row.visit_date)).format(
-                            "YYYY-MM-DD"
-                          );
-                        }
-                        return (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{row.visit_code}</td>
-                            <td>{vistDate}</td>
-                            <td>
-                              <AlagehAutoComplete
-                                div={{ className: "col-lg-6" }}
-                                selector={{
-                                  name: "visit_type",
-                                  className: "select-fld",
-                                  value: row.visit_type,
-                                  others: {
-                                    style: { width: "130px" },
-                                    disabled: true
-                                  },
-                                  dataSource: {
-                                    textField: "visit_type",
-                                    valueField: "hims_d_visit_type_id",
-                                    data: this.props.visittypes
-                                  }
-                                }}
-                              />
-                            </td>
-                            <td>
-                              <AlagehAutoComplete
-                                div={{ className: "col-lg-6" }}
-                                selector={{
-                                  name: "sub_department_id",
-                                  className: "select-fld",
-                                  value: row.sub_department_id,
-                                  others: {
-                                    style: { width: "130px" },
-                                    disabled: true
-                                  },
-                                  dataSource: {
-                                    textField: "sub_department_name",
-                                    valueField: "hims_d_sub_department_id",
-                                    data: this.props.clndepartments
-                                  }
-                                }}
-                              />
-                            </td>
-                            <td>
-                              <AlagehAutoComplete
-                                div={{ className: "col-lg-6" }}
-                                selector={{
-                                  name: "doctor_id",
-                                  className: "select-fld",
-                                  value: row.doctor_id,
-                                  others: {
-                                    style: { width: "130px" },
-                                    disabled: true
-                                  },
-                                  dataSource: {
-                                    textField: "full_name",
-                                    valueField: "hims_d_employee_id",
-                                    data: this.props.providers
-                                  }
-                                }}
-                              />
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table> */}
                 </div>
               </div>
             </div>
@@ -438,11 +345,15 @@ function AddVisitHandlers(state, context) {
           department_id: e.selected.department_id
         });
       }
+      // let doctors = Enumerable.from(this.props.clndepartments)
+      //   .where(w => w.hims_d_sub_department_id == e.value)
+      //   .firstOrDefault();
     },
 
     selectedHandeler: e => {
       state.setState({
-        [e.name]: e.value
+        [e.name]: e.value,
+        visittypeselect: false
       });
       if (context != null) {
         context.updateState({ [e.name]: e.value });
