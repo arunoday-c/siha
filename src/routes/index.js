@@ -18,6 +18,7 @@ import billing from "../controller/billing";
 let router = express();
 
 //connect to DB
+//function(db)
 initializedDb(db => {
   //internal middleware
   router.use(middleware({ config, db }));
