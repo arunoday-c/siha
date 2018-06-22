@@ -208,7 +208,7 @@ class DataGrid extends Component {
   };
   returnEditableColumn = () => {
     if (this.state.isEditable != null && this.state.isEditable) {
-      return <TableCell style={{ width: "10px" }} />; // hi </TableCell>;
+      return <TableCell width="100px" />; // hi </TableCell>;
     }
   };
   returnEditableButtons = rowId => {
@@ -222,7 +222,11 @@ class DataGrid extends Component {
           >
             <Done />
           </IconButton>
-          <IconButton title="Cancel" onClick={this.handleCancelRow.bind(this)}>
+          <IconButton
+            title="Cancel"
+            style={{ marginLeft: "20px" }}
+            onClick={this.handleCancelRow.bind(this)}
+          >
             <CancelIcon />
           </IconButton>
         </TableCell>
@@ -275,7 +279,7 @@ class DataGrid extends Component {
   returnEditDeleteButtons = row => {
     if (this.state.isEditable != null && this.state.isEditable == true) {
       return (
-        <TableCell padding="checkbox">
+        <TableCell>
           <IconButton
             title="Edit record"
             row-key={row[this.state.keyField]}
@@ -283,7 +287,7 @@ class DataGrid extends Component {
           >
             <EditIcon />
           </IconButton>
-          <IconButton title="Delete  record">
+          <IconButton title="Delete  record" style={{ marginLeft: "20px" }}>
             <DeleteIcon />
           </IconButton>
         </TableCell>
@@ -408,6 +412,7 @@ class DataGrid extends Component {
             {this.returnTableHeaderColumns()}
           </TableRow>
         </TableHead>
+
         <TableBody>
           {this.renderTableRows()}
           {this.renderFooter()}
