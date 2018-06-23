@@ -197,7 +197,6 @@ class VisitType extends Component {
   }
 
   changeTexts(e) {
-    debugger;
     this.setState({ [e.target.name]: e.target.value });
   }
 
@@ -489,14 +488,9 @@ class VisitType extends Component {
                               name="visit_type_desc"
                               value={row.visit_type_desc}
                               onChange={control => {
-                                debugger;
                                 row["visit_type_desc"] = control.target.value;
                                 callback(row);
                               }}
-                              // onChange={this.editTexts.bind(
-                              //   callback(row),
-                              //   this
-                              // )}
                             />
                           );
                         }

@@ -3,7 +3,6 @@
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function postVisitDetails(dataValue, callback) {
-  debugger;
   callback = callback || null;
 
   return function(dispatch) {

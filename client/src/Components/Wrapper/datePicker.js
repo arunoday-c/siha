@@ -108,6 +108,7 @@ export default class DateHandler extends Component {
                   // locale: this.state.language,
                   disabledDays: this.disabledStartDate.bind(this)
                 }}
+                dateFormat="LLL"
                 {...this.props.textBox.others}
               />
             );

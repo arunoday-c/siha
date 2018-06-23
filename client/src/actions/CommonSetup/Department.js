@@ -55,7 +55,6 @@ export function getSubDepartments(datavalue) {
 }
 
 export function getDepartmentsClinicalNon(datavalue) {
-  debugger;
   return function(dispatch) {
     algaehApiCall({
       uri:

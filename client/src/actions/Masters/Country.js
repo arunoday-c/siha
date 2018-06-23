@@ -6,7 +6,8 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 export function getCountries() {
   return function(dispatch) {
     algaehApiCall({
-      uri: "/masters/get/country",
+      // uri: "/masters/get/country",
+      uri: "/masters/get/countryStateCity",
       method: "GET",
       onSuccess: response => {
         if (response.data.success == true) {

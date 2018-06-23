@@ -118,15 +118,25 @@ class AutoComplete extends Component {
       this.setState({ single: null });
     }
   };
+
   constructor(props) {
     super(props);
     this.state = {
-      single: ""
+      single: "",
+      disabled: false
     };
   }
 
   componentWillReceiveProps(props) {
-    this.setState({ single: props.selector.value });
+    this.setState({
+      single: props.selector.value,
+      disabled:
+        props.selector.others != null
+          ? props.selector.others.disabled == null
+            ? false
+            : props.selector.others.disabled
+          : false
+    });
   }
 
   componentWillMount() {
@@ -136,7 +146,12 @@ class AutoComplete extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.selector.value !== this.state.single) return true;
+    if (
+      nextProps.selector.value !== this.state.single ||
+      (nextProps.selector.others != null &&
+        nextProps.selector.others.disabled != this.state.disabled)
+    )
+      return true;
     return false;
   }
   renderAutoComplete = () => {
@@ -145,12 +160,6 @@ class AutoComplete extends Component {
         fullWidth
         placeholder="Select multiple countries"
         style={{ background: "#fbfbfb" }}
-        // name="react-select-chip-label"
-        // label="With label"
-        // InputLabelProps={{
-        //   shrink: true
-        // }}
-
         InputProps={{
           inputComponent: () => {
             return (
@@ -165,6 +174,7 @@ class AutoComplete extends Component {
                 valueComponent={this.props.selector.valueComponet}
                 optionComponent={this.props.selector.optionComponent}
                 selectedValue={this.props.selector.value}
+                clearable={true}
                 {...this.props.selector.others}
               />
             );
