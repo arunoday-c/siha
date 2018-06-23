@@ -154,6 +154,7 @@ class AutoComplete extends Component {
       return true;
     return false;
   }
+
   renderAutoComplete = () => {
     return (
       <TextField
@@ -174,7 +175,7 @@ class AutoComplete extends Component {
                 valueComponent={this.props.selector.valueComponet}
                 optionComponent={this.props.selector.optionComponent}
                 selectedValue={this.props.selector.value}
-                clearable={true}
+                clearable={false}
                 {...this.props.selector.others}
               />
             );

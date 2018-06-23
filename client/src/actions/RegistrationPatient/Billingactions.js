@@ -5,31 +5,79 @@ export function postBillDetsils(dataValue, callback) {
   callback = callback || null;
 
   return function(dispatch) {
-    if (callback === null) {
-      dispatch({
-        type: "BILL_GET_DATA",
-        payload: dataValue
-      });
-    } else {
-      algaehApiCall({
-        uri: "/save",
-        method: "POST",
-        data: dataValue,
-        onSuccess: response => {
-          if (response.data.success === true) {
-          } else {
-          }
-          if (typeof callback === "function") {
-            callback(response.data.records);
-          }
-        },
-        onFailure: error => {
+    // if (callback === null) {
+    //   dispatch({
+    //     type: "BILL_GEN_INIT_DATA",
+    //     payload: dataValue
+    //   });
+    // } else {
+
+    // }
+
+    algaehApiCall({
+      uri: "/save",
+      method: "POST",
+      data: dataValue,
+      onSuccess: response => {
+        if (response.data.success === true) {
+        }
+        if (typeof callback === "function") {
+          callback(response.data.records);
+        }
+      },
+      onFailure: error => {
+        dispatch({
+          type: "GET_ERR_DATA",
+          departments: error
+        });
+      }
+    });
+  };
+}
+
+export function generateBill(dataValue, callback) {
+  callback = callback || null;
+  debugger;
+  return function(dispatch) {
+    // if (callback === null) {
+    //   dispatch({
+    //     type: "BILL_GET_DATA",
+    //     payload: dataValue
+    //   });
+    // } else {
+
+    // }
+
+    algaehApiCall({
+      uri: "/billing/getBillDetails",
+      method: "POST",
+      data: dataValue,
+      onSuccess: response => {
+        if (response.data.success === true) {
           dispatch({
-            type: "GET_ERR_DATA",
-            departments: error
+            type: "BILL_GEN_GET_DATA",
+            payload: response.data.records
           });
         }
-      });
-    }
+        if (typeof callback === "function") {
+          callback(response.data.records);
+        }
+      },
+      onFailure: error => {
+        dispatch({
+          type: "GET_ERR_DATA",
+          departments: error
+        });
+      }
+    });
+  };
+}
+
+export function initialStateBilldata() {
+  return function(dispatch) {
+    dispatch({
+      type: "BILL_GEN_INIT_DATA",
+      payload: {}
+    });
   };
 }

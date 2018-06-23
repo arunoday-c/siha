@@ -1,21 +1,18 @@
 div[numberbox="true"] input[type="text"] {
   text-align: right !important; }
 
-.DayPickerInput {
-  z-index: 2 !important; }
-  .DayPickerInput input {
-    font: inherit;
-    color: currentColor;
-    border: 0;
-    margin: 0;
-    padding: 6px 0 7px;
-    box-sizing: content-box;
-    background: none;
-    vertical-align: middle;
-    -webkit-tap-highlight-color: transparent;
-    background-color: #fbfbfb;
-    width: 100 !important;
-    min-width: 100%; }
+.DayPickerInput input {
+  font: inherit;
+  color: currentColor;
+  border: 0;
+  margin: 0;
+  padding: 6px 0 7px;
+  box-sizing: content-box;
+  background: none;
+  vertical-align: middle;
+  -webkit-tap-highlight-color: transparent;
+  background-color: #fbfbfb;
+  max-width: 75% !important; }
 
 .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
   background-color: #00bcb0 !important; }

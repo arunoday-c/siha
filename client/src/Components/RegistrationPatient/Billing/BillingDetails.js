@@ -48,7 +48,7 @@ export default class BillingDetails extends PureComponent {
                 />
               }
             </li>
-            <li
+            {/* <li
               className={"nav-item tab-button " + ReciptDetails}
               onClick={this.openTab.bind(this, "Recipts-details")}
             >
@@ -59,11 +59,13 @@ export default class BillingDetails extends PureComponent {
                   }}
                 />
               }
-            </li>
-          </ul>          
+            </li> */}
+          </ul>
         </div>
         <div className="billing-section">
-          {this.state.actionBillingDetails ? <BillingForm /> : null}
+          {this.state.actionBillingDetails ? (
+            <BillingForm PatRegIOputs={this.props.PatRegIOputs} />
+          ) : null}
           {this.state.actionReciptDetails ? null : <ReciptForm />}
         </div>
       </div>

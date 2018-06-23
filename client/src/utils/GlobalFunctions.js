@@ -46,3 +46,27 @@ export const FORMAT_GENDER = [
   { name: "Female", arabic_name: "إناثا", value: "Female" },
   { name: "Others", arabic_name: "الآخرين", value: "Others" }
 ];
+
+export const FORMAT_PAYTYPE = [
+  { name: "Cash", arabic_name: "السيولة النقدية", value: "CA" },
+  { name: "Card", arabic_name: "بطاقة", value: "CD" },
+  { name: "Cheque", arabic_name: "التحقق من", value: "CH" }
+];
+
+export const FORMAT_CARDTYPE = [
+  { name: "Master", arabic_name: "رئيس", value: "CA" },
+  { name: "Visa", arabic_name: "تأشيرة", value: "CD" },
+  { name: "Mada", arabic_name: "مادا", value: "CH" }
+];
+
+export const FORMAT_COUNTER = [
+  { name: "OP", arabic_name: "OP", value: "1" },
+  { name: "Emergency", arabic_name: "حالة طوارئ", value: "2" },
+  { name: "IP", arabic_name: "IP", value: "3" }
+];
+
+export const FORMAT_SHIFT = [
+  { name: "Morning", arabic_name: "صباح", value: "1" },
+  { name: "Afternoon", arabic_name: "بعد الظهر", value: "2" },
+  { name: "Night", arabic_name: "ليل", value: "3" }
+];

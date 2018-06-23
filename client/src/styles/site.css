@@ -434,3 +434,6 @@ body {
 
 input[type="text"] {
   font-size: 14px; }
+
+DayPickerInput {
+  border-bottom: 1px dashed #000; }

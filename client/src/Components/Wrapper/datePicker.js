@@ -52,7 +52,8 @@ export default class DateHandler extends Component {
     super(props);
     this.state = {
       language: "en",
-      value: null
+      value: null,
+      disabled: false
     };
     let lang = getCookie("Language");
     this.setState({
@@ -61,8 +62,11 @@ export default class DateHandler extends Component {
     });
   }
   componentWillMount() {
+    debugger;
     if (this.props.value != null)
-      this.setState({ value: moment(this.props.value).format("YYYY-MM-DD") });
+      this.setState({
+        value: moment(this.props.value).format("YYYY-MM-DD")
+      });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== null) {
@@ -108,12 +112,13 @@ export default class DateHandler extends Component {
                   // locale: this.state.language,
                   disabledDays: this.disabledStartDate.bind(this)
                 }}
-                dateFormat="LLL"
+                // dateFormat="LLL"
                 {...this.props.textBox.others}
               />
             );
           }
         }}
+        disabled={this.props.disabled == null ? false : this.props.disabled}
       />
     );
   };
@@ -129,7 +134,7 @@ export default class DateHandler extends Component {
         {...this.renderOthers()}
       >
         {this.generateLabel()}
-        <br />
+
         {this.renderDatePicker()}
       </div>
     );

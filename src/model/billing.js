@@ -10,7 +10,7 @@ let billingHeaderModel = {
   patient_id: null,
   billing_type_id: null,
   visit_id: null,
-  bill_number: 0,
+  bill_number: null,
   incharge_or_provider: null,
   bill_date: null,
   advance_amount: 0,
@@ -46,6 +46,15 @@ let billingHeaderModel = {
   cancel_by: null,
   bill_comments: null
 };
+
+let receiptHeaderModel = {
+  total_amount: 0,
+  unbalanced_amount: 0,
+  cash_amount: 0,
+  card_amount: 0,
+  cheque_amount: 0
+};
+
 let billingDetailsModel = {
   hims_f_billing_details_id: null,
   hims_f_billing_header_id: null,
@@ -62,7 +71,7 @@ let billingDetailsModel = {
   copay_amount: 0,
   deductable_amount: 0,
   deductable_percentage: 0,
-  tax_inclusive: 'N',
+  tax_inclusive: "N",
   patient_tax: 0,
   company_tax: 0,
   total_tax: 0,
@@ -431,7 +440,6 @@ let billingCalculations = (req, res, next) => {
   }
 };
 
-
 //created by irfan: functionality for calculating bill headder and bill details
 let getBillDetails = (req, res, next) => {
   debugFunction("getBillDetails");
@@ -445,6 +453,7 @@ let getBillDetails = (req, res, next) => {
       if (error) {
         next(error);
       }
+      debugLog("Service ID" + servicesDetails.hims_d_services_id);
 
       connection.query(
         "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id`=? ",
@@ -490,10 +499,11 @@ let getBillDetails = (req, res, next) => {
           );
           if (billingHeaderModel.sheet_discount_amount > 0) {
             billingHeaderModel.sheet_discount_percentage =
-              (gross_total * billingHeaderModel.sheet_discount_amount) / 100;
+              (billingHeaderModel.sheet_discount_amount / gross_total) * 100;
           } else if (billingHeaderModel.sheet_discount_percentage > 0) {
             billingHeaderModel.sheet_discount_amount =
-              gross_total / billingHeaderModel.sheet_discount_percentage;
+              (gross_total * billingHeaderModel.sheet_discount_percentage) /
+              100;
           }
 
           billingHeaderModel.net_amount =
@@ -503,8 +513,28 @@ let getBillDetails = (req, res, next) => {
           billingHeaderModel.receiveable_amount =
             billingHeaderModel.net_amount - billingHeaderModel.credit_amount;
 
+          extend(
+            receiptHeaderModel,
+            {
+              total_amount: 0,
+              unbalanced_amount: 0,
+              cash_amount: billingHeaderModel.receiveable_amount,
+              card_amount: 0,
+              cheque_amount: 0
+            },
+            req.body
+          );
+          receiptHeaderModel.total_amount =
+            receiptHeaderModel.cash_amount +
+            receiptHeaderModel.card_amount +
+            receiptHeaderModel.cheque_amount;
+
+          receiptHeaderModel.unbalanced_amount =
+            billingHeaderModel.receiveable_amount -
+            receiptHeaderModel.total_amount;
+
           debugLog("Results are recorded...", result);
-          req.records = extend(billingHeaderModel, {
+          req.records = extend(billingHeaderModel, receiptHeaderModel, {
             details: [billingDetailsModel]
           });
           next();
@@ -520,5 +550,4 @@ module.exports = {
   addBilling,
   billingCalculations,
   getBillDetails
-  
 };

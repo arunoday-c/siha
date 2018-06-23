@@ -1,55 +1,101 @@
-.hptl-phase1-billing-form{
-	background: #fff;
-	border-radius: 5px;
-	padding: 5px;
+.hptl-phase1-billing-form {
+  background: #fff;
+  border-radius: 5px;
 }
 
-.hptl-phase1-add-billing-form{
-	label{
-		font-weight: 400;
-		font-size: 11px;
-	}
+.hptl-phase1-add-billing-form {
+  .primary-details {
+    padding: 5px;
+    border-right: 1px solid #000;
+    @media only screen and (max-width: 904px) {
+      padding: 5px;
+    }
+    .primary-box-container {
+      padding: 5px;
+    }
 
-	.boderlabel{
-		border-bottom : 1px dashed #000;
-		// width: 100%;
-	}
+    .last-box-container {
+      padding: 5px;
+      border: 1px solid #000;
+    }
 
-	mark{
-		background: none;
-		color: red;
-	}
-	.form-details{
-		padding: 5px;
-		padding-bottom: 0px;
-	}
-	.radio-design{
-		position: absolute;
-	    top: 5px;
-	    left: 36px;
-	}
-	.refactor-design{
-		min-height: 28px;
-	    background-color: #fbfbfb;
-	    border: 0px;
-	}
-	.file-name-upload{
-		margin-left: 4%;
-		margin-top: 2%;
-	}
-	.table-detail{
-		background: "#b4e2df"
-	}
-	th, td{
-		border-right: 1px solid #e6e6e6;
-		font-size: 11px;
-	}
+    .last-box-label {
+      padding: 15px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+  }
 
-	.header-details{
-		padding: 5px;
-		padding-bottom: 0px;
-		border-radius: 5px;
-		border: 1px solid #d3d3d3;
-	}
+  label {
+    font-weight: 400;
+    font-size: 11px;
+  }
 
+  .boderlabel {
+    border-bottom: 1px dashed #000;
+    // width: 100%;
+  }
+
+  mark {
+    background: none;
+    color: red;
+  }
+  .form-details {
+    padding: 5px;
+    padding-bottom: 0px;
+  }
+  .radio-design {
+    position: absolute;
+    top: 5px;
+    left: 36px;
+  }
+  .refactor-design {
+    min-height: 28px;
+    background-color: #fbfbfb;
+    border: 0px;
+  }
+  .file-name-upload {
+    margin-left: 4%;
+    margin-top: 2%;
+  }
+  .table-detail {
+    background: "#b4e2df";
+  }
+  th,
+  td {
+    border-right: 1px solid #e6e6e6;
+    font-size: 11px;
+  }
+
+  .header-details {
+    padding: 5px;
+    padding-bottom: 0px;
+    border-radius: 5px;
+    border: 1px solid #d3d3d3;
+  }
+
+  .secondary-details {
+    padding: 5px;
+    .secondary-box-container {
+      padding: 5px;
+      .attach-design {
+        background: #8c8c8c;
+        min-height: 30px;
+        color: #fff;
+        padding: 5px;
+        position: relative;
+        top: 99px;
+        cursor: pointer;
+        margin-left: -1px;
+        margin-right: -1px;
+        font-size: 11px;
+      }
+      .preview-image {
+        position: absolute;
+        top: -1px;
+        left: 15px;
+        height: 101px;
+      }
+    }
+  }
 }

@@ -6,6 +6,10 @@ import "./../../../../styles/site.css";
 import { getDepartmentsClinicalNon } from "../../../../actions/CommonSetup/Department.js";
 import { getVisittypes } from "../../../../actions/CommonSetup/VisitTypeactions.js";
 import { getProviderDetails } from "../../../../actions/serviceActions";
+import {
+  generateBill,
+  initialStateBilldata
+} from "../../../../actions/RegistrationPatient/Billingactions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -18,6 +22,11 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import {
+  DeptselectedHandeler,
+  selectedHandeler,
+  doctorselectedHandeler
+} from "./AddConsultationDetails";
 
 const FORMAT_DEFAULT = [
   { name: "Mohammed", value: 1 },
@@ -60,6 +69,8 @@ class AddConsultationForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
+    // console.log("Bill Details", nextProps.genbill);
     this.setState(nextProps.PatRegIOputs);
   }
 
@@ -99,10 +110,7 @@ class AddConsultationForm extends Component {
                           valueField: "hims_d_visit_type_id",
                           data: this.props.visittypes
                         },
-                        onChange: AddVisitHandlers(
-                          this,
-                          context
-                        ).selectedHandeler.bind(this)
+                        onChange: selectedHandeler.bind(this, this, context)
                         // others: {
                         //   clearRenderer: e => {
                         //     debugger;
@@ -132,10 +140,7 @@ class AddConsultationForm extends Component {
                         others: {
                           disabled: this.state.visittypeselect
                         },
-                        onChange: AddVisitHandlers(
-                          this,
-                          context
-                        ).DeptselectedHandeler.bind(this)
+                        onChange: DeptselectedHandeler.bind(this, this, context)
                       }}
                     />
                   </div>
@@ -161,10 +166,11 @@ class AddConsultationForm extends Component {
                         others: {
                           disabled: this.state.visittypeselect
                         },
-                        onChange: AddVisitHandlers(
+                        onChange: doctorselectedHandeler.bind(
+                          this,
                           this,
                           context
-                        ).selectedHandeler.bind(this)
+                        )
                       }}
                     />
 
@@ -331,42 +337,12 @@ class AddConsultationForm extends Component {
   }
 }
 
-function AddVisitHandlers(state, context) {
-  context = context || null;
-  return {
-    DeptselectedHandeler: e => {
-      state.setState({
-        [e.name]: e.value,
-        department_id: e.selected.department_id
-      });
-      if (context != null) {
-        context.updateState({
-          [e.name]: e.value,
-          department_id: e.selected.department_id
-        });
-      }
-      // let doctors = Enumerable.from(this.props.clndepartments)
-      //   .where(w => w.hims_d_sub_department_id == e.value)
-      //   .firstOrDefault();
-    },
-
-    selectedHandeler: e => {
-      state.setState({
-        [e.name]: e.value,
-        visittypeselect: false
-      });
-      if (context != null) {
-        context.updateState({ [e.name]: e.value });
-      }
-    }
-  };
-}
-
 function mapStateToProps(state) {
   return {
     clndepartments: state.clndepartments.clndepartments,
     visittypes: state.visittypes.visittypes,
-    providers: state.providers.providers
+    providers: state.providers.providers,
+    genbill: state.genbill.genbill
   };
 }
 
@@ -375,7 +351,8 @@ function mapDispatchToProps(dispatch) {
     {
       getDepartmentsClinicalNon: getDepartmentsClinicalNon,
       getVisittypes: getVisittypes,
-      getProviderDetails: getProviderDetails
+      getProviderDetails: getProviderDetails,
+      generateBill: generateBill
     },
     dispatch
   );
