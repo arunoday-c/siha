@@ -2,7 +2,8 @@ import httpStatus from "../utils/httpStatus";
 import extend from "extend";
 import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 import moment from "moment";
-import { debuglog, debugFunction } from "util";
+import { debugLog, debugFunction } from "../utils/logging";
+
 import { LINQ } from "node-linq";
 let billingHeaderModel = {
   hims_f_billing_header_id: null,
@@ -45,6 +46,63 @@ let billingHeaderModel = {
   cancel_by: null,
   bill_comments: null
 };
+let billingDetailsModel = {
+  hims_f_billing_details_id: null,
+  hims_f_billing_header_id: null,
+  service_type_id: null,
+  services_id: null,
+  quantity: null,
+  unit_cost: null,
+  insurance_yesno: null,
+  gross_amount: null,
+  discount_amout: null,
+  discount_percentage: null,
+  net_amout: null,
+  copay_percentage: null,
+  copay_amount: null,
+  deductable_amount: null,
+  deductable_percentage: null,
+  tax_inclusive: null,
+  patient_tax: null,
+  company_tax: null,
+  total_tax: null,
+  patient_resp: null,
+  patient_payable: null,
+  comapany_resp: null,
+  company_payble: null,
+  sec_company: null,
+  sec_deductable_percentage: null,
+  sec_deductable_amount: null,
+  sec_company_res: null,
+  sec_company_tax: null,
+  sec_company_paybale: null,
+  sec_copay_percntage: null,
+  sec_copay_amount: null,
+  created_by: null,
+  created_date: null,
+  updated_by: null,
+  updated_date: null,
+  record_status: null
+};
+let servicesModel = {
+  hims_d_services_id: null,
+  service_code: null,
+  cpt_code: null,
+  service_name: null,
+  service_desc: null,
+  sub_department_id: null,
+  hospital_id: null,
+  service_type_id: null,
+  standard_fee: null,
+  discount: null,
+  effective_start_date: null,
+  effectice_end_date: null,
+  created_by: null,
+  created_date: null,
+  updated_by: null,
+  updated_date: null,
+  record_status: null
+};
 
 let addBilling = (req, res, next) => {
   let dataBase = null;
@@ -57,9 +115,12 @@ let addBilling = (req, res, next) => {
 
     let inputParam = extend(billingHeaderModel, req.body);
 
-    if (inputParam.details == null && inputParam.details.length == 0) {
+    if (inputParam.details == null || inputParam.details.length == 0) {
       next(
-        httpStatus(httpStatus.badRequest, "Please select atleast one service.")
+        httpStatus.generateError(
+          httpStatus.badRequest,
+          "Please select atleast one service."
+        )
       );
     }
 
@@ -86,10 +147,11 @@ let addBilling = (req, res, next) => {
                 next(error);
               });
             }
-            let fromDate = moment(records[0].visit_expiery_date).format(
-              "YYYYMMDD"
-            );
-            let toDate = moment(new Date()).format("YYYYMMDD");
+            let fromDate;
+            let toDate;
+            fromDate = moment(records[0].visit_expiery_date).format("YYYYMMDD");
+            toDate = moment(new Date()).format("YYYYMMDD");
+
             if (toDate > fromDate) {
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
@@ -369,7 +431,94 @@ let billingCalculations = (req, res, next) => {
   }
 };
 
+
+//created by irfan: functionality for calculating bill headder and bill details
+let getBillDetails = (req, res, next) => {
+  debugFunction("getBillDetails");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let servicesDetails = extend(servicesModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id`=? ",
+        [servicesDetails.hims_d_services_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          let records = result[0];
+
+          extend(billingDetailsModel, {
+            quantity: 1,
+            unit_cost: records.standard_fee,
+            gross_amount: records.standard_fee,
+            discount_amout: 0,
+            discount_percentage: 0,
+            net_amout: records.standard_fee,
+            patient_resp: records.standard_fee,
+            patient_payable: records.standard_fee
+          });
+
+          let sub_total_amount = new LINQ([billingDetailsModel]).Sum(
+            s => s.gross_amount
+          );
+          let gross_total = new LINQ([billingDetailsModel]).Sum(
+            s => s.net_amout
+          );
+          // debugLog("Net amount" + billingDetailsModel.);
+          extend(
+            billingHeaderModel,
+            {
+              sub_total_amount: sub_total_amount,
+              gross_total: gross_total,
+              patient_res: gross_total,
+              patient_payable: gross_total,
+              sheet_discount_amount: 0,
+              sheet_discount_percentage: 0,
+              net_amount: 0,
+              receiveable_amount: 0
+            },
+            req.body
+          );
+          if (billingHeaderModel.sheet_discount_amount > 0) {
+            billingHeaderModel.sheet_discount_percentage =
+              (gross_total * billingHeaderModel.sheet_discount_amount) / 100;
+          } else if (billingHeaderModel.sheet_discount_percentage > 0) {
+            billingHeaderModel.sheet_discount_amount =
+              gross_total / billingHeaderModel.sheet_discount_percentage;
+          }
+
+          billingHeaderModel.net_amount =
+            billingHeaderModel.gross_total -
+            billingHeaderModel.sheet_discount_amount;
+
+          billingHeaderModel.receiveable_amount =
+            billingHeaderModel.net_amount - billingHeaderModel.credit_amount;
+
+          debugLog("Results are recorded...", result);
+          req.records = extend(billingHeaderModel, {
+            details: [billingDetailsModel]
+          });
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addBilling,
-  billingCalculations
+  billingCalculations,
+  getBillDetails
+  
 };
