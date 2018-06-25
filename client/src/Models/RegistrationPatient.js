@@ -57,7 +57,8 @@ export default {
         mlc_wound_certified_date: "",
         visit_code: "",
         visitDetails: null,
-        patient_id: null
+        patient_id: null,
+        hims_d_services_id: null
       },
       param
     );

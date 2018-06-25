@@ -36,7 +36,6 @@ import {
   FORMAT_GENDER
 } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
-import moment from "moment";
 
 const MobileFormat = "+91 (###)-## #####";
 
@@ -97,23 +96,27 @@ class AddPatientForm extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.PatRegIOputs);
-    if (this.state.country_id != null) {
+    if (this.state.country_id != nextProps.country_id) {
       debugger;
       let country = Enumerable.from(this.props.countries)
         .where(w => w.hims_d_country_id == this.state.country_id)
         .firstOrDefault();
       let states = country != null ? country.states : [];
-      let cities = Enumerable.from(states)
-        .where(w => w.hims_d_state_id == this.state.state_id)
-        .firstOrDefault();
+      if (nextProps.state_id != this.state.state_id) {
+        let cities = Enumerable.from(states)
+          .where(w => w.hims_d_state_id == this.state.state_id)
+          .firstOrDefault();
 
-      this.props.getStates(states, callback => {
-        this.setState({
-          state_id: this.state.state_id
+        this.props.getStates(states, callback => {
+          this.setState({
+            state_id: this.state.state_id
+          });
         });
-      });
-      debugger;
-      this.props.getCities(cities.cities);
+        debugger;
+        if (cities != "undefined") {
+          this.props.getCities(cities.cities);
+        }
+      }
     }
   }
 
@@ -506,7 +509,6 @@ class AddPatientForm extends PureComponent {
                   <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 secondary-details">
                     <div className="row secondary-box-container">
                       <AlgaehDateHandler
-                        style={{ borderBottom: "1px solid #2020" }}
                         div={{ className: "col-lg-6" }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
                         textBox={{ className: "txt-fld" }}
@@ -514,6 +516,9 @@ class AddPatientForm extends PureComponent {
                         events={{
                           onChange: calculateAge.bind(this, this, context)
                         }}
+                        // others={
+                        //   (style = { "border-bottom": "1px dashed #000" })
+                        // }
                         value={DateofBirth}
                         // value={this.state.date_of_birth}
                       />
@@ -526,22 +531,6 @@ class AddPatientForm extends PureComponent {
                         // events={{onChange: AddPatientHandlers(this,context).CalculateAge.bind(this)}}
                         value={this.state.hijiri_date}
                       />
-                      {/* <div className="col-xs-6 col-sm-6 col-AddPatientHandlersmd-6 col-lg-6 col-xl-6">
-                        <AlgaehLabelAddPatientHandlers
-                          label={{AddPatientHandlers
-                            fieldName: "hijiri_date",AddPatientHandlers
-                            isImp: false,                            
-                          }}
-                        />
-                        <br />
-                        <TextField
-                          id="date"
-                          type="date"
-                          onChange={AddPatientHandlers(this,context).CalculateAge.bind(this)}
-                          className="text_field"
-                          value={this.state.date_of_birth}
-                        />
-                      </div> */}
                     </div>
 
                     <div className="row secondary-box-container">
@@ -583,41 +572,6 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
                     </div>
-                    {/* <div className="row secondary-box-container">
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-6" }}
-                        label={{
-                          fieldName: "secondary_identity_id",
-                          isImp: false
-                        }}
-                        selector={{
-                          name: "secondary_identity_id",
-                          className: "select-fld",
-                          value: this.state.secondary_identity_id,
-                          dataSource: {
-                            textField: "identity_document_name",
-                            valueField: "hims_d_identity_document_id",
-                            data: this.props.idtypes
-                          },
-                          onChange: texthandle.bind(this, this, context)
-                        }}
-                      />
-
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-6" }}
-                        label={{
-                          fieldName: "secondary_id_no"
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "secondary_id_no",
-                          value: this.state.secondary_id_no,
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          }
-                        }}
-                      />
-                    </div> */}
                     <div className="row secondary-box-container">
                       <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                         <div className="image-drop-area">
@@ -683,32 +637,6 @@ class AddPatientForm extends PureComponent {
                           />
                         </div>
                       </div>
-                      {/* <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                        <div className="image-drop-area">
-                          <Dropzone
-                            className="dropzone"
-                            onDrop={onDrop.bind(this, "fileSecPreview")}
-                            id="attach-sec-id"
-                            accept="image/*"
-                            multiple={false}
-                            name="image"
-                          >
-                            <div
-                              className="attach-design text-center"
-                              id="attach-sec-id"
-                            >
-                              ATTACH SEC. ID
-                            </div>
-                          </Dropzone>
-                        </div>
-                        <div>
-                          <img
-                            className="preview-image"
-                            src={this.state.file["fileSecPreview"]}
-                            style={{ width: this.widthImg, height: "107px" }}
-                          />
-                        </div>
-                      </div> */}
                     </div>
                   </div>
                 </div>

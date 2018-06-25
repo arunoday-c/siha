@@ -24,13 +24,13 @@ const MobileFormat = "+91 (###)-## #####";
 class OtherInfo extends Component {
   constructor(props) {
     super(props);
-    let InputOutput = this.props.PatRegIOputs;
+    // let InputOutput = this.props.PatRegIOputs;
 
-    if (this.props.patients.length > 0) {
-      InputOutput = PatRegIOputs.inputParam(this.props.patients[0]);
-    }
+    // if (this.props.patients.length > 0) {
+    //   InputOutput = PatRegIOputs.inputParam(this.props.patients[0]);
+    // }
 
-    this.state = InputOutput;
+    this.state = this.props.PatRegIOputs;
   }
 
   componentDidMount() {
@@ -78,9 +78,6 @@ class OtherInfo extends Component {
                     value: this.state.emergency_contact_number,
                     className: "txt-fld",
                     name: "emergency_contact_number",
-                    mask: {
-                      format: MobileFormat
-                    },
                     events: {
                       onChange: AddPatientOtherHandlers(
                         this,
@@ -164,7 +161,8 @@ function AddPatientOtherHandlers(state, context) {
       });
     },
 
-    numbertexthandle: (ctrl, e) => {
+    numbertexthandle: e => {
+      debugger;
       state.setState({
         [e.target.name]: e.target.value
       });

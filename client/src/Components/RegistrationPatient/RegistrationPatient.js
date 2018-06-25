@@ -15,6 +15,8 @@ import {
 } from "../../actions/RegistrationPatient/Registrationactions";
 
 import { postVisitDetails } from "../../actions/RegistrationPatient/Visitactions";
+import { generateBill } from "../../actions/RegistrationPatient/Billingactions";
+
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -54,7 +56,20 @@ class RegistrationPatient extends Component {
       AGEDD: 0,
       breadCrumbWidth: null,
       saveEnable: false,
-      clearData: ""
+      clearData: "",
+      pay_cash: "CA",
+      pay_creidt: "CD",
+      pay_cheque: "CH",
+      cash_amount: 0,
+      card_number: "",
+      card_date: null,
+      card_amount: 0,
+      cheque_number: "",
+      cheque_date: null,
+      cheque_amount: 0,
+      unbalanced_amount: 0,
+      advance: 0,
+      total_amount: 0
     };
   }
 
@@ -141,6 +156,16 @@ class RegistrationPatient extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
+
+    if (nextProps.genbill.length != 0) {
+      // let IOputs = extend(PatRegIOputs.inputParam(), nextProps.genbill);
+      this.setState({ ...this.state, ...nextProps.genbill });
+      // this.setState({ ...this.state, ...nextProps.genbill });
+      // this.setState(nextProps.genbill);
+      // this.setState(BillingIOputs.inputParam(nextProps.genbill));
+    }
+
     console.log("", this.props.SelectLanguage);
   }
 
@@ -279,7 +304,8 @@ class RegistrationPatient extends Component {
 
 function mapStateToProps(state) {
   return {
-    patients: state.patients.patients
+    patients: state.patients.patients,
+    genbill: state.genbill.genbill
   };
 }
 
@@ -289,7 +315,8 @@ function mapDispatchToProps(dispatch) {
       postPatientDetails: postPatientDetails,
       getPatientDetails: getPatientDetails,
       initialStatePatientData: initialStatePatientData,
-      postVisitDetails: postVisitDetails
+      postVisitDetails: postVisitDetails,
+      generateBill: generateBill
     },
     dispatch
   );
