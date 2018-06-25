@@ -113,7 +113,7 @@ export default ({ config, db }) => {
   );
 
   api.get(
-    "/get/selectDoctors",
+    "/get/get_All_Doctors_DepartmentWise",
     selectdoctors,
     (req, res, next) => {
       let result = req.records;
