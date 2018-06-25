@@ -481,28 +481,29 @@ let selectdoctors = (req, res, next) => {
           " and hims_d_department.department_type='NON-CLINICAL' ";
       }
 
-      connection.query(
-        "select hims_d_sub_department.hims_d_sub_department_id ,sub_department_code,sub_department_name\
-         ,sub_department_desc, arabic_sub_department_name, hims_d_sub_department.department_id,hims_d_department.department_type \
-         from hims_d_sub_department,hims_d_department where \
-         hims_d_sub_department.department_id=hims_d_department.hims_d_department_id \
-         and hims_d_department.record_status='A' and sub_department_status='A' \
-         " +
-          connectionString,
-        (error, result) => {
-          if (error) {
-            connection.release();
-            next(error);
-          }
-          // req.records = result;
-          //sbdepartment = extend(sbdepartment, result.body);
-          // console.log(sbdepartment);
-          //next();
-        }
-      );
+      // connection.query(
+      //   "select hims_d_sub_department.hims_d_sub_department_id ,sub_department_code,sub_department_name\
+      //    ,sub_department_desc, arabic_sub_department_name, hims_d_sub_department.department_id,hims_d_department.department_type \
+      //    from hims_d_sub_department,hims_d_department where \
+      //    hims_d_sub_department.department_id=hims_d_department.hims_d_department_id \
+      //    and hims_d_department.record_status='A' and sub_department_status='A' \
+      //    " +
+      //     connectionString,
+      //   (error, result) => {
+      //     if (error) {
+      //       connection.release();
+      //       next(error);
+      //     }
+      //     // req.records = result;
+      //     //sbdepartment = extend(sbdepartment, result.body);
+      //     // console.log(sbdepartment);
+      //     //next();
+      //   }
+      // );
 
       connection.query(
-        "select hims_m_employee_department_mappings.sub_department_id,\
+        "select hims_m_employee_department_mappings.employee_id,\
+         hims_m_employee_department_mappings.sub_department_id,\
       concat( hims_d_employee.first_name,' ',\
       hims_d_employee.middle_name,' ',\
       hims_d_employee.last_name) full_name,\
@@ -531,14 +532,12 @@ let selectdoctors = (req, res, next) => {
             next(error);
           }
 
-          let departments = new LINQ(results)
-            .GroupBy(g => {
-              return g.sub_department_id;
-            })
-            .SelectMany(s => {
-              return s;
-            })
-            .ToArray();
+          let departments = new LINQ(results).GroupBy(g => g.sub_department_id);
+          let doctors = new LINQ(results).GroupBy(g => g.employee_id);
+          // .SelectMany(s => {
+          //   return s;
+          // })
+          // .ToArray();
           // .Select(s => {
           //   debugLog("log of ", s);
           //   return {
@@ -549,7 +548,7 @@ let selectdoctors = (req, res, next) => {
           // });
           //.ToArray();
 
-          req.records = departments;
+          req.records = { departments: departments, doctors: doctors };
           //extend(sbdepartment, doctorsInfo);
           next();
         }
