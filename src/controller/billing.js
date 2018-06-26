@@ -25,7 +25,7 @@ export default ({ config, db }) => {
   );
 
   api.post(
-    "/addReceiptDetails",
+    "/addReceipt",
     addReceipt,
     (req, res, next) => {
       let result = req.records;
