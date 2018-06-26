@@ -21,3 +21,6 @@ div[numberbox="true"] input[type="text"] {
   color: #00bcb0 !important;
   padding-left: 70px;
   font-weight: bold; }
+
+table td:first-child {
+  width: 100px !important; }

@@ -29,3 +29,9 @@ div[numberbox="true"] {
   padding-left: 70px;
   font-weight: bold;
 }
+
+table {
+  td:first-child {
+    width: 100px !important;
+  }
+}

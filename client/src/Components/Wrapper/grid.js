@@ -16,7 +16,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import IconButton from "material-ui/IconButton";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
-
+import "./wrapper.css";
 class DataGrid extends Component {
   constructor(props) {
     super(props);
@@ -208,7 +208,7 @@ class DataGrid extends Component {
   };
   returnEditableColumn = () => {
     if (this.state.isEditable != null && this.state.isEditable) {
-      return <TableCell width="100px" />; // hi </TableCell>;
+      return <TableCell />; // hi </TableCell width="100px">;
     }
   };
   returnEditableButtons = rowId => {
