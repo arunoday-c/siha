@@ -6,6 +6,7 @@ import path from "path";
 import mkdirp from "mkdirp";
 import { logger, debugFunction, debugLog } from "./logging";
 //import { LINQ } from "node-linq";
+import _ from "underscore";
 let paging = options => {
   let pageLimit = options.paging.pageNo * options.paging.pageSize;
   return {
@@ -338,6 +339,20 @@ let downloadFile = (req, res, callBack) => {
   });
 };
 
+let bulkInputArrayObject = (arrayObj, outArray, objectToChang) => {
+  objectToChang = objectToChang || {};
+  _.each(arrayObj, (item, index) => {
+    outArray.push(
+      Object.keys(item).map(key => {
+        if (objectToChang[key] != null) {
+          return objectToChang[key];
+        }
+        return item[key];
+      })
+    );
+  });
+};
+
 module.exports = {
   selectStatement,
   paging,
@@ -348,5 +363,6 @@ module.exports = {
   deleteRecord,
   releaseDBConnection,
   uploadFile,
-  downloadFile
+  downloadFile,
+  bulkInputArrayObject
 };

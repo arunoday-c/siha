@@ -1,6 +1,10 @@
 import httpStatus from "../utils/httpStatus";
 import extend from "extend";
-import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
+import {
+  bulkInputArrayObject,
+  runningNumber,
+  releaseDBConnection
+} from "../utils";
 import moment from "moment";
 import { debugLog, debugFunction } from "../utils/logging";
 
@@ -156,6 +160,7 @@ let addBilling = (req, res, next) => {
                 next(error);
               });
             }
+            debugLog("irf at 1 q %j", records);
             let fromDate;
             let toDate;
             fromDate = moment(records[0].visit_expiery_date).format("YYYYMMDD");
@@ -183,70 +188,72 @@ let addBilling = (req, res, next) => {
                       next(error);
                     });
                   }
-                  debuglog("new Bill number : " + newNumber);
+                  debugLog("new Bill number : " + newNumber);
                   inputParam["bill_number"] = newNumber;
 
-                  inputParam.sub_total_amount = new LINQ(
-                    inputParam.details
-                  ).Sum(d => d.gross_amount);
-                  inputParam.net_total = new LINQ(inputParam.details).Sum(
-                    d => d.net_amount
-                  );
-                  inputParam.discount_amount = new LINQ(inputParam.details);
-                  Sum(d => d.discount_amout);
+                  // inputParam.sub_total_amount = new LINQ(
+                  //   inputParam.details
+                  // ).Sum(d => d.gross_amount);
+                  // inputParam.net_total = new LINQ(inputParam.details).Sum(
+                  //   d => d.net_amount
+                  // );
+                  // inputParam.discount_amount = new LINQ(inputParam.details).Sum(
+                  //   d => d.discount_amout
+                  // );
 
-                  inputParam.total_tax = new LINQ(inputParam.details).Sum(
-                    d => d.total_tax
-                  );
-                  inputParam.patient_tax = new LINQ(inputParam.details).Sum(
-                    d => d.patient_tax
-                  );
-                  inputParam.company_tax = new LINQ(inputParam.details).Sum(
-                    d => d.company_tax
-                  );
-                  inputParam.gross_total = new LINQ(inputParam.details).Sum(
-                    d => d.net_amount
-                  );
-                  inputParam.copay_amount = new LINQ(inputParam.details).Sum(
-                    d => d.copay_amount
-                  );
+                  // inputParam.total_tax = new LINQ(inputParam.details).Sum(
+                  //   d => d.total_tax
+                  // );
+                  // inputParam.patient_tax = new LINQ(inputParam.details).Sum(
+                  //   d => d.patient_tax
+                  // );
+                  // inputParam.company_tax = new LINQ(inputParam.details).Sum(
+                  //   d => d.company_tax
+                  // );
+                  // inputParam.gross_total = new LINQ(inputParam.details).Sum(
+                  //   d => d.net_amount
+                  // );
+                  // inputParam.copay_amount = new LINQ(inputParam.details).Sum(
+                  //   d => d.copay_amount
+                  // );
 
-                  inputParam.deductable_amount = new LINQ(
-                    inputParam.details
-                  ).Sum(d => d.deductable_amount);
+                  // inputParam.deductable_amount = new LINQ(
+                  //   inputParam.details
+                  // ).Sum(d => d.deductable_amount);
 
-                  inputParam.patient_resp = new LINQ(inputParam.details).Sum(
-                    d => d.deductable_amount
-                  );
-                  inputParam.company_res = new LINQ(inputParam.details).Sum(
-                    d => d.comapany_resp
-                  );
-                  inputParam.company_res = new LINQ(inputParam.details).Sum(
-                    d => d.comapany_resp
-                  );
-                  inputParam.sec_company_res = new LINQ(inputParam.details).Sum(
-                    d => d.sec_company_res
-                  );
-                  inputParam.patient_payable = new LINQ(inputParam.details).Sum(
-                    d => d.patient_payable
-                  );
-                  inputParam.company_payable = new LINQ(inputParam.details).Sum(
-                    d => d.company_payable
-                  );
-                  inputParam.sec_company_payable = new LINQ(
-                    inputParam.details
-                  ).Sum(d => d.sec_company_payable);
-                  inputParam.sec_company_tax = new LINQ(inputParam.details).Sum(
-                    d => d.sec_company_tax
-                  );
-                  inputParam.sheet_discount_amount =
-                    inputParam.sheet_discount_percentage /
-                    100 /
-                    inputParam.gross_amount;
-                  inputParam.net_amount =
-                    inputParam.gross_total - inputParam.sheet_discount_amount;
-                  inputParam.receiveable_amount =
-                    inputParam.net_amount - inputParam.credit_amount;
+                  // inputParam.patient_resp = new LINQ(inputParam.details).Sum(
+                  //   d => d.deductable_amount
+                  // );
+                  // inputParam.company_res = new LINQ(inputParam.details).Sum(
+                  //   d => d.comapany_resp
+                  // );
+                  // inputParam.company_res = new LINQ(inputParam.details).Sum(
+                  //   d => d.comapany_resp
+                  // );
+                  // inputParam.sec_company_res = new LINQ(inputParam.details).Sum(
+                  //   d => d.sec_company_res
+                  // );
+                  // inputParam.patient_payable = new LINQ(inputParam.details).Sum(
+                  //   d => d.patient_payable
+                  // );
+                  // inputParam.company_payable = new LINQ(inputParam.details).Sum(
+                  //   d => d.company_payable
+                  // );
+                  // inputParam.sec_company_payable = new LINQ(
+                  //   inputParam.details
+                  // ).Sum(d => d.sec_company_payable);
+                  // inputParam.sec_company_tax = new LINQ(inputParam.details).Sum(
+                  //   d => d.sec_company_tax
+                  // );
+
+                  // inputParam.sheet_discount_amount =
+                  //   (inputParam.sheet_discount_percentage * 100) /
+                  //   inputParam.gross_amount;
+
+                  // inputParam.net_amount =
+                  //   inputParam.gross_total - inputParam.sheet_discount_amount;
+                  // inputParam.receiveable_amount =
+                  //   inputParam.net_amount - inputParam.credit_amount;
 
                   if (
                     inputParam.sheet_discount_amount != 0 &&
@@ -261,22 +268,15 @@ let addBilling = (req, res, next) => {
                   }
 
                   connection.query(
-                    "insert into hims_f_billing_header(patient_id, billing_type_id, visit_id, bill_number \
-                  , incharge_or_provider, bill_date, advance_amount, discount_amount, discount_percentage, total_amount \
-                  , total_tax, total_payable, billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount \
-                  , patient_resp, company_res, sec_company_res, patient_payable, company_payable, sec_company_payable \
+                    "INSERT INTO hims_f_billing_header ( patient_id, billing_type_id, visit_id, bill_number,\
+                  incharge_or_provider, bill_date, advance_amount, discount_amount \
+                  , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount \
+                  , company_res, sec_company_res, patient_payable, company_payable, sec_company_payable \
                   , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount \
-                  , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount)vlaue(?,?,?,?\
-                    ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'" +
-                      new Date() +
-                      "'\
-                  ,'" +
-                      inputParam.created_by +
-                      "','" +
-                      new Date() +
-                      "',?,?)",
+                  , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
+                    ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     [
-                      patient_id,
+                      inputParam.patient_id,
                       inputParam.billing_type_id,
                       inputParam.visit_id,
                       inputParam.bill_number,
@@ -284,15 +284,11 @@ let addBilling = (req, res, next) => {
                       inputParam.bill_date,
                       inputParam.advance_amount,
                       inputParam.discount_amount,
-                      inputParam.discount_percentage,
-                      inputParam.total_amount,
                       inputParam.total_tax,
-                      inputParam.total_payable,
                       inputParam.billing_status,
                       inputParam.sheet_discount_amount,
                       inputParam.sheet_discount_percentage,
                       inputParam.net_amount,
-                      inputParam.patient_resp,
                       inputParam.company_res,
                       inputParam.sec_company_res,
                       inputParam.patient_payable,
@@ -305,6 +301,9 @@ let addBilling = (req, res, next) => {
                       inputParam.credit_amount,
                       inputParam.receiveable_amount,
                       inputParam.created_by,
+                      inputParam.created_date,
+                      inputParam.updated_by,
+                      inputParam.updated_date,
                       inputParam.copay_amount,
                       inputParam.deductable_amount
                     ],
@@ -315,26 +314,41 @@ let addBilling = (req, res, next) => {
                           next(error);
                         });
                       }
+                      debugLog("irf at 2 q %j", headerResult);
                       if (
-                        headerResult.insertId != nll &&
+                        headerResult.insertId != null &&
                         headerResult.insertId != ""
                       ) {
                         let detailsInsert = [];
-                        for (let i = 0; i < inputParam.details.length; i++) {
-                          detailsInsert.push([inputParam.details[i]]);
-                        }
 
+                        // for (let i = 0; i < inputParam.details.length; i++) {
+                        //   detailsInsert.push(inputParam.details[i]);
+                        // }
+
+                        //
+
+                        bulkInputArrayObject(
+                          inputParam.details,
+                          detailsInsert,
+                          {
+                            hims_f_billing_header_id: headerResult.insertId
+                          }
+                        );
+                        //
+                        debugLog("data:", detailsInsert);
+                        //  for (let j = 0; j < detailsInsert.length; j++) {
                         connection.query(
-                          "insert into hims_f_billing_details (hims_f_billing_header_id, service_type_id,\
-                           services_id, quantity, unit_cost, gross_amount, discount_amout, \
+                          "INSERT  INTO hims_f_billing_details (hims_f_billing_header_id, service_type_id,\
+                           services_id, quantity, unit_cost,insurance_yesno,gross_amount, discount_amout, \
                            discount_percentage, net_amout, copay_percentage, copay_amount, \
                            deductable_amount, deductable_percentage, tax_inclusive, patient_tax, \
                            company_tax, total_tax, patient_resp, patient_payable, comapany_resp,\
                            company_payble, sec_company, sec_deductable_percentage, sec_deductable_amount,\
                            sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage, \
-                           sec_copay_amount, created_by, created_date, updated_by, updated_date) VALUES ? ",
-                          detailsInsert,
+                           sec_copay_amount, created_by, created_date, updated_by, updated_date,record_status) VALUES ? ",
+                          [detailsInsert],
                           (error, detailsRecords) => {
+                            debugLog("irf 3 %j", detailsRecords);
                             if (error) {
                               connection.rollback(() => {
                                 releaseDBConnection(db, connection);
@@ -348,11 +362,12 @@ let addBilling = (req, res, next) => {
                                   next(error);
                                 });
                               }
-                              req.records = result;
+                              req.records = detailsRecords;
                               next();
                             });
                           }
                         );
+                        // }
                       } else {
                         debuglog("Data is not inerted to billing header");
                         next(

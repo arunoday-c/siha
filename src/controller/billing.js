@@ -11,7 +11,7 @@ import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
   let api = Router();
   api.post(
-    "/save",
+    "/addBillDetails",
     addBilling,
     (req, res, next) => {
       let result = req.records;
