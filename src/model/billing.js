@@ -9,6 +9,7 @@ import moment from "moment";
 import { debugLog, debugFunction } from "../utils/logging";
 
 import { LINQ } from "node-linq";
+import { inflate } from "zlib";
 let billingHeaderModel = {
   hims_f_billing_header_id: null,
   patient_id: null,
@@ -49,14 +50,6 @@ let billingHeaderModel = {
   cancel_remarks: null,
   cancel_by: null,
   bill_comments: null
-};
-
-let receiptHeaderModel = {
-  total_amount: 0,
-  unbalanced_amount: 0,
-  cash_amount: 0,
-  card_amount: 0,
-  cheque_amount: 0
 };
 
 let billingDetailsModel = {
@@ -117,6 +110,43 @@ let servicesModel = {
   record_status: null
 };
 
+let receiptHeaderModel = {
+  total_amount: 0,
+  unbalanced_amount: 0,
+  cash_amount: 0,
+  card_amount: 0,
+  cheque_amount: 0
+};
+let P_receiptHeaderModel = {
+  hims_f_receipt_header_id: null,
+  receipt_number: null,
+  receipt_date: null,
+  billing_header_id: null,
+  total_amount: null,
+  created_by: null,
+  created_date: null,
+  updated_by: null,
+  updated_date: null,
+  record_status: null,
+  counter_id: null,
+  shift_id: null
+};
+let P_receiptDetailsModel = {
+  hims_f_receipt_details_id: null,
+  hims_f_receipt_header_id: null,
+  card_check_number: null,
+  expiry_date: null,
+  pay_type: null,
+  amount: null,
+  created_by: null,
+  created_date: null,
+  updated_by: null,
+  updated_date: null,
+  record_status: null,
+  card_type: null
+};
+
+//created by irfan: Adding bill headder and bill details
 let addBilling = (req, res, next) => {
   let dataBase = null;
   try {
@@ -160,7 +190,7 @@ let addBilling = (req, res, next) => {
                 next(error);
               });
             }
-            debugLog("irf at 1 q %j", records);
+
             let fromDate;
             let toDate;
             fromDate = moment(records[0].visit_expiery_date).format("YYYYMMDD");
@@ -314,7 +344,7 @@ let addBilling = (req, res, next) => {
                           next(error);
                         });
                       }
-                      debugLog("irf at 2 q %j", headerResult);
+
                       if (
                         headerResult.insertId != null &&
                         headerResult.insertId != ""
@@ -348,7 +378,6 @@ let addBilling = (req, res, next) => {
                            sec_copay_amount, created_by, created_date, updated_by, updated_date,record_status) VALUES ? ",
                           [detailsInsert],
                           (error, detailsRecords) => {
-                            debugLog("irf 3 %j", detailsRecords);
                             if (error) {
                               connection.rollback(() => {
                                 releaseDBConnection(db, connection);
@@ -382,6 +411,131 @@ let addBilling = (req, res, next) => {
                 }
               );
             }
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by:irfan, add receipt headder and details
+let addReceipt = (req, res, next) => {
+  let dataBase = null;
+  try {
+    debugFunction("add receipt");
+    let db = dataBase != null ? dataBase : req.db;
+    if (db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    let inputParam = extend(P_receiptHeaderModel, req.body);
+
+    if (inputParam.details == null || inputParam.details.length == 0) {
+      next(
+        httpStatus.generateError(
+          httpStatus.badRequest,
+          "Please select atleast one service."
+        )
+      );
+    }
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        //let numgenId = 5;
+
+        runningNumber(
+          connection,
+          5,
+          "PAT_RCPT",
+          (error, numgenId, newNumber) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            debugLog("new receipt number : " + newNumber);
+            inputParam["receipt_number"] = newNumber;
+
+            connection.query(
+              "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, billing_header_id, total_amount,\
+                 created_by, created_date, updated_by, updated_date, record_status, counter_id, shift_id) VALUES (?,?,?,?\
+              ,?,?,?,?,?,?,?)",
+              [
+                inputParam.receipt_number,
+                inputParam.receipt_date,
+                inputParam.billing_header_id,
+                inputParam.total_amount,
+                inputParam.created_by,
+                inputParam.created_date,
+                inputParam.updated_by,
+                inputParam.updated_date,
+                inputParam.record_status,
+                inputParam.counter_id,
+                inputParam.shift_id
+              ],
+              (error, headerRcptResult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                if (
+                  headerRcptResult.insertId != null &&
+                  headerRcptResult.insertId != ""
+                ) {
+                  let detailsInsert = [];
+
+                  bulkInputArrayObject(inputParam.details, detailsInsert, {
+                    hims_f_receipt_header_id: headerRcptResult.insertId
+                  });
+
+                  connection.query(
+                    "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
+                      created_by, created_date, updated_by, updated_date, record_status, card_type) VALUES ? ",
+                    [detailsInsert],
+                    (error, RcptDetailsRecords) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      connection.commit(error => {
+                        releaseDBConnection(db, connection);
+                        if (error) {
+                          connection.rollback(() => {
+                            next(error);
+                          });
+                        }
+                        req.records = RcptDetailsRecords;
+                        next();
+                      });
+                    }
+                  );
+                } else {
+                  debuglog("Data is not inerted to billing header");
+                  next(
+                    httpStatus.generateError(
+                      httpStatus.badRequest,
+                      "Technical issue while billis notinserted"
+                    )
+                  );
+                }
+              }
+            );
           }
         );
       });
@@ -455,7 +609,7 @@ let billingCalculations = (req, res, next) => {
   }
 };
 
-//created by irfan: functionality for calculating bill headder and bill details
+//created by irfan: only calculation bill headder and bill details
 let getBillDetails = (req, res, next) => {
   debugFunction("getBillDetails");
   try {
@@ -564,5 +718,6 @@ let getBillDetails = (req, res, next) => {
 module.exports = {
   addBilling,
   billingCalculations,
-  getBillDetails
+  getBillDetails,
+  addReceipt
 };
