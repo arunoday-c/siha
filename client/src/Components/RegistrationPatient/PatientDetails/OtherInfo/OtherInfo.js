@@ -162,7 +162,6 @@ function AddPatientOtherHandlers(state, context) {
     },
 
     numbertexthandle: e => {
-      debugger;
       state.setState({
         [e.target.name]: e.target.value
       });

@@ -5,6 +5,7 @@ div[numberbox="true"] {
 }
 .DayPickerInput {
   // z-index: 2 !important;
+
   input {
     font: inherit;
     color: currentColor;
@@ -16,8 +17,7 @@ div[numberbox="true"] {
     vertical-align: middle;
     -webkit-tap-highlight-color: transparent;
     background-color: #fbfbfb;
-    // width: 100 !important;
-    max-width: 75% !important;
+    min-width: 100%;
   }
 }
 
@@ -30,8 +30,56 @@ div[numberbox="true"] {
   font-weight: bold;
 }
 
-table {
-  td:first-child {
-    width: 100px !important;
+.table {
+  width: 100%;
+  tbody {
+    height: 200px;
+    overflow: auto;
+    width: 100%;
   }
+
+  tbody {
+    td {
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+  }
+  thead {
+    tr {
+      td {
+        font-weight: bold;
+      }
+    }
+  }
+}
+// .table-scroll {
+//   position: absolute;
+//   display: inline-block;
+//   width: auto;
+//   border-right: 1px solid #ddd;
+// }
+
+.scrolling table {
+  table-layout: inherit;
+  *margin-left: -100px; /*ie7*/
+}
+.scrolling td,
+th {
+  vertical-align: top;
+  padding: 10px;
+  min-width: 100px;
+}
+.scrolling th {
+  position: absolute;
+  *position: relative; /*ie7*/
+  left: 0;
+  width: 120px;
+}
+.outer {
+  position: relative;
+}
+.inner {
+  overflow-x: auto;
+  overflow-y: visible;
+  margin-left: 120px;
 }

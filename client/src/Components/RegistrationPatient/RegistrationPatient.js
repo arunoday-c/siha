@@ -8,30 +8,28 @@ import PatRegIOputs from "../../Models/RegistrationPatient";
 import BillingIOputs from "../../Models/Billing";
 import Button from "material-ui/Button";
 import extend from "extend";
+import moment from "moment";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import AppBar from "material-ui/AppBar";
+import AHSnackbar from "../common/Inputs/AHSnackbar.js";
+import Dialog, { DialogActions, DialogTitle } from "material-ui/Dialog";
+import Slide from "material-ui/transitions/Slide";
+
 import {
   postPatientDetails,
   getPatientDetails,
   initialStatePatientData
 } from "../../actions/RegistrationPatient/Registrationactions";
-
 import { postVisitDetails } from "../../actions/RegistrationPatient/Visitactions";
 import { generateBill } from "../../actions/RegistrationPatient/Billingactions";
-
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import AppBar from "material-ui/AppBar";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
-import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
-import Dialog, { DialogActions, DialogTitle } from "material-ui/Dialog";
-import Slide from "material-ui/transitions/Slide";
 import { getCookie } from "../../utils/algaehApiCall";
 import { algaehApiCall } from "../../utils/algaehApiCall";
-
-// import Barcode from "../Experiment";
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -58,7 +56,7 @@ class RegistrationPatient extends Component {
       saveEnable: false,
       clearData: "",
       pay_cash: "CA",
-      pay_creidt: "CD",
+      pay_card: "CD",
       pay_cheque: "CH",
       cash_amount: 0,
       card_number: "",
@@ -67,9 +65,7 @@ class RegistrationPatient extends Component {
       cheque_number: "",
       cheque_date: null,
       cheque_amount: 0,
-      unbalanced_amount: 0,
-      advance: 0,
-      total_amount: 0
+      advance: 0
     };
   }
 
@@ -102,10 +98,63 @@ class RegistrationPatient extends Component {
     this.setState(data);
   }
 
+  GenerateReciept() {
+    debugger;
+    if (this.state.total_amount > 0) {
+      let obj = [];
+
+      if (this.state.cash_amount > 0) {
+        obj.push({
+          hims_f_receipt_header_id: null,
+          card_check_number: null,
+          expiry_date: null,
+          pay_type: this.state.pay_cash,
+          amount: this.state.cash_amount,
+          created_by: getCookie("UserID"),
+          created_date: moment(String(new Date())).format("YYYY-MM-DD"),
+          updated_by: null,
+          updated_date: null
+        });
+      }
+      if (this.state.card_amount > 0) {
+        obj.push({
+          hims_f_receipt_header_id: null,
+          card_check_number: this.state.card_number,
+          expiry_date: this.state.card_date,
+          pay_type: this.state.pay_card,
+          amount: this.state.card_amount,
+          created_by: getCookie("UserID"),
+          created_date: moment(String(new Date())).format("YYYY-MM-DD"),
+          updated_by: null,
+          updated_date: null
+        });
+      }
+      if (this.state.cheque_amount > 0) {
+        obj.push({
+          hims_f_receipt_header_id: null,
+          card_check_number: this.state.cheque_number,
+          expiry_date: this.state.cheque_date,
+          pay_type: this.state.pay_cheque,
+          amount: this.state.cheque_amount,
+          created_by: getCookie("UserID"),
+          created_date: moment(String(new Date())).format("YYYY-MM-DD"),
+          updated_by: null,
+          updated_date: null
+        });
+      }
+
+      this.setState({
+        receiptdetails: [...this.state.receiptdetails, obj]
+      });
+    }
+  }
   SavePatientDetails(e) {
+    debugger;
     const err = Validations(this);
 
     if (!err) {
+      this.GenerateReciept();
+
       if (this.state.hims_d_patient_id != null) {
         this.props.postPatientDetails(this.state, data => {
           this.setState({
@@ -156,45 +205,43 @@ class RegistrationPatient extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
-
     if (nextProps.genbill.length != 0) {
-      // let IOputs = extend(PatRegIOputs.inputParam(), nextProps.genbill);
       this.setState({ ...this.state, ...nextProps.genbill });
-      // this.setState({ ...this.state, ...nextProps.genbill });
-      // this.setState(nextProps.genbill);
-      // this.setState(BillingIOputs.inputParam(nextProps.genbill));
     }
-
-    console.log("", this.props.SelectLanguage);
   }
+  getCtrlCode(patcode) {
+    debugger;
+    let $this = this;
+    clearInterval(intervalId);
+    intervalId = setInterval(() => {
+      this.props.getPatientDetails(patcode, data => {
+        data.patientRegistration.visitDetails = data.visitDetails;
+        data.patientRegistration.patient_id =
+          data.patientRegistration.hims_d_patient_id;
+        $this.setState(data.patientRegistration);
+        // $this.setState({});
+      });
+      clearInterval(intervalId);
+    }, 500);
 
-  SelectLanguage(secLang) {
-    this.setState({
-      selectedLang: secLang,
-      chnageLang: !this.state.chnageLang
-    });
-  }
-
-  getCtrlCode(data) {
-    this.setState(
-      {
-        patient_code: data
-      },
-      () => {
-        clearInterval(intervalId);
-        intervalId = setInterval(() => {
-          this.props.getPatientDetails(this.state.patient_code, data => {
-            this.setState(PatRegIOputs.inputParam(data.patientRegistration));
-            this.setState({
-              visitDetails: data.visitDetails,
-              patient_id: this.state.hims_d_patient_id
-            });
-          });
-          clearInterval(intervalId);
-        }, 500);
-      }
-    );
+    // this.setState(
+    //   {
+    //     patient_code: data
+    //   },
+    //   () => {
+    //     clearInterval(intervalId);
+    //     intervalId = setInterval(() => {
+    //       this.props.getPatientDetails(this.state.patient_code, data => {
+    //         this.setState(PatRegIOputs.inputParam(data.patientRegistration));
+    //         this.setState({
+    //           visitDetails: data.visitDetails,
+    //           patient_id: this.state.hims_d_patient_id
+    //         });
+    //       });
+    //       clearInterval(intervalId);
+    //     }, 500);
+    //   }
+    // );
   }
 
   render() {
@@ -217,6 +264,7 @@ class RegistrationPatient extends Component {
           ctrlCode={this.state.patient_code}
           ctrlDate={this.state.registration_date}
           ControlCode={this.getCtrlCode.bind(this)}
+          selectedLang={this.state.selectedLang}
         />
         <div className="spacing-push">
           <MyContext.Provider

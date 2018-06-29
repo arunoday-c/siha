@@ -37,7 +37,6 @@ export function postPatientDetails(dataValue, callback) {
 }
 
 export function getPatientDetails(dataValue, callback) {
-  debugger;
   callback = callback || null;
   return function(dispatch) {
     algaehApiCall({
@@ -48,6 +47,7 @@ export function getPatientDetails(dataValue, callback) {
           : "/frontDesk/get",
       method: "GET",
       onSuccess: response => {
+        debugger;
         if (response.data.success == true) {
           dispatch({
             type: "PAT_GET_DATA",

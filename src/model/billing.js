@@ -512,6 +512,7 @@ let getBillDetails = (req, res, next) => {
             },
             req.body
           );
+
           if (billingHeaderModel.sheet_discount_amount > 0) {
             billingHeaderModel.sheet_discount_percentage =
               (billingHeaderModel.sheet_discount_amount / gross_total) * 100;
@@ -528,17 +529,31 @@ let getBillDetails = (req, res, next) => {
           billingHeaderModel.receiveable_amount =
             billingHeaderModel.net_amount - billingHeaderModel.credit_amount;
 
-          extend(
-            receiptHeaderModel,
-            {
+          debugLog("Sheet Amount ", billingHeaderModel.sheet_discount_amount);
+
+          req.body.sheet_discount_amount =
+            billingHeaderModel.sheet_discount_amount;
+
+          req.body.sheet_discount_percentage =
+            billingHeaderModel.sheet_discount_percentage;
+
+          req.body.isReceipt =
+            req.body.isReceipt == null ? false : req.body.isReceipt;
+
+          if (req.body.isReceipt == false) {
+            extend(receiptHeaderModel, req.body, {
               total_amount: 0,
               unbalanced_amount: 0,
               cash_amount: billingHeaderModel.receiveable_amount,
               card_amount: 0,
               cheque_amount: 0
-            },
-            req.body
-          );
+            });
+          } else {
+            extend(receiptHeaderModel, req.body);
+          }
+
+          debugLog("Receipt Log", receiptHeaderModel);
+
           receiptHeaderModel.total_amount =
             receiptHeaderModel.cash_amount +
             receiptHeaderModel.card_amount +
@@ -550,7 +565,7 @@ let getBillDetails = (req, res, next) => {
 
           debugLog("Results are recorded...", result);
           req.records = extend(billingHeaderModel, receiptHeaderModel, {
-            details: [billingDetailsModel]
+            billdetails: [billingDetailsModel]
           });
           next();
         }

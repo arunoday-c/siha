@@ -15,6 +15,8 @@ import languageTranslator from "../controller/languageTranslator";
 import visit from "../controller/visit";
 import serviceType from "../controller/serviceType";
 import billing from "../controller/billing";
+import patientType from "../controller/patientType";
+
 let router = express();
 
 //connect to DB
@@ -36,6 +38,7 @@ initializedDb(db => {
   router.use("/visit", visit({ config, db }));
   router.use("/serviceType", serviceType({ config, db }));
   router.use("/billing", billing({ config, db }));
+  router.use("/patientType", patientType({ config, db }));
 });
 
 export default router;

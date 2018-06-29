@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+// import Modal from "./Modal";
 import "./AddBillingForm.css";
 import "./../../../../styles/site.css";
 
@@ -18,34 +19,33 @@ import {
 } from "./AddBillingDetails";
 import MyContext from "../../../../utils/MyContext.js";
 import { generateBill } from "../../../../actions/RegistrationPatient/Billingactions";
-import {
-  FORMAT_PAYTYPE,
-  FORMAT_CARDTYPE,
-  FORMAT_COUNTER,
-  FORMAT_SHIFT
-} from "../../../../utils/GlobalFunctions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import variableJson from "../../../../utils/GlobalVariables.json";
 
 class AddBillingForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filePreview: ""
+      isOpen: false
     };
   }
 
   componentWillMount() {
-    debugger;
     let InputOutput = this.props.PatRegIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState(nextProps.PatRegIOputs);
   }
+
+  // toggleModal = () => {
+  //   this.setState({
+  //     isOpen: !this.state.isOpen
+  //   });
+  // };
 
   render() {
     return (
@@ -92,6 +92,22 @@ class AddBillingForm extends Component {
                           }}
                           value={this.state.bill_date}
                         />
+                        <div className="col-lg-3">
+                          {/* <Modal
+                            show={this.state.isOpen}
+                            onClose={this.toggleModal}
+                          >
+                            Here's some content for the modal
+                            
+                          </Modal> */}
+
+                          <button
+                            className="htpl1-phase1-btn-primary"
+                            // onClick={this.BillDetails.bind(this)}
+                          >
+                            Detail....
+                          </button>
+                        </div>
                       </div>
 
                       <div className="row primary-box-container">
@@ -239,7 +255,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                       </div>
-
+                      <hr />
                       <div className="row last-box-container">
                         <div className="col-lg-3 last-box-label">
                           <AlgaehLabel
@@ -268,7 +284,6 @@ class AddBillingForm extends Component {
                             }
                           }}
                         />
-
                         <AlagehFormGroup
                           div={{ className: "col-lg-3", id: "widthDate" }}
                           label={{
@@ -289,7 +304,6 @@ class AddBillingForm extends Component {
                             }
                           }}
                         />
-
                         <AlagehFormGroup
                           div={{ className: "col-lg-3", id: "widthDate" }}
                           label={{
@@ -352,20 +366,20 @@ class AddBillingForm extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "counter",
+                            fieldName: "counter_id",
                             isImp: true
                           }}
                           selector={{
-                            name: "counter",
+                            name: "counter_id",
                             className: "select-fld",
-                            value: this.state.counter,
+                            value: this.state.counter_id,
                             dataSource: {
                               textField:
                                 this.state.selectedLang == "en"
                                   ? "name"
                                   : "arabic_name",
                               valueField: "value",
-                              data: FORMAT_COUNTER
+                              data: variableJson.FORMAT_COUNTER
                             },
                             onChange: texthandle.bind(this, this, context)
                           }}
@@ -374,20 +388,20 @@ class AddBillingForm extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "shift",
+                            fieldName: "shift_id",
                             isImp: true
                           }}
                           selector={{
-                            name: "shift",
+                            name: "shift_id",
                             className: "select-fld",
-                            value: this.state.shift,
+                            value: this.state.shift_id,
                             dataSource: {
                               textField:
                                 this.state.selectedLang == "en"
                                   ? "name"
                                   : "arabic_name",
                               valueField: "value",
-                              data: FORMAT_SHIFT
+                              data: variableJson.FORMAT_SHIFT
                             },
                             onChange: texthandle.bind(this, this, context)
                           }}
@@ -410,7 +424,7 @@ class AddBillingForm extends Component {
                                   ? "name"
                                   : "arabic_name",
                               valueField: "value",
-                              data: FORMAT_PAYTYPE
+                              data: variableJson.FORMAT_PAYTYPE
                             },
                             others: {
                               disabled: true
@@ -446,6 +460,9 @@ class AddBillingForm extends Component {
                             value: this.state.cash_amount,
                             events: {
                               onChange: cashtexthandle.bind(this, this, context)
+                            },
+                            others: {
+                              receipt: true
                             }
                           }}
                         />
@@ -455,16 +472,16 @@ class AddBillingForm extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           selector={{
-                            name: "pay_creidt",
+                            name: "pay_card",
                             className: "select-fld",
-                            value: this.state.pay_creidt,
+                            value: this.state.pay_card,
                             dataSource: {
                               textField:
                                 this.state.selectedLang == "en"
                                   ? "name"
                                   : "arabic_name",
                               valueField: "value",
-                              data: FORMAT_PAYTYPE
+                              data: variableJson.FORMAT_PAYTYPE
                             },
                             others: {
                               disabled: true
@@ -507,6 +524,9 @@ class AddBillingForm extends Component {
                             value: this.state.card_amount,
                             events: {
                               onChange: cardtexthandle.bind(this, this, context)
+                            },
+                            others: {
+                              receipt: true
                             }
                           }}
                         />
@@ -525,7 +545,7 @@ class AddBillingForm extends Component {
                                   ? "name"
                                   : "arabic_name",
                               valueField: "value",
-                              data: FORMAT_PAYTYPE
+                              data: variableJson.FORMAT_PAYTYPE
                             },
                             others: {
                               disabled: true
@@ -571,6 +591,9 @@ class AddBillingForm extends Component {
                                 this,
                                 context
                               )
+                            },
+                            others: {
+                              "data-receipt": "true"
                             }
                           }}
                         />

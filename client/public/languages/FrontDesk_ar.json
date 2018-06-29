@@ -75,8 +75,8 @@
 
   "receipt_number": "عدد إيصال",
   "receipt_date": "تاريخ استلام",
-  "counter": "عداد",
-  "shift": "تحول",
+  "counter_id": "عداد",
+  "shift_id": "تحول",
   "total_amount": "المبلغ الإجمالي",
   "sl_no": "SL. لا.",
   "pay_type": "نوع الدفع",

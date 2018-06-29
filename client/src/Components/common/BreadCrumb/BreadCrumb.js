@@ -1,11 +1,7 @@
 import React, { PureComponent } from "react";
 import "./breadcrumb.css";
 import AlgaehLabel from "../../Wrapper/label.js";
-
-const CREATE_PATIENT = [
-  { label: "Yes", value: "Y" },
-  { label: "No", value: "N" }
-];
+import variableJson from "../../../utils/GlobalVariables.json";
 
 class BreadCrumb extends PureComponent {
   constructor(props) {
@@ -89,7 +85,7 @@ class BreadCrumb extends PureComponent {
                           }
                           <div>
                             <div className="row">
-                              {CREATE_PATIENT.map((data, idx) => {
+                              {variableJson.FORMAT_YESNO.map((data, idx) => {
                                 return (
                                   <div
                                     className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4"
@@ -108,8 +104,14 @@ class BreadCrumb extends PureComponent {
                                         data.value === "Y" ? true : false
                                       }
                                     />
+
                                     <label className="radio-design">
-                                      {data.label}
+                                      {data => {
+                                        debugger;
+                                        return this.props.selectedLang == "en"
+                                          ? data.name
+                                          : data.arabic_name;
+                                      }}
                                     </label>
                                   </div>
                                 );

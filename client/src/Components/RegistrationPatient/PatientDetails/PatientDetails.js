@@ -66,24 +66,6 @@ class PatientDetails extends PureComponent {
     let informationSelect = this.state.actionInformationDesign ? "" : "active";
     return (
       <div className="hptl-phase1-patient-details">
-        {/* <div className="row">
-					<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-						<label>PATIENT CODE</label><br />
-						< TextField className="text_field" name="patient_code" 
-							onChange={this.patcodehandle.bind(this)} 
-							value={this.state.patient_code}						
-						/>
-					</div>
-
-					<div className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-						<label>REGESTRATION DATE</label><br />
-						< TextField className="text_field" name="registration_date" 							
-							value={this.state.registration_date}							
-							type="date"
-							disabled = {true}
-						/>
-					</div>
-				</div> */}
         <div className="tab-container toggle-section">
           <ul className="nav">
             <li

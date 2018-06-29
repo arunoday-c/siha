@@ -62,7 +62,6 @@ export default class DateHandler extends Component {
     });
   }
   componentWillMount() {
-    debugger;
     if (this.props.value != null)
       this.setState({
         value: moment(this.props.value).format("YYYY-MM-DD")

@@ -86,7 +86,9 @@ export default class FormGroup extends Component {
             numberBox="true"
             prefix={this.props.textBox.decimal.prefix}
             suffix={this.props.textBox.decimal.suffix}
-            value={this.props.textBox.value}
+            value={
+              this.props.textBox.value == null ? 0 : this.props.textBox.value
+            }
             disabled={
               this.props.textBox.disabled != null
                 ? this.props.textBox.disabled

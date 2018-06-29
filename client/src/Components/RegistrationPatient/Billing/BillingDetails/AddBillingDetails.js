@@ -1,7 +1,6 @@
 import moment from "moment";
 
 const texthandle = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
   let name;
   let value;
@@ -23,7 +22,6 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const cashtexthandle = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
 
   $this.setState(
@@ -31,14 +29,18 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     },
     () => {
+      debugger;
       var intervalId;
       let serviceInput = {
+        isReceipt: true,
         hims_d_services_id: $this.state.hims_d_services_id,
-        sheet_discount_percentage: $this.state.sheet_discount_percentage,
-        sheet_discount_amount: $this.state.sheet_discount_amount,
-        cash_amount: $this.state.cash_amount,
-        card_amount: $this.state.card_amount,
-        cheque_amount: $this.state.cheque_amount
+        sheet_discount_percentage: parseFloat(
+          $this.state.sheet_discount_percentage
+        ),
+        sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
+        cash_amount: parseFloat($this.state.cash_amount),
+        card_amount: parseFloat($this.state.card_amount),
+        cheque_amount: parseFloat($this.state.cheque_amount)
       };
 
       clearInterval(intervalId);
@@ -55,7 +57,6 @@ const cashtexthandle = ($this, context, ctrl, e) => {
 };
 
 const cardtexthandle = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
 
   $this.setState(
@@ -63,14 +64,18 @@ const cardtexthandle = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     },
     () => {
+      debugger;
       var intervalId;
       let serviceInput = {
+        isReceipt: true,
         hims_d_services_id: $this.state.hims_d_services_id,
-        sheet_discount_percentage: $this.state.sheet_discount_percentage,
-        sheet_discount_amount: $this.state.sheet_discount_amount,
-        cash_amount: $this.state.cash_amount,
-        card_amount: $this.state.card_amount,
-        cheque_amount: $this.state.cheque_amount
+        sheet_discount_percentage: parseFloat(
+          $this.state.sheet_discount_percentage
+        ),
+        sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
+        cash_amount: parseFloat($this.state.cash_amount),
+        card_amount: parseFloat($this.state.card_amount),
+        cheque_amount: parseFloat($this.state.cheque_amount)
       };
 
       clearInterval(intervalId);
@@ -87,7 +92,6 @@ const cardtexthandle = ($this, context, ctrl, e) => {
 };
 
 const chequetexthandle = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
 
   $this.setState(
@@ -95,14 +99,18 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     },
     () => {
+      debugger;
       var intervalId;
       let serviceInput = {
+        isReceipt: true,
         hims_d_services_id: $this.state.hims_d_services_id,
-        sheet_discount_percentage: $this.state.sheet_discount_percentage,
-        sheet_discount_amount: $this.state.sheet_discount_amount,
-        cash_amount: $this.state.cash_amount,
-        card_amount: $this.state.card_amount,
-        cheque_amount: $this.state.cheque_amount
+        sheet_discount_percentage: parseFloat(
+          $this.state.sheet_discount_percentage
+        ),
+        sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
+        cash_amount: parseFloat($this.state.cash_amount),
+        card_amount: parseFloat($this.state.card_amount),
+        cheque_amount: parseFloat($this.state.cheque_amount)
       };
 
       clearInterval(intervalId);
@@ -127,26 +135,28 @@ const servicetexthandle = ($this, context, ctrl, e) => {
     sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
     sheet_discount_amount = 0;
   } else {
-    sheet_discount_amount = e.target.value;
+    sheet_discount_amount = parseFloat(e.target.value);
     sheet_discount_percentage = 0;
   }
   $this.setState(
     {
       sheet_discount_percentage: sheet_discount_percentage,
       sheet_discount_amount: sheet_discount_amount,
-      cash_amount: $this.state.cash_amount,
-      card_amount: $this.state.card_amount,
-      cheque_amount: $this.state.cheque_amount
+      cash_amount: parseFloat($this.state.cash_amount),
+      card_amount: parseFloat($this.state.card_amount),
+      cheque_amount: parseFloat($this.state.cheque_amount)
     },
     () => {
       var intervalId;
       let serviceInput = {
         hims_d_services_id: $this.state.hims_d_services_id,
-        sheet_discount_percentage: $this.state.sheet_discount_percentage,
-        sheet_discount_amount: $this.state.sheet_discount_amount,
-        cash_amount: $this.state.cash_amount,
-        card_amount: $this.state.card_amount,
-        cheque_amount: $this.state.cheque_amount
+        sheet_discount_percentage: parseFloat(
+          $this.state.sheet_discount_percentage
+        ),
+        sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
+        cash_amount: parseFloat($this.state.cash_amount),
+        card_amount: parseFloat($this.state.card_amount),
+        cheque_amount: parseFloat($this.state.cheque_amount)
       };
 
       clearInterval(intervalId);
@@ -166,10 +176,8 @@ const servicetexthandle = ($this, context, ctrl, e) => {
 };
 
 const datehandle = ($this, context, e) => {
-  debugger;
-
   $this.setState({
-    bill_date: moment(e)._d
+    [e.target.name]: moment(e)._d
   });
 
   if (context != null) {

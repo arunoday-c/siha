@@ -43,14 +43,14 @@
         "path": "/FrontDesk"
       },
       {
-        "name": "Billing",
-        "label": "Billing",
-        "path": "/registration/our-patient"
+        "name": "OP Billing",
+        "label": "OP Billing",
+        "path": "/OPBilling"
       },
       {
         "name": "OP List",
         "label": "OP List",
-        "path": "/registration/op-list"
+        "path": "/BillDetails"
       },
       {
         "name": "Patient List",

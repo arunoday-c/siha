@@ -36,18 +36,10 @@ export function postBillDetsils(dataValue, callback) {
 }
 
 export function generateBill(dataValue, callback) {
-  callback = callback || null;
   debugger;
+  callback = callback || null;
+
   return function(dispatch) {
-    // if (callback === null) {
-    //   dispatch({
-    //     type: "BILL_GET_DATA",
-    //     payload: dataValue
-    //   });
-    // } else {
-
-    // }
-
     algaehApiCall({
       uri: "/billing/getBillDetails",
       method: "POST",

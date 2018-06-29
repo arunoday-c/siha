@@ -1,0 +1,47 @@
+{
+  "FORMAT_GENDER": [
+    { "name": "Male", "arabic_name": "الذكر", "value": "Male" },
+    { "name": "Female", "arabic_name": "إناثا", "value": "Female" },
+    { "name": "Others", "arabic_name": "الآخرين", "value": "Others" }
+  ],
+
+  "FORMAT_MARTIALSTS": [
+    { "name": "Married", "arabic_name": "زوجت", "value": "Married" },
+    { "name": "Single", "arabic_name": "غير مرتبطة", "value": "Single" },
+    { "name": "Divorced", "arabic_name": "مطلقة", "value": "Divorced" },
+    { "name": "Widowed", "arabic_name": "الأرامل", "value": "Widowed" }
+  ],
+
+  "FORMAT_PAYTYPE": [
+    { "name": "Cash", "arabic_name": "السيولة النقدية", "value": "CA" },
+    { "name": "Card", "arabic_name": "بطاقة", "value": "CD" },
+    { "name": "Cheque", "arabic_name": "التحقق من", "value": "CH" }
+  ],
+
+  "FORMAT_CARDTYPE": [
+    { "name": "Master", "arabic_name": "رئيس", "value": "CA" },
+    { "name": "Visa", "arabic_name": "تأشيرة", "value": "CD" },
+    { "name": "Mada", "arabic_name": "مادا", "value": "CH" }
+  ],
+
+  "FORMAT_YESNO": [
+    { "name": "No", "arabic_name": "لا", "value": "N" },
+    { "name": "Yes", "arabic_name": "نعم فعلا", "value": "Y" }
+  ],
+
+  "FORMAT_COUNTER": [
+    { "name": "OP", "arabic_name": "OP", "value": "1" },
+    { "name": "Emergency", "arabic_name": "حالة طوارئ", "value": "2" },
+    { "name": "IP", "arabic_name": "IP", "value": "3" }
+  ],
+  "FORMAT_SHIFT": [
+    { "name": "Morning", "arabic_name": "صباح", "value": "1" },
+    { "name": "Afternoon", "arabic_name": "بعد الظهر", "value": "2" },
+    { "name": "Night", "arabic_name": "ليل", "value": "3" }
+  ],
+
+  "MODE_OF_PAY": [
+    { "name": "Self", "arabic_name": "الذات", "value": "1" },
+    { "name": "Insurance", "arabic_name": "تأمين", "value": "2" }
+  ]
+}

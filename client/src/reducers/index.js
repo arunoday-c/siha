@@ -19,6 +19,10 @@ import { OptionsDetails } from "./BusinessSetup/Options";
 import { ProviderDetails } from "./ServiceCategory/Providerreducers";
 import { PatVisitDetails } from "./RegistrationPatient/Visitreducers";
 import { Billreducers } from "./RegistrationPatient/Billreducers";
+import { DepartmentsandDoctors } from "./CommonSetup/DepartmentsDoctorsreducers";
+import { ServiceTypeDetails } from "./ServiceCategory/ServiceTypesreducers";
+import { ServicesDetails } from "./ServiceCategory/Servicesreducers";
+import { PatientTypeDetails } from "./CommonSetup/PatientTypereducers";
 
 export default combineReducers({
   tokensDtl: TokenDetails,
@@ -38,5 +42,9 @@ export default combineReducers({
   providers: ProviderDetails,
   visits: PatVisitDetails,
   clndepartments: DepartmentsClinicalNon,
-  genbill: Billreducers
+  genbill: Billreducers,
+  deptanddoctors: DepartmentsandDoctors,
+  servicetype: ServiceTypeDetails,
+  services: ServicesDetails,
+  patienttype: PatientTypeDetails
 });

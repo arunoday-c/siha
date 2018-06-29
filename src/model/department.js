@@ -508,6 +508,8 @@ let selectdoctors = (req, res, next) => {
       hims_d_employee.middle_name,' ',\
       hims_d_employee.last_name) full_name,\
       hims_d_employee.arabic_name,\
+      hims_d_employee.services_id,\
+      hims_d_sub_department.department_id,\
       hims_d_sub_department.sub_department_name,\
       hims_d_sub_department.arabic_sub_department_name\
       from hims_m_employee_department_mappings,\

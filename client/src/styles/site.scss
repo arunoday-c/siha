@@ -5,9 +5,7 @@
       font-weight: normal;
       border-radius: 0px;
       background-color: #f3f3f3;
-      // border: solid 1px #d0d8dc;
       color: #7c909b;
-      // padding: 5px 15px;
       cursor: pointer;
       border-top-right-radius: 5px;
       border-top-left-radius: 5px;
@@ -183,81 +181,6 @@
       color: rgba(72, 90, 99, 0.26);
       border: none;
       cursor: not-allowed;
-    }
-  }
-
-  .ins-tab-container {
-    .tab-button {
-      width: 100%;
-      font-size: 10px;
-      font-weight: normal;
-      border-radius: 0px;
-      background-color: #f3f3f3;
-      border: solid 1px #d0d8dc;
-      color: #7c909b;
-      padding: 6px 8px;
-      cursor: pointer;
-      border-top-right-radius: 5px;
-      border-top-left-radius: 5px;
-      border-bottom: none;
-
-      &:hover {
-        background-color: #fff !important;
-        color: #68509f !important;
-      }
-      &:focus {
-        outline: none;
-      }
-
-      &.active {
-        background-color: #f7f7f7;
-        color: #000;
-        border: solid 1px #000;
-        pointer-events: none;
-
-        &:hover {
-          background-color: #f7f7f7 !important;
-          color: #fff !important;
-        }
-      }
-    }
-
-    .tab {
-      margin-right: -30px;
-      &:last-child {
-        .tab-button {
-          //padding: 6px 16px;
-        }
-      }
-    }
-    .tab-content {
-      padding: 10px 20px;
-      background-color: #fcfcfc;
-      border: solid 1px #eceff1;
-
-      .tab-item {
-        position: relative;
-      }
-    }
-  }
-
-  .ins-Dis-image-drop-area {
-    border: 1px solid #93a4ad;
-    min-height: 80px;
-    position: relative;
-    background-color: #eaeaea;
-    font-size: 11px;
-    .dropzone {
-      min-width: 100%;
-      min-height: 100%;
-    }
-
-    .drop-message {
-      font-size: 11px;
-      color: #485a63;
-      margin: 8px 0px;
-      min-width: 130px;
-      padding-left: 0px;
     }
   }
 
