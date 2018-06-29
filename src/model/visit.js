@@ -171,8 +171,11 @@ let insertVisitData = (dataBase, req, res, callBack) => {
                 logger.logger("error", "Add new visit %j", error);
               });
             }
+            req.visit_id = result.insertId;
             let patient_visit_id = result.insertId;
+
             debugLog("patient_visit_id : " + patient_visit_id);
+
             if (patient_visit_id != null) {
               dataBase.query(
                 "INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
@@ -188,7 +191,7 @@ let insertVisitData = (dataBase, req, res, callBack) => {
                 ],
                 (error, resultData) => {
                   if (typeof callBack == "function") {
-                    callBack(error, resultData);
+                    callBack(error, result);
                   }
                 }
               );

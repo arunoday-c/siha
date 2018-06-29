@@ -147,18 +147,20 @@ let P_receiptDetailsModel = {
 };
 
 //created by irfan: Adding bill headder and bill details
-let addBilling = (req, res, next) => {
-  let dataBase = null;
+
+//AddBill
+let addBill = (dataBase, req, res, callBack, isCommited, next) => {
+  isCommited = isCommited || false;
   try {
-    debugFunction("addBilling");
-    let db = dataBase != null ? dataBase : req.db;
-    if (db == null) {
+    debugFunction("addBill");
+
+    if (dataBase == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
 
     let inputParam = extend(billingHeaderModel, req.body);
 
-    if (inputParam.details == null || inputParam.details.length == 0) {
+    if (inputParam.billdetails == null || inputParam.billdetails.length == 0) {
       next(
         httpStatus.generateError(
           httpStatus.badRequest,
@@ -166,209 +168,121 @@ let addBilling = (req, res, next) => {
         )
       );
     }
+    inputParam.hims_f_patient_visit_id = req.body.visit_id;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.beginTransaction(error => {
+    dataBase.query(
+      "select hims_f_patient_visit_id,visit_expiery_date from hims_f_patient_visit where hims_f_patient_visit_id=? \
+           and record_status='A'",
+      [inputParam.hims_f_patient_visit_id],
+      (error, records) => {
         if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
+          dataBase.rollback(() => {
+            releaseDBConnection(db, dataBase);
             next(error);
           });
         }
 
-        connection.query(
-          "select hims_f_patient_visit_id,visit_expiery_date from hims_f_patient_visit where hims_f_patient_visit_id=? \
-           and record_status='A'",
-          [inputParam.hims_f_patient_visit_id],
-          (error, records) => {
+        let fromDate;
+        let toDate;
+        if (records.length == 0) {
+          fromDate = 0;
+          toDate = 0;
+        } else {
+          fromDate = moment(records[0].visit_expiery_date).format("YYYYMMDD");
+          toDate = moment(new Date()).format("YYYYMMDD");
+        }
+
+        if (toDate > fromDate) {
+          dataBase.rollback(() => {
+            releaseDBConnection(db, dataBase);
+            next(
+              httpStatus.generateError(
+                httpStatus.badRequest,
+                "Visit expired please create new visit to process"
+              )
+            );
+          });
+        } else {
+          runningNumber(req.db, 3, "PAT_BILL", (error, records, newNumber) => {
             if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
+              dataBase.rollback(() => {
+                releaseDBConnection(db, dataBase);
                 next(error);
               });
             }
-
-            let fromDate;
-            let toDate;
-            fromDate = moment(records[0].visit_expiery_date).format("YYYYMMDD");
-            toDate = moment(new Date()).format("YYYYMMDD");
-
-            if (toDate > fromDate) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(
-                  httpStatus.generateError(
-                    httpStatus.badRequest,
-                    "Visit expired please create new visit to process"
-                  )
-                );
-              });
-            } else {
-              runningNumber(
-                connection,
-                3,
-                "PAT_BILL",
-                (error, records, newNumber) => {
-                  if (error) {
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-                  debugLog("new Bill number : " + newNumber);
-                  inputParam["bill_number"] = newNumber;
-
-                  // inputParam.sub_total_amount = new LINQ(
-                  //   inputParam.details
-                  // ).Sum(d => d.gross_amount);
-                  // inputParam.net_total = new LINQ(inputParam.details).Sum(
-                  //   d => d.net_amount
-                  // );
-                  // inputParam.discount_amount = new LINQ(inputParam.details).Sum(
-                  //   d => d.discount_amout
-                  // );
-
-                  // inputParam.total_tax = new LINQ(inputParam.details).Sum(
-                  //   d => d.total_tax
-                  // );
-                  // inputParam.patient_tax = new LINQ(inputParam.details).Sum(
-                  //   d => d.patient_tax
-                  // );
-                  // inputParam.company_tax = new LINQ(inputParam.details).Sum(
-                  //   d => d.company_tax
-                  // );
-                  // inputParam.gross_total = new LINQ(inputParam.details).Sum(
-                  //   d => d.net_amount
-                  // );
-                  // inputParam.copay_amount = new LINQ(inputParam.details).Sum(
-                  //   d => d.copay_amount
-                  // );
-
-                  // inputParam.deductable_amount = new LINQ(
-                  //   inputParam.details
-                  // ).Sum(d => d.deductable_amount);
-
-                  // inputParam.patient_resp = new LINQ(inputParam.details).Sum(
-                  //   d => d.deductable_amount
-                  // );
-                  // inputParam.company_res = new LINQ(inputParam.details).Sum(
-                  //   d => d.comapany_resp
-                  // );
-                  // inputParam.company_res = new LINQ(inputParam.details).Sum(
-                  //   d => d.comapany_resp
-                  // );
-                  // inputParam.sec_company_res = new LINQ(inputParam.details).Sum(
-                  //   d => d.sec_company_res
-                  // );
-                  // inputParam.patient_payable = new LINQ(inputParam.details).Sum(
-                  //   d => d.patient_payable
-                  // );
-                  // inputParam.company_payable = new LINQ(inputParam.details).Sum(
-                  //   d => d.company_payable
-                  // );
-                  // inputParam.sec_company_payable = new LINQ(
-                  //   inputParam.details
-                  // ).Sum(d => d.sec_company_payable);
-                  // inputParam.sec_company_tax = new LINQ(inputParam.details).Sum(
-                  //   d => d.sec_company_tax
-                  // );
-
-                  // inputParam.sheet_discount_amount =
-                  //   (inputParam.sheet_discount_percentage * 100) /
-                  //   inputParam.gross_amount;
-
-                  // inputParam.net_amount =
-                  //   inputParam.gross_total - inputParam.sheet_discount_amount;
-                  // inputParam.receiveable_amount =
-                  //   inputParam.net_amount - inputParam.credit_amount;
-
-                  if (
-                    inputParam.sheet_discount_amount != 0 &&
-                    inputParam.bill_comments == ""
-                  ) {
-                    next(
-                      httpStatus.generateError(
-                        httpStatus.badRequest,
-                        "Please enter sheet level discount comments. "
-                      )
-                    );
-                  }
-
-                  connection.query(
-                    "INSERT INTO hims_f_billing_header ( patient_id, billing_type_id, visit_id, bill_number,\
+            debugLog("new Bill number : " + newNumber);
+            inputParam["bill_number"] = newNumber;
+            if (
+              inputParam.sheet_discount_amount != 0 &&
+              inputParam.bill_comments == ""
+            ) {
+              next(
+                httpStatus.generateError(
+                  httpStatus.badRequest,
+                  "Please enter sheet level discount comments. "
+                )
+              );
+            }
+            dataBase.query(
+              "INSERT INTO hims_f_billing_header ( patient_id, billing_type_id, visit_id, bill_number,\
                   incharge_or_provider, bill_date, advance_amount, discount_amount \
                   , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount \
                   , company_res, sec_company_res, patient_payable, company_payable, sec_company_payable \
                   , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount \
                   , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
                     ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    [
-                      inputParam.patient_id,
-                      inputParam.billing_type_id,
-                      inputParam.visit_id,
-                      inputParam.bill_number,
-                      inputParam.incharge_or_provider,
-                      inputParam.bill_date,
-                      inputParam.advance_amount,
-                      inputParam.discount_amount,
-                      inputParam.total_tax,
-                      inputParam.billing_status,
-                      inputParam.sheet_discount_amount,
-                      inputParam.sheet_discount_percentage,
-                      inputParam.net_amount,
-                      inputParam.company_res,
-                      inputParam.sec_company_res,
-                      inputParam.patient_payable,
-                      inputParam.company_payable,
-                      inputParam.sec_company_payable,
-                      inputParam.patient_tax,
-                      inputParam.company_tax,
-                      inputParam.sec_company_tax,
-                      inputParam.net_tax,
-                      inputParam.credit_amount,
-                      inputParam.receiveable_amount,
-                      inputParam.created_by,
-                      inputParam.created_date,
-                      inputParam.updated_by,
-                      inputParam.updated_date,
-                      inputParam.copay_amount,
-                      inputParam.deductable_amount
-                    ],
-                    (error, headerResult) => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
-                      }
+              [
+                inputParam.patient_id,
+                inputParam.billing_type_id,
+                inputParam.visit_id,
+                inputParam.bill_number,
+                inputParam.incharge_or_provider,
+                inputParam.bill_date,
+                inputParam.advance_amount,
+                inputParam.discount_amount,
+                inputParam.total_tax,
+                inputParam.billing_status,
+                inputParam.sheet_discount_amount,
+                inputParam.sheet_discount_percentage,
+                inputParam.net_amount,
+                inputParam.company_res,
+                inputParam.sec_company_res,
+                inputParam.patient_payable,
+                inputParam.company_payable,
+                inputParam.sec_company_payable,
+                inputParam.patient_tax,
+                inputParam.company_tax,
+                inputParam.sec_company_tax,
+                inputParam.net_tax,
+                inputParam.credit_amount,
+                inputParam.receiveable_amount,
+                inputParam.created_by,
+                inputParam.created_date,
+                inputParam.updated_by,
+                inputParam.updated_date,
+                inputParam.copay_amount,
+                inputParam.deductable_amount
+              ],
+              (error, headerResult) => {
+                if (error) {
+                  dataBase.rollback(() => {
+                    releaseDBConnection(db, dataBase);
+                    next(error);
+                  });
+                }
 
-                      if (
-                        headerResult.insertId != null &&
-                        headerResult.insertId != ""
-                      ) {
-                        let detailsInsert = [];
+                if (
+                  headerResult.insertId != null &&
+                  headerResult.insertId != ""
+                ) {
+                  req.billing_header_id = headerResult.insertId;
+                  let detailsInsert = [];
+                  bulkInputArrayObject(inputParam.billdetails, detailsInsert, {
+                    hims_f_billing_header_id: headerResult.insertId
+                  });
 
-                        // for (let i = 0; i < inputParam.details.length; i++) {
-                        //   detailsInsert.push(inputParam.details[i]);
-                        // }
-
-                        //
-
-                        bulkInputArrayObject(
-                          inputParam.details,
-                          detailsInsert,
-                          {
-                            hims_f_billing_header_id: headerResult.insertId
-                          }
-                        );
-                        //
-                        debugLog("data:", detailsInsert);
-                        //  for (let j = 0; j < detailsInsert.length; j++) {
-                        connection.query(
-                          "INSERT  INTO hims_f_billing_details (hims_f_billing_header_id, service_type_id,\
+                  dataBase.query(
+                    "INSERT  INTO hims_f_billing_details (hims_f_billing_details_id,hims_f_billing_header_id, service_type_id,\
                            services_id, quantity, unit_cost,insurance_yesno,gross_amount, discount_amout, \
                            discount_percentage, net_amout, copay_percentage, copay_amount, \
                            deductable_amount, deductable_percentage, tax_inclusive, patient_tax, \
@@ -376,153 +290,18 @@ let addBilling = (req, res, next) => {
                            company_payble, sec_company, sec_deductable_percentage, sec_deductable_amount,\
                            sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage, \
                            sec_copay_amount, created_by, created_date, updated_by, updated_date,record_status) VALUES ? ",
-                          [detailsInsert],
-                          (error, detailsRecords) => {
-                            if (error) {
-                              connection.rollback(() => {
-                                releaseDBConnection(db, connection);
-                                next(error);
-                              });
-                            }
-                            connection.commit(error => {
-                              releaseDBConnection(db, connection);
-                              if (error) {
-                                connection.rollback(() => {
-                                  next(error);
-                                });
-                              }
-                              req.records = detailsRecords;
-                              next();
-                            });
-                          }
-                        );
-                        // }
-                      } else {
-                        debuglog("Data is not inerted to billing header");
-                        next(
-                          httpStatus.generateError(
-                            httpStatus.badRequest,
-                            "Technical issue while billis notinserted"
-                          )
-                        );
-                      }
-                    }
-                  );
-                }
-              );
-            }
-          }
-        );
-      });
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-//created by:irfan, add receipt headder and details
-let addReceipt = (req, res, next) => {
-  let dataBase = null;
-  try {
-    debugFunction("add receipt");
-    let db = dataBase != null ? dataBase : req.db;
-    if (db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-
-    let inputParam = extend(P_receiptHeaderModel, req.body);
-
-    if (inputParam.details == null || inputParam.details.length == 0) {
-      next(
-        httpStatus.generateError(
-          httpStatus.badRequest,
-          "Please select atleast one service."
-        )
-      );
-    }
-
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.beginTransaction(error => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-
-        //let numgenId = 5;
-
-        runningNumber(
-          connection,
-          5,
-          "PAT_RCPT",
-          (error, numgenId, newNumber) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-            debugLog("new receipt number : " + newNumber);
-            inputParam["receipt_number"] = newNumber;
-
-            connection.query(
-              "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, billing_header_id, total_amount,\
-                 created_by, created_date, updated_by, updated_date, record_status, counter_id, shift_id) VALUES (?,?,?,?\
-              ,?,?,?,?,?,?,?)",
-              [
-                inputParam.receipt_number,
-                inputParam.receipt_date,
-                inputParam.billing_header_id,
-                inputParam.total_amount,
-                inputParam.created_by,
-                inputParam.created_date,
-                inputParam.updated_by,
-                inputParam.updated_date,
-                inputParam.record_status,
-                inputParam.counter_id,
-                inputParam.shift_id
-              ],
-              (error, headerRcptResult) => {
-                if (error) {
-                  connection.rollback(() => {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  });
-                }
-                if (
-                  headerRcptResult.insertId != null &&
-                  headerRcptResult.insertId != ""
-                ) {
-                  let detailsInsert = [];
-
-                  bulkInputArrayObject(inputParam.details, detailsInsert, {
-                    hims_f_receipt_header_id: headerRcptResult.insertId
-                  });
-
-                  connection.query(
-                    "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
-                      created_by, created_date, updated_by, updated_date, record_status, card_type) VALUES ? ",
                     [detailsInsert],
-                    (error, RcptDetailsRecords) => {
+                    (error, detailsRecords) => {
                       if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
+                        dataBase.rollback(() => {
+                          releaseDBConnection(db, dataBase);
                           next(error);
                         });
                       }
-                      connection.commit(error => {
-                        releaseDBConnection(db, connection);
-                        if (error) {
-                          connection.rollback(() => {
-                            next(error);
-                          });
-                        }
-                        req.records = RcptDetailsRecords;
-                        next();
-                      });
+                      //headerResult
+                      if (typeof callBack == "function") {
+                        callBack(error, headerResult);
+                      }
                     }
                   );
                 } else {
@@ -536,9 +315,110 @@ let addReceipt = (req, res, next) => {
                 }
               }
             );
+          });
+        }
+      }
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by:irfan, add receipt headder and details
+
+//AddReceipt
+let newReceipt = (dataBase, req, res, callBack, next) => {
+  try {
+    debugFunction("newReceiptFUnc");
+
+    if (dataBase == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    let inputParam = extend(P_receiptHeaderModel, req.body);
+    if (
+      inputParam.receiptdetails == null ||
+      inputParam.receiptdetails.length == 0
+    ) {
+      next(
+        httpStatus.generateError(
+          httpStatus.badRequest,
+          "Please select atleast one service."
+        )
+      );
+    }
+
+    runningNumber(req.db, 5, "PAT_RCPT", (error, numgenId, newNumber) => {
+      if (error) {
+        dataBase.rollback(() => {
+          releaseDBConnection(db, dataBase);
+          next(error);
+        });
+      }
+      debugLog("new receipt number : " + newNumber);
+      inputParam["receipt_number"] = newNumber;
+      debugLog("bil hdr id:", inputParam.billing_header_id);
+
+      dataBase.query(
+        "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, billing_header_id, total_amount,\
+             created_by, created_date, updated_by, updated_date,  counter_id, shift_id) VALUES (?,?,?\
+          ,?,?,?,?,?,?,?)",
+        [
+          inputParam.receipt_number,
+          inputParam.receipt_date,
+          inputParam.billing_header_id,
+          inputParam.total_amount,
+          inputParam.created_by,
+          inputParam.created_date,
+          inputParam.updated_by,
+          inputParam.updated_date,
+          inputParam.counter_id,
+          inputParam.shift_id
+        ],
+        (error, headerRcptResult) => {
+          if (error) {
+            dataBase.rollback(() => {
+              releaseDBConnection(db, dataBase);
+              next(error);
+            });
           }
-        );
-      });
+          if (
+            headerRcptResult.insertId != null &&
+            headerRcptResult.insertId != ""
+          ) {
+            let detailsInsert = [];
+
+            bulkInputArrayObject(inputParam.receiptdetails, detailsInsert, {
+              hims_f_receipt_header_id: headerRcptResult.insertId
+            });
+
+            dataBase.query(
+              "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
+                  created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
+              [detailsInsert],
+              (error, RcptDetailsRecords) => {
+                if (error) {
+                  dataBase.rollback(() => {
+                    releaseDBConnection(db, dataBase);
+                    next(error);
+                  });
+                }
+                if (typeof callBack == "function") {
+                  callBack(error, RcptDetailsRecords);
+                }
+              }
+            );
+          } else {
+            debuglog("Data is not inerted to billing header");
+            next(
+              httpStatus.generateError(
+                httpStatus.badRequest,
+                "Technical issue while billis notinserted"
+              )
+            );
+          }
+        }
+      );
     });
   } catch (e) {
     next(e);
@@ -704,7 +584,7 @@ let getBillDetails = (req, res, next) => {
 
           debugLog("Results are recorded...", result);
           req.records = extend(billingHeaderModel, receiptHeaderModel, {
-            details: [billingDetailsModel]
+            billdetails: [billingDetailsModel]
           });
           next();
         }
@@ -716,8 +596,8 @@ let getBillDetails = (req, res, next) => {
 };
 
 module.exports = {
-  addBilling,
+  addBill,
   billingCalculations,
   getBillDetails,
-  addReceipt
+  newReceipt
 };

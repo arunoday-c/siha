@@ -175,6 +175,7 @@ let runningNumber = (
   isreleaseConnection
 ) => {
   isreleaseConnection = isreleaseConnection || false;
+
   db.query(
     "SELECT  `prefix`, `intermediate_series`, `postfix`\
   , `length`, `increment_by`, `numgen_seperator`, `postfix_start`\

@@ -1,7 +1,11 @@
 import { Router } from "express";
 
 import { releaseConnection } from "../utils";
-import { addFrontDesk, selectFrontDesk } from "../model/frontDesk";
+import {
+  addFrontDesk,
+  selectFrontDesk,
+  addCompleteBill
+} from "../model/frontDesk";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
   let api = Router();
@@ -17,6 +21,7 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
   api.get(
     "/get",
     selectFrontDesk,
@@ -33,5 +38,19 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.post(
+    "/addCompleteBill",
+    addCompleteBill,
+    (req, res, next) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };
