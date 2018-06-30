@@ -47,7 +47,6 @@ export function getPatientDetails(dataValue, callback) {
           : "/frontDesk/get",
       method: "GET",
       onSuccess: response => {
-        debugger;
         if (response.data.success == true) {
           dispatch({
             type: "PAT_GET_DATA",

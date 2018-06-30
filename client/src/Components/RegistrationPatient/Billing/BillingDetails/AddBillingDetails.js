@@ -29,7 +29,6 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     },
     () => {
-      debugger;
       var intervalId;
       let serviceInput = {
         isReceipt: true,
@@ -64,7 +63,6 @@ const cardtexthandle = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     },
     () => {
-      debugger;
       var intervalId;
       let serviceInput = {
         isReceipt: true,
@@ -99,7 +97,6 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     },
     () => {
-      debugger;
       var intervalId;
       let serviceInput = {
         isReceipt: true,
@@ -127,7 +124,6 @@ const chequetexthandle = ($this, context, ctrl, e) => {
 };
 
 const servicetexthandle = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;

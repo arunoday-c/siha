@@ -27,7 +27,6 @@ class DisPatientForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState(nextProps.BillingIOputs);
   }
 

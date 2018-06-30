@@ -1,5 +1,4 @@
 const DeptselectedHandeler = ($this, context, e) => {
-  debugger;
   $this.setState({
     [e.name]: e.value,
     department_id: e.selected.department_id
@@ -23,7 +22,6 @@ const selectedHandeler = ($this, context, e) => {
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
-  debugger;
   $this.setState(
     {
       [e.name]: e.value,

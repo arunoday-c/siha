@@ -65,6 +65,9 @@ class OtherInfo extends Component {
                         this,
                         context
                       ).numbertexthandle.bind(this)
+                    },
+                    others: {
+                      disabled: this.state.existingPatient
                     }
                   }}
                 />
@@ -83,6 +86,9 @@ class OtherInfo extends Component {
                         this,
                         context
                       ).numbertexthandle.bind(this)
+                    },
+                    others: {
+                      disabled: this.state.existingPatient
                     }
                   }}
                 />
@@ -101,6 +107,9 @@ class OtherInfo extends Component {
                         this,
                         context
                       ).texthandle.bind(this)
+                    },
+                    others: {
+                      disabled: this.state.existingPatient
                     }
                   }}
                 />
@@ -119,6 +128,9 @@ class OtherInfo extends Component {
                         this,
                         context
                       ).texthandle.bind(this)
+                    },
+                    others: {
+                      disabled: this.state.existingPatient
                     }
                   }}
                 />
@@ -138,6 +150,9 @@ class OtherInfo extends Component {
                         this,
                         context
                       ).texthandle.bind(this)
+                    },
+                    others: {
+                      disabled: this.state.existingPatient
                     }
                   }}
                 />

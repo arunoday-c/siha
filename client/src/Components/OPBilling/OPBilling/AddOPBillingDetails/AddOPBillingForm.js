@@ -46,7 +46,6 @@ class AddOPBillingForm extends Component {
   }
 
   ProcessToBill(context, e) {
-    debugger;
     let $this = this;
     let serviceInput = { hims_d_services_id: this.state.s_service };
     this.props.generateBill(serviceInput, data => {
@@ -66,7 +65,6 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
-    debugger;
     let serviceList =
       this.state.billdetails === null ? [{}] : this.state.billdetails;
     return (

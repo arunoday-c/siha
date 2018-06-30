@@ -81,7 +81,7 @@ class AddPatientForm extends PureComponent {
       this.props.getRelegion();
     }
     if (this.props.countries.length === 0) {
-      this.props.getCountries();
+      // this.props.getCountries();
     }
     if (this.props.visatypes.length === 0) {
       this.props.getVisatypes();
@@ -89,28 +89,26 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState(nextProps.PatRegIOputs, () => {
-      if (this.state.country_id != nextProps.country_id) {
-        let country = Enumerable.from(this.props.countries)
-          .where(w => w.hims_d_country_id == this.state.country_id)
-          .firstOrDefault();
-        let states = country != null ? country.states : [];
-        if (nextProps.state_id != this.state.state_id) {
-          let cities = Enumerable.from(states)
-            .where(w => w.hims_d_state_id == this.state.state_id)
-            .firstOrDefault();
-
-          this.props.getStates(states, callback => {
-            this.setState({
-              state_id: this.state.state_id
-            });
-          });
-          if (cities != "undefined") {
-            this.props.getCities(cities.cities);
-          }
-        }
-      }
+      // if (this.state.country_id != nextProps.country_id) {
+      //   let country = Enumerable.from(this.props.countries)
+      //     .where(w => w.hims_d_country_id == this.state.country_id)
+      //     .firstOrDefault();
+      //   let states = country != null ? country.states : [];
+      //   if (nextProps.state_id != this.state.state_id) {
+      //     let cities = Enumerable.from(states)
+      //       .where(w => w.hims_d_state_id == this.state.state_id)
+      //       .firstOrDefault();
+      //     this.props.getStates(states, callback => {
+      //       this.setState({
+      //         state_id: this.state.state_id
+      //       });
+      //     });
+      //     if (cities != "undefined") {
+      //       this.props.getCities(cities.cities);
+      //     }
+      //   }
+      // }
     });
   }
 
@@ -157,7 +155,10 @@ class AddPatientForm extends PureComponent {
                             valueField: "his_d_title_id",
                             data: this.props.titles
                           },
-                          onChange: titlehandle.bind(this, this, context)
+                          onChange: titlehandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
                         }}
                       />
 
@@ -173,6 +174,9 @@ class AddPatientForm extends PureComponent {
                           value: this.state.full_name,
                           events: {
                             onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
                           },
                           error: this.state.open,
                           helperText: this.state.MandatoryMsg
@@ -191,6 +195,9 @@ class AddPatientForm extends PureComponent {
                           value: this.state.arabic_name,
                           events: {
                             onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
                           }
                         }}
                       />
@@ -213,7 +220,10 @@ class AddPatientForm extends PureComponent {
                             valueField: "value",
                             data: variableJson.FORMAT_GENDER
                           },
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
                         }}
                       />
                     </div>
@@ -233,6 +243,9 @@ class AddPatientForm extends PureComponent {
                           },
                           events: {
                             onChange: setAge.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
                           }
                         }}
                       />
@@ -253,6 +266,9 @@ class AddPatientForm extends PureComponent {
                           },
                           events: {
                             onChange: setAge.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
                           }
                         }}
                       />
@@ -273,6 +289,9 @@ class AddPatientForm extends PureComponent {
                           },
                           events: {
                             onChange: setAge.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
                           }
                         }}
                       />
@@ -298,7 +317,10 @@ class AddPatientForm extends PureComponent {
                             valueField: "value",
                             data: variableJson.FORMAT_MARTIALSTS
                           },
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
                         }}
                       />
 
@@ -320,7 +342,10 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_religion_id",
                             data: this.props.relegions
                           },
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
                         }}
                       />
 
@@ -342,7 +367,10 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_visa_type_id",
                             data: this.props.visatypes
                           },
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
                         }}
                       />
                     </div>
@@ -361,6 +389,9 @@ class AddPatientForm extends PureComponent {
 
                           events: {
                             onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
                           }
                         }}
                       />
@@ -383,7 +414,10 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_nationality_id",
                             data: this.props.nationalities
                           },
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
                         }}
                       />
                       <AlagehFormGroup
@@ -397,6 +431,9 @@ class AddPatientForm extends PureComponent {
                           value: this.state.address1,
                           events: {
                             onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
                           }
                         }}
                       />
@@ -412,6 +449,9 @@ class AddPatientForm extends PureComponent {
                           value: this.state.address2,
                           events: {
                             onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
                           }
                         }}
                       />
@@ -428,6 +468,9 @@ class AddPatientForm extends PureComponent {
                           value: this.state.postal_code,
                           events: {
                             onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
                           }
                         }}
                       />
@@ -450,7 +493,14 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_country_id",
                             data: this.props.countries
                           },
-                          onChange: countryStatehandle.bind(this, this, context)
+                          onChange: countryStatehandle.bind(
+                            this,
+                            this,
+                            context
+                          ),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
                         }}
                       />
 
@@ -472,7 +522,14 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_state_id",
                             data: this.props.countrystates
                           },
-                          onChange: countryStatehandle.bind(this, this, context)
+                          onChange: countryStatehandle.bind(
+                            this,
+                            this,
+                            context
+                          ),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
                         }}
                       />
 
@@ -494,7 +551,10 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_city_id",
                             data: this.props.cities
                           },
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
                         }}
                       />
                     </div>
@@ -509,11 +569,8 @@ class AddPatientForm extends PureComponent {
                         events={{
                           onChange: calculateAge.bind(this, this, context)
                         }}
-                        // others={
-                        //   (style = { "border-bottom": "1px dashed #000" })
-                        // }
+                        disabled={this.state.existingPatient}
                         value={DateofBirth}
-                        // value={this.state.date_of_birth}
                       />
 
                       <AlgaehDateHandler
@@ -521,6 +578,7 @@ class AddPatientForm extends PureComponent {
                         label={{ fieldName: "hijiri_date", isImp: true }}
                         textBox={{ className: "txt-fld" }}
                         maxDate={this.state.CurrentDate}
+                        disabled={this.state.existingPatient}
                         // events={{onChange: AddPatientHandlers(this,context).CalculateAge.bind(this)}}
                         value={this.state.hijiri_date}
                       />
@@ -545,7 +603,10 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_identity_document_id",
                             data: this.props.idtypes
                           },
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
                         }}
                       />
 
@@ -561,6 +622,9 @@ class AddPatientForm extends PureComponent {
                           value: this.state.primary_id_no,
                           events: {
                             onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
                           }
                         }}
                       />

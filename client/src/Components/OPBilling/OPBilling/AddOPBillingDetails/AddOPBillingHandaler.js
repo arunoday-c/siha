@@ -4,7 +4,6 @@ const serviceTypeHandeler = ($this, context, e) => {
       [e.name]: e.value
     },
     () => {
-      debugger;
       $this.props.getServices($this.state.s_service_type);
     }
   );
