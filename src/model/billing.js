@@ -289,7 +289,7 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
                            company_tax, total_tax, patient_resp, patient_payable, comapany_resp,\
                            company_payble, sec_company, sec_deductable_percentage, sec_deductable_amount,\
                            sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage, \
-                           sec_copay_amount, created_by, created_date, updated_by, updated_date,record_status) VALUES ? ",
+                           sec_copay_amount, created_by, created_date, updated_by, updated_date) VALUES ? ",
                     [detailsInsert],
                     (error, detailsRecords) => {
                       if (error) {
