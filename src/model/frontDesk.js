@@ -190,7 +190,9 @@ let addFrontDesk = (req, res, next) => {
             }
           }
         );
+        //ruunin
       });
+      //bign tr
     });
   } catch (e) {
     next(e);
@@ -264,8 +266,8 @@ let selectFrontDesk = (req, res, next) => {
   }
 };
 
-let addCompleteBill = (req, res, next) => {
-  debugFunction("addCompleteBill");
+let updateFrontDesk = (req, res, next) => {
+  debugFunction("updateFrontDesk");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -287,58 +289,110 @@ let addCompleteBill = (req, res, next) => {
             next(error);
           });
         }
+        //Front Desk updation
 
-        addBilling(
-          req,
-          res,
-          (error, result) => {
+        //Visit Insertion for update front desk API
+        //query 1
+        runningNumber(
+          req.db,
+          2,
+          "VISIT_NUMGEN",
+          (error, patResults, completeNum) => {
             if (error) {
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
                 next(error);
               });
             }
-            if (result != null && result.length != 0) {
-              debugLog("data Q1" + result);
+            req.query.visit_code = completeNum;
+            req.body.visit_code = completeNum;
+            debugLog("req.body.visit_code : " + completeNum);
 
-              addReceipt(connection, req, res, (error, resultdata) => {
+            //call
+            insertVisitData(
+              connection,
+              req,
+              res,
+              (error, resultdata) => {
                 if (error) {
                   connection.rollback(() => {
                     releaseDBConnection(db, connection);
                     next(error);
                   });
                 }
-                connection.commit(error => {
-                  releaseDBConnection(db, connection);
-                  if (error) {
-                    connection.rollback(() => {
-                      next(error);
-                    });
-                  }
-                  debugLog("data Q2 : " + resultdata);
 
-                  req.records = resultdata;
-                  //Upload Images to server.
-                  // createFolder(req, res);
-                  next();
-                  return;
-                });
-              });
-            } else {
-              connection.commit(error => {
-                releaseDBConnection(db, connection);
-                if (error) {
-                  connection.rollback(() => {
-                    next(error);
-                  });
+                //Billing Insertion for update front desk APi
+                //Quwery:2
+                if (resultdata != null && resultdata.length != 0) {
+                  req.query.visit_id = resultdata["insertId"];
+                  req.body.visit_id = resultdata["insertId"];
+
+                  debugLog("req.body.visit_id:" + resultdata["insertId"]);
+
+                  debugLog(" succes result of second query", resultdata);
+                  //call
+                  addBill(
+                    connection,
+                    req,
+                    res,
+                    (error, result) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+
+                      //Query :3
+                      //insert receipt for update front desk api
+
+                      if (result != null && result.length != 0) {
+                        req.query.billing_header_id = result.insertId;
+                        req.body.billing_header_id = result.insertId;
+
+                        debugLog(
+                          "  req.body.billing_header_id:" + result["insertId"]
+                        );
+
+                        //call
+
+                        newReceipt(
+                          connection,
+                          req,
+                          res,
+                          (error, resultdata) => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+                            connection.commit(error => {
+                              releaseDBConnection(db, connection);
+                              if (error) {
+                                connection.rollback(() => {
+                                  next(error);
+                                });
+                              }
+                              req.records = result;
+                              next();
+                            });
+
+                            debugLog("succes result of query 3 : ", resultdata);
+                          },
+                          next
+                        );
+                      }
+                    },
+
+                    next
+                  );
                 }
-                req.records = result;
-                next();
-              });
-            }
-          },
-          true,
-          next
+              },
+              true,
+              next
+            );
+          }
         );
       });
     });
@@ -346,8 +400,9 @@ let addCompleteBill = (req, res, next) => {
     next(e);
   }
 };
+
 module.exports = {
   addFrontDesk,
   selectFrontDesk,
-  addCompleteBill
+  updateFrontDesk
 };

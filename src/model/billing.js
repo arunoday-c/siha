@@ -5,6 +5,7 @@ import {
   runningNumber,
   releaseDBConnection
 } from "../utils";
+
 import moment from "moment";
 import { debugLog, debugFunction } from "../utils/logging";
 
@@ -211,6 +212,7 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
             }
             debugLog("new Bill number : " + newNumber);
             inputParam["bill_number"] = newNumber;
+            req.body.bill_number = newNumber;
             if (
               inputParam.sheet_discount_amount != 0 &&
               inputParam.bill_comments == ""
@@ -356,6 +358,7 @@ let newReceipt = (dataBase, req, res, callBack, next) => {
       }
       debugLog("new receipt number : " + newNumber);
       inputParam["receipt_number"] = newNumber;
+      req.body.receipt_number = newNumber;
       debugLog("bil hdr id:", inputParam.billing_header_id);
 
       dataBase.query(
@@ -403,7 +406,7 @@ let newReceipt = (dataBase, req, res, callBack, next) => {
                   });
                 }
                 if (typeof callBack == "function") {
-                  callBack(error, RcptDetailsRecords);
+                  callBack(error, headerRcptResult);
                 }
               }
             );
