@@ -87,8 +87,7 @@ let billingDetailsModel = {
   created_by: null,
   created_date: null,
   updated_by: null,
-  updated_date: null,
-  record_status: null
+  updated_date: null
 };
 let servicesModel = {
   hims_d_services_id: null,
