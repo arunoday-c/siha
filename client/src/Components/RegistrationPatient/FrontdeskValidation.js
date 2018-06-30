@@ -66,6 +66,24 @@ export function Validations(state) {
     return isError;
   }
 
+  if (state.state.counter_id == null) {
+    isError = true;
+    state.setState({
+      open: true,
+      MandatoryMsg: "Invalid. Counter ID Cannot be blank."
+    });
+    return isError;
+  }
+
+  if (state.state.shift_id == null) {
+    isError = true;
+    state.setState({
+      open: true,
+      MandatoryMsg: "Invalid. Shift ID Cannot be blank."
+    });
+    return isError;
+  }
+
   if (state.state.contact_number <= 0) {
     isError = true;
     state.setState({
@@ -73,5 +91,45 @@ export function Validations(state) {
       MandatoryMsg: "Invalid. Mobile No. Cannot be blank."
     });
     return isError;
+  }
+
+  if (state.state.card_amount > 0) {
+    if (state.state.card_number == null || state.state.card_number == "") {
+      isError = true;
+      state.setState({
+        open: true,
+        MandatoryMsg: "Invalid. Card Number cannot be blank."
+      });
+      return isError;
+    }
+
+    if (state.state.card_date == null || state.state.card_date == "") {
+      isError = true;
+      state.setState({
+        open: true,
+        MandatoryMsg: "Invalid. Card Date Cannot be blank."
+      });
+      return isError;
+    }
+  }
+
+  if (state.state.cheque_amount > 0) {
+    if (state.state.cheque_number == null || state.state.cheque_number == "") {
+      isError = true;
+      state.setState({
+        open: true,
+        MandatoryMsg: "Invalid. Check Number cannot be blank."
+      });
+      return isError;
+    }
+
+    if (state.state.cheque_date == null || state.state.cheque_date == "") {
+      isError = true;
+      state.setState({
+        open: true,
+        MandatoryMsg: "Invalid. Cheque Date Cannot be blank."
+      });
+      return isError;
+    }
   }
 }

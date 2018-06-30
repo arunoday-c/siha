@@ -1,4 +1,5 @@
 import moment from "moment";
+import { getCookie } from "../utils/algaehApiCall.js";
 
 export default {
   inputParam: function() {
@@ -9,9 +10,10 @@ export default {
       patient_id: null,
       billing_type_id: null,
       visit_id: null,
+      hims_f_patient_visit_id: null,
       bill_number: null,
       incharge_or_provider: null,
-      bill_date: moment(CurrentDate),
+      bill_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
       advance_amount: 0,
       discount_amount: 0,
       sub_total_amount: 0,
@@ -37,15 +39,15 @@ export default {
       net_tax: 0,
       credit_amount: 0,
       receiveable_amount: 0,
-      created_by: null,
-      created_date: null,
+      created_by: getCookie("UserID"),
+      created_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
       updated_by: null,
       updated_date: null,
-      record_status: null,
       cancel_remarks: null,
       cancel_by: null,
       bill_comments: null,
-      details: [
+
+      billdetails: [
         {
           hims_f_billing_details_id: null,
           hims_f_billing_header_id: null,
@@ -53,6 +55,7 @@ export default {
           services_id: null,
           quantity: 0,
           unit_cost: 0,
+          insurance_yesno: "N",
           gross_amount: 0,
           discount_amout: 0,
           discount_percentage: 0,
@@ -69,7 +72,7 @@ export default {
           patient_payable: 0,
           comapany_resp: 0,
           company_payble: 0,
-          sec_company: 0,
+          sec_company: "N",
           sec_deductable_percentage: 0,
           sec_deductable_amount: 0,
           sec_company_res: 0,
@@ -77,12 +80,25 @@ export default {
           sec_company_paybale: 0,
           sec_copay_percntage: 0,
           sec_copay_amount: 0,
-          created_by: null,
-          created_date: null,
+          created_by: getCookie("UserID"),
+          created_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
           updated_by: null,
           updated_date: null
         }
-      ]
+      ],
+      hims_f_receipt_header_id: null,
+      receipt_number: null,
+      receipt_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
+      billing_header_id: null,
+      total_amount: 0,
+      counter_id: null,
+      shift_id: null,
+      unbalanced_amount: 0,
+      created_by: getCookie("UserID"),
+      created_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
+      updated_by: null,
+      updated_date: null,
+      receiptdetails: []
     };
     return output;
   }

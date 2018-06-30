@@ -1,0 +1,41 @@
+.hptl-opbilling-details {
+  background: #ffff; }
+  .hptl-opbilling-details .patient-section {
+    border: 1px solid #d3d3d3;
+    margin: 10px;
+    margin-top: 0px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px; }
+  .hptl-opbilling-details .toggle-section {
+    margin: 10px;
+    margin-bottom: 0px;
+    background-color: #ffff; }
+  .hptl-opbilling-details .text_field {
+    width: 100% !important;
+    background-color: #fbfbfb;
+    font-size: "11px";
+    margin-right: "5px"; }
+  .hptl-opbilling-details .paper {
+    background-color: #292929 !important;
+    left: 0px;
+    width: 250px; }
+  .hptl-opbilling-details .menuBar-title {
+    display: flex;
+    justify-content: center; }
+
+.hptl-op-billing-footer .main {
+  background-color: #000000 !important;
+  border-top: 1px solid #0000;
+  padding: 10px;
+  height: 40px;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0; }
+
+.hptl-op-billing-footer .app_bar {
+  background: #000000; }
+
+.spacing-push {
+  margin-top: 6em; }

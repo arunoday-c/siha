@@ -1,22 +1,14 @@
 import React, { Component } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableFooter,
-  TablePagination,
-  TextField
-} from "material-ui";
+import { TextField, Paper, TablePagination } from "material-ui";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
-import IconButton from "material-ui/IconButton";
+import { IconButton } from "material-ui";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
 import "./wrapper.css";
+import { Tooltip } from "material-ui";
 class DataGrid extends Component {
   constructor(props) {
     super(props);
@@ -32,7 +24,8 @@ class DataGrid extends Component {
       //   multiExpand: true,
       //   expandRows: []
       // },
-      keyField: ""
+      keyField: "",
+      width: null
     };
   }
   handleChangePage = (event, page) => {
@@ -43,8 +36,9 @@ class DataGrid extends Component {
     this.setState({ rowsPerPage: event.target.value });
   };
   handleEditRow = event => {
+    let width = document.getElementsByTagName("table")[0].clientWidth + "px";
     let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
-    this.setState({ isEditable: true, rowToIndexEdit: rowId });
+    this.setState({ isEditable: true, rowToIndexEdit: rowId, width: width });
     let row = this.state.data[rowId];
     //this.setState({ selectedPreviousRow: row });
     if (this.props.events != null) {
@@ -54,7 +48,7 @@ class DataGrid extends Component {
     }
   };
   handleCancelRow = event => {
-    this.setState({ rowToIndexEdit: -1 });
+    this.setState({ rowToIndexEdit: -1, width: null });
     let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
     let row = this.state.data[rowId];
     // let stateData = this.state.data;
@@ -77,7 +71,7 @@ class DataGrid extends Component {
     }
   };
   handleDoneRow = event => {
-    this.setState({ rowToIndexEdit: -1 });
+    this.setState({ rowToIndexEdit: -1, width: null });
     let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
     if (this.props.events != null) {
       if (this.props.events.onDone) {
@@ -88,9 +82,12 @@ class DataGrid extends Component {
   };
   handleExpandRow = event => {
     let rowId = event.currentTarget.getAttribute("row-key");
-    let target = event.currentTarget.getAttribute("thisIs");
+    let target = event.currentTarget.getAttribute("thisis");
     let _expandRows;
-    let currentArray = this.state.expanded.expandRows;
+    let currentArray =
+      this.state.expanded.expandRows == null
+        ? []
+        : this.state.expanded.expandRows;
     if (target == "E") {
       currentArray.splice(0, 0, rowId);
     } else {
@@ -107,8 +104,12 @@ class DataGrid extends Component {
     this.setState({ expanded: obj });
   };
   expandButton = rowKey => {
+    debugger;
     if (this.state.expanded) {
-      if (this.state.expanded.multiExpand) {
+      if (
+        this.state.expanded.multiExpand != null &&
+        this.state.expanded.multiExpand == true
+      ) {
         let _expand = this.state.expanded.expandRows;
         if (_expand != null)
           _expand = this.state.expanded.expandRows.filter(
@@ -116,32 +117,46 @@ class DataGrid extends Component {
           );
         if (_expand != null && _expand.length > 0) {
           return (
-            <IconButton
-              title="Collapse"
-              row-key={String(rowKey)}
-              thisIs="C"
-              onClick={this.handleExpandRow.bind(this)}
-            >
-              <KeyboardArrowDown />
-            </IconButton>
+            <Tooltip title="Collapse record">
+              <IconButton
+                row-key={String(rowKey)}
+                thisis="C"
+                onClick={this.handleExpandRow.bind(this)}
+              >
+                <KeyboardArrowDown />
+              </IconButton>
+            </Tooltip>
           );
         } else {
           return (
+            <Tooltip title="Expand record">
+              <IconButton
+                row-key={String(rowKey)}
+                thisis="E"
+                onClick={this.handleExpandRow.bind(this)}
+              >
+                <KeyboardArrowUp />
+              </IconButton>
+            </Tooltip>
+          );
+        }
+      } else {
+        return (
+          <Tooltip title="Expand record">
             <IconButton
-              title="Expand"
               row-key={String(rowKey)}
-              thisIs="E"
+              thisis="E"
               onClick={this.handleExpandRow.bind(this)}
             >
               <KeyboardArrowUp />
             </IconButton>
-          );
-        }
+          </Tooltip>
+        );
       }
-    } else {
     }
   };
   renderDetailTemplate = (row, rowid) => {
+    if (this.state.expanded.expandRows == null) return null;
     var index = this.state.expanded.expandRows.indexOf(
       String(row[this.state.keyField])
     );
@@ -149,11 +164,9 @@ class DataGrid extends Component {
       let colSpan =
         this.props.columns.length + 1 + (this.state.isEditable ? 1 : 0);
       return (
-        <TableRow key={rowid + "_Expand"}>
-          <TableCell colSpan={colSpan}>
-            {this.props.expanded.detailTemplate(row)}
-          </TableCell>
-        </TableRow>
+        <tr key={rowid + "_Expand"}>
+          <td colSpan={colSpan}>{this.props.expanded.detailTemplate(row)}</td>
+        </tr>
       );
     }
   };
@@ -195,56 +208,63 @@ class DataGrid extends Component {
   returnTableHeaderColumns = () => {
     return this.props.columns.map((row, i) => {
       return (
-        <TableCell numeric={row.numeric == null ? false : row.numeric}>
+        // numeric={row.numeric == null ? false : row.numeric}
+        <td key={i.toString()}>
           {typeof row.label == "function" ? row.label() : row.label}
-        </TableCell>
+        </td>
       );
     });
   };
   returnExpandColumn = () => {
     if (this.state.expanded != null) {
-      return <TableCell />;
+      return <td />;
     }
   };
   returnEditableColumn = () => {
     if (this.state.isEditable != null && this.state.isEditable) {
-      return <TableCell />; // hi </TableCell width="100px">;
+      return <td className="" />; // hi </TableCell width="100px">;
     }
   };
-  returnEditableButtons = rowId => {
+  returnEditableButtons = (row, rowId) => {
     if (this.state.isEditable != null && this.state.isEditable == true) {
       return (
-        <TableCell>
-          <IconButton
-            title="Done"
-            row-key={rowId}
-            onClick={this.handleDoneRow.bind(this)}
-          >
-            <Done />
-          </IconButton>
-          <IconButton
-            title="Cancel"
-            style={{ marginLeft: "20px" }}
-            onClick={this.handleCancelRow.bind(this)}
-          >
-            <CancelIcon />
-          </IconButton>
-        </TableCell>
+        <td width="10%" className="">
+          <Tooltip title="Done record">
+            <IconButton row-key={rowId} onClick={this.handleDoneRow.bind(this)}>
+              <Done />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Cancel record">
+            <IconButton onClick={this.handleCancelRow.bind(this)}>
+              <CancelIcon />
+            </IconButton>
+          </Tooltip>
+          {this.returnExpandButton(row[this.state.keyField])}
+        </td>
       );
-    } else return null;
+    } else
+      return (
+        <React.Fragment>
+          {this.returnExpandButton(row[this.state.keyField])}
+        </React.Fragment>
+      );
   };
   returnExpandButton = row => {
     if (this.state.expanded != null) {
-      return (
-        <TableCell>{this.expandButton(row[[this.state.keyField]])}</TableCell>
-      );
+      if (this.state.isEditable != null && this.state.isEditable == true)
+        return (
+          <React.Fragment>
+            {this.expandButton(row[[this.state.keyField]])}
+          </React.Fragment>
+        );
+      else return <td>{this.expandButton(row[[this.state.keyField]])}</td>;
     }
   };
 
   returnTableRowWithColumns = (row, index) => {
     return this.props.columns.map(col => {
       return (
-        <TableCell>
+        <td>
           {col.editorTemplate != null ? (
             col.editorTemplate(row, row => {
               return;
@@ -259,7 +279,7 @@ class DataGrid extends Component {
               }}
             />
           )}
-        </TableCell>
+        </td>
       );
     });
   };
@@ -267,11 +287,11 @@ class DataGrid extends Component {
   returnEditableStateRow = (row, index) => {
     return (
       <React.Fragment>
-        <TableRow key={row[this.state.keyField]}>
-          {this.returnEditableButtons(row[this.state.keyField])}
-          {this.returnExpandButton(row[this.state.keyField])}
+        <tr key={index.toString()}>
+          {this.returnEditableButtons(row, row[this.state.keyField])}
+          {/* {this.returnExpandButton(row[this.state.keyField])} */}
           {this.returnTableRowWithColumns(row, index)}
-        </TableRow>
+        </tr>
       </React.Fragment>
     );
   };
@@ -279,30 +299,36 @@ class DataGrid extends Component {
   returnEditDeleteButtons = row => {
     if (this.state.isEditable != null && this.state.isEditable == true) {
       return (
-        <TableCell>
-          <IconButton
-            title="Edit record"
-            row-key={row[this.state.keyField]}
-            onClick={this.handleEditRow.bind(this)}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton title="Delete  record" style={{ marginLeft: "20px" }}>
-            <DeleteIcon />
-          </IconButton>
-        </TableCell>
+        <td width="10%" className="">
+          <Tooltip title="Edit record">
+            <IconButton
+              row-key={row[this.state.keyField]}
+              onClick={this.handleEditRow.bind(this)}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete record">
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+          {this.returnExpandButton(row)}
+        </td>
       );
-    } else return null;
+    } else {
+      return <React.Fragment>{this.returnExpandButton(row)}</React.Fragment>;
+    }
   };
 
   returnTableRoNonEditWithColumns = (row, index) => {
-    return this.props.columns.map(col => {
+    return this.props.columns.map((col, i) => {
       return (
-        <TableCell>
+        <td key={i}>
           {col.displayTemplate != null
             ? col.displayTemplate(row)
             : row[col.fieldName]}
-        </TableCell>
+        </td>
       );
     });
   };
@@ -310,11 +336,11 @@ class DataGrid extends Component {
   returnNonEditedStateRow = (row, index) => {
     return (
       <React.Fragment>
-        <TableRow key={row[this.state.keyField]}>
+        <tr key={index.toString()}>
           {this.returnEditDeleteButtons(row)}
-          {this.returnExpandButton(row)}
+          {/* {this.returnExpandButton(row)} */}
           {this.returnTableRoNonEditWithColumns(row, index)}
-        </TableRow>
+        </tr>
       </React.Fragment>
     );
   };
@@ -339,14 +365,14 @@ class DataGrid extends Component {
             .map((n, i) => {
               if (isEditable && i == rowToIndexEdit) {
                 return (
-                  <React.Fragment>
+                  <React.Fragment key={i}>
                     {this.returnEditableStateRow(n, i)}
                     {this.renderDetailedTemplateRecords(n, i)}
                   </React.Fragment>
                 );
               } else {
                 return (
-                  <React.Fragment>
+                  <React.Fragment key={i}>
                     {this.returnNonEditedStateRow(n, i)}
                     {this.renderDetailedTemplateRecords(n, i)}
                   </React.Fragment>
@@ -361,14 +387,14 @@ class DataGrid extends Component {
           {data.map((n, i) => {
             if (isEditable && i == rowToIndexEdit) {
               return (
-                <React.Fragment>
+                <React.Fragment key={i.toString()}>
                   {this.returnEditableStateRow(n, i)}
                   {this.renderDetailedTemplateRecords(n, i)}
                 </React.Fragment>
               );
             } else {
               return (
-                <React.Fragment>
+                <React.Fragment key={i.toString()}>
                   {this.returnNonEditedStateRow(n, i)}
                   {this.renderDetailedTemplateRecords(n, i)}
                 </React.Fragment>
@@ -384,18 +410,14 @@ class DataGrid extends Component {
     if (this.props.paging != null) {
       const { data, rowsPerPage, page } = this.state;
       return (
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              component="div"
-              count={data.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={this.handleChangePage}
-              onChangeRowsPerPage={this.handleChangeRowsPerPage}
-            />
-          </TableRow>
-        </TableFooter>
+        <TablePagination
+          component="div"
+          count={data.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={this.handleChangePage}
+          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+        />
       );
     } else null;
   };
@@ -404,20 +426,25 @@ class DataGrid extends Component {
     // const emptyRows =
     //   rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     return (
-      <Table fixedHeader={true} {...this.props.others}>
-        <TableHead>
-          <TableRow>
-            {this.returnEditableColumn()}
-            {this.returnExpandColumn()}
-            {this.returnTableHeaderColumns()}
-          </TableRow>
-        </TableHead>
+      // <div className="table-responsive">
+      <Paper
+        style={{ width: this.state.width != null ? this.state.width : "100%" }}
+      >
+        <div className="table-responsive">
+          <table className="table table-hover table-fixed">
+            <thead>
+              <tr>
+                {this.returnEditableColumn()}
+                {/* {this.returnExpandColumn()} */}
+                {this.returnTableHeaderColumns()}
+              </tr>
+            </thead>
+            <tbody>{this.renderTableRows()}</tbody>
+          </table>
 
-        <TableBody>
-          {this.renderTableRows()}
           {this.renderFooter()}
-        </TableBody>
-      </Table>
+        </div>
+      </Paper>
     );
   }
 }

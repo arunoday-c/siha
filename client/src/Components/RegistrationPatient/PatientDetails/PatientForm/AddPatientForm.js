@@ -31,13 +31,8 @@ import {
   AlgaehLabel,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
-import {
-  FORMAT_MARTIALSTS,
-  FORMAT_GENDER
-} from "../../../../utils/GlobalFunctions";
+import variableJson from "../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
-
-const MobileFormat = "+91 (###)-## #####";
 
 class AddPatientForm extends PureComponent {
   constructor(props) {
@@ -48,9 +43,8 @@ class AddPatientForm extends PureComponent {
       file: {
         filePreview: null,
         filePrimaryPreview: null
-        // fileSecPreview: null
       },
-      filePreview: null,
+
       DOBErrorMsg: "",
       DOBError: false,
       DOB: 0,
@@ -95,29 +89,29 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.PatRegIOputs);
-    if (this.state.country_id != nextProps.country_id) {
-      debugger;
-      let country = Enumerable.from(this.props.countries)
-        .where(w => w.hims_d_country_id == this.state.country_id)
-        .firstOrDefault();
-      let states = country != null ? country.states : [];
-      if (nextProps.state_id != this.state.state_id) {
-        let cities = Enumerable.from(states)
-          .where(w => w.hims_d_state_id == this.state.state_id)
+    debugger;
+    this.setState(nextProps.PatRegIOputs, () => {
+      if (this.state.country_id != nextProps.country_id) {
+        let country = Enumerable.from(this.props.countries)
+          .where(w => w.hims_d_country_id == this.state.country_id)
           .firstOrDefault();
+        let states = country != null ? country.states : [];
+        if (nextProps.state_id != this.state.state_id) {
+          let cities = Enumerable.from(states)
+            .where(w => w.hims_d_state_id == this.state.state_id)
+            .firstOrDefault();
 
-        this.props.getStates(states, callback => {
-          this.setState({
-            state_id: this.state.state_id
+          this.props.getStates(states, callback => {
+            this.setState({
+              state_id: this.state.state_id
+            });
           });
-        });
-        debugger;
-        if (cities != "undefined") {
-          this.props.getCities(cities.cities);
+          if (cities != "undefined") {
+            this.props.getCities(cities.cities);
+          }
         }
       }
-    }
+    });
   }
 
   numInput(e) {
@@ -132,7 +126,6 @@ class AddPatientForm extends PureComponent {
   }
 
   render() {
-    // debugger;
     const DateofBirth =
       this.state.hims_d_patient_id != null ? this.state.date_of_birth : null;
     // const DateofBirth = x._d;
@@ -182,7 +175,7 @@ class AddPatientForm extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           error: this.state.open,
-                          helperText: this.state.userErrorText
+                          helperText: this.state.MandatoryMsg
                         }}
                       />
 
@@ -218,7 +211,7 @@ class AddPatientForm extends PureComponent {
                                 ? "name"
                                 : "arabic_name",
                             valueField: "value",
-                            data: FORMAT_GENDER
+                            data: variableJson.FORMAT_GENDER
                           },
                           onChange: texthandle.bind(this, this, context)
                         }}
@@ -303,7 +296,7 @@ class AddPatientForm extends PureComponent {
                                 ? "name"
                                 : "arabic_name",
                             valueField: "value",
-                            data: FORMAT_MARTIALSTS
+                            data: variableJson.FORMAT_MARTIALSTS
                           },
                           onChange: texthandle.bind(this, this, context)
                         }}
@@ -598,7 +591,7 @@ class AddPatientForm extends PureComponent {
                         <div>
                           <img
                             className="preview-image"
-                            src={this.state.file["filePreview"]}
+                            src={this.state.file.filePreview}
                             style={{ width: this.widthImg }}
                           />
                         </div>
@@ -632,7 +625,7 @@ class AddPatientForm extends PureComponent {
                         <div>
                           <img
                             className="preview-image"
-                            src={this.state.file["filePrimaryPreview"]}
+                            src={this.state.file.filePrimaryPreview}
                             style={{ width: this.widthImg }}
                           />
                         </div>

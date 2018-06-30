@@ -515,6 +515,8 @@ let getBillDetails = (req, res, next) => {
           let records = result[0];
 
           extend(billingDetailsModel, {
+            service_type_id: result[0].service_type_id,
+            services_id: servicesDetails.hims_d_services_id,
             quantity: 1,
             unit_cost: records.standard_fee,
             gross_amount: records.standard_fee,
@@ -546,6 +548,7 @@ let getBillDetails = (req, res, next) => {
             },
             req.body
           );
+
           if (billingHeaderModel.sheet_discount_amount > 0) {
             billingHeaderModel.sheet_discount_percentage =
               (billingHeaderModel.sheet_discount_amount / gross_total) * 100;
@@ -562,17 +565,31 @@ let getBillDetails = (req, res, next) => {
           billingHeaderModel.receiveable_amount =
             billingHeaderModel.net_amount - billingHeaderModel.credit_amount;
 
-          extend(
-            receiptHeaderModel,
-            {
+          debugLog("Sheet Amount ", billingHeaderModel.sheet_discount_amount);
+
+          req.body.sheet_discount_amount =
+            billingHeaderModel.sheet_discount_amount;
+
+          req.body.sheet_discount_percentage =
+            billingHeaderModel.sheet_discount_percentage;
+
+          req.body.isReceipt =
+            req.body.isReceipt == null ? false : req.body.isReceipt;
+
+          if (req.body.isReceipt == false) {
+            extend(receiptHeaderModel, req.body, {
               total_amount: 0,
               unbalanced_amount: 0,
               cash_amount: billingHeaderModel.receiveable_amount,
               card_amount: 0,
               cheque_amount: 0
-            },
-            req.body
-          );
+            });
+          } else {
+            extend(receiptHeaderModel, req.body);
+          }
+
+          debugLog("Receipt Log", receiptHeaderModel);
+
           receiptHeaderModel.total_amount =
             receiptHeaderModel.cash_amount +
             receiptHeaderModel.card_amount +

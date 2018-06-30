@@ -12,7 +12,7 @@ div[numberbox="true"] input[type="text"] {
   vertical-align: middle;
   -webkit-tap-highlight-color: transparent;
   background-color: #fbfbfb;
-  max-width: 75% !important; }
+  min-width: 100%; }
 
 .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
   background-color: #00bcb0 !important; }
@@ -22,5 +22,40 @@ div[numberbox="true"] input[type="text"] {
   padding-left: 70px;
   font-weight: bold; }
 
-table td:first-child {
-  width: 100px !important; }
+.table {
+  width: 100%; }
+  .table tbody {
+    height: 200px;
+    overflow: auto;
+    width: 100%; }
+  .table tbody td {
+    vertical-align: middle;
+    white-space: nowrap; }
+  .table thead tr td {
+    font-weight: bold; }
+
+.scrolling table {
+  table-layout: inherit;
+  *margin-left: -100px;
+  /*ie7*/ }
+
+.scrolling td,
+th {
+  vertical-align: top;
+  padding: 10px;
+  min-width: 100px; }
+
+.scrolling th {
+  position: absolute;
+  *position: relative;
+  /*ie7*/
+  left: 0;
+  width: 120px; }
+
+.outer {
+  position: relative; }
+
+.inner {
+  overflow-x: auto;
+  overflow-y: visible;
+  margin-left: 120px; }

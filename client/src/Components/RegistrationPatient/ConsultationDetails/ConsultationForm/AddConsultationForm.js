@@ -5,18 +5,17 @@ import "./ConsultationForm.css";
 import "./../../../../styles/site.css";
 import { getDepartmentsClinicalNon } from "../../../../actions/CommonSetup/Department.js";
 import { getVisittypes } from "../../../../actions/CommonSetup/VisitTypeactions.js";
+import { getDepartmentsandDoctors } from "../../../../actions/CommonSetup/DepartmentsDoctorsaction";
+
 import { getProviderDetails } from "../../../../actions/serviceActions";
-import {
-  generateBill,
-  initialStateBilldata
-} from "../../../../actions/RegistrationPatient/Billingactions";
+import { generateBill } from "../../../../actions/RegistrationPatient/Billingactions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
 import moment from "moment";
 import Options from "../../../../Options.json";
-import Enumerable from "linq";
+
 import {
   AlgaehLabel,
   AlagehAutoComplete,
@@ -28,11 +27,6 @@ import {
   doctorselectedHandeler
 } from "./AddConsultationDetails";
 
-const FORMAT_DEFAULT = [
-  { name: "Mohammed", value: 1 },
-  { name: "Raheem", value: 2 },
-  { name: "Rahaman", value: 3 }
-];
 const MATERNITY_PATIENT = [
   { label: "Yes", value: "Y" },
   { label: "No", value: "N" }
@@ -66,10 +60,13 @@ class AddConsultationForm extends Component {
     if (this.props.providers.length === 0) {
       this.props.getProviderDetails();
     }
+
+    if (this.props.deptanddoctors.length === 0) {
+      this.props.getDepartmentsandDoctors();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     // console.log("Bill Details", nextProps.genbill);
     this.setState(nextProps.PatRegIOputs);
   }
@@ -83,7 +80,7 @@ class AddConsultationForm extends Component {
 
   render() {
     const vstDeatils =
-      this.state.visitDetails === null ? [{}] : this.state.visitDetails;
+      this.state.visitDetails == null ? [{}] : this.state.visitDetails;
     return (
       <MyContext.Consumer>
         {context => (
@@ -111,11 +108,6 @@ class AddConsultationForm extends Component {
                           data: this.props.visittypes
                         },
                         onChange: selectedHandeler.bind(this, this, context)
-                        // others: {
-                        //   clearRenderer: e => {
-                        //     debugger;
-                        //   }
-                        // }
                       }}
                     />
 
@@ -134,8 +126,8 @@ class AddConsultationForm extends Component {
                             this.state.selectedLang == "en"
                               ? "sub_department_name"
                               : "arabic_sub_department_name",
-                          valueField: "hims_d_sub_department_id",
-                          data: this.props.clndepartments
+                          valueField: "sub_department_id",
+                          data: this.props.deptanddoctors.departmets
                         },
                         others: {
                           disabled: this.state.visittypeselect
@@ -160,8 +152,8 @@ class AddConsultationForm extends Component {
                             this.state.selectedLang == "en"
                               ? "full_name"
                               : "arabic_name",
-                          valueField: "hims_d_employee_id",
-                          data: this.props.providers
+                          valueField: "employee_id",
+                          data: this.props.deptanddoctors.doctors
                         },
                         others: {
                           disabled: this.state.visittypeselect
@@ -274,11 +266,13 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "department_id" }} />
                         ),
                         displayTemplate: row => {
-                          let display = this.props.clndepartments.filter(
-                            f =>
-                              f.hims_d_sub_department_id ==
-                              row.sub_department_id
-                          );
+                          let display = [];
+                          this.props.deptanddoctors != 0
+                            ? (display = this.props.deptanddoctors.departmets.filter(
+                                f =>
+                                  f.sub_department_id == row.sub_department_id
+                              ))
+                            : [];
 
                           return (
                             <span>
@@ -298,9 +292,12 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                         ),
                         displayTemplate: row => {
-                          let display = this.props.providers.filter(
-                            f => f.hims_d_employee_id == row.doctor_id
-                          );
+                          let display;
+                          this.props.deptanddoctors != 0
+                            ? (display = this.props.deptanddoctors.doctors.filter(
+                                f => f.employee_id == row.doctor_id
+                              ))
+                            : [];
 
                           return (
                             <span>
@@ -342,7 +339,8 @@ function mapStateToProps(state) {
     clndepartments: state.clndepartments.clndepartments,
     visittypes: state.visittypes.visittypes,
     providers: state.providers.providers,
-    genbill: state.genbill.genbill
+    genbill: state.genbill.genbill,
+    deptanddoctors: state.deptanddoctors.deptanddoctors
   };
 }
 
@@ -352,7 +350,8 @@ function mapDispatchToProps(dispatch) {
       getDepartmentsClinicalNon: getDepartmentsClinicalNon,
       getVisittypes: getVisittypes,
       getProviderDetails: getProviderDetails,
-      generateBill: generateBill
+      generateBill: generateBill,
+      getDepartmentsandDoctors: getDepartmentsandDoctors
     },
     dispatch
   );

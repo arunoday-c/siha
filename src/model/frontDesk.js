@@ -212,7 +212,7 @@ let selectFrontDesk = (req, res, next) => {
       }
       let where = whereCondition(extend(selectWhere, req.query));
       connection.query(
-        "SELECT `hims_d_patient_id`, `patient_code`\
+        "SELECT  `hims_d_patient_id`, `patient_code`\
       , `registration_date`, `title_id`,`first_name`, `middle_name`, `last_name`,`full_name`, `arabic_name`\
       , `gender`, `religion_id`,`date_of_birth`, `age`, `marital_status`, `address1`\
       , `address2`,`contact_number`, `secondary_contact_number`, `email`\
@@ -232,7 +232,7 @@ let selectFrontDesk = (req, res, next) => {
           if (result.length != 0) {
             let hims_d_patient_id = result[0]["hims_d_patient_id"];
             connection.query(
-              "SELECT `hims_f_patient_visit_id`, `patient_id`,`visit_code`\
+              "SELECT 0 radioselect, `hims_f_patient_visit_id`, `patient_id`,`visit_code`\
             , `visit_type`, `visit_date`, `department_id`, `sub_department_id`\
             , `doctor_id`, `maternity_patient`, `is_mlc`, `mlc_accident_reg_no`\
             , `mlc_police_station`, `mlc_wound_certified_date`\

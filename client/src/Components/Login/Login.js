@@ -94,7 +94,10 @@ class Login extends Component {
         data: this.state,
         timeout: 10000,
         onSuccess: response => {
+          debugger;
           if (response.data.success === true) {
+            setCookie("UserID", response.data.records.algaeh_d_app_user_id, 30);
+
             window.location.hash = "/Home";
           } else {
           }
