@@ -39,7 +39,7 @@ const doctorselectedHandeler = ($this, context, e) => {
   if (context != null) {
     context.updateState({
       [e.name]: e.value,
-      hims_d_services_id: e.value,
+      hims_d_services_id: e.selected.services_id,
       incharge_or_provider: e.value
     });
   }

@@ -1,28 +1,38 @@
 import { Router } from "express";
-import {
-  addBilling,
-  billingCalculations,
-  getBillDetails,
-  billcalc
-} from "../model/billing";
+import { billingCalculations, getBillDetails } from "../model/billing";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
 export default ({ config, db }) => {
   let api = Router();
-  api.post(
-    "/addBillDetails",
-    addBilling,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
+  // api.post(
+  //   "/addBillDetails",
+  //   addBilling,
+  //   (req, res, next) => {
+  //     let result = req.records;
+  //     res.status(httpStatus.ok).json({
+  //       success: true,
+  //       records: result
+  //     });
+  //     next();
+  //   },
+  //   releaseConnection
+  // );
+
+  // api.post(
+  //   "/addReceipt",
+  //   addReceipt,
+  //   (req, res, next) => {
+  //     let result = req.records;
+  //     res.status(httpStatus.ok).json({
+  //       success: true,
+  //       records: result
+  //     });
+  //     next();
+  //   },
+  //   releaseConnection
+  // );
+
   api.post(
     "/billingCalculations",
     billingCalculations,

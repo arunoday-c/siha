@@ -173,6 +173,7 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
         if (result) {
           let insertId = result.insertId;
           debugLog("insertId : " + insertId);
+          inputparam.patient_id = insertId;
           let optionString =
             "SELECT `algaeh_d_app_config_id`, `param_name`, `param_value` FROM `algaeh_d_app_config` WHERE `record_status` ='A' AND \
              param_category='DOCUMENTS' AND param_name='PATIENT_DOC_PATH';";

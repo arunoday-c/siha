@@ -98,7 +98,7 @@ class RegistrationPatient extends Component {
     this.setState(data);
   }
 
-  GenerateReciept() {
+  GenerateReciept(callback) {
     debugger;
     if (this.state.total_amount > 0) {
       let obj = [];
@@ -143,49 +143,56 @@ class RegistrationPatient extends Component {
         });
       }
 
-      this.setState({
-        receiptdetails: [...this.state.receiptdetails, obj]
-      });
+      this.setState(
+        {
+          receiptdetails: obj
+        },
+        () => {
+          debugger;
+          callback(this);
+        }
+      );
     }
   }
   SavePatientDetails(e) {
-    debugger;
     const err = Validations(this);
 
     if (!err) {
-      this.GenerateReciept();
-
-      if (this.state.hims_d_patient_id != null) {
-        this.props.postPatientDetails(this.state, data => {
-          this.setState({
-            patient_code: data.patient_code,
-            visit_code: data.visit_code,
-            DialogOpen: true,
-            saveEnable: true
+      debugger;
+      this.GenerateReciept($this => {
+        debugger;
+        if ($this.state.hims_d_patient_id == null) {
+          $this.props.postPatientDetails($this.state, data => {
+            $this.setState({
+              patient_code: data.patient_code,
+              visit_code: data.visit_code,
+              DialogOpen: true,
+              saveEnable: true
+            });
           });
-        });
-      } else {
-        algaehApiCall({
-          uri: "/visit/checkVisitExists",
-          data: this.state,
-          onSuccess: response => {
-            if (response.data.success == true) {
-              this.props.postVisitDetails(this.state, data => {
-                this.setState({
-                  visit_code: data.visit_code,
-                  DialogOpen: true,
-                  saveEnable: true
+        } else {
+          algaehApiCall({
+            uri: "/visit/checkVisitExists",
+            data: $this.state,
+            onSuccess: response => {
+              if (response.data.success == true) {
+                $this.props.postVisitDetails($this.state, data => {
+                  $this.setState({
+                    visit_code: data.visit_code,
+                    DialogOpen: true,
+                    saveEnable: true
+                  });
                 });
-              });
-            } else {
-              this.setState({
-                MandatoryMsg: response.data.message,
-                open: true
-              });
+              } else {
+                $this.setState({
+                  MandatoryMsg: response.data.message,
+                  open: true
+                });
+              }
             }
-          }
-        });
-      }
+          });
+        }
+      });
     }
   }
 

@@ -10,6 +10,7 @@ export default {
       patient_id: null,
       billing_type_id: null,
       visit_id: null,
+      hims_f_patient_visit_id: null,
       bill_number: null,
       incharge_or_provider: null,
       bill_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
@@ -42,7 +43,6 @@ export default {
       created_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
       updated_by: null,
       updated_date: null,
-      record_status: null,
       cancel_remarks: null,
       cancel_by: null,
       bill_comments: null,
@@ -96,6 +96,8 @@ export default {
       unbalanced_amount: 0,
       created_by: getCookie("UserID"),
       created_date: moment(String(CurrentDate)).format("YYYY-MM-DD"),
+      updated_by: null,
+      updated_date: null,
       receiptdetails: []
     };
     return output;
