@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
-import TextField from "material-ui/TextField";
+import swal from "sweetalert";
+
 import "./ConsultationForm.css";
 import "./../../../../styles/site.css";
 import { getDepartmentsClinicalNon } from "../../../../actions/CommonSetup/Department.js";
@@ -15,11 +15,13 @@ import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
 import moment from "moment";
 import Options from "../../../../Options.json";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
 
 import {
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import {
   DeptselectedHandeler,
@@ -166,7 +168,25 @@ class AddConsultationForm extends Component {
                       }}
                     />
 
-                    <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                    <AlgaehDateHandler
+                      div={{ className: "col-lg-6" }}
+                      label={{ fieldName: "visit_date" }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "visit_date"
+                      }}
+                      disabled={true}
+                      maxDate={new Date()}
+                      minDate={new Date()}
+                      events={{
+                        onChange: null
+                      }}
+                      value={this.state.visit_date}
+                    />
+
+                    {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+
+
                       <AlgaehLabel
                         label={{
                           fieldName: "visit_date",
@@ -180,7 +200,7 @@ class AddConsultationForm extends Component {
                         disabled={true}
                         value={this.state.visit_date}
                       />
-                    </div>
+                    </div> */}
                   </div>
                   <div className="row primary-box-container">
                     <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">

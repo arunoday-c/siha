@@ -8,6 +8,7 @@ import "react-day-picker/lib/style.css";
 import "../Wrapper/wrapper.css";
 // import "moment/locale/ar";
 import { getCookie } from "../../utils/algaehApiCall.js";
+
 export default class DateHandler extends Component {
   generateLabel = () => {
     if (this.props.label !== null) {
@@ -87,7 +88,6 @@ export default class DateHandler extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.value === this.state.value) return false;
-
     return true;
   }
   onDayChange = (selected, modifiers) => {
@@ -102,7 +102,7 @@ export default class DateHandler extends Component {
           inputComponent: () => {
             return (
               <DayPickerInput
-                value={this.state.value}
+                value={this.props.value}
                 onDayChange={this.onDayChange.bind(this)}
                 className={this.props.textBox.className}
                 dayPickerProps={{

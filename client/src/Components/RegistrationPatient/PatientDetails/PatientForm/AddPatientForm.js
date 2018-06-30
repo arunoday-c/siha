@@ -40,10 +40,12 @@ class AddPatientForm extends PureComponent {
 
     this.state = {
       value: "",
-      file: {
-        filePreview: null,
-        filePrimaryPreview: null
-      },
+      // file: {
+      //   filePreview: null,
+      //   filePrimaryPreview: null
+      // },
+      filePreview: null,
+      filePrimaryPreview: null,
 
       DOBErrorMsg: "",
       DOBError: false,
@@ -124,9 +126,9 @@ class AddPatientForm extends PureComponent {
   }
 
   render() {
-    const DateofBirth =
-      this.state.hims_d_patient_id != null ? this.state.date_of_birth : null;
-    // const DateofBirth = x._d;
+    debugger;
+
+    console.log("Date of birth", this.state.date_of_birth);
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -570,7 +572,11 @@ class AddPatientForm extends PureComponent {
                           onChange: calculateAge.bind(this, this, context)
                         }}
                         disabled={this.state.existingPatient}
-                        value={DateofBirth}
+                        value={
+                          this.state.date_of_birth != null
+                            ? this.state.date_of_birth
+                            : null
+                        }
                       />
 
                       <AlgaehDateHandler
@@ -655,7 +661,7 @@ class AddPatientForm extends PureComponent {
                         <div>
                           <img
                             className="preview-image"
-                            src={this.state.file.filePreview}
+                            src={this.state.filePreview}
                             style={{ width: this.widthImg }}
                           />
                         </div>
@@ -689,7 +695,7 @@ class AddPatientForm extends PureComponent {
                         <div>
                           <img
                             className="preview-image"
-                            src={this.state.file.filePrimaryPreview}
+                            src={this.state.filePrimaryPreview}
                             style={{ width: this.widthImg }}
                           />
                         </div>

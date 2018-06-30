@@ -1,8 +1,12 @@
 import React, { PureComponent } from "react";
 import "./breadcrumb.css";
-import AlgaehLabel from "../../Wrapper/label.js";
+import { AlgaehLabel, AlgaehDateHandler } from "../../Wrapper/algaehWrapper";
 import variableJson from "../../../utils/GlobalVariables.json";
 
+const CREATE_PATIENT = [
+  { name: "No", arabic_name: "لا", value: "N" },
+  { name: "Yes", arabic_name: "نعم فعلا", value: "Y" }
+];
 class BreadCrumb extends PureComponent {
   constructor(props) {
     super(props);
@@ -85,7 +89,8 @@ class BreadCrumb extends PureComponent {
                           }
                           <div>
                             <div className="row">
-                              {variableJson.FORMAT_YESNO.map((data, idx) => {
+                              {CREATE_PATIENT.map((data, idx) => {
+                                debugger;
                                 return (
                                   <div
                                     className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4"
@@ -106,11 +111,13 @@ class BreadCrumb extends PureComponent {
                                     />
 
                                     <label className="radio-design">
-                                      {data => {
+                                      {data.name}
+                                      {/* {data => {
+                                        debugger;
                                         return this.props.selectedLang == "en"
                                           ? data.name
                                           : data.arabic_name;
-                                      }}
+                                      }} */}
                                     </label>
                                   </div>
                                 );
@@ -146,8 +153,27 @@ class BreadCrumb extends PureComponent {
                           </div>
                         </div>
                       </div>
-                      <div className="col-lg-3">
+
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-3" }}
+                        label={{ forceLabel: this.props.dateLabel }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "ctrlDate"
+                        }}
+                        disabled={true}
+                        maxDate={new Date()}
+                        minDate={new Date()}
+                        events={{
+                          onChange: null
+                        }}
+                        value={this.state.ctrlDate}
+                      />
+
+                      {/* <div className="col-lg-3">
                         <div className="form-group">
+
+                          
                           {this.props.dateLabel}
                           <input
                             type="date"
@@ -156,7 +182,7 @@ class BreadCrumb extends PureComponent {
                             disabled="true"
                           />
                         </div>
-                      </div>
+                      </div> */}
                       <div className="col-lg-1">
                         <div className="form-group print_actions">
                           <i className="fas fa-print fa-2x" />

@@ -7,7 +7,7 @@ export function postVisitDetails(dataValue, callback) {
 
   return function(dispatch) {
     algaehApiCall({
-      uri: "/visit/addVisit",
+      uri: "/frontDesk/update",
       method: "POST",
       data: dataValue,
       onSuccess: response => {

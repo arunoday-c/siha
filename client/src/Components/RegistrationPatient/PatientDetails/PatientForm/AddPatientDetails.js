@@ -86,6 +86,7 @@ const titlehandle = ($this, context, e) => {
 };
 
 const calculateAge = ($this, context, e) => {
+  debugger;
   let fromDate = moment(e);
   let toDate = new Date();
   let years = moment(toDate).diff(fromDate, "year");
@@ -97,7 +98,8 @@ const calculateAge = ($this, context, e) => {
   $this.setState({
     age: years,
     AGEMM: months,
-    AGEDD: days
+    AGEDD: days,
+    date_of_birth: moment(e)._d
   });
   if (context != null) {
     context.updateState({
@@ -110,6 +112,7 @@ const calculateAge = ($this, context, e) => {
 };
 
 const setAge = ($this, context, ctrl, e) => {
+  debugger;
   if (e !== null) {
     let years = context.state.age;
     let months = context.state.AGEMM;
@@ -122,14 +125,14 @@ const setAge = ($this, context, ctrl, e) => {
     let d = m.add(-days, "days");
 
     $this.setState({
-      date_of_birth: d.format("YYYY-M-D"),
+      date_of_birth: d._d,
       [e.target.name]: e.target.value
     });
 
     if (context != null) {
       context.updateState({
         [e.target.name]: e.target.value,
-        date_of_birth: d.format("YYYY-M-D")
+        date_of_birth: d._d
       });
     }
   }
@@ -145,7 +148,8 @@ const numberSet = ($this, context, cntrl, e) => {
 };
 
 const onDrop = ($this, file, fileType) => {
-  $this.setState(...$this.state.file, { [file]: fileType[0].preview });
+  debugger;
+  $this.setState({ [file]: fileType[0].preview });
 };
 
 export {

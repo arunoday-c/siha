@@ -87,8 +87,9 @@ class AddBillingForm extends Component {
                           }}
                           disabled={true}
                           maxDate={new Date()}
+                          minDate={new Date()}
                           events={{
-                            onChange: datehandle.bind(this, this, context)
+                            onChange: null
                           }}
                           value={this.state.bill_date}
                         />
@@ -341,7 +342,7 @@ class AddBillingForm extends Component {
                             name: "receipt_number",
                             value: this.state.receipt_number,
                             events: {
-                              onChange: texthandle.bind(this, this, context)
+                              onChange: null
                             },
                             others: {
                               disabled: true
@@ -357,8 +358,9 @@ class AddBillingForm extends Component {
                           }}
                           disabled={true}
                           maxDate={new Date()}
+                          minDate={new Date()}
                           events={{
-                            onChange: datehandle.bind(this, this, context)
+                            onChange: null
                           }}
                           value={this.state.receipt_date}
                         />

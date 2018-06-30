@@ -30,6 +30,7 @@ import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import { getCookie } from "../../utils/algaehApiCall";
 import { algaehApiCall } from "../../utils/algaehApiCall";
+import swal from "sweetalert";
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -67,12 +68,20 @@ class RegistrationPatient extends Component {
   }
 
   ClearData(e) {
-    // this.setState({ saveEnable: false, clearData: true });
-
     this.props.initialStatePatientData();
     let IOputs = emptyObject;
 
     this.setState(IOputs);
+  }
+
+  successfulMessage(message, title) {
+    swal({
+      title: title,
+      text: message,
+      icon: "error",
+      button: false,
+      timer: 2500
+    });
   }
 
   GenerateReciept(callback) {
@@ -134,6 +143,7 @@ class RegistrationPatient extends Component {
   }
   SavePatientDetails(e) {
     const err = Validations(this);
+    debugger;
 
     if (!err) {
       this.GenerateReciept($this => {
@@ -141,31 +151,20 @@ class RegistrationPatient extends Component {
           $this.props.postPatientDetails($this.state, data => {
             $this.setState({
               patient_code: data.patient_code,
-              visit_code: data.visit_code,
-              DialogOpen: true,
+              bill_number: data.bill_number,
+              receipt_number: data.receipt_number,
               saveEnable: true
             });
+            this.successfulMessage("Done Successfully", "Success");
           });
         } else {
-          algaehApiCall({
-            uri: "/visit/checkVisitExists",
-            data: $this.state,
-            onSuccess: response => {
-              if (response.data.success == true) {
-                $this.props.postVisitDetails($this.state, data => {
-                  $this.setState({
-                    visit_code: data.visit_code,
-                    DialogOpen: true,
-                    saveEnable: true
-                  });
-                });
-              } else {
-                $this.setState({
-                  MandatoryMsg: response.data.message,
-                  open: true
-                });
-              }
-            }
+          $this.props.postVisitDetails($this.state, data => {
+            $this.setState({
+              bill_number: data.bill_number,
+              receipt_number: data.receipt_number,
+              saveEnable: true
+            });
+            this.successfulMessage("Done Successfully", "Success");
           });
         }
       });
@@ -176,9 +175,9 @@ class RegistrationPatient extends Component {
     this.setState({ open: false });
   };
 
-  DialoghandleClose = () => {
-    this.setState({ DialogOpen: false });
-  };
+  // DialoghandleClose = () => {
+  //   this.setState({ DialogOpen: false });
+  // };
 
   SideMenuBarOpen(sidOpen) {
     this.setState({
@@ -202,29 +201,9 @@ class RegistrationPatient extends Component {
           data.patientRegistration.hims_d_patient_id;
         data.patientRegistration.existingPatient = true;
         $this.setState(data.patientRegistration);
-        // $this.setState({});
       });
       clearInterval(intervalId);
     }, 500);
-
-    // this.setState(
-    //   {
-    //     patient_code: data
-    //   },
-    //   () => {
-    //     clearInterval(intervalId);
-    //     intervalId = setInterval(() => {
-    //       this.props.getPatientDetails(this.state.patient_code, data => {
-    //         this.setState(PatRegIOputs.inputParam(data.patientRegistration));
-    //         this.setState({
-    //           visitDetails: data.visitDetails,
-    //           patient_id: this.state.hims_d_patient_id
-    //         });
-    //       });
-    //       clearInterval(intervalId);
-    //     }, 500);
-    //   }
-    // );
   }
 
   render() {
@@ -304,7 +283,7 @@ class RegistrationPatient extends Component {
           </MyContext.Provider>
         </div>
 
-        <div>
+        {/* <div>
           <Dialog
             open={this.state.DialogOpen}
             TransitionComponent={Transition}
@@ -323,7 +302,7 @@ class RegistrationPatient extends Component {
               </Button>
             </DialogActions>
           </Dialog>
-        </div>
+        </div> */}
       </div>
     );
   }
