@@ -60,7 +60,34 @@ export default {
       visit_code: "",
       visitDetails: null,
       patient_id: null,
-      hims_d_services_id: null
+      hims_d_services_id: null,
+
+      widthImg: "",
+      open: false,
+      vertical: null,
+      horizontal: null,
+      DialogOpen: false,
+      sideBarOpen: false,
+      sidBarOpen: true,
+      selectedLang: "en",
+      chnageLang: false,
+      AGEMM: 0,
+      AGEDD: 0,
+      breadCrumbWidth: null,
+      saveEnable: false,
+      clearData: "",
+      pay_cash: "CA",
+      pay_card: "CD",
+      pay_cheque: "CH",
+      cash_amount: 0,
+      card_number: "",
+      card_date: null,
+      card_amount: 0,
+      cheque_number: "",
+      cheque_date: null,
+      cheque_amount: 0,
+      advance: 0,
+      existingPatient: false
     };
     return output;
   }

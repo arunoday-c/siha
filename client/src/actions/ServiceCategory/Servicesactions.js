@@ -2,7 +2,6 @@
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getServices(dataValue) {
-  debugger;
   return function(dispatch) {
     algaehApiCall({
       uri:

@@ -36,7 +36,6 @@ export function postBillDetsils(dataValue, callback) {
 }
 
 export function generateBill(dataValue, callback) {
-  debugger;
   callback = callback || null;
 
   return function(dispatch) {

@@ -104,7 +104,6 @@ class DataGrid extends Component {
     this.setState({ expanded: obj });
   };
   expandButton = rowKey => {
-    debugger;
     if (this.state.expanded) {
       if (
         this.state.expanded.multiExpand != null &&

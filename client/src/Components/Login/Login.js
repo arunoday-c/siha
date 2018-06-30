@@ -94,7 +94,6 @@ class Login extends Component {
         data: this.state,
         timeout: 10000,
         onSuccess: response => {
-          debugger;
           if (response.data.success === true) {
             setCookie("UserID", response.data.records.algaeh_d_app_user_id, 30);
 
@@ -103,20 +102,48 @@ class Login extends Component {
           }
         },
         onFailure: error => {
+          debugger;
           x.style.display = "none";
-          if (error.response.status !== null && error.response.status === 404) {
-            this.unsuccessfulSignIn();
+          if (error) {
+            if (error.response) {
+              if (
+                error.response.status !== null &&
+                error.response.status === 404
+              ) {
+                this.unsuccessfulSignIn(
+                  "User Name or Password doesn't match.\n Please check and login again",
+                  "Invalid User Details."
+                );
+              } else if (
+                error.response.status !== null &&
+                error.response.status > 400
+              ) {
+                this.unsuccessfulSignIn(
+                  "Server is not responding, Please contact administator.",
+                  "Failure"
+                );
+              }
+            } else {
+              this.unsuccessfulSignIn(
+                "Server is not responding, Please contact administator.",
+                "Failure"
+              );
+            }
+          } else {
+            this.unsuccessfulSignIn(
+              "Server is not responding, Please contact administator.",
+              "Failure"
+            );
           }
         }
       });
     }
   }
 
-  unsuccessfulSignIn() {
+  unsuccessfulSignIn(message, title) {
     swal({
-      title: "Failed",
-      text:
-        "User Name or Password doesn't match.\n Please check and login again",
+      title: title,
+      text: message,
       icon: "error",
       button: false,
       timer: 2500

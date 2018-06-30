@@ -35,43 +35,21 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
+const emptyObject = extend(
+  PatRegIOputs.inputParam(),
+  BillingIOputs.inputParam()
+);
 var intervalId;
 class RegistrationPatient extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      widthImg: "",
-      open: false,
-      vertical: null,
-      horizontal: null,
-      DialogOpen: false,
-      sideBarOpen: false,
-      sidBarOpen: true,
-      selectedLang: "en",
-      chnageLang: false,
-      AGEMM: 0,
-      AGEDD: 0,
-      breadCrumbWidth: null,
-      saveEnable: false,
-      clearData: "",
-      pay_cash: "CA",
-      pay_card: "CD",
-      pay_cheque: "CH",
-      cash_amount: 0,
-      card_number: "",
-      card_date: null,
-      card_amount: 0,
-      cheque_number: "",
-      cheque_date: null,
-      cheque_amount: 0,
-      advance: 0
-    };
+    this.state = {};
   }
 
   componentWillMount() {
-    let IOputs = extend(PatRegIOputs.inputParam(), BillingIOputs.inputParam());
-    this.setState({ ...this.state, ...IOputs });
+    let IOputs = emptyObject;
+    this.setState(IOputs);
   }
   componentDidMount() {
     var width = document.getElementById("attach").offsetHeight;
@@ -89,17 +67,15 @@ class RegistrationPatient extends Component {
   }
 
   ClearData(e) {
-    this.setState({ saveEnable: false, clearData: true });
-    let data = this.state;
+    // this.setState({ saveEnable: false, clearData: true });
 
     this.props.initialStatePatientData();
-    let IOputs = PatRegIOputs.inputParam();
-    extend(data, IOputs);
-    this.setState(data);
+    let IOputs = emptyObject;
+
+    this.setState(IOputs);
   }
 
   GenerateReciept(callback) {
-    debugger;
     if (this.state.total_amount > 0) {
       let obj = [];
 
@@ -113,7 +89,8 @@ class RegistrationPatient extends Component {
           created_by: getCookie("UserID"),
           created_date: moment(String(new Date())).format("YYYY-MM-DD"),
           updated_by: null,
-          updated_date: null
+          updated_date: null,
+          card_type: null
         });
       }
       if (this.state.card_amount > 0) {
@@ -126,7 +103,8 @@ class RegistrationPatient extends Component {
           created_by: getCookie("UserID"),
           created_date: moment(String(new Date())).format("YYYY-MM-DD"),
           updated_by: null,
-          updated_date: null
+          updated_date: null,
+          card_type: null
         });
       }
       if (this.state.cheque_amount > 0) {
@@ -139,7 +117,8 @@ class RegistrationPatient extends Component {
           created_by: getCookie("UserID"),
           created_date: moment(String(new Date())).format("YYYY-MM-DD"),
           updated_by: null,
-          updated_date: null
+          updated_date: null,
+          card_type: null
         });
       }
 
@@ -148,7 +127,6 @@ class RegistrationPatient extends Component {
           receiptdetails: obj
         },
         () => {
-          debugger;
           callback(this);
         }
       );
@@ -158,9 +136,7 @@ class RegistrationPatient extends Component {
     const err = Validations(this);
 
     if (!err) {
-      debugger;
       this.GenerateReciept($this => {
-        debugger;
         if ($this.state.hims_d_patient_id == null) {
           $this.props.postPatientDetails($this.state, data => {
             $this.setState({
@@ -217,7 +193,6 @@ class RegistrationPatient extends Component {
     }
   }
   getCtrlCode(patcode) {
-    debugger;
     let $this = this;
     clearInterval(intervalId);
     intervalId = setInterval(() => {
@@ -225,6 +200,7 @@ class RegistrationPatient extends Component {
         data.patientRegistration.visitDetails = data.visitDetails;
         data.patientRegistration.patient_id =
           data.patientRegistration.hims_d_patient_id;
+        data.patientRegistration.existingPatient = true;
         $this.setState(data.patientRegistration);
         // $this.setState({});
       });
