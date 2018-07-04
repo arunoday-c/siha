@@ -1,11 +1,9 @@
 import React, { Component, PureComponent } from "react";
-import styles from "./sideMenu.css";
+import "./sideMenu.css";
 import sideMenu from "./SideMenuList.json";
-import TextField from "material-ui/TextField";
 import IconButton from "material-ui/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ExpandMore from "@material-ui/icons/ExpandMore";
-import Drawer from "material-ui/Drawer";
 import Paper from "material-ui/Paper";
 import { setCookie } from "../../../utils/algaehApiCall";
 

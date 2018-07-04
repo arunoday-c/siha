@@ -43,32 +43,119 @@
         "path": "/FrontDesk"
       },
       {
+        "name": "Patient List",
+        "label": "Patient List",
+        "path": "/PatientList"
+      },
+      {
+        "name": "Patient Recall",
+        "label": "Patient Recall",
+        "path": "/PatientRecall"
+      }
+    ]
+  },
+  {
+    "name": "OP Billing",
+    "label": "OP Billing",
+    "subMenu": [
+      {
         "name": "OP Billing",
         "label": "OP Billing",
         "path": "/OPBilling"
       },
       {
-        "name": "OP List",
-        "label": "OP List",
-        "path": "/BillDetails"
+        "name": "Advance",
+        "label": "Advance",
+        "path": "/Advance"
       },
       {
-        "name": "Patient List",
-        "label": "Patient List",
-        "path": "/registration/registration-list"
+        "name": "Refund",
+        "label": "Refund",
+        "path": "/Refund"
+      },
+      {
+        "name": "Advance List",
+        "label": "Advance List",
+        "path": "/AdvanceList"
+      },
+      {
+        "name": "Refund List",
+        "label": "Refund List",
+        "path": "/RefundList"
+      }
+    ]
+  },
+
+  {
+    "name": "laboratory",
+    "label": "Laboratory",
+    "subMenu": [
+      {
+        "name": "Sample Collection",
+        "label": "Sample Collection",
+        "arlabel": "جمع العينات",
+        "path": "/SampleCollection"
+      },
+      {
+        "name": "Accession/Acknowledgement",
+        "label": "Accession/Acknowledgement",
+        "arlabel": "لانضمام/إعتراف",
+        "path": "/AccessionAcknowledgement"
+      },
+      {
+        "name": "Result Entry",
+        "label": "Result Entry",
+        "arlabel": "نتيجة الدخول",
+        "path": "/ResultEntry"
       }
     ]
   },
   {
-    "name": "ADMISSION",
-    "label": "Admission",
-    "path": "/admission/",
-    "subMenu": []
+    "name": "Radiology",
+    "label": "Radiology",
+    "subMenu": [
+      {
+        "name": "List",
+        "label": "List",
+        "arlabel": "قائمة",
+        "path": "/List"
+      },
+      {
+        "name": "Result Entry",
+        "label": "Result Entry",
+        "arlabel": "نتيجة الدخول",
+        "path": "/ResultEntry"
+      }
+    ]
   },
   {
-    "name": "OP BILL",
-    "label": "OP Bill",
-    "path": "/op-bill/",
-    "subMenu": []
+    "name": "Pharmacy",
+    "label": "Pharmacy",
+    "subMenu": [
+      {
+        "name": "Initial Stock",
+        "label": "Initial Stock",
+        "arlabel": "الأسهم الأولية",
+        "path": "/InitialStock"
+      },
+      {
+        "name": "POS Entry",
+        "label": "POS Entry",
+        "arlabel": "دخول POS",
+        "path": "/ResultEntry"
+      },
+      {
+        "name": "Sales Return",
+        "label": "Sales Return",
+        "arlabel": "عائد المبيعات",
+        "path": "/SalesReturn"
+      },
+      {
+        "name": "Prescription",
+        "label": "Prescription",
+        "arlabel": "وصفة طبية",
+        "path": "/Prescription"
+      }
+    ]
   }
 ]

@@ -1,10 +1,6 @@
 import React, { PureComponent } from "react";
 import PatientForm from "./PatientForm/PatientForm.js";
 import OtherInfo from "./OtherInfo/OtherInfo.js";
-import style from "./../../../styles/site.css";
-import styles from "./PatientDetails.css";
-import TextField from "material-ui/TextField";
-import extend from "extend";
 import {
   postPatientDetails,
   getPatientDetails
@@ -12,9 +8,8 @@ import {
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import moment from "moment";
 import AlgaehLabel from "../../Wrapper/label.js";
-
+import "./PatientDetails.css";
 var intervalId;
 
 class PatientDetails extends PureComponent {

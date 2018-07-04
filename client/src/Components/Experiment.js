@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { Paper, TextField, withStyles } from "material-ui";
-import "../Components/BusinessSetup/DeptMaster/dept.css";
-import IconButton from "material-ui/IconButton";
-import { Button } from "material-ui";
-import SelectField from "../Components/common/Inputs/SelectField";
+// import { Paper, TextField, withStyles } from "@material-ui/core";
+// import "../Components/BusinessSetup/DeptMaster/dept.css";
+// import IconButton from "material-ui/core/IconButton";
+// import { Button } from "material-ui/core";
 import moment from "moment";
 import { algaehApiCall, SelectFiledData } from "../utils/algaehApiCall";
 import {
@@ -13,29 +12,11 @@ import {
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import Done from "@material-ui/icons/Done";
-import CancelIcon from "@material-ui/icons/Cancel";
-import {
-  EditingState,
-  IntegratedFiltering,
-  RowDetailState,
-  FilteringState,
-  DataTypeProvider,
-  SearchState
-} from "@devexpress/dx-react-grid";
-import {
-  Grid,
-  Table,
-  TableHeaderRow,
-  TableRowDetail,
-  TableEditRow,
-  TableEditColumn,
-  VirtualTable,
-  Toolbar,
-  SearchPanel
-} from "@devexpress/dx-react-grid-material-ui";
+// import DeleteIcon from "@material-ui/icons/Delete";
+// import EditIcon from "@material-ui/icons/Edit";
+// import Done from "@material-ui/icons/Done";
+// import CancelIcon from "@material-ui/icons/Cancel";
+
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -43,121 +24,6 @@ import {
   AlagehAutoComplete,
   AlgaehLabel
 } from "../Components/Wrapper/algaehWrapper";
-
-const TableRow = ({ row, ...restProps }) => (
-  <Table.Row
-    {...restProps}
-    onClick={control => {}}
-    style={{
-      cursor: "pointer"
-    }}
-  />
-);
-
-const styles = theme => ({
-  tableStriped: {
-    "& tbody tr:nth-of-type(odd)": {
-      backgroundColor: "#fbfbfb"
-    }
-  }
-});
-
-const TableComponentBase = ({ classes, ...restProps }) => (
-  <Table.Table {...restProps} className={classes.tableStriped} />
-);
-
-export const TableComponent = withStyles(styles, { name: "TableComponent" })(
-  TableComponentBase
-);
-
-const AddButton = ({ onExecute }) => (
-  <div style={{ textAlign: "center" }}>
-    <Button color="primary" onClick={onExecute} title="Create new row">
-      New
-    </Button>
-  </div>
-);
-
-const EditButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Edit row">
-    <EditIcon />
-  </IconButton>
-);
-
-const DeleteButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Delete row">
-    <DeleteIcon />
-  </IconButton>
-);
-
-const CommitButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Save changes">
-    <Done />
-  </IconButton>
-);
-
-const CancelButton = ({ onExecute }) => (
-  <IconButton color="secondary" onClick={onExecute} title="Cancel changes">
-    <CancelIcon />
-  </IconButton>
-);
-
-const commandComponents = {
-  add: AddButton,
-  edit: EditButton,
-  delete: DeleteButton,
-  commit: CommitButton,
-  cancel: CancelButton
-};
-
-const Command = ({ id, onExecute }) => {
-  const CommandButton = commandComponents[id];
-  return <CommandButton onExecute={onExecute} />;
-};
-
-const DEPT_TYPE = [
-  { name: "CLINICAL", value: "CLINICAL", key: "c" },
-  { name: "NON-CLINICAL", value: "NON-CLINICAL", key: "nc" }
-];
-
-const STATUS = [
-  { name: "Active", value: "Active", key: "A" },
-  { name: "Inactive", value: "Inactive", key: "IA" }
-];
-
-class StatusPick extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { status: this.props.value };
-  }
-
-  render() {
-    return (
-      <div>
-        <SelectField children={STATUS} />
-      </div>
-    );
-  }
-}
-
-class ExDate extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { startDate: moment(this.props.value).format("YYYY-MM-DD") };
-  }
-  handleChange(event) {
-    this.setState({
-      startDate: moment(event.target.value).format("YYYY-MM-DD")
-    });
-  }
-  render() {
-    return (
-      <div>
-        <TextField type="date" onChange={this.handleChange.bind(this)} />
-      </div>
-    );
-  }
-}
 
 class DeptMaster extends Component {
   constructor(props) {
@@ -188,212 +54,212 @@ class DeptMaster extends Component {
     };
   }
 
-  selectedDeptType(deptType) {
-    this.setState({ department_type: deptType });
-  }
+  // selectedDeptType(deptType) {
+  //   this.setState({ department_type: deptType });
+  // }
 
-  selectedHeadDept(headDept) {
-    this.setState({ hims_d_department_id: headDept, department_id: headDept });
-  }
+  // selectedHeadDept(headDept) {
+  //   this.setState({ hims_d_department_id: headDept, department_id: headDept });
+  // }
 
-  changeDeptCode(e) {
-    this.setState({
-      department_code: e.target.value,
-      sub_department_code: e.target.value
-    });
-  }
+  // changeDeptCode(e) {
+  //   this.setState({
+  //     department_code: e.target.value,
+  //     sub_department_code: e.target.value
+  //   });
+  // }
 
-  changeDeptName(e) {
-    this.setState({ department_name: e.target.value });
-    this.setState({ department_desc: e.target.value });
-    this.setState({ sub_department_name: e.target.value });
-    this.setState({ sub_department_desc: e.target.value });
-  }
+  // changeDeptName(e) {
+  //   this.setState({ department_name: e.target.value });
+  //   this.setState({ department_desc: e.target.value });
+  //   this.setState({ sub_department_name: e.target.value });
+  //   this.setState({ sub_department_desc: e.target.value });
+  // }
 
-  changeEST(date) {
-    console.log(date);
-  }
+  // changeEST(date) {
+  //   console.log(date);
+  // }
 
-  sendDate(date) {
-    return String(moment(date).format("YYYY-MM-DD"));
-  }
+  // sendDate(date) {
+  //   return String(moment(date).format("YYYY-MM-DD"));
+  // }
 
-  getFullStatusText({ value }) {
-    if (value === "A") {
-      return "Active";
-    } else if (value === "I") {
-      return "Inactive";
-    } else {
-      return "";
-    }
-  }
+  // getFullStatusText({ value }) {
+  //   if (value === "A") {
+  //     return "Active";
+  //   } else if (value === "I") {
+  //     return "Inactive";
+  //   } else {
+  //     return "";
+  //   }
+  // }
 
-  changeStatus(e) {
-    this.setState({
-      department_status: e.target.value,
-      sub_department_status: e.target.value
-    });
-    if (e.target.value === "A")
-      this.setState({ checkedActive: true, effective_end_date: "9999-12-31" });
-    else if (e.target.value === "I") {
-      this.setState({
-        checkedInactive: true,
-        effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
-      });
-    }
-  }
+  // changeStatus(e) {
+  //   this.setState({
+  //     department_status: e.target.value,
+  //     sub_department_status: e.target.value
+  //   });
+  //   if (e.target.value === "A")
+  //     this.setState({ checkedActive: true, effective_end_date: "9999-12-31" });
+  //   else if (e.target.value === "I") {
+  //     this.setState({
+  //       checkedInactive: true,
+  //       effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
+  //     });
+  //   }
+  // }
 
-  addBtnClick(e) {
-    e.preventDefault();
+  // addBtnClick(e) {
+  //   e.preventDefault();
 
-    if (
-      this.state.buttonText === "ADD TO LIST" &&
-      this.state.department_id.length === 0
-    ) {
-      algaehApiCall({
-        uri: "/department/add",
-        data: this.state,
-        onSuccess: response => {
-          window.location.reload();
-        },
-        onFailure: error => {}
-      });
-    } else if (
-      this.state.buttonText === "ADD TO LIST" &&
-      this.state.department_id.length !== 0
-    ) {
-      algaehApiCall({
-        uri: "/department/add/subdepartment",
-        data: this.state,
-        onSuccess: response => {
-          window.location.reload();
-        },
-        onFailure: error => {}
-      });
-    } else if (this.state.buttonText === "UPDATE") {
-      algaehApiCall({
-        uri: "/department/update",
-        data: this.state,
-        onSuccess: response => {},
-        onFailure: error => {}
-      });
-    }
-  }
+  //   if (
+  //     this.state.buttonText === "ADD TO LIST" &&
+  //     this.state.department_id.length === 0
+  //   ) {
+  //     algaehApiCall({
+  //       uri: "/department/add",
+  //       data: this.state,
+  //       onSuccess: response => {
+  //         window.location.reload();
+  //       },
+  //       onFailure: error => {}
+  //     });
+  //   } else if (
+  //     this.state.buttonText === "ADD TO LIST" &&
+  //     this.state.department_id.length !== 0
+  //   ) {
+  //     algaehApiCall({
+  //       uri: "/department/add/subdepartment",
+  //       data: this.state,
+  //       onSuccess: response => {
+  //         window.location.reload();
+  //       },
+  //       onFailure: error => {}
+  //     });
+  //   } else if (this.state.buttonText === "UPDATE") {
+  //     algaehApiCall({
+  //       uri: "/department/update",
+  //       data: this.state,
+  //       onSuccess: response => {},
+  //       onFailure: error => {}
+  //     });
+  //   }
+  // }
 
-  componentDidMount() {
-    this.props.getDepartments();
-  }
+  // componentDidMount() {
+  //   this.props.getDepartments();
+  // }
 
-  commitChanges(rowId) {
-    // let rows = this.state;
-  }
+  // commitChanges(rowId) {
+  //   // let rows = this.state;
+  // }
 
-  commitSubdeptChanges({ added, changed, deleted }) {
-    if (added) {
-    } else if (changed) {
-    } else if (deleted) {
-    }
-  }
+  // commitSubdeptChanges({ added, changed, deleted }) {
+  //   if (added) {
+  //   } else if (changed) {
+  //   } else if (deleted) {
+  //   }
+  // }
 
-  dateFormater({ value }) {
-    if (value !== null) {
-      return String(moment(value).format("DD-MM-YYYY"));
-    } else {
-      return "";
-    }
-  }
+  // dateFormater({ value }) {
+  //   if (value !== null) {
+  //     return String(moment(value).format("DD-MM-YYYY"));
+  //   } else {
+  //     return "";
+  //   }
+  // }
 
-  loadSubDeps(dep_id) {
-    algaehApiCall({
-      uri: "/department/get/subdepartment?department_id=" + dep_id,
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success === true) {
-          this.setState({ subdeps: response.data.records });
-        } else {
-          this.setState({ subdeps: [] });
-        }
-      },
-      onFailure: error => {}
-    });
+  // loadSubDeps(dep_id) {
+  //   algaehApiCall({
+  //     uri: "/department/get/subdepartment?department_id=" + dep_id,
+  //     method: "GET",
+  //     onSuccess: response => {
+  //       if (response.data.success === true) {
+  //         this.setState({ subdeps: response.data.records });
+  //       } else {
+  //         this.setState({ subdeps: [] });
+  //       }
+  //     },
+  //     onFailure: error => {}
+  //   });
 
-    return this.sd;
-  }
+  //   return this.sd;
+  // }
 
-  RowDetail = ({ row }) => (
-    <div>
-      {this.props.getSubDepartments(row.hims_d_department_id)}
-      <label>SUB DEPARTMENT LIST</label>
-      <Paper>
-        <Grid
-          rows={this.props.subdepartments}
-          columns={[
-            { name: "sub_department_code", title: "Sub Dept Code" },
-            { name: "sub_department_name", title: "Sub Dept Name" },
-            { name: "effective_start_date", title: "Sub Dept Start Date" },
-            { name: "effective_end_date", title: "Sub Dept End Date" },
-            { name: "sub_department_status", title: "Sub Dept Status" }
-          ]}
-        >
-          <DataTypeProvider
-            formatterComponent={this.dateFormater}
-            for={["effective_start_date"]}
-          />
+  // RowDetail = ({ row }) => (
+  //   <div>
+  //     {this.props.getSubDepartments(row.hims_d_department_id)}
+  //     <label>SUB DEPARTMENT LIST</label>
+  //     <Paper>
+  //       <Grid
+  //         rows={this.props.subdepartments}
+  //         columns={[
+  //           { name: "sub_department_code", title: "Sub Dept Code" },
+  //           { name: "sub_department_name", title: "Sub Dept Name" },
+  //           { name: "effective_start_date", title: "Sub Dept Start Date" },
+  //           { name: "effective_end_date", title: "Sub Dept End Date" },
+  //           { name: "sub_department_status", title: "Sub Dept Status" }
+  //         ]}
+  //       >
+  //         <DataTypeProvider
+  //           formatterComponent={this.dateFormater}
+  //           for={["effective_start_date"]}
+  //         />
 
-          <DataTypeProvider
-            formatterComponent={this.dateFormater}
-            for={["effective_end_date"]}
-          />
+  //         <DataTypeProvider
+  //           formatterComponent={this.dateFormater}
+  //           for={["effective_end_date"]}
+  //         />
 
-          <DataTypeProvider
-            formatterComponent={this.getFullStatusText}
-            for={["sub_department_status"]}
-          />
+  //         <DataTypeProvider
+  //           formatterComponent={this.getFullStatusText}
+  //           for={["sub_department_status"]}
+  //         />
 
-          <Table />
-          <TableHeaderRow />
+  //         <Table />
+  //         <TableHeaderRow />
 
-          <EditingState onCommitChanges={this.commitChanges.bind(this)} />
-          <TableEditRow />
-          <TableEditColumn
-            width={120}
-            showEditCommand
-            showDeleteCommand
-            commandComponent={Command}
-          />
-        </Grid>
-      </Paper>
-    </div>
-  );
+  //         <EditingState onCommitChanges={this.commitChanges.bind(this)} />
+  //         <TableEditRow />
+  //         <TableEditColumn
+  //           width={120}
+  //           showEditCommand
+  //           showDeleteCommand
+  //           commandComponent={Command}
+  //         />
+  //       </Grid>
+  //     </Paper>
+  //   </div>
+  // );
 
-  onDateChange = event => {};
+  // onDateChange = event => {};
 
-  DatePickerEditor = ({ value, onchangeEvent }) => (
-    <div>
-      <TextField
-        type="date"
-        value={moment(value).format("YYYY-MM-DD")}
-        onChange={this.onDateChange.bind(this)}
-      />
-    </div>
-  );
-  DropDownEditor = ({ value }) => (
-    <SelectField
-      displayValue={this.state.department_type}
-      selected={this.selectedDeptType.bind(this)}
-      children={DEPT_TYPE}
-    />
-  );
-  changeDateFormat = date => {
-    if (date != null) {
-      return moment(date).format("YYYY-MM-DD");
-    }
-  };
+  // DatePickerEditor = ({ value, onchangeEvent }) => (
+  //   <div>
+  //     <TextField
+  //       type="date"
+  //       value={moment(value).format("YYYY-MM-DD")}
+  //       onChange={this.onDateChange.bind(this)}
+  //     />
+  //   </div>
+  // );
+  // DropDownEditor = ({ value }) => (
+  //   <SelectField
+  //     displayValue={this.state.department_type}
+  //     selected={this.selectedDeptType.bind(this)}
+  //     children={DEPT_TYPE}
+  //   />
+  // );
+  // changeDateFormat = date => {
+  //   if (date != null) {
+  //     return moment(date).format("YYYY-MM-DD");
+  //   }
+  // };
 
   render() {
     return (
       <div className="dept">
-        <Paper Style={{ maxHeight: "200px" }}>
+        {/* <Paper Style={{ maxHeight: "200px" }}>
           <AlgaehDataGrid
             columns={[
               {
@@ -496,8 +362,8 @@ class DeptMaster extends Component {
             //   className: "testingHeight"
             // }}
           />
-        </Paper>
-        <Paper className="container-fluid">
+        </Paper> */}
+        {/* <Paper className="container-fluid">
           <div>
             <div
               className="row"
@@ -580,7 +446,7 @@ class DeptMaster extends Component {
                 <TextField className="txt-fld" />
               </div> */}
 
-              <AlagehFormGroup
+        {/* <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
                   fieldName: "department_name",
@@ -729,7 +595,7 @@ class DeptMaster extends Component {
               </div>
             </div>
           </div>
-        </Paper>
+        </Paper> */}
       </div>
     );
   }

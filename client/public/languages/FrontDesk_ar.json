@@ -83,5 +83,45 @@
   "card_check_number": "رقم",
   "expiry_date": "تاريخ الانتهاء",
   "amount": "كمية",
-  "unbalanced_amount": "المبلغ غير المتوازن"
+  "unbalanced_amount": "المبلغ غير المتوازن",
+
+  "service_type_id": "نوع الخدمة",
+  "services_id": "الخدمات",
+  "quantity": "كمية",
+  "unit_cost": "تكلفة الوحدة",
+  "gross_amount": "المبلغ الإجمالي",
+  "discount_percentage": "خصم ٪",
+  "discount_amout": "مقدار الخصم",
+  "net_amout": "كمية الشبكة",
+  "insurance": "تأمين",
+  "copay_percentage": "كوباي٪",
+  "copay_amount": "مبلغ التعويض",
+
+  "deductable_percentage": "خصم ٪",
+  "deductable_amount": "مقدار الخصم",
+
+  "tax_inclusive": "الضرائب شاملة",
+  "patient_tax": "ضريبة المرضى",
+  "company_tax": "ضريبة الشركات",
+  "sec_company_tax": "ضريبة الشركات الثانوية",
+  "total_tax": "مجموع الضريبة",
+
+  "patient_resp": "المريض المسؤول",
+  "patient_payable": "حصة المريض",
+  "comapany_resp": "شركة مسؤولة",
+  "company_payble": "شركة حصة",
+
+  "sec_company": "التأمين الثانوي",
+  "sec_deductable_percentage": "خصم ٪",
+  "sec_deductable_amount": "مقدار الخصم",
+
+  "sec_company_res": "شركة مسؤولة",
+  "sec_company_paybale": "شركة ثانوية",
+
+  "sec_copay_percntage": "كوباي٪",
+  "sec_copay_amount": "مبلغ التعويض",
+
+  "tax_Detsils": "تفاصيل الضريبة",
+  "prim-insurance": "تأمين ابتدائي",
+  "present-bill-services": "خدمات الفواتير الحالية"
 }

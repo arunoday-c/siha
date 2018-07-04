@@ -28,6 +28,7 @@
   .htpl-phase1-primary-insurancelist-form .file-name-upload {
     margin-left: 4%;
     margin-top: 2%; }
-  .htpl-phase1-primary-insurancelist-form th, .htpl-phase1-primary-insurancelist-form td {
+  .htpl-phase1-primary-insurancelist-form th,
+  .htpl-phase1-primary-insurancelist-form td {
     border-right: 1px solid #e6e6e6;
     font-size: 11px; }

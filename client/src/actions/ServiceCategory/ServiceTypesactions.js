@@ -2,7 +2,7 @@
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getServiceTypes() {
-  return function(dispatch) {
+  return function (dispatch) {
     algaehApiCall({
       uri: "/serviceType",
       method: "GET",
@@ -16,7 +16,7 @@ export function getServiceTypes() {
       },
       onFailure: error => {
         dispatch({
-          type: "DOCT_GET_ERR_DATA",
+          type: "SERVIES_TYPES_GET_ERR_DATA",
           payload: error
         });
       }

@@ -1,13 +1,9 @@
 import React, { Component } from "react";
-import styles from "./MLCPatient.css";
-import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
-import TextField from "material-ui/TextField";
+import "./MLCPatient.css";
 import Checkbox from "material-ui/Checkbox";
 import MyContext from "../../../../utils/MyContext.js";
-import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
 import AlagehFormGroup from "../../../Wrapper/formGroup.js";
 import AlgaehLabel from "../../../Wrapper/label.js";
-import extend from "extend";
 
 export default class MLCPatient extends Component {
   constructor(props) {

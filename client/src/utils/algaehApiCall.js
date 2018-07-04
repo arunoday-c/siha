@@ -18,7 +18,7 @@ export function algaehApiCall(options) {
     },
     options
   );
-
+  debugger;
   if (settings.uri != null || settings.uri != "") {
     axios({
       method: settings.method,
@@ -28,10 +28,11 @@ export function algaehApiCall(options) {
       timeout: settings.timeout
     })
       .then(response => {
+        debugger
         if (typeof settings.onSuccess == "function")
           settings.onSuccess(response);
       })
-      .catch(function(err) {
+      .catch(function (err) {
         if (typeof settings.onFailure == "function") settings.onFailure(err);
       });
   }

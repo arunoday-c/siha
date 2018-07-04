@@ -1,7 +1,6 @@
-import style from "./../../../styles/site.css";
-import styles from "./ConsultationDetails.css";
+import "./../../../styles/site.css";
+import "./ConsultationDetails.css";
 import React, { PureComponent } from "react";
-import Paper from "material-ui/Paper";
 import ConsultationForm from "./ConsultationForm/ConsultationForm.js";
 import MLCPatient from "./MLCPatient/MLCPatient.js";
 import AlgaehLabel from "../../Wrapper/label.js";
@@ -31,8 +30,6 @@ export default class ConsultationDetails extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-
-
     this.setState({
       visitcode: nextProps.visitcode
     });

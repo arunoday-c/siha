@@ -37,7 +37,7 @@ let getServiceType = (req, res, next) => {
       connection.query(
         "SELECT `hims_d_service_type_id`, `service_type_code`, `service_type`, `service_type_desc` \
           ,`arabic_service_type` FROM `hims_d_service_type` WHERE `record_status`='A' AND " +
-          where.condition,
+        where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -79,7 +79,8 @@ let serviceWhere = {
   cpt_code: "ALL",
   service_name: "ALL",
   service_desc: "ALL",
-  sub_department_id: "ALL"
+  sub_department_id: "ALL",
+  service_type_id: "ALL"
 };
 let getServices = (req, res, next) => {
   try {
