@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import Modal from "./Modal";
+import DisplayOPBilling from "../../../BillDetails/BillDetails";
 import "./AddBillingForm.css";
 import "./../../../../styles/site.css";
 
@@ -41,11 +41,24 @@ class AddBillingForm extends Component {
     this.setState(nextProps.PatRegIOputs);
   }
 
-  // toggleModal = () => {
-  //   this.setState({
-  //     isOpen: !this.state.isOpen
-  //   });
-  // };
+  ShowBillDetails(e) {
+    debugger;
+    this.setState(
+      {
+        ...this.state,
+        isOpen: !this.state.isOpen
+      },
+      () => {
+        debugger;
+      }
+    );
+  }
+
+  toggleModal = () => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  };
 
   render() {
     return (
@@ -93,21 +106,25 @@ class AddBillingForm extends Component {
                           }}
                           value={this.state.bill_date}
                         />
+
                         <div className="col-lg-3">
-                          {/* <Modal
+                          {/* <BillDetails
                             show={this.state.isOpen}
                             onClose={this.toggleModal}
-                          >
-                            Here's some content for the modal
-                            
-                          </Modal> */}
+                          /> */}
 
                           <button
                             className="htpl1-phase1-btn-primary"
-                            // onClick={this.BillDetails.bind(this)}
+                            onClick={this.ShowBillDetails.bind(this)}
                           >
                             Detail....
                           </button>
+
+                          <DisplayOPBilling
+                            BillingIOputs={this.state}
+                            show={this.state.isOpen}
+                            onClose={this.ShowBillDetails.bind(this)}
+                          />
                         </div>
                       </div>
 

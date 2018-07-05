@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-import styles from "./OtherInfo.css";
-import SelectFieldDrop from "../../../common/Inputs/SelectField.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { SelectFiledData } from "../../../../utils/algaehApiCall.js";
-import TextField from "material-ui/TextField";
 import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
 import MyContext from "../../../../utils/MyContext.js";
 import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
@@ -14,13 +10,13 @@ import {
   AlagehAutoComplete,
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
-
+import "./OtherInfo.css";
 const FORMAT_DEFAULT = [
   { name: "CSV", value: "CSV" },
   { name: "XML", value: "XML" },
   { name: "XLS", value: "XLS" }
 ];
-const MobileFormat = "+91 (###)-## #####";
+
 class OtherInfo extends Component {
   constructor(props) {
     super(props);
@@ -48,7 +44,7 @@ class OtherInfo extends Component {
       <MyContext.Consumer>
         {context => (
           <div className="hptl-phase1-add-other-form">
-            <div />
+            {/* <div className="main-details" /> */}
             <div className="container-fluid">
               <div className="row">
                 <AlagehFormGroup

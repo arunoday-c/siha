@@ -39,32 +39,109 @@
         "path": "/FrontDesk"
       },
       {
-        "name": "Billing",
-        "label": "الفواتير",
-        "path": "/registration/our-patient"
-      },
-      {
-        "name": "OP List",
-        "label": "قائمة OP",
-        "path": "/registration/op-list"
-      },
-      {
         "name": "Patient List",
         "label": "قائمة المرضى",
         "path": "/registration/registration-list"
+      },
+      {
+        "name": "Patient Recall",
+        "label": "استدعاء المريض",
+        "path": "/PatientRecall"
       }
     ]
   },
   {
-    "name": "Admission",
-    "label": "قبول",
-    "path": "/admission/",
-    "subMenu": []
+    "name": "OP Billing",
+    "label": "الفواتير OP",
+    "subMenu": [
+      {
+        "name": "OP Billing",
+        "label": "الفواتير OP",
+        "path": "/OPBilling"
+      },
+      {
+        "name": "Advance",
+        "label": "تقدم",
+        "path": "/Advance"
+      },
+      {
+        "name": "Refund",
+        "label": "إعادة مال",
+        "path": "/Refund"
+      },
+      {
+        "name": "Advance List",
+        "label": "قائمة متقدمة",
+        "path": "/AdvanceList"
+      },
+      {
+        "name": "Refund List",
+        "label": "إعادة مال قائمة",
+        "path": "/RefundList"
+      }
+    ]
   },
   {
-    "name": "OP BILL",
-    "label": "OP Bill",
-    "path": "/op-bill/",
-    "subMenu": []
+    "name": "laboratory",
+    "label": "مختبر",
+    "subMenu": [
+      {
+        "name": "Sample Collection",
+        "label": "جمع العينات",
+        "path": "/SampleCollection"
+      },
+      {
+        "name": "Accession/Acknowledgement",
+        "label": "لانضمام/إعتراف",
+        "path": "/AccessionAcknowledgement"
+      },
+      {
+        "name": "Result Entry",
+        "label": "نتيجة الدخول",
+        "path": "/ResultEntry"
+      }
+    ]
+  },
+  {
+    "name": "Radiology",
+    "label": "طب إشعاعي",
+    "subMenu": [
+      {
+        "name": "List",
+        "label": "قائمة",
+        "path": "/List"
+      },
+      {
+        "name": "Result Entry",
+        "label": "نتيجة الدخول",
+        "path": "/ResultEntry"
+      }
+    ]
+  },
+  {
+    "name": "Pharmacy",
+    "label": "مقابل",
+    "subMenu": [
+      {
+        "name": "Initial Stock",
+        "label": "الأسهم الأولية",
+        "path": "/InitialStock"
+      },
+      {
+        "name": "POS Entry",
+        "label": "دخول POS",
+        "path": "/ResultEntry"
+      },
+      {
+        "name": "Sales Return",
+        "label": "عائد المبيعات",
+        "path": "/SalesReturn"
+      },
+      {
+        "name": "Prescription List",
+        "label": "قائمة وصفة طبية",
+        "path": "/PrescriptionList"
+      }
+    ]
   }
 ]

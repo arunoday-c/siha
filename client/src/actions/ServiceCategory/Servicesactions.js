@@ -2,14 +2,16 @@
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getServices(dataValue) {
-  return function(dispatch) {
+  debugger;
+  return function (dispatch) {
     algaehApiCall({
       uri:
-        dataValue !== null && dataValue !== ""
+        dataValue != null && dataValue != ""
           ? "/serviceType/getService?service_type_id=" + dataValue
           : "/serviceType/getService",
       method: "GET",
       onSuccess: response => {
+        debugger;
         if (response.data.success == true) {
           dispatch({
             type: "SERVICES_GET_DATA",

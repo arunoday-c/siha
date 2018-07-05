@@ -86,7 +86,6 @@ const titlehandle = ($this, context, e) => {
 };
 
 const calculateAge = ($this, context, e) => {
-  debugger;
   let fromDate = moment(e);
   let toDate = new Date();
   let years = moment(toDate).diff(fromDate, "year");
@@ -112,7 +111,6 @@ const calculateAge = ($this, context, e) => {
 };
 
 const setAge = ($this, context, ctrl, e) => {
-  debugger;
   if (e !== null) {
     let years = context.state.age;
     let months = context.state.AGEMM;
@@ -148,7 +146,6 @@ const numberSet = ($this, context, cntrl, e) => {
 };
 
 const onDrop = ($this, file, fileType) => {
-  debugger;
   $this.setState({ [file]: fileType[0].preview });
 };
 

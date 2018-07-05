@@ -35,7 +35,6 @@ const unsuccessfulSignIn = (message, title) => {
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
-  debugger;
   if ($this.state.hims_d_patient_id != null) {
     algaehApiCall({
       uri: "/visit/checkVisitExists",

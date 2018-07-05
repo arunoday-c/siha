@@ -67,6 +67,14 @@
     font-size: 11px;
   }
 
+  .modal-container {
+    position: relative;
+  }
+  .modal-container .modal,
+  .modal-container .modal-backdrop {
+    position: absolute;
+  }
+
   .header-details {
     padding: 5px;
     padding-bottom: 0px;

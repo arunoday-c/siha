@@ -70,6 +70,7 @@ class AddPatientForm extends PureComponent {
   }
 
   componentDidMount() {
+    debugger;
     if (this.props.titles.length === 0) {
       this.props.getTitles();
     }
@@ -83,7 +84,7 @@ class AddPatientForm extends PureComponent {
       this.props.getRelegion();
     }
     if (this.props.countries.length === 0) {
-      // this.props.getCountries();
+      this.props.getCountries();
     }
     if (this.props.visatypes.length === 0) {
       this.props.getVisatypes();
@@ -92,25 +93,25 @@ class AddPatientForm extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.PatRegIOputs, () => {
-      // if (this.state.country_id != nextProps.country_id) {
-      //   let country = Enumerable.from(this.props.countries)
-      //     .where(w => w.hims_d_country_id == this.state.country_id)
-      //     .firstOrDefault();
-      //   let states = country != null ? country.states : [];
-      //   if (nextProps.state_id != this.state.state_id) {
-      //     let cities = Enumerable.from(states)
-      //       .where(w => w.hims_d_state_id == this.state.state_id)
-      //       .firstOrDefault();
-      //     this.props.getStates(states, callback => {
-      //       this.setState({
-      //         state_id: this.state.state_id
-      //       });
-      //     });
-      //     if (cities != "undefined") {
-      //       this.props.getCities(cities.cities);
-      //     }
-      //   }
-      // }
+      if (this.state.country_id != nextProps.country_id) {
+        let country = Enumerable.from(this.props.countries)
+          .where(w => w.hims_d_country_id == this.state.country_id)
+          .firstOrDefault();
+        let states = country != null ? country.states : [];
+        if (nextProps.state_id != this.state.state_id) {
+          let cities = Enumerable.from(states)
+            .where(w => w.hims_d_state_id == this.state.state_id)
+            .firstOrDefault();
+          this.props.getStates(states, callback => {
+            this.setState({
+              state_id: this.state.state_id
+            });
+          });
+          if (cities != "undefined") {
+            this.props.getCities(cities.cities);
+          }
+        }
+      }
     });
   }
 
@@ -126,8 +127,6 @@ class AddPatientForm extends PureComponent {
   }
 
   render() {
-    debugger;
-
     console.log("Date of birth", this.state.date_of_birth);
     return (
       <React.Fragment>
@@ -179,9 +178,9 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient
-                          },
-                          error: this.state.open,
-                          helperText: this.state.MandatoryMsg
+                          }
+                          // error: this.state.open
+                          // helperText: this.state.MandatoryMsg
                         }}
                       />
 

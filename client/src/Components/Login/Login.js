@@ -102,7 +102,6 @@ class Login extends Component {
           }
         },
         onFailure: error => {
-          debugger;
           x.style.display = "none";
           if (error) {
             if (error.response) {

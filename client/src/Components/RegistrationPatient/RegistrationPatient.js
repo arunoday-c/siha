@@ -12,11 +12,10 @@ import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Dialog, { DialogActions, DialogTitle } from "material-ui/Dialog";
+import { Slide } from "material-ui";
 import AppBar from "material-ui/AppBar";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
-import Dialog, { DialogActions, DialogTitle } from "material-ui/Dialog";
-import Slide from "material-ui/transitions/Slide";
-
 import {
   postPatientDetails,
   getPatientDetails,
@@ -29,7 +28,6 @@ import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import { getCookie } from "../../utils/algaehApiCall";
-import { algaehApiCall } from "../../utils/algaehApiCall";
 import swal from "sweetalert";
 
 function Transition(props) {
@@ -49,6 +47,7 @@ class RegistrationPatient extends Component {
   }
 
   componentWillMount() {
+    debugger;
     let IOputs = emptyObject;
     this.setState(IOputs);
   }
@@ -79,7 +78,7 @@ class RegistrationPatient extends Component {
       title: title,
       text: message,
       icon: "error",
-      button: false,
+      button: true,
       timer: 2500
     });
   }
@@ -143,7 +142,6 @@ class RegistrationPatient extends Component {
   }
   SavePatientDetails(e) {
     const err = Validations(this);
-    debugger;
 
     if (!err) {
       this.GenerateReciept($this => {
@@ -283,7 +281,7 @@ class RegistrationPatient extends Component {
           </MyContext.Provider>
         </div>
 
-        {/* <div>
+        <div>
           <Dialog
             open={this.state.DialogOpen}
             TransitionComponent={Transition}
@@ -302,7 +300,7 @@ class RegistrationPatient extends Component {
               </Button>
             </DialogActions>
           </Dialog>
-        </div> */}
+        </div>
       </div>
     );
   }

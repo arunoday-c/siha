@@ -90,7 +90,6 @@ class BreadCrumb extends PureComponent {
                           <div>
                             <div className="row">
                               {CREATE_PATIENT.map((data, idx) => {
-                                debugger;
                                 return (
                                   <div
                                     className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4"

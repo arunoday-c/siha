@@ -1,7 +1,6 @@
 import React, { Component, PureComponent } from "react";
-import { withStyles } from "material-ui/styles";
-import SideMenuBar from "./../SideMenuBar/SideMenuBar.js";
-import style from "./header.css";
+import "./../SideMenuBar/SideMenuBar.js";
+import "./header.css";
 import MenuIcon from "@material-ui/icons/Menu";
 import {
   AppBar,

@@ -59,14 +59,14 @@ class PatientDisplayDetails extends Component {
   }
 
   getPatientDetails() {
+    debugger;
     clearInterval(intervalId);
     intervalId = setInterval(() => {
       this.props.getPatientDetails(this.state.patient_code, data => {
-        this.setState(PatRegIOputs.inputParam(data.patientRegistration));
-        this.setState({
-          patient_id: data.patientRegistration.hims_d_patient_id,
-          visitDetails: data.visitDetails
-        });
+        data.patientRegistration.visitDetails = data.visitDetails;
+        data.patientRegistration.patient_id =
+          data.patientRegistration.hims_d_patient_id;
+        this.setState(data.patientRegistration);
       });
       clearInterval(intervalId);
     }, 500);
