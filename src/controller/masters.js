@@ -11,9 +11,11 @@ import {
   countryStateCity
 } from "../model/masters";
 import { Router } from "express";
-import { releaseConnection } from "../utils";
+import { releaseConnection, bulkMasters } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
+import path from "path";
+import fs from "fs";
 export default () => {
   let api = Router();
 
@@ -101,7 +103,20 @@ export default () => {
   );
   api.get(
     "/countryStateCity",
-    countryStateCity,
+    (req, res, next) => {
+      const masterDir = path.join(
+        __dirname,
+        "../../Masters/countryStateCity.json"
+      );
+      if (fs.existsSync(masterDir)) {
+        res.status(httpStatus.ok).json({
+          records: JSON.parse(fs.readFileSync(masterDir)),
+          success: true
+        });
+      } else {
+        countryStateCity(req, res, next);
+      }
+    },
     (req, res, next) => {
       let result;
       if (req.records != null) {
@@ -129,7 +144,7 @@ export default () => {
             })
             .ToArray();
         }
-
+        bulkMasters("countryStateCity", result);
         res.status(httpStatus.ok).json({
           records: result,
           success: true
