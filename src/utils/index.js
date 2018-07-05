@@ -5,6 +5,7 @@ import extend from "extend";
 import path from "path";
 import mkdirp from "mkdirp";
 import { logger, debugFunction, debugLog } from "./logging";
+import fs from "fs";
 //import { LINQ } from "node-linq";
 import _ from "underscore";
 let paging = options => {
@@ -353,6 +354,24 @@ let bulkInputArrayObject = (arrayObj, outArray, objectToChang) => {
     );
   });
 };
+let bulkMasters = (fileName, bulkObject) => {
+  try {
+    const masterDir = path.join(__dirname, "../../Masters/");
+    if (!fs.existsSync(masterDir)) {
+      fs.mkdirSync(masterDir);
+    }
+    const fPath = masterDir + fileName + ".json";
+    if (!fs.exists(fPath)) {
+      var writeStream = fs.createWriteStream(fPath);
+      writeStream.write(JSON.stringify(bulkObject));
+      writeStream.end();
+      return bulkObject;
+    }
+    return JSON.parse(fs.readFileSync(fPath));
+  } catch (e) {
+    logger.log("error", "Bulk master save : %j", e);
+  }
+};
 
 module.exports = {
   selectStatement,
@@ -365,5 +384,6 @@ module.exports = {
   releaseDBConnection,
   uploadFile,
   downloadFile,
-  bulkInputArrayObject
+  bulkInputArrayObject,
+  bulkMasters
 };

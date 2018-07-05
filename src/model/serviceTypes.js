@@ -2,7 +2,27 @@ import httpStatus from "../utils/httpStatus";
 import { whereCondition, releaseDBConnection, selectStatement } from "../utils";
 import extend from "extend";
 import { logger, debugLog, debugFunction } from "../utils/logging";
+import { validate } from "node-model-validation";
+let inputServiceType = {
+  hims_d_service_type_id: null,
+  service_type_code: null,
+  service_type: null,
+  service_type_desc: null,
+  arabic_service_type: null,
+  effective_start_date: null,
+  effective_end_date: null,
+  created_by: null,
+  created_date: null,
+  updated_by: null,
+  updated_date: null,
+  record_status: null
+};
 
+let serviceTypeWhere = {
+  hims_d_service_type_id: "ALL",
+  service_type_code: "ALL",
+  service_type: "ALL"
+};
 let getServiceType = (req, res, next) => {
   let serviceTypeWhere = {
     hims_d_service_type_id: "ALL",
@@ -47,9 +67,9 @@ let getServices = (req, res, next) => {
     cpt_code: "ALL",
     service_name: "ALL",
     service_desc: "ALL",
-    sub_department_id: "ALL",
-    service_type_id: "ALL"
+    sub_department_id: "ALL"
   };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -60,10 +80,10 @@ let getServices = (req, res, next) => {
       pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
     }
     let parameters = extend(
-      serviceWhere,
-      req.Wherecondition == null ? {} : req.Wherecondition
+      req.Wherecondition == null ? {} : req.Wherecondition,
+      serviceWhere
     );
-    let condition = whereCondition(extend(parameters, req.query));
+    let condition = whereCondition(extend(req.query, parameters));
     selectStatement(
       {
         db: req.db,
