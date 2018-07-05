@@ -2,7 +2,7 @@ import httpStatus from "../utils/httpStatus";
 import { whereCondition, releaseDBConnection, selectStatement } from "../utils";
 import extend from "extend";
 import { logger, debugLog, debugFunction } from "../utils/logging";
-
+import { validate } from "node-model-validation";
 let inputServiceType = {
   hims_d_service_type_id: null,
   service_type_code: null,
@@ -73,15 +73,16 @@ let inputServices = {
   record_status: null
 };
 
-let serviceWhere = {
-  hims_d_services_id: "ALL",
-  service_code: "ALL",
-  cpt_code: "ALL",
-  service_name: "ALL",
-  service_desc: "ALL",
-  sub_department_id: "ALL"
-};
 let getServices = (req, res, next) => {
+  let serviceWhere = {
+    hims_d_services_id: "ALL",
+    service_code: "ALL",
+    cpt_code: "ALL",
+    service_name: "ALL",
+    service_desc: "ALL",
+    sub_department_id: "ALL"
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -92,10 +93,10 @@ let getServices = (req, res, next) => {
       pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
     }
     let parameters = extend(
-      serviceWhere,
-      req.Wherecondition == null ? {} : req.Wherecondition
+      req.Wherecondition == null ? {} : req.Wherecondition,
+      serviceWhere
     );
-    let condition = whereCondition(extend(parameters, req.query));
+    let condition = whereCondition(extend(req.query, parameters));
     selectStatement(
       {
         db: req.db,
