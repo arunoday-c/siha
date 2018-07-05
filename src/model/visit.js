@@ -133,7 +133,7 @@ let insertVisitData = (dataBase, req, res, callBack) => {
         if (error) {
           dataBase.rollback(() => {
             dataBase.release();
-            logger.logger("error", "Add new visit %j", error);
+            logger.log("error", "Add new visit %j", error);
           });
         }
         inputParam.visit_expiery_date = moment(inputParam.visit_date).add(
@@ -169,7 +169,7 @@ let insertVisitData = (dataBase, req, res, callBack) => {
             if (error) {
               dataBase.rollback(() => {
                 dataBase.release();
-                logger.logger("error", "Add new visit %j", error);
+                logger.log("error", "Add new visit %j", error);
               });
             }
             req.visit_id = result.insertId;

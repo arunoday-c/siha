@@ -2,10 +2,12 @@ import extend from "extend";
 import {
   selectStatement,
   whereCondition,
+  runningNumber,
   releaseDBConnection,
   deleteRecord
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
+import { debugLog, debugFunction } from "../utils/logging";
 
 let addIdentity = (req, res, next) => {
   let identityDoc = {
@@ -30,41 +32,58 @@ let addIdentity = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.query(
-        "INSERT INTO `hims_d_identity_document` \
-            (`identity_document_code`, `identity_document_name`, `arabic_identity_document_name`, `created_by`\
-            , `created_date`,`identity_status`)\
-            VALUE (?, ?, ?, ?)",
-        [
-          insertDoc.identity_document_code,
-          insertDoc.identity_document_name,
-          insertDoc.created_by,
-          new Date(),
-          insertDoc.identity_status
-        ],
-        (error, result) => {
-          if (error) {
+
+      runningNumber(req.db, 6, "IDEN_DOC", (error, records, newNumber) => {
+        debugLog("newNumber:" + newNumber);
+        if (error) {
+          connection.rollback(() => {
             releaseDBConnection(db, connection);
             next(error);
-          }
-          insertDoc.hims_d_identity_document_id = result.insertId;
-          connection.query(
-            "SELECT `hims_d_identity_document_id`, `identity_document_code`,\
+          });
+        }
+        if (records.length != 0) {
+          req.query.identity_document_code = newNumber;
+          req.body.identity_document_code = newNumber;
+          insertDoc.identity_document_code = newNumber;
+        }
+
+        connection.query(
+          "INSERT INTO `hims_d_identity_document` \
+            (`identity_document_code`, `identity_document_name`, `arabic_identity_document_name`, `created_by`\
+            , `created_date`,`identity_status`)\
+            VALUE (?, ?, ?, ?,?,?)",
+          [
+            insertDoc.identity_document_code,
+            insertDoc.identity_document_name,
+            insertDoc.arabic_identity_document_name,
+            insertDoc.created_by,
+            new Date(),
+            insertDoc.identity_status
+          ],
+          (error, result) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            insertDoc.hims_d_identity_document_id = result.insertId;
+            connection.query(
+              "SELECT `hims_d_identity_document_id`, `identity_document_code`,\
          `identity_document_name`, `arabic_identity_document_name`,`identity_status` \
          FROM `hims_d_identity_document` WHERE `record_status`='A' AND \
          `hims_d_identity_document_id`=? ",
-            [insertDoc.hims_d_identity_document_id],
-            (error, resultData) => {
-              releaseDBConnection(db, connection);
-              if (error) {
-                next(error);
+              [insertDoc.hims_d_identity_document_id],
+              (error, resultData) => {
+                releaseDBConnection(db, connection);
+                if (error) {
+                  next(error);
+                }
+                req.records = resultData;
+                next();
               }
-              req.records = resultData;
-              next();
-            }
-          );
-        }
-      );
+            );
+          }
+        );
+      });
     });
   } catch (e) {
     next(e);
