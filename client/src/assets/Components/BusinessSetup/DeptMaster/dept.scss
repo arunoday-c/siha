@@ -1,0 +1,66 @@
+.dept {
+  font-weight: normal;
+
+  .imp {
+    color: #ff063e;
+  }
+
+  label {
+    font-style: bold;
+    font-weight: 400;
+    font-size: 12px;
+  }
+
+  .txt-fld {
+    background-color: #fbfbfb;
+    width: 100%;
+  }
+
+  .select-fld {
+    padding-left: 8px;
+    background-color: #fbfbfb;
+    width: 100%;
+  }
+
+  .table-details {
+    text-align: center;
+  }
+
+  .table-hover tbody tr:hover {
+    td,
+    th {
+      background-color: #fcffde;
+    }
+  }
+
+  .form-details {
+    margin-top: 20px;
+    margin-left: "auto";
+    margin-right: "auto";
+  }
+
+  th,
+  td {
+    border-right: 1px solid #ffffff;
+  }
+
+  .radio [type="radio"]:checked + label:after {
+    border-color: #00bcb0;
+    background-color: #00bcb0;
+  }
+
+  /*Gap*/
+
+  .radio-gap [type="radio"] {
+    &.with-gap:checked + label:before {
+      border-color: #00bcb0;
+    }
+    &:checked + label:after {
+      border-color: #00bcb0;
+      background-color: #00bcb0;
+    }
+  }
+}
+.testingHeight {
+  max-height: 200px;
+}

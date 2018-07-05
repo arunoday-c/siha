@@ -1,0 +1,48 @@
+
+.htpl-phase1-primary-insurancelist-form{
+	background: #ffff;
+	border-radius: 5px;
+
+	.secinsurance-section{
+		border: 1px solid #d3d3d3;
+		margin: 50px;
+		margin-top: 0px;
+		border-bottom-left-radius: 5px;
+	    border-bottom-right-radius: 5px;
+	    border-top-right-radius: 5px;
+	}
+
+	label{
+		font-weight: 400;
+		font-size: 11px;
+	}
+	mark{
+		background: none;
+		color: red;
+	}
+	.form-details{
+		padding: 10px;
+		padding-bottom: 0px;
+	}
+	.radio-design{
+		position: absolute;
+	    top: 5px;
+	    left: 36px;
+	}
+	.refactor-design{
+		min-height: 28px;
+	    background-color: #fbfbfb;
+	    border: 0px;
+	}
+	.file-name-upload{
+		margin-left: 4%;
+		margin-top: 2%;
+	}
+	.table-detail{
+		
+	}
+	th, td{
+		border-right: 1px solid #e6e6e6;
+		font-size: 11px;
+	}
+}

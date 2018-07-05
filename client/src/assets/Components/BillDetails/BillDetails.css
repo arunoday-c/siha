@@ -1,0 +1,16 @@
+.hptl-phase1-op-display-billing-form {
+  background: #fff;
+  border-radius: 5px; }
+  .hptl-phase1-op-display-billing-form label {
+    font-weight: 400;
+    font-size: 11px; }
+  .hptl-phase1-op-display-billing-form mark {
+    background: none;
+    color: red; }
+  .hptl-phase1-op-display-billing-form .form-details {
+    padding: 5px;
+    padding-bottom: 0px; }
+  .hptl-phase1-op-display-billing-form th,
+  .hptl-phase1-op-display-billing-form td {
+    font-size: 11px;
+    border-right: 1px solid #e6e6e6; }
