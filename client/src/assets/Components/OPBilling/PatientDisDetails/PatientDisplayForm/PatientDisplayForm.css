@@ -1,0 +1,15 @@
+.hptl-phase1-display-patient-form {
+  background: #ffff;
+  border-radius: 5px; }
+
+.hptl-phase1-display-patient-form .form-details {
+  padding: 5px;
+  padding-bottom: 5px; }
+
+.hptl-phase1-display-patient-form mark {
+  background: none;
+  color: red; }
+
+.hptl-phase1-display-patient-form label {
+  font-weight: 400;
+  font-size: 11px; }

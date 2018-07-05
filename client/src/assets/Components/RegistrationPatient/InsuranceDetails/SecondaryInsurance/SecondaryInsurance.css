@@ -1,0 +1,33 @@
+.hptl-phase1-secinsurance-form {
+  background: #ffff;
+  border-radius: 5px; }
+
+.htpl-phase1-primary-secinsurance-form label {
+  font-weight: 400;
+  font-size: 11px; }
+
+.htpl-phase1-primary-secinsurance-form mark {
+  background: none;
+  color: red; }
+
+.htpl-phase1-primary-secinsurance-form .form-details {
+  padding: 5px;
+  padding-bottom: 0px; }
+
+.htpl-phase1-primary-secinsurance-form .radio-design {
+  position: absolute;
+  top: 5px;
+  left: 36px; }
+
+.htpl-phase1-primary-secinsurance-form .refactor-design {
+  min-height: 28px;
+  background-color: #fbfbfb;
+  border: 0px; }
+
+.htpl-phase1-primary-secinsurance-form .file-name-upload {
+  margin-left: 4%;
+  margin-top: 2%; }
+
+.htpl-phase1-primary-secinsurance-form th, .htpl-phase1-primary-secinsurance-form td {
+  border-right: 1px solid #e6e6e6;
+  font-size: 11px; }
