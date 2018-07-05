@@ -2,51 +2,6 @@ import extend from "extend";
 import { whereCondition, checkIsNull, uploadFile } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { logger, debugLog, debugFunction } from "../utils/logging";
-let patientModel = {
-  hims_d_patient_id: null,
-  patient_code: null,
-  registration_date: null,
-  title_id: null,
-  first_name: null,
-  middle_name: null,
-  last_name: null,
-  gender: null,
-  religion_id: null,
-  date_of_birth: null,
-  age: null,
-  marital_status: null,
-  address1: null,
-  address2: null,
-  contact_number: null,
-  secondary_contact_number: null,
-  email: null,
-  emergency_contact_name: "",
-  emergency_contact_number: "",
-  relationship_with_patient: "",
-  visa_type_id: null,
-  nationality_id: null,
-  postal_code: null,
-  primary_identity_id: null,
-  primary_id_no: null,
-  secondary_identity_id: "",
-  secondary_id_no: "",
-  photo_file: "",
-  primary_id_file: "",
-  secondary_id_file: "",
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  city_id: null,
-  state_id: null,
-  country_id: null,
-  documents: null /*{
-                      patientImage:{base64String:"",fileExtention:""},
-                      patientPrimaryID:{base64String:"",fileExtention:""},
-                      patientSecondaryID:{base64String:"",fileExtention:""}
-                    }
-  */
-};
 
 let addPatientToRegisteration = (req, res, next) => {
   try {
@@ -95,6 +50,51 @@ let updatePatientRegistrstion = (req, res, next) => {
   }
 };
 let insertData = (dataBase, req, res, callBack, isCommited, next) => {
+  let patientModel = {
+    hims_d_patient_id: null,
+    patient_code: null,
+    registration_date: null,
+    title_id: null,
+    first_name: null,
+    middle_name: null,
+    last_name: null,
+    gender: null,
+    religion_id: null,
+    date_of_birth: null,
+    age: null,
+    marital_status: null,
+    address1: null,
+    address2: null,
+    contact_number: null,
+    secondary_contact_number: null,
+    email: null,
+    emergency_contact_name: "",
+    emergency_contact_number: "",
+    relationship_with_patient: "",
+    visa_type_id: null,
+    nationality_id: null,
+    postal_code: null,
+    primary_identity_id: null,
+    primary_id_no: null,
+    secondary_identity_id: "",
+    secondary_id_no: "",
+    photo_file: "",
+    primary_id_file: "",
+    secondary_id_file: "",
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    city_id: null,
+    state_id: null,
+    country_id: null,
+    documents: null /*{
+                        patientImage:{base64String:"",fileExtention:""},
+                        patientPrimaryID:{base64String:"",fileExtention:""},
+                        patientSecondaryID:{base64String:"",fileExtention:""}
+                      }
+    */
+  };
   isCommited = isCommited || false;
   try {
     debugFunction("Insert Patient Registration");
@@ -209,6 +209,52 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
   }
 };
 let updateData = (dataBase, req, callBack) => {
+  let patientModel = {
+    hims_d_patient_id: null,
+    patient_code: null,
+    registration_date: null,
+    title_id: null,
+    first_name: null,
+    middle_name: null,
+    last_name: null,
+    gender: null,
+    religion_id: null,
+    date_of_birth: null,
+    age: null,
+    marital_status: null,
+    address1: null,
+    address2: null,
+    contact_number: null,
+    secondary_contact_number: null,
+    email: null,
+    emergency_contact_name: "",
+    emergency_contact_number: "",
+    relationship_with_patient: "",
+    visa_type_id: null,
+    nationality_id: null,
+    postal_code: null,
+    primary_identity_id: null,
+    primary_id_no: null,
+    secondary_identity_id: "",
+    secondary_id_no: "",
+    photo_file: "",
+    primary_id_file: "",
+    secondary_id_file: "",
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    city_id: null,
+    state_id: null,
+    country_id: null,
+    documents: null /*{
+                        patientImage:{base64String:"",fileExtention:""},
+                        patientPrimaryID:{base64String:"",fileExtention:""},
+                        patientSecondaryID:{base64String:"",fileExtention:""}
+                      }
+    */
+  };
+
   try {
     let inputparam = extend(patientModel, req.body);
     dataBase.query(
@@ -286,13 +332,14 @@ let patientSelect = (req, res, next) => {
     next(e);
   }
 };
-let patientWhereCondition = {
-  patient_code: "ALL",
-  contact_number: "ALL",
-  gender: "ALL"
-};
 
 let selectData = (dataBase, req, callBack) => {
+  let patientWhereCondition = {
+    patient_code: "ALL",
+    contact_number: "ALL",
+    gender: "ALL"
+  };
+
   try {
     let where = whereCondition(extend(patientWhereCondition, req.query));
     dataBase.query(

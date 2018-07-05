@@ -4,20 +4,23 @@ import keys from "../keys/keys";
 import extend from "extend";
 import fs from "fs";
 let translate = new AWS.Translate(keys.AWSCredentials);
-let languageModel = {
-  targetLanguage: "ar",
-  sourceLanguage: "en",
-  forceChange: false
-  /*
-    fieldIdentifier:{
-      english:'',
-      target:null
 
-    }
-  */
-};
 let getTargetLangage = (req, res, next) => {
   debugFunction("getTargetLangage");
+
+  let languageModel = {
+    targetLanguage: "ar",
+    sourceLanguage: "en",
+    forceChange: false
+    /*
+      fieldIdentifier:{
+        english:'',
+        target:null
+  
+      }
+    */
+  };
+
   // extend(languageModel, req.body);
   languageModel = JSON.parse(
     fs.readFileSync(keys.languageFolderPath + "/language.json")

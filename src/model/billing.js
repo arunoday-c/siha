@@ -11,146 +11,54 @@ import { debugLog, debugFunction } from "../utils/logging";
 
 import { LINQ } from "node-linq";
 import { inflate } from "zlib";
-let billingHeaderModel = {
-  hims_f_billing_header_id: null,
-  patient_id: null,
-  billing_type_id: null,
-  visit_id: null,
-  bill_number: null,
-  incharge_or_provider: null,
-  bill_date: null,
-  advance_amount: 0,
-  discount_amount: 0,
-  sub_total_amount: 0,
-  total_tax: 0,
-  net_total: 0,
-  billing_status: null,
-  copay_amount: 0,
-  deductable_amount: 0,
-  gross_total: 0,
-  sheet_discount_amount: 0,
-  sheet_discount_percentage: 0,
-  net_amount: 0,
-  patient_res: 0,
-  company_res: 0,
-  sec_company_res: 0,
-  patient_payable: 0,
-  company_payable: 0,
-  sec_company_payable: 0,
-  patient_tax: 0,
-  company_tax: 0,
-  sec_company_tax: 0,
-  net_tax: 0,
-  credit_amount: 0,
-  receiveable_amount: 0,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
-  cancel_remarks: null,
-  cancel_by: null,
-  bill_comments: null
-};
-
-let billingDetailsModel = {
-  hims_f_billing_details_id: null,
-  hims_f_billing_header_id: null,
-  service_type_id: null,
-  services_id: null,
-  quantity: 0,
-  unit_cost: 0,
-  insurance_yesno: null,
-  gross_amount: 0,
-  discount_amout: 0,
-  discount_percentage: 0,
-  net_amout: 0,
-  copay_percentage: 0,
-  copay_amount: 0,
-  deductable_amount: 0,
-  deductable_percentage: 0,
-  tax_inclusive: "N",
-  patient_tax: 0,
-  company_tax: 0,
-  total_tax: 0,
-  patient_resp: 0,
-  patient_payable: 0,
-  comapany_resp: 0,
-  company_payble: 0,
-  sec_company: 0,
-  sec_deductable_percentage: 0,
-  sec_deductable_amount: 0,
-  sec_company_res: 0,
-  sec_company_tax: 0,
-  sec_company_paybale: 0,
-  sec_copay_percntage: 0,
-  sec_copay_amount: 0,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null
-};
-let servicesModel = {
-  hims_d_services_id: null,
-  service_code: null,
-  cpt_code: null,
-  service_name: null,
-  service_desc: null,
-  sub_department_id: null,
-  hospital_id: null,
-  service_type_id: null,
-  standard_fee: null,
-  discount: null,
-  effective_start_date: null,
-  effectice_end_date: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null
-};
-
-let receiptHeaderModel = {
-  total_amount: 0,
-  unbalanced_amount: 0,
-  cash_amount: 0,
-  card_amount: 0,
-  cheque_amount: 0
-};
-let P_receiptHeaderModel = {
-  hims_f_receipt_header_id: null,
-  receipt_number: null,
-  receipt_date: null,
-  billing_header_id: null,
-  total_amount: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
-  counter_id: null,
-  shift_id: null
-};
-let P_receiptDetailsModel = {
-  hims_f_receipt_details_id: null,
-  hims_f_receipt_header_id: null,
-  card_check_number: null,
-  expiry_date: null,
-  pay_type: null,
-  amount: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
-  card_type: null
-};
 
 //created by irfan: Adding bill headder and bill details
 
 //AddBill
 let addBill = (dataBase, req, res, callBack, isCommited, next) => {
   isCommited = isCommited || false;
+  let billingHeaderModel = {
+    hims_f_billing_header_id: null,
+    patient_id: null,
+    billing_type_id: null,
+    visit_id: null,
+    bill_number: null,
+    incharge_or_provider: null,
+    bill_date: null,
+    advance_amount: 0,
+    discount_amount: 0,
+    sub_total_amount: 0,
+    total_tax: 0,
+    net_total: 0,
+    billing_status: null,
+    copay_amount: 0,
+    deductable_amount: 0,
+    gross_total: 0,
+    sheet_discount_amount: 0,
+    sheet_discount_percentage: 0,
+    net_amount: 0,
+    patient_res: 0,
+    company_res: 0,
+    sec_company_res: 0,
+    patient_payable: 0,
+    company_payable: 0,
+    sec_company_payable: 0,
+    patient_tax: 0,
+    company_tax: 0,
+    sec_company_tax: 0,
+    net_tax: 0,
+    credit_amount: 0,
+    receiveable_amount: 0,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    cancel_remarks: null,
+    cancel_by: null,
+    bill_comments: null
+  };
+
   try {
     debugFunction("addBill");
 
@@ -329,6 +237,21 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
 
 //AddReceipt
 let newReceipt = (dataBase, req, res, callBack, next) => {
+  let P_receiptHeaderModel = {
+    hims_f_receipt_header_id: null,
+    receipt_number: null,
+    receipt_date: null,
+    billing_header_id: null,
+    total_amount: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    counter_id: null,
+    shift_id: null
+  };
+
   try {
     debugFunction("newReceiptFUnc");
 
@@ -493,6 +416,112 @@ let billingCalculations = (req, res, next) => {
 
 //created by irfan: only calculation bill headder and bill details
 let getBillDetails = (req, res, next) => {
+  let billingHeaderModel = {
+    hims_f_billing_header_id: null,
+    patient_id: null,
+    billing_type_id: null,
+    visit_id: null,
+    bill_number: null,
+    incharge_or_provider: null,
+    bill_date: null,
+    advance_amount: 0,
+    discount_amount: 0,
+    sub_total_amount: 0,
+    total_tax: 0,
+    net_total: 0,
+    billing_status: null,
+    copay_amount: 0,
+    deductable_amount: 0,
+    gross_total: 0,
+    sheet_discount_amount: 0,
+    sheet_discount_percentage: 0,
+    net_amount: 0,
+    patient_res: 0,
+    company_res: 0,
+    sec_company_res: 0,
+    patient_payable: 0,
+    company_payable: 0,
+    sec_company_payable: 0,
+    patient_tax: 0,
+    company_tax: 0,
+    sec_company_tax: 0,
+    net_tax: 0,
+    credit_amount: 0,
+    receiveable_amount: 0,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    cancel_remarks: null,
+    cancel_by: null,
+    bill_comments: null
+  };
+
+  let billingDetailsModel = {
+    hims_f_billing_details_id: null,
+    hims_f_billing_header_id: null,
+    service_type_id: null,
+    services_id: null,
+    quantity: 0,
+    unit_cost: 0,
+    insurance_yesno: null,
+    gross_amount: 0,
+    discount_amout: 0,
+    discount_percentage: 0,
+    net_amout: 0,
+    copay_percentage: 0,
+    copay_amount: 0,
+    deductable_amount: 0,
+    deductable_percentage: 0,
+    tax_inclusive: "N",
+    patient_tax: 0,
+    company_tax: 0,
+    total_tax: 0,
+    patient_resp: 0,
+    patient_payable: 0,
+    comapany_resp: 0,
+    company_payble: 0,
+    sec_company: 0,
+    sec_deductable_percentage: 0,
+    sec_deductable_amount: 0,
+    sec_company_res: 0,
+    sec_company_tax: 0,
+    sec_company_paybale: 0,
+    sec_copay_percntage: 0,
+    sec_copay_amount: 0,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null
+  };
+  let servicesModel = {
+    hims_d_services_id: null,
+    service_code: null,
+    cpt_code: null,
+    service_name: null,
+    service_desc: null,
+    sub_department_id: null,
+    hospital_id: null,
+    service_type_id: null,
+    standard_fee: null,
+    discount: null,
+    effective_start_date: null,
+    effectice_end_date: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null
+  };
+
+  let receiptHeaderModel = {
+    total_amount: 0,
+    unbalanced_amount: 0,
+    cash_amount: 0,
+    card_amount: 0,
+    cheque_amount: 0
+  };
   debugFunction("getBillDetails");
   try {
     if (req.db == null) {

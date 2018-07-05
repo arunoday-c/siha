@@ -1,10 +1,6 @@
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 
-let authModel = {
-  username: "",
-  password: ""
-};
 let getUserNamePassWord = base64String => {
   try {
     const temp = base64String.split(" ");
@@ -18,8 +14,14 @@ let getUserNamePassWord = base64String => {
     console.error(e);
   }
 };
+
+//api authentication
 let apiAuth = (req, res, next) => {
   let c;
+  let authModel = {
+    username: "",
+    password: ""
+  };
   try {
     let db;
     if (req.db == null) {
@@ -90,7 +92,12 @@ let apiAuth = (req, res, next) => {
   }
 };
 
+//api user authentication
 let authUser = (req, res, next) => {
+  let authModel = {
+    username: "",
+    password: ""
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());

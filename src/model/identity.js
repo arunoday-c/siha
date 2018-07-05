@@ -6,17 +6,19 @@ import {
   deleteRecord
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
-let identityDoc = {
-  hims_d_identity_document_id: null,
-  identity_document_code: null,
-  identity_document_name: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  identity_status: "A"
-};
+
 let addIdentity = (req, res, next) => {
+  let identityDoc = {
+    hims_d_identity_document_id: null,
+    identity_document_code: null,
+    identity_document_name: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    identity_status: "A"
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -69,6 +71,17 @@ let addIdentity = (req, res, next) => {
   }
 };
 let updateIdentity = (req, res, next) => {
+  let identityDoc = {
+    hims_d_identity_document_id: null,
+    identity_document_code: null,
+    identity_document_name: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    identity_status: "A"
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -107,12 +120,13 @@ let updateIdentity = (req, res, next) => {
   }
 };
 
-let selectWhereCondition = {
-  hims_d_identity_document_id: "ALL",
-  identity_document_code: "ALL",
-  identity_document_name: "ALL"
-};
 let selectIdentity = (req, res, next) => {
+  let selectWhereCondition = {
+    hims_d_identity_document_id: "ALL",
+    identity_document_code: "ALL",
+    identity_document_name: "ALL"
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());

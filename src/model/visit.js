@@ -3,30 +3,7 @@ import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction, logger } from "../utils/logging";
 import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 import moment from "moment";
-let visitDetails = {
-  hims_f_patient_visit_id: null,
-  patient_id: null,
-  visit_type: null,
-  visit_date: null,
-  visit_code: null,
-  department_id: null,
-  sub_department_id: null,
-  doctor_id: null,
-  maternity_patient: null,
-  is_mlc: null,
-  mlc_accident_reg_no: null,
-  mlc_police_station: null,
-  mlc_wound_certified_date: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
-  patient_message: null,
-  is_critical_message: null,
-  message_active_till: null,
-  visit_expiery_date: null
-};
+
 let addVisit = (req, res, next) => {
   try {
     debugFunction("addVisit");
@@ -118,6 +95,30 @@ let addVisit = (req, res, next) => {
 };
 
 let insertVisitData = (dataBase, req, res, callBack) => {
+  let visitDetails = {
+    hims_f_patient_visit_id: null,
+    patient_id: null,
+    visit_type: null,
+    visit_date: null,
+    visit_code: null,
+    department_id: null,
+    sub_department_id: null,
+    doctor_id: null,
+    maternity_patient: null,
+    is_mlc: null,
+    mlc_accident_reg_no: null,
+    mlc_police_station: null,
+    mlc_wound_certified_date: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    patient_message: null,
+    is_critical_message: null,
+    message_active_till: null,
+    visit_expiery_date: null
+  };
   try {
     debugFunction("insertVisitData");
     let inputParam = extend(
@@ -229,6 +230,31 @@ let updateVisit = (req, res, next) => {
 };
 
 let updateData = (dataBase, req, callBack) => {
+  let visitDetails = {
+    hims_f_patient_visit_id: null,
+    patient_id: null,
+    visit_type: null,
+    visit_date: null,
+    visit_code: null,
+    department_id: null,
+    sub_department_id: null,
+    doctor_id: null,
+    maternity_patient: null,
+    is_mlc: null,
+    mlc_accident_reg_no: null,
+    mlc_police_station: null,
+    mlc_wound_certified_date: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    patient_message: null,
+    is_critical_message: null,
+    message_active_till: null,
+    visit_expiery_date: null
+  };
+
   try {
     let inputParam = extend(visitDetails, req.body);
     dataBase.query(
