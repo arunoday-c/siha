@@ -60,16 +60,6 @@
         "path": "/OPBilling"
       },
       {
-        "name": "Advance",
-        "label": "تقدم",
-        "path": "/Advance"
-      },
-      {
-        "name": "Refund",
-        "label": "إعادة مال",
-        "path": "/Refund"
-      },
-      {
         "name": "Advance List",
         "label": "قائمة متقدمة",
         "path": "/AdvanceList"

@@ -153,7 +153,6 @@ class PersistentDrawer extends React.Component {
   }
 
   Languaue(secLang, e) {
-    debugger;
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
@@ -229,7 +228,6 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(e) {
-    debugger;
     const path = e.currentTarget.getAttribute("path");
     const name = e.currentTarget.getAttribute("name");
     // const name = e.currentTarget.getAttribute("name");

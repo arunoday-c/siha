@@ -18,7 +18,10 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  AppBar,
+  Typography,
+  Toolbar
 } from "material-ui";
 
 import { getServiceTypes } from "../../actions/ServiceCategory/ServiceTypesactions";
@@ -64,7 +67,6 @@ class DisplayOPBilling extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     let InputOutput = nextProps.BillingIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -84,7 +86,6 @@ class DisplayOPBilling extends PureComponent {
   };
 
   displayServiceBills() {
-    debugger;
     if (this.state.billdetails != null) {
       return this.state.billdetails.map((row, index) => {
         return {
@@ -112,87 +113,92 @@ class DisplayOPBilling extends PureComponent {
             aria-describedby="alert-dialog-description"
             maxWidth="500px"
           >
-            <DialogTitle id="alert-dialog-title">
-              {"Bill Details..."}
-            </DialogTitle>
+            <div className="colorPrimary">
+              <AppBar position="static">
+                <Toolbar>
+                  <Typography variant="title">Bill Details</Typography>
+                </Toolbar>
+              </AppBar>
+            </div>
 
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 <div className="container-fluid">
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-6" }}
-                    label={{
-                      fieldName: "present-bill-services"
-                    }}
-                    selector={{
-                      name: "service_type_id",
-                      className: "select-fld",
-                      value: this.state.service_type_id,
-                      dataSource: {
-                        textField:
-                          this.state.selectedLang == "en"
-                            ? "service_type"
-                            : "arabic_service_type",
-                        valueField: "hims_d_service_type_id",
-                        data: this.displayServiceBills()
-                      },
-                      onChange: selector => {
-                        debugger;
-                        let row = selector.selected;
-                        this.setState({ ...this.state, ...row });
-                      }
-                    }}
-                  />
                   <div className="row form-details">
-                    <div className="row form-details col-lg-12">
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-4" }}
-                        label={{
-                          fieldName: "service_type_id"
-                        }}
-                        selector={{
-                          name: "service_type_id",
-                          className: "select-fld",
-                          value: this.state.service_type_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang == "en"
-                                ? "service_type"
-                                : "arabic_service_type",
-                            valueField: "hims_d_service_type_id",
-                            data: this.props.servicetype
-                          },
-                          onChange: null,
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-6" }}
+                      label={{
+                        fieldName: "present-bill-services"
+                      }}
+                      selector={{
+                        name: "service_type_id",
+                        className: "select-fld",
+                        value: this.state.service_type_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang == "en"
+                              ? "service_type"
+                              : "arabic_service_type",
+                          valueField: "hims_d_service_type_id",
+                          data: this.displayServiceBills()
+                        },
+                        onChange: selector => {
+                          let row = selector.selected;
+                          this.setState({ ...this.state, ...row });
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="row form-details">
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-3" }}
+                      label={{
+                        fieldName: "service_type_id"
+                      }}
+                      selector={{
+                        name: "service_type_id",
+                        className: "select-fld",
+                        value: this.state.service_type_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang == "en"
+                              ? "service_type"
+                              : "arabic_service_type",
+                          valueField: "hims_d_service_type_id",
+                          data: this.props.servicetype
+                        },
+                        onChange: null,
+                        others: {
+                          disabled: true
+                        }
+                      }}
+                    />
 
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-4" }}
-                        label={{
-                          fieldName: "services_id"
-                        }}
-                        selector={{
-                          name: "services_id",
-                          className: "select-fld",
-                          value: this.state.services_id,
-                          dataSource: {
-                            textField: "service_name",
-                            // this.state.selectedLang == "en"
-                            //   ? "service_name"
-                            //   : "arabic_service_name",
-                            valueField: "hims_d_services_id",
-                            data: this.props.services
-                          },
-                          onChange: null,
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-                    </div>
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-3" }}
+                      label={{
+                        fieldName: "services_id"
+                      }}
+                      selector={{
+                        name: "services_id",
+                        className: "select-fld",
+                        value: this.state.services_id,
+                        dataSource: {
+                          textField: "service_name",
+                          // this.state.selectedLang == "en"
+                          //   ? "service_name"
+                          //   : "arabic_service_name",
+                          valueField: "hims_d_services_id",
+                          data: this.props.services
+                        },
+                        onChange: null,
+                        others: {
+                          disabled: true
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="row form-details">
                     <div className="row form-details">
                       <AlagehFormGroup
                         div={{ className: "col-lg-2" }}

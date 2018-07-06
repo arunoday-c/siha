@@ -70,7 +70,6 @@ class AddPatientForm extends PureComponent {
   }
 
   componentDidMount() {
-    debugger;
     if (this.props.titles.length === 0) {
       this.props.getTitles();
     }

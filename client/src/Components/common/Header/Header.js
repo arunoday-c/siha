@@ -84,7 +84,6 @@ class Header extends PureComponent {
     if (secLang === "en") {
       this.setState({ languageName: "English" });
     } else if (secLang === "ar") {
-      //this.props.SelectLanguage("lang_ar");
       this.setState({ languageName: "عربي" });
     }
     this.props.SelectLanguage(secLang);

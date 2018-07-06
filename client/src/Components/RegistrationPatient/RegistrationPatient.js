@@ -28,7 +28,9 @@ import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import { getCookie } from "../../utils/algaehApiCall";
-import swal from "sweetalert";
+import AddAdvanceModal from "../Advance/AdvanceModal";
+import { successfulMessage } from "../../utils/GlobalFunctions";
+import { setGlobal } from "../../utils/GlobalFunctions";
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -43,13 +45,14 @@ class RegistrationPatient extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = { AdvanceOpen: false, RefundOpen: false };
   }
 
   componentWillMount() {
-    debugger;
     let IOputs = emptyObject;
     this.setState(IOputs);
+
+    setGlobal({ selectedLang: "en" });
   }
   componentDidMount() {
     var width = document.getElementById("attach").offsetHeight;
@@ -61,6 +64,8 @@ class RegistrationPatient extends Component {
     }
 
     let prevLang = getCookie("Language");
+
+    setGlobal({ selectedLang: prevLang });
     this.setState({
       selectedLang: prevLang
     });
@@ -71,16 +76,6 @@ class RegistrationPatient extends Component {
     let IOputs = emptyObject;
 
     this.setState(IOputs);
-  }
-
-  successfulMessage(message, title) {
-    swal({
-      title: title,
-      text: message,
-      icon: "error",
-      button: true,
-      timer: 2500
-    });
   }
 
   GenerateReciept(callback) {
@@ -153,7 +148,11 @@ class RegistrationPatient extends Component {
               receipt_number: data.receipt_number,
               saveEnable: true
             });
-            this.successfulMessage("Done Successfully", "Success");
+            successfulMessage({
+              message: "Done Successfully",
+              title: "Success",
+              icon: "success"
+            });
           });
         } else {
           $this.props.postVisitDetails($this.state, data => {
@@ -162,7 +161,11 @@ class RegistrationPatient extends Component {
               receipt_number: data.receipt_number,
               saveEnable: true
             });
-            this.successfulMessage("Done Successfully", "Success");
+            successfulMessage({
+              message: "Done Successfully",
+              title: "Success",
+              icon: "success"
+            });
           });
         }
       });
@@ -173,9 +176,36 @@ class RegistrationPatient extends Component {
     this.setState({ open: false });
   };
 
-  // DialoghandleClose = () => {
-  //   this.setState({ DialogOpen: false });
-  // };
+  ShowAdvanceScreen(e) {
+    debugger;
+    if (this.state.patient_code != null && this.state.patient_code != "") {
+      this.setState({
+        ...this.state,
+        AdvanceOpen: !this.state.AdvanceOpen
+      });
+    } else {
+      successfulMessage({
+        message: "Select Patient",
+        title: "Error",
+        icon: "error"
+      });
+    }
+  }
+
+  ShowRefundScreen(e) {
+    if (this.state.patient_code != null && this.state.patient_code != "") {
+      this.setState({
+        ...this.state,
+        RefundOpen: !this.state.RefundOpen
+      });
+    } else {
+      successfulMessage({
+        message: "Select Patient",
+        title: "Error",
+        icon: "error"
+      });
+    }
+  }
 
   SideMenuBarOpen(sidOpen) {
     this.setState({
@@ -248,7 +278,70 @@ class RegistrationPatient extends Component {
               <AppBar position="static" className="main">
                 <div className="container-fluid">
                   <div className="row">
-                    <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
+                    <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-11">
+                      <button
+                        className="htpl1-phase1-btn-others"
+                        onClick={this.ShowAdvanceScreen.bind(this)}
+                      >
+                        Advance
+                      </button>
+
+                      <AddAdvanceModal
+                        show={this.state.AdvanceOpen}
+                        onClose={this.ShowAdvanceScreen.bind(this)}
+                        selectedLang={this.state.selectedLang}
+                        HeaderCaption={
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "advance_caption",
+                              align: "ltr"
+                            }}
+                          />
+                        }
+                        NumberLabel="receipt_number"
+                        DateLabel="receipt_date"
+                        inputsparameters={{
+                          patient_code: this.state.patient_code,
+                          full_name: this.state.full_name,
+                          hims_f_patient_id: this.state.hims_d_patient_id,
+                          transaction_type: "A",
+                          pay_type: "R"
+                        }}
+                      />
+                    </div>
+
+                    <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-11">
+                      <button
+                        className="htpl1-phase1-btn-others"
+                        onClick={this.ShowRefundScreen.bind(this)}
+                      >
+                        Refund
+                      </button>
+
+                      <AddAdvanceModal
+                        show={this.state.RefundOpen}
+                        onClose={this.ShowRefundScreen.bind(this)}
+                        selectedLang={this.state.selectedLang}
+                        HeaderCaption={
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "refund_caption",
+                              align: "ltr"
+                            }}
+                          />
+                        }
+                        NumberLabel="payment_number"
+                        DateLabel="payment_date"
+                        inputsparameters={{
+                          patient_code: this.state.patient_code,
+                          full_name: this.state.full_name,
+                          hims_f_patient_id: this.state.hims_d_patient_id,
+                          transaction_type: "R",
+                          pay_type: "P"
+                        }}
+                      />
+                    </div>
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8">
                       &nbsp;
                     </div>
                     <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-11">
