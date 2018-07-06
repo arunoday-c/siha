@@ -180,13 +180,13 @@ class DataGrid extends Component {
       expanded:
         nextProps.expanded != null
           ? {
-            multiExpand: true,
-            expandRows: [],
-            detailTemplate:
-              nextProps.expanded != null
-                ? nextProps.expanded.detailTemplate
-                : null
-          }
+              multiExpand: true,
+              expandRows: [],
+              detailTemplate:
+                nextProps.expanded != null
+                  ? nextProps.expanded.detailTemplate
+                  : null
+            }
           : null,
       id: nextProps.id ? "prevRecord_" + nextProps.id : "prevRecord"
     });
@@ -264,17 +264,17 @@ class DataGrid extends Component {
           {col.editorTemplate != null ? (
             col.editorTemplate(row)
           ) : (
-              <TextField
-                name={col.fieldName}
-                value={row[col.fieldName]}
-                disabled={col.disabled}
-                onChange={(control, $this = this) => {
-                  const value = control.target.value;
-                  $this.state.data[index][col.fieldName] = value;
-                  $this.setState({ data: $this.state.data });
-                }}
-              />
-            )}
+            <TextField
+              name={col.fieldName}
+              value={row[col.fieldName]}
+              disabled={col.disabled}
+              onChange={(control, $this = this) => {
+                const value = control.target.value;
+                $this.state.data[index][col.fieldName] = value;
+                $this.setState({ data: $this.state.data });
+              }}
+            />
+          )}
         </td>
       );
     });

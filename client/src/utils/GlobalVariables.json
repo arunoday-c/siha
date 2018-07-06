@@ -43,5 +43,10 @@
   "MODE_OF_PAY": [
     { "name": "Self", "arabic_name": "الذات", "value": "1" },
     { "name": "Insurance", "arabic_name": "تأمين", "value": "2" }
+  ],
+
+  "FORMAT_STATUS": [
+    { "name": "Active", "arabic_name": "نشيط", "value": "A" },
+    { "name": "Inactive", "arabic_name": "غير نشط", "value": "I" }
   ]
 }

@@ -28,17 +28,17 @@ class BusinessSetup extends Component {
     });
   }
 
-  // openTab(e) {
-  //   var element = document.querySelectorAll("[alagehtabs]");
-  //   for (var i = 0; i < element.length; i++) {
-  //     element[i].classList.remove("active");
-  //   }
-  //   e.target.classList.add("active");
-  //   var specified = e.target.attributes["alagehtabs"].value;
-  //   this.setState({
-  //     pageDisplay: specified
-  //   });
-  // }
+  openTab(e) {
+    var element = document.querySelectorAll("[alagehtabs]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
+    }
+    e.target.classList.add("active");
+    var specified = e.target.attributes["alagehtabs"].value;
+    this.setState({
+      pageDisplay: specified
+    });
+  }
 
   SideMenuBarOpen(sidOpen) {
     this.setState({
