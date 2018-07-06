@@ -1,0 +1,107 @@
+#burgerMenuAction {
+  width: 40px;
+  margin: 0 0 0 -15px;
+  color: #fff;
+  padding: 8px 12px;
+  background: #3eafa7;
+  float: left;
+}
+
+#topBar {
+  background: linear-gradient(
+    to right,
+    rgba(46, 185, 193, 1) 0%,
+    rgba(67, 182, 174, 1) 100%
+  );
+  height: 40px;
+  z-index: 1;
+}
+
+.startPoint {
+  position: fixed;
+  z-index: 100000;
+}
+
+#pageHeader {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  background: #fff;
+}
+
+.hdg_bredcrump {
+  background-color: #fff;
+  background-image: url("../../../assets/images/breadcrump_border.png")
+    no-repeat top right #fff;
+}
+
+.hdg_bredcrump h5 {
+  margin-top: 10px;
+}
+
+.hdg_bredcrump .breadcrumb {
+  font-size: 0.7rem;
+  padding: 0 0 0.5rem;
+  margin-bottom: 0;
+  background-color: #fff;
+}
+
+.hdg_actions {
+  background: #f8f8f8;
+}
+
+.hdg_actions1 {
+  background: #ffff;
+}
+
+.hdg_actions1 .form-group {
+  margin-bottom: 0;
+  margin-top: 4px;
+  padding: 0;
+  padding-top: 20px;
+  cursor: pointer;
+}
+
+.hdg_actions label {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  margin-top: 0.1rem;
+}
+
+.hdg_actions .form-group {
+  margin-bottom: 0;
+  margin-top: 4px;
+}
+
+.hdg_actions .next_actions,
+.hdg_actions .previous_actions {
+  padding: 0;
+  padding-top: 29px;
+}
+
+.hdg_actions .next_actions i,
+.hdg_actions .previous_actions i {
+  color: cadetblue;
+  cursor: pointer;
+}
+
+.hdg_actions .print_actions {
+  padding: 0;
+  padding-top: 20px;
+  cursor: pointer;
+}
+
+.hdg_actions .form-control {
+  border: none;
+  border-bottom: 1px solid #ced4da;
+  font-size: 0.9rem;
+  border-radius: 0;
+}
+
+.hdg_actions i.fa-search {
+  line-height: 20px;
+  margin-left: 50%;
+}
+.breadcrumb-fixed {
+  position: fixed;
+  z-index: 2;
+  width: 83%;
+}

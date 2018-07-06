@@ -1,0 +1,70 @@
+[
+  {
+    "name": "GENERAL",
+    "label": "جنرال لواء",
+    "path": "/",
+    "subMenu": [
+      {
+        "name": "Dashboard",
+        "label": "لوحة القيادة",
+        "path": "/Dashboard"
+      }
+    ]
+  },
+  {
+    "name": "MASTERS",
+    "label": "رئيس",
+    "path": "/appointment/",
+    "subMenu": [
+      {
+        "name": "Business Setup",
+        "label": "إعداد الأعمال",
+        "path": "/BusinessSetup"
+      },
+      {
+        "name": "Common Setup",
+        "label": "الإعداد المشترك",
+        "path": "/CommonSetup"
+      }
+    ]
+  },
+  {
+    "name": "Front Desk",
+    "label": "المقعدالامامي",
+    "path": "/registration/",
+    "subMenu": [
+      {
+        "name": "Front Desk",
+        "label": "المقعدالامامي",
+        "path": "/FrontDesk"
+      },
+      {
+        "name": "Billing",
+        "label": "الفواتير",
+        "path": "/registration/our-patient"
+      },
+      {
+        "name": "OP List",
+        "label": "قائمة OP",
+        "path": "/registration/op-list"
+      },
+      {
+        "name": "Patient List",
+        "label": "قائمة المرضى",
+        "path": "/registration/registration-list"
+      }
+    ]
+  },
+  {
+    "name": "Admission",
+    "label": "قبول",
+    "path": "/admission/",
+    "subMenu": []
+  },
+  {
+    "name": "OP BILL",
+    "label": "OP Bill",
+    "path": "/op-bill/",
+    "subMenu": []
+  }
+]

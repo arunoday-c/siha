@@ -1,0 +1,61 @@
+div[numberbox="true"] input[type="text"] {
+  text-align: right !important; }
+
+.DayPickerInput input {
+  font: inherit;
+  color: currentColor;
+  border: 0;
+  margin: 0;
+  padding: 6px 0 7px;
+  box-sizing: content-box;
+  background: none;
+  vertical-align: middle;
+  -webkit-tap-highlight-color: transparent;
+  background-color: #fbfbfb;
+  min-width: 100%; }
+
+.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
+  background-color: #00bcb0 !important; }
+
+.DayPicker-TodayButton {
+  color: #00bcb0 !important;
+  padding-left: 70px;
+  font-weight: bold; }
+
+.table {
+  width: 100%; }
+  .table tbody {
+    height: 200px;
+    overflow: auto;
+    width: 100%; }
+  .table tbody td {
+    vertical-align: middle;
+    white-space: nowrap; }
+  .table thead tr td {
+    font-weight: bold; }
+
+.scrolling table {
+  table-layout: inherit;
+  *margin-left: -100px;
+  /*ie7*/ }
+
+.scrolling td,
+th {
+  vertical-align: top;
+  padding: 10px;
+  min-width: 100px; }
+
+.scrolling th {
+  position: absolute;
+  *position: relative;
+  /*ie7*/
+  left: 0;
+  width: 120px; }
+
+.outer {
+  position: relative; }
+
+.inner {
+  overflow-x: auto;
+  overflow-y: visible;
+  margin-left: 120px; }

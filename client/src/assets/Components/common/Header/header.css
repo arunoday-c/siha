@@ -1,0 +1,29 @@
+.hptl-phase1-header {
+  box-shadow: 0ch; }
+  .hptl-phase1-header .menuBar-title {
+    display: flex;
+    justify-content: center; }
+  .hptl-phase1-header .drawer_color {
+    background-color: #292929; }
+  .hptl-phase1-header .close-menu {
+    padding-top: 5px;
+    cursor: pointer;
+    color: #fff; }
+  .hptl-phase1-header .title-section {
+    height: 50px;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    background: #fff;
+    z-index: 100000; }
+  .hptl-phase1-header .drawerPaper {
+    background: #292929; }
+  .hptl-phase1-header .app_bar {
+    background: #3BB3B7;
+    box-shadow: none; }
+  .hptl-phase1-header .notification {
+    text-align: right; }
+  .hptl-phase1-header .Typography {
+    padding-left: 10px; }
+  .hptl-phase1-header .focus {
+    outline: none; }
