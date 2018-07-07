@@ -6,15 +6,17 @@ import Billing from "./Billing/BillingDetails";
 import "./registration.css";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import BillingIOputs from "../../Models/Billing";
-import Button from "material-ui/Button";
+import Button from "@material-ui/core/Button";
 import extend from "extend";
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Dialog, { DialogActions, DialogTitle } from "material-ui/Dialog";
-import { Slide } from "material-ui";
-import AppBar from "material-ui/AppBar";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Slide from "@material-ui/core/Slide";
+import AppBar from "@material-ui/core/AppBar";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import {
   postPatientDetails,
@@ -177,7 +179,6 @@ class RegistrationPatient extends Component {
   };
 
   ShowAdvanceScreen(e) {
-    debugger;
     if (this.state.patient_code != null && this.state.patient_code != "") {
       this.setState({
         ...this.state,

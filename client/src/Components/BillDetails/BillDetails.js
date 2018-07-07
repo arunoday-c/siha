@@ -12,17 +12,14 @@ import {
   AlagehAutoComplete
 } from "../Wrapper/algaehWrapper";
 
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  AppBar,
-  Typography,
-  Toolbar
-} from "material-ui";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import AppBar from "@material-ui/core/AppBar";
+import Typography from "@material-ui/core/Typography";
+import Toolbar from "@material-ui/core/Toolbar";
 
 import { getServiceTypes } from "../../actions/ServiceCategory/ServiceTypesactions";
 import { getServices } from "../../actions/ServiceCategory/Servicesactions";
@@ -149,7 +146,7 @@ class DisplayOPBilling extends PureComponent {
                       }}
                     />
                   </div>
-                  <div className="row form-details">
+                  <div className="row">
                     <AlagehAutoComplete
                       div={{ className: "col-lg-3" }}
                       label={{
@@ -184,10 +181,11 @@ class DisplayOPBilling extends PureComponent {
                         className: "select-fld",
                         value: this.state.services_id,
                         dataSource: {
-                          textField: "service_name",
-                          // this.state.selectedLang == "en"
-                          //   ? "service_name"
-                          //   : "arabic_service_name",
+                          // textField: "service_name",
+                          textField:
+                            this.state.selectedLang == "en"
+                              ? "service_name"
+                              : "arabic_service_name",
                           valueField: "hims_d_services_id",
                           data: this.props.services
                         },
@@ -199,7 +197,7 @@ class DisplayOPBilling extends PureComponent {
                     />
                   </div>
                   <div className="row form-details">
-                    <div className="row form-details">
+                    <div className="row">
                       <AlagehFormGroup
                         div={{ className: "col-lg-2" }}
                         label={{
@@ -606,25 +604,6 @@ class DisplayOPBilling extends PureComponent {
                     </div>
 
                     <div className="row bottom-details col-lg-12">
-                      {/* <AlagehFormGroup
-                        div={{ className: "col-lg-2" }}
-                        label={{
-                          fieldName: "patient_resp"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.patient_resp,
-                          className: "txt-fld",
-                          name: "patient_resp",
-
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      /> */}
                       <div className="col-lg-3">&nbsp;</div>
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
@@ -645,26 +624,6 @@ class DisplayOPBilling extends PureComponent {
                           }
                         }}
                       />
-                      {/* <div className="col-lg-1">&nbsp;</div> */}
-                      {/* <AlagehFormGroup
-                        div={{ className: "col-lg-2" }}
-                        label={{
-                          fieldName: "comapany_resp"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.comapany_resp,
-                          className: "txt-fld",
-                          name: "comapany_resp",
-
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      /> */}
 
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
@@ -685,26 +644,7 @@ class DisplayOPBilling extends PureComponent {
                           }
                         }}
                       />
-                      {/* <div className="col-lg-1">&nbsp;</div> */}
-                      {/* <AlagehFormGroup
-                        div={{ className: "col-lg-2" }}
-                        label={{
-                          fieldName: "sec_company_res"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.sec_company_res,
-                          className: "txt-fld",
-                          name: "sec_company_res",
 
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      /> */}
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{

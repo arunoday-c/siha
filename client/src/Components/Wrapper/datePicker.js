@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Label from "../Wrapper/label";
-import { TextField, FormControl } from "material-ui";
+import TextField from "@material-ui/core/TextField";
 import moment from "moment";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import MomentLocaleUtils from "react-day-picker/moment";

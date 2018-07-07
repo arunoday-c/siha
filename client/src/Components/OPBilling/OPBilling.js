@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import AppBar from "material-ui/AppBar";
+import AppBar from "@material-ui/core/AppBar";
 import extend from "extend";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";

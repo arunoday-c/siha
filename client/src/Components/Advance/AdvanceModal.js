@@ -12,16 +12,15 @@ import {
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
 import variableJson from "../../utils/GlobalVariables.json";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  AppBar,
-  Typography,
-  Toolbar
-} from "material-ui";
+
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import AppBar from "@material-ui/core/AppBar";
+import Typography from "@material-ui/core/Typography";
+import Toolbar from "@material-ui/core/Toolbar";
 
 import {
   texthandle,
@@ -31,6 +30,7 @@ import {
   chequetexthandle,
   Validations
 } from "./AdvanceModalHandaler";
+
 import AdvRefunIOputs from "../../Models/AdvanceRefund";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { getCookie } from "../../utils/algaehApiCall";

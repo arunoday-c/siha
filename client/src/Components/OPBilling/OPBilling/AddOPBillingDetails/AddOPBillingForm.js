@@ -12,7 +12,7 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
-
+import DisplayOPBilling from "../../../BillDetails/BillDetails";
 import { generateBill } from "../../../../actions/RegistrationPatient/Billingactions";
 import {
   serviceTypeHandeler,
@@ -22,12 +22,14 @@ import {
 } from "./AddOPBillingHandaler";
 import { getServiceTypes } from "../../../../actions/ServiceCategory/ServiceTypesactions";
 import { getServices } from "../../../../actions/ServiceCategory/Servicesactions";
-import { IconButton } from "material-ui";
+import IconButton from "@material-ui/core/IconButton";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isOpen: false
+    };
   }
 
   componentWillMount() {
@@ -47,6 +49,13 @@ class AddOPBillingForm extends Component {
     if (this.props.services.length === 0) {
       this.props.getServices();
     }
+  }
+
+  ShowBillDetails(e) {
+    this.setState({
+      ...this.state,
+      isOpen: !this.state.isOpen
+    });
   }
 
   ProcessToBill(context, e) {
@@ -127,6 +136,21 @@ class AddOPBillingForm extends Component {
                         onClick={this.ProcessToBill.bind(this, context)}
                       />
                     </IconButton>
+                  </div>
+
+                  <div className="col-lg-3">
+                    <button
+                      className="htpl1-phase1-btn-primary"
+                      onClick={this.ShowBillDetails.bind(this)}
+                    >
+                      Detail....
+                    </button>
+
+                    <DisplayOPBilling
+                      BillingIOputs={this.state}
+                      show={this.state.isOpen}
+                      onClose={this.ShowBillDetails.bind(this)}
+                    />
                   </div>
                 </div>
                 <div className="row form-details">

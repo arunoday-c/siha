@@ -2,22 +2,13 @@ import React, { Component, PureComponent } from "react";
 import "./../SideMenuBar/SideMenuBar.js";
 import "./header.css";
 import MenuIcon from "@material-ui/icons/Menu";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Close,
-  SwipeableDrawer,
-  Button,
-  List,
-  Divider,
-  Paper,
-  ChevronLeftIcon,
-  Menu,
-  MenuItem,
-  Radio
-} from "material-ui";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 
 import { setCookie, getCookie } from "../../../utils/algaehApiCall.js";
 // var noScroll = require('no-scroll');
