@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { billingCalculations, getBillDetails } from "../model/billing";
+import {
+  billingCalculations,
+  patientAdvanceRefund,
+  getBillDetails
+} from "../model/billing";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
@@ -34,6 +38,20 @@ export default ({ config, db }) => {
         });
       }
 
+      next();
+    },
+    releaseConnection
+  );
+
+  api.post(
+    "/patientAdvanceRefund",
+    patientAdvanceRefund,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
       next();
     },
     releaseConnection
