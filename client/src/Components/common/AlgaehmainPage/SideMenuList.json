@@ -64,16 +64,6 @@
         "path": "/OPBilling"
       },
       {
-        "name": "Advance",
-        "label": "Advance",
-        "path": "/Advance"
-      },
-      {
-        "name": "Refund",
-        "label": "Refund",
-        "path": "/Refund"
-      },
-      {
         "name": "Advance List",
         "label": "Advance List",
         "path": "/AdvanceList"

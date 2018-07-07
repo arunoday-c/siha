@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import "./common_setup.css";
 import "../../index.css";
-// import PatientType from "./PatientType/PatientType.js";
+import PatientType from "./PatientType/PatientType.js";
 import AccidentType from "./AccidentType/AccidentType.js";
-// import VisaType from "./VisaType/VisaType.js";
-// import IDType from "./IDType/IDType";
-// import VisitType from "./VisitType/VisitType";
+import VisaType from "./VisaType/VisaType.js";
+import IDType from "./IDType/IDType";
+import VisitType from "./VisitType/VisitType";
 import EquipmentType from "./EquipmentType/EquipmentType";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -139,21 +139,15 @@ class CommonSetup extends Component {
             <AccidentType />
           ) : this.state.pageDisplay === "EquipmentType" ? (
             <EquipmentType />
-          ) : null}
-
-          {/* {this.state.pageDisplay === "PatientType" ? (
-            <PatientType />
-          ) : this.state.pageDisplay === "AccidentType" ? (
-            <AccidentType />
+          ) : this.state.pageDisplay === "VisitType" ? (
+            <VisitType />
           ) : this.state.pageDisplay === "VisaType" ? (
             <VisaType />
           ) : this.state.pageDisplay === "IDType" ? (
             <IDType />
-          ) : this.state.pageDisplay === "VisitType" ? (
-            <VisitType />
-          ) : this.state.pageDisplay === "EquipmentType" ? (
-            <EquipmentType />
-          ) : null} */}
+          ) : this.state.pageDisplay === "PatientType" ? (
+            <PatientType />
+          ) : null}
         </div>
       </div>
     );

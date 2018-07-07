@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import Header from "../common/Header/Header.js";
-import SideMenuBar from "../common/SideMenuBar/SideMenuBar.js";
 import "./dashboard.css";
 import { Bar } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
@@ -82,7 +80,6 @@ class Dashboard extends Component {
   }
 
   SideMenuBarOpen(sidOpen) {
-
     this.setState({
       sidBarOpen: sidOpen
     });

@@ -123,5 +123,12 @@
 
   "tax_Detsils": "تفاصيل الضريبة",
   "prim-insurance": "تأمين ابتدائي",
-  "present-bill-services": "خدمات الفواتير الحالية"
+  "present-bill-services": "خدمات الفواتير الحالية",
+
+  "advance_amount": "تقدم مقدما",
+  "advance_caption": "تقدم",
+  "refund_caption": "إعادة مال",
+
+  "payment_number": "رقم الدفع",
+  "payment_date": "تاريخ الدفع"
 }

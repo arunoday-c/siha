@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Paper, TextField } from "material-ui";
+import Paper from "@material-ui/core/Paper";
 import "./equipment.css";
-import { Button } from "material-ui";
+import Button from "@material-ui/core/Button";
 import moment from "moment";
 import { AlagehFormGroup, AlgaehOptions } from "../../Wrapper/algaehWrapper";
 

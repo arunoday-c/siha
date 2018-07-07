@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Label from "../Wrapper/label";
-import { TextField, FormControl } from "material-ui";
+import TextField from "@material-ui/core/TextField";
 import moment from "moment";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import MomentLocaleUtils from "react-day-picker/moment";
@@ -85,7 +85,7 @@ export default class DateHandler extends Component {
   }
   onDayChange = (selected, modifiers) => {
     this.props.events !== null
-      ? this.props.events.onChange(selected, modifiers)
+      ? this.props.events.onChange(selected, this.props.textBox.name)
       : null;
   };
 
@@ -126,7 +126,7 @@ export default class DateHandler extends Component {
     var datePickers = document.querySelectorAll("[datepickerfocus='true']");
     if (datePickers != null) {
       for (var i = 0; i < datePickers.length; i++) {
-        datePickers[i].addEventListener("click", function (event) {
+        datePickers[i].addEventListener("click", function(event) {
           this.previousSibling.firstChild.click();
         });
       }

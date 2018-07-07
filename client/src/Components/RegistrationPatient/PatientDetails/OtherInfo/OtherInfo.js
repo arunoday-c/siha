@@ -5,26 +5,13 @@ import { bindActionCreators } from "redux";
 import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
 import MyContext from "../../../../utils/MyContext.js";
 import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
-import {
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehLabel
-} from "../../../Wrapper/algaehWrapper";
+import { AlagehFormGroup } from "../../../Wrapper/algaehWrapper";
 import "./OtherInfo.css";
-const FORMAT_DEFAULT = [
-  { name: "CSV", value: "CSV" },
-  { name: "XML", value: "XML" },
-  { name: "XLS", value: "XLS" }
-];
+import "../../../../styles/site.css";
 
 class OtherInfo extends Component {
   constructor(props) {
     super(props);
-    // let InputOutput = this.props.PatRegIOputs;
-
-    // if (this.props.patients.length > 0) {
-    //   InputOutput = PatRegIOputs.inputParam(this.props.patients[0]);
-    // }
 
     this.state = this.props.PatRegIOputs;
   }

@@ -2,6 +2,20 @@
   background: #fff;
   border-radius: 5px; }
 
+.hptl-phase1-op-add-billing-form .primary-details {
+  padding: 5px;
+  border-right: 1px solid #000; }
+  @media only screen and (max-width: 904px) {
+    .hptl-phase1-op-add-billing-form .primary-details {
+      padding: 5px; } }
+  .hptl-phase1-op-add-billing-form .primary-details .primary-box-container {
+    padding: 5px; }
+
+.hptl-phase1-op-add-billing-form .secondary-details {
+  padding: 5px; }
+  .hptl-phase1-op-add-billing-form .secondary-details .secondary-box-container {
+    padding: 5px; }
+
 .hptl-phase1-op-add-billing-form label {
   font-weight: 400;
   font-size: 11px; }
@@ -26,3 +40,8 @@
 .hptl-phase1-op-add-billing-form td {
   font-size: 11px;
   border-right: 1px solid #e6e6e6; }
+
+.insurance-amt-details {
+  padding: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #5f5f5f; }

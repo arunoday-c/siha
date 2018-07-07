@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { withStyles } from "material-ui/styles";
-import Drawer from "material-ui/Drawer";
-import { MenuItem } from "material-ui/Menu";
+import { withStyles } from "@material-ui/core/styles";
+import Drawer from "@material-ui/core/Drawer";
+import { MenuItem } from "@material-ui/core/Menu";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -14,15 +14,13 @@ import { setCookie, getCookie } from "../../../utils/algaehApiCall";
 import directRoutes from "../../../Dynamicroutes";
 import CancelIcon from "@material-ui/icons/Close";
 
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Button,
-  Paper,
-  Menu
-} from "material-ui";
+import Button from "@material-ui/core/Button";
+import AppBar from "@material-ui/core/AppBar";
+import Typography from "@material-ui/core/Typography";
+import Toolbar from "@material-ui/core/Toolbar";
+import IconButton from "@material-ui/core/IconButton";
+import Paper from "@material-ui/core/Paper";
+import Menu from "@material-ui/core/Menu";
 
 const drawerWidth = 240;
 
@@ -153,7 +151,6 @@ class PersistentDrawer extends React.Component {
   }
 
   Languaue(secLang, e) {
-    debugger;
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
@@ -229,7 +226,6 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(e) {
-    debugger;
     const path = e.currentTarget.getAttribute("path");
     const name = e.currentTarget.getAttribute("name");
     // const name = e.currentTarget.getAttribute("name");
@@ -448,16 +444,14 @@ class PersistentDrawer extends React.Component {
             >
               <div className={classes.drawerHeader} />
               <div className="container" style={{ minWidth: "100%" }}>
-                <Typography>
-                  <div className="row" id="hisapp">
-                    <div className="col-lg-12">
-                      {directRoutes(
-                        this.state.renderComponent,
-                        this.state.selectedLang
-                      )}
-                    </div>
+                <div className="row" id="hisapp">
+                  <div className="col-lg-12">
+                    {directRoutes(
+                      this.state.renderComponent,
+                      this.state.selectedLang
+                    )}
                   </div>
-                </Typography>
+                </div>
               </div>
             </main>
           </div>

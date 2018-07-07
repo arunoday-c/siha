@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import "./Login.css";
-import { Button, CircularProgress, LinearProgress } from "material-ui";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import LinearProgress from "@material-ui/core/LinearProgress";
+
 import { algaehApiCall, setCookie } from "../../utils/algaehApiCall.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";

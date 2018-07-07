@@ -1,124 +1,22 @@
 import React, { Component } from "react";
-import { Paper, TextField } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
 import "./visit_type.css";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core";
-import { Button } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { getVisittypes } from "../../../actions/CommonSetup/VisitTypeactions.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import Done from "@material-ui/icons/Done";
-import CancelIcon from "@material-ui/icons/Cancel";
 import {
   AlagehFormGroup,
   AlgaehOptions,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlagehAutoComplete,
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-import {
-  EditingState,
-  DataTypeProvider,
-  SearchState,
-  IntegratedFiltering
-} from "@devexpress/dx-react-grid";
-import { withStyles } from "material-ui/styles";
-import {
-  Grid,
-  Table,
-  Toolbar,
-  SearchPanel,
-  TableHeaderRow,
-  TableEditRow,
-  TableEditColumn,
-  VirtualTable
-} from "@devexpress/dx-react-grid-material-ui";
-
-//Grid Logic Start here
-let sel_id = "";
-
-const TableRow = ({ row, ...restProps }) => (
-  <Table.Row
-    {...restProps}
-    onClick={control => {
-      sel_id = JSON.stringify(row.hims_d_identity_document_id);
-    }}
-    style={{
-      cursor: "pointer"
-    }}
-  />
-);
-
-const DateEditor = ({ value, onValueChange }) => (
-  <TextField
-    value={moment(value).format("YYYY-MM-DD")}
-    type="date"
-    onChange={e => onValueChange(e.target.value === "12")}
-  />
-);
-
-const styles = theme => ({
-  tableStriped: {
-    "& tbody tr:nth-of-type(odd)": {
-      backgroundColor: "#fbfbfb"
-    }
-  }
-});
-
-const TableComponentBase = ({ classes, ...restProps }) => (
-  <Table.Table {...restProps} className={classes.tableStriped} />
-);
-
-export const TableComponent = withStyles(styles, { name: "TableComponent" })(
-  TableComponentBase
-);
-
-const EditButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} algaeh-command="edit" title="Edit row">
-    <EditIcon />
-  </IconButton>
-);
-
-const DeleteButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} algaeh-command="delete" title="Delete row">
-    <DeleteIcon />
-  </IconButton>
-);
-
-const CommitButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} algaeh-command="submit" title="Save changes">
-    <Done />
-  </IconButton>
-);
-
-const CancelButton = ({ onExecute }) => (
-  <IconButton
-    color="secondary"
-    algaeh-command="cancel"
-    onClick={onExecute}
-    title="Cancel changes"
-  >
-    <CancelIcon />
-  </IconButton>
-);
-
-const commandComponents = {
-  edit: EditButton,
-  delete: DeleteButton,
-  commit: CommitButton,
-  cancel: CancelButton
-};
-
-const Command = ({ id, onExecute }) => {
-  const CommandButton = commandComponents[id];
-  return <CommandButton onExecute={onExecute} />;
-};
-
-//Grid Logic Ends here
+import GlobalVariables from "../../../utils/GlobalVariables";
+import swal from "sweetalert";
 
 const VISIT_TYPE = [
   { name: "CONSULTATION", value: "CONSULTATION", key: "cn" },
@@ -146,6 +44,8 @@ class VisitType extends Component {
       hims_d_visit_type_id: "",
       deleteId: ""
     };
+
+    this.baseState = this.state;
   }
 
   onCommitChanges({ added, changed, deleted }) {
@@ -157,16 +57,53 @@ class VisitType extends Component {
     }
   }
 
-  changeStatus(e) {
-    this.setState({ visit_status: e.target.value });
-    console.log("Status:", this.state.visit_status);
-    if (e.target.value == "A")
+  changeStatus(row, status) {
+    this.setState({ visit_status: status.value });
+    //console.log("Status:", this.state.visit_status);
+    if (status.value == "A")
       this.setState({ effective_end_date: "9999-12-31" });
-    else if (e.target.value == "I") {
+    else if (status.value == "I") {
       this.setState({
         effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
       });
     }
+    row.visit_status = status.value;
+  }
+
+  showconfirmDialog(id) {
+    swal({
+      title: "Are you sure you want to delete this Visit Type?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        let data = { hims_d_visit_type_id: id };
+        algaehApiCall({
+          uri: "/visitType/delete",
+          data: data,
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.success) {
+              swal("Record deleted successfully . .", {
+                icon: "success",
+                buttons: false,
+                timer: 2000
+              });
+              this.props.getVisittypes();
+            }
+          },
+          onFailure: error => {}
+        });
+      } else {
+        swal("Delete request cancelled");
+      }
+    });
+  }
+
+  deleteVisitType(row) {
+    //console.log("Delete Row ID: ", row.hims_d_visit_type_id);
+    this.showconfirmDialog(row.hims_d_visit_type_id);
   }
 
   handleConfirmDelete() {
@@ -211,6 +148,10 @@ class VisitType extends Component {
     return String(moment(value).format("DD-MM-YYYY"));
   }
 
+  resetState() {
+    this.setState(this.baseState);
+  }
+
   addVisit(e) {
     e.preventDefault();
     if (this.state.visit_type_code.length == 0) {
@@ -251,6 +192,16 @@ class VisitType extends Component {
           window.location.reload();
           if (response.data.success == true) {
             //Handle Successful Add here
+            this.props.getVisittypes();
+            this.resetState();
+
+            swal({
+              title: "Success",
+              text: "Visa Type added successfully",
+              icon: "success",
+              button: false,
+              timer: 2500
+            });
           } else {
             //Handle unsuccessful Add here.
           }
@@ -269,7 +220,7 @@ class VisitType extends Component {
   }
 
   getFormatedDate(date) {
-    return String(moment(date).format("DD-MM-YYYY"));
+    return String(moment(date).format("YYYY-MM-DD"));
   }
 
   editVisitTypes(e) {
@@ -281,6 +232,25 @@ class VisitType extends Component {
       hims_d_visit_type: data.hims_d_visit_type,
       buttonText: "UPDATE",
       hims_d_visit_type_id: data.hims_d_visit_type_id
+    });
+  }
+
+  updateVisitType(data) {
+    algaehApiCall({
+      uri: "/visitType/update",
+      data: data,
+      method: "PUT",
+      onSuccess: response => {
+        if (response.data.success) {
+          swal("Record updated successfully . .", {
+            icon: "success",
+            buttons: false,
+            timer: 2000
+          });
+          this.props.getVisittypes();
+        }
+      },
+      onFailure: error => {}
     });
   }
 
@@ -423,55 +393,8 @@ class VisitType extends Component {
             <div className="row form-details">
               <div className="col">
                 <Paper>
-                  {/* <Grid
-                    rows={this.props.visittypes}
-                    columns={[
-                      { name: "visit_type_code", title: "VISIT CODE" },
-                      {
-                        name: "visit_type_desc",
-                        title: "VISIT NAME"
-                      },
-                      // { name: "hims_d_visit_type", title: "VISIT TYPE" },
-                      { name: "created_date", title: "ADDED DATE" },
-                      { name: "visit_status", title: "Visit Status" }
-                    ]}
-                  >
-                    <DataTypeProvider
-                      formatterComponent={this.dateFormater}
-                      editorComponent={({ value }) => (
-                        <DateEditor value={value} />
-                      )}
-                      for={["created_date"]}
-                    />
-                    <DataTypeProvider
-                      formatterComponent={this.getFullStatusText}
-                      // editorComponent={StatusEditor}
-                      for={["visit_status"]}
-                    />
-
-                    <SearchState />
-                    <IntegratedFiltering />
-                    <Toolbar />
-                    <SearchPanel />
-                    <VirtualTable
-                      tableComponent={TableComponent}
-                      rowComponent={TableRow}
-                      height={400}
-                    />
-                    <TableHeaderRow />
-                    <EditingState
-                      onCommitChanges={this.onCommitChanges.bind(this)}
-                    />
-                    <TableEditRow />
-                    <TableEditColumn
-                      width={120}
-                      showEditCommand
-                      showDeleteCommand
-                      commandComponent={Command}
-                    />
-                  </Grid> */}
-
                   <AlgaehDataGrid
+                    id="visit_grd"
                     columns={[
                       {
                         fieldName: "visit_type_code",
@@ -480,19 +403,7 @@ class VisitType extends Component {
                       },
                       {
                         fieldName: "visit_type_desc",
-                        label: "Visit Type Name",
-                        editorTemplate: (row, callback) => {
-                          return (
-                            <TextField
-                              name="visit_type_desc"
-                              value={row.visit_type_desc}
-                              onChange={control => {
-                                row["visit_type_desc"] = control.target.value;
-                                callback(row);
-                              }}
-                            />
-                          );
-                        }
+                        label: "Visit Type Name"
                       },
                       {
                         fieldName: "created_date",
@@ -501,11 +412,50 @@ class VisitType extends Component {
                           return (
                             <span>{this.dateFormater(row.created_date)}</span>
                           );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlgaehDateHandler
+                              div={{}}
+                              textBox={{ className: "txt-fld" }}
+                              events={{
+                                onChange: selected => {
+                                  row.created_date = selected._d;
+                                }
+                              }}
+                              value={this.getFormatedDate(row.created_date)}
+                            />
+                          );
                         }
                       },
                       {
                         fieldName: "visit_status",
-                        label: "Visit Status"
+                        label: "Visit Status",
+                        displayTemplate: row => {
+                          return row.visit_status == "A"
+                            ? "Active"
+                            : "Inactive";
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                className: "select-fld",
+                                value: row.visit_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                onChange: this.changeStatus.bind(this, row),
+                                others: {
+                                  disabled: this.state.existingPatient
+                                }
+                              }}
+                            />
+                          );
+                        }
                       }
                     ]}
                     keyId="visit_type_code"
@@ -515,9 +465,9 @@ class VisitType extends Component {
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
                     events={{
-                      onDone: row => {
-                        alert(JSON.stringify(row));
-                      }
+                      onDelete: this.deleteVisitType.bind(this),
+                      onEdit: row => {},
+                      onDone: this.updateVisitType.bind(this)
                     }}
                   />
                 </Paper>

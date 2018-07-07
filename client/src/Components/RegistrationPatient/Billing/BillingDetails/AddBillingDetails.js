@@ -39,7 +39,8 @@ const cashtexthandle = ($this, context, ctrl, e) => {
         sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
         cash_amount: parseFloat($this.state.cash_amount),
         card_amount: parseFloat($this.state.card_amount),
-        cheque_amount: parseFloat($this.state.cheque_amount)
+        cheque_amount: parseFloat($this.state.cheque_amount),
+        patient_id: $this.state.hims_d_patient_id
       };
 
       clearInterval(intervalId);
@@ -73,7 +74,8 @@ const cardtexthandle = ($this, context, ctrl, e) => {
         sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
         cash_amount: parseFloat($this.state.cash_amount),
         card_amount: parseFloat($this.state.card_amount),
-        cheque_amount: parseFloat($this.state.cheque_amount)
+        cheque_amount: parseFloat($this.state.cheque_amount),
+        patient_id: $this.state.hims_d_patient_id
       };
 
       clearInterval(intervalId);
@@ -107,7 +109,8 @@ const chequetexthandle = ($this, context, ctrl, e) => {
         sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
         cash_amount: parseFloat($this.state.cash_amount),
         card_amount: parseFloat($this.state.card_amount),
-        cheque_amount: parseFloat($this.state.cheque_amount)
+        cheque_amount: parseFloat($this.state.cheque_amount),
+        patient_id: $this.state.hims_d_patient_id
       };
 
       clearInterval(intervalId);
@@ -152,7 +155,8 @@ const servicetexthandle = ($this, context, ctrl, e) => {
         sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
         cash_amount: parseFloat($this.state.cash_amount),
         card_amount: parseFloat($this.state.card_amount),
-        cheque_amount: parseFloat($this.state.cheque_amount)
+        cheque_amount: parseFloat($this.state.cheque_amount),
+        patient_id: $this.state.hims_d_patient_id
       };
 
       clearInterval(intervalId);
@@ -171,13 +175,13 @@ const servicetexthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const datehandle = ($this, context, e) => {
+const datehandle = ($this, context, ctrl, e) => {
   $this.setState({
-    [e.target.name]: moment(e)._d
+    [e]: moment(ctrl)._d
   });
 
   if (context != null) {
-    context.updateState({ bill_date: moment(e)._d });
+    context.updateState({ [e]: moment(ctrl)._d });
   }
 };
 

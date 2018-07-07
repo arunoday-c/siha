@@ -1,35 +1,23 @@
-import moment from "moment";
 import extend from "extend";
+import swal from "sweetalert";
 
-export default { isDateFormat: isDateFormat };
+export function successfulMessage(options) {
+  options.timer = options.timer || 2500;
+  options.icon = options.icon || "error";
+  options.title = options.title || "Error";
+  options.button = options.button || true;
 
-function isDateFormat(options) {
-  var returnString = "";
-  var defOpt = defaultOptions();
-  var settings = extend(
-    {
-      date: null,
-      isTime: false,
-      usedefaultFarmats: true
-    },
-    options
-  );
-  if (settings.isTime) {
-    settings.format = defOpt.serverTimeFormat;
-  }
-  if (settings.date !== null && settings.date !== "") {
-    var dateasString = String(settings.date);
-    if (dateasString !== "0") {
-      returnString = moment(settings.date).format(settings.format);
-    }
-  }
-
-  return returnString;
+  swal({
+    title: options.title,
+    text: options.message,
+    icon: options.icon,
+    button: options.button,
+    timer: options.timer
+  });
 }
 
-function defaultOptions() {
-  return {
-    DateFormat: "YYYY-MM-DD",
-    TimeFormat: "HH:MM"
-  };
+export function setGlobal(obj) {
+  let windglob = Window.global == null ? {} : Window.global;
+  extend(windglob, obj);
+  Window.global = windglob;
 }

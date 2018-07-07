@@ -2,8 +2,8 @@ import "./Numbering/numbering.css";
 import React, { Component } from "react";
 import "../business_setup.css";
 import "../../../styles/site.css";
-import Transaction from "./Transaction/Transaction.js";
-// import Numbering from "./Numbering/Numbering.js";
+import Transaction from './Transaction/Transaction.js'
+import Numbering from "./Numbering/Numbering.js";
 
 class OptionsTabs extends Component {
   constructor(props) {
@@ -82,7 +82,13 @@ class OptionsTabs extends Component {
           </ul>
         </div>
         <div className="business-section">
-          {this.state.pageDisplay === "Transaction" ? <Transaction /> : null}
+          {
+            this.state.pageDisplay === "Transaction" ? (
+              <Transaction />
+            ) :
+            this.state.pageDisplay === "Numbering" ? (
+            <Numbering />
+          )  :  null}
         </div>
       </div>
     );

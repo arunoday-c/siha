@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Radio, RadioGroup } from "material-ui";
+import Radio from "@material-ui/core/Radio";
 
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import "./DisplayVisitDetails.css";

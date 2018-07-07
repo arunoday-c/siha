@@ -42,23 +42,11 @@ class AddBillingForm extends Component {
   }
 
   ShowBillDetails(e) {
-    debugger;
-    this.setState(
-      {
-        ...this.state,
-        isOpen: !this.state.isOpen
-      },
-      () => {
-        debugger;
-      }
-    );
-  }
-
-  toggleModal = () => {
     this.setState({
+      ...this.state,
       isOpen: !this.state.isOpen
     });
-  };
+  }
 
   render() {
     return (
@@ -158,7 +146,7 @@ class AddBillingForm extends Component {
                         <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
-                              fieldName: "share"
+                              fieldName: "patient_payable"
                             }}
                           />
                         </div>
@@ -192,9 +180,9 @@ class AddBillingForm extends Component {
                           div={{ className: "col-lg-3", id: "widthDate" }}
                           textBox={{
                             decimal: { allowNegative: false },
-                            value: this.state.advance,
+                            value: this.state.advance_amount,
                             className: "txt-fld",
-                            name: "advance",
+                            name: "advance_amount",
 
                             events: {
                               onChange: texthandle.bind(this, this, context)
@@ -215,9 +203,9 @@ class AddBillingForm extends Component {
                           div={{ className: "col-lg-2", id: "widthDate" }}
                           textBox={{
                             decimal: { allowNegative: false },
-                            value: this.state.advance_amount,
+                            value: this.state.advance,
                             className: "txt-fld",
-                            name: "advance_amount",
+                            name: "advance",
                             events: {
                               onChange: texthandle.bind(this, this, context)
                             }
@@ -527,7 +515,7 @@ class AddBillingForm extends Component {
                             className: "txt-fld",
                             name: "card_date"
                           }}
-                          maxDate={new Date()}
+                          minDate={new Date()}
                           events={{
                             onChange: datehandle.bind(this, this, context)
                           }}
@@ -590,7 +578,7 @@ class AddBillingForm extends Component {
                             className: "txt-fld",
                             name: "cheque_date"
                           }}
-                          maxDate={new Date()}
+                          minDate={new Date()}
                           events={{
                             onChange: datehandle.bind(this, this, context)
                           }}

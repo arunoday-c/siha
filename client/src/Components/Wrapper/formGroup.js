@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { TextField } from "material-ui";
+import TextField from "@material-ui/core/TextField";
 import NumberFormat from "react-number-format";
 import "./wrapper.css";
 import Label from "../Wrapper/label";

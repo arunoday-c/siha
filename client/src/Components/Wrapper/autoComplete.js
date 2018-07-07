@@ -6,7 +6,9 @@ import React, { Component } from "react";
 import Select from "react-select";
 import Label from "../Wrapper/label";
 import "react-select/dist/react-select.css";
-import { withStyles, TextField } from "material-ui";
+import { withStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+
 const ITEM_HEIGHT = 48;
 const styles = theme => ({
   root: {
