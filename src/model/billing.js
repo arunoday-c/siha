@@ -841,7 +841,7 @@ let patientAdvanceRefund = (req, res, next) => {
                                             next(error);
                                           });
                                         }
-                                        req.records = appendAdvance;
+                                        req.records = { recieptNo: newNumber };
                                         next();
                                       });
                                     }
@@ -878,7 +878,7 @@ let patientAdvanceRefund = (req, res, next) => {
                                             next(error);
                                           });
                                         }
-                                        req.records = subtractAdvance;
+                                        req.records = { recieptNo: newNumber };
                                         next();
                                       });
                                     }
