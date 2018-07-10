@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { render } from "react-dom";
+//import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core";
 // import createMuiTheme from "@material-ui/core/createMuiTheme";
