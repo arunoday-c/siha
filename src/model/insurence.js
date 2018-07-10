@@ -147,7 +147,7 @@ let addPatientInsurence = (req, res, next) => {
   }
 };
 
-//created by:irfan,to get patient insurence details by patient id
+//created by:irfan,to get list of all insurence providers
 let getListOfInsurenceProvider = (req, res, next) => {
   let patientInsurenceModel = {
     patient_id: null
@@ -186,8 +186,104 @@ let getListOfInsurenceProvider = (req, res, next) => {
   }
 };
 
+//created by irfan: to add new insurence provider
+let addInsurenceProvider = (req, res, next) => {
+  let insurenceProviderModel = {
+    hims_d_insurance_provider_id: null,
+    insurance_provider_code: null,
+    insurance_provider_name: null,
+    deductible_proc: null,
+    deductible_lab: null,
+    co_payment: null,
+    insurance_type: null,
+    package_claim: null,
+    hospital_id: null,
+    credit_period: null,
+    insurance_limit: null,
+    payment_type: null,
+    insurance_remarks: null,
+    cpt_mandate: null,
+    child_id: null,
+    currency: null,
+    preapp_valid_days: null,
+    claim_submit_days: null,
+    lab_result_check: null,
+    resubmit_all: null,
+    ins_rej_per: null,
+    effective_start_date: null,
+    effective_end_date: null,
+    created_date: null,
+    created_by: null,
+    updated_date: null,
+    updated_by: null,
+    record_status: null
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend(insurenceProviderModel, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO hims_d_insurance_provider(`insurance_provider_code`,`insurance_provider_name`,\
+        `deductible_proc`,`deductible_lab`,`co_payment`,`insurance_type`,`package_claim`,`hospital_id`,\
+        `credit_period`,`insurance_limit`,`payment_type`,`insurance_remarks`,`cpt_mandate`,`child_id`,`currency`,\
+        `preapp_valid_days`,`claim_submit_days`,`lab_result_check`,`resubmit_all`,`ins_rej_per`,`effective_start_date`,\
+        `effective_end_date`,`created_date`,`created_by`,`updated_date`,`updated_by`,`record_status`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          inputparam.insurance_provider_code,
+          inputparam.insurance_provider_name,
+          inputparam.deductible_proc,
+          inputparam.deductible_lab,
+          inputparam.co_payment,
+          inputparam.insurance_type,
+          inputparam.package_claim,
+          inputparam.hospital_id,
+          inputparam.credit_period,
+          inputparam.insurance_limit,
+          inputparam.payment_type,
+          inputparam.insurance_remarks,
+          inputparam.cpt_mandate,
+          inputparam.child_id,
+          inputparam.currency,
+          inputparam.preapp_valid_days,
+          inputparam.claim_submit_days,
+          inputparam.lab_result_check,
+          inputparam.resubmit_all,
+          inputparam.ins_rej_per,
+          inputparam.effective_start_date,
+          inputparam.effective_end_date,
+          new Date(),
+          inputparam.created_by,
+          new Date(),
+          inputparam.updated_by,
+          inputparam.record_status
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   getPatientInsurence,
   addPatientInsurence,
-  getListOfInsurenceProvider
+  getListOfInsurenceProvider,
+  addInsurenceProvider
 };

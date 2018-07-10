@@ -6,7 +6,8 @@ import { LINQ } from "node-linq";
 import {
   getPatientInsurence,
   addPatientInsurence,
-  getListOfInsurenceProvider
+  getListOfInsurenceProvider,
+  addInsurenceProvider
 } from "../model/insurence";
 
 export default ({ config, db }) => {
@@ -46,6 +47,21 @@ export default ({ config, db }) => {
   api.get(
     "/getListOfInsurenceProvider",
     getListOfInsurenceProvider,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to add insurence provider
+  api.post(
+    "/addInsurenceProvider",
+    addInsurenceProvider,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
