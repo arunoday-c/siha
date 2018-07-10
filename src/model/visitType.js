@@ -1,13 +1,13 @@
 import extend from "extend";
 import { whereCondition, releaseDBConnection, deleteRecord } from "../utils";
 import httpStatus from "../utils/httpStatus";
-let whereStatement = {
-  hims_d_visit_type_id: "ALL",
-  visit_type_code: "ALL",
-  visit_type_desc: "ALL"
-};
 
 let selectStatement = (req, res, next) => {
+  let whereStatement = {
+    hims_d_visit_type_id: "ALL",
+    visit_type_code: "ALL",
+    visit_type_desc: "ALL"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -37,20 +37,21 @@ let selectStatement = (req, res, next) => {
     next(e);
   }
 };
-let visitType = {
-  hims_d_visit_type_id: null,
-  visit_type_code: null,
-  visit_type_desc: null,
-  hims_d_visit_type: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
-  visit_status: "A"
-};
 
 let addVisit = (req, res, next) => {
+  let visitType = {
+    hims_d_visit_type_id: null,
+    visit_type_code: null,
+    visit_type_desc: null,
+    hims_d_visit_type: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    visit_status: "A"
+  };
+
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
   }
@@ -85,6 +86,18 @@ let addVisit = (req, res, next) => {
 };
 
 let updateVisit = (req, res, next) => {
+  let visitType = {
+    hims_d_visit_type_id: null,
+    visit_type_code: null,
+    visit_type_desc: null,
+    hims_d_visit_type: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    visit_status: "A"
+  };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
   }

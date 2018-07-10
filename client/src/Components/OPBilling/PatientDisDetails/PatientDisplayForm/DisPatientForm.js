@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import "./PatientDisplayForm.css";
-// import InsuranceDisDetails from "./../../InsuranceDisDetails/InsuranceDisDetails.js";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,

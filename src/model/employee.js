@@ -6,46 +6,36 @@ import {
   releaseDBConnection
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
-let employeeModel = {
-  hims_d_employee_id: 0,
-  employee_code: null,
-  first_name: null,
-  middle_name: null,
-  last_name: null,
-  arabic_name: null,
-  sex: "MALE",
-  date_of_birth: null,
-  date_of_joining: null,
-  date_of_leaving: null,
-  address: null,
-  primary_contact_no: null,
-  secondary_contact_no: null,
-  email: null,
-  emergancy_contact_person: null,
-  emergancy_contact_no: null,
-  blood_group: null,
-  employee_status: "A",
-  effective_start_date: null,
-  effective_end_date: null,
-  created_date: new Date(),
-  created_by: null,
-  updated_date: new Date(),
-  updated_by: null
-};
-let employeeWhereCondition = {
-  employee_code: "ALL",
-  first_name: "ALL",
-  middle_name: "ALL",
-  last_name: "ALL",
-  sex: "ALL",
-  blood_group: "ALL",
-  employee_status: "ALL",
-  date_of_joining: "ALL",
-  date_of_leaving: "ALL",
-  primary_contact_no: "ALL",
-  email: "ALL"
-};
+
+// api to add employee
 let addEmployee = (req, res, next) => {
+  let employeeModel = {
+    hims_d_employee_id: 0,
+    employee_code: null,
+    first_name: null,
+    middle_name: null,
+    last_name: null,
+    arabic_name: null,
+    sex: "MALE",
+    date_of_birth: null,
+    date_of_joining: null,
+    date_of_leaving: null,
+    address: null,
+    primary_contact_no: null,
+    secondary_contact_no: null,
+    email: null,
+    emergancy_contact_person: null,
+    emergancy_contact_no: null,
+    blood_group: null,
+    employee_status: "A",
+    effective_start_date: null,
+    effective_end_date: null,
+    created_date: new Date(),
+    created_by: null,
+    updated_date: new Date(),
+    updated_by: null
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -111,7 +101,22 @@ let addEmployee = (req, res, next) => {
   }
 };
 
+// api to fetch employee
 let getEmployee = (req, res, next) => {
+  let employeeWhereCondition = {
+    employee_code: "ALL",
+    first_name: "ALL",
+    middle_name: "ALL",
+    last_name: "ALL",
+    sex: "ALL",
+    blood_group: "ALL",
+    employee_status: "ALL",
+    date_of_joining: "ALL",
+    date_of_leaving: "ALL",
+    primary_contact_no: "ALL",
+    email: "ALL"
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -170,6 +175,33 @@ let getEmployee = (req, res, next) => {
 };
 
 let updateEmployee = (req, res, next) => {
+  let employeeModel = {
+    hims_d_employee_id: 0,
+    employee_code: null,
+    first_name: null,
+    middle_name: null,
+    last_name: null,
+    arabic_name: null,
+    sex: "MALE",
+    date_of_birth: null,
+    date_of_joining: null,
+    date_of_leaving: null,
+    address: null,
+    primary_contact_no: null,
+    secondary_contact_no: null,
+    email: null,
+    emergancy_contact_person: null,
+    emergancy_contact_no: null,
+    blood_group: null,
+    employee_status: "A",
+    effective_start_date: null,
+    effective_end_date: null,
+    created_date: new Date(),
+    created_by: null,
+    updated_date: new Date(),
+    updated_by: null
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());

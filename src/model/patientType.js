@@ -1,11 +1,6 @@
 import extend from "extend";
 import { whereCondition, releaseDBConnection, deleteRecord } from "../utils";
 import httpStatus from "../utils/httpStatus";
-let whereStatement = {
-  hims_d_patient_type_id: "ALL",
-  patient_type_code: "ALL",
-  patitent_type_desc: "ALL"
-};
 
 let selectPattypeStatement = (req, res, next) => {
   try {
@@ -72,20 +67,21 @@ let selectPattypeStatement = (req, res, next) => {
   //   next(e);
   // }
 };
-let visitType = {
-  hims_d_patient_type_id: null,
-  patient_type_code: null,
-  patitent_type_desc: null,
-  arabic_patitent_type_desc: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
-  visit_status: "A"
-};
 
 let addPatientType = (req, res, next) => {
+  let visitType = {
+    hims_d_patient_type_id: null,
+    patient_type_code: null,
+    patitent_type_desc: null,
+    arabic_patitent_type_desc: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    visit_status: "A"
+  };
+
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
   }
@@ -119,6 +115,19 @@ let addPatientType = (req, res, next) => {
 };
 
 let updatePatientType = (req, res, next) => {
+  let visitType = {
+    hims_d_patient_type_id: null,
+    patient_type_code: null,
+    patitent_type_desc: null,
+    arabic_patitent_type_desc: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    visit_status: "A"
+  };
+
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
   }

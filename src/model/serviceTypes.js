@@ -24,6 +24,12 @@ let serviceTypeWhere = {
   service_type: "ALL"
 };
 let getServiceType = (req, res, next) => {
+  let serviceTypeWhere = {
+    hims_d_service_type_id: "ALL",
+    service_type_code: "ALL",
+    service_type: "ALL"
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -52,25 +58,6 @@ let getServiceType = (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
-let inputServices = {
-  hims_d_services_id: null,
-  service_code: null,
-  cpt_code: null,
-  service_name: null,
-  service_desc: null,
-  sub_department_id: null,
-  hospital_id: null,
-  service_type_id: null,
-  standard_fee: null,
-  discount: null,
-  effective_start_date: null,
-  effectice_end_date: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null
 };
 
 let getServices = (req, res, next) => {

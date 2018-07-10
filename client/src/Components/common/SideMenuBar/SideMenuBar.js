@@ -1,10 +1,10 @@
 import React, { Component, PureComponent } from "react";
 import "./sideMenu.css";
 import sideMenu from "./SideMenuList.json";
-import IconButton from "material-ui/IconButton";
+import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ExpandMore from "@material-ui/icons/ExpandMore";
-import Paper from "material-ui/Paper";
+import Paper from "@material-ui/core/Paper";
 import { setCookie } from "../../../utils/algaehApiCall";
 
 const paper_style = {

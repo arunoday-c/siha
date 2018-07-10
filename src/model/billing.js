@@ -11,146 +11,53 @@ import { debugLog, debugFunction } from "../utils/logging";
 
 import { LINQ } from "node-linq";
 import { inflate } from "zlib";
-let billingHeaderModel = {
-  hims_f_billing_header_id: null,
-  patient_id: null,
-  billing_type_id: null,
-  visit_id: null,
-  bill_number: null,
-  incharge_or_provider: null,
-  bill_date: null,
-  advance_amount: 0,
-  discount_amount: 0,
-  sub_total_amount: 0,
-  total_tax: 0,
-  net_total: 0,
-  billing_status: null,
-  copay_amount: 0,
-  deductable_amount: 0,
-  gross_total: 0,
-  sheet_discount_amount: 0,
-  sheet_discount_percentage: 0,
-  net_amount: 0,
-  patient_res: 0,
-  company_res: 0,
-  sec_company_res: 0,
-  patient_payable: 0,
-  company_payable: 0,
-  sec_company_payable: 0,
-  patient_tax: 0,
-  company_tax: 0,
-  sec_company_tax: 0,
-  net_tax: 0,
-  credit_amount: 0,
-  receiveable_amount: 0,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
-  cancel_remarks: null,
-  cancel_by: null,
-  bill_comments: null
-};
-
-let billingDetailsModel = {
-  hims_f_billing_details_id: null,
-  hims_f_billing_header_id: null,
-  service_type_id: null,
-  services_id: null,
-  quantity: 0,
-  unit_cost: 0,
-  insurance_yesno: null,
-  gross_amount: 0,
-  discount_amout: 0,
-  discount_percentage: 0,
-  net_amout: 0,
-  copay_percentage: 0,
-  copay_amount: 0,
-  deductable_amount: 0,
-  deductable_percentage: 0,
-  tax_inclusive: "N",
-  patient_tax: 0,
-  company_tax: 0,
-  total_tax: 0,
-  patient_resp: 0,
-  patient_payable: 0,
-  comapany_resp: 0,
-  company_payble: 0,
-  sec_company: 0,
-  sec_deductable_percentage: 0,
-  sec_deductable_amount: 0,
-  sec_company_res: 0,
-  sec_company_tax: 0,
-  sec_company_paybale: 0,
-  sec_copay_percntage: 0,
-  sec_copay_amount: 0,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null
-};
-let servicesModel = {
-  hims_d_services_id: null,
-  service_code: null,
-  cpt_code: null,
-  service_name: null,
-  service_desc: null,
-  sub_department_id: null,
-  hospital_id: null,
-  service_type_id: null,
-  standard_fee: null,
-  discount: null,
-  effective_start_date: null,
-  effectice_end_date: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null
-};
-
-let receiptHeaderModel = {
-  total_amount: 0,
-  unbalanced_amount: 0,
-  cash_amount: 0,
-  card_amount: 0,
-  cheque_amount: 0
-};
-let P_receiptHeaderModel = {
-  hims_f_receipt_header_id: null,
-  receipt_number: null,
-  receipt_date: null,
-  billing_header_id: null,
-  total_amount: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
-  counter_id: null,
-  shift_id: null
-};
-let P_receiptDetailsModel = {
-  hims_f_receipt_details_id: null,
-  hims_f_receipt_header_id: null,
-  card_check_number: null,
-  expiry_date: null,
-  pay_type: null,
-  amount: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
-  card_type: null
-};
 
 //created by irfan: Adding bill headder and bill details
-
 //AddBill
 let addBill = (dataBase, req, res, callBack, isCommited, next) => {
   isCommited = isCommited || false;
+  let billingHeaderModel = {
+    hims_f_billing_header_id: null,
+    patient_id: null,
+    billing_type_id: null,
+    visit_id: null,
+    bill_number: null,
+    incharge_or_provider: null,
+    bill_date: null,
+    advance_amount: 0,
+    discount_amount: 0,
+    sub_total_amount: 0,
+    total_tax: 0,
+    net_total: 0,
+    billing_status: null,
+    copay_amount: 0,
+    deductable_amount: 0,
+    gross_total: 0,
+    sheet_discount_amount: 0,
+    sheet_discount_percentage: 0,
+    net_amount: 0,
+    patient_res: 0,
+    company_res: 0,
+    sec_company_res: 0,
+    patient_payable: 0,
+    company_payable: 0,
+    sec_company_payable: 0,
+    patient_tax: 0,
+    company_tax: 0,
+    sec_company_tax: 0,
+    net_tax: 0,
+    credit_amount: 0,
+    receiveable_amount: 0,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    cancel_remarks: null,
+    cancel_by: null,
+    bill_comments: null
+  };
+
   try {
     debugFunction("addBill");
 
@@ -326,9 +233,23 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
 };
 
 //created by:irfan, add receipt headder and details
-
 //AddReceipt
-let newReceipt = (dataBase, req, res, callBack, next) => {
+let newReceipt = (dataBase, req, res, next) => {
+  let P_receiptHeaderModel = {
+    hims_f_receipt_header_id: null,
+    receipt_number: null,
+    receipt_date: null,
+    billing_header_id: null,
+    total_amount: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    counter_id: null,
+    shift_id: null
+  };
+
   try {
     debugFunction("newReceiptFUnc");
 
@@ -367,13 +288,13 @@ let newReceipt = (dataBase, req, res, callBack, next) => {
           ,?,?,?,?,?,?,?)",
         [
           inputParam.receipt_number,
-          inputParam.receipt_date,
+          new Date(),
           inputParam.billing_header_id,
           inputParam.total_amount,
           inputParam.created_by,
-          inputParam.created_date,
+          new Date(),
           inputParam.updated_by,
-          inputParam.updated_date,
+          new Date(),
           inputParam.counter_id,
           inputParam.shift_id
         ],
@@ -427,6 +348,7 @@ let newReceipt = (dataBase, req, res, callBack, next) => {
   }
 };
 
+// performing only calculation
 let billingCalculations = (req, res, next) => {
   try {
     let inputParam = req.body;
@@ -493,6 +415,112 @@ let billingCalculations = (req, res, next) => {
 
 //created by irfan: only calculation bill headder and bill details
 let getBillDetails = (req, res, next) => {
+  let billingHeaderModel = {
+    hims_f_billing_header_id: null,
+    patient_id: null,
+    billing_type_id: null,
+    visit_id: null,
+    bill_number: null,
+    incharge_or_provider: null,
+    bill_date: null,
+    advance_amount: 0,
+    discount_amount: 0,
+    sub_total_amount: 0,
+    total_tax: 0,
+    net_total: 0,
+    billing_status: null,
+    copay_amount: 0,
+    deductable_amount: 0,
+    gross_total: 0,
+    sheet_discount_amount: 0,
+    sheet_discount_percentage: 0,
+    net_amount: 0,
+    patient_res: 0,
+    company_res: 0,
+    sec_company_res: 0,
+    patient_payable: 0,
+    company_payable: 0,
+    sec_company_payable: 0,
+    patient_tax: 0,
+    company_tax: 0,
+    sec_company_tax: 0,
+    net_tax: 0,
+    credit_amount: 0,
+    receiveable_amount: 0,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    cancel_remarks: null,
+    cancel_by: null,
+    bill_comments: null
+  };
+
+  let billingDetailsModel = {
+    hims_f_billing_details_id: null,
+    hims_f_billing_header_id: null,
+    service_type_id: null,
+    services_id: null,
+    quantity: 0,
+    unit_cost: 0,
+    insurance_yesno: null,
+    gross_amount: 0,
+    discount_amout: 0,
+    discount_percentage: 0,
+    net_amout: 0,
+    copay_percentage: 0,
+    copay_amount: 0,
+    deductable_amount: 0,
+    deductable_percentage: 0,
+    tax_inclusive: "N",
+    patient_tax: 0,
+    company_tax: 0,
+    total_tax: 0,
+    patient_resp: 0,
+    patient_payable: 0,
+    comapany_resp: 0,
+    company_payble: 0,
+    sec_company: 0,
+    sec_deductable_percentage: 0,
+    sec_deductable_amount: 0,
+    sec_company_res: 0,
+    sec_company_tax: 0,
+    sec_company_paybale: 0,
+    sec_copay_percntage: 0,
+    sec_copay_amount: 0,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null
+  };
+  let servicesModel = {
+    hims_d_services_id: null,
+    service_code: null,
+    cpt_code: null,
+    service_name: null,
+    service_desc: null,
+    sub_department_id: null,
+    hospital_id: null,
+    service_type_id: null,
+    standard_fee: null,
+    discount: null,
+    effective_start_date: null,
+    effectice_end_date: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null
+  };
+
+  let receiptHeaderModel = {
+    total_amount: 0,
+    unbalanced_amount: 0,
+    cash_amount: 0,
+    card_amount: 0,
+    cheque_amount: 0
+  };
   debugFunction("getBillDetails");
   try {
     if (req.db == null) {
@@ -614,9 +642,543 @@ let getBillDetails = (req, res, next) => {
   }
 };
 
+//created by:irfan, Patient-receipt if advance or  Refund to patient
+let patientAdvanceRefund = (req, res, next) => {
+  let P_receiptHeaderModel = {
+    hims_f_receipt_header_id: null,
+    receipt_number: null,
+    receipt_date: null,
+    billing_header_id: null,
+    total_amount: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    counter_id: null,
+    shift_id: null,
+    pay_type: null
+  };
+
+  let advanceModel = {
+    hims_f_patient_id: null,
+    hims_f_receipt_header_id: null,
+    transaction_type: null,
+    advance_amount: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    update_date: null,
+    record_status: null
+  };
+
+  debugFunction("patientAdvanceRefund");
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        let inputParam = extend(P_receiptHeaderModel, req.body);
+        if (
+          inputParam.receiptdetails == null ||
+          inputParam.receiptdetails.length == 0
+        ) {
+          next(
+            httpStatus.generateError(
+              httpStatus.badRequest,
+              "Please select atleast one service."
+            )
+          );
+        }
+        let RCPT_or_PYMNT_NUM = null;
+        // fuction for advance recieved from patient
+        if (inputParam.pay_type == "R") {
+          runningNumber(req.db, 5, "PAT_RCPT", (error, numgenId, newNumber) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.query.receipt_number = newNumber;
+            req.body.receipt_number = newNumber;
+            inputParam.receipt_number = newNumber;
+            debugLog("new R for recpt number:", newNumber);
+            // receipt header table insert
+            connection.query(
+              "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, billing_header_id, total_amount,\
+         created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_type) VALUES (?,?,?\
+      ,?,?,?,?,?,?,?,?)",
+              [
+                inputParam.receipt_number,
+                new Date(),
+                inputParam.billing_header_id,
+                inputParam.total_amount,
+                inputParam.created_by,
+                new Date(),
+                inputParam.updated_by,
+                new Date(),
+                inputParam.counter_id,
+                inputParam.shift_id,
+                inputParam.pay_type
+              ],
+              (error, headerRcptResult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                debugFunction("inside header result");
+                if (
+                  headerRcptResult.insertId != null &&
+                  headerRcptResult.insertId != ""
+                ) {
+                  let detailsInsert = [];
+
+                  bulkInputArrayObject(
+                    inputParam.receiptdetails,
+                    detailsInsert,
+                    {
+                      hims_f_receipt_header_id: headerRcptResult.insertId
+                    }
+                  );
+                  // receipt details table insert
+
+                  connection.query(
+                    "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
+              created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
+                    [detailsInsert],
+                    (error, RcptDetailsRecords) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      debugFunction("inside details result");
+
+                      let inputParameters = extend(advanceModel, req.body);
+
+                      //  if (inputParameters.transaction_type)
+                      // patient advance table insert
+                      connection.query(
+                        "INSERT  INTO hims_f_patient_advance ( hims_f_patient_id, hims_f_receipt_header_id,\
+                        transaction_type, advance_amount, created_by, \
+                   created_date, updated_by, update_date,  record_status) VALUES (?,?,?,?,?,?,?,?,?) ",
+                        [
+                          inputParameters.hims_f_patient_id,
+                          headerRcptResult.insertId,
+                          inputParameters.transaction_type,
+                          inputParameters.advance_amount,
+                          inputParameters.created_by,
+                          new Date(),
+                          inputParameters.updated_by,
+                          new Date(),
+                          inputParameters.record_status
+                        ],
+                        (error, AdvanceRecords) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          debugFunction("inside patient advance result");
+                          connection.query(
+                            "SELECT advance_amount FROM hims_f_patient WHERE hims_d_patient_id=?",
+                            [inputParameters.hims_f_patient_id],
+                            (error, result) => {
+                              if (error) {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              }
+                              let existingAdvance = result[0].advance_amount;
+                              if (result.length != 0) {
+                                //advance adding
+                                if (inputParameters.transaction_type == "AD") {
+                                  inputParameters.advance_amount += existingAdvance;
+                                  debugLog("existingAdvance:", existingAdvance);
+
+                                  connection.query(
+                                    "UPDATE  `hims_f_patient` SET  `advance_amount`=?, \
+                           `updated_by`=?, `updated_date`=? WHERE `hims_d_patient_id`=?",
+                                    [
+                                      inputParameters.advance_amount,
+                                      inputParameters.updated_by,
+                                      new Date(),
+                                      inputParameters.hims_f_patient_id
+                                    ],
+                                    (error, appendAdvance) => {
+                                      if (error) {
+                                        connection.rollback(() => {
+                                          releaseDBConnection(db, connection);
+                                          next(error);
+                                        });
+                                      }
+
+                                      //commit comes here
+
+                                      connection.commit(error => {
+                                        releaseDBConnection(db, connection);
+                                        if (error) {
+                                          connection.rollback(() => {
+                                            next(error);
+                                          });
+                                        }
+                                        req.records = {
+                                          receipt_number: newNumber
+                                        };
+                                        next();
+                                      });
+                                    }
+                                  );
+                                }
+
+                                //refund  perform substraction
+                                //       if (inputParameters.transaction_type == "RF") {
+                                //         inputParameters.advance_amount =
+                                //           existingAdvance -
+                                //           inputParameters.advance_amount;
+                                //         connection.query(
+                                //           "UPDATE  `hims_f_patient` SET  `advance_amount`=?, \
+                                //  `updated_by`=?, `updated_date`=? WHERE `hims_d_patient_id`=?",
+                                //           [
+                                //             inputParameters.advance_amount,
+                                //             inputParameters.updated_by,
+                                //             new Date(),
+                                //             inputParameters.hims_f_patient_id
+                                //           ],
+                                //           (error, subtractAdvance) => {
+                                //             if (error) {
+                                //               connection.rollback(() => {
+                                //                 releaseDBConnection(db, connection);
+                                //                 next(error);
+                                //               });
+                                //             }
+
+                                //             //commit comes here
+                                //             connection.commit(error => {
+                                //               releaseDBConnection(db, connection);
+                                //               if (error) {
+                                //                 connection.rollback(() => {
+                                //                   next(error);
+                                //                 });
+                                //               }
+                                //               req.records = {
+                                //                 recieptNo: newNumber
+                                //               };
+                                //               next();
+                                //             });
+                                //           }
+                                //         );
+                                //       }
+                                if (inputParameters.transaction_type == "CA") {
+                                  // cancel
+                                }
+                              }
+                            }
+                          );
+                        }
+                      );
+                    }
+                  );
+                } else {
+                  debugLog("Data is not inerted to billing header");
+                  next(
+                    httpStatus.generateError(
+                      httpStatus.badRequest,
+                      "Technical issue while billis notinserted"
+                    )
+                  );
+                }
+              }
+            );
+          });
+        }
+
+        //function for payment to the patient
+        if (inputParam.pay_type == "P") {
+          runningNumber(req.db, 7, "PYMNT_NO", (error, numgenId, newNumber) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            debugLog("new PAYMENT no : ", newNumber);
+            inputParam.receipt_number = newNumber;
+            req.body.receipt_number = newNumber;
+
+            //R-->recieved amount   P-->payback amount
+
+            // receipt header table insert
+            connection.query(
+              "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, billing_header_id, total_amount,\
+created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_type) VALUES (?,?,?\
+,?,?,?,?,?,?,?,?)",
+              [
+                inputParam.receipt_number,
+                new Date(),
+                inputParam.billing_header_id,
+                inputParam.total_amount,
+                inputParam.created_by,
+                new Date(),
+                inputParam.updated_by,
+                new Date(),
+                inputParam.counter_id,
+                inputParam.shift_id,
+                inputParam.pay_type
+              ],
+              (error, headerRcptResult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                debugFunction("inside header result");
+                if (
+                  headerRcptResult.insertId != null &&
+                  headerRcptResult.insertId != ""
+                ) {
+                  let detailsInsert = [];
+
+                  bulkInputArrayObject(
+                    inputParam.receiptdetails,
+                    detailsInsert,
+                    {
+                      hims_f_receipt_header_id: headerRcptResult.insertId
+                    }
+                  );
+                  // receipt details table insert
+
+                  connection.query(
+                    "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
+created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
+                    [detailsInsert],
+                    (error, RcptDetailsRecords) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      debugFunction("inside details result");
+
+                      let inputParameters = extend(advanceModel, req.body);
+
+                      // patient advance table insert
+                      connection.query(
+                        "INSERT  INTO hims_f_patient_advance ( hims_f_patient_id, hims_f_receipt_header_id,\
+          transaction_type, advance_amount, created_by, \
+     created_date, updated_by, update_date,  record_status) VALUES (?,?,?,?,?,?,?,?,?) ",
+                        [
+                          inputParameters.hims_f_patient_id,
+                          headerRcptResult.insertId,
+                          inputParameters.transaction_type,
+                          inputParameters.advance_amount,
+                          inputParameters.created_by,
+                          new Date(),
+                          inputParameters.updated_by,
+                          new Date(),
+                          inputParameters.record_status
+                        ],
+                        (error, AdvanceRecords) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          debugFunction("inside patient advance result");
+                          connection.query(
+                            "SELECT advance_amount FROM hims_f_patient WHERE hims_d_patient_id=?",
+                            [inputParameters.hims_f_patient_id],
+                            (error, result) => {
+                              if (error) {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              }
+                              let existingAdvance = result[0].advance_amount;
+                              if (result.length != 0) {
+                                //advance adding
+                                //                     if (inputParameters.transaction_type == "AD") {
+                                //                       inputParameters.advance_amount += existingAdvance;
+                                //                       debugLog("existingAdvance:", existingAdvance);
+
+                                //                       connection.query(
+                                //                         "UPDATE  `hims_f_patient` SET  `advance_amount`=?, \
+                                //  `updated_by`=?, `updated_date`=? WHERE `hims_d_patient_id`=?",
+                                //                         [
+                                //                           inputParameters.advance_amount,
+                                //                           inputParameters.updated_by,
+                                //                           new Date(),
+                                //                           inputParameters.hims_f_patient_id
+                                //                         ],
+                                //                         (error, appendAdvance) => {
+                                //                           if (error) {
+                                //                             connection.rollback(() => {
+                                //                               releaseDBConnection(db, connection);
+                                //                               next(error);
+                                //                             });
+                                //                           }
+
+                                //                           //commit comes here
+
+                                //                           connection.commit(error => {
+                                //                             releaseDBConnection(db, connection);
+                                //                             if (error) {
+                                //                               connection.rollback(() => {
+                                //                                 next(error);
+                                //                               });
+                                //                             }
+                                //                             req.records = {
+                                //                               RCPT_or_PYMNT_NUM: RCPT_or_PYMNT_NUM
+                                //                             };
+                                //                             next();
+                                //                           });
+                                //                         }
+                                //                       );
+                                //                     }
+
+                                //refund  perform substraction
+                                if (inputParameters.transaction_type == "RF") {
+                                  inputParameters.advance_amount =
+                                    existingAdvance -
+                                    inputParameters.advance_amount;
+                                  connection.query(
+                                    "UPDATE  `hims_f_patient` SET  `advance_amount`=?, \
+             `updated_by`=?, `updated_date`=? WHERE `hims_d_patient_id`=?",
+                                    [
+                                      inputParameters.advance_amount,
+                                      inputParameters.updated_by,
+                                      new Date(),
+                                      inputParameters.hims_f_patient_id
+                                    ],
+                                    (error, subtractAdvance) => {
+                                      if (error) {
+                                        connection.rollback(() => {
+                                          releaseDBConnection(db, connection);
+                                          next(error);
+                                        });
+                                      }
+
+                                      //commit comes here
+                                      connection.commit(error => {
+                                        releaseDBConnection(db, connection);
+                                        if (error) {
+                                          connection.rollback(() => {
+                                            next(error);
+                                          });
+                                        }
+                                        req.records = { payment_no: newNumber };
+                                        next();
+                                      });
+                                    }
+                                  );
+                                }
+                                if (inputParameters.transaction_type == "CA") {
+                                  // cancel
+                                }
+                              }
+                            }
+                          );
+                        }
+                      );
+                    }
+                  );
+                } else {
+                  debugLog("Data is not inerted to billing header");
+                  next(
+                    httpStatus.generateError(
+                      httpStatus.badRequest,
+                      "Technical issue while billis notinserted"
+                    )
+                  );
+                }
+              }
+            );
+          }); //end of runing number PYMNT
+        }
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by:irfan,to get patient insurence details by patient id
+let getPatientInsurence = (req, res, next) => {
+  let patientInsurenceModel = {
+    patient_id: null
+  };
+
+  debugFunction("getPatientInsurence");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      extend(patientInsurenceModel, req.query);
+
+      connection.query(
+        "select  mIns.patient_id,  Ins.insurance_provider_name, sIns.insurance_sub_name,\
+        net.network_type,netoff.policy_number,mIns.primary_effective_start_date,\
+        mIns.primary_effective_end_date,mIns.primary_inc_card_path         \
+        from  hims_m_patient_insurance_mapping mIns,hims_d_insurance_provider Ins,\
+       hims_d_insurance_sub sIns ,hims_d_insurance_network net ,\
+       hims_d_insurance_network_office netoff where\
+        mIns.`patient_id`=? and (Ins.hims_d_insurance_provider_id = mIns.primary_insurance_provider_id\
+         or Ins.hims_d_insurance_provider_id = mIns.secondary_insurance_provider_id)\
+         and Ins.hims_d_insurance_provider_id = sIns.insurance_provider_id\
+         and net.insurance_provider_id= Ins.hims_d_insurance_provider_id\
+         and netoff.network_id = net.hims_d_insurance_network_id\
+         group by hims_d_insurance_provider_id",
+
+        [patientInsurenceModel.patient_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addBill,
   billingCalculations,
   getBillDetails,
-  newReceipt
+  newReceipt,
+  patientAdvanceRefund,
+  getPatientInsurence
 };

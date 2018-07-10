@@ -114,5 +114,11 @@
   "sec_copay_amount": "Copay Amt.",
   "tax_Detsils": "Tax Details",
   "prim-insurance": "Primary Insurance",
-  "present-bill-services": "Current Bill Services"
+  "present-bill-services": "Current Bill Services",
+  "advance_amount": "Available Advance",
+  "advance_caption": "Advance",
+  "refund_caption": "Refund",
+
+  "payment_number": "Payment Number",
+  "payment_date": "Payment Date"
 }

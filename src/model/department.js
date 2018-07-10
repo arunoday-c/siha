@@ -11,39 +11,42 @@ import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 // import $ from "jquery";
 import { logger, debugFunction, debugLog } from "../utils/logging";
-let department = {
-  hims_d_department_id: null,
-  department_code: null,
-  department_name: null,
-  department_desc: null,
-  department_type: null,
-  hospital_id: null,
-  effective_start_date: null,
-  effective_end_date: null,
-  department_status: null,
-  created_date: null,
-  created_by: null,
-  updated_date: null,
-  updated_by: null,
-  record_status: null,
-  sub_department: [subDepartment]
-};
-let subDepartment = {
-  hims_d_sub_department_id: null,
-  sub_department_code: null,
-  sub_department_name: null,
-  sub_department_desc: null,
-  department_id: null,
-  effective_start_date: null,
-  effective_end_date: null,
-  sub_department_status: null,
-  created_date: null,
-  created_by: null,
-  updated_date: null,
-  updated_by: null,
-  record_status: null
-};
+
 let addDepartment = (req, res, next) => {
+  let subDepartment = {
+    hims_d_sub_department_id: null,
+    sub_department_code: null,
+    sub_department_name: null,
+    sub_department_desc: null,
+    department_id: null,
+    effective_start_date: null,
+    effective_end_date: null,
+    sub_department_status: null,
+    created_date: null,
+    created_by: null,
+    updated_date: null,
+    updated_by: null,
+    record_status: null
+  };
+
+  let department = {
+    hims_d_department_id: null,
+    department_code: null,
+    department_name: null,
+    department_desc: null,
+    department_type: null,
+    hospital_id: null,
+    effective_start_date: null,
+    effective_end_date: null,
+    department_status: null,
+    created_date: null,
+    created_by: null,
+    updated_date: null,
+    updated_by: null,
+    record_status: null,
+    sub_department: [subDepartment]
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -140,8 +143,7 @@ let updateDepartment = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    // let departmentDetails = extend(department, req.body);
-    // Dynamic query
+
     debugLog("Input Data", req.body);
     db.getConnection((error, connection) => {
       if (error) {
@@ -167,7 +169,7 @@ let updateDepartment = (req, res, next) => {
           departmentDetails.hospital_id,
           departmentDetails.effective_start_date,
           departmentDetails.effective_end_date,
-          department.department_status,
+          departmentDetails.department_status,
           new Date(),
           departmentDetails.updated_by,
           departmentDetails.hims_d_department_id
@@ -286,18 +288,17 @@ let selectDepartment = (req, res, next) => {
   }
 };
 
-let subDepartmentWhereCondition = {
-  hims_d_sub_department_id: "ALL",
-  sub_department_code: "ALL",
-  sub_department_name: "ALL",
-  sub_department_desc: "ALL",
-  department_id: "ALL",
-  effective_start_date: "ALL",
-  effective_end_date: "ALL",
-  sub_department_status: "ALL"
-};
-
 let selectSubDepartment = (req, res, next) => {
+  let subDepartmentWhereCondition = {
+    hims_d_sub_department_id: "ALL",
+    sub_department_code: "ALL",
+    sub_department_name: "ALL",
+    sub_department_desc: "ALL",
+    department_id: "ALL",
+    effective_start_date: "ALL",
+    effective_end_date: "ALL",
+    sub_department_status: "ALL"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -331,6 +332,22 @@ let selectSubDepartment = (req, res, next) => {
 };
 
 let addSubDepartment = (req, res, next) => {
+  let subDepartment = {
+    hims_d_sub_department_id: null,
+    sub_department_code: null,
+    sub_department_name: null,
+    sub_department_desc: null,
+    department_id: null,
+    effective_start_date: null,
+    effective_end_date: null,
+    sub_department_status: null,
+    created_date: null,
+    created_by: null,
+    updated_date: null,
+    updated_by: null,
+    record_status: null
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -399,6 +416,21 @@ let addSubDepartment = (req, res, next) => {
   }
 };
 let updateSubDepartment = (req, res, next) => {
+  let subDepartment = {
+    hims_d_sub_department_id: null,
+    sub_department_code: null,
+    sub_department_name: null,
+    sub_department_desc: null,
+    department_id: null,
+    effective_start_date: null,
+    effective_end_date: null,
+    sub_department_status: null,
+    created_date: null,
+    created_by: null,
+    updated_date: null,
+    updated_by: null,
+    record_status: null
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -440,28 +472,11 @@ let updateSubDepartment = (req, res, next) => {
   }
 };
 
-let doctorsInfo = {
-  sub_department_id: null,
-  full_name: null,
-  arabic_name: null,
-  sub_department_name: null,
-  arabic_sub_department_name: null
-};
-
-let inputClicnicalNonClinicalDept = {
-  department_type: "ALL"
-};
-let sbdepartment = {
-  hims_d_sub_department_id: null,
-  sub_department_code: null,
-  sub_department_name: null,
-  sub_department_desc: null,
-  arabic_sub_department_name: null,
-  department_id: null,
-  department_type: null
-};
-
 let selectdoctors = (req, res, next) => {
+  let inputClicnicalNonClinicalDept = {
+    department_type: "ALL"
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());

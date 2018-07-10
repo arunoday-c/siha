@@ -198,11 +198,13 @@ let addFrontDesk = (req, res, next) => {
     next(e);
   }
 };
-let selectWhere = {
-  patient_code: "ALL",
-  hims_d_patient_id: "ALL"
-};
+
 let selectFrontDesk = (req, res, next) => {
+  let selectWhere = {
+    patient_code: "ALL",
+    hims_d_patient_id: "ALL"
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());

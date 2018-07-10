@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import { TextField, Paper, TablePagination } from "material-ui";
+import TextField from "@material-ui/core/TextField";
+import Paper from "@material-ui/core/Paper";
+import TablePagination from "@material-ui/core/TablePagination";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Done from "@material-ui/icons/Done";
 import CancelIcon from "@material-ui/icons/Cancel";
-import IconButton from "material-ui/IconButton";
+import IconButton from "@material-ui/core/IconButton";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
 import "./wrapper.css";
@@ -180,13 +182,13 @@ class DataGrid extends Component {
       expanded:
         nextProps.expanded != null
           ? {
-            multiExpand: true,
-            expandRows: [],
-            detailTemplate:
-              nextProps.expanded != null
-                ? nextProps.expanded.detailTemplate
-                : null
-          }
+              multiExpand: true,
+              expandRows: [],
+              detailTemplate:
+                nextProps.expanded != null
+                  ? nextProps.expanded.detailTemplate
+                  : null
+            }
           : null,
       id: nextProps.id ? "prevRecord_" + nextProps.id : "prevRecord"
     });
@@ -264,17 +266,17 @@ class DataGrid extends Component {
           {col.editorTemplate != null ? (
             col.editorTemplate(row)
           ) : (
-              <TextField
-                name={col.fieldName}
-                value={row[col.fieldName]}
-                disabled={col.disabled}
-                onChange={(control, $this = this) => {
-                  const value = control.target.value;
-                  $this.state.data[index][col.fieldName] = value;
-                  $this.setState({ data: $this.state.data });
-                }}
-              />
-            )}
+            <TextField
+              name={col.fieldName}
+              value={row[col.fieldName]}
+              disabled={col.disabled}
+              onChange={(control, $this = this) => {
+                const value = control.target.value;
+                $this.state.data[index][col.fieldName] = value;
+                $this.setState({ data: $this.state.data });
+              }}
+            />
+          )}
         </td>
       );
     });
