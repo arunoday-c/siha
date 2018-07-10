@@ -1125,10 +1125,60 @@ created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
   }
 };
 
+let getPatientInsurence = (req, res, next) => {
+  let patientInsurenceModel = {
+    patient_id: null
+  };
+
+  debugFunction("getPatientInsurence");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      extend(patientInsurenceModel, req.query);
+
+      connection.query(
+        "select  mIns.patient_id,  Ins.insurance_provider_name, sIns.insurance_sub_name,\
+        net.network_type,netoff.policy_number,mIns.primary_effective_start_date,\
+        mIns.primary_effective_end_date,mIns.primary_inc_card_path         \
+        from  hims_m_patient_insurance_mapping mIns,hims_d_insurance_provider Ins,\
+       hims_d_insurance_sub sIns ,hims_d_insurance_network net ,\
+       hims_d_insurance_network_office netoff where\
+        mIns.`patient_id`=? and (Ins.hims_d_insurance_provider_id = mIns.primary_insurance_provider_id\
+         or Ins.hims_d_insurance_provider_id = mIns.secondary_insurance_provider_id)\
+         and Ins.hims_d_insurance_provider_id = sIns.insurance_provider_id\
+         and net.insurance_provider_id= Ins.hims_d_insurance_provider_id\
+         and netoff.network_id = net.hims_d_insurance_network_id\
+         group by hims_d_insurance_provider_id",
+
+        [patientInsurenceModel.patient_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addBill,
   billingCalculations,
   getBillDetails,
   newReceipt,
-  patientAdvanceRefund
+  patientAdvanceRefund,
+  getPatientInsurence
 };
