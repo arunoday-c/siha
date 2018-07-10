@@ -13,7 +13,6 @@ import { LINQ } from "node-linq";
 import { inflate } from "zlib";
 
 //created by irfan: Adding bill headder and bill details
-
 //AddBill
 let addBill = (dataBase, req, res, callBack, isCommited, next) => {
   isCommited = isCommited || false;
@@ -234,7 +233,6 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
 };
 
 //created by:irfan, add receipt headder and details
-
 //AddReceipt
 let newReceipt = (dataBase, req, res, next) => {
   let P_receiptHeaderModel = {
@@ -350,6 +348,7 @@ let newReceipt = (dataBase, req, res, next) => {
   }
 };
 
+// performing only calculation
 let billingCalculations = (req, res, next) => {
   try {
     let inputParam = req.body;
@@ -643,7 +642,7 @@ let getBillDetails = (req, res, next) => {
   }
 };
 
-//created by:irfan, Patient-receipt if advance or Refund
+//created by:irfan, Patient-receipt if advance or  Refund to patient
 let patientAdvanceRefund = (req, res, next) => {
   let P_receiptHeaderModel = {
     hims_f_receipt_header_id: null,
@@ -1125,6 +1124,7 @@ created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
   }
 };
 
+//created by:irfan,to get patient insurence details by patient id
 let getPatientInsurence = (req, res, next) => {
   let patientInsurenceModel = {
     patient_id: null

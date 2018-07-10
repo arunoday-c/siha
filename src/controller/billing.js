@@ -46,7 +46,7 @@ export default ({ config, db }) => {
   // created by irfan : to get advance and to refund
   api.post(
     "/patientAdvanceRefund",
-    getPatientInsurence,
+    patientAdvanceRefund,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
