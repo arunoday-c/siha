@@ -10,7 +10,8 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  Button
 } from "../../../Wrapper/algaehWrapper";
 import DisplayOPBilling from "../../../BillDetails/BillDetails";
 import { generateBill } from "../../../../actions/RegistrationPatient/Billingactions";
@@ -20,9 +21,8 @@ import {
   texthandle,
   servicetexthandle
 } from "./AddOPBillingHandaler";
-import { getServiceTypes } from "../../../../actions/ServiceCategory/ServiceTypesactions";
-import { getServices } from "../../../../actions/ServiceCategory/Servicesactions";
 import IconButton from "@material-ui/core/IconButton";
+import { AlgaehActions } from "../../../../actions/algaehActions";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
@@ -42,12 +42,29 @@ class AddOPBillingForm extends Component {
   }
 
   componentDidMount() {
-    if (this.props.servicetype.length === 0) {
-      this.props.getServiceTypes();
+    if (
+      this.props.servicetype === undefined ||
+      this.props.servicetype.length === 0
+    ) {
+      this.props.getServiceTypes({
+        uri: "/serviceType",
+        method: "GET",
+        redux: {
+          type: "SERVIES_TYPES_GET_DATA",
+          mappingName: "servicetype"
+        }
+      });
     }
 
-    if (this.props.services.length === 0) {
-      this.props.getServices();
+    if (this.props.services === undefined || this.props.services.length === 0) {
+      this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "services"
+        }
+      });
     }
   }
 
@@ -61,20 +78,44 @@ class AddOPBillingForm extends Component {
   ProcessToBill(context, e) {
     let $this = this;
     let serviceInput = { hims_d_services_id: this.state.s_service };
-    this.props.generateBill(serviceInput, data => {
-      let existingservices = $this.state.billdetails;
-      if (existingservices.length != 0 && data.billdetails.length != 0) {
-        data.billdetails[0].service_type_id = $this.state.s_service_type;
-        data.billdetails[0].service_type = $this.state.s_service;
-        existingservices.splice(0, 0, data.billdetails[0]);
-      }
 
-      $this.setState({ billdetails: existingservices });
+    $this.props.generateBill({
+      uri: "/billing/getBillDetails",
+      method: "POST",
+      data: serviceInput,
+      redux: {
+        type: "BILL_GEN_GET_DATA",
+        mappingName: "genbill"
+      },
+      afterSuccess: data => {
+        let existingservices = $this.state.billdetails;
+        if (existingservices.length != 0 && data.billdetails.length != 0) {
+          data.billdetails[0].service_type_id = $this.state.s_service_type;
+          data.billdetails[0].service_type = $this.state.s_service;
+          existingservices.splice(0, 0, data.billdetails[0]);
+        }
 
-      if (context != null) {
-        context.updateState({ billdetails: existingservices });
+        $this.setState({ billdetails: existingservices });
+
+        if (context != null) {
+          context.updateState({ billdetails: existingservices });
+        }
       }
     });
+    // this.props.generateBill(serviceInput, data => {
+    //   let existingservices = $this.state.billdetails;
+    //   if (existingservices.length != 0 && data.billdetails.length != 0) {
+    //     data.billdetails[0].service_type_id = $this.state.s_service_type;
+    //     data.billdetails[0].service_type = $this.state.s_service;
+    //     existingservices.splice(0, 0, data.billdetails[0]);
+    //   }
+
+    //   $this.setState({ billdetails: existingservices });
+
+    //   if (context != null) {
+    //     context.updateState({ billdetails: existingservices });
+    //   }
+    // });
   }
 
   render() {
@@ -130,7 +171,7 @@ class AddOPBillingForm extends Component {
                     }}
                   />
 
-                  <div className="col-lg-3">
+                  <div className="col-lg-2">
                     <IconButton className="go-button" color="primary">
                       <PlayCircleFilled
                         onClick={this.ProcessToBill.bind(this, context)}
@@ -138,12 +179,14 @@ class AddOPBillingForm extends Component {
                     </IconButton>
                   </div>
 
-                  <div className="col-lg-3">
+                  <div className="col-lg-3"> &nbsp; </div>
+
+                  <div className="col-lg-2">
                     <button
                       className="htpl1-phase1-btn-primary"
                       onClick={this.ShowBillDetails.bind(this)}
                     >
-                      Detail....
+                      Details....
                     </button>
 
                     <DisplayOPBilling
@@ -165,10 +208,14 @@ class AddOPBillingForm extends Component {
                             />
                           ),
                           displayTemplate: row => {
-                            let display = this.props.servicetype.filter(
-                              f =>
-                                f.hims_d_service_type_id == row.service_type_id
-                            );
+                            let display =
+                              this.props.servicetype === undefined
+                                ? []
+                                : this.props.servicetype.filter(
+                                    f =>
+                                      f.hims_d_service_type_id ==
+                                      row.service_type_id
+                                  );
 
                             return (
                               <span>
@@ -189,9 +236,12 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
                           displayTemplate: row => {
-                            let display = this.props.services.filter(
-                              f => f.hims_d_services_id == row.services_id
-                            );
+                            let display =
+                              this.props.services === undefined
+                                ? []
+                                : this.props.services.filter(
+                                    f => f.hims_d_services_id == row.services_id
+                                  );
 
                             return (
                               <span>
@@ -1007,18 +1057,18 @@ class AddOPBillingForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype.servicetype,
-    services: state.services.services,
-    genbill: state.genbill.genbill
+    servicetype: state.servicetype,
+    services: state.services,
+    genbill: state.genbill
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: getServiceTypes,
-      getServices: getServices,
-      generateBill: generateBill
+      getServiceTypes: AlgaehActions,
+      getServices: AlgaehActions,
+      generateBill: AlgaehActions
     },
     dispatch
   );

@@ -423,7 +423,7 @@ let getBillDetails = (req, res, next) => {
     visit_id: null,
     bill_number: null,
     incharge_or_provider: null,
-    bill_date: null,
+    bill_date: new Date(),
     advance_amount: 0,
     discount_amount: 0,
     sub_total_amount: 0,

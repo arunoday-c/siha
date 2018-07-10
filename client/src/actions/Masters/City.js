@@ -28,7 +28,7 @@ export function getCities(dataValue) {
 
   return function(dispatch) {
     dispatch({
-      type: "CITYGET_DATA",
+      type: "CITY_GET_DATA",
       payload: dataValue
     });
   };

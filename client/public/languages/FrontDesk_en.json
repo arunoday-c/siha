@@ -102,7 +102,7 @@
   "total_tax": "Total Tax",
   "patient_resp": "Patient Responsible",
   "patient_payable": "Patient Share",
-  "comapany_resp": "Company Responsible",
+  "company_resp": "Company Responsible",
   "company_payble": "Company Payable",
   "sec_company": "Secondary Insurance",
   "sec_deductable_amount": "Deductable Amt.",
@@ -119,6 +119,22 @@
   "advance_caption": "Advance",
   "refund_caption": "Refund",
 
+  "responsibility_lbl": "Responsibility",
+  "tax_lbl": "Tax",
+  "payable_lbl": "Payable",
+
+  "patient_lbl": "Patient",
+  "company_lbl": "Primary Company",
+  "sec_comp_lbl": "Secondary Company",
+
   "payment_number": "Payment Number",
-  "payment_date": "Payment Date"
+  "payment_date": "Payment Date",
+
+  "insurance_id": "Insurance Company",
+  "sub_insurance_id": "Secondary Insurance Company",
+  "plan_id": "Plan",
+  "policy_id": "Policy",
+  "effective_start_date": "Effective Start Date",
+  "attach_front": "Front Side",
+  "attach_back": "Back Side"
 }

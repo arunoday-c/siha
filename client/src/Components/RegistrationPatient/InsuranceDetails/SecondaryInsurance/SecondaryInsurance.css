@@ -2,33 +2,64 @@
   background: #ffff;
   border-radius: 5px; }
 
-.htpl-phase1-primary-secinsurance-form label {
+.htpl-phase1-seconary-insurance-form .primary-details {
+  padding: 5px;
+  padding-bottom: 15px;
+  border-right: 1px solid #000; }
+  @media only screen and (max-width: 904px) {
+    .htpl-phase1-seconary-insurance-form .primary-details {
+      padding: 5px; } }
+  .htpl-phase1-seconary-insurance-form .primary-details .primary-box-container {
+    padding: 5px; }
+
+.htpl-phase1-seconary-insurance-form label {
   font-weight: 400;
   font-size: 11px; }
 
-.htpl-phase1-primary-secinsurance-form mark {
+.htpl-phase1-seconary-insurance-form mark {
   background: none;
   color: red; }
 
-.htpl-phase1-primary-secinsurance-form .form-details {
+.htpl-phase1-seconary-insurance-form .form-details {
   padding: 5px;
   padding-bottom: 0px; }
 
-.htpl-phase1-primary-secinsurance-form .radio-design {
+.htpl-phase1-seconary-insurance-form .radio-design {
   position: absolute;
   top: 5px;
   left: 36px; }
 
-.htpl-phase1-primary-secinsurance-form .refactor-design {
+.htpl-phase1-seconary-insurance-form .go-button {
+  cursor: pointer;
+  margin-top: 10px; }
+
+.htpl-phase1-seconary-insurance-form .refactor-design {
   min-height: 28px;
   background-color: #fbfbfb;
   border: 0px; }
 
-.htpl-phase1-primary-secinsurance-form .file-name-upload {
+.htpl-phase1-seconary-insurance-form .file-name-upload {
   margin-left: 4%;
   margin-top: 2%; }
 
-.htpl-phase1-primary-secinsurance-form th,
-.htpl-phase1-primary-secinsurance-form td {
-  border-right: 1px solid #e6e6e6;
-  font-size: 11px; }
+.htpl-phase1-seconary-insurance-form .secondary-details {
+  padding: 5px;
+  padding-bottom: 15px; }
+  .htpl-phase1-seconary-insurance-form .secondary-details .secondary-box-container {
+    padding: 5px; }
+    .htpl-phase1-seconary-insurance-form .secondary-details .secondary-box-container .attach-design {
+      background: #8c8c8c;
+      min-height: 30px;
+      color: #fff;
+      padding: 5px;
+      position: relative;
+      top: 99px;
+      cursor: pointer;
+      margin-left: -1px;
+      margin-right: -1px;
+      font-size: 11px; }
+    .htpl-phase1-seconary-insurance-form .secondary-details .secondary-box-container .preview-image {
+      position: absolute;
+      top: -1px;
+      left: 15px;
+      height: 101px; }

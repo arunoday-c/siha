@@ -111,13 +111,13 @@ class Header extends PureComponent {
               </IconButton>
             </div>
             <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-              <Typography
+              {/* <Typography
                 className="Typography"
                 variant="title"
                 color="inherit"
-              >
-                {this.props.title}
-              </Typography>
+              > */}
+              <h5>{this.props.title}</h5>
+              {/* </Typography> */}
             </div>
             <div className="col-lg-5">
               <Button

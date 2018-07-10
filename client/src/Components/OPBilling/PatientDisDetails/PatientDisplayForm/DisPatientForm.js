@@ -11,10 +11,9 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext.js";
 import { texthandle } from "./DisPatientHandlers";
-import { getPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions";
 import variableJson from "../../../../utils/GlobalVariables.json";
 
-class DisPatientForm extends Component {
+export default class DisPatientForm extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -122,25 +121,3 @@ class DisPatientForm extends Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    patients: state.patients.patients
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getPatientDetails: getPatientDetails
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(DisPatientForm)
-);

@@ -15,6 +15,11 @@
   .hptl-phase1-add-advance-form .lbl-resize label {
     font-size: 16px;
     background: #5f5f5f; }
+  .hptl-phase1-add-advance-form .app_bar {
+    box-shadow: none;
+    background-color: #dbad64; }
+    .hptl-phase1-add-advance-form .app_bar h2 {
+      color: #fff; }
 
 .bottom-details {
   padding: 5px;
@@ -23,6 +28,7 @@
   margin-top: 0.5%; }
 
 .colorPrimary div {
-  background-color: #dbad64; }
+  background-color: #dbad64;
+  box-shadow: none; }
   .colorPrimary div h2 {
     color: #fff; }

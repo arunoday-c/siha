@@ -130,5 +130,21 @@
   "refund_caption": "إعادة مال",
 
   "payment_number": "رقم الدفع",
-  "payment_date": "تاريخ الدفع"
+  "payment_date": "تاريخ الدفع",
+
+  "insurance_id": "شركة التأمين",
+  "sub_insurance_id": "شركة التأمين الثانوية",
+  "plan_id": "خطة",
+  "policy_id": "سياسات",
+  "effective_start_date": "تاريخ البدء الفعال",
+  "attach_front": "الجانب الامامي",
+  "attach_back": "الجانب الخلفي",
+
+  "responsibility": "المسئولية",
+  "tax_details": "ضريبة",
+  "payable": "تدفع",
+
+  "patient_lbl": "صبور",
+  "company_lbl": "الشركة الرئيسية",
+  "sec_comp_lbl": "شركة ثانوية"
 }

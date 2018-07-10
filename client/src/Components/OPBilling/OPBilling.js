@@ -15,9 +15,9 @@ import MyContext from "../../utils/MyContext.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/Billing";
 import PatRegIOputs from "../../Models/RegistrationPatient";
-import { getPatientDetails } from "../../actions/RegistrationPatient/Registrationactions";
 import { getCookie } from "../../utils/algaehApiCall";
 
+import { AlgaehActions } from "../../actions/algaehActions";
 var intervalId;
 
 class PatientDisplayDetails extends Component {
@@ -55,18 +55,36 @@ class PatientDisplayDetails extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // this.setState(nextProps.patients[0]);
+    debugger;
+    this.setState(nextProps.patients[0]);
   }
 
   getPatientDetails() {
     clearInterval(intervalId);
     intervalId = setInterval(() => {
-      this.props.getPatientDetails(this.state.patient_code, data => {
-        data.patientRegistration.visitDetails = data.visitDetails;
-        data.patientRegistration.patient_id =
-          data.patientRegistration.hims_d_patient_id;
-        this.setState(data.patientRegistration);
+      this.props.getPatientDetails({
+        uri: "/frontDesk/get",
+        method: "GET",
+        printInput: true,
+        data: { patient_code: this.state.patient_code },
+        redux: {
+          type: "PAT_GET_DATA",
+          mappingName: "patients"
+        },
+        afterSuccess: data => {
+          data.patientRegistration.visitDetails = data.visitDetails;
+          data.patientRegistration.patient_id =
+            data.patientRegistration.hims_d_patient_id;
+          this.setState(data.patientRegistration);
+        }
       });
+
+      // this.props.getPatientDetails(this.state.patient_code, data => {
+      //   data.patientRegistration.visitDetails = data.visitDetails;
+      //   data.patientRegistration.patient_id =
+      //     data.patientRegistration.hims_d_patient_id;
+      //   this.setState(data.patientRegistration);
+      // });
       clearInterval(intervalId);
     }, 500);
   }
@@ -156,14 +174,14 @@ class PatientDisplayDetails extends Component {
 
 function mapStateToProps(state) {
   return {
-    patients: state.patients.patients
+    patients: state.patients
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPatientDetails: getPatientDetails
+      getPatientDetails: AlgaehActions
     },
     dispatch
   );
