@@ -5,6 +5,7 @@ import DateHandler from "../Wrapper/datePicker";
 import Options from "../Wrapper/optionButton";
 import AutoComplete from "../Wrapper/autoComplete";
 import DataGrid from "../Wrapper/grid";
+import Button from "@material-ui/core/Button";
 import "hijri-date";
 
 const AlgaehLabel = Label;
@@ -28,5 +29,6 @@ export {
   AlgaehConvertToHijri,
   AlgaehOptions,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  Button
 };

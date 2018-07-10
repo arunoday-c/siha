@@ -6,7 +6,8 @@ import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
 import ArrowDropUp from "@material-ui/icons/ArrowDropUp";
 import {
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  Button
 } from "../Components/Wrapper/algaehWrapper";
 
 class DeptMaster extends Component {

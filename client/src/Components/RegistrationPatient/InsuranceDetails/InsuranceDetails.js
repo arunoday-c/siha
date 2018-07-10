@@ -1,10 +1,12 @@
 import React, { PureComponent } from "react";
 import InsuranceForm from "./InsuranceForm/InsuranceForm.js";
 import SecondaryInsurance from "./SecondaryInsurance/SecondaryInsurance.js";
-import InsuranceList from "./InsuranceList/InsuranceList.js";
 import "./InsuranceDetails.css";
 import "./../../../styles/site.css";
 import AlgaehLabel from "../../Wrapper/label.js";
+
+import AddCircle from "@material-ui/icons/AddCircle";
+import IconButton from "@material-ui/core/IconButton";
 
 export default class InsuranceDetails extends PureComponent {
   constructor(props) {
@@ -47,6 +49,11 @@ export default class InsuranceDetails extends PureComponent {
                   }}
                 />
               }
+
+              {/* <AddCircle style={{ padding: "2px", marginBottom: "-10px" }} /> */}
+              {/* <IconButton className="newadd-button" color="primary">
+                <AddCircle />
+              </IconButton> */}
             </li>
             <li
               className={"nav-item tab-button " + secondaryInsurance}
