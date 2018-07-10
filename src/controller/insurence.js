@@ -1,18 +1,21 @@
 import { Router } from "express";
-import {
-  billingCalculations,
-  patientAdvanceRefund,
-  getBillDetails
-} from "../model/billing";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
+import { LINQ } from "node-linq";
+
+import {
+  getPatientInsurence,
+  addPatientInsurence,
+  getListOfInsurenceProvider
+} from "../model/insurence";
 
 export default ({ config, db }) => {
   let api = Router();
 
-  api.post(
-    "/billingCalculations",
-    billingCalculations,
+  // created by irfan : to fetch insurence based on patient id
+  api.get(
+    "/getPatientInsurence",
+    getPatientInsurence,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -24,29 +27,25 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan : to save insurence of patient in DB
   api.post(
-    "/getBillDetails",
-    getBillDetails,
+    "/addPatientInsurence",
+    addPatientInsurence,
     (req, res, next) => {
-      let resultBack = req.records;
-      if (resultBack.length == 0) {
-        next(httpStatus.generateError(httpStatus.notFound, "No record found"));
-      } else {
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: resultBack
-        });
-      }
-
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
       next();
     },
     releaseConnection
   );
 
-  // created by irfan : to get advance and to refund
-  api.post(
-    "/patientAdvanceRefund",
-    patientAdvanceRefund,
+  // created by irfan : to get all insurence provider  company details
+  api.get(
+    "/getListOfInsurenceProvider",
+    getListOfInsurenceProvider,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
