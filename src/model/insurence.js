@@ -281,9 +281,74 @@ let addInsurenceProvider = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to add SUB-insurence provider
+let addSubInsurenceProvider = (req, res, next) => {
+  let insurenceSubProviderModel = {
+    hims_d_insurance_sub_id: null,
+    insurance_sub_code: null,
+    insurance_sub_name: null,
+    insurance_provider_id: null,
+    card_format: null,
+    transaction_number: null,
+    effective_start_date: null,
+    effective_end_date: null,
+    created_date: null,
+    created_by: null,
+    updated_date: null,
+    updated_by: null,
+    record_status: null
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let subInsurence = extend(insurenceSubProviderModel, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO hims_d_insurance_sub(`insurance_sub_code`,`insurance_sub_name`,`insurance_provider_id`,\
+        `card_format`,`transaction_number`,`effective_start_date`,`effective_end_date`,\
+        `created_date`,`created_by`,`updated_date`,`updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          subInsurence.insurance_sub_code,
+          subInsurence.insurance_sub_name,
+          subInsurence.insurance_provider_id,
+          subInsurence.card_format,
+          subInsurence.transaction_number,
+          subInsurence.effective_start_date,
+          subInsurence.effective_end_date,
+          new Date(),
+          subInsurence.created_by,
+          new Date(),
+          subInsurence.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientInsurence,
   addPatientInsurence,
   getListOfInsurenceProvider,
-  addInsurenceProvider
+  addInsurenceProvider,
+  addSubInsurenceProvider
 };
