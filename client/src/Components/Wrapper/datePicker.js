@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import Label from "../Wrapper/label";
-import { TextField, FormControl } from "material-ui";
+import { TextField } from "material-ui";
 import moment from "moment";
 import DayPickerInput from "react-day-picker/DayPickerInput";
-import MomentLocaleUtils from "react-day-picker/moment";
+//import MomentLocaleUtils from "react-day-picker/moment";
 import "react-day-picker/lib/style.css";
 import "../Wrapper/wrapper.css";
 // import "moment/locale/ar";
@@ -126,7 +126,7 @@ export default class DateHandler extends Component {
     var datePickers = document.querySelectorAll("[datepickerfocus='true']");
     if (datePickers != null) {
       for (var i = 0; i < datePickers.length; i++) {
-        datePickers[i].addEventListener("click", function (event) {
+        datePickers[i].addEventListener("click", function(event) {
           this.previousSibling.firstChild.click();
         });
       }

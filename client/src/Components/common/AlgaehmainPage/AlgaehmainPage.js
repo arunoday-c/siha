@@ -448,16 +448,14 @@ class PersistentDrawer extends React.Component {
             >
               <div className={classes.drawerHeader} />
               <div className="container" style={{ minWidth: "100%" }}>
-                <Typography>
-                  <div className="row" id="hisapp">
-                    <div className="col-lg-12">
-                      {directRoutes(
-                        this.state.renderComponent,
-                        this.state.selectedLang
-                      )}
-                    </div>
+                <div className="row" id="hisapp">
+                  <div className="col-lg-12">
+                    {directRoutes(
+                      this.state.renderComponent,
+                      this.state.selectedLang
+                    )}
                   </div>
-                </Typography>
+                </div>
               </div>
             </main>
           </div>
