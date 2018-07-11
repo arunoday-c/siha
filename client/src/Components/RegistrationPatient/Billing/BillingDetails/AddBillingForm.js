@@ -15,7 +15,8 @@ import {
   servicetexthandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle
+  chequetexthandle,
+  adjustadvance
 } from "./AddBillingDetails";
 import MyContext from "../../../../utils/MyContext.js";
 import { generateBill } from "../../../../actions/RegistrationPatient/Billingactions";
@@ -199,11 +200,11 @@ class AddBillingForm extends Component {
                           div={{ className: "col-lg-2", id: "widthDate" }}
                           textBox={{
                             decimal: { allowNegative: false },
-                            value: this.state.advance,
+                            value: this.state.advance_adjust,
                             className: "txt-fld",
-                            name: "advance",
+                            name: "advance_adjust",
                             events: {
-                              onChange: null
+                              onChange: adjustadvance.bind(this, this, context)
                             }
                           }}
                         />
@@ -674,7 +675,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      generateBill: AlgaehActions
+      generateBill: AlgaehActions,
+      billingCalculations: AlgaehActions
     },
     dispatch
   );

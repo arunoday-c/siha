@@ -93,6 +93,7 @@ class DisplayVisitDetails extends Component {
                     displayTemplate: row => {
                       return (
                         <Radio
+                          style={{ maxHeight: "10px" }}
                           name="select"
                           onChange={this.handleChange.bind(this, row)}
                           checked={row.radioselect == 1 ? true : false}

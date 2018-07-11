@@ -38,6 +38,8 @@ export function algaehApiCall(options) {
     }
   }
   // "baseUrl": "/api/v1",
+  //"baseUrl": "http://192.168.0.149:3000/api/v1",
+
   var settings = extend(
     {
       uri: null,

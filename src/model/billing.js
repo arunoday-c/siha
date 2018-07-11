@@ -234,7 +234,7 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
 
 //created by:irfan, add receipt headder and details
 //AddReceipt
-let newReceipt = (dataBase, req, res,callBack, next) => {
+let newReceipt = (dataBase, req, res, callBack, next) => {
   let P_receiptHeaderModel = {
     hims_f_receipt_header_id: null,
     receipt_number: null,
@@ -316,7 +316,7 @@ let newReceipt = (dataBase, req, res,callBack, next) => {
             });
 
             dataBase.query(
-              "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
+              "INSERT  INTO    ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
                   created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
               [detailsInsert],
               (error, RcptDetailsRecords) => {
@@ -351,7 +351,10 @@ let newReceipt = (dataBase, req, res,callBack, next) => {
 //created by irfan: performing only calculation
 let billingCalculations = (req, res, next) => {
   try {
-    let inputParam = req.body;
+    let hasCalculateall =
+      req.body.intCalculateall === undefined ? true : req.body.intCalculateall;
+    let inputParam =
+      req.body.intCalculateall === undefined ? req.body.billdetails : req.body;
     if (inputParam.length == 0) {
       next(
         httpStatus.generateError(
@@ -361,51 +364,121 @@ let billingCalculations = (req, res, next) => {
       );
     }
     let sendingObject = {};
-    sendingObject.sub_total_amount = new LINQ(inputParam).Sum(
-      d => d.gross_amount
-    );
-    sendingObject.net_total = new LINQ(inputParam).Sum(d => d.net_amount);
-    sendingObject.discount_amount = new LINQ(inputParam);
-    Sum(d => d.discount_amout);
 
-    sendingObject.total_tax = new LINQ(inputParam).Sum(d => d.total_tax);
-    sendingObject.patient_tax = new LINQ(inputParam).Sum(d => d.patient_tax);
-    sendingObject.company_tax = new LINQ(inputParam).Sum(d => d.company_tax);
-    sendingObject.gross_total = new LINQ(inputParam).Sum(d => d.net_amount);
-    sendingObject.copay_amount = new LINQ(inputParam).Sum(d => d.copay_amount);
+    debugLog("bool Value: ", inputParam.intCalculateall);
+    if (hasCalculateall == true) {
+      sendingObject.sub_total_amount = new LINQ(inputParam).Sum(
+        d => d.gross_amount
+      );
+      sendingObject.net_total = new LINQ(inputParam).Sum(d => d.net_amout);
+      sendingObject.discount_amount = new LINQ(inputParam).Sum(
+        d => d.discount_amout
+      );
+      sendingObject.gross_total = new LINQ(inputParam).Sum(d => d.net_amout);
 
-    sendingObject.deductable_amount = new LINQ(inputParam).Sum(
-      d => d.deductable_amount
-    );
+      // Primary Insurance
+      sendingObject.copay_amount = new LINQ(inputParam).Sum(
+        d => d.copay_amount
+      );
+      sendingObject.deductable_amount = new LINQ(inputParam).Sum(
+        d => d.deductable_amount
+      );
 
-    sendingObject.patient_resp = new LINQ(inputParam).Sum(
-      d => d.deductable_amount
-    );
-    sendingObject.company_res = new LINQ(inputParam).Sum(d => d.comapany_resp);
-    sendingObject.company_res = new LINQ(inputParam).Sum(d => d.comapany_resp);
-    sendingObject.sec_company_res = new LINQ(inputParam).Sum(
-      d => d.sec_company_res
-    );
-    sendingObject.patient_payable = new LINQ(inputParam).Sum(
-      d => d.patient_payable
-    );
-    sendingObject.company_payable = new LINQ(inputParam).Sum(
-      d => d.company_payable
-    );
-    sendingObject.sec_company_payable = new LINQ(inputParam).Sum(
-      d => d.sec_company_payable
-    );
-    sendingObject.sec_company_tax = new LINQ(inputParam).Sum(
-      d => d.sec_company_tax
-    );
-    sendingObject.sheet_discount_amount =
-      sendingObject.sheet_discount_percentage /
-      100 /
-      sendingObject.gross_amount;
-    sendingObject.net_amount =
-      sendingObject.gross_total - sendingObject.sheet_discount_amount;
-    sendingObject.receiveable_amount =
-      sendingObject.net_amount - sendingObject.credit_amount;
+      // Secondary Insurance
+      sendingObject.sec_copay_amount = new LINQ(inputParam).Sum(
+        d => d.sec_copay_amount
+      );
+      sendingObject.sec_deductable_amount = new LINQ(inputParam).Sum(
+        d => d.sec_deductable_amount
+      );
+
+      // Responsibilities
+      sendingObject.patient_res = new LINQ(inputParam).Sum(d => d.patient_resp);
+      sendingObject.company_res = new LINQ(inputParam).Sum(
+        d => d.comapany_resp
+      );
+      sendingObject.sec_company_res = new LINQ(inputParam).Sum(
+        d => d.sec_company_res
+      );
+
+      // Tax Calculation
+      sendingObject.total_tax = new LINQ(inputParam).Sum(d => d.total_tax);
+      sendingObject.patient_tax = new LINQ(inputParam).Sum(d => d.patient_tax);
+      sendingObject.company_tax = new LINQ(inputParam).Sum(d => d.company_tax);
+      sendingObject.sec_company_tax = new LINQ(inputParam).Sum(
+        d => d.sec_company_tax
+      );
+
+      // Payables
+      sendingObject.patient_payable = new LINQ(inputParam).Sum(
+        d => d.patient_payable
+      );
+      sendingObject.company_payable = new LINQ(inputParam).Sum(
+        d => d.company_payable
+      );
+      sendingObject.sec_company_payable = new LINQ(inputParam).Sum(
+        d => d.sec_company_payable
+      );
+      // Sheet Level Discount Nullify
+      sendingObject.sheet_discount_amount = 0;
+      sendingObject.sheet_discount_percentage = 0;
+      sendingObject.advance_adjust = 0;
+
+      sendingObject.net_amount = sendingObject.gross_total;
+      sendingObject.receiveable_amount = sendingObject.net_amount;
+
+      //Reciept
+      sendingObject.cash_amount = sendingObject.receiveable_amount;
+      sendingObject.total_amount = sendingObject.receiveable_amount;
+
+      sendingObject.unbalanced_amount = 0;
+      sendingObject.card_amount = 0;
+      sendingObject.cheque_amount = 0;
+    } else {
+      //Reciept
+
+      if (inputParam.isReceipt == false) {
+        // Sheet Level Discount Nullify
+        sendingObject.sheet_discount_percentage = 0;
+        sendingObject.sheet_discount_amount = 0;
+        if (inputParam.sheet_discount_amount > 0) {
+          sendingObject.sheet_discount_percentage =
+            (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
+
+          sendingObject.sheet_discount_amount =
+            inputParam.sheet_discount_amount;
+        } else if (inputParam.sheet_discount_percentage > 0) {
+          sendingObject.sheet_discount_percentage =
+            inputParam.sheet_discount_percentage;
+          sendingObject.sheet_discount_amount =
+            (inputParam.gross_total * inputParam.sheet_discount_percentage) /
+            100;
+        }
+
+        sendingObject.net_amount =
+          inputParam.gross_total - sendingObject.sheet_discount_amount;
+        sendingObject.receiveable_amount =
+          sendingObject.net_amount - inputParam.advance_adjust;
+
+        sendingObject.cash_amount = sendingObject.receiveable_amount;
+        sendingObject.card_amount = 0;
+        sendingObject.cheque_amount = 0;
+      } else {
+        sendingObject.card_amount = inputParam.card_amount;
+        sendingObject.cheque_amount = inputParam.cheque_amount;
+        sendingObject.cash_amount = inputParam.cash_amount;
+        sendingObject.receiveable_amount = inputParam.receiveable_amount;
+      }
+
+      sendingObject.total_amount =
+        sendingObject.cash_amount +
+        sendingObject.card_amount +
+        sendingObject.cheque_amount;
+
+      sendingObject.unbalanced_amount =
+        sendingObject.receiveable_amount - sendingObject.total_amount;
+    }
+
     req.records = sendingObject;
     next();
   } catch (e) {
@@ -492,7 +565,8 @@ let getBillDetails = (req, res, next) => {
     created_by: null,
     created_date: null,
     updated_by: null,
-    updated_date: null
+    updated_date: null,
+    advance_adjust: 0
   };
   let servicesModel = {
     hims_d_services_id: null,
@@ -564,73 +638,77 @@ let getBillDetails = (req, res, next) => {
             s => s.net_amout
           );
           // debugLog("Net amount" + billingDetailsModel.);
-          extend(
-            billingHeaderModel,
-            {
-              sub_total_amount: sub_total_amount,
-              gross_total: gross_total,
-              patient_res: gross_total,
-              patient_payable: gross_total,
-              sheet_discount_amount: 0,
-              sheet_discount_percentage: 0,
-              net_amount: 0,
-              receiveable_amount: 0
-            },
-            req.body
-          );
+          // extend(
+          //   billingHeaderModel,
+          //   {
+          //     sub_total_amount: sub_total_amount,
+          //     gross_total: gross_total,
+          //     patient_res: gross_total,
+          //     patient_payable: gross_total,
+          //     sheet_discount_amount: 0,
+          //     sheet_discount_percentage: 0,
+          //     net_amount: 0,
+          //     receiveable_amount: 0
+          //   },
+          //   req.body
+          // );
 
-          if (billingHeaderModel.sheet_discount_amount > 0) {
-            billingHeaderModel.sheet_discount_percentage =
-              (billingHeaderModel.sheet_discount_amount / gross_total) * 100;
-          } else if (billingHeaderModel.sheet_discount_percentage > 0) {
-            billingHeaderModel.sheet_discount_amount =
-              (gross_total * billingHeaderModel.sheet_discount_percentage) /
-              100;
-          }
+          // if (billingHeaderModel.sheet_discount_amount > 0) {
+          //   billingHeaderModel.sheet_discount_percentage =
+          //     (billingHeaderModel.sheet_discount_amount / gross_total) * 100;
+          // } else if (billingHeaderModel.sheet_discount_percentage > 0) {
+          //   billingHeaderModel.sheet_discount_amount =
+          //     (gross_total * billingHeaderModel.sheet_discount_percentage) /
+          //     100;
+          // }
 
-          billingHeaderModel.net_amount =
-            billingHeaderModel.gross_total -
-            billingHeaderModel.sheet_discount_amount;
+          // billingHeaderModel.advance_amount = records.advance_amount;
 
-          billingHeaderModel.receiveable_amount =
-            billingHeaderModel.net_amount - billingHeaderModel.credit_amount;
+          // billingHeaderModel.net_amount =
+          //   billingHeaderModel.gross_total -
+          //   billingHeaderModel.sheet_discount_amount;
 
-          debugLog("Sheet Amount ", billingHeaderModel.sheet_discount_amount);
+          // billingHeaderModel.receiveable_amount =
+          //   billingHeaderModel.net_amount -
+          //   billingHeaderModel.credit_amount -
+          //   billingHeaderModel.advance_adjust;
 
-          req.body.sheet_discount_amount =
-            billingHeaderModel.sheet_discount_amount;
+          // debugLog("Sheet Amount ", billingHeaderModel.sheet_discount_amount);
 
-          req.body.sheet_discount_percentage =
-            billingHeaderModel.sheet_discount_percentage;
+          // req.body.sheet_discount_amount =
+          //   billingHeaderModel.sheet_discount_amount;
 
-          req.body.isReceipt =
-            req.body.isReceipt == null ? false : req.body.isReceipt;
+          // req.body.sheet_discount_percentage =
+          //   billingHeaderModel.sheet_discount_percentage;
 
-          if (req.body.isReceipt == false) {
-            extend(receiptHeaderModel, req.body, {
-              total_amount: 0,
-              unbalanced_amount: 0,
-              cash_amount: billingHeaderModel.receiveable_amount,
-              card_amount: 0,
-              cheque_amount: 0
-            });
-          } else {
-            extend(receiptHeaderModel, req.body);
-          }
+          // req.body.isReceipt =
+          //   req.body.isReceipt == null ? false : req.body.isReceipt;
 
-          debugLog("Receipt Log", receiptHeaderModel);
+          // if (req.body.isReceipt == false) {
+          //   extend(receiptHeaderModel, req.body, {
+          //     total_amount: 0,
+          //     unbalanced_amount: 0,
+          //     cash_amount: billingHeaderModel.receiveable_amount,
+          //     card_amount: 0,
+          //     cheque_amount: 0
+          //   });
+          // } else {
+          //   extend(receiptHeaderModel, req.body);
+          // }
 
-          receiptHeaderModel.total_amount =
-            receiptHeaderModel.cash_amount +
-            receiptHeaderModel.card_amount +
-            receiptHeaderModel.cheque_amount;
+          // debugLog("Receipt Log", receiptHeaderModel);
 
-          receiptHeaderModel.unbalanced_amount =
-            billingHeaderModel.receiveable_amount -
-            receiptHeaderModel.total_amount;
+          // receiptHeaderModel.total_amount =
+          //   receiptHeaderModel.cash_amount +
+          //   receiptHeaderModel.card_amount +
+          //   receiptHeaderModel.cheque_amount;
+
+          // receiptHeaderModel.unbalanced_amount =
+          //   billingHeaderModel.receiveable_amount -
+          //   receiptHeaderModel.total_amount;
 
           debugLog("Results are recorded...", result);
-          req.records = extend(billingHeaderModel, receiptHeaderModel, {
+          req.records = extend({
             billdetails: [billingDetailsModel]
           });
           next();

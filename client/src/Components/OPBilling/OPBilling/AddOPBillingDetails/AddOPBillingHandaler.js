@@ -4,7 +4,17 @@ const serviceTypeHandeler = ($this, context, e) => {
       [e.name]: e.value
     },
     () => {
-      $this.props.getServices($this.state.s_service_type);
+      // $this.props.getServices($this.state.s_service_type);
+
+      $this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        data: { service_type_id: $this.state.s_service_type },
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "services"
+        }
+      });
     }
   );
   if (context != null) {

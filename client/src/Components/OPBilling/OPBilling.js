@@ -56,7 +56,10 @@ class PatientDisplayDetails extends Component {
 
   componentWillReceiveProps(nextProps) {
     debugger;
-    this.setState(nextProps.patients[0]);
+    //this.setState(nextProps.patients[0]);
+    if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
+      this.setState({ ...this.state, ...nextProps.genbill });
+    }
   }
 
   getPatientDetails() {
@@ -132,8 +135,8 @@ class PatientDisplayDetails extends Component {
             }}
           >
             <PatientDetails BillingIOputs={this.state} />
-            <DisplayInsuranceDetails BillingIOputs={this.state} />
             <DisplayVisitDetails BillingIOputs={this.state} />
+            <DisplayInsuranceDetails BillingIOputs={this.state} />
             <OPBillingDetails BillingIOputs={this.state} />
           </MyContext.Provider>
         </div>
@@ -174,6 +177,7 @@ class PatientDisplayDetails extends Component {
 
 function mapStateToProps(state) {
   return {
+    genbill: state.genbill,
     patients: state.patients
   };
 }

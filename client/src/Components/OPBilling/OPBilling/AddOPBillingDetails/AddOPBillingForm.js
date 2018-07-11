@@ -10,11 +10,9 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  Button
+  AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import DisplayOPBilling from "../../../BillDetails/BillDetails";
-import { generateBill } from "../../../../actions/RegistrationPatient/Billingactions";
 import {
   serviceTypeHandeler,
   serviceHandeler,
@@ -85,37 +83,32 @@ class AddOPBillingForm extends Component {
       data: serviceInput,
       redux: {
         type: "BILL_GEN_GET_DATA",
-        mappingName: "genbill"
+        mappingName: "xxx"
       },
       afterSuccess: data => {
+        debugger;
         let existingservices = $this.state.billdetails;
-        if (existingservices.length != 0 && data.billdetails.length != 0) {
+        if (data.billdetails.length != 0) {
           data.billdetails[0].service_type_id = $this.state.s_service_type;
           data.billdetails[0].service_type = $this.state.s_service;
           existingservices.splice(0, 0, data.billdetails[0]);
         }
 
-        $this.setState({ billdetails: existingservices });
-
         if (context != null) {
           context.updateState({ billdetails: existingservices });
         }
+        debugger;
+        $this.props.billingCalculations({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: existingservices,
+          redux: {
+            type: "BILL_HEADER_GEN_GET_DATA",
+            mappingName: "genbill"
+          }
+        });
       }
     });
-    // this.props.generateBill(serviceInput, data => {
-    //   let existingservices = $this.state.billdetails;
-    //   if (existingservices.length != 0 && data.billdetails.length != 0) {
-    //     data.billdetails[0].service_type_id = $this.state.s_service_type;
-    //     data.billdetails[0].service_type = $this.state.s_service;
-    //     existingservices.splice(0, 0, data.billdetails[0]);
-    //   }
-
-    //   $this.setState({ billdetails: existingservices });
-
-    //   if (context != null) {
-    //     context.updateState({ billdetails: existingservices });
-    //   }
-    // });
   }
 
   render() {
@@ -331,7 +324,6 @@ class AddOPBillingForm extends Component {
                     <AlgaehLabel
                       label={{
                         fieldName: "sub_total_amount"
-                        // forceLabel: "Sub Total"
                       }}
                     />
                   </div>
@@ -400,214 +392,6 @@ class AddOPBillingForm extends Component {
                     }}
                   />
                 </div>
-
-                {/* <div className="row primary-box-container">
-                  <div className="col-lg-3">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "gross_total"
-                      }}
-                    />
-                  </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3", id: "widthDate" }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: this.state.gross_total,
-                      className: "txt-fld",
-                      name: "gross_total",
-
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                </div>
-
-                <div className="row primary-box-container">
-                  <div className="col-lg-3">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "patient_payable"
-                      }}
-                    />
-                  </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3", id: "widthDate" }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: this.state.patient_payable,
-                      className: "txt-fld",
-                      name: "patient_payable",
-
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                </div>
-                <div className="row primary-box-container">
-                  <div className="col-lg-3">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "advance"
-                      }}
-                    />
-                  </div>
-
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3", id: "widthDate" }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: this.state.advance,
-                      className: "txt-fld",
-                      name: "advance",
-
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                  <div className="col-lg-1">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "advance_adjust"
-                      }}
-                    />
-                  </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-2", id: "widthDate" }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: this.state.advance_amount,
-                      className: "txt-fld",
-                      name: "advance_amount",
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
-                    }}
-                  />
-                </div>
-                <div className="row primary-box-container">
-                  <div className="col-lg-3">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "sheet_discount"
-                      }}
-                    />
-                  </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3", id: "widthDate" }}
-                    textBox={{
-                      decimal: { allowNegative: false, suffix: " %" },
-                      value: this.state.sheet_discount_percentage,
-                      className: "txt-fld",
-                      name: "sheet_discount_percentage",
-                      events: {
-                        onChange: servicetexthandle.bind(this, this, context)
-                      }
-                    }}
-                  />
-                  <div className="col-lg-1">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "sheet_discount_amount"
-                      }}
-                    />
-                  </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-2", id: "widthDate" }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: this.state.sheet_discount_amount,
-                      className: "txt-fld",
-                      name: "sheet_discount_amount",
-
-                      events: {
-                        onChange: servicetexthandle.bind(this, this, context)
-                      }
-                    }}
-                  />
-                </div>
-                <hr />
-                <div className="row last-box-container">
-                  <div className="col-lg-3 last-box-label">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "bill_amount"
-                      }}
-                    />
-                  </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3", id: "widthDate" }}
-                    label={{
-                      fieldName: "net_amount",
-                      isImp: true
-                    }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: this.state.net_amount,
-                      className: "txt-fld",
-                      name: "net_amount",
-
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3", id: "widthDate" }}
-                    label={{
-                      fieldName: "credit_amount",
-                      isImp: true
-                    }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: this.state.credit_amount,
-                      className: "txt-fld",
-                      name: "credit_amount",
-
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3", id: "widthDate" }}
-                    label={{
-                      fieldName: "receiveable_amount",
-                      isImp: true
-                    }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: this.state.receiveable_amount,
-                      className: "txt-fld",
-                      name: "receiveable_amount",
-
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                </div> */}
 
                 <div className="row insurance-amt-details">
                   <AlagehFormGroup
@@ -694,7 +478,7 @@ class AddOPBillingForm extends Component {
                 <div className="row">
                   <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 primary-details">
                     <div className="row primary-box-container">
-                      <div className="col-lg-3">
+                      <div className="col-lg-3" style={{ marginTop: "20px" }}>
                         <AlgaehLabel
                           label={{
                             fieldName: "patient"
@@ -709,9 +493,9 @@ class AddOPBillingForm extends Component {
                         }}
                         textBox={{
                           decimal: { allowNegative: false },
-                          value: this.state.patient_resp,
+                          value: this.state.patient_res,
                           className: "txt-fld",
-                          name: "patient_resp",
+                          name: "patient_res",
 
                           events: {
                             onChange: null
@@ -773,14 +557,11 @@ class AddOPBillingForm extends Component {
                       </div>
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
-                        // label={{
-                        //   fieldName: "responsiblity"
-                        // }}
                         textBox={{
                           decimal: { allowNegative: false },
-                          value: this.state.comapany_resp,
+                          value: this.state.company_res,
                           className: "txt-fld",
-                          name: "comapany_resp",
+                          name: "company_res",
 
                           events: {
                             onChange: null
@@ -793,9 +574,6 @@ class AddOPBillingForm extends Component {
 
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
-                        // label={{
-                        //   fieldName: "tax"
-                        // }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.company_tax,
@@ -813,9 +591,6 @@ class AddOPBillingForm extends Component {
 
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
-                        // label={{
-                        //   fieldName: "payble"
-                        // }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.company_payble,
@@ -843,9 +618,6 @@ class AddOPBillingForm extends Component {
 
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
-                        // label={{
-                        //   fieldName: "responsiblity"
-                        // }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.sec_company_res,
@@ -863,9 +635,6 @@ class AddOPBillingForm extends Component {
 
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
-                        // label={{
-                        //   fieldName: "tax"
-                        // }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.sec_company_tax,
@@ -883,9 +652,6 @@ class AddOPBillingForm extends Component {
 
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
-                        // label={{
-                        //   fieldName: "payble"
-                        // }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.sec_company_paybale,
@@ -932,15 +698,12 @@ class AddOPBillingForm extends Component {
                         }}
                         textBox={{
                           decimal: { allowNegative: false },
-                          value: this.state.advance,
+                          value: this.state.advance_adjust,
                           className: "txt-fld",
-                          name: "advance",
+                          name: "advance_adjust",
 
                           events: {
                             onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            disabled: true
                           }
                         }}
                       />
@@ -1068,7 +831,8 @@ function mapDispatchToProps(dispatch) {
     {
       getServiceTypes: AlgaehActions,
       getServices: AlgaehActions,
-      generateBill: AlgaehActions
+      generateBill: AlgaehActions,
+      billingCalculations: AlgaehActions
     },
     dispatch
   );

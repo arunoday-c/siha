@@ -97,7 +97,6 @@ class AddConsultationForm extends Component {
   changeDateFormat = date => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
-      // return moment(date).format(Options.dateFormat);
     }
   };
 
@@ -348,8 +347,7 @@ class AddConsultationForm extends Component {
                     dataSource={{
                       data: vstDeatils
                     }}
-                    // isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 5 }}
+                    paging={{ page: 0, rowsPerPage: 3 }}
                     events={{
                       onDone: row => {
                         alert("done is raisedd");
@@ -380,7 +378,8 @@ function mapDispatchToProps(dispatch) {
       getVisittypes: AlgaehActions,
       getProviderDetails: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
-      generateBill: AlgaehActions
+      generateBill: AlgaehActions,
+      billingCalculations: AlgaehActions
     },
     dispatch
   );

@@ -4,13 +4,14 @@
 import axios from "axios";
 import { setToken, setCookie } from "../../utils/algaehApiCall";
 import config from "../../utils/config.json";
+import { successfulMessage } from "../../utils/GlobalFunctions";
 
 export function getTokenDetals() {
   var auth_url = "/api/v1/apiAuth";
   var username = config.apiAuth.user;
   var password = config.apiAuth.password;
   var basicAuth = "Basic " + btoa(username + ":" + password);
-
+  debugger;
   axios({
     method: "GET",
     url: auth_url,
@@ -22,5 +23,10 @@ export function getTokenDetals() {
     })
     .catch(err => {
       console.error("Error : ", err);
+      successfulMessage({
+        message: err,
+        title: "Error",
+        icon: "error"
+      });
     });
 }

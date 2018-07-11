@@ -194,22 +194,22 @@ class RegistrationPatient extends Component {
   };
 
   ShowAdvanceScreen(e) {
-    this.setState({
-      ...this.state,
-      AdvanceOpen: !this.state.AdvanceOpen
-    });
-    // if (this.state.patient_code != null && this.state.patient_code != "") {
-    //   this.setState({
-    //     ...this.state,
-    //     AdvanceOpen: !this.state.AdvanceOpen
-    //   });
-    // } else {
-    //   successfulMessage({
-    //     message: "Select Patient",
-    //     title: "Error",
-    //     icon: "error"
-    //   });
-    // }
+    // this.setState({
+    //   ...this.state,
+    //   AdvanceOpen: !this.state.AdvanceOpen
+    // });
+    if (this.state.patient_code != null && this.state.patient_code != "") {
+      this.setState({
+        ...this.state,
+        AdvanceOpen: !this.state.AdvanceOpen
+      });
+    } else {
+      successfulMessage({
+        message: "Select Patient",
+        title: "Error",
+        icon: "error"
+      });
+    }
   }
 
   ShowRefundScreen(e) {
@@ -221,7 +221,7 @@ class RegistrationPatient extends Component {
     } else {
       successfulMessage({
         message: "Select Patient",
-        title: "Error",
+        title: "Warning",
         icon: "error"
       });
     }
