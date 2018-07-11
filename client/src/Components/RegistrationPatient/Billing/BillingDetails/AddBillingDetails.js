@@ -24,7 +24,6 @@ const texthandle = ($this, context, ctrl, e) => {
 
 const calculateRecipt = ($this, context) => {
   var intervalId;
-  debugger;
 
   let serviceInput = {
     isReceipt: true,
@@ -35,7 +34,7 @@ const calculateRecipt = ($this, context) => {
     cheque_amount: parseFloat($this.state.cheque_amount),
     receiveable_amount: parseFloat($this.state.receiveable_amount)
   };
-  debugger;
+
   clearInterval(intervalId);
   intervalId = setInterval(() => {
     $this.props.billingCalculations({
@@ -141,7 +140,6 @@ const chequetexthandle = ($this, context, ctrl, e) => {
 };
 
 const adjustadvance = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
 
   if (e.target.value > $this.state.advance_amount) {
@@ -171,7 +169,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
 
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  debugger;
+
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
@@ -222,7 +220,7 @@ const billheaderCalculation = ($this, context) => {
   };
 
   clearInterval(intervalId);
-  debugger;
+
   intervalId = setInterval(() => {
     $this.props.billingCalculations({
       uri: "/billing/billingCalculations",

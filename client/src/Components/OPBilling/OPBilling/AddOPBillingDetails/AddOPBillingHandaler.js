@@ -57,7 +57,6 @@ const texthandle = ($this, context, ctrl, e) => {
 
 //New
 const adjustadvance = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
 
   if (e.target.value > $this.state.advance_amount) {
@@ -87,7 +86,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
 
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  debugger;
+
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
@@ -138,7 +137,7 @@ const billheaderCalculation = ($this, context) => {
   };
 
   clearInterval(intervalId);
-  debugger;
+
   intervalId = setInterval(() => {
     $this.props.billingCalculations({
       uri: "/billing/billingCalculations",

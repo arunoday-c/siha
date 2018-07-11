@@ -46,7 +46,6 @@ class AddConsultationForm extends Component {
   }
 
   componentDidMount() {
-    debugger;
     if (
       this.props.visittypes === undefined ||
       this.props.visittypes.length === 0
@@ -74,7 +73,7 @@ class AddConsultationForm extends Component {
         }
       });
     }
-    debugger;
+
     if (
       this.props.deptanddoctors === undefined ||
       this.props.deptanddoctors.length === 0

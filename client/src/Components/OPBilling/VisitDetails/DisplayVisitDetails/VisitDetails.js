@@ -59,7 +59,6 @@ class DisplayVisitDetails extends Component {
   }
 
   handleChange(row, context, e) {
-    debugger;
     let x = Enumerable.from(this.state.visitDetails)
       .where(w => w.radioselect == 1)
       .toArray();

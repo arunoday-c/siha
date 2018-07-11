@@ -2,7 +2,7 @@ import { successfulMessage } from "../../utils/GlobalFunctions";
 
 export function Validations(state) {
   let isError = false;
-  debugger;
+
   if (state.state.full_name.length <= 0) {
     isError = true;
     state.setState({
@@ -134,7 +134,7 @@ export function Validations(state) {
       return isError;
     }
   }
-  debugger;
+
   if (state.state.unbalanced_amount > 0) {
     isError = true;
 

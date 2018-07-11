@@ -88,7 +88,6 @@ class AddOPBillingForm extends Component {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        debugger;
         let existingservices = $this.state.billdetails;
         if (data.billdetails.length != 0) {
           existingservices.splice(0, 0, data.billdetails[0]);
@@ -97,7 +96,6 @@ class AddOPBillingForm extends Component {
         if (context != null) {
           context.updateState({ billdetails: existingservices });
         }
-        debugger;
 
         $this.props.billingCalculations({
           uri: "/billing/billingCalculations",
@@ -111,9 +109,8 @@ class AddOPBillingForm extends Component {
       }
     });
   }
-
+  //Calculate Row Detail
   calculateAmount(row, context, ctrl, e) {
-    debugger;
     e = e || ctrl;
     let $this = this;
 
@@ -136,10 +133,14 @@ class AddOPBillingForm extends Component {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        debugger;
-
         extend(row, data.billdetails[0]);
+
         $this.setState({});
+        // if (context != null) {
+        //   context.updateState({
+        //     billdetails: serviceDetails
+        //   });
+        // }
       }
     });
   }
@@ -158,7 +159,6 @@ class AddOPBillingForm extends Component {
   }
 
   deleteBillDetail(context, e, rowId) {
-    debugger;
     let serviceDetails = this.state.billdetails;
     serviceDetails.splice(rowId, 1);
 

@@ -37,7 +37,6 @@ export function postPatientDetails(dataValue, callback) {
 }
 
 export function postVisitDetails(dataValue, callback) {
-  debugger;
   callback = callback || null;
 
   return function(dispatch) {

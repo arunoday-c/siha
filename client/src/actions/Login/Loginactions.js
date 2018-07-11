@@ -11,7 +11,6 @@ export function getTokenDetals() {
   var username = config.apiAuth.user;
   var password = config.apiAuth.password;
   var basicAuth = "Basic " + btoa(username + ":" + password);
-  debugger;
   axios({
     method: "GET",
     url: auth_url,
