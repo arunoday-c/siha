@@ -236,7 +236,6 @@ class VisitType extends Component {
   }
 
   updateVisitType(data) {
-    debugger;
     algaehApiCall({
       uri: "/visitType/update",
       data: data,

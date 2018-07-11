@@ -11,7 +11,7 @@ import {
 import FrontDesk from "./Components/RegistrationPatient/RegistrationPatient";
 import Login from "./Components/Login/Login";
 import Dashboard from "./Components/Dashboard/Dashboard";
-import DeptMaster from "./Components/BusinessSetup/DeptMaster/DeptMaster";
+import InsuranceSetup from "./Components/InsuranceSetup/InsuranceSetup.js";
 import BusinessSetup from "./Components/BusinessSetup/BusinessSetup";
 import CommonSetup from "./Components/CommonSetup/CommonSetup";
 import Experiment from "./Components/Experiment";
@@ -58,15 +58,18 @@ const appRoutes = [
     path: "/Dashboard",
     isExactPath: true,
     component: <Dashboard />
+  },
+  {
+    path: "/InsuranceSetup",
+    isExactPath: true,
+    component: <InsuranceSetup />
   }
 ];
 
 const routes = (
   <HashRouter>
     <Switch>
-      
       {appRoutes.map((routeItem, idx) => {
-
         return (
           <Route
             key={routeItem.path}
@@ -83,4 +86,3 @@ const routes = (
 );
 
 export default routes;
-
