@@ -345,10 +345,232 @@ let addSubInsurenceProvider = (req, res, next) => {
   }
 };
 
+//created by irfan: to add network(insurence plan)
+let addNetwork = (req, res, next) => {
+  let NetworkModel = {
+    hims_d_insurance_network_id: null,
+    network_type: null,
+    insurance_provider_id: null,
+    insurance_sub_id: null,
+    effective_start_date: null,
+    effective_end_date: null,
+    sub_insurance_status: null,
+    created_date: null,
+    created_by: null,
+    updated_date: null,
+    updated_by: null
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend(NetworkModel, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO hims_d_insurance_network(`network_type`,`insurance_provider_id`,`insurance_sub_id`,\
+        `effective_start_date`,`effective_end_date`, `sub_insurance_status`,`created_date`,`created_by`,\
+        `updated_date`,`updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?)",
+        [
+          inputparam.network_type,
+          inputparam.insurance_provider_id,
+          inputparam.insurance_sub_id,
+          inputparam.effective_start_date,
+          inputparam.effective_end_date,
+          inputparam.sub_insurance_status,
+          new Date(),
+          inputparam.created_by,
+          new Date(),
+          inputparam.updated_by,
+          inputparam.record_status
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add networkoffice(policy)
+// let NetworkOffice = (req, res, next) => {
+//   let NetworkOfficeModel = {
+//     hims_d_insurance_network_office_id: null,
+//     network_id: null,
+//     hospital_id: null,
+//     deductible: null,
+//     deductable_type: null,
+//     min_value: null,
+//     max_value: null,
+//     copay_consultation: null,
+//     deductible_lab: null,
+//     for_alllab: null,
+//     copay_percent: null,
+//     deductible_rad: null,
+//     for_allrad: null,
+//     copay_percent_rad: null,
+//     copay_percent_trt: null,
+//     copay_percent_dental: null,
+//     copay_medicine: null,
+//     insur_network_limit: null,
+//     deductible_trt: null,
+//     deductible_dental: null,
+//     deductible_medicine: null,
+//     lab_min: null,
+//     lab_max: null,
+//     rad_min: null,
+//     rad_max: null,
+//     trt_max: null,
+//     trt_min: null,
+//     dental_min: null,
+//     dental_max: null,
+//     medicine_min: null,
+//     medicine_max: null,
+//     invoice_max_liability: null,
+//     for_alltrt: null,
+//     for_alldental: null,
+//     for_allmedicine: null,
+//     invoice_max_deduct: null,
+//     price_from: null,
+//     employer: null,
+//     policy_number: null,
+//     follow_up: null,
+//     preapp_limit: null,
+//     deductible_ip: null,
+//     copay_ip: null,
+//     ip_min: null,
+//     ip_max: null,
+//     for_allip: null,
+//     consult_limit: null,
+//     preapp_limit_from: null,
+//     copay_maternity: null,
+//     maternity_min: null,
+//     maternity_max: null,
+//     copay_optical: null,
+//     optical_min: null,
+//     optical_max: null,
+//     copay_diagnostic: null,
+//     diagnostic_min: null,
+//     diagnostic_max: null,
+//     created_date: null,
+//     created_by: null,
+//     updated_date: null,
+//     updated_by: null
+//   };
+
+//   try {
+//     if (req.db == null) {
+//       next(httpStatus.dataBaseNotInitilizedError());
+//     }
+//     let db = req.db;
+//     let inputparam = extend(NetworkOfficeModel, req.body);
+
+//     db.getConnection((error, connection) => {
+//       if (error) {
+//         next(error);
+//       }
+
+//       connection.query(
+//         "INSERT INTO hims_d_insurance_network_office(`network_type`,`insurance_provider_id`,`insurance_sub_id`,\
+//         `effective_start_date`,`effective_end_date`, `sub_insurance_status`,`created_date`,`created_by`,\
+//         `updated_date`,`updated_by`)\
+//         VALUE(?,?,?,?,?,?,?,?,?,?)",
+//         [
+//           inputparam.network_id,
+//           inputparam.hospital_id,
+//           inputparam.deductible,
+//           inputparam.deductable_type,
+//           inputparam.min_value,
+//           inputparam.max_value,
+//           inputparam.copay_consultation,
+//           inputparam.deductible_lab,
+//           inputparam.for_alllab,
+//           inputparam.copay_percent,
+//           inputparam.deductible_rad,
+//           inputparam.for_allrad,
+//           inputparam.copay_percent_rad,
+//           inputparam.copay_percent_trt,
+//           inputparam.copay_percent_dental,
+//           inputparam.copay_medicine,
+//           inputparam.insur_network_limit,
+//           inputparam.deductible_trt,
+//           inputparam.deductible_dental,
+//           inputparam.deductible_medicine,
+//           inputparam.lab_min,
+//           inputparam.lab_max,
+//           inputparam.rad_min,
+//           inputparam.rad_max,
+//           inputparam.trt_max,
+//           inputparam.trt_min,
+//           inputparam.dental_min,
+//           inputparam.dental_max,
+//           inputparam.medicine_min,
+//           inputparam.medicine_max,
+//           inputparam.invoice_max_liability,
+//           inputparam.for_alltrt,
+//           inputparam.for_alldental,
+//           inputparam.for_allmedicine,
+//           inputparam.invoice_max_deduct,
+//           inputparam.price_from,
+//           inputparam.employer,
+//           inputparam.policy_number,
+//           inputparam.follow_up,
+//           inputparam.preapp_limit,
+//           inputparam.deductible_ip,
+//           inputparam.copay_ip,
+//           inputparam.ip_min,
+//           inputparam.ip_max,
+//           inputparam.for_allip,
+//           inputparam.consult_limit,
+//           inputparam.preapp_limit_from,
+//           inputparam.copay_maternity,
+//           inputparam.maternity_min,
+//           inputparam.maternity_max,
+//           inputparam.copay_optical,
+//           inputparam.optical_min,
+//           inputparam.optical_max,
+//           inputparam.copay_diagnostic,
+//           inputparam.diagnostic_min,
+//           inputparam.diagnostic_max,
+//           inputparam.created_date,
+//           inputparam.created_by,
+//           inputparam.updated_date,
+//           inputparam.updated_by
+//         ],
+//         (error, result) => {
+//           releaseDBConnection(db, connection);
+//           if (error) {
+//             next(error);
+//           }
+//           req.records = result;
+//           next();
+//         }
+//       );
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
+
 module.exports = {
   getPatientInsurence,
   addPatientInsurence,
   getListOfInsurenceProvider,
   addInsurenceProvider,
-  addSubInsurenceProvider
+  addSubInsurenceProvider,
+  addNetwork
 };

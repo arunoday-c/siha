@@ -8,7 +8,8 @@ import {
   addPatientInsurence,
   getListOfInsurenceProvider,
   addInsurenceProvider,
-  addSubInsurenceProvider
+  addSubInsurenceProvider,
+  addNetwork
 } from "../model/insurence";
 
 export default ({ config, db }) => {
@@ -89,5 +90,19 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan : to add network(insurence plan)
+  api.post(
+    "/addNetwork",
+    addNetwork,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };
