@@ -12,7 +12,7 @@ import {
 import {
   texthandle,
   datehandle,
-  servicetexthandle,
+  discounthandle,
   cashtexthandle,
   cardtexthandle,
   chequetexthandle,
@@ -225,11 +225,7 @@ class AddBillingForm extends Component {
                             className: "txt-fld",
                             name: "sheet_discount_percentage",
                             events: {
-                              onChange: servicetexthandle.bind(
-                                this,
-                                this,
-                                context
-                              )
+                              onChange: discounthandle.bind(this, this, context)
                             }
                           }}
                         />
@@ -249,11 +245,7 @@ class AddBillingForm extends Component {
                             name: "sheet_discount_amount",
 
                             events: {
-                              onChange: servicetexthandle.bind(
-                                this,
-                                this,
-                                context
-                              )
+                              onChange: discounthandle.bind(this, this, context)
                             }
                           }}
                         />

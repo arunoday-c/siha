@@ -169,7 +169,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
   }
 };
 
-const servicetexthandle = ($this, context, ctrl, e) => {
+const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
   debugger;
   let sheet_discount_percentage = 0;
@@ -250,7 +250,7 @@ const datehandle = ($this, context, ctrl, e) => {
 export {
   texthandle,
   datehandle,
-  servicetexthandle,
+  discounthandle,
   cashtexthandle,
   cardtexthandle,
   chequetexthandle,

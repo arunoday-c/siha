@@ -7,13 +7,12 @@ import "./registration.css";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import BillingIOputs from "../../Models/Billing";
 import extend from "extend";
-import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogTitle from "@material-ui/core/DialogTitle";
+// import Dialog from "@material-ui/core/Dialog";
+// import DialogActions from "@material-ui/core/DialogActions";
+// import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import AppBar from "@material-ui/core/AppBar";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
@@ -30,7 +29,6 @@ import { getCookie } from "../../utils/algaehApiCall";
 import AddAdvanceModal from "../Advance/AdvanceModal";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
-import { Button } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 
 function Transition(props) {
@@ -105,7 +103,7 @@ class RegistrationPatient extends Component {
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
           created_by: getCookie("UserID"),
-          created_date: moment(String(new Date())).format("YYYY-MM-DD"),
+          created_date: new Date(),
           updated_by: null,
           updated_date: null,
           card_type: null
@@ -119,7 +117,7 @@ class RegistrationPatient extends Component {
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
           created_by: getCookie("UserID"),
-          created_date: moment(String(new Date())).format("YYYY-MM-DD"),
+          created_date: new Date(),
           updated_by: null,
           updated_date: null,
           card_type: null
@@ -133,7 +131,7 @@ class RegistrationPatient extends Component {
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
           created_by: getCookie("UserID"),
-          created_date: moment(String(new Date())).format("YYYY-MM-DD"),
+          created_date: new Date(),
           updated_by: null,
           updated_date: null,
           card_type: null
@@ -406,7 +404,7 @@ class RegistrationPatient extends Component {
           </MyContext.Provider>
         </div>
 
-        <div>
+        {/* <div>
           <Dialog
             open={this.state.DialogOpen}
             TransitionComponent={Transition}
@@ -425,7 +423,7 @@ class RegistrationPatient extends Component {
               </Button>
             </DialogActions>
           </Dialog>
-        </div>
+        </div> */}
       </div>
     );
   }

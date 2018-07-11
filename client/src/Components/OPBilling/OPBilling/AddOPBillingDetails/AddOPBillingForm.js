@@ -17,7 +17,8 @@ import {
   serviceTypeHandeler,
   serviceHandeler,
   texthandle,
-  servicetexthandle
+  discounthandle,
+  adjustadvance
 } from "./AddOPBillingHandaler";
 import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -98,10 +99,11 @@ class AddOPBillingForm extends Component {
           context.updateState({ billdetails: existingservices });
         }
         debugger;
+
         $this.props.billingCalculations({
           uri: "/billing/billingCalculations",
           method: "POST",
-          data: existingservices,
+          data: { billdetails: existingservices },
           redux: {
             type: "BILL_HEADER_GEN_GET_DATA",
             mappingName: "genbill"
@@ -192,6 +194,7 @@ class AddOPBillingForm extends Component {
                 <div className="row form-details">
                   <div className="col-lg-12">
                     <AlgaehDataGrid
+                      id="Bill_details"
                       columns={[
                         {
                           fieldName: "service_type_id",
@@ -252,8 +255,7 @@ class AddOPBillingForm extends Component {
                           fieldName: "quantity",
                           label: (
                             <AlgaehLabel label={{ fieldName: "quantity" }} />
-                          ),
-                          disabled: true
+                          )
                         },
                         {
                           fieldName: "unit_cost",
@@ -278,8 +280,7 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel
                               label={{ fieldName: "discount_percentage" }}
                             />
-                          ),
-                          disabled: true
+                          )
                         },
                         {
                           fieldName: "discount_amout",
@@ -287,8 +288,7 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel
                               label={{ fieldName: "discount_amout" }}
                             />
-                          ),
-                          disabled: true
+                          )
                         },
 
                         {
@@ -306,9 +306,9 @@ class AddOPBillingForm extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 5 }}
                       events={{
-                        onDone: row => {
-                          alert("done is raisedd");
-                        }
+                        // onDelete: this.deleteIDType.bind(this),
+                        onEdit: row => {}
+                        // onDone: this.updateIDtypes.bind(this)
                       }}
                     />
                   </div>
@@ -703,7 +703,7 @@ class AddOPBillingForm extends Component {
                           name: "advance_adjust",
 
                           events: {
-                            onChange: texthandle.bind(this, this, context)
+                            onChange: adjustadvance.bind(this, this, context)
                           }
                         }}
                       />
@@ -742,7 +742,7 @@ class AddOPBillingForm extends Component {
                           name: "sheet_discount_percentage",
 
                           events: {
-                            onChange: texthandle.bind(this, this, context)
+                            onChange: discounthandle.bind(this, this, context)
                           }
                         }}
                       />
@@ -759,7 +759,7 @@ class AddOPBillingForm extends Component {
                           name: "sheet_discount_amount",
 
                           events: {
-                            onChange: texthandle.bind(this, this, context)
+                            onChange: discounthandle.bind(this, this, context)
                           }
                         }}
                       />

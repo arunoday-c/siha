@@ -5,15 +5,6 @@ export function postBillDetsils(dataValue, callback) {
   callback = callback || null;
 
   return function(dispatch) {
-    // if (callback === null) {
-    //   dispatch({
-    //     type: "BILL_GEN_INIT_DATA",
-    //     payload: dataValue
-    //   });
-    // } else {
-
-    // }
-
     algaehApiCall({
       uri: "/save",
       method: "POST",

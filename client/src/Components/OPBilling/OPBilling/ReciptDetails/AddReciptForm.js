@@ -1,9 +1,11 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 import {
   texthandle,
   datehandle,
-  servicetexthandle,
   cashtexthandle,
   cardtexthandle,
   chequetexthandle
@@ -19,8 +21,9 @@ import MyContext from "../../../../utils/MyContext";
 import "./AddReciptForm.css";
 import "./../../../../styles/site.css";
 import variableJson from "../../../../utils/GlobalVariables.json";
+import { AlgaehActions } from "../../../../actions/algaehActions";
 
-export default class AddReciptForm extends Component {
+class AddReciptForm extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -369,3 +372,25 @@ export default class AddReciptForm extends Component {
     // return <div className="">Recipt Details</div>;
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    genbill: state.genbill
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      billingCalculations: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AddReciptForm)
+);
