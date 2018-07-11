@@ -108,7 +108,7 @@ let addPatientInsurence = (req, res, next) => {
                 `primary_effective_end_date`,`secondary_insurance_provider_id`,`secondary_sub_id`,\
                 `secondary_network_id`,`secondary_effective_start_date`,`secondary_effective_end_date`,\
                 `secondary_inc_card_path`,`secondary_policy_num`,`created_by`,`created_date`,`updated_by`,\
-                `updated_date`,`record_status`)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                `updated_date`)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.patient_id,
           input.patient_visit_id,
@@ -129,8 +129,7 @@ let addPatientInsurence = (req, res, next) => {
           input.created_by,
           new Date(),
           input.updated_by,
-          new Date(),
-          input.record_status
+          new Date()
         ],
         (error, resdata) => {
           releaseDBConnection(db, connection);
@@ -168,7 +167,7 @@ let getListOfInsurenceProvider = (req, res, next) => {
 
       connection.query(
         "select insurance_type,insurance_provider_name,insurance_provider_code,\
-        currency,effective_start_date,effective_end_date,record_status from hims_d_insurance_provider",
+        currency,effective_start_date,effective_end_date from hims_d_insurance_provider where record_status='A'",
 
         (error, result) => {
           if (error) {
@@ -215,8 +214,7 @@ let addInsurenceProvider = (req, res, next) => {
     created_date: null,
     created_by: null,
     updated_date: null,
-    updated_by: null,
-    record_status: null
+    updated_by: null
   };
 
   try {
@@ -236,8 +234,8 @@ let addInsurenceProvider = (req, res, next) => {
         `deductible_proc`,`deductible_lab`,`co_payment`,`insurance_type`,`package_claim`,`hospital_id`,\
         `credit_period`,`insurance_limit`,`payment_type`,`insurance_remarks`,`cpt_mandate`,`child_id`,`currency`,\
         `preapp_valid_days`,`claim_submit_days`,`lab_result_check`,`resubmit_all`,`ins_rej_per`,`effective_start_date`,\
-        `effective_end_date`,`created_date`,`created_by`,`updated_date`,`updated_by`,`record_status`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        `effective_end_date`,`created_date`,`created_by`,`updated_date`,`updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           inputparam.insurance_provider_code,
           inputparam.insurance_provider_name,
@@ -264,8 +262,7 @@ let addInsurenceProvider = (req, res, next) => {
           new Date(),
           inputparam.created_by,
           new Date(),
-          inputparam.updated_by,
-          inputparam.record_status
+          inputparam.updated_by
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -296,8 +293,7 @@ let addSubInsurenceProvider = (req, res, next) => {
     created_date: null,
     created_by: null,
     updated_date: null,
-    updated_by: null,
-    record_status: null
+    updated_by: null
   };
 
   try {
