@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import Label from "../Wrapper/label";
-import {
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Checkbox,
-  Switch
-} from "material-ui";
+
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import Switch from "@material-ui/core/Switch";
+
 import extend from "extend";
 export default class Options extends Component {
   constructor(props) {

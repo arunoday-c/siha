@@ -2,22 +2,13 @@ import React, { Component, PureComponent } from "react";
 import "./../SideMenuBar/SideMenuBar.js";
 import "./header.css";
 import MenuIcon from "@material-ui/icons/Menu";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Close,
-  SwipeableDrawer,
-  Button,
-  List,
-  Divider,
-  Paper,
-  ChevronLeftIcon,
-  Menu,
-  MenuItem,
-  Radio
-} from "material-ui";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 
 import { setCookie, getCookie } from "../../../utils/algaehApiCall.js";
 // var noScroll = require('no-scroll');
@@ -120,13 +111,13 @@ class Header extends PureComponent {
               </IconButton>
             </div>
             <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-              <Typography
+              {/* <Typography
                 className="Typography"
                 variant="title"
                 color="inherit"
-              >
-                {this.props.title}
-              </Typography>
+              > */}
+              <h5>{this.props.title}</h5>
+              {/* </Typography> */}
             </div>
             <div className="col-lg-5">
               <Button

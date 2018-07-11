@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Paper, LinearProgress } from "material-ui";
+import Paper from "@material-ui/core/Paper";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import "./visatype.css";
-import { Button } from "material-ui";
+import Button from "@material-ui/core/Button";
 import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import DeleteDialog from "../../../utils/DeleteDialog";
@@ -97,7 +98,6 @@ class VisaType extends Component {
   }
 
   updateVisaTypes(data) {
-    debugger;
     algaehApiCall({
       uri: "/masters/set/update/visa",
       data: data,
@@ -303,7 +303,6 @@ class VisaType extends Component {
                             textBox={{ className: "txt-fld" }}
                             events={{
                               onChange: selected => {
-                                debugger;
                                 row.created_date = selected._d;
                               }
                             }}

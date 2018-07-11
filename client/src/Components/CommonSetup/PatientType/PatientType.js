@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Paper } from "material-ui";
+import Paper from "@material-ui/core/Paper";
 import "./patient_type.css";
-import { Button } from "material-ui";
+import Button from "@material-ui/core/Button";
 import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { AlagehFormGroup, AlgaehOptions } from "../../Wrapper/algaehWrapper";

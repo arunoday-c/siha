@@ -16,6 +16,7 @@ import visit from "../controller/visit";
 import serviceType from "../controller/serviceType";
 import billing from "../controller/billing";
 import patientType from "../controller/patientType";
+import insurence from "../controller/insurence";
 
 let router = express();
 
@@ -39,6 +40,7 @@ initializedDb(db => {
   router.use("/serviceType", serviceType({ config, db }));
   router.use("/billing", billing({ config, db }));
   router.use("/patientType", patientType({ config, db }));
+  router.use("/insurence", insurence({ config, db }));
 });
 
 export default router;

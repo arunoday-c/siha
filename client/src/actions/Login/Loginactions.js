@@ -2,33 +2,25 @@
 
 "use strict";
 import axios from "axios";
-import { setToken, getToken, setCookie } from "../../utils/algaehApiCall";
+import { setToken, setCookie } from "../../utils/algaehApiCall";
+import config from "../../utils/config.json";
 
 export function getTokenDetals() {
   var auth_url = "/api/v1/apiAuth";
-  var username = "devteam";
-  var password = "devteam";
+  var username = config.apiAuth.user;
+  var password = config.apiAuth.password;
   var basicAuth = "Basic " + btoa(username + ":" + password);
 
-  return function(dispatch) {
-    axios({
-      method: "GET",
-      url: auth_url,
-      headers: { Authorization: basicAuth }
+  axios({
+    method: "GET",
+    url: auth_url,
+    headers: { Authorization: basicAuth }
+  })
+    .then(response => {
+      setToken(response.data.token);
+      setCookie("Language", "en", 30);
     })
-      .then(response => {
-        setToken(response.data.token);
-        setCookie("Language", "en", 30);
-        dispatch({
-          type: "GET_DATA",
-          payload: response.data.token
-        });
-      })
-      .catch(err => {
-        dispatch({
-          type: "GET_ERR_DATA",
-          payload: "err"
-        });
-      });
-  };
+    .catch(err => {
+      console.error("Error : ", err);
+    });
 }

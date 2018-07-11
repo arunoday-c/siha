@@ -192,7 +192,7 @@ function AddPatientOtherHandlers(state, context) {
 
 function mapStateToProps(state) {
   return {
-    patients: state.patients.patients
+    patients: state.patients
   };
 }
 

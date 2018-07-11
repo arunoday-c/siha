@@ -53,7 +53,15 @@ const doctorselectedHandeler = ($this, context, e) => {
                 hims_d_services_id: $this.state.hims_d_services_id,
                 patient_id: $this.state.hims_d_patient_id
               };
-              $this.props.generateBill(serviceInput);
+              $this.props.generateBill({
+                uri: "/billing/getBillDetails",
+                method: "POST",
+                data: serviceInput,
+                redux: {
+                  type: "BILL_GEN_GET_DATA",
+                  mappingName: "genbill"
+                }
+              });
             }
           );
           if (context != null) {
@@ -88,7 +96,15 @@ const doctorselectedHandeler = ($this, context, e) => {
           hims_d_services_id: $this.state.hims_d_services_id,
           patient_id: $this.state.hims_d_patient_id
         };
-        $this.props.generateBill(serviceInput);
+        $this.props.generateBill({
+          uri: "/billing/getBillDetails",
+          method: "POST",
+          data: serviceInput,
+          redux: {
+            type: "BILL_GEN_GET_DATA",
+            mappingName: "genbill"
+          }
+        });
       }
     );
     if (context != null) {

@@ -23,6 +23,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import variableJson from "../../../../utils/GlobalVariables.json";
+import { AlgaehActions } from "../../../../actions/algaehActions";
 
 class AddBillingForm extends Component {
   constructor(props) {
@@ -96,16 +97,11 @@ class AddBillingForm extends Component {
                         />
 
                         <div className="col-lg-3">
-                          {/* <BillDetails
-                            show={this.state.isOpen}
-                            onClose={this.toggleModal}
-                          /> */}
-
                           <button
                             className="htpl1-phase1-btn-primary"
                             onClick={this.ShowBillDetails.bind(this)}
                           >
-                            Detail....
+                            Details....
                           </button>
 
                           <DisplayOPBilling
@@ -207,7 +203,7 @@ class AddBillingForm extends Component {
                             className: "txt-fld",
                             name: "advance",
                             events: {
-                              onChange: texthandle.bind(this, this, context)
+                              onChange: null
                             }
                           }}
                         />
@@ -671,14 +667,14 @@ class AddBillingForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    genbill: state.genbill.genbill
+    genbill: state.genbill
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      generateBill: generateBill
+      generateBill: AlgaehActions
     },
     dispatch
   );

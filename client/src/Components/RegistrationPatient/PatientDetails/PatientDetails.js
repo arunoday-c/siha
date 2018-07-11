@@ -1,18 +1,11 @@
 import React, { PureComponent } from "react";
 import PatientForm from "./PatientForm/PatientForm.js";
 import OtherInfo from "./OtherInfo/OtherInfo.js";
-import {
-  postPatientDetails,
-  getPatientDetails
-} from "../../../actions/RegistrationPatient/Registrationactions.js";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import AlgaehLabel from "../../Wrapper/label.js";
 import "./PatientDetails.css";
 var intervalId;
 
-class PatientDetails extends PureComponent {
+export default class PatientDetails extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -106,26 +99,3 @@ class PatientDetails extends PureComponent {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    patients: state.patients.patients
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      postPatientDetails: postPatientDetails,
-      getPatientDetails: getPatientDetails
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PatientDetails)
-);

@@ -72,7 +72,6 @@ const datehandle = ($this, e) => {
 };
 
 const Validations = ($this, e) => {
-  debugger;
   let isError = false;
 
   if ($this.state.card_number.length !== 0 && $this.state.card_amount >= 0) {

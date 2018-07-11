@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Paper } from "material-ui";
+import Paper from "@material-ui/core/Paper";
 import "./id_type.css";
-import { Button } from "material-ui";
+import Button from "@material-ui/core/Button";
 import moment from "moment";
 import { getIDTypes } from "../../../actions/CommonSetup/IDType.js";
 import { withRouter } from "react-router-dom";
@@ -292,7 +292,6 @@ class IDType extends Component {
                             textBox={{ className: "txt-fld" }}
                             events={{
                               onChange: selected => {
-                                debugger;
                                 row.created_date = selected._d;
                               }
                             }}

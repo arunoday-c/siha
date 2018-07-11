@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Paper, TextField } from "material-ui";
+import Paper from "@material-ui/core/Paper";
 import "./visit_type.css";
-import { Button } from "material-ui";
+import Button from "@material-ui/core/Button";
 import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { getVisittypes } from "../../../actions/CommonSetup/VisitTypeactions.js";
@@ -420,7 +420,6 @@ class VisitType extends Component {
                               textBox={{ className: "txt-fld" }}
                               events={{
                                 onChange: selected => {
-                                  debugger;
                                   row.created_date = selected._d;
                                 }
                               }}

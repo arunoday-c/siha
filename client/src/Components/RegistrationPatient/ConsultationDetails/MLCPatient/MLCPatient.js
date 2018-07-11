@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./MLCPatient.css";
-import Checkbox from "material-ui/Checkbox";
+import Checkbox from "@material-ui/core/Checkbox";
 import MyContext from "../../../../utils/MyContext.js";
 import AlagehFormGroup from "../../../Wrapper/formGroup.js";
 import AlgaehLabel from "../../../Wrapper/label.js";

@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import Header from "../common/Header/Header.js";
-import SideMenuBar from "../common/SideMenuBar/SideMenuBar.js";
 import "./dashboard.css";
 import { Bar } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
@@ -82,7 +80,6 @@ class Dashboard extends Component {
   }
 
   SideMenuBarOpen(sidOpen) {
-
     this.setState({
       sidBarOpen: sidOpen
     });
@@ -92,17 +89,7 @@ class Dashboard extends Component {
     let margin = this.state.sidBarOpen ? "" : "";
     return (
       <div className="dashboard ">
-        {/* {this.state.sidBarOpen === true ? (
-          <div>
-            <SideMenuBar />
-          </div>
-        ) : null} */}
-        {/* <SideBar title="Dashboard"/> */}
         <div style={{ marginLeft: margin }}>
-          {/* <Header
-            title="Dashboard"
-            SideMenuBarOpen={this.SideMenuBarOpen.bind(this)}
-          /> */}
           <div className="row card-deck" style={{ margin: 40 }}>
             {/* Bar Graph Start */}
 

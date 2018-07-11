@@ -45,7 +45,15 @@ const cashtexthandle = ($this, context, ctrl, e) => {
 
       clearInterval(intervalId);
       intervalId = setInterval(() => {
-        $this.props.generateBill(serviceInput);
+        $this.props.generateBill({
+          uri: "/billing/getBillDetails",
+          method: "POST",
+          data: serviceInput,
+          redux: {
+            type: "BILL_GEN_GET_DATA",
+            mappingName: "genbill"
+          }
+        });
         clearInterval(intervalId);
       }, 1000);
     }
@@ -80,7 +88,15 @@ const cardtexthandle = ($this, context, ctrl, e) => {
 
       clearInterval(intervalId);
       intervalId = setInterval(() => {
-        $this.props.generateBill(serviceInput);
+        $this.props.generateBill({
+          uri: "/billing/getBillDetails",
+          method: "POST",
+          data: serviceInput,
+          redux: {
+            type: "BILL_GEN_GET_DATA",
+            mappingName: "genbill"
+          }
+        });
         clearInterval(intervalId);
       }, 1000);
     }
@@ -115,7 +131,15 @@ const chequetexthandle = ($this, context, ctrl, e) => {
 
       clearInterval(intervalId);
       intervalId = setInterval(() => {
-        $this.props.generateBill(serviceInput);
+        $this.props.generateBill({
+          uri: "/billing/getBillDetails",
+          method: "POST",
+          data: serviceInput,
+          redux: {
+            type: "BILL_GEN_GET_DATA",
+            mappingName: "genbill"
+          }
+        });
         clearInterval(intervalId);
       }, 1000);
     }
@@ -161,7 +185,15 @@ const servicetexthandle = ($this, context, ctrl, e) => {
 
       clearInterval(intervalId);
       intervalId = setInterval(() => {
-        $this.props.generateBill(serviceInput);
+        $this.props.generateBill({
+          uri: "/billing/getBillDetails",
+          method: "POST",
+          data: serviceInput,
+          redux: {
+            type: "BILL_GEN_GET_DATA",
+            mappingName: "genbill"
+          }
+        });
         clearInterval(intervalId);
       }, 1000);
     }

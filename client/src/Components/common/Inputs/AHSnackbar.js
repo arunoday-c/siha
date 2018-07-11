@@ -1,5 +1,6 @@
 import React, { Component, PureComponent } from "react";
-import { Slide, Snackbar } from "material-ui";
+import Slide from "@material-ui/core/Slide";
+import Snackbar from "@material-ui/core/Snackbar";
 
 function TransitionUp(props) {
   return <Slide {...props} direction="up" />;

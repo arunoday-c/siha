@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import "./Login.css";
-import { Button, CircularProgress, LinearProgress } from "material-ui";
+import { Button } from "../Wrapper/algaehWrapper";
+import LinearProgress from "@material-ui/core/LinearProgress";
+
 import { algaehApiCall, setCookie } from "../../utils/algaehApiCall.js";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { getTokenDetals } from "../../actions/Login/Loginactions.js";
 import swal from "sweetalert";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
 
@@ -25,7 +23,7 @@ const styles = {
   }
 };
 
-class Login extends Component {
+export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -90,7 +88,6 @@ class Login extends Component {
 
       algaehApiCall({
         uri: "/apiAuth/authUser",
-        token: this.props.tokensDtl,
         data: this.state,
         timeout: 10000,
         onSuccess: response => {
@@ -153,27 +150,12 @@ class Login extends Component {
     document.querySelector("[name='username']").focus();
   }
 
-  componentDidMount() {
-    this.props.getTokenDetals();
-  }
   texthandle(e) {
     this.setState({
       [e.target.name]: e.target.value
     });
   }
   render() {
-    if (this.props.tokensDtl === 0 || this.props.tokensDtl.length === 0) {
-      return (
-        <div className="container">
-          <div className="row" style={{ marginTop: "30%" }}>
-            <div className="col-lg-1 offset-5">
-              <CircularProgress size={100} />
-            </div>
-          </div>
-        </div>
-      );
-    }
-
     return (
       <div className="login bg">
         <div className="container margintop15">
@@ -261,20 +243,3 @@ class Login extends Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    tokensDtl: state.tokensDtl.tokensDtl
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ getTokenDetals: getTokenDetals }, dispatch);
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Login)
-);
