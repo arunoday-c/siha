@@ -616,27 +616,50 @@ let getBillDetails = (req, res, next) => {
             next(error);
           }
           let records = result[0];
+          let quantity =
+            servicesDetails.quantity === undefined
+              ? 1
+              : servicesDetails.quantity;
 
+          let discount_amout =
+            servicesDetails.discount_amout === undefined
+              ? 0
+              : servicesDetails.discount_amout;
+
+          let discount_percentage =
+            servicesDetails.discount_percentage === undefined
+              ? 0
+              : servicesDetails.discount_percentage;
+
+          let gross_amount = quantity * records.standard_fee;
+
+          if (discount_amout > 0) {
+            discount_percentage = (discount_amout / gross_amount) * 100;
+          } else if (discount_percentage > 0) {
+            discount_amout = (gross_amount * discount_percentage) / 100;
+          }
+
+          let net_amout = gross_amount - discount_amout;
           extend(billingDetailsModel, {
             service_type_id: result[0].service_type_id,
             services_id: servicesDetails.hims_d_services_id,
-            quantity: 1,
+            quantity: quantity,
             unit_cost: records.standard_fee,
-            gross_amount: records.standard_fee,
-            discount_amout: 0,
-            discount_percentage: 0,
-            net_amout: records.standard_fee,
-            patient_resp: records.standard_fee,
-            patient_payable: records.standard_fee
+            gross_amount: gross_amount,
+            discount_amout: discount_amout,
+            discount_percentage: discount_percentage,
+            net_amout: net_amout,
+            patient_resp: net_amout,
+            patient_payable: net_amout
           });
 
-          let sub_total_amount = new LINQ([billingDetailsModel]).Sum(
-            s => s.gross_amount
-          );
-          let gross_total = new LINQ([billingDetailsModel]).Sum(
-            s => s.net_amout
-          );
-          // debugLog("Net amount" + billingDetailsModel.);
+          // let sub_total_amount = new LINQ([billingDetailsModel]).Sum(
+          //   s => s.gross_amount
+          // );
+          // let gross_total = new LINQ([billingDetailsModel]).Sum(
+          //   s => s.net_amout
+          // );
+          // // debugLog("Net amount" + billingDetailsModel.);
           // extend(
           //   billingHeaderModel,
           //   {
