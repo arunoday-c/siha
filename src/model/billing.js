@@ -16,6 +16,7 @@ import { inflate } from "zlib";
 //AddBill
 let addBill = (dataBase, req, res, callBack, isCommited, next) => {
   isCommited = isCommited || false;
+
   let billingHeaderModel = {
     hims_f_billing_header_id: null,
     patient_id: null,
@@ -55,7 +56,8 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
     record_status: null,
     cancel_remarks: null,
     cancel_by: null,
-    bill_comments: null
+    bill_comments: null,
+    advance_adjust: 0
   };
 
   try {
@@ -133,12 +135,12 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
             }
             dataBase.query(
               "INSERT INTO hims_f_billing_header ( patient_id, billing_type_id, visit_id, bill_number,\
-                  incharge_or_provider, bill_date, advance_amount, discount_amount \
+                  incharge_or_provider, bill_date, advance_amount,advance_adjust, discount_amount \
                   , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount \
                   , company_res, sec_company_res, patient_payable, company_payable, sec_company_payable \
                   , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount \
                   , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
-                    ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               [
                 inputParam.patient_id,
                 inputParam.billing_type_id,
@@ -147,6 +149,7 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
                 inputParam.incharge_or_provider,
                 inputParam.bill_date,
                 inputParam.advance_amount,
+                inputParam.advance_adjust,
                 inputParam.discount_amount,
                 inputParam.total_tax,
                 inputParam.billing_status,
@@ -177,6 +180,50 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
                     releaseDBConnection(db, dataBase);
                     next(error);
                   });
+                }
+                // if a patient utilizing his advance amount for his current payment
+                if (
+                  headerResult.insertId != null &&
+                  headerResult.insertId != "" &&
+                  inputParam.advance_adjust > 0
+                ) {
+                  dataBase.query(
+                    "SELECT advance_amount FROM hims_f_patient WHERE hims_d_patient_id=?",
+                    [inputParam.patient_id],
+                    (error, result) => {
+                      if (error) {
+                        releaseDBConnection(db, dataBase);
+                        next(error);
+                      }
+                      let existingAdvance = result[0].advance_amount;
+                      debugLog("existingAdvance:", existingAdvance);
+                      debugLog("before ", inputParam.advance_adjust);
+                      if (result.length != 0) {
+                        inputParam.advance_amount =
+                          existingAdvance - inputParam.advance_adjust;
+
+                        debugLog("after ", inputParam.advance_amount);
+                        dataBase.query(
+                          "UPDATE  `hims_f_patient` SET  `advance_amount`=?, \
+                          `updated_by`=?, `updated_date`=? WHERE `hims_d_patient_id`=?",
+                          [
+                            inputParam.advance_amount,
+                            inputParam.updated_by,
+                            new Date(),
+                            inputParam.patient_id
+                          ],
+                          (error, subtractAdvance) => {
+                            if (error) {
+                              dataBase.rollback(() => {
+                                releaseDBConnection(db, dataBase);
+                                next(error);
+                              });
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
                 }
 
                 if (

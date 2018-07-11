@@ -6,6 +6,7 @@ import { addBill, newReceipt } from "../model/billing";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction } from "../utils/logging";
 
+//created by irfan :to save front desk data inputs
 let addFrontDesk = (req, res, next) => {
   debugFunction("addFrontDesk");
   try {
@@ -268,6 +269,7 @@ let selectFrontDesk = (req, res, next) => {
   }
 };
 
+//created by irfan :to update front desk
 let updateFrontDesk = (req, res, next) => {
   debugFunction("updateFrontDesk");
   try {
