@@ -110,7 +110,7 @@ const generateBillDetails = ($this, context) => {
     },
     afterSuccess: data => {
       if (context != null) {
-        context.updateState({ data });
+        context.updateState({ ...data });
       }
       debugger;
 
