@@ -77,7 +77,6 @@ class RegistrationPatient extends Component {
   }
 
   ClearData(e) {
-    debugger;
     this.props.initialStatePatientData({
       redux: {
         type: "PAT_INIT_DATA",
@@ -151,7 +150,6 @@ class RegistrationPatient extends Component {
   SavePatientDetails(e) {
     const err = Validations(this);
 
-    debugger;
     if (!err) {
       this.GenerateReciept($this => {
         if ($this.state.hims_d_patient_id == null) {
@@ -169,7 +167,6 @@ class RegistrationPatient extends Component {
             });
           });
         } else {
-          debugger;
           $this.props.postVisitDetails($this.state, data => {
             $this.setState({
               bill_number: data.bill_number,

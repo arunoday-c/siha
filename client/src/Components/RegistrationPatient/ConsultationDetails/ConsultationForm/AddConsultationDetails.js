@@ -49,7 +49,6 @@ const doctorselectedHandeler = ($this, context, e) => {
               incharge_or_provider: e.value
             },
             () => {
-              debugger;
               generateBillDetails($this, context);
             }
           );
@@ -95,7 +94,6 @@ const doctorselectedHandeler = ($this, context, e) => {
 };
 
 const generateBillDetails = ($this, context) => {
-  debugger;
   let serviceInput = {
     hims_d_services_id: $this.state.hims_d_services_id,
     patient_id: $this.state.hims_d_patient_id
@@ -112,7 +110,6 @@ const generateBillDetails = ($this, context) => {
       if (context != null) {
         context.updateState({ ...data });
       }
-      debugger;
 
       $this.props.billingCalculations({
         uri: "/billing/billingCalculations",

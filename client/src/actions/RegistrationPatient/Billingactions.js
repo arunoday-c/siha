@@ -6,7 +6,7 @@ export function postBillDetsils(dataValue, callback) {
 
   return function(dispatch) {
     algaehApiCall({
-      uri: "/save",
+      uri: "/opBilling/addOpBIlling",
       method: "POST",
       data: dataValue,
       onSuccess: response => {

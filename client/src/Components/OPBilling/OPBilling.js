@@ -58,7 +58,6 @@ class PatientDisplayDetails extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     //this.setState(nextProps.patients[0]);
     if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
       this.setState({ ...this.state, ...nextProps.genbill });
@@ -152,7 +151,6 @@ class PatientDisplayDetails extends Component {
   }
 
   SaveBill(e) {
-    debugger;
     this.GenerateReciept($this => {
       $this.props.postBillDetsils($this.state, data => {
         $this.setState({

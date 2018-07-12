@@ -24,7 +24,6 @@ const texthandle = ($this, context, ctrl, e) => {
 
 const calculateRecipt = ($this, context) => {
   var intervalId;
-  debugger;
 
   let serviceInput = {
     isReceipt: true,
@@ -35,7 +34,7 @@ const calculateRecipt = ($this, context) => {
     cheque_amount: parseFloat($this.state.cheque_amount),
     receiveable_amount: parseFloat($this.state.receiveable_amount)
   };
-  debugger;
+
   clearInterval(intervalId);
   intervalId = setInterval(() => {
     $this.props.billingCalculations({

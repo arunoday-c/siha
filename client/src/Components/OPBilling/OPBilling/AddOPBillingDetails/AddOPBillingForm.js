@@ -6,6 +6,7 @@ import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import MyContext from "../../../../utils/MyContext";
 import "./AddOPBillingForm.css";
 import "./../../../../styles/site.css";
+import extend from "extend";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
@@ -78,7 +79,7 @@ class AddOPBillingForm extends Component {
     let $this = this;
     let serviceInput = { hims_d_services_id: this.state.s_service };
 
-    $this.props.generateBill({
+    this.props.generateBill({
       uri: "/billing/getBillDetails",
       method: "POST",
       data: serviceInput,
@@ -87,18 +88,14 @@ class AddOPBillingForm extends Component {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        debugger;
         let existingservices = $this.state.billdetails;
         if (data.billdetails.length != 0) {
-          data.billdetails[0].service_type_id = $this.state.s_service_type;
-          data.billdetails[0].service_type = $this.state.s_service;
           existingservices.splice(0, 0, data.billdetails[0]);
         }
 
         if (context != null) {
           context.updateState({ billdetails: existingservices });
         }
-        debugger;
 
         $this.props.billingCalculations({
           uri: "/billing/billingCalculations",
@@ -111,6 +108,118 @@ class AddOPBillingForm extends Component {
         });
       }
     });
+  }
+  //Calculate Row Detail
+  calculateAmount(row, context, ctrl, e) {
+    e = e || ctrl;
+    let $this = this;
+
+    row[e.target.name] = parseFloat(e.target.value);
+    let inputParam = {
+      hims_d_services_id: this.state.s_service,
+      quantity: row.quantity,
+      discount_amout:
+        e.target.name === "discount_percentage" ? 0 : row.discount_amout,
+      discount_percentage:
+        e.target.name === "discount_amout" ? 0 : row.discount_percentage
+    };
+
+    this.props.billingCalculations({
+      uri: "/billing/getBillDetails",
+      method: "POST",
+      data: inputParam,
+      redux: {
+        type: "BILL_GEN_GET_DATA",
+        mappingName: "xxx"
+      },
+      afterSuccess: data => {
+        extend(row, data.billdetails[0]);
+
+        $this.setState({});
+        // if (context != null) {
+        //   context.updateState({
+        //     billdetails: serviceDetails
+        //   });
+        // }
+      }
+    });
+  }
+
+  updateBillDetail(e) {
+    debugger;
+    this.props.billingCalculations({
+      uri: "/billing/billingCalculations",
+      method: "POST",
+      data: { billdetails: this.state.billdetails },
+      redux: {
+        type: "BILL_HEADER_GEN_GET_DATA",
+        mappingName: "genbill"
+      }
+    });
+  }
+
+  deleteBillDetail(context, e, rowId) {
+    let serviceDetails = this.state.billdetails;
+    serviceDetails.splice(rowId, 1);
+
+    this.props.billingCalculations({
+      uri: "/billing/billingCalculations",
+      method: "POST",
+      data: { billdetails: serviceDetails },
+      redux: {
+        type: "BILL_HEADER_GEN_GET_DATA",
+        mappingName: "genbill"
+      }
+    });
+
+    if (serviceDetails.length === 0) {
+      if (context != null) {
+        context.updateState({
+          billdetails: serviceDetails,
+          advance_amount: 0,
+          discount_amount: 0,
+          sub_total_amount: 0,
+          total_tax: 0,
+          net_total: 0,
+          copay_amount: 0,
+          sec_copay_amount: 0,
+          deductable_amount: 0,
+          sec_deductable_amount: 0,
+          gross_total: 0,
+          sheet_discount_amount: 0,
+          sheet_discount_percentage: 0,
+          net_amount: 0,
+          patient_res: 0,
+          company_res: 0,
+          sec_company_res: 0,
+          patient_payable: 0,
+          company_payable: 0,
+          sec_company_payable: 0,
+          patient_tax: 0,
+          company_tax: 0,
+          sec_company_tax: 0,
+          net_tax: 0,
+          credit_amount: 0,
+          receiveable_amount: 0,
+
+          cash_amount: 0,
+          card_number: "",
+          card_date: null,
+          card_amount: 0,
+          cheque_number: "",
+          cheque_date: null,
+          cheque_amount: 0,
+          total_amount: 0,
+          unbalanced_amount: 0
+        });
+      }
+    } else {
+      if (context != null) {
+        context.updateState({
+          billdetails: serviceDetails
+        });
+      }
+    }
   }
 
   render() {
@@ -155,10 +264,10 @@ class AddOPBillingForm extends Component {
                       className: "select-fld",
                       value: this.state.s_service,
                       dataSource: {
-                        textField: "service_name",
-                        // this.state.selectedLang == "en"
-                        //   ? "service_name"
-                        //   : "arabic_service_name",
+                        textField:
+                          this.state.selectedLang == "en"
+                            ? "service_name"
+                            : "arabic_service_name",
                         valueField: "hims_d_services_id",
                         data: this.props.services
                       },
@@ -255,7 +364,26 @@ class AddOPBillingForm extends Component {
                           fieldName: "quantity",
                           label: (
                             <AlgaehLabel label={{ fieldName: "quantity" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.quantity,
+                                  className: "txt-fld",
+                                  name: "quantity",
+                                  events: {
+                                    onChange: this.calculateAmount.bind(
+                                      this,
+                                      row,
+                                      context
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "unit_cost",
@@ -280,7 +408,27 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel
                               label={{ fieldName: "discount_percentage" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  decimal: { allowNegative: false },
+                                  value: row.discount_percentage,
+                                  className: "txt-fld",
+                                  name: "discount_percentage",
+                                  events: {
+                                    onChange: this.calculateAmount.bind(
+                                      this,
+                                      row,
+                                      context
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "discount_amout",
@@ -288,7 +436,27 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel
                               label={{ fieldName: "discount_amout" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  decimal: { allowNegative: false },
+                                  value: row.discount_amout,
+                                  className: "txt-fld",
+                                  name: "discount_amout",
+                                  events: {
+                                    onChange: this.calculateAmount.bind(
+                                      this,
+                                      row,
+                                      context
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
 
                         {
@@ -306,9 +474,9 @@ class AddOPBillingForm extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 5 }}
                       events={{
-                        // onDelete: this.deleteIDType.bind(this),
-                        onEdit: row => {}
-                        // onDone: this.updateIDtypes.bind(this)
+                        onDelete: this.deleteBillDetail.bind(this, context),
+                        onEdit: row => {},
+                        onDone: this.updateBillDetail.bind(this)
                       }}
                     />
                   </div>
