@@ -4,22 +4,22 @@ import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 
 import {
-  getPatientInsurence,
-  addPatientInsurence,
-  getListOfInsurenceProvider,
-  addInsurenceProvider,
-  addSubInsurenceProvider,
+  getPatientInsurance,
+  addPatientInsurance,
+  getListOfInsuranceProvider,
+  addInsuranceProvider,
+  addSubInsuranceProvider,
   addNetwork,
   NetworkOfficeMaster
-} from "../model/insurence";
+} from "../model/insurance";
 
 export default ({ config, db }) => {
   let api = Router();
 
   // created by irfan : to fetch insurence based on patient id
   api.get(
-    "/getPatientInsurence",
-    getPatientInsurence,
+    "/getPatientInsurance",
+    getPatientInsurance,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -33,8 +33,8 @@ export default ({ config, db }) => {
 
   // created by irfan : to save insurence of patient in DB
   api.post(
-    "/addPatientInsurence",
-    addPatientInsurence,
+    "/addPatientInsurance",
+    addPatientInsurance,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -48,8 +48,8 @@ export default ({ config, db }) => {
 
   // created by irfan : to get all insurence provider  company details
   api.get(
-    "/getListOfInsurenceProvider",
-    getListOfInsurenceProvider,
+    "/getListOfInsuranceProvider",
+    getListOfInsuranceProvider,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -63,8 +63,8 @@ export default ({ config, db }) => {
 
   // created by irfan : to add insurence provider
   api.post(
-    "/addInsurenceProvider",
-    addInsurenceProvider,
+    "/addInsuranceProvider",
+    addInsuranceProvider,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -78,8 +78,8 @@ export default ({ config, db }) => {
 
   // created by irfan : to add SUB-insurence provider
   api.post(
-    "/addSubInsurenceProvider",
-    addSubInsurenceProvider,
+    "/addSubInsuranceProvider",
+    addSubInsuranceProvider,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

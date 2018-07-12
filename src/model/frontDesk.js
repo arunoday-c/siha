@@ -3,6 +3,7 @@ import { insertVisitData } from "../model/visit";
 import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 import extend from "extend";
 import { addBill, newReceipt } from "../model/billing";
+import { addPatientInsurence } from "../model/insurance";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction } from "../utils/logging";
 
@@ -106,7 +107,8 @@ let addFrontDesk = (req, res, next) => {
                             if (resultdata != null && resultdata.length != 0) {
                               req.query.visit_id = resultdata["insertId"];
                               req.body.visit_id = resultdata["insertId"];
-
+                              req.body.patient_visit_id =
+                                resultdata["insertId"];
                               debugLog(
                                 "req.body.visit_id:" + resultdata["insertId"]
                               );
@@ -115,6 +117,31 @@ let addFrontDesk = (req, res, next) => {
                                 " succes result of second query",
                                 resultdata
                               );
+
+                              //add patient insurance
+
+                              if (req.body.insured == "Y") {
+                                addPatientInsurence(
+                                  connection,
+                                  req,
+                                  res,
+                                  (error, result) => {
+                                    if (error) {
+                                      debugLog(
+                                        "error in adding insurence",
+                                        error
+                                      );
+                                      connection.rollback(() => {
+                                        releaseDBConnection(db, connection);
+                                        next(error);
+                                      });
+                                    }
+
+                                    debugLog("add insuence result:", result);
+                                  }
+                                );
+                              }
+
                               //call
                               addBill(
                                 connection,
@@ -330,10 +357,32 @@ let updateFrontDesk = (req, res, next) => {
                 if (resultdata != null && resultdata.length != 0) {
                   req.query.visit_id = resultdata["insertId"];
                   req.body.visit_id = resultdata["insertId"];
-
+                  req.body.patient_visit_id = resultdata["insertId"];
                   debugLog("req.body.visit_id:" + resultdata["insertId"]);
 
-                  debugLog(" succes result of second query", resultdata);
+                  debugLog(" result of visit func", resultdata);
+
+                  //add patient insurance
+
+                  if (req.body.insured == "Y") {
+                    addPatientInsurence(
+                      connection,
+                      req,
+                      res,
+                      (error, result) => {
+                        if (error) {
+                          debugLog("error in adding insurence", error);
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+
+                        debugLog("add insuence result:", result);
+                      }
+                    );
+                  }
+
                   //call
                   addBill(
                     connection,

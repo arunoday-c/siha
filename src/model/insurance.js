@@ -13,12 +13,12 @@ import httpStatus from "../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../utils/logging";
 
 //created by:irfan,to get patient insurence details by patient id
-let getPatientInsurence = (req, res, next) => {
-  let patientInsurenceModel = {
+let getPatientInsurance = (req, res, next) => {
+  let patientInsuranceModel = {
     patient_id: null
   };
 
-  debugFunction("getPatientInsurence");
+  debugFunction("getPatientInsurance");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -29,7 +29,7 @@ let getPatientInsurence = (req, res, next) => {
       if (error) {
         next(error);
       }
-      extend(patientInsurenceModel, req.query);
+      extend(patientInsuranceModel, req.query);
 
       connection.query(
         "(select  mIns.patient_id,mIns.primary_insurance_provider_id as insurance_provider_id,Ins.insurance_provider_name,\
@@ -55,11 +55,13 @@ let getPatientInsurence = (req, res, next) => {
            INNER JOIN hims_d_insurance_network_office netoff ON mIns.secondary_policy_num=netoff.policy_number) where mIns.patient_id=?\
            GROUP BY mIns.secondary_policy_num);",
 
-        [patientInsurenceModel.patient_id, patientInsurenceModel.patient_id],
+        [patientInsuranceModel.patient_id, patientInsuranceModel.patient_id],
         (error, result) => {
           if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
           }
           req.records = result;
 
@@ -73,7 +75,7 @@ let getPatientInsurence = (req, res, next) => {
 };
 
 //created by irfan: to add(save) patient insurence  details to DB
-let addPatientInsurence = (req, res, next) => {
+let addPatientInsurance = (connection, req, res, next) => {
   let patientInsuranceMappingModel = {
     hims_f_patient_insurance_mapping_id: null,
     patient_id: null,
@@ -85,11 +87,13 @@ let addPatientInsurence = (req, res, next) => {
     primary_policy_num: null,
     primary_effective_start_date: null,
     primary_effective_end_date: null,
+    primary_card_number: null,
     secondary_insurance_provider_id: null,
     secondary_sub_id: null,
     secondary_network_id: null,
     secondary_effective_start_date: null,
     secondary_effective_end_date: null,
+    secondary_card_number: null,
     secondary_inc_card_path: null,
     secondary_policy_num: null,
     created_by: null,
@@ -98,67 +102,65 @@ let addPatientInsurence = (req, res, next) => {
     updated_date: null,
     record_status: null
   };
-
+  debugFunction("addPatientInsurence");
   try {
-    if (req.db == null) {
+    if (connection == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
-    let db = req.db;
+
     let input = extend(patientInsuranceMappingModel, req.body);
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-
-      connection.query(
-        "INSERT INTO hims_m_patient_insurance_mapping(`patient_id`,`patient_visit_id`,\
+    connection.query(
+      "INSERT INTO hims_m_patient_insurance_mapping(`patient_id`,`patient_visit_id`,\
                 `primary_insurance_provider_id`,`primary_sub_id`,`primary_network_id`,\
                 `primary_inc_card_path`,`primary_policy_num`,`primary_effective_start_date`,\
-                `primary_effective_end_date`,`secondary_insurance_provider_id`,`secondary_sub_id`,\
+                `primary_effective_end_date`,`primary_card_number`,`secondary_insurance_provider_id`,`secondary_sub_id`,\
                 `secondary_network_id`,`secondary_effective_start_date`,`secondary_effective_end_date`,\
-                `secondary_inc_card_path`,`secondary_policy_num`,`created_by`,`created_date`,`updated_by`,\
-                `updated_date`)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          input.patient_id,
-          input.patient_visit_id,
-          input.primary_insurance_provider_id,
-          input.primary_sub_id,
-          input.primary_network_id,
-          input.primary_inc_card_path,
-          input.primary_policy_num,
-          input.primary_effective_start_date,
-          input.primary_effective_end_date,
-          input.secondary_insurance_provider_id,
-          input.secondary_sub_id,
-          input.secondary_network_id,
-          input.secondary_effective_start_date,
-          input.secondary_effective_end_date,
-          input.secondary_inc_card_path,
-          input.secondary_policy_num,
-          input.created_by,
-          new Date(),
-          input.updated_by,
-          new Date()
-        ],
-        (error, resdata) => {
-          releaseDBConnection(db, connection);
-          if (error) {
+                `secondary_card_number`,`secondary_inc_card_path`,`secondary_policy_num`,`created_by`,`created_date`,`updated_by`,\
+                `updated_date`)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      [
+        input.patient_id,
+        input.patient_visit_id,
+        input.primary_insurance_provider_id,
+        input.primary_sub_id,
+        input.primary_network_id,
+        input.primary_inc_card_path,
+        input.primary_policy_num,
+        input.primary_effective_start_date,
+        input.primary_effective_end_date,
+        input.primary_card_number,
+        input.secondary_insurance_provider_id,
+        input.secondary_sub_id,
+        input.secondary_network_id,
+        input.secondary_effective_start_date,
+        input.secondary_effective_end_date,
+        input.secondary_card_number,
+        input.secondary_inc_card_path,
+        input.secondary_policy_num,
+        input.created_by,
+        new Date(),
+        input.updated_by,
+        new Date()
+      ],
+      (error, resdata) => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
             next(error);
-          }
-          req.records = resdata;
-          next();
+          });
         }
-      );
-    });
+        req.records = resdata;
+        next();
+      }
+    );
   } catch (e) {
     next(e);
   }
 };
 
 //created by:irfan,to get list of all insurence providers
-let getListOfInsurenceProvider = (req, res, next) => {
-  let patientInsurenceModel = {
+let getListOfInsuranceProvider = (req, res, next) => {
+  let patientInsuranceModel = {
     patient_id: null
   };
 
@@ -173,7 +175,7 @@ let getListOfInsurenceProvider = (req, res, next) => {
       if (error) {
         next(error);
       }
-      extend(patientInsurenceModel, req.query);
+      extend(patientInsuranceModel, req.query);
 
       connection.query(
         "select insurance_type,insurance_provider_name,insurance_provider_code,\
@@ -196,8 +198,8 @@ let getListOfInsurenceProvider = (req, res, next) => {
 };
 
 //created by irfan: to add new insurence provider
-let addInsurenceProvider = (req, res, next) => {
-  let insurenceProviderModel = {
+let addInsuranceProvider = (req, res, next) => {
+  let insuranceProviderModel = {
     hims_d_insurance_provider_id: null,
     insurance_provider_code: null,
     insurance_provider_name: null,
@@ -232,7 +234,7 @@ let addInsurenceProvider = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let inputparam = extend(insurenceProviderModel, req.body);
+    let inputparam = extend(insuranceProviderModel, req.body);
 
     db.getConnection((error, connection) => {
       if (error) {
@@ -275,8 +277,8 @@ let addInsurenceProvider = (req, res, next) => {
           inputparam.updated_by
         ],
         (error, result) => {
-          releaseDBConnection(db, connection);
           if (error) {
+            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -290,8 +292,8 @@ let addInsurenceProvider = (req, res, next) => {
 };
 
 //created by irfan: to add SUB-insurence provider
-let addSubInsurenceProvider = (req, res, next) => {
-  let insurenceSubProviderModel = {
+let addSubInsuranceProvider = (req, res, next) => {
+  let insuranceSubProviderModel = {
     hims_d_insurance_sub_id: null,
     insurance_sub_code: null,
     insurance_sub_name: null,
@@ -311,7 +313,7 @@ let addSubInsurenceProvider = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let subInsurence = extend(insurenceSubProviderModel, req.body);
+    let subInsurance = extend(insuranceSubProviderModel, req.body);
 
     db.getConnection((error, connection) => {
       if (error) {
@@ -324,21 +326,21 @@ let addSubInsurenceProvider = (req, res, next) => {
         `created_date`,`created_by`,`updated_date`,`updated_by`)\
         VALUE(?,?,?,?,?,?,?,?,?,?,?)",
         [
-          subInsurence.insurance_sub_code,
-          subInsurence.insurance_sub_name,
-          subInsurence.insurance_provider_id,
-          subInsurence.card_format,
-          subInsurence.transaction_number,
-          subInsurence.effective_start_date,
-          subInsurence.effective_end_date,
+          subInsurance.insurance_sub_code,
+          subInsurance.insurance_sub_name,
+          subInsurance.insurance_provider_id,
+          subInsurance.card_format,
+          subInsurance.transaction_number,
+          subInsurance.effective_start_date,
+          subInsurance.effective_end_date,
           new Date(),
-          subInsurence.created_by,
+          subInsurance.created_by,
           new Date(),
-          subInsurence.updated_by
+          subInsurance.updated_by
         ],
         (error, result) => {
-          releaseDBConnection(db, connection);
           if (error) {
+            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -398,8 +400,8 @@ let addNetwork = (req, res, next) => {
           inputparam.record_status
         ],
         (error, result) => {
-          releaseDBConnection(db, connection);
           if (error) {
+            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -562,8 +564,8 @@ let NetworkOfficeMaster = (req, res, next) => {
           inputparam.updated_by
         ],
         (error, result) => {
-          releaseDBConnection(db, connection);
           if (error) {
+            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -577,11 +579,11 @@ let NetworkOfficeMaster = (req, res, next) => {
 };
 
 module.exports = {
-  getPatientInsurence,
-  addPatientInsurence,
-  getListOfInsurenceProvider,
-  addInsurenceProvider,
-  addSubInsurenceProvider,
+  getPatientInsurance,
+  addPatientInsurance,
+  getListOfInsuranceProvider,
+  addInsuranceProvider,
+  addSubInsuranceProvider,
   addNetwork,
   NetworkOfficeMaster
 };
