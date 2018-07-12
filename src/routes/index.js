@@ -16,6 +16,7 @@ import visit from "../controller/visit";
 import serviceType from "../controller/serviceType";
 import billing from "../controller/billing";
 import patientType from "../controller/patientType";
+import globalSearch from "../controller/globalSearch";
 import insurance from "../controller/insurance";
 import opBilling from "../controller/opBilling";
 
@@ -41,7 +42,12 @@ initializedDb(db => {
   router.use("/serviceType", serviceType({ config, db }));
   router.use("/billing", billing({ config, db }));
   router.use("/patientType", patientType({ config, db }));
+<<<<<<< HEAD
   router.use("/insurance", insurance({ config, db }));
+=======
+  router.use("/gloabelSearch", globalSearch());
+  router.use("/insurence", insurence({ config, db }));
+>>>>>>> 6b93e4bdafc685977aa00a13856c60112f11d577
   router.use("/opBilling", opBilling({ config, db }));
 });
 

@@ -394,11 +394,16 @@ class DataGrid extends Component {
       return (
         <TablePagination
           component="div"
-          count={data.length}
+          count={
+            this.props.paging.totalPages
+              ? this.props.paging.totalPages
+              : data.length
+          }
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          {...this.props.others}
         />
       );
     } else null;
@@ -410,7 +415,11 @@ class DataGrid extends Component {
         style={{ width: this.state.width != null ? this.state.width : "100%" }}
       >
         <div className="table-responsive">
-          <table id={this.props.id} className="table table-hover table-fixed">
+          <table
+            id={this.props.id}
+            className="table table-hover table-fixed"
+            {...this.props.others}
+          >
             <thead>
               <tr>
                 {this.returnEditableColumn()}
