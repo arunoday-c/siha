@@ -7,7 +7,7 @@ export function getStates(dataValue, callback) {
   callback = callback || null;
   return function(dispatch) {
     dispatch({
-      type: "STATEGET_DATA",
+      type: "STATE_GET_DATA",
       payload: dataValue
     });
     if (typeof callback === "function") {

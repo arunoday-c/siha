@@ -7,7 +7,8 @@ import { algaehApiCall } from "../utils/algaehApiCall";
 import AlgaehSearch from "../Components/Wrapper/globalSearch";
 import {
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  Button
 } from "../Components/Wrapper/algaehWrapper";
 var intervalId;
 class DeptMaster extends Component {

@@ -84,5 +84,13 @@
   "card_check_number": "رقم",
   "expiry_date": "تاريخ الانتهاء",
   "amount": "كمية",
-  "unbalanced_amount": "المبلغ غير المتوازن"
+  "unbalanced_amount": "المبلغ غير المتوازن",
+
+  "responsibility": "المسئولية",
+  "tax_details": "ضريبة",
+  "payable": "تدفع",
+
+  "patient_lbl": "صبور",
+  "company_lbl": "الشركة الرئيسية",
+  "sec_comp_lbl": "شركة ثانوية"
 }

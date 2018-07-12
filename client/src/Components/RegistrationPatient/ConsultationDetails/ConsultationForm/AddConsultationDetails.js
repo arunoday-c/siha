@@ -49,11 +49,7 @@ const doctorselectedHandeler = ($this, context, e) => {
               incharge_or_provider: e.value
             },
             () => {
-              let serviceInput = {
-                hims_d_services_id: $this.state.hims_d_services_id,
-                patient_id: $this.state.hims_d_patient_id
-              };
-              $this.props.generateBill(serviceInput);
+              generateBillDetails($this, context);
             }
           );
           if (context != null) {
@@ -84,11 +80,7 @@ const doctorselectedHandeler = ($this, context, e) => {
         incharge_or_provider: e.value
       },
       () => {
-        let serviceInput = {
-          hims_d_services_id: $this.state.hims_d_services_id,
-          patient_id: $this.state.hims_d_patient_id
-        };
-        $this.props.generateBill(serviceInput);
+        generateBillDetails($this, context);
       }
     );
     if (context != null) {
@@ -99,6 +91,37 @@ const doctorselectedHandeler = ($this, context, e) => {
       });
     }
   }
+};
+
+const generateBillDetails = ($this, context) => {
+  let serviceInput = {
+    hims_d_services_id: $this.state.hims_d_services_id,
+    patient_id: $this.state.hims_d_patient_id
+  };
+  $this.props.generateBill({
+    uri: "/billing/getBillDetails",
+    method: "POST",
+    data: serviceInput,
+    redux: {
+      type: "BILL_GEN_GET_DATA",
+      mappingName: "xxx"
+    },
+    afterSuccess: data => {
+      if (context != null) {
+        context.updateState({ ...data });
+      }
+
+      $this.props.billingCalculations({
+        uri: "/billing/billingCalculations",
+        method: "POST",
+        data: data,
+        redux: {
+          type: "BILL_HEADER_GEN_GET_DATA",
+          mappingName: "genbill"
+        }
+      });
+    }
+  });
 };
 
 export {

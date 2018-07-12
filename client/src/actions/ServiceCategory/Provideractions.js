@@ -4,7 +4,7 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 export function getProviderDetails() {
   return function(dispatch) {
     algaehApiCall({
-      uri: "/employee/get",
+      uri: "  ",
       method: "GET",
       onSuccess: response => {
         if (response.data.success == true) {

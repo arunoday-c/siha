@@ -17,15 +17,6 @@ export default class DisplaySecondaryInsurance extends Component {
     };
   }
 
-  handle(val) {}
-
-  onDrop(file) {
-    console.log("!!!!!", file);
-    this.setState({
-      filePreview: file[0].name
-    });
-  }
-
   render() {
     return (
       <React.Fragment>

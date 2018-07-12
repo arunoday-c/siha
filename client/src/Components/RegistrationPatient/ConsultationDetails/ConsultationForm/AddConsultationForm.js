@@ -3,20 +3,14 @@ import swal from "sweetalert";
 
 import "./ConsultationForm.css";
 import "./../../../../styles/site.css";
-import { getDepartmentsClinicalNon } from "../../../../actions/CommonSetup/Department.js";
-import { getVisittypes } from "../../../../actions/CommonSetup/VisitTypeactions.js";
-import { getDepartmentsandDoctors } from "../../../../actions/CommonSetup/DepartmentsDoctorsaction";
 
-import { getProviderDetails } from "../../../../actions/serviceActions";
-import { generateBill } from "../../../../actions/RegistrationPatient/Billingactions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
 import moment from "moment";
 import Options from "../../../../Options.json";
-import { algaehApiCall } from "../../../../utils/algaehApiCall";
-
+import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
@@ -52,31 +46,56 @@ class AddConsultationForm extends Component {
   }
 
   componentDidMount() {
-    if (this.props.clndepartments.length === 0) {
-      this.props.getDepartmentsClinicalNon("CLINICAL");
-    }
-    if (this.props.visittypes.length === 0) {
-      this.props.getVisittypes();
+    if (
+      this.props.visittypes === undefined ||
+      this.props.visittypes.length === 0
+    ) {
+      this.props.getVisittypes({
+        uri: "/visitType/get",
+        method: "GET",
+        redux: {
+          type: "VISITTYPE_GET_DATA",
+          mappingName: "visittypes"
+        }
+      });
     }
 
-    if (this.props.providers.length === 0) {
-      this.props.getProviderDetails();
+    if (
+      this.props.providers === undefined ||
+      this.props.providers.length === 0
+    ) {
+      this.props.getProviderDetails({
+        uri: "/employee/get",
+        method: "GET",
+        redux: {
+          type: "DOCTOR_GET_DATA",
+          mappingName: "providers"
+        }
+      });
     }
 
-    if (this.props.deptanddoctors.length === 0) {
-      this.props.getDepartmentsandDoctors();
+    if (
+      this.props.deptanddoctors === undefined ||
+      this.props.deptanddoctors.length === 0
+    ) {
+      this.props.getDepartmentsandDoctors({
+        uri: "/department/get/get_All_Doctors_DepartmentWise",
+        method: "GET",
+        redux: {
+          type: "DEPT_DOCTOR_GET_DATA",
+          mappingName: "deptanddoctors"
+        }
+      });
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log("Bill Details", nextProps.genbill);
     this.setState(nextProps.PatRegIOputs);
   }
 
   changeDateFormat = date => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
-      // return moment(date).format(Options.dateFormat);
     }
   };
 
@@ -129,7 +148,10 @@ class AddConsultationForm extends Component {
                               ? "sub_department_name"
                               : "arabic_sub_department_name",
                           valueField: "sub_department_id",
-                          data: this.props.deptanddoctors.departmets
+                          data:
+                            this.props.deptanddoctors === undefined
+                              ? []
+                              : this.props.deptanddoctors.departmets
                         },
                         others: {
                           disabled: this.state.visittypeselect
@@ -155,7 +177,10 @@ class AddConsultationForm extends Component {
                               ? "full_name"
                               : "arabic_name",
                           valueField: "employee_id",
-                          data: this.props.deptanddoctors.doctors
+                          data:
+                            this.props.deptanddoctors === undefined
+                              ? []
+                              : this.props.deptanddoctors.doctors
                         },
                         others: {
                           disabled: this.state.visittypeselect
@@ -183,24 +208,6 @@ class AddConsultationForm extends Component {
                       }}
                       value={this.state.visit_date}
                     />
-
-                    {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-
-
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "visit_date",
-                          isImp: true
-                        }}
-                      />
-                      <br />
-
-                      <TextField
-                        type="date"
-                        disabled={true}
-                        value={this.state.visit_date}
-                      />
-                    </div> */}
                   </div>
                   <div className="row primary-box-container">
                     <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
@@ -264,9 +271,12 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "visit_type" }} />
                         ),
                         displayTemplate: row => {
-                          let display = this.props.visittypes.filter(
-                            f => f.hims_d_visit_type_id == row.visit_type
-                          );
+                          let display =
+                            this.props.visittypes === undefined
+                              ? []
+                              : this.props.visittypes.filter(
+                                  f => f.hims_d_visit_type_id == row.visit_type
+                                );
 
                           return (
                             <span>
@@ -287,12 +297,12 @@ class AddConsultationForm extends Component {
                         ),
                         displayTemplate: row => {
                           let display = [];
-                          this.props.deptanddoctors != 0
-                            ? (display = this.props.deptanddoctors.departmets.filter(
+                          this.props.deptanddoctors === undefined
+                            ? []
+                            : (display = this.props.deptanddoctors.departmets.filter(
                                 f =>
                                   f.sub_department_id == row.sub_department_id
-                              ))
-                            : [];
+                              ));
 
                           return (
                             <span>
@@ -313,11 +323,11 @@ class AddConsultationForm extends Component {
                         ),
                         displayTemplate: row => {
                           let display;
-                          this.props.deptanddoctors != 0
-                            ? (display = this.props.deptanddoctors.doctors.filter(
+                          this.props.deptanddoctors === undefined
+                            ? []
+                            : (display = this.props.deptanddoctors.doctors.filter(
                                 f => f.employee_id == row.doctor_id
-                              ))
-                            : [];
+                              ));
 
                           return (
                             <span>
@@ -336,8 +346,7 @@ class AddConsultationForm extends Component {
                     dataSource={{
                       data: vstDeatils
                     }}
-                    // isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 5 }}
+                    paging={{ page: 0, rowsPerPage: 3 }}
                     events={{
                       onDone: row => {
                         alert("done is raisedd");
@@ -356,22 +365,20 @@ class AddConsultationForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    clndepartments: state.clndepartments.clndepartments,
-    visittypes: state.visittypes.visittypes,
-    providers: state.providers.providers,
-    genbill: state.genbill.genbill,
-    deptanddoctors: state.deptanddoctors.deptanddoctors
+    visittypes: state.visittypes,
+    providers: state.providers,
+    deptanddoctors: state.deptanddoctors
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getDepartmentsClinicalNon: getDepartmentsClinicalNon,
-      getVisittypes: getVisittypes,
-      getProviderDetails: getProviderDetails,
-      generateBill: generateBill,
-      getDepartmentsandDoctors: getDepartmentsandDoctors
+      getVisittypes: AlgaehActions,
+      getProviderDetails: AlgaehActions,
+      getDepartmentsandDoctors: AlgaehActions,
+      generateBill: AlgaehActions,
+      billingCalculations: AlgaehActions
     },
     dispatch
   );

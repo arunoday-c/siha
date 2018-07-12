@@ -15,8 +15,11 @@ import MyContext from "../../utils/MyContext.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/Billing";
 import PatRegIOputs from "../../Models/RegistrationPatient";
-import { getPatientDetails } from "../../actions/RegistrationPatient/Registrationactions";
 import { getCookie } from "../../utils/algaehApiCall";
+
+import { AlgaehActions } from "../../actions/algaehActions";
+import { postBillDetsils } from "../../actions/RegistrationPatient/Billingactions";
+import { successfulMessage } from "../../utils/GlobalFunctions";
 
 var intervalId;
 
@@ -55,17 +58,30 @@ class PatientDisplayDetails extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // this.setState(nextProps.patients[0]);
+    //this.setState(nextProps.patients[0]);
+    if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
+      this.setState({ ...this.state, ...nextProps.genbill });
+    }
   }
 
   getPatientDetails() {
     clearInterval(intervalId);
     intervalId = setInterval(() => {
-      this.props.getPatientDetails(this.state.patient_code, data => {
-        data.patientRegistration.visitDetails = data.visitDetails;
-        data.patientRegistration.patient_id =
-          data.patientRegistration.hims_d_patient_id;
-        this.setState(data.patientRegistration);
+      this.props.getPatientDetails({
+        uri: "/frontDesk/get",
+        method: "GET",
+        printInput: true,
+        data: { patient_code: this.state.patient_code },
+        redux: {
+          type: "PAT_GET_DATA",
+          mappingName: "patients"
+        },
+        afterSuccess: data => {
+          data.patientRegistration.visitDetails = data.visitDetails;
+          data.patientRegistration.patient_id =
+            data.patientRegistration.hims_d_patient_id;
+          this.setState(data.patientRegistration);
+        }
       });
       clearInterval(intervalId);
     }, 500);
@@ -74,6 +90,80 @@ class PatientDisplayDetails extends Component {
   getCtrlCode(data) {
     this.setState({
       bill_number: data
+    });
+  }
+  GenerateReciept(callback) {
+    if (this.state.total_amount > 0) {
+      let obj = [];
+
+      if (this.state.cash_amount > 0) {
+        obj.push({
+          hims_f_receipt_header_id: null,
+          card_check_number: null,
+          expiry_date: null,
+          pay_type: this.state.pay_cash,
+          amount: this.state.cash_amount,
+          created_by: getCookie("UserID"),
+          created_date: new Date(),
+          updated_by: null,
+          updated_date: null,
+          card_type: null
+        });
+      }
+      if (this.state.card_amount > 0) {
+        obj.push({
+          hims_f_receipt_header_id: null,
+          card_check_number: this.state.card_number,
+          expiry_date: this.state.card_date,
+          pay_type: this.state.pay_card,
+          amount: this.state.card_amount,
+          created_by: getCookie("UserID"),
+          created_date: new Date(),
+          updated_by: null,
+          updated_date: null,
+          card_type: null
+        });
+      }
+      if (this.state.cheque_amount > 0) {
+        obj.push({
+          hims_f_receipt_header_id: null,
+          card_check_number: this.state.cheque_number,
+          expiry_date: this.state.cheque_date,
+          pay_type: this.state.pay_cheque,
+          amount: this.state.cheque_amount,
+          created_by: getCookie("UserID"),
+          created_date: new Date(),
+          updated_by: null,
+          updated_date: null,
+          card_type: null
+        });
+      }
+
+      this.setState(
+        {
+          receiptdetails: obj
+        },
+        () => {
+          callback(this);
+        }
+      );
+    }
+  }
+
+  SaveBill(e) {
+    this.GenerateReciept($this => {
+      $this.props.postBillDetsils($this.state, data => {
+        $this.setState({
+          bill_number: data.bill_number,
+          receipt_number: data.receipt_number,
+          saveEnable: true
+        });
+        successfulMessage({
+          message: "Done Successfully",
+          title: "Success",
+          icon: "success"
+        });
+      });
     });
   }
 
@@ -114,8 +204,8 @@ class PatientDisplayDetails extends Component {
             }}
           >
             <PatientDetails BillingIOputs={this.state} />
-            <DisplayInsuranceDetails BillingIOputs={this.state} />
             <DisplayVisitDetails BillingIOputs={this.state} />
+            <DisplayInsuranceDetails BillingIOputs={this.state} />
             <OPBillingDetails BillingIOputs={this.state} />
           </MyContext.Provider>
         </div>
@@ -139,8 +229,8 @@ class PatientDisplayDetails extends Component {
                 <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-12">
                   <button
                     className="htpl1-phase1-btn-primary"
-                    // onClick={this.SavePatientDetails.bind(this)}
-                    // disabled={this.state.saveEnable}
+                    onClick={this.SaveBill.bind(this)}
+                    disabled={this.state.saveEnable}
                   >
                     Save
                   </button>
@@ -156,14 +246,16 @@ class PatientDisplayDetails extends Component {
 
 function mapStateToProps(state) {
   return {
-    patients: state.patients.patients
+    genbill: state.genbill,
+    patients: state.patients
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPatientDetails: getPatientDetails
+      getPatientDetails: AlgaehActions,
+      postBillDetsils: postBillDetsils
     },
     dispatch
   );

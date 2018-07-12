@@ -12,7 +12,7 @@ export function getCountries() {
       onSuccess: response => {
         if (response.data.success == true) {
           dispatch({
-            type: "CTRYGET_DATA",
+            type: "CTRY_GET_DATA",
             payload: response.data.records
           });
 

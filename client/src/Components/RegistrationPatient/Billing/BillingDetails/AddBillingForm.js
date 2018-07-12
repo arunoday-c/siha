@@ -12,10 +12,11 @@ import {
 import {
   texthandle,
   datehandle,
-  servicetexthandle,
+  discounthandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle
+  chequetexthandle,
+  adjustadvance
 } from "./AddBillingDetails";
 import MyContext from "../../../../utils/MyContext.js";
 import { generateBill } from "../../../../actions/RegistrationPatient/Billingactions";
@@ -23,6 +24,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import variableJson from "../../../../utils/GlobalVariables.json";
+import { AlgaehActions } from "../../../../actions/algaehActions";
 
 class AddBillingForm extends Component {
   constructor(props) {
@@ -96,16 +98,11 @@ class AddBillingForm extends Component {
                         />
 
                         <div className="col-lg-3">
-                          {/* <BillDetails
-                            show={this.state.isOpen}
-                            onClose={this.toggleModal}
-                          /> */}
-
                           <button
                             className="htpl1-phase1-btn-primary"
                             onClick={this.ShowBillDetails.bind(this)}
                           >
-                            Detail....
+                            Details....
                           </button>
 
                           <DisplayOPBilling
@@ -203,11 +200,11 @@ class AddBillingForm extends Component {
                           div={{ className: "col-lg-2", id: "widthDate" }}
                           textBox={{
                             decimal: { allowNegative: false },
-                            value: this.state.advance,
+                            value: this.state.advance_adjust,
                             className: "txt-fld",
-                            name: "advance",
+                            name: "advance_adjust",
                             events: {
-                              onChange: texthandle.bind(this, this, context)
+                              onChange: adjustadvance.bind(this, this, context)
                             }
                           }}
                         />
@@ -228,11 +225,7 @@ class AddBillingForm extends Component {
                             className: "txt-fld",
                             name: "sheet_discount_percentage",
                             events: {
-                              onChange: servicetexthandle.bind(
-                                this,
-                                this,
-                                context
-                              )
+                              onChange: discounthandle.bind(this, this, context)
                             }
                           }}
                         />
@@ -252,11 +245,7 @@ class AddBillingForm extends Component {
                             name: "sheet_discount_amount",
 
                             events: {
-                              onChange: servicetexthandle.bind(
-                                this,
-                                this,
-                                context
-                              )
+                              onChange: discounthandle.bind(this, this, context)
                             }
                           }}
                         />
@@ -671,14 +660,15 @@ class AddBillingForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    genbill: state.genbill.genbill
+    genbill: state.genbill
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      generateBill: generateBill
+      generateBill: AlgaehActions,
+      billingCalculations: AlgaehActions
     },
     dispatch
   );

@@ -91,5 +91,13 @@
   "card_check_number": "Number",
   "expiry_date": "Expiry Date",
   "amount": "Amount",
-  "unbalanced_amount": "Unbalanced Amount"
+  "unbalanced_amount": "Unbalanced Amount",
+
+  "responsibility_lbl": "Responsibility",
+  "tax_lbl": "Tax",
+  "payable_lbl": "Payable",
+
+  "patient_lbl": "Patient",
+  "company_lbl": "Primary Company",
+  "sec_comp_lbl": "Secondary Company"
 }

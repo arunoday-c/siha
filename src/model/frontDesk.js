@@ -6,6 +6,7 @@ import { addBill, newReceipt } from "../model/billing";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction } from "../utils/logging";
 
+//created by irfan :to save front desk data inputs
 let addFrontDesk = (req, res, next) => {
   debugFunction("addFrontDesk");
   try {
@@ -223,7 +224,7 @@ let selectFrontDesk = (req, res, next) => {
       , `emergency_contact_name`,`emergency_contact_number`, `relationship_with_patient`\
       , `visa_type_id`,`nationality_id`, `postal_code`, `primary_identity_id`\
       , `primary_id_no`,`secondary_identity_id`, `secondary_id_no`, `photo_file`\
-      , `primary_id_file`,`secondary_id_file`,`city_id`,`state_id`,`country_id` FROM `hims_f_patient` \
+      , `primary_id_file`,`secondary_id_file`,`city_id`,`state_id`,`country_id`, `advance_amount` FROM `hims_f_patient` \
        WHERE `record_status`='A' AND " +
           where.condition,
         where.values,
@@ -268,6 +269,7 @@ let selectFrontDesk = (req, res, next) => {
   }
 };
 
+//created by irfan :to update front desk
 let updateFrontDesk = (req, res, next) => {
   debugFunction("updateFrontDesk");
   try {

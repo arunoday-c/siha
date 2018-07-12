@@ -50,23 +50,6 @@ export default class OPBillingDetails extends Component {
               Recipt Details
             </li>
           </ul>
-          {/* <div className="col-xs-4 col-sm-3 col-md-3 col-lg-2 tab">
-              <button
-                className={"tab-button " + BillingDetails}
-                onClick={this.openTab.bind(this, "Billing-details")}
-              >
-                Billing Details
-              </button>
-            </div>
-
-            <div className="col-xs-4 col-sm-3 col-md-3 col-lg-2 tab">
-              <button
-                className={"tab-button " + ReciptDetails}
-                onClick={this.openTab.bind(this, "Recipts-details")}
-              >
-                Recipts
-              </button>
-            </div> */}
         </div>
         <div className="opbilling-section">
           {this.state.actionBillingDetails ? (

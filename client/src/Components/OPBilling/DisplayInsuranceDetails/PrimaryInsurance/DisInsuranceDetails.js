@@ -16,13 +16,6 @@ export default class AddInsuranceForm extends Component {
     };
   }
 
-  onDrop(file) {
-    console.log("!!!!!", file);
-    this.setState({
-      filePreview: file[0].name
-    });
-  }
-
   render() {
     return (
       <div className="htpl-primary-display-insurance-form ">

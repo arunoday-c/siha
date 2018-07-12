@@ -1,13 +1,45 @@
+import React from "react";
 import axios from "axios";
 import extend from "extend";
 import moment from "moment";
-
+import swal from "sweetalert";
+import Slide from "@material-ui/core/Slide";
+import config from "../utils/config.json";
 export function algaehApiCall(options) {
-  // const baseUrl = "http://159.89.163.148:3000/api/";
-  // const baseUrl = "http://192.168.0.156:3000/api/v1";
-  // const baseUrl = "http://192.168.0.149:3000/api/v1";
-  // const baseUrl = "http://localhost:3003/api/";
-  const baseUrl = "/api/v1";
+  let headerToken = getToken();
+  if (headerToken === undefined) {
+    window.location.href = window.location.origin;
+    return;
+  }
+  if (!window.navigator.onLine) {
+    swal({
+      title: "Connection Error",
+      text:
+        "Looks like you're not connected to any network, please make sure you connect and try again",
+      icon: "images/nointernet.png",
+      button: false,
+      timer: 5000
+    });
+    return false;
+  } else {
+    if (headerToken === undefined) {
+      window.location.href = window.location.origin;
+      return;
+    }
+
+    if (window.navigator.connection.effectiveType == "2g") {
+      <Slide
+        open={true}
+        direction="up"
+        vertical="top"
+        horizontal="center"
+        message={<span>Low internet connectivity</span>}
+      />;
+    }
+  }
+  // "baseUrl": "/api/v1",
+  //"baseUrl": "http://192.168.0.149:3000/api/v1",
+
   var settings = extend(
     {
       uri: null,
@@ -15,15 +47,67 @@ export function algaehApiCall(options) {
       method: "POST",
       token: null,
       onSuccess: null,
-      onFailure: null
+      onFailure: null,
+      baseUrl: config.baseUrl,
+      printInput: false,
+      isfetch: false
     },
     options
   );
+  let queryParametres = "";
+  if (String(settings.method).toUpperCase() === "GET") {
+    let str = [];
+    for (let p in settings.data) {
+      if (settings.data.hasOwnProperty(p)) {
+        str.push(
+          encodeURIComponent(p) + "=" + encodeURIComponent(settings.data[p])
+        );
+      }
+    }
+    settings.data = {};
+    queryParametres = "?" + str.join("&");
+    if (settings.printInput) {
+      console.log(
+        "Input data :",
+        settings.baseUrl + settings.uri + queryParametres
+      );
+    }
+  }
+  if (settings.printInput) {
+    console.log("Input data :", settings.data);
+  }
+
   if (settings.uri != null || settings.uri != "") {
+    if (settings.isfetch) {
+      return fetch(settings.baseUrl + settings.uri + queryParametres, {
+        method: settings.method,
+        headers: { "x-api-key": headerToken },
+        body: JSON.stringify(settings.data)
+      })
+        .then(response => {
+          if (response.status >= 200 && response.status < 300) {
+            console.log(response);
+            // dispatch(loginSuccess(response));
+            if (typeof settings.onSuccess === "function")
+              settings.onSuccess(response);
+          } else {
+            const error = new Error(response.statusText);
+            error.response = response;
+            // dispatch(loginError(error));
+            if (typeof settings.onFailure === "function")
+              settings.onFailure(error);
+            throw error;
+          }
+        })
+        .catch(error => {
+          console.error("request failed", error);
+        });
+    }
+
     axios({
       method: settings.method,
-      url: baseUrl + settings.uri,
-      headers: { "x-api-key": getToken() },
+      url: settings.baseUrl + settings.uri + queryParametres,
+      headers: { "x-api-key": headerToken },
       data: settings.data,
       timeout: settings.timeout
     })

@@ -9,12 +9,18 @@
     color: red; }
   .hptl-phase1-op-display-billing-form .form-details {
     padding: 5px;
-    padding-bottom: 0px; }
+    padding-bottom: 0px;
+    margin-top: 7px; }
   .hptl-phase1-op-display-billing-form .lbl-milldle {
     padding-top: 30px; }
   .hptl-phase1-op-display-billing-form .lbl-resize label {
     font-size: 16px;
     background: #5f5f5f; }
+  .hptl-phase1-op-display-billing-form .form-details {
+    padding: 5px;
+    padding-bottom: 0px; }
+  .hptl-phase1-op-display-billing-form .Paper {
+    border: 1px solid #5f5f5f; }
 
 .bottom-details {
   padding: 5px;
@@ -28,9 +34,8 @@
   border: 1px solid #5f5f5f; }
 
 .insurance-details {
-  padding: 5px;
-  padding-bottom: 5px;
-  border: 1px solid #5f5f5f; }
+  padding: 20px;
+  padding-bottom: 5px; }
 
 .colorPrimary div {
   background-color: #dbad64; }

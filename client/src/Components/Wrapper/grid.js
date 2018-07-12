@@ -63,7 +63,7 @@ class DataGrid extends Component {
     let row = this.state.data[rowId];
     if (this.props.events != null) {
       if (this.props.events.onDelete) {
-        this.props.events.onDelete(row);
+        this.props.events.onDelete(row, rowId);
       }
     }
   };

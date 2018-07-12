@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import { MenuItem } from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -384,15 +384,6 @@ class PersistentDrawer extends React.Component {
                 <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                   <Typography variant="title" color="inherit" noWrap>
                     {this.state.title}
-
-                    {/* <label
-                      ref={data => {
-                        return (this.title = data);
-                      }}
-                      data-algeahtitle="Dashboard"
-                    >
-                      Dashboard
-                    </label> */}
                   </Typography>
                 </div>
 

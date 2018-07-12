@@ -1,16 +1,9 @@
 import React, { PureComponent } from "react";
 import "./PatientForm.css";
 import Dropzone from "react-dropzone";
-import {
-  getTitles,
-  getCountries,
-  getNationalities,
-  getIDTypes,
-  getRelegion,
-  getCities,
-  getStates,
-  getVisatypes
-} from "../../../../actions/masterActions";
+
+import { AlgaehActions } from "../../../../actions/algaehActions";
+
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -60,9 +53,6 @@ class AddPatientForm extends PureComponent {
   componentWillUpdate(nextProps, nextState) {
     var width = document.getElementById("attach-width").offsetWidth;
     this.widthImg = width + 1;
-
-    // var widthDate = document.getElementById("widthDate").offsetWidth;
-    // this.widthDate = widthDate;
   }
   componentWillMount() {
     let InputOutput = this.props.PatRegIOputs;
@@ -70,23 +60,74 @@ class AddPatientForm extends PureComponent {
   }
 
   componentDidMount() {
-    if (this.props.titles.length === 0) {
-      this.props.getTitles();
+    if (this.props.titles === undefined || this.props.titles.length === 0) {
+      this.props.getTitles({
+        uri: "/masters/get/title",
+        method: "GET",
+        redux: {
+          type: "TITLE_GET_DATA",
+          mappingName: "titles"
+        }
+      });
     }
-    if (this.props.nationalities.length === 0) {
-      this.props.getNationalities();
+    if (
+      this.props.nationalities === undefined ||
+      this.props.nationalities.length === 0
+    ) {
+      this.props.getNationalities({
+        uri: "/masters/get/nationality",
+        method: "GET",
+        redux: {
+          type: "NAT_GET_DATA",
+          mappingName: "nationalities"
+        }
+      });
     }
-    if (this.props.idtypes.length === 0) {
-      this.props.getIDTypes();
+    if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
+      this.props.getIDTypes({
+        uri: "/identity/get",
+        method: "GET",
+        redux: {
+          type: "IDTYPE_GET_DATA",
+          mappingName: "idtypes"
+        }
+      });
     }
-    if (this.props.relegions.length === 0) {
-      this.props.getRelegion();
+    if (
+      this.props.relegions === undefined ||
+      this.props.relegions.length === 0
+    ) {
+      this.props.getRelegion({
+        uri: "/masters/get/relegion",
+        method: "GET",
+        redux: {
+          type: "RELGE_GET_DATA",
+          mappingName: "relegions"
+        }
+      });
     }
-    if (this.props.countries.length === 0) {
-      this.props.getCountries();
+    if (this.props.countries == undefined || this.props.countries.length == 0) {
+      this.props.getCountries({
+        uri: "/masters/get/countryStateCity",
+        method: "GET",
+        redux: {
+          type: "CTRY_GET_DATA",
+          mappingName: "countries"
+        }
+      });
     }
-    if (this.props.visatypes.length === 0) {
-      this.props.getVisatypes();
+    if (
+      this.props.visatypes === undefined ||
+      this.props.visatypes.length === 0
+    ) {
+      this.props.getVisatypes({
+        uri: "/masters/get/visa",
+        method: "GET",
+        redux: {
+          type: "VISA_GET_DATA",
+          mappingName: "visatypes"
+        }
+      });
     }
   }
 
@@ -101,13 +142,28 @@ class AddPatientForm extends PureComponent {
           let cities = Enumerable.from(states)
             .where(w => w.hims_d_state_id == this.state.state_id)
             .firstOrDefault();
-          this.props.getStates(states, callback => {
-            this.setState({
-              state_id: this.state.state_id
-            });
+          this.props.getStates({
+            redux: {
+              data: states,
+              type: "STATE_GET_DATA",
+              mappingName: "countrystates"
+            },
+            afterSuccess: callback => {
+              this.setState({
+                state_id: this.state.state_id
+              });
+            }
           });
-          if (cities != "undefined") {
-            this.props.getCities(cities.cities);
+          if (cities !== undefined) {
+            // this.props.getCities(cities.cities);
+
+            this.props.getCities({
+              redux: {
+                data: cities.cities,
+                type: "CITY_GET_DATA",
+                mappingName: "cities"
+              }
+            });
           }
         }
       }
@@ -717,30 +773,30 @@ class AddPatientForm extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    titles: state.titles.titles,
-    nationalities: state.nationalities.nationalities,
-    idtypes: state.idtypes.idtypes,
-    relegions: state.relegions.relegions,
-    cities: state.cities.cities,
-    countries: state.countries.countries,
-    countrystates: state.countrystates.countrystates,
-    patients: state.patients.patients,
-    visatypes: state.visatypes.visatypes
+    titles: state.titles,
+    nationalities: state.nationalities,
+    idtypes: state.idtypes,
+    relegions: state.relegions,
+    cities: state.cities,
+    countries: state.countries,
+    countrystates: state.countrystates,
+    patients: state.patients,
+    visatypes: state.visatypes
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getTitles: getTitles,
-      getNationalities: getNationalities,
-      getIDTypes: getIDTypes,
-      getRelegion: getRelegion,
-      getCities: getCities,
-      getCountries: getCountries,
-      getStates: getStates,
-      postPatientDetails: postPatientDetails,
-      getVisatypes: getVisatypes
+      getTitles: AlgaehActions,
+      getNationalities: AlgaehActions,
+      getIDTypes: AlgaehActions,
+      getRelegion: AlgaehActions,
+      getCities: AlgaehActions,
+      getCountries: AlgaehActions,
+      getStates: AlgaehActions,
+      postPatientDetails: AlgaehActions,
+      getVisatypes: AlgaehActions
     },
     dispatch
   );

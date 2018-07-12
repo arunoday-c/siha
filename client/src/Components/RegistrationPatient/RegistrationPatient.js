@@ -6,25 +6,21 @@ import Billing from "./Billing/BillingDetails";
 import "./registration.css";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import BillingIOputs from "../../Models/Billing";
-import Button from "@material-ui/core/Button";
 import extend from "extend";
-import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogTitle from "@material-ui/core/DialogTitle";
+// import Dialog from "@material-ui/core/Dialog";
+// import DialogActions from "@material-ui/core/DialogActions";
+// import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import AppBar from "@material-ui/core/AppBar";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import {
   postPatientDetails,
-  getPatientDetails,
-  initialStatePatientData
+  postVisitDetails
 } from "../../actions/RegistrationPatient/Registrationactions";
-import { postVisitDetails } from "../../actions/RegistrationPatient/Visitactions";
-import { generateBill } from "../../actions/RegistrationPatient/Billingactions";
+
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";
@@ -33,6 +29,7 @@ import { getCookie } from "../../utils/algaehApiCall";
 import AddAdvanceModal from "../Advance/AdvanceModal";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
+import { AlgaehActions } from "../../actions/algaehActions";
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -62,7 +59,13 @@ class RegistrationPatient extends Component {
       widthImg: width
     });
     if (this.state.saveEnable === "clear") {
-      this.props.initialStatePatientData();
+      this.props.initialStatePatientData({
+        redux: {
+          type: "PAT_INIT_DATA",
+          mappingName: "patients",
+          data: {}
+        }
+      });
     }
 
     let prevLang = getCookie("Language");
@@ -74,7 +77,14 @@ class RegistrationPatient extends Component {
   }
 
   ClearData(e) {
-    this.props.initialStatePatientData();
+    this.props.initialStatePatientData({
+      redux: {
+        type: "PAT_INIT_DATA",
+        mappingName: "patients",
+        data: {}
+      }
+    });
+
     let IOputs = emptyObject;
 
     this.setState(IOputs);
@@ -92,7 +102,7 @@ class RegistrationPatient extends Component {
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
           created_by: getCookie("UserID"),
-          created_date: moment(String(new Date())).format("YYYY-MM-DD"),
+          created_date: new Date(),
           updated_by: null,
           updated_date: null,
           card_type: null
@@ -106,7 +116,7 @@ class RegistrationPatient extends Component {
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
           created_by: getCookie("UserID"),
-          created_date: moment(String(new Date())).format("YYYY-MM-DD"),
+          created_date: new Date(),
           updated_by: null,
           updated_date: null,
           card_type: null
@@ -120,7 +130,7 @@ class RegistrationPatient extends Component {
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
           created_by: getCookie("UserID"),
-          created_date: moment(String(new Date())).format("YYYY-MM-DD"),
+          created_date: new Date(),
           updated_by: null,
           updated_date: null,
           card_type: null
@@ -179,6 +189,10 @@ class RegistrationPatient extends Component {
   };
 
   ShowAdvanceScreen(e) {
+    // this.setState({
+    //   ...this.state,
+    //   AdvanceOpen: !this.state.AdvanceOpen
+    // });
     if (this.state.patient_code != null && this.state.patient_code != "") {
       this.setState({
         ...this.state,
@@ -202,7 +216,7 @@ class RegistrationPatient extends Component {
     } else {
       successfulMessage({
         message: "Select Patient",
-        title: "Error",
+        title: "Warning",
         icon: "error"
       });
     }
@@ -216,7 +230,7 @@ class RegistrationPatient extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.genbill.length != 0) {
+    if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
       this.setState({ ...this.state, ...nextProps.genbill });
     }
   }
@@ -224,12 +238,22 @@ class RegistrationPatient extends Component {
     let $this = this;
     clearInterval(intervalId);
     intervalId = setInterval(() => {
-      this.props.getPatientDetails(patcode, data => {
-        data.patientRegistration.visitDetails = data.visitDetails;
-        data.patientRegistration.patient_id =
-          data.patientRegistration.hims_d_patient_id;
-        data.patientRegistration.existingPatient = true;
-        $this.setState(data.patientRegistration);
+      this.props.getPatientDetails({
+        uri: "/frontDesk/get",
+        method: "GET",
+        printInput: true,
+        data: { patient_code: patcode },
+        redux: {
+          type: "PAT_GET_DATA",
+          mappingName: "patients"
+        },
+        afterSuccess: data => {
+          data.patientRegistration.visitDetails = data.visitDetails;
+          data.patientRegistration.patient_id =
+            data.patientRegistration.hims_d_patient_id;
+          data.patientRegistration.existingPatient = true;
+          $this.setState(data.patientRegistration);
+        }
       });
       clearInterval(intervalId);
     }, 500);
@@ -279,7 +303,7 @@ class RegistrationPatient extends Component {
               <AppBar position="static" className="main">
                 <div className="container-fluid">
                   <div className="row">
-                    <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-11">
+                    <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-9">
                       <button
                         className="htpl1-phase1-btn-others"
                         onClick={this.ShowAdvanceScreen.bind(this)}
@@ -305,13 +329,14 @@ class RegistrationPatient extends Component {
                           patient_code: this.state.patient_code,
                           full_name: this.state.full_name,
                           hims_f_patient_id: this.state.hims_d_patient_id,
-                          transaction_type: "A",
-                          pay_type: "R"
+                          transaction_type: "AD",
+                          pay_type: "R",
+                          advance_amount: this.state.advance_amount
                         }}
                       />
                     </div>
 
-                    <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-11">
+                    <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-10">
                       <button
                         className="htpl1-phase1-btn-others"
                         onClick={this.ShowRefundScreen.bind(this)}
@@ -337,8 +362,9 @@ class RegistrationPatient extends Component {
                           patient_code: this.state.patient_code,
                           full_name: this.state.full_name,
                           hims_f_patient_id: this.state.hims_d_patient_id,
-                          transaction_type: "R",
-                          pay_type: "P"
+                          transaction_type: "RF",
+                          pay_type: "P",
+                          advance_amount: this.state.advance_amount
                         }}
                       />
                     </div>
@@ -375,7 +401,7 @@ class RegistrationPatient extends Component {
           </MyContext.Provider>
         </div>
 
-        <div>
+        {/* <div>
           <Dialog
             open={this.state.DialogOpen}
             TransitionComponent={Transition}
@@ -394,20 +420,16 @@ class RegistrationPatient extends Component {
               </Button>
             </DialogActions>
           </Dialog>
-        </div>
+        </div> */}
       </div>
     );
   }
 }
 
-// function TransitionUp(props) {
-//   return <Slide {...props} direction="up" />;
-// }
-
 function mapStateToProps(state) {
   return {
-    patients: state.patients.patients,
-    genbill: state.genbill.genbill
+    patients: state.patients,
+    genbill: state.genbill
   };
 }
 
@@ -415,10 +437,11 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       postPatientDetails: postPatientDetails,
-      getPatientDetails: getPatientDetails,
-      initialStatePatientData: initialStatePatientData,
+      getPatientDetails: AlgaehActions,
+      initialStatePatientData: AlgaehActions,
       postVisitDetails: postVisitDetails,
-      generateBill: generateBill
+      generateBill: AlgaehActions,
+      initialStateBillGen: AlgaehActions
     },
     dispatch
   );

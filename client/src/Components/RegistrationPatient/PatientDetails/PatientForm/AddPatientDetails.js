@@ -42,7 +42,14 @@ const countryStatehandle = ($this, context, e) => {
           city_id: null
         });
       }
-      $this.props.getStates(e.selected.states);
+
+      $this.props.getStates({
+        redux: {
+          data: e.selected.states,
+          type: "STATE_GET_DATA",
+          mappingName: "countrystates"
+        }
+      });
     } else if (e.name == "state_id") {
       name = e.name;
       value = e.value;
@@ -54,7 +61,13 @@ const countryStatehandle = ($this, context, e) => {
           city_id: null
         });
       }
-      $this.props.getCities(e.selected.cities);
+      $this.props.getCities({
+        redux: {
+          data: e.selected.cities,
+          type: "CITY_GET_DATA",
+          mappingName: "cities"
+        }
+      });
     }
   }
 
