@@ -7,8 +7,7 @@ import { algaehApiCall } from "../utils/algaehApiCall";
 import AlgaehSearch from "../Components/Wrapper/globalSearch";
 import {
   AlagehAutoComplete,
-  AlgaehDataGrid,
-  Button
+  AlgaehDataGrid
 } from "../Components/Wrapper/algaehWrapper";
 var intervalId;
 class DeptMaster extends Component {
@@ -16,6 +15,7 @@ class DeptMaster extends Component {
     super(props);
 
     this.state = {
+      textboxField: "",
       openFinder: false,
       dropDownValue: "patient_code",
       loadedData: this.dummyRows(),
@@ -116,13 +116,13 @@ class DeptMaster extends Component {
             fieldName: "contact_number",
             label: "Contact Number"
           }
-        ],
-        searchName: "patients"
+        ]
+      },
+      searchName: "patients",
+      onRowSelect: row => {
+        this.setState({ textboxField: row.patient_code });
       }
     });
-    // this.setState({
-    //   openFinder: true
-    // });
   }
 
   handleSearchChange(e) {
@@ -195,6 +195,7 @@ class DeptMaster extends Component {
             <TextField
               style={{ width: "100%" }}
               onChange={this.handleSearchChange.bind(this)}
+              value={this.state.textboxField}
             />
           </div>
           {this.state.openFinder ? this.dropDownFilterBy() : null}

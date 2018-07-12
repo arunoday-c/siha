@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import TablePagination from "@material-ui/core/TablePagination";
@@ -10,14 +10,15 @@ import IconButton from "@material-ui/core/IconButton";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
 import "./wrapper.css";
-
-class DataGrid extends Component {
+import { algaehApiCall } from "../../utils/algaehApiCall";
+class DataGrid extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
       page: 0,
       rowsPerPage: 5,
+      totalPages: 0,
       selectedPreviousRow: null,
       isEditable: false,
       rowToIndexEdit: -1,
@@ -27,8 +28,61 @@ class DataGrid extends Component {
       id: null
     };
   }
+
+  apiCallingFunction = ($this, page, callBack) => {
+    algaehApiCall({
+      uri: this.props.dataSource.uri,
+      data: {
+        ...this.props.dataSource.inputParam,
+        ...{ pageSize: $this.state.rowsPerPage, pageNo: page + 1 }
+      },
+      method: this.props.dataSource.method
+        ? this.props.dataSource.method
+        : "GET",
+      onSuccess: response => {
+        if (response.data.success === true) {
+          let dataS = eval(
+            "response.data." + $this.props.dataSource.responseSchema.data
+          );
+          let total_pages = eval(
+            "response.data." + $this.props.dataSource.responseSchema.totalPages
+          );
+          callBack(dataS, total_pages);
+          // $this.setState({
+          //   data: dataS,
+          //   totalPages:
+          //     $this.props.dataSource.responseSchema.totalPages === undefined
+          //       ? dataS.length
+          //       : total_pages
+          // });
+        } else {
+          console.error(response);
+        }
+      },
+      onFailure: data => {
+        console.error(data);
+      }
+    });
+  };
+
   handleChangePage = (event, page) => {
-    this.setState({ page });
+    if (
+      this.props.dataSource.uri !== undefined &&
+      this.props.dataSource.responseSchema.totalPages !== undefined
+    ) {
+      this.apiCallingFunction(this, page, (data, totalPages) => {
+        this.setState({
+          data: data,
+          totalPages:
+            this.props.dataSource.responseSchema.totalPages === undefined
+              ? data.length
+              : totalPages,
+          page: page
+        });
+      });
+    } else {
+      this.setState({ page });
+    }
   };
 
   handleChangeRowsPerPage = event => {
@@ -56,6 +110,18 @@ class DataGrid extends Component {
   };
   componentDidMount() {
     sessionStorage.removeItem(this.state.id);
+    if (this.props.dataSource.uri !== undefined) {
+      this.apiCallingFunction(this, 0, (data, totalPages) => {
+        this.setState({
+          data: data,
+          totalPages:
+            this.props.dataSource.responseSchema.totalPages === undefined
+              ? data.length
+              : totalPages,
+          page: 0
+        });
+      });
+    }
   }
   handleDeleteRow = event => {
     sessionStorage.removeItem(this.state.id);
@@ -178,7 +244,8 @@ class DataGrid extends Component {
 */
   componentWillReceiveProps(nextProps) {
     this.setState({
-      data: nextProps.dataSource.data,
+      data:
+        nextProps.dataSource.uri === undefined ? nextProps.dataSource.data : [],
       expanded:
         nextProps.expanded != null
           ? {
@@ -204,10 +271,10 @@ class DataGrid extends Component {
       keyField: this.props.keyField
     });
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps === this.state) return false;
-    else return true;
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (nextProps === this.state) return false;
+  //   return true;
+  // }
   returnTableHeaderColumns = () => {
     return this.props.columns.map((row, i) => {
       return (
@@ -334,16 +401,35 @@ class DataGrid extends Component {
       );
     });
   };
+  getRowDetailsOnClick(event) {
+    let rowId = event.target.parentElement.rowIndex - 1;
+    let row = this.state.data[rowId];
+    this.props.onRowSelect(row);
+  }
 
   returnNonEditedStateRow = (row, index) => {
-    return (
-      <React.Fragment>
-        <tr key={index.toString()}>
-          {this.returnEditDeleteButtons(row)}
-          {this.returnTableRoNonEditWithColumns(row, index)}
-        </tr>
-      </React.Fragment>
-    );
+    if (this.props.algaehSearch === undefined) {
+      return (
+        <React.Fragment>
+          <tr key={index.toString()}>
+            {this.returnEditDeleteButtons(row)}
+            {this.returnTableRoNonEditWithColumns(row, index)}
+          </tr>
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <React.Fragment>
+          <tr
+            key={index.toString()}
+            onClick={this.getRowDetailsOnClick.bind(this)}
+          >
+            {this.returnEditDeleteButtons(row)}
+            {this.returnTableRoNonEditWithColumns(row, index)}
+          </tr>
+        </React.Fragment>
+      );
+    }
   };
   renderDetailedTemplateRecords = (row, index) => {
     if (this.state.expanded != null) {
@@ -360,30 +446,38 @@ class DataGrid extends Component {
     let { data, rowsPerPage, page, isEditable, rowToIndexEdit } = this.state;
 
     if (this.props.paging == null) {
-      page = 0;
-      rowsPerPage = data.length;
+      page = page !== undefined ? page : 0;
+      rowsPerPage = rowsPerPage !== undefined ? rowsPerPage : data.length;
     }
+
+    if (data === undefined) {
+      return null;
+    }
+    if (
+      this.props.dataSource.uri !== undefined &&
+      this.props.dataSource.responseSchema.totalPages !== undefined
+    )
+      page = 0;
     return (
       <React.Fragment>
         {data
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          .map((n, i) => {
-            if (isEditable && i == rowToIndexEdit) {
-              return (
+          .map((n, i) => (
+            <React.Fragment key={i.toString()}>
+              {console.log("printing rows ", i)}
+              {isEditable && i == rowToIndexEdit ? (
                 <React.Fragment key={i.toString()}>
                   {this.returnEditableStateRow(n, i)}
                   {this.renderDetailedTemplateRecords(n, i)}
                 </React.Fragment>
-              );
-            } else {
-              return (
+              ) : (
                 <React.Fragment key={i}>
                   {this.returnNonEditedStateRow(n, i)}
                   {this.renderDetailedTemplateRecords(n, i)}
                 </React.Fragment>
-              );
-            }
-          })}
+              )}
+            </React.Fragment>
+          ))}
       </React.Fragment>
     );
   };
@@ -395,9 +489,11 @@ class DataGrid extends Component {
         <TablePagination
           component="div"
           count={
-            this.props.paging.totalPages
-              ? this.props.paging.totalPages
-              : data.length
+            this.props.dataSource.uri
+              ? this.state.totalPages
+              : data === undefined
+                ? 0
+                : data.length
           }
           rowsPerPage={rowsPerPage}
           page={page}

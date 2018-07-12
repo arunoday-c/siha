@@ -10,18 +10,24 @@ class SearchModule extends Component {
       open: false,
       title: "Algaeh Search",
       searchBy: "",
+      page: 0,
       loadedData: [],
       gridData: [],
-      searchName: ""
+      searchName: "",
+      contentDivVisibility: false,
+      contains: ""
     };
   }
 
   handleOpen = () => {
-    this.setState({ open: true });
+    this.setState({ open: true, contentDivVisibility: false });
   };
 
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({
+      open: false,
+      contentDivVisibility: false
+    });
   };
 
   componentDidMount() {
@@ -32,62 +38,77 @@ class SearchModule extends Component {
     });
     this.setState({
       open: this.props.model.open,
-      searchName: this.props.searchName
+      searchName: this.props.searchName,
+      searchBy: this.props.selector.dataSource.data[0][
+        this.props.selector.dataSource.valueField
+      ]
     });
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     this.setState({
       open: nextProps.model.open,
-      searchName: nextProps.searchName
+      searchName: nextProps.searchName,
+      searchBy:
+        nextProps.selector.dataSource.data[0][
+          nextProps.selector.dataSource.valueField
+        ]
     });
   }
-  apiCallingFunction = (contains, $this) => {
-    algaehApiCall({
-      uri: "/gloabelSearch/get",
-      data: {
-        fieldName: $this.state.searchBy,
-        fieldContains: contains,
-        searchName: $this.state.searchName
-      },
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success === true) {
-          $this.setState({
-            loadedData: response.data.records,
-            gridData: response.data.records
-          });
-        } else {
-          console.error(response);
-          alert(response.data.message);
-        }
-      },
-      onFailure: data => {
-        console.error(data);
-        alert(data);
-      }
-    });
-  };
 
   handleOnchnageSearchBy(e) {
     this.setState({ searchBy: e.target.value });
   }
   handleSpotLightContains(e) {
-    let filterData = this.state.loadedData.filter(f => {
-      if (f[this.state.searchBy].indexOf(e.target.value) > -1) {
-        return f;
-      }
-    });
-    if (filterData.length === 0) {
-      let $this = this;
-      let contains = e.target.value;
+    let contains = e.target.value;
+    let $this = this;
+    clearInterval(intervalId);
+    intervalId = setInterval(() => {
+      $this.setState({ contains: contains, contentDivVisibility: true });
       clearInterval(intervalId);
-      intervalId = setInterval(() => {
-        $this.apiCallingFunction(contains, $this);
-        clearInterval(intervalId);
-      }, 500);
-    } else this.setState({ gridData: filterData });
+    }, 500);
   }
+
+  loadContentDivision = () => {
+    // let $this = this;
+    if (this.state.contentDivVisibility) {
+      return (
+        <div id="spotlightResultArea" className="animated  fadeIn">
+          <AlgaehDataGrid
+            columns={this.props.searchGrid.columns}
+            dataSource={{
+              uri: "/gloabelSearch/get",
+              inputParam: {
+                fieldName: this.state.searchBy,
+                fieldContains: this.state.contains,
+                searchName: this.state.searchName
+              },
+              method: "GET",
+              responseSchema: {
+                data: "records.data",
+                totalPages: "records.totalPages"
+              }
+            }}
+            paging={{
+              page: 0,
+              rowsPerPage:
+                this.props.rowsPerPage !== undefined
+                  ? this.props.rowsPerPage
+                  : 5
+            }}
+            algaehSearch={true}
+            onRowSelect={row => {
+              debugger;
+              this.props.onRowSelect(row);
+              this.setState({ open: false });
+            }}
+          />
+        </div>
+      );
+    }
+  };
+
   render() {
     return (
       <div
@@ -99,14 +120,14 @@ class SearchModule extends Component {
           className="d-none"
           onClick={this.handleClose.bind()}
         />
-        <div className="row">
+        <div className="row spotlightContainer">
           <input
-            id="spotlight"
+            id="spotlightInput"
             type="text"
             placeholder={this.state.title}
             onChange={this.handleSpotLightContains.bind(this)}
           />
-          <div id="filterBy">
+          <div id="spotlightFilterBy">
             <select
               onChange={this.handleOnchnageSearchBy.bind(this)}
               value={this.state.searchBy}
@@ -122,16 +143,7 @@ class SearchModule extends Component {
               ))}
             </select>
           </div>
-        </div>
-        <div id="contentArea" className="animated  zoomInUp">
-          <AlgaehDataGrid
-            columns={this.props.searchGrid.columns}
-            dataSource={{
-              data: this.state.gridData
-            }}
-            paging={{ page: 0, rowsPerPage: 5 }}
-            others={{ style: { backgroundColor: "#f9f5f4" } }}
-          />
+          {this.loadContentDivision()}
         </div>
       </div>
     );

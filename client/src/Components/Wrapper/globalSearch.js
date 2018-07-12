@@ -11,11 +11,11 @@ let searchWindow = props => {
       selector={props.selector}
       searchGrid={props.searchGrid}
       searchName={props.searchName}
+      onRowSelect={props.onRowSelect}
     />
   );
 };
 let AlgaehSearch = props => {
-  debugger;
   let modelData = searchWindow(props);
   ReactDOM.render(modelData, document.getElementById("searchWindow"));
 };
