@@ -16,13 +16,10 @@ import visit from "../controller/visit";
 import serviceType from "../controller/serviceType";
 import billing from "../controller/billing";
 import patientType from "../controller/patientType";
-<<<<<<< HEAD
 import globalSearch from "../controller/globalSearch";
-=======
 import insurence from "../controller/insurence";
 import opBilling from "../controller/opBilling";
 
->>>>>>> bba6d359313142d9692f1267e6fa98e80055a8e1
 let router = express();
 
 //connect to DB
@@ -45,12 +42,9 @@ initializedDb(db => {
   router.use("/serviceType", serviceType({ config, db }));
   router.use("/billing", billing({ config, db }));
   router.use("/patientType", patientType({ config, db }));
-<<<<<<< HEAD
   router.use("/gloabelSearch", globalSearch());
-=======
   router.use("/insurence", insurence({ config, db }));
   router.use("/opBilling", opBilling({ config, db }));
->>>>>>> bba6d359313142d9692f1267e6fa98e80055a8e1
 });
 
 export default router;
