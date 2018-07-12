@@ -32,8 +32,10 @@ let getPatientInsurence = (req, res, next) => {
       extend(patientInsurenceModel, req.query);
 
       connection.query(
-        "(select  mIns.patient_id, mIns.primary_network_id, Ins.insurance_provider_name, sIns.insurance_sub_name, net.network_type,netoff.policy_number,\
-          mIns.primary_effective_start_date,mIns.primary_effective_end_date from ((((\
+        "(select  mIns.patient_id,mIns.primary_insurance_provider_id,Ins.insurance_provider_name,\
+          mIns.primary_sub_id, sIns.insurance_sub_name,\
+          mIns.primary_network_id,  net.network_type,netoff.policy_number,mIns.primary_card_number,mIns.primary_inc_card_path,\
+         mIns.primary_effective_start_date,mIns.primary_effective_end_date  from ((((\
           hims_d_insurance_provider Ins \
           INNER JOIN  hims_m_patient_insurance_mapping mIns ON mIns.primary_insurance_provider_id=Ins.hims_d_insurance_provider_id)\
            INNER JOIN  hims_d_insurance_sub sIns ON mIns.primary_sub_id= sIns.hims_d_insurance_sub_id) \
@@ -41,8 +43,10 @@ let getPatientInsurence = (req, res, next) => {
            INNER JOIN hims_d_insurance_network_office netoff ON mIns.primary_policy_num=netoff.policy_number) where mIns.patient_id=?\
            GROUP BY mIns.primary_policy_num)\
            union\
-           (select  mIns.patient_id, mIns.secondary_network_id, Ins.insurance_provider_name, sIns.insurance_sub_name, net.network_type,netoff.policy_number,\
-          mIns.secondary_effective_start_date,mIns.secondary_effective_end_date from ((((\
+           (select  mIns.patient_id,mIns.secondary_insurance_provider_id , Ins.insurance_provider_name,\
+            mIns.secondary_sub_id,sIns.insurance_sub_name, \
+            mIns.secondary_network_id, net.network_type,netoff.policy_number,mIns.secondary_card_number,mIns.secondary_inc_card_path,\
+           mIns.secondary_effective_start_date,mIns.secondary_effective_end_date from ((((\
           hims_d_insurance_provider Ins \
           INNER JOIN  hims_m_patient_insurance_mapping mIns ON mIns.secondary_insurance_provider_id=Ins.hims_d_insurance_provider_id)\
            INNER JOIN  hims_d_insurance_sub sIns ON mIns.secondary_sub_id= sIns.hims_d_insurance_sub_id) \
