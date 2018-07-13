@@ -1,5 +1,5 @@
 #spotlight_wrapper {
-  position: absolute;
+  position: fixed;
   top: 15%;
   left: 0;
   right: 0;
@@ -16,7 +16,7 @@
   border: 1px solid rgba(0, 0, 0, 0.2);
   background-color: #f8f5f4;
   overflow: hidden;
-  opacity: 0.8; }
+  opacity: 1; }
 
 #spotlightInput {
   display: block;
@@ -32,7 +32,7 @@
   background-position: left 17px center;
   background-repeat: no-repeat;
   background-size: 3.5%;
-  padding: 0 135px 0 52px;
+  padding: 0 170px 0 52px;
   -webkit-appearance: none;
   border: none; }
 
