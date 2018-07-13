@@ -33,9 +33,13 @@ let searchData = (req, res, next) => {
         : req.query.pageSize;
     let offSet = req.query.pageNo === 0 ? limit * 1 : limit * req.query.pageNo;
     let whereCondition =
-      req.query.searchBy === undefined
+      req.query.fieldName === undefined
         ? " "
-        : req.query.searchBy + " like '%" + req.query.contains + "%'";
+        : " and " +
+          req.query.fieldName +
+          " like '%" +
+          req.query.fieldContains +
+          "%'";
     let query =
       queryConfig.searchQuery +
       whereCondition +

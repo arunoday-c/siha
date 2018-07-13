@@ -25,22 +25,27 @@ class DataGrid extends PureComponent {
       expanded: null,
       keyField: "",
       width: null,
-      id: null
+      id: null,
+      inputParam: {}
     };
   }
 
-  apiCallingFunction = ($this, page, callBack) => {
+  apiCallingFunction = ($this, page, callBack, inputProps) => {
+    debugger;
+    inputProps = inputProps || $this.state.inputParam;
+    let input = {
+      ...inputProps,
+      ...{ pageSize: $this.state.rowsPerPage, pageNo: page + 1 }
+    };
     algaehApiCall({
-      uri: this.props.dataSource.uri,
-      data: {
-        ...this.props.dataSource.inputParam,
-        ...{ pageSize: $this.state.rowsPerPage, pageNo: page + 1 }
-      },
-      method: this.props.dataSource.method
-        ? this.props.dataSource.method
+      uri: $this.props.dataSource.uri,
+      data: input,
+      method: $this.props.dataSource.method
+        ? $this.props.dataSource.method
         : "GET",
       printInput: true,
       onSuccess: response => {
+        debugger;
         console.log("result data", response);
         if (response.data.success === true) {
           let dataS = eval(
@@ -246,40 +251,40 @@ class DataGrid extends PureComponent {
 */
   componentWillReceiveProps(nextProps) {
     debugger;
-    this.setState(
-      {
-        data:
-          nextProps.dataSource.uri === undefined
-            ? nextProps.dataSource.data
-            : [],
-        expanded:
-          nextProps.expanded != null
-            ? {
-                multiExpand: true,
-                expandRows: [],
-                detailTemplate:
-                  nextProps.expanded != null
-                    ? nextProps.expanded.detailTemplate
-                    : null
-              }
-            : null,
-        id: nextProps.id ? "prevRecord_" + nextProps.id : "prevRecord"
-      },
-      () => {
-        if (this.props.algaehSearch !== undefined) {
-          this.apiCallingFunction(this, 0, (data, totalPages) => {
-            this.setState({
-              data: data,
-              totalPages:
-                this.props.dataSource.responseSchema.totalPages === undefined
-                  ? data.length
-                  : totalPages,
-              page: 0
-            });
+    this.setState({
+      data:
+        nextProps.dataSource.uri === undefined ? nextProps.dataSource.data : [],
+      expanded:
+        nextProps.expanded != null
+          ? {
+              multiExpand: true,
+              expandRows: [],
+              detailTemplate:
+                nextProps.expanded != null
+                  ? nextProps.expanded.detailTemplate
+                  : null
+            }
+          : null,
+      id: nextProps.id ? "prevRecord_" + nextProps.id : "prevRecord",
+      inputParam: nextProps.dataSource.inputParam
+    });
+    if (this.props.algaehSearch !== undefined) {
+      this.apiCallingFunction(
+        this,
+        0,
+        (data, totalPages) => {
+          this.setState({
+            data: data,
+            totalPages:
+              this.props.dataSource.responseSchema.totalPages === undefined
+                ? data.length
+                : totalPages,
+            page: 0
           });
-        }
-      }
-    );
+        },
+        nextProps.dataSource.inputParam
+      );
+    }
   }
   componentWillMount() {
     this.setState({
@@ -289,7 +294,8 @@ class DataGrid extends PureComponent {
       isEditable: this.props.isEditable,
       data: this.props.dataSource.data,
       expanded: this.props.expanded,
-      keyField: this.props.keyField
+      keyField: this.props.keyField,
+      inputParam: this.props.dataSource.inputParam
     });
   }
   returnTableHeaderColumns = () => {

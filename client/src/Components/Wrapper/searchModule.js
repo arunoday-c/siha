@@ -58,8 +58,8 @@ class SearchModule extends Component {
     clearInterval(intervalId);
     intervalId = setInterval(() => {
       if (typeof $this.props.onContainsChange === "function") {
-        $this.props.onContainsChange(contains, $this.state.searchBy, () => {
-          $this.setState({ contains: contains, contentDivVisibility: true });
+        $this.props.onContainsChange(contains, $this.state.searchBy, vlaue => {
+          $this.setState({ contains: vlaue, contentDivVisibility: true });
         });
       } else {
         $this.setState({ contains: contains, contentDivVisibility: true });
