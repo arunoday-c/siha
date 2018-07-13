@@ -87,13 +87,6 @@ class DeptMaster extends Component {
   }
   handleOpenFinder() {
     AlgaehSearch({
-      // selector: {
-      //   dataSource: {
-      //     textField: "name",
-      //     valueField: "value",
-      //     data: this.state.searchByDropDown
-      //   }
-      // },
       searchGrid: {
         columns: [
           {
@@ -119,6 +112,10 @@ class DeptMaster extends Component {
         ]
       },
       searchName: "patients",
+      onContainsChange: (text, serchBy, callBack) => {
+        debugger;
+        callBack();
+      },
       onRowSelect: row => {
         this.setState({ textboxField: row.patient_code });
       }

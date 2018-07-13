@@ -8,10 +8,10 @@ let searchWindow = props => {
       model={{
         open: true
       }}
-      selector={props.selector}
       searchGrid={props.searchGrid}
       searchName={props.searchName}
       onRowSelect={props.onRowSelect}
+      onContainsChange={props.onContainsChange}
     />
   );
 };

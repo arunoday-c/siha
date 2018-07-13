@@ -11,8 +11,6 @@ class SearchModule extends Component {
       title: "Algaeh Search",
       searchBy: "",
       page: 0,
-      loadedData: [],
-      gridData: [],
       searchName: "",
       contentDivVisibility: false,
       contains: ""
@@ -39,7 +37,7 @@ class SearchModule extends Component {
     this.setState({
       open: this.props.model.open,
       searchName: this.props.searchName,
-      searchBy: this.props.selector.dataSource.data[0]["fieldName"]
+      searchBy: this.props.searchGrid.columns[0]["fieldName"]
     });
   }
 
@@ -47,7 +45,7 @@ class SearchModule extends Component {
     this.setState({
       open: nextProps.model.open,
       searchName: nextProps.searchName,
-      searchBy: nextProps.selector.dataSource.data[0]["fieldName"]
+      searchBy: nextProps.searchGrid.columns[0]["fieldName"]
     });
   }
 
@@ -59,13 +57,18 @@ class SearchModule extends Component {
     let $this = this;
     clearInterval(intervalId);
     intervalId = setInterval(() => {
-      $this.setState({ contains: contains, contentDivVisibility: true });
+      if (typeof $this.props.onContainsChange === "function") {
+        $this.props.onContainsChange(contains, $this.state.searchBy, () => {
+          $this.setState({ contains: contains, contentDivVisibility: true });
+        });
+      } else {
+        $this.setState({ contains: contains, contentDivVisibility: true });
+      }
       clearInterval(intervalId);
     }, 500);
   }
 
   loadContentDivision = () => {
-    // let $this = this;
     if (this.state.contentDivVisibility) {
       return (
         <div id="spotlightResultArea" className="animated  fadeIn">
@@ -93,7 +96,6 @@ class SearchModule extends Component {
             }}
             algaehSearch={true}
             onRowSelect={row => {
-              debugger;
               this.props.onRowSelect(row);
               this.setState({ open: false });
             }}
