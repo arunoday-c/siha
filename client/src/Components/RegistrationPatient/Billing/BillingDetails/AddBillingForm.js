@@ -25,6 +25,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import variableJson from "../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import Paper from "@material-ui/core/Paper";
 
 class AddBillingForm extends Component {
   constructor(props) {
@@ -59,7 +60,8 @@ class AddBillingForm extends Component {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 primary-details">
-                    <div className="container-fluid">
+                    {/* <div className="container-fluid"> */}
+                    <Paper className="Paper">
                       <div className="row primary-box-container">
                         <div className="col-lg-3">
                           <AlgaehLabel
@@ -320,11 +322,13 @@ class AddBillingForm extends Component {
                           }}
                         />
                       </div>
-                    </div>
+                    </Paper>
+                    {/* </div> */}
                   </div>
-                  <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 primary-details">
-                    <div className="container-fluid">
-                      <div className="row primary-box-container">
+                  <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 secondary-details">
+                    {/* <div className="container-fluid"> */}
+                    <Paper className="Paper">
+                      <div className="row secondary-box-container">
                         <AlagehFormGroup
                           div={{ className: "col-lg-3" }}
                           label={{
@@ -404,7 +408,7 @@ class AddBillingForm extends Component {
                         />
                       </div>
 
-                      <div className="row primary-box-container">
+                      <div className="row secondary-box-container">
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
@@ -464,7 +468,7 @@ class AddBillingForm extends Component {
                         />
                       </div>
 
-                      <div className="row primary-box-container">
+                      <div className="row secondary-box-container">
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           selector={{
@@ -528,7 +532,7 @@ class AddBillingForm extends Component {
                         />
                       </div>
 
-                      <div className="row primary-box-container">
+                      <div className="row secondary-box-container">
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           selector={{
@@ -595,7 +599,7 @@ class AddBillingForm extends Component {
                         />
                       </div>
 
-                      <div className="row primary-box-container">
+                      <div className="row secondary-box-container">
                         <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
@@ -646,7 +650,8 @@ class AddBillingForm extends Component {
                           }}
                         />
                       </div>
-                    </div>
+                    </Paper>
+                    {/* </div> */}
                   </div>
                 </div>
               </div>

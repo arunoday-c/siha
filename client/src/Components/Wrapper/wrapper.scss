@@ -32,6 +32,7 @@ div[numberbox="true"] {
 
 .table {
   width: 100%;
+  border-bottom: 1.5px solid #f2f2f2;
   tbody {
     height: 200px;
     overflow: auto;
@@ -39,15 +40,32 @@ div[numberbox="true"] {
   }
 
   tbody {
+    tr {
+      cursor: pointer;
+    }
     td {
       vertical-align: middle;
       white-space: nowrap;
+      font-size: 0.75rem;
     }
   }
   thead {
+    // position: fixed;
+    // top: 50px;
+    // left: 0;
+    // right: 0;
+    // width: 100%;
+    // height: 50px;
+    // line-height: 3em;
+    // background: #eee;
+    // table-layout: fixed;
+    // display: table;
+
     tr {
       td {
+        font-size: 0.75rem;
         font-weight: bold;
+        text-transform: uppercase;
       }
     }
   }

@@ -148,6 +148,7 @@ class RegistrationPatient extends Component {
     }
   }
   SavePatientDetails(e) {
+    debugger;
     const err = Validations(this);
 
     if (!err) {
@@ -189,10 +190,6 @@ class RegistrationPatient extends Component {
   };
 
   ShowAdvanceScreen(e) {
-    // this.setState({
-    //   ...this.state,
-    //   AdvanceOpen: !this.state.AdvanceOpen
-    // });
     if (this.state.patient_code != null && this.state.patient_code != "") {
       this.setState({
         ...this.state,
@@ -253,6 +250,16 @@ class RegistrationPatient extends Component {
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.existingPatient = true;
           $this.setState(data.patientRegistration);
+
+          $this.props.getPatientInsurance({
+            uri: "/insurance/getPatientInsurance",
+            method: "GET",
+            data: { patient_id: data.patientRegistration.hims_d_patient_id },
+            redux: {
+              type: "EXIT_INSURANCE_GET_DATA",
+              mappingName: "existinsurance"
+            }
+          });
         }
       });
       clearInterval(intervalId);
@@ -429,7 +436,8 @@ class RegistrationPatient extends Component {
 function mapStateToProps(state) {
   return {
     patients: state.patients,
-    genbill: state.genbill
+    genbill: state.genbill,
+    existinsurance: state.existinsurance
   };
 }
 
@@ -441,7 +449,8 @@ function mapDispatchToProps(dispatch) {
       initialStatePatientData: AlgaehActions,
       postVisitDetails: postVisitDetails,
       generateBill: AlgaehActions,
-      initialStateBillGen: AlgaehActions
+      initialStateBillGen: AlgaehActions,
+      getPatientInsurance: AlgaehActions
     },
     dispatch
   );

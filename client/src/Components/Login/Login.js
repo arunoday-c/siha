@@ -95,6 +95,10 @@ export default class Login extends Component {
             setCookie("UserID", response.data.records.algaeh_d_app_user_id, 30);
 
             window.location.hash = "/Home";
+            window.history.pushState(null, null, window.location.href);
+            window.onpopstate = function(event) {
+              window.history.go(1);
+            };
           } else {
           }
         },

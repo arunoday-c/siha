@@ -7,8 +7,7 @@ import { algaehApiCall } from "../utils/algaehApiCall";
 import AlgaehSearch from "../Components/Wrapper/globalSearch";
 import {
   AlagehAutoComplete,
-  AlgaehDataGrid,
-  Button
+  AlgaehDataGrid
 } from "../Components/Wrapper/algaehWrapper";
 var intervalId;
 class DeptMaster extends Component {
@@ -16,6 +15,7 @@ class DeptMaster extends Component {
     super(props);
 
     this.state = {
+      textboxField: "",
       openFinder: false,
       dropDownValue: "patient_code",
       loadedData: this.dummyRows(),
@@ -87,13 +87,6 @@ class DeptMaster extends Component {
   }
   handleOpenFinder() {
     AlgaehSearch({
-      selector: {
-        dataSource: {
-          textField: "name",
-          valueField: "value",
-          data: this.state.searchByDropDown
-        }
-      },
       searchGrid: {
         columns: [
           {
@@ -116,13 +109,18 @@ class DeptMaster extends Component {
             fieldName: "contact_number",
             label: "Contact Number"
           }
-        ],
-        searchName: "patients"
+        ]
+      },
+      searchName: "patients",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        debugger;
+        callBack(text);
+      },
+      onRowSelect: row => {
+        this.setState({ textboxField: row.patient_code });
       }
     });
-    // this.setState({
-    //   openFinder: true
-    // });
   }
 
   handleSearchChange(e) {
@@ -189,12 +187,13 @@ class DeptMaster extends Component {
 
   render() {
     return (
-      <Paper>
+      <Paper style={{ height: "700px" }}>
         <div className="row">
           <div className="col-lg-4">
             <TextField
               style={{ width: "100%" }}
               onChange={this.handleSearchChange.bind(this)}
+              value={this.state.textboxField}
             />
           </div>
           {this.state.openFinder ? this.dropDownFilterBy() : null}

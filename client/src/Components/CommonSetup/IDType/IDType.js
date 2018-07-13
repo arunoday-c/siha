@@ -3,7 +3,6 @@ import Paper from "@material-ui/core/Paper";
 import "./id_type.css";
 import Button from "@material-ui/core/Button";
 import moment from "moment";
-import { getIDTypes } from "../../../actions/CommonSetup/IDType.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -18,6 +17,7 @@ import {
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
+import { AlgaehActions } from "../../../actions/algaehActions";
 
 class IDType extends Component {
   constructor(props) {
@@ -93,7 +93,17 @@ class IDType extends Component {
         data: this.state,
         onSuccess: response => {
           if (response.data.success === true) {
-            this.props.getIDTypes();
+            // this.props.getIDTypes();
+
+            this.props.getIDTypes({
+              uri: "/identity/get",
+              method: "GET",
+              redux: {
+                type: "IDTYPE_GET_DATA",
+                mappingName: "idtypes"
+              }
+            });
+
             this.resetState();
 
             swal({
@@ -132,7 +142,14 @@ class IDType extends Component {
                 buttons: false,
                 timer: 2000
               });
-              this.props.getIDTypes();
+              this.props.getIDTypes({
+                uri: "/identity/get",
+                method: "GET",
+                redux: {
+                  type: "IDTYPE_GET_DATA",
+                  mappingName: "idtypes"
+                }
+              });
             }
           },
           onFailure: error => {}
@@ -155,7 +172,16 @@ class IDType extends Component {
   }
 
   componentDidMount() {
-    this.props.getIDTypes();
+    if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
+      this.props.getIDTypes({
+        uri: "/identity/get",
+        method: "GET",
+        redux: {
+          type: "IDTYPE_GET_DATA",
+          mappingName: "idtypes"
+        }
+      });
+    }
   }
 
   updateIDtypes(data) {
@@ -170,7 +196,14 @@ class IDType extends Component {
             buttons: false,
             timer: 2000
           });
-          this.props.getIDTypes();
+          this.props.getIDTypes({
+            uri: "/identity/get",
+            method: "GET",
+            redux: {
+              type: "IDTYPE_GET_DATA",
+              mappingName: "idtypes"
+            }
+          });
         }
       },
       onFailure: error => {}
@@ -332,7 +365,8 @@ class IDType extends Component {
                   ]}
                   keyId="identity_document_code"
                   dataSource={{
-                    data: this.props.idtypes
+                    data:
+                      this.props.idtypes === undefined ? [] : this.props.idtypes
                   }}
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 5 }}
@@ -357,14 +391,14 @@ class IDType extends Component {
 
 function mapStateToProps(state) {
   return {
-    idtypes: state.idtypes.idtypes
+    idtypes: state.idtypes
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getIDTypes: getIDTypes
+      getIDTypes: AlgaehActions
     },
     dispatch
   );

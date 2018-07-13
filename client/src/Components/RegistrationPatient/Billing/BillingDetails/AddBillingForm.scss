@@ -5,13 +5,10 @@
 
 .hptl-phase1-add-billing-form {
   .primary-details {
-    padding: 5px;
-    border-right: 1px solid #000;
-    @media only screen and (max-width: 904px) {
-      padding: 5px;
-    }
+    padding: 10px;
+
     .primary-box-container {
-      padding: 5px;
+      padding: 6px;
     }
 
     .last-box-container {
@@ -24,6 +21,10 @@
       font-weight: 600;
       font-size: 15px;
     }
+  }
+
+  .Paper {
+    border: 1px solid #5f5f5f;
   }
 
   label {
@@ -83,27 +84,9 @@
   }
 
   .secondary-details {
-    padding: 5px;
+    padding: 10px;
     .secondary-box-container {
-      padding: 5px;
-      .attach-design {
-        background: #8c8c8c;
-        min-height: 30px;
-        color: #fff;
-        padding: 5px;
-        position: relative;
-        top: 99px;
-        cursor: pointer;
-        margin-left: -1px;
-        margin-right: -1px;
-        font-size: 11px;
-      }
-      .preview-image {
-        position: absolute;
-        top: -1px;
-        left: 15px;
-        height: 101px;
-      }
+      padding: 8px;
     }
   }
 }

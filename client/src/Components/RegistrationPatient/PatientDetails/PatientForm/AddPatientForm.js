@@ -15,7 +15,6 @@ import {
   onDrop,
   countryStatehandle
 } from "./AddPatientDetails.js";
-import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
 import MyContext from "../../../../utils/MyContext.js";
 import AHSnackbar from "../../../common/Inputs/AHSnackbar.js";
 import {
@@ -182,7 +181,7 @@ class AddPatientForm extends PureComponent {
   }
 
   render() {
-    console.log("Date of birth", this.state.date_of_birth);
+    // console.log("Date of birth", this.state.date_of_birth);
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -795,7 +794,6 @@ function mapDispatchToProps(dispatch) {
       getCities: AlgaehActions,
       getCountries: AlgaehActions,
       getStates: AlgaehActions,
-      postPatientDetails: AlgaehActions,
       getVisatypes: AlgaehActions
     },
     dispatch

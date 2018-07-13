@@ -73,15 +73,38 @@ class DisplayVisitDetails extends Component {
     index = this.state.visitDetails.indexOf(row);
     this.state.visitDetails[index]["radioselect"] = 1;
 
-    this.setState({
-      incharge_or_provider: row.doctor_id,
-      visit_id: row.hims_f_patient_visit_id
-    });
+    debugger;
+    this.setState(
+      {
+        incharge_or_provider: row.doctor_id,
+        visit_id: row.hims_f_patient_visit_id,
+        insured: row.insured,
+        sec_insured: row.sec_insured
+      },
+      () => {
+        if (this.state.insured === "Y") {
+          this.props.getPatientInsurance({
+            uri: "/insurance/getPatientInsurance",
+            method: "GET",
+            data: {
+              patient_id: this.state.hims_d_patient_id,
+              patient_visit_id: this.state.patient_visit_id
+            },
+            redux: {
+              type: "EXIT_INSURANCE_GET_DATA",
+              mappingName: "existinsurance"
+            }
+          });
+        }
+      }
+    );
 
     if (context != null) {
       context.updateState({
         incharge_or_provider: row.doctor_id,
-        visit_id: row.hims_f_patient_visit_id
+        visit_id: row.hims_f_patient_visit_id,
+        insured: row.insured,
+        sec_insured: row.sec_insured
       });
     }
   }
@@ -245,7 +268,8 @@ class DisplayVisitDetails extends Component {
 function mapStateToProps(state) {
   return {
     visittypes: state.visittypes,
-    deptanddoctors: state.deptanddoctors
+    deptanddoctors: state.deptanddoctors,
+    existinsurance: state.existinsurance
   };
 }
 
@@ -253,7 +277,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getVisittypes: AlgaehActions,
-      getDepartmentsandDoctors: AlgaehActions
+      getDepartmentsandDoctors: AlgaehActions,
+      getPatientInsurance: AlgaehActions
     },
     dispatch
   );

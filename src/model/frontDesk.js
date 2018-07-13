@@ -267,7 +267,7 @@ let selectFrontDesk = (req, res, next) => {
               "SELECT 0 radioselect, `hims_f_patient_visit_id`, `patient_id`,`visit_code`\
             , `visit_type`, `visit_date`, `department_id`, `sub_department_id`\
             , `doctor_id`, `maternity_patient`, `is_mlc`, `mlc_accident_reg_no`\
-            , `mlc_police_station`, `mlc_wound_certified_date`\
+            , `mlc_police_station`, `mlc_wound_certified_date`, `insured`, `sec_insured`\
              FROM `hims_f_patient_visit` WHERE `record_status`='A' AND \
              patient_id=? ORDER BY hims_f_patient_visit_id desc ",
               [hims_d_patient_id],

@@ -10,10 +10,9 @@ export default () => {
     (req, res, next) => {
       let result;
       if (req.records !== undefined) {
-        result = {
-          totalPages: req.records[1].total_pages,
-          data: req.records[0]
-        };
+        result = new Object();
+        result["totalPages"] = req.records[1][0].total_pages;
+        result["data"] = req.records[0];
       }
       res.status(httpStatus.ok).json({
         success: true,

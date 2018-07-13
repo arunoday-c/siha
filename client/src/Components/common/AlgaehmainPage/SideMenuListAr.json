@@ -13,7 +13,7 @@
   },
   {
     "name": "MASTERS",
-    "label": "رئيس",
+    "label": "إعدادات",
     "path": "/appointment/",
     "subMenu": [
       {
@@ -25,6 +25,16 @@
         "name": "Common Setup",
         "label": "الإعداد المشترك",
         "path": "/CommonSetup"
+      },
+      {
+        "name": "Insurance Setup",
+        "label": "إعداد التأمين",
+        "path": "/InsuranceSetup"
+      },
+      {
+        "name": "Investigation Setup",
+        "label": "إعداد التحقيق",
+        "path": "/InvestigationSetup"
       }
     ]
   },

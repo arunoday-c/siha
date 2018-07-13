@@ -23,6 +23,7 @@ import {
 } from "./AddOPBillingHandaler";
 import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import Paper from "@material-ui/core/Paper";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
@@ -645,336 +646,340 @@ class AddOPBillingForm extends Component {
 
                 <div className="row">
                   <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 primary-details">
-                    <div className="row primary-box-container">
-                      <div className="col-lg-3" style={{ marginTop: "20px" }}>
-                        <AlgaehLabel
+                    <Paper className="Paper">
+                      <div className="row primary-box-container">
+                        <div className="col-lg-3" style={{ marginTop: "20px" }}>
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "patient"
+                            }}
+                          />
+                        </div>
+
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "patient"
+                            fieldName: "responsiblity"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.patient_res,
+                            className: "txt-fld",
+                            name: "patient_res",
+
+                            events: {
+                              onChange: null
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
+
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            fieldName: "tax"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.patient_tax,
+                            className: "txt-fld",
+                            name: "patient_tax",
+
+                            events: {
+                              onChange: null
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
+
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            fieldName: "payable"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.patient_payable,
+                            className: "txt-fld",
+                            name: "patient_payable",
+
+                            events: {
+                              onChange: null
+                            },
+                            others: {
+                              disabled: true
+                            }
                           }}
                         />
                       </div>
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "responsiblity"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.patient_res,
-                          className: "txt-fld",
-                          name: "patient_res",
+                      <div className="row primary-box-container">
+                        <div className="col-lg-3">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "company"
+                            }}
+                          />
+                        </div>
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-3" }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.company_res,
+                            className: "txt-fld",
+                            name: "company_res",
 
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "tax"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.patient_tax,
-                          className: "txt-fld",
-                          name: "patient_tax",
-
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "payable"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.patient_payable,
-                          className: "txt-fld",
-                          name: "patient_payable",
-
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-                    </div>
-
-                    <div className="row primary-box-container">
-                      <div className="col-lg-3">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "company"
+                            events: {
+                              onChange: null
+                            },
+                            others: {
+                              disabled: true
+                            }
                           }}
                         />
-                      </div>
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.company_res,
-                          className: "txt-fld",
-                          name: "company_res",
 
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-3" }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.company_tax,
+                            className: "txt-fld",
+                            name: "company_tax",
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.company_tax,
-                          className: "txt-fld",
-                          name: "company_tax",
+                            events: {
+                              onChange: null
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
 
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-3" }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.company_payble,
+                            className: "txt-fld",
+                            name: "company_payble",
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.company_payble,
-                          className: "txt-fld",
-                          name: "company_payble",
-
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-                    </div>
-
-                    <div className="row primary-box-container">
-                      <div className="col-lg-3">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "seco_company"
+                            events: {
+                              onChange: null
+                            },
+                            others: {
+                              disabled: true
+                            }
                           }}
                         />
                       </div>
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.sec_company_res,
-                          className: "txt-fld",
-                          name: "sec_company_res",
+                      <div className="row primary-box-container">
+                        <div className="col-lg-3">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "seco_company"
+                            }}
+                          />
+                        </div>
 
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-3" }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.sec_company_res,
+                            className: "txt-fld",
+                            name: "sec_company_res",
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.sec_company_tax,
-                          className: "txt-fld",
-                          name: "sec_company_tax",
+                            events: {
+                              onChange: null
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
 
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-3" }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.sec_company_tax,
+                            className: "txt-fld",
+                            name: "sec_company_tax",
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.sec_company_paybale,
-                          className: "txt-fld",
-                          name: "sec_company_paybale",
+                            events: {
+                              onChange: null
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
 
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-                    </div>
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-3" }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.sec_company_paybale,
+                            className: "txt-fld",
+                            name: "sec_company_paybale",
+
+                            events: {
+                              onChange: null
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
+                      </div>
+                    </Paper>
                   </div>
 
                   <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 secondary-details">
-                    <div className="row secondary-box-container">
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
-                        label={{
-                          fieldName: "advance_amount"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.advance_amount,
-                          className: "txt-fld",
-                          name: "advance_amount",
+                    <Paper className="Paper">
+                      <div className="row secondary-box-container">
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-4" }}
+                          label={{
+                            fieldName: "advance_amount"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.advance_amount,
+                            className: "txt-fld",
+                            name: "advance_amount",
 
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
+                            events: {
+                              onChange: null
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
-                        label={{
-                          fieldName: "advance_adjust"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.advance_adjust,
-                          className: "txt-fld",
-                          name: "advance_adjust",
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-4" }}
+                          label={{
+                            fieldName: "advance_adjust"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.advance_adjust,
+                            className: "txt-fld",
+                            name: "advance_adjust",
 
-                          events: {
-                            onChange: adjustadvance.bind(this, this, context)
-                          }
-                        }}
-                      />
+                            events: {
+                              onChange: adjustadvance.bind(this, this, context)
+                            }
+                          }}
+                        />
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
-                        label={{
-                          fieldName: "net_amount"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.net_amount,
-                          className: "txt-fld",
-                          name: "net_amount",
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-4" }}
+                          label={{
+                            fieldName: "net_amount"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.net_amount,
+                            className: "txt-fld",
+                            name: "net_amount",
 
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-                    </div>
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
+                      </div>
 
-                    <div className="row secondary-box-container">
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
-                        label={{
-                          fieldName: "sheet_discount_percentage"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.sheet_discount_percentage,
-                          className: "txt-fld",
-                          name: "sheet_discount_percentage",
+                      <div className="row secondary-box-container">
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-4" }}
+                          label={{
+                            fieldName: "sheet_discount_percentage"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.sheet_discount_percentage,
+                            className: "txt-fld",
+                            name: "sheet_discount_percentage",
 
-                          events: {
-                            onChange: discounthandle.bind(this, this, context)
-                          }
-                        }}
-                      />
+                            events: {
+                              onChange: discounthandle.bind(this, this, context)
+                            }
+                          }}
+                        />
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
-                        label={{
-                          fieldName: "sheet_discount_amount"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.sheet_discount_amount,
-                          className: "txt-fld",
-                          name: "sheet_discount_amount",
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-4" }}
+                          label={{
+                            fieldName: "sheet_discount_amount"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.sheet_discount_amount,
+                            className: "txt-fld",
+                            name: "sheet_discount_amount",
 
-                          events: {
-                            onChange: discounthandle.bind(this, this, context)
-                          }
-                        }}
-                      />
+                            events: {
+                              onChange: discounthandle.bind(this, this, context)
+                            }
+                          }}
+                        />
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
-                        label={{
-                          fieldName: "credit_amount"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.credit_amount,
-                          className: "txt-fld",
-                          name: "credit_amount",
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-4", id: "widthDate" }}
+                          label={{
+                            fieldName: "credit_amount"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.credit_amount,
+                            className: "txt-fld",
+                            name: "credit_amount",
 
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-                    </div>
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
+                      </div>
 
-                    <div className="row secondary-box-container">
-                      <div className="col-lg-8"> &nbsp;</div>
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
-                        label={{
-                          fieldName: "receiveable_amount"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.receiveable_amount,
-                          className: "txt-fld",
-                          name: "receiveable_amount",
+                      <div className="row secondary-box-container">
+                        <div className="col-lg-8"> &nbsp;</div>
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-4", id: "widthDate" }}
+                          label={{
+                            fieldName: "receiveable_amount"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.receiveable_amount,
+                            className: "txt-fld",
+                            name: "receiveable_amount",
 
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-                    </div>
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
+                      </div>
+                    </Paper>
                   </div>
                 </div>
               </div>
