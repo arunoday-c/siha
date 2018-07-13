@@ -250,7 +250,6 @@ class DataGrid extends PureComponent {
     dataSource:{data:[]}
 */
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState({
       data:
         nextProps.dataSource.uri === undefined ? nextProps.dataSource.data : [],

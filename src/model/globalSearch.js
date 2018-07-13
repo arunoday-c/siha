@@ -31,7 +31,8 @@ let searchData = (req, res, next) => {
       req.query.pageSize === undefined || req.query.pageSize === 0
         ? 5
         : req.query.pageSize;
-    let offSet = req.query.pageNo === 0 ? limit * 1 : limit * req.query.pageNo;
+    //let offSet = req.query.pageNo === 0 ? limit * 1 : limit * req.query.pageNo;
+    let offSet = req.query.pageNo === 0 ? 1 : req.query.pageNo;
     let whereCondition =
       req.query.fieldName === undefined
         ? " "
@@ -51,6 +52,7 @@ let searchData = (req, res, next) => {
       offSet +
       " ;" +
       " SELECT FOUND_ROWS() total_pages;";
+    debugLog("SQL Query : ", query);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
