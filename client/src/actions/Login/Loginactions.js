@@ -7,6 +7,7 @@ import config from "../../utils/config.json";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 
 export function getTokenDetals() {
+  debugger;
   var auth_url = "/api/v1/apiAuth";
   var username = config.apiAuth.user;
   var password = config.apiAuth.password;
@@ -22,10 +23,10 @@ export function getTokenDetals() {
     })
     .catch(err => {
       console.error("Error : ", err);
-      successfulMessage({
-        message: err,
-        title: "Error",
-        icon: "error"
-      });
+      // successfulMessage({
+      //   message: err,
+      //   title: "Error",
+      //   icon: "error"
+      // });
     });
 }
