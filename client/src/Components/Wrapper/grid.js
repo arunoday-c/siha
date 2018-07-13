@@ -31,11 +31,10 @@ class DataGrid extends PureComponent {
   }
 
   apiCallingFunction = ($this, page, callBack, inputProps) => {
-    debugger;
     inputProps = inputProps || $this.state.inputParam;
     let input = {
       ...inputProps,
-      ...{ pageSize: $this.state.rowsPerPage, pageNo: page + 1 }
+      ...{ pageSize: $this.state.rowsPerPage, pageNo: page }
     };
     algaehApiCall({
       uri: $this.props.dataSource.uri,
@@ -45,8 +44,6 @@ class DataGrid extends PureComponent {
         : "GET",
       printInput: true,
       onSuccess: response => {
-        debugger;
-        console.log("result data", response);
         if (response.data.success === true) {
           let dataS = eval(
             "response.data." + $this.props.dataSource.responseSchema.data

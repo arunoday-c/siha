@@ -32,15 +32,15 @@ let searchData = (req, res, next) => {
         ? 5
         : req.query.pageSize;
     //let offSet = req.query.pageNo === 0 ? limit * 1 : limit * req.query.pageNo;
-    let offSet = req.query.pageNo === 0 ? 1 : req.query.pageNo;
+    let offSet = req.query.pageNo;
     let whereCondition =
       req.query.fieldName === undefined
         ? " "
-        : " and " +
+        : " and upper(" +
           req.query.fieldName +
-          " like '%" +
+          ") like  upper('%" +
           req.query.fieldContains +
-          "%'";
+          "%')";
     let query =
       queryConfig.searchQuery +
       whereCondition +
