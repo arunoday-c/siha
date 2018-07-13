@@ -75,7 +75,7 @@ class SearchModule extends Component {
           <AlgaehDataGrid
             columns={this.props.searchGrid.columns}
             dataSource={{
-              uri: "/gloabelSearch/get",
+              uri: this.props.uri,
               inputParam: {
                 fieldName: this.state.searchBy,
                 fieldContains: this.state.contains,

@@ -12,6 +12,7 @@ let searchWindow = props => {
       searchName={props.searchName}
       onRowSelect={props.onRowSelect}
       onContainsChange={props.onContainsChange}
+      uri={props.uri}
     />
   );
 };
