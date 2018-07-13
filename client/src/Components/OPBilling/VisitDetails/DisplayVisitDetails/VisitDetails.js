@@ -129,6 +129,7 @@ class DisplayVisitDetails extends Component {
                               <Radio
                                 style={{ maxHeight: "10px" }}
                                 name="select"
+                                color="primary"
                                 onChange={this.handleChange.bind(
                                   this,
                                   row,

@@ -232,6 +232,7 @@ class RegistrationPatient extends Component {
     }
   }
   getCtrlCode(patcode) {
+    debugger;
     let $this = this;
     clearInterval(intervalId);
     intervalId = setInterval(() => {
@@ -287,6 +288,7 @@ class RegistrationPatient extends Component {
           ctrlDate={this.state.registration_date}
           ControlCode={this.getCtrlCode.bind(this)}
           selectedLang={this.state.selectedLang}
+          searchName="patients"
         />
         <div className="spacing-push">
           <MyContext.Provider

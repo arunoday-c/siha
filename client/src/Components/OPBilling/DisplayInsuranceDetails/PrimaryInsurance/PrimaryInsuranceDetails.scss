@@ -7,9 +7,6 @@
   .primary-details {
     padding: 5px;
     border-right: 1px solid #000;
-    @media only screen and (max-width: 904px) {
-      padding: 5px;
-    }
     .primary-box-container {
       padding: 5px;
     }
@@ -19,18 +16,6 @@
     padding: 5px;
     .secondary-box-container {
       padding: 5px;
-      .attach-design {
-        background: #8c8c8c;
-        min-height: 30px;
-        color: #fff;
-        padding: 5px;
-        position: relative;
-        top: 99px;
-        cursor: pointer;
-        margin-left: -1px;
-        margin-right: -1px;
-        font-size: 11px;
-      }
     }
   }
 
@@ -68,11 +53,5 @@
   .file-name-upload {
     margin-left: 4%;
     margin-top: 2%;
-  }
-
-  th,
-  td {
-    border-right: 1px solid #e6e6e6;
-    font-size: 11px;
   }
 }

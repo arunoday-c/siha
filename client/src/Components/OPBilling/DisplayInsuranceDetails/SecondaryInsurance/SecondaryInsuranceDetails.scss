@@ -4,6 +4,21 @@
   //   padding: 10px;
 }
 .htpl-phase1-primary-secinsurancedis-form {
+  .primary-details {
+    padding: 5px;
+    border-right: 1px solid #000;
+    .primary-box-container {
+      padding: 5px;
+    }
+  }
+
+  .secondary-details {
+    padding: 5px;
+    .secondary-box-container {
+      padding: 5px;
+    }
+  }
+
   label {
     font-weight: 400;
     font-size: 11px;
@@ -12,10 +27,18 @@
     background: none;
     color: red;
   }
-  .form-details {
-    padding: 5px;
-    padding-bottom: 5px;
+
+  .centerAlign {
+    text-align: center;
+    font-weight: 700;
   }
+  .text_field {
+    width: 100% !important;
+    background-color: #fbfbfb;
+    font-size: "12px";
+    margin-right: "5px";
+  }
+
   .radio-design {
     position: absolute;
     top: 5px;
@@ -29,11 +52,5 @@
   .file-name-upload {
     margin-left: 4%;
     margin-top: 2%;
-  }
-  .table-detail {
-  }
-  th,
-  td {
-    border-right: 1px solid #e6e6e6;
   }
 }

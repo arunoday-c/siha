@@ -2,6 +2,17 @@
   background: #ffff;
   border-radius: 5px; }
 
+.htpl-phase1-primary-secinsurancedis-form .primary-details {
+  padding: 5px;
+  border-right: 1px solid #000; }
+  .htpl-phase1-primary-secinsurancedis-form .primary-details .primary-box-container {
+    padding: 5px; }
+
+.htpl-phase1-primary-secinsurancedis-form .secondary-details {
+  padding: 5px; }
+  .htpl-phase1-primary-secinsurancedis-form .secondary-details .secondary-box-container {
+    padding: 5px; }
+
 .htpl-phase1-primary-secinsurancedis-form label {
   font-weight: 400;
   font-size: 11px; }
@@ -10,9 +21,15 @@
   background: none;
   color: red; }
 
-.htpl-phase1-primary-secinsurancedis-form .form-details {
-  padding: 5px;
-  padding-bottom: 5px; }
+.htpl-phase1-primary-secinsurancedis-form .centerAlign {
+  text-align: center;
+  font-weight: 700; }
+
+.htpl-phase1-primary-secinsurancedis-form .text_field {
+  width: 100% !important;
+  background-color: #fbfbfb;
+  font-size: "12px";
+  margin-right: "5px"; }
 
 .htpl-phase1-primary-secinsurancedis-form .radio-design {
   position: absolute;
@@ -27,7 +44,3 @@
 .htpl-phase1-primary-secinsurancedis-form .file-name-upload {
   margin-left: 4%;
   margin-top: 2%; }
-
-.htpl-phase1-primary-secinsurancedis-form th,
-.htpl-phase1-primary-secinsurancedis-form td {
-  border-right: 1px solid #e6e6e6; }

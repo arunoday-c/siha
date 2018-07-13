@@ -1,20 +1,18 @@
 import React, { Component } from "react";
-import Dropzone from "react-dropzone";
+
 import "./SecondaryInsuranceDetails.css";
 import "./../../../../styles/site.css";
-import {
-  AlgaehDateHandler,
-  AlagehFormGroup,
-  AlagehAutoComplete
-} from "../../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext.js";
 
 export default class DisplaySecondaryInsurance extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      filePreview: ""
-    };
+    this.state = {};
+  }
+  componentWillMount() {
+    let InputOutput = this.props.BillingIOputs;
+    this.setState({ ...this.state, ...InputOutput });
   }
 
   render() {
@@ -24,84 +22,418 @@ export default class DisplaySecondaryInsurance extends Component {
           {context => (
             <div className="htpl-phase1-primary-secinsurancedis-form">
               <div className="container-fluid">
-                <div className="row form-details">
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
-                    label={{
-                      forceLabel: "Insurance Company"
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "full_name",
-                      value: this.state.full_name,
-                      events: {
-                        onChange: null
-                      },
-                      disabled: true
-                    }}
-                  />
+                <div className="row">
+                  <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 primary-details">
+                    <div className="row primary-box-container">
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          forceLabel: "Insurance Company"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+                          value: this.state.full_name,
+                          events: {
+                            onChange: null
+                          },
+                          disabled: true
+                        }}
+                      />
 
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
-                    label={{
-                      forceLabel: "Plan Description"
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "full_name",
-                      value: this.state.full_name,
-                      events: {
-                        onChange: null
-                      },
-                      disabled: true
-                    }}
-                  />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          forceLabel: "Plan Description"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+                          value: this.state.full_name,
+                          events: {
+                            onChange: null
+                          },
+                          disabled: true
+                        }}
+                      />
+                    </div>
+                    <div className="row primary-box-container">
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          forceLabel: "Policy No."
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+                          value: this.state.full_name,
+                          events: {
+                            onChange: null
+                          },
+                          disabled: true
+                        }}
+                      />
 
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
-                    label={{
-                      forceLabel: "Policy Group"
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "full_name",
-                      value: this.state.full_name,
-                      events: {
-                        onChange: null
-                      },
-                      disabled: true
-                    }}
-                  />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          forceLabel: "Card No."
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+                          value: this.state.full_name,
+                          events: {
+                            onChange: null
+                          },
+                          disabled: true
+                        }}
+                      />
+                    </div>
 
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
-                    label={{
-                      forceLabel: "Policy No"
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "full_name",
-                      value: this.state.full_name,
-                      events: {
-                        onChange: null
-                      },
-                      disabled: true
-                    }}
-                  />
+                    <div className="row primary-box-container">
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          forceLabel: "Start Date."
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+                          value: this.state.full_name,
+                          events: {
+                            onChange: null
+                          },
+                          disabled: true
+                        }}
+                      />
 
-                  <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
-                    <div className="ins-Dis-image-drop-area">
-                      <Dropzone className="dropzone">
-                        <div className="text-center">Front</div>
-                      </Dropzone>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          forceLabel: "End Date"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+                          value: this.state.full_name,
+                          events: {
+                            onChange: null
+                          },
+                          disabled: true
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 primary-details">
+                    <div className="row primary-box-container">
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            // fieldName: "Co-Insurance"
+                            forceLabel: "Services"
+                          }}
+                        />
+                      </div>
+                      <div className="col-lg-4 centerAlign">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "%"
+                          }}
+                        />
+                      </div>
+                      <div className="col-lg-4 centerAlign">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Max-Limit"
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="row primary-box-container">
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            // fieldName: "Co-Insurance"
+                            forceLabel: "Consultation"
+                          }}
+                        />
+                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                    </div>
+
+                    <div className="row primary-box-container">
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            // fieldName: "Co-Insurance"
+                            forceLabel: "Laboratory"
+                          }}
+                        />
+                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                    </div>
+
+                    <div className="row primary-box-container">
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            // fieldName: "Co-Insurance"
+                            forceLabel: "Radiology"
+                          }}
+                        />
+                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
                     </div>
                   </div>
 
-                  <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
-                    <div className="ins-Dis-image-drop-area">
-                      <Dropzone className="dropzone">
-                        <div className="text-center">Back</div>
-                      </Dropzone>
+                  <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 secondary-details">
+                    <div className="row secondary-box-container">
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            // fieldName: "Co-Insurance"
+                            forceLabel: "Co-Insurance"
+                          }}
+                        />
+                      </div>
+                      <div className="col-lg-4 centerAlign">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "%"
+                          }}
+                        />
+                      </div>
+                      <div className="col-lg-4 centerAlign">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Max-Limit"
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="row secondary-box-container">
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            // fieldName: "Co-Insurance"
+                            forceLabel: "Medicine"
+                          }}
+                        />
+                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                    </div>
+
+                    <div className="row secondary-box-container">
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            // fieldName: "Co-Insurance"
+                            forceLabel: "Procedure"
+                          }}
+                        />
+                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                    </div>
+
+                    <div className="row secondary-box-container">
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            // fieldName: "Co-Insurance"
+                            forceLabel: "Dental"
+                          }}
+                        />
+                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.unbalanced_amount,
+                          className: "txt-fld",
+                          name: "unbalanced_amount",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
                     </div>
                   </div>
                 </div>

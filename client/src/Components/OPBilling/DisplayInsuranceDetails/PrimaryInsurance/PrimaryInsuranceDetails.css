@@ -5,9 +5,6 @@
 .htpl-primary-display-insurance-form .primary-details {
   padding: 5px;
   border-right: 1px solid #000; }
-  @media only screen and (max-width: 904px) {
-    .htpl-primary-display-insurance-form .primary-details {
-      padding: 5px; } }
   .htpl-primary-display-insurance-form .primary-details .primary-box-container {
     padding: 5px; }
 
@@ -15,17 +12,6 @@
   padding: 5px; }
   .htpl-primary-display-insurance-form .secondary-details .secondary-box-container {
     padding: 5px; }
-    .htpl-primary-display-insurance-form .secondary-details .secondary-box-container .attach-design {
-      background: #8c8c8c;
-      min-height: 30px;
-      color: #fff;
-      padding: 5px;
-      position: relative;
-      top: 99px;
-      cursor: pointer;
-      margin-left: -1px;
-      margin-right: -1px;
-      font-size: 11px; }
 
 .htpl-primary-display-insurance-form mark {
   background: none;
@@ -58,8 +44,3 @@
 .htpl-primary-display-insurance-form .file-name-upload {
   margin-left: 4%;
   margin-top: 2%; }
-
-.htpl-primary-display-insurance-form th,
-.htpl-primary-display-insurance-form td {
-  border-right: 1px solid #e6e6e6;
-  font-size: 11px; }

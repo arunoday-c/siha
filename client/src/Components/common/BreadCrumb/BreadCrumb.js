@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import "./breadcrumb.css";
 import { AlgaehLabel, AlgaehDateHandler } from "../../Wrapper/algaehWrapper";
-import variableJson from "../../../utils/GlobalVariables.json";
+import { SearchDetails } from "./BreadCurmbFunctionality";
 
 const CREATE_PATIENT = [
   { name: "No", arabic_name: "لا", value: "N" },
@@ -148,7 +148,10 @@ class BreadCrumb extends PureComponent {
                             <i className="fas fa-step-forward" />
                           </div>
                           <div className="form-group print_actions">
-                            <i className="fas fa-search fa-2x" />
+                            <i
+                              className="fas fa-search fa-2x"
+                              onClick={SearchDetails.bind(this, this)}
+                            />
                           </div>
                         </div>
                       </div>

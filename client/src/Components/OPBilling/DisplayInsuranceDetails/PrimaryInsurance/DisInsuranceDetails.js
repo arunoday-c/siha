@@ -1,24 +1,21 @@
 import React, { Component } from "react";
-import Dropzone from "react-dropzone";
 import "./PrimaryInsuranceDetails.css";
 import "./../../../../styles/site.css";
-import {
-  AlgaehDateHandler,
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehLabel
-} from "../../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 export default class AddInsuranceForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      filePreview: ""
-    };
+    this.state = {};
+  }
+
+  componentWillMount() {
+    let InputOutput = this.props.BillingIOputs;
+    this.setState({ ...this.state, ...InputOutput });
   }
 
   render() {
     return (
-      <div className="htpl-primary-display-insurance-form ">
+      <div className="htpl-primary-display-insurance-form">
         <div className="container-fluid">
           <div className="row">
             <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 primary-details">

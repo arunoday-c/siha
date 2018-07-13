@@ -1,4 +1,5 @@
 import AlgaehSearch from "../../../Wrapper/globalSearch";
+import FrontDesk from "../../../../Search/FrontDesk.json";
 
 const texthandle = ($this, context, e) => {
   $this.setState({
@@ -14,28 +15,7 @@ const PatientSearch = ($this, context, e) => {
   debugger;
   AlgaehSearch({
     searchGrid: {
-      columns: [
-        {
-          fieldName: "patient_code",
-          label: "Patient Code"
-        },
-        {
-          fieldName: "full_name",
-          label: "Name"
-        },
-        {
-          fieldName: "arabic_name",
-          label: "Arabic Name"
-        },
-        {
-          fieldName: "gender",
-          label: "Gender"
-        },
-        {
-          fieldName: "contact_number",
-          label: "Contact Number"
-        }
-      ]
+      columns: FrontDesk
     },
     searchName: "patients",
     uri: "/gloabelSearch/get",
@@ -44,6 +24,10 @@ const PatientSearch = ($this, context, e) => {
     },
     onRowSelect: row => {
       $this.setState({ patient_code: row.patient_code });
+
+      if (context != null) {
+        context.updateState({ patient_code: row.patient_code });
+      }
     }
   });
 };
