@@ -15,7 +15,7 @@ let searchData = (req, res, next) => {
         )
       );
     let queryConfig = algaehSearchConfig(inputParam.searchName);
-    if (queryConfig === undefined) {
+    if (queryConfig == null) {
       next(
         httpStatus.generateError(
           httpStatus.unAuthorized,
@@ -24,23 +24,25 @@ let searchData = (req, res, next) => {
       );
     }
     let db = req.db;
-    if (db === undefined) {
+    if (db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let limit =
-      req.query.pageSize === undefined || req.query.pageSize === 0
+      req.query.pageSize == null || req.query.pageSize === 0
         ? 5
         : req.query.pageSize;
     //let offSet = req.query.pageNo === 0 ? limit * 1 : limit * req.query.pageNo;
     let offSet = req.query.pageNo;
     let whereCondition =
-      req.query.fieldName === undefined
+      req.query.fieldName == null
         ? " "
         : " and upper(" +
           req.query.fieldName +
           ") like  upper('%" +
           req.query.fieldContains +
           "%')";
+    whereCondition +=
+      req.query.inputs == null ? "" : " and " + req.query.inputs;
     let query =
       queryConfig.searchQuery +
       whereCondition +

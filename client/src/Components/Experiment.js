@@ -113,6 +113,7 @@ class DeptMaster extends Component {
       },
       searchName: "patients",
       uri: "/gloabelSearch/get",
+      inputs: "country_id=2",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },

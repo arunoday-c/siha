@@ -13,6 +13,7 @@ let searchWindow = props => {
       onRowSelect={props.onRowSelect}
       onContainsChange={props.onContainsChange}
       uri={props.uri}
+      inputs={props.inputs}
     />
   );
 };

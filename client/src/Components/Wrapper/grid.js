@@ -52,13 +52,6 @@ class DataGrid extends PureComponent {
             "response.data." + $this.props.dataSource.responseSchema.totalPages
           );
           callBack(dataS, total_pages);
-          // $this.setState({
-          //   data: dataS,
-          //   totalPages:
-          //     $this.props.dataSource.responseSchema.totalPages === undefined
-          //       ? dataS.length
-          //       : total_pages
-          // });
         } else {
           console.error(response);
         }

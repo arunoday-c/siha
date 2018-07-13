@@ -39,7 +39,6 @@ class SearchModule extends Component {
       searchName: this.props.searchName,
       searchBy: this.props.searchGrid.columns[0]["fieldName"]
     });
-    document.getElementById("spotlightInput").focus();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -48,7 +47,6 @@ class SearchModule extends Component {
       searchName: nextProps.searchName,
       searchBy: nextProps.searchGrid.columns[0]["fieldName"]
     });
-    document.getElementById("spotlightInput").focus();
   }
 
   handleOnchnageSearchBy(e) {
@@ -79,6 +77,7 @@ class SearchModule extends Component {
             dataSource={{
               uri: this.props.uri,
               inputParam: {
+                inputs: this.props.inputs,
                 fieldName: this.state.searchBy,
                 fieldContains: this.state.contains,
                 searchName: this.state.searchName
@@ -124,7 +123,6 @@ class SearchModule extends Component {
             type="text"
             placeholder={this.state.title}
             onChange={this.handleSpotLightContains.bind(this)}
-            value={this.state.contains}
           />
           <div id="spotlightFilterBy">
             <select
