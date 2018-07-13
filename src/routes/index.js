@@ -44,7 +44,6 @@ initializedDb(db => {
   router.use("/patientType", patientType({ config, db }));
   router.use("/insurance", insurance({ config, db }));
   router.use("/gloabelSearch", globalSearch());
-  // router.use("/insurence", insurence({ config, db }));
   router.use("/opBilling", opBilling({ config, db }));
 });
 
