@@ -87,13 +87,13 @@ class DeptMaster extends Component {
   }
   handleOpenFinder() {
     AlgaehSearch({
-      selector: {
-        dataSource: {
-          textField: "name",
-          valueField: "value",
-          data: this.state.searchByDropDown
-        }
-      },
+      // selector: {
+      //   dataSource: {
+      //     textField: "name",
+      //     valueField: "value",
+      //     data: this.state.searchByDropDown
+      //   }
+      // },
       searchGrid: {
         columns: [
           {

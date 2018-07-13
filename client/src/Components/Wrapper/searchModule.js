@@ -39,21 +39,15 @@ class SearchModule extends Component {
     this.setState({
       open: this.props.model.open,
       searchName: this.props.searchName,
-      searchBy: this.props.selector.dataSource.data[0][
-        this.props.selector.dataSource.valueField
-      ]
+      searchBy: this.props.selector.dataSource.data[0]["fieldName"]
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState({
       open: nextProps.model.open,
       searchName: nextProps.searchName,
-      searchBy:
-        nextProps.selector.dataSource.data[0][
-          nextProps.selector.dataSource.valueField
-        ]
+      searchBy: nextProps.selector.dataSource.data[0]["fieldName"]
     });
   }
 
@@ -132,13 +126,13 @@ class SearchModule extends Component {
               onChange={this.handleOnchnageSearchBy.bind(this)}
               value={this.state.searchBy}
             >
-              {this.props.selector.dataSource.data.map((row, index) => (
+              {this.props.searchGrid.columns.map((row, index) => (
                 <option
                   key={index}
                   datafieldtype={row.fieldType}
-                  value={row[this.props.selector.dataSource.valueField]}
+                  value={row["fieldName"]}
                 >
-                  {row[this.props.selector.dataSource.textField]}
+                  {row["label"]}
                 </option>
               ))}
             </select>
