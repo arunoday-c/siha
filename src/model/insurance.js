@@ -31,6 +31,16 @@ let getPatientInsurance = (req, res, next) => {
       }
       extend(patientInsuranceModel, req.query);
 
+      let strQuery = "";
+      if (patientInsuranceModel.patient_visit_id !== undefined) {
+        strQuery =
+          " AND mIns.patient_visit_id = '" +
+          patientInsuranceModel.patient_visit_id +
+          "'";
+      }
+
+      debugLog("Check Query", strQuery);
+
       connection.query(
         "(select  mIns.patient_id,mIns.primary_insurance_provider_id as insurance_provider_id,Ins.insurance_provider_name,\
           mIns.primary_sub_id as sub_insurance_provider_id, sIns.insurance_sub_name as sub_insurance_provider_name,\
@@ -41,8 +51,9 @@ let getPatientInsurance = (req, res, next) => {
           INNER JOIN  hims_m_patient_insurance_mapping mIns ON mIns.primary_insurance_provider_id=Ins.hims_d_insurance_provider_id)\
            INNER JOIN  hims_d_insurance_sub sIns ON mIns.primary_sub_id= sIns.hims_d_insurance_sub_id) \
            INNER JOIN hims_d_insurance_network net ON mIns.primary_network_id=net.hims_d_insurance_network_id)\
-           INNER JOIN hims_d_insurance_network_office netoff ON mIns.primary_policy_num=netoff.policy_number) where mIns.patient_id=?\
-           GROUP BY mIns.primary_policy_num)\
+           INNER JOIN hims_d_insurance_network_office netoff ON mIns.primary_policy_num=netoff.policy_number) where mIns.patient_id=?" +
+          strQuery +
+          "GROUP BY mIns.primary_policy_num)\
            union\
            (select  mIns.patient_id,mIns.secondary_insurance_provider_id , Ins.insurance_provider_name,\
             mIns.secondary_sub_id,sIns.insurance_sub_name, \
@@ -52,8 +63,9 @@ let getPatientInsurance = (req, res, next) => {
           INNER JOIN  hims_m_patient_insurance_mapping mIns ON mIns.secondary_insurance_provider_id=Ins.hims_d_insurance_provider_id)\
            INNER JOIN  hims_d_insurance_sub sIns ON mIns.secondary_sub_id= sIns.hims_d_insurance_sub_id) \
            INNER JOIN hims_d_insurance_network net ON mIns.secondary_network_id=net.hims_d_insurance_network_id)\
-           INNER JOIN hims_d_insurance_network_office netoff ON mIns.secondary_policy_num=netoff.policy_number) where mIns.patient_id=?\
-           GROUP BY mIns.secondary_policy_num);",
+           INNER JOIN hims_d_insurance_network_office netoff ON mIns.secondary_policy_num=netoff.policy_number) where mIns.patient_id=?" +
+          strQuery +
+          "GROUP BY mIns.secondary_policy_num);",
 
         [patientInsuranceModel.patient_id, patientInsuranceModel.patient_id],
         (error, result) => {

@@ -187,7 +187,7 @@ class DeptMaster extends Component {
 
   render() {
     return (
-      <Paper>
+      <Paper style={{ height: "700px" }}>
         <div className="row">
           <div className="col-lg-4">
             <TextField

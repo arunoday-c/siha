@@ -4,7 +4,8 @@
   left: 0;
   right: 0;
   width: 100%;
-  display: block; }
+  display: block;
+  z-index: 999999999; }
 
 .spotlightContainer {
   width: 700px;

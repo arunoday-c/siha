@@ -10,7 +10,7 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext.js";
-import { texthandle } from "./DisPatientHandlers";
+import { texthandle, PatientSearch } from "./DisPatientHandlers";
 import variableJson from "../../../../utils/GlobalVariables.json";
 
 export default class DisPatientForm extends Component {
@@ -55,7 +55,11 @@ export default class DisPatientForm extends Component {
                   />
 
                   <div className="col-lg-1 form-group print_actions">
-                    <span className="fas fa-search fa-2x" />
+                    <span
+                      className="fas fa-search fa-2x"
+                      onClick={PatientSearch.bind(this, this, context)}
+                      // onClick={this.PatientSearch.bind(this)}
+                    />
                   </div>
                   {/* Patient name */}
                   <AlagehFormGroup
