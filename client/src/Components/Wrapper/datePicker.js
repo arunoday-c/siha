@@ -103,6 +103,7 @@ export default class DateHandler extends Component {
                     value={this.props.value}
                     onDayChange={this.onDayChange.bind(this)}
                     className={this.props.textBox.className}
+                    disabled={this.props.disabled}
                     dayPickerProps={{
                       todayButton: "Today",
                       // localeUtils: MomentLocaleUtils,

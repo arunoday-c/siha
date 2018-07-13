@@ -17,6 +17,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import swal from "sweetalert";
+import { AlgaehActions } from "../../../actions/algaehActions";
 
 const VISIT_TYPE = [
   { name: "CONSULTATION", value: "CONSULTATION", key: "cn" },
@@ -90,7 +91,14 @@ class VisitType extends Component {
                 buttons: false,
                 timer: 2000
               });
-              this.props.getVisittypes();
+              this.props.getVisittypes({
+                uri: "/visitType/get",
+                method: "GET",
+                redux: {
+                  type: "VISITTYPE_GET_DATA",
+                  mappingName: "visittypes"
+                }
+              });
             }
           },
           onFailure: error => {}
@@ -141,7 +149,14 @@ class VisitType extends Component {
   }
 
   componentDidMount() {
-    this.props.getVisittypes();
+    this.props.getVisittypes({
+      uri: "/visitType/get",
+      method: "GET",
+      redux: {
+        type: "VISITTYPE_GET_DATA",
+        mappingName: "visittypes"
+      }
+    });
   }
 
   dateFormater({ value }) {
@@ -192,7 +207,14 @@ class VisitType extends Component {
           window.location.reload();
           if (response.data.success == true) {
             //Handle Successful Add here
-            this.props.getVisittypes();
+            this.props.getVisittypes({
+              uri: "/visitType/get",
+              method: "GET",
+              redux: {
+                type: "VISITTYPE_GET_DATA",
+                mappingName: "visittypes"
+              }
+            });
             this.resetState();
 
             swal({
@@ -247,7 +269,14 @@ class VisitType extends Component {
             buttons: false,
             timer: 2000
           });
-          this.props.getVisittypes();
+          this.props.getVisittypes({
+            uri: "/visitType/get",
+            method: "GET",
+            redux: {
+              type: "VISITTYPE_GET_DATA",
+              mappingName: "visittypes"
+            }
+          });
         }
       },
       onFailure: error => {}
@@ -460,7 +489,10 @@ class VisitType extends Component {
                     ]}
                     keyId="visit_type_code"
                     dataSource={{
-                      data: this.props.visittypes
+                      data:
+                        this.props.visittypes === undefined
+                          ? []
+                          : this.props.visittypes
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
@@ -482,14 +514,14 @@ class VisitType extends Component {
 
 function mapStateToProps(state) {
   return {
-    visittypes: state.visittypes.visittypes
+    visittypes: state.visittypes
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisittypes: getVisittypes
+      getVisittypes: AlgaehActions
     },
     dispatch
   );

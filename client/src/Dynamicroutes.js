@@ -15,6 +15,7 @@ import CommonSetup from "./Components/CommonSetup/CommonSetup";
 import Experiment from "./Components/Experiment";
 import OPBilling from "./Components/OPBilling/OPBilling";
 import BillDetails from "./Components/BillDetails/BillDetails";
+import InsuranceSetup from "./Components/InsuranceSetup/InsuranceSetup";
 
 function height() {
   let height =
@@ -30,7 +31,8 @@ const componts = selectedLang => {
     CommonSetup: <CommonSetup SelectLanguage={selectedLang} />,
     Experiment: <Experiment SelectLanguage={selectedLang} />,
     OPBilling: <OPBilling SelectLanguage={selectedLang} />,
-    BillDetails: <BillDetails SelectLanguage={selectedLang} />
+    BillDetails: <BillDetails SelectLanguage={selectedLang} />,
+    InsuranceSetup: <InsuranceSetup SelectLanguage={selectedLang} />
   };
 };
 

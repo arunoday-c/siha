@@ -131,10 +131,11 @@
   "payment_date": "Payment Date",
 
   "insurance_id": "Insurance Company",
-  "sub_insurance_id": "Secondary Insurance Company",
+  "sub_insurance_id": "Sub Insurance Company",
   "plan_id": "Plan",
   "policy_id": "Policy",
   "effective_start_date": "Effective Start Date",
   "attach_front": "Front Side",
-  "attach_back": "Back Side"
+  "attach_back": "Back Side",
+  "card_number": "Card Number"
 }

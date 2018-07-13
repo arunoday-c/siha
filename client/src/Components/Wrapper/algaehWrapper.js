@@ -6,6 +6,8 @@ import Options from "../Wrapper/optionButton";
 import AutoComplete from "../Wrapper/autoComplete";
 import DataGrid from "../Wrapper/grid";
 import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
+
 import "hijri-date";
 
 const AlgaehLabel = Label;
@@ -30,5 +32,6 @@ export {
   AlgaehOptions,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  Button
+  Button,
+  Tooltip
 };

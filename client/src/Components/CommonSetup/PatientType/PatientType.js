@@ -7,10 +7,10 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { AlagehFormGroup, AlgaehOptions } from "../../Wrapper/algaehWrapper";
 import DeleteDialog from "../../../utils/DeleteDialog";
 
-import { getVisatypes } from "../../../actions/CommonSetup/Visatype.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../actions/algaehActions";
 
 let sel_id = "";
 let openDialog = false;
@@ -33,7 +33,19 @@ class PatientType extends Component {
   }
 
   componentDidMount() {
-    this.props.getVisatypes();
+    if (
+      this.props.visatypes === undefined ||
+      this.props.visatypes.length === 0
+    ) {
+      this.props.getVisatypes({
+        uri: "/masters/get/visa",
+        method: "GET",
+        redux: {
+          type: "VISA_GET_DATA",
+          mappingName: "visatypes"
+        }
+      });
+    }
   }
 
   componentWillReceiveProps() {}
@@ -191,14 +203,14 @@ class PatientType extends Component {
 
 function mapStateToProps(state) {
   return {
-    visatypes: state.visatypes.visatypes
+    visatypes: state.visatypes
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisatypes: getVisatypes
+      getVisatypes: AlgaehActions
     },
     dispatch
   );

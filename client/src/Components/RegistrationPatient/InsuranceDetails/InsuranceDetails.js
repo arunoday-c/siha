@@ -71,8 +71,12 @@ export default class InsuranceDetails extends PureComponent {
         </div>
 
         <div className="insurance-section">
-          {this.state.actionPrimaryDesign ? <InsuranceForm /> : null}
-          {this.state.actionSecondaryDesign ? null : <SecondaryInsurance />}
+          {this.state.actionPrimaryDesign ? (
+            <InsuranceForm PatRegIOputs={this.props.PatRegIOputs} />
+          ) : null}
+          {this.state.actionSecondaryDesign ? null : (
+            <SecondaryInsurance PatRegIOputs={this.props.PatRegIOputs} />
+          )}
         </div>
         {/* <div>
           <InsuranceList />

@@ -64,7 +64,8 @@ class DisplayOPBilling extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    nextProps.BillingIOputs.patient_payable = 0;
+    debugger;
+    // nextProps.BillingIOputs.patient_payable = 0;
     let InputOutput = nextProps.BillingIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }

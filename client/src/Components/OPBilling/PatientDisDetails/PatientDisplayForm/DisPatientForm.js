@@ -38,7 +38,7 @@ export default class DisPatientForm extends Component {
                 <div className="row form-details">
                   {/* Patient code */}
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-2" }}
                     label={{
                       fieldName: "patient_code"
                     }}
@@ -53,6 +53,10 @@ export default class DisPatientForm extends Component {
                       helperText: this.state.userErrorText
                     }}
                   />
+
+                  <div className="col-lg-1 form-group print_actions">
+                    <span className="fas fa-search fa-2x" />
+                  </div>
                   {/* Patient name */}
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}

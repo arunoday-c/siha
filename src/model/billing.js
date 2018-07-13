@@ -654,6 +654,19 @@ let getBillDetails = (req, res, next) => {
       }
       debugLog("Service ID" + servicesDetails.hims_d_services_id);
 
+      // let strquery = "";
+
+      // let insured =
+      //   servicesDetails.insured === undefined ? "N" : servicesDetails.insured;
+      // if (insured === "N") {
+      //   (strquery =
+      //     "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id`=? "),
+      //     [servicesDetails.hims_d_services_id];
+      // } else if (insured === "Y") {
+      //   (strquery =
+      //     "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id`=? "),
+      //     [servicesDetails.hims_d_services_id];
+      // }
       connection.query(
         "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id`=? ",
         [servicesDetails.hims_d_services_id],

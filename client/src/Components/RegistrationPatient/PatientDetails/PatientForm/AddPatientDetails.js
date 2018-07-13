@@ -118,7 +118,10 @@ const calculateAge = ($this, context, e) => {
       date_of_birth: moment(e)._d,
       age: years,
       AGEMM: months,
-      AGEDD: days
+      AGEDD: days,
+      age_in_years: years,
+      age_in_months: months,
+      age_in_days: days
     });
   }
 };

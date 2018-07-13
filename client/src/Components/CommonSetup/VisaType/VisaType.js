@@ -19,6 +19,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import swal from "sweetalert";
+import { AlgaehActions } from "../../../actions/algaehActions";
 
 class VisaType extends Component {
   constructor(props) {
@@ -76,7 +77,14 @@ class VisaType extends Component {
         onSuccess: response => {
           if (response.data.success === true) {
             //Handle Successful Add here
-            this.props.getVisatypes();
+            this.props.getVisatypes({
+              uri: "/masters/get/visa",
+              method: "GET",
+              redux: {
+                type: "VISA_GET_DATA",
+                mappingName: "visatypes"
+              }
+            });
             this.resetState();
 
             swal({
@@ -109,7 +117,14 @@ class VisaType extends Component {
             buttons: false,
             timer: 2000
           });
-          this.props.getVisatypes();
+          this.props.getVisatypes({
+            uri: "/masters/get/visa",
+            method: "GET",
+            redux: {
+              type: "VISA_GET_DATA",
+              mappingName: "visatypes"
+            }
+          });
         }
       },
       onFailure: error => {}
@@ -121,7 +136,19 @@ class VisaType extends Component {
   }
 
   componentDidMount() {
-    this.props.getVisatypes();
+    if (
+      this.props.visatypes === undefined ||
+      this.props.visatypes.length === 0
+    ) {
+      this.props.getVisatypes({
+        uri: "/masters/get/visa",
+        method: "GET",
+        redux: {
+          type: "VISA_GET_DATA",
+          mappingName: "visatypes"
+        }
+      });
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -169,7 +196,15 @@ class VisaType extends Component {
                 buttons: false,
                 timer: 2000
               });
-              this.props.getVisatypes();
+
+              this.props.getVisatypes({
+                uri: "/masters/get/visa",
+                method: "GET",
+                redux: {
+                  type: "VISA_GET_DATA",
+                  mappingName: "visatypes"
+                }
+              });
             }
           },
           onFailure: error => {}
@@ -341,7 +376,10 @@ class VisaType extends Component {
                   ]}
                   keyId="visa_type_code"
                   dataSource={{
-                    data: this.props.visatypes
+                    data:
+                      this.props.visatypes === undefined
+                        ? []
+                        : this.props.visatypes
                   }}
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 5 }}
@@ -365,14 +403,14 @@ class VisaType extends Component {
 
 function mapStateToProps(state) {
   return {
-    visatypes: state.visatypes.visatypes
+    visatypes: state.visatypes
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisatypes: getVisatypes
+      getVisatypes: AlgaehActions
     },
     dispatch
   );

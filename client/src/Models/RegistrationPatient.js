@@ -61,6 +61,7 @@ export default {
       visitDetails: null,
       patient_id: null,
       hims_d_services_id: null,
+      patient_visit_id: null,
 
       widthImg: "",
       open: false,
@@ -87,7 +88,32 @@ export default {
       cheque_date: null,
       cheque_amount: 0,
       advance: 0,
-      existingPatient: false
+      existingPatient: false,
+      insured: "N",
+      sec_insured: "N",
+      insuranceYes: true,
+      sec_insuranceYes: true,
+      age_in_years: null,
+      age_in_months: null,
+      age_in_days: null,
+
+      primary_insurance_provider_id: null,
+      primary_sub_id: null,
+      primary_network_id: null,
+      primary_policy_num: null,
+      primary_effective_start_date: null,
+      primary_effective_end_date: null,
+      primary_inc_card_path: null,
+      primary_card_number: null,
+
+      secondary_insurance_provider_id: null,
+      secondary_sub_id: null,
+      secondary_network_id: null,
+      secondary_effective_start_date: null,
+      secondary_effective_end_date: null,
+      secondary_policy_num: null,
+      secondary_inc_card_path: null,
+      secondary_card_number: null
     };
     return output;
   }

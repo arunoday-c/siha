@@ -13,8 +13,8 @@
     ]
   },
   {
-    "name": "MASTERS",
-    "label": "Masters",
+    "name": "Settings",
+    "label": "Settings",
     "path": "/appointment/",
     "subMenu": [
       {
@@ -28,6 +28,18 @@
         "label": "Common Setup",
         "arlabel": "الإعداد المشترك",
         "path": "/CommonSetup"
+      },
+      {
+        "name": "Insurance Setup",
+        "label": "Insurance Setup",
+        "arlabel": "إعداد التأمين",
+        "path": "/InsuranceSetup"
+      },
+      {
+        "name": "Investigation Setup",
+        "label": "Investigation Setup",
+        "arlabel": "إعداد التحقيق",
+        "path": "/InvestigationSetup"
       }
     ]
   },
