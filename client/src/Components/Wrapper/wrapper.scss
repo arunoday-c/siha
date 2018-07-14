@@ -21,14 +21,33 @@ div[numberbox="true"] {
   }
 }
 
-.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
-  background-color: #00bcb0 !important;
+/*
+   React date picker customizing style
+*/
+.algaeh-datePicker {
+  border-bottom: 1px solid #6c757d;
+  background-color: #fbfbfb;
+  .react-date-picker__button {
+    background-color: #fbfbfb;
+    border: none;
+    line-height: 1.9em;
+    .react-date-picker__clear-button {
+      visibility: hidden;
+    }
+  }
+  .react-calendar {
+    width: 250px;
+  }
 }
-.DayPicker-TodayButton {
-  color: #00bcb0 !important;
-  padding-left: 70px;
-  font-weight: bold;
-}
+
+// .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
+//   background-color: #00bcb0 !important;
+// }
+// .DayPicker-TodayButton {
+//   color: #00bcb0 !important;
+//   padding-left: 70px;
+//   font-weight: bold;
+// }
 
 .table {
   width: 100%;
