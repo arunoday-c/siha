@@ -12,45 +12,35 @@ var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var employeeModel = {
-  hims_d_employee_id: 0,
-  employee_code: null,
-  first_name: null,
-  middle_name: null,
-  last_name: null,
-  sex: "MALE",
-  date_of_birth: null,
-  date_of_joining: null,
-  date_of_leaving: null,
-  address: null,
-  primary_contact_no: null,
-  secondary_contact_no: null,
-  email: null,
-  emergancy_contact_person: null,
-  emergancy_contact_no: null,
-  blood_group: null,
-  employee_status: "A",
-  effective_start_date: null,
-  effective_end_date: null,
-  created_date: new Date(),
-  created_by: null,
-  updated_date: new Date(),
-  updated_by: null
-};
-var employeeWhereCondition = {
-  employee_code: "ALL",
-  first_name: "ALL",
-  middle_name: "ALL",
-  last_name: "ALL",
-  sex: "ALL",
-  blood_group: "ALL",
-  employee_status: "ALL",
-  date_of_joining: "ALL",
-  date_of_leaving: "ALL",
-  primary_contact_no: "ALL",
-  email: "ALL"
-};
+// api to add employee
 var addEmployee = function addEmployee(req, res, next) {
+  var employeeModel = {
+    hims_d_employee_id: 0,
+    employee_code: null,
+    first_name: null,
+    middle_name: null,
+    last_name: null,
+    arabic_name: null,
+    sex: "MALE",
+    date_of_birth: null,
+    date_of_joining: null,
+    date_of_leaving: null,
+    address: null,
+    primary_contact_no: null,
+    secondary_contact_no: null,
+    email: null,
+    emergancy_contact_person: null,
+    emergancy_contact_no: null,
+    blood_group: null,
+    employee_status: "A",
+    effective_start_date: null,
+    effective_end_date: null,
+    created_date: new Date(),
+    created_by: null,
+    updated_date: new Date(),
+    updated_by: null
+  };
+
   try {
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
@@ -62,11 +52,11 @@ var addEmployee = function addEmployee(req, res, next) {
         next(error);
       }
 
-      connection.query("INSERT hims_d_employee(employee_code,first_name,middle_name,last_name, \
+      connection.query("INSERT hims_d_employee(employee_code,first_name,middle_name,last_name,arabic_name, \
             sex,date_of_birth,date_of_joining,date_of_leaving,address,primary_contact_no,\
             secondary_contact_no,email,emergancy_contact_person,emergancy_contact_no,\
             blood_group,effective_start_date,effective_end_date,created_date,created_by) \
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [employeeDetails.employee_code, employeeDetails.first_name, employeeDetails.middle_name, employeeDetails.last_name, employeeDetails.sex, employeeDetails.date_of_birth, employeeDetails.date_of_joining, employeeDetails.date_of_leaving, employeeDetails.address, employeeDetails.primary_contact_no, employeeDetails.secondary_contact_no, employeeDetails.email, employeeDetails.emergancy_contact_person, employeeDetails.emergancy_contact_no, employeeDetails.blood_group, employeeDetails.effective_start_date, employeeDetails.effective_end_date, employeeDetails.created_date, employeeDetails.created_by], function (error, result) {
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [employeeDetails.employee_code, employeeDetails.first_name, employeeDetails.middle_name, employeeDetails.last_name, employeeDetails.arabic_name, employeeDetails.sex, employeeDetails.date_of_birth, employeeDetails.date_of_joining, employeeDetails.date_of_leaving, employeeDetails.address, employeeDetails.primary_contact_no, employeeDetails.secondary_contact_no, employeeDetails.email, employeeDetails.emergancy_contact_person, employeeDetails.emergancy_contact_no, employeeDetails.blood_group, employeeDetails.effective_start_date, employeeDetails.effective_end_date, employeeDetails.created_date, employeeDetails.created_by], function (error, result) {
         if (error) {
           (0, _utils.releaseDBConnection)(db, connection);
           next(error);
@@ -86,7 +76,23 @@ var addEmployee = function addEmployee(req, res, next) {
     next(e);
   }
 };
+
+// api to fetch employee
 var getEmployee = function getEmployee(req, res, next) {
+  var employeeWhereCondition = {
+    employee_code: "ALL",
+    first_name: "ALL",
+    middle_name: "ALL",
+    last_name: "ALL",
+    sex: "ALL",
+    blood_group: "ALL",
+    employee_status: "ALL",
+    date_of_joining: "ALL",
+    date_of_leaving: "ALL",
+    primary_contact_no: "ALL",
+    email: "ALL"
+  };
+
   try {
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
@@ -105,6 +111,7 @@ var getEmployee = function getEmployee(req, res, next) {
         ,first_name               	\
         ,middle_name              	\
         ,last_name                	\
+        ,arabic_name \
         ,sex                      	\
         ,date_of_birth            	\
         ,date_of_joining          	\
@@ -118,7 +125,7 @@ var getEmployee = function getEmployee(req, res, next) {
         ,blood_group              	\
         ,employee_status          	\
         ,effective_start_date     	\
-        ,effective_end_date FROM hims_d_employee WHERE record_status ='A' AND " + condition.condition + " " + pagePaging,
+        ,effective_end_date,CONCAT(first_name ,' ', middle_name,' ' ,last_name )as full_name FROM hims_d_employee WHERE record_status ='A' AND " + condition.condition + " " + pagePaging,
       values: condition.values
     }, function (result) {
       req.records = result;
@@ -130,7 +137,35 @@ var getEmployee = function getEmployee(req, res, next) {
     next(e);
   }
 };
+
 var updateEmployee = function updateEmployee(req, res, next) {
+  var employeeModel = {
+    hims_d_employee_id: 0,
+    employee_code: null,
+    first_name: null,
+    middle_name: null,
+    last_name: null,
+    arabic_name: null,
+    sex: "MALE",
+    date_of_birth: null,
+    date_of_joining: null,
+    date_of_leaving: null,
+    address: null,
+    primary_contact_no: null,
+    secondary_contact_no: null,
+    email: null,
+    emergancy_contact_person: null,
+    emergancy_contact_no: null,
+    blood_group: null,
+    employee_status: "A",
+    effective_start_date: null,
+    effective_end_date: null,
+    created_date: new Date(),
+    created_by: null,
+    updated_date: new Date(),
+    updated_by: null
+  };
+
   try {
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
@@ -142,11 +177,11 @@ var updateEmployee = function updateEmployee(req, res, next) {
         next(error);
       }
       connection.query("UPDATE hims_d_employee SET first_name=?,middle_name=?\
-                     ,last_name=?,sex=?,date_of_birth=?,date_of_joining=?\
+                     ,last_name=?,arabic_name=?,sex=?,date_of_birth=?,date_of_joining=?\
                      ,date_of_leaving=?,address=?,primary_contact_no=?,secondary_contact_no=?\
                      ,email=?,emergancy_contact_person=?,emergancy_contact_no=?\
                      ,blood_group=?,employee_status=?,effective_start_date=?,effective_end_date=?\
-                     ,updated_date=now(),updated_by=? WHERE  hims_d_employee_id=?", [employeeDetails.first_name, employeeDetails.middle_name, employeeDetails.last_name, employeeDetails.sex, employeeDetails.date_of_birth, employeeDetails.date_of_joining, employeeDetails.date_of_leaving, employeeDetails.address, employeeDetails.primary_contact_no, employeeDetails.secondary_contact_no, employeeDetails.email, employeeDetails.emergancy_contact_person, employeeDetails.emergancy_contact_no, employeeDetails.blood_group, employeeDetails.employee_status, employeeDetails.effective_start_date, employeeDetails.effective_end_date, employeeDetails.updated_by, employeeDetails.hims_d_employee_id], function (error, result) {
+                     ,updated_date=now(),updated_by=? WHERE  hims_d_employee_id=?", [employeeDetails.first_name, employeeDetails.middle_name, employeeDetails.last_name, employeeDetails.arabic_name, employeeDetails.sex, employeeDetails.date_of_birth, employeeDetails.date_of_joining, employeeDetails.date_of_leaving, employeeDetails.address, employeeDetails.primary_contact_no, employeeDetails.secondary_contact_no, employeeDetails.email, employeeDetails.emergancy_contact_person, employeeDetails.emergancy_contact_no, employeeDetails.blood_group, employeeDetails.employee_status, employeeDetails.effective_start_date, employeeDetails.effective_end_date, employeeDetails.updated_by, employeeDetails.hims_d_employee_id], function (error, result) {
         (0, _utils.releaseDBConnection)(db, connection);
         if (error) {
           next(error);

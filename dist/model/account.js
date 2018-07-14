@@ -10,10 +10,6 @@ var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var authModel = {
-  username: "",
-  password: ""
-};
 var getUserNamePassWord = function getUserNamePassWord(base64String) {
   try {
     var temp = base64String.split(" ");
@@ -27,8 +23,14 @@ var getUserNamePassWord = function getUserNamePassWord(base64String) {
     console.error(e);
   }
 };
+
+//api authentication
 var apiAuth = function apiAuth(req, res, next) {
   var c = void 0;
+  var authModel = {
+    username: "",
+    password: ""
+  };
   try {
     var db = void 0;
     if (req.db == null) {
@@ -75,7 +77,12 @@ var apiAuth = function apiAuth(req, res, next) {
   }
 };
 
+//api user authentication
 var authUser = function authUser(req, res, next) {
+  var authModel = {
+    username: "",
+    password: ""
+  };
   try {
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());

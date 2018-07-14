@@ -26,7 +26,13 @@ var _mkdirp2 = _interopRequireDefault(_mkdirp);
 
 var _logging = require("./logging");
 
-var _nodeLinq = require("node-linq");
+var _fs = require("fs");
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _underscore = require("underscore");
+
+var _underscore2 = _interopRequireDefault(_underscore);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37,6 +43,8 @@ var paging = function paging(options) {
     pageSize: options.paging.pageSize
   };
 };
+//import { LINQ } from "node-linq";
+
 var whereCondition = function whereCondition(options) {
   var condition = "";
   var values = [];
@@ -168,6 +176,7 @@ var checkIsNull = function checkIsNull(input, defaultType) {
 
 var runningNumber = function runningNumber(db, numgenId, paramName, callBack, isreleaseConnection) {
   isreleaseConnection = isreleaseConnection || false;
+
   db.query("SELECT  `prefix`, `intermediate_series`, `postfix`\
   , `length`, `increment_by`, `numgen_seperator`, `postfix_start`\
   ,`postfix_end`, `current_num`, `pervious_num` FROM `hims_f_app_numgen`\
@@ -298,6 +307,36 @@ var downloadFile = function downloadFile(req, res, callBack) {
   });
 };
 
+var bulkInputArrayObject = function bulkInputArrayObject(arrayObj, outArray, objectToChang) {
+  objectToChang = objectToChang || {};
+  _underscore2.default.each(arrayObj, function (item, index) {
+    outArray.push(Object.keys(item).map(function (key) {
+      if (objectToChang[key] != null) {
+        return objectToChang[key];
+      }
+      return item[key];
+    }));
+  });
+};
+var bulkMasters = function bulkMasters(fileName, bulkObject) {
+  try {
+    var masterDir = _path2.default.join(__dirname, "../../Masters/");
+    if (!_fs2.default.existsSync(masterDir)) {
+      _fs2.default.mkdirSync(masterDir);
+    }
+    var fPath = masterDir + fileName + ".json";
+    if (!_fs2.default.exists(fPath)) {
+      var writeStream = _fs2.default.createWriteStream(fPath);
+      writeStream.write(JSON.stringify(bulkObject));
+      writeStream.end();
+      return bulkObject;
+    }
+    return JSON.parse(_fs2.default.readFileSync(fPath));
+  } catch (e) {
+    _logging.logger.log("error", "Bulk master save : %j", e);
+  }
+};
+
 module.exports = {
   selectStatement: selectStatement,
   paging: paging,
@@ -308,6 +347,8 @@ module.exports = {
   deleteRecord: deleteRecord,
   releaseDBConnection: releaseDBConnection,
   uploadFile: uploadFile,
-  downloadFile: downloadFile
+  downloadFile: downloadFile,
+  bulkInputArrayObject: bulkInputArrayObject,
+  bulkMasters: bulkMasters
 };
 //# sourceMappingURL=index.js.map

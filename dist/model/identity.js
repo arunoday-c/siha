@@ -10,19 +10,22 @@ var _httpStatus = require("../utils/httpStatus");
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
+var _logging = require("../utils/logging");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var identityDoc = {
-  hims_d_identity_document_id: null,
-  identity_document_code: null,
-  identity_document_name: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  identity_status: "A"
-};
 var addIdentity = function addIdentity(req, res, next) {
+  var identityDoc = {
+    hims_d_identity_document_id: null,
+    identity_document_code: null,
+    identity_document_name: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    identity_status: "A"
+  };
+
   try {
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
@@ -34,25 +37,41 @@ var addIdentity = function addIdentity(req, res, next) {
       if (error) {
         next(error);
       }
-      connection.query("INSERT INTO `hims_d_identity_document` \
-            (`identity_document_code`, `identity_document_name`, `created_by`\
-            , `created_date`,`identity_status`)\
-            VALUE (?, ?, ?, ?)", [insertDoc.identity_document_code, insertDoc.identity_document_name, insertDoc.created_by, new Date(), insertDoc.identity_status], function (error, result) {
+
+      (0, _utils.runningNumber)(req.db, 6, "IDEN_DOC", function (error, records, newNumber) {
+        (0, _logging.debugLog)("newNumber:" + newNumber);
         if (error) {
-          (0, _utils.releaseDBConnection)(db, connection);
-          next(error);
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
         }
-        insertDoc.hims_d_identity_document_id = result.insertId;
-        connection.query("SELECT `hims_d_identity_document_id`, `identity_document_code`,\
-         `identity_document_name`,`identity_status` \
-         FROM `hims_d_identity_document` WHERE `record_status`='A' AND \
-         `hims_d_identity_document_id`=? ", [insertDoc.hims_d_identity_document_id], function (error, resultData) {
-          (0, _utils.releaseDBConnection)(db, connection);
+        if (records.length != 0) {
+          req.query.identity_document_code = newNumber;
+          req.body.identity_document_code = newNumber;
+          insertDoc.identity_document_code = newNumber;
+        }
+
+        connection.query("INSERT INTO `hims_d_identity_document` \
+            (`identity_document_code`, `identity_document_name`, `arabic_identity_document_name`, `created_by`\
+            , `created_date`,`identity_status`)\
+            VALUE (?, ?, ?, ?,?,?)", [insertDoc.identity_document_code, insertDoc.identity_document_name, insertDoc.arabic_identity_document_name, insertDoc.created_by, new Date(), insertDoc.identity_status], function (error, result) {
           if (error) {
+            (0, _utils.releaseDBConnection)(db, connection);
             next(error);
           }
-          req.records = resultData;
-          next();
+          insertDoc.hims_d_identity_document_id = result.insertId;
+          connection.query("SELECT `hims_d_identity_document_id`, `identity_document_code`,\
+         `identity_document_name`, `arabic_identity_document_name`,`identity_status` \
+         FROM `hims_d_identity_document` WHERE `record_status`='A' AND \
+         `hims_d_identity_document_id`=? ", [insertDoc.hims_d_identity_document_id], function (error, resultData) {
+            (0, _utils.releaseDBConnection)(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = resultData;
+            next();
+          });
         });
       });
     });
@@ -61,6 +80,17 @@ var addIdentity = function addIdentity(req, res, next) {
   }
 };
 var updateIdentity = function updateIdentity(req, res, next) {
+  var identityDoc = {
+    hims_d_identity_document_id: null,
+    identity_document_code: null,
+    identity_document_name: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    identity_status: "A"
+  };
+
   try {
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
@@ -89,12 +119,13 @@ var updateIdentity = function updateIdentity(req, res, next) {
   }
 };
 
-var selectWhereCondition = {
-  hims_d_identity_document_id: "ALL",
-  identity_document_code: "ALL",
-  identity_document_name: "ALL"
-};
 var selectIdentity = function selectIdentity(req, res, next) {
+  var selectWhereCondition = {
+    hims_d_identity_document_id: "ALL",
+    identity_document_code: "ALL",
+    identity_document_name: "ALL"
+  };
+
   try {
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
@@ -102,7 +133,7 @@ var selectIdentity = function selectIdentity(req, res, next) {
     var condition = (0, _utils.whereCondition)((0, _extend2.default)(selectWhereCondition, req.query));
     (0, _utils.selectStatement)({
       db: req.db,
-      query: "SELECT `hims_d_identity_document_id`, `identity_document_code`, `identity_document_name`,`identity_status`\
+      query: "SELECT `hims_d_identity_document_id`, `identity_document_code`, `identity_document_name`, `arabic_identity_document_name`, `identity_status`\
           ,`created_by`, `created_date`, `updated_by`, `updated_date`,`identity_status` FROM `hims_d_identity_document` WHERE record_status ='A' AND " + condition.condition,
       values: condition.values
     }, function (result) {

@@ -21,6 +21,7 @@ exports.default = function (_ref) {
       db = _ref.db;
 
   var api = (0, _express.Router)();
+
   api.post("/add", _employee.addEmployee, function (req, res, next) {
     var resultBack = req.records;
     if (resultBack.length == 0) {

@@ -60,11 +60,36 @@ var _languageTranslator = require("../controller/languageTranslator");
 
 var _languageTranslator2 = _interopRequireDefault(_languageTranslator);
 
+var _visit = require("../controller/visit");
+
+var _visit2 = _interopRequireDefault(_visit);
+
+var _serviceType = require("../controller/serviceType");
+
+var _serviceType2 = _interopRequireDefault(_serviceType);
+
+var _billing = require("../controller/billing");
+
+var _billing2 = _interopRequireDefault(_billing);
+
+var _patientType = require("../controller/patientType");
+
+var _patientType2 = _interopRequireDefault(_patientType);
+
+var _insurence = require("../controller/insurence");
+
+var _insurence2 = _interopRequireDefault(_insurence);
+
+var _opBilling = require("../controller/opBilling");
+
+var _opBilling2 = _interopRequireDefault(_opBilling);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = (0, _express2.default)();
 
 //connect to DB
+//function(db)
 (0, _db2.default)(function (db) {
   //internal middleware
   router.use((0, _middleware2.default)({ config: _keys2.default, db: db }));
@@ -79,6 +104,12 @@ var router = (0, _express2.default)();
   router.use("/masters/get", (0, _masters2.default)());
   router.use("/masters/set", (0, _updateMasters2.default)());
   router.use("/translator", (0, _languageTranslator2.default)());
+  router.use("/visit", (0, _visit2.default)({ config: _keys2.default, db: db }));
+  router.use("/serviceType", (0, _serviceType2.default)({ config: _keys2.default, db: db }));
+  router.use("/billing", (0, _billing2.default)({ config: _keys2.default, db: db }));
+  router.use("/patientType", (0, _patientType2.default)({ config: _keys2.default, db: db }));
+  router.use("/insurence", (0, _insurence2.default)({ config: _keys2.default, db: db }));
+  router.use("/opBilling", (0, _opBilling2.default)({ config: _keys2.default, db: db }));
 });
 
 exports.default = router;

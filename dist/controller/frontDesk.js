@@ -6,6 +6,10 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = require("express");
 
+var _extend = require("extend");
+
+var _extend2 = _interopRequireDefault(_extend);
+
 var _utils = require("../utils");
 
 var _frontDesk = require("../model/frontDesk");
@@ -24,10 +28,19 @@ exports.default = function (_ref) {
   api.post("/add", _frontDesk.addFrontDesk, function (req, res, next) {
     res.status(_httpStatus2.default.ok).json({
       success: true,
-      records: req.records
+      records: req.body
     });
     next();
   }, _utils.releaseConnection);
+
+  api.post("/update", _frontDesk.updateFrontDesk, function (req, res, next) {
+    res.status(_httpStatus2.default.ok).json({
+      success: true,
+      records: req.body
+    });
+    next();
+  }, _utils.releaseConnection);
+
   api.get("/get", _frontDesk.selectFrontDesk, function (req, res, next) {
     if (req.records == null) {
       next(_httpStatus2.default.generateError(_httpStatus2.default.notFound, "No records found"));
@@ -39,6 +52,7 @@ exports.default = function (_ref) {
       next();
     }
   }, _utils.releaseConnection);
+
   return api;
 };
 //# sourceMappingURL=frontDesk.js.map

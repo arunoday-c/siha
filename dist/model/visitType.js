@@ -12,13 +12,12 @@ var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var whereStatement = {
-  hims_d_visit_type_id: "ALL",
-  visit_type_code: "ALL",
-  visit_type_desc: "ALL"
-};
-
 var selectStatement = function selectStatement(req, res, next) {
+  var whereStatement = {
+    hims_d_visit_type_id: "ALL",
+    visit_type_code: "ALL",
+    visit_type_desc: "ALL"
+  };
   try {
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
@@ -29,7 +28,7 @@ var selectStatement = function selectStatement(req, res, next) {
         next(error);
       }
       var where = (0, _utils.whereCondition)((0, _extend2.default)(whereStatement, req.query));
-      connection.query("SELECT `hims_d_visit_type_id`, `visit_type_code`, `visit_type_desc`,`visit_status`\
+      connection.query("SELECT `hims_d_visit_type_id`, `visit_type_code`, `visit_type_desc`,`visit_status`,`arabic_visit_type_desc`\
        , `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_visit_type`  WHERE record_status='A' AND " + where.condition, where.values, function (error, result) {
         (0, _utils.releaseDBConnection)(db, connection);
         if (error) {
@@ -43,20 +42,21 @@ var selectStatement = function selectStatement(req, res, next) {
     next(e);
   }
 };
-var visitType = {
-  hims_d_visit_type_id: null,
-  visit_type_code: null,
-  visit_type_desc: null,
-  hims_d_visit_type: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
-  visit_status: "A"
-};
 
 var addVisit = function addVisit(req, res, next) {
+  var visitType = {
+    hims_d_visit_type_id: null,
+    visit_type_code: null,
+    visit_type_desc: null,
+    hims_d_visit_type: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    visit_status: "A"
+  };
+
   if (req.db == null) {
     next(_httpStatus2.default.dataBaseNotInitilizedError());
   }
@@ -80,6 +80,18 @@ var addVisit = function addVisit(req, res, next) {
 };
 
 var updateVisit = function updateVisit(req, res, next) {
+  var visitType = {
+    hims_d_visit_type_id: null,
+    visit_type_code: null,
+    visit_type_desc: null,
+    hims_d_visit_type: null,
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null,
+    visit_status: "A"
+  };
   if (req.db == null) {
     next(_httpStatus2.default.dataBaseNotInitilizedError());
   }

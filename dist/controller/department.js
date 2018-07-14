@@ -6,10 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = require("express");
 
-var _extend = require("extend");
-
-var _extend2 = _interopRequireDefault(_extend);
-
 var _department = require("../model/department");
 
 var _utils = require("../utils");
@@ -17,6 +13,8 @@ var _utils = require("../utils");
 var _httpStatus = require("../utils/httpStatus");
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
+
+var _nodeLinq = require("node-linq");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -85,6 +83,46 @@ exports.default = function (_ref) {
   api.delete("/delete", _department.deleteDepartment, function (req, res, next) {
     var result = req.records;
     res.status(_httpStatus2.default.ok).json(result);
+    next();
+  }, _utils.releaseConnection);
+
+  api.get("/get/get_All_Doctors_DepartmentWise", _department.selectdoctors, function (req, res, next) {
+    var result = req.records;
+    var departmets = result.departments;
+    var doctors = result.doctors;
+    var dept_Obj = new Array();
+    var doc_Obj = new Array();
+    var d_keys = Object.keys(departmets);
+    d_keys.forEach(function (item, index) {
+      var firstItem = new _nodeLinq.LINQ(departmets[item]).FirstOrDefault();
+      var subDept = new Object();
+      subDept["department_id"] = firstItem.department_id;
+      subDept["sub_department_id"] = firstItem.sub_department_id;
+      subDept["sub_department_name"] = firstItem.sub_department_name;
+      subDept["arabic_sub_department_name"] = firstItem.arabic_sub_department_name;
+      subDept["doctors"] = departmets[item];
+      dept_Obj.push(subDept);
+    });
+
+    var doc_keys = Object.keys(doctors);
+    doc_keys.forEach(function (item, index) {
+      var firstItem = new _nodeLinq.LINQ(doctors[item]).FirstOrDefault();
+      var doc = new Object();
+      doc["employee_id"] = firstItem.employee_id;
+      doc["full_name"] = firstItem.full_name;
+      doc["arabic_name"] = firstItem.arabic_name;
+      doc["services_id"] = firstItem.services_id;
+      doc["departments"] = doctors[item];
+      doc_Obj.push(doc);
+    });
+
+    res.status(_httpStatus2.default.ok).json({
+      success: true,
+      records: {
+        departmets: dept_Obj,
+        doctors: doc_Obj
+      }
+    });
     next();
   }, _utils.releaseConnection);
 
