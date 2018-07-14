@@ -35,6 +35,9 @@ div[numberbox="true"] {
       visibility: hidden;
     }
   }
+  .react-date-picker__button__input {
+    min-width: 75%; //calc(4px + (4px * 3) + 10em + 5em);
+  }
   .react-calendar {
     width: 250px;
   }

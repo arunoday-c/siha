@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Label from "../Wrapper/label";
 import TextField from "@material-ui/core/TextField";
 import DayPickerInput from "react-date-picker";
-import "react-day-picker/lib/style.css";
+// import "react-day-picker/lib/style.css";
 import "../Wrapper/wrapper.css";
 import { getCookie } from "../../utils/algaehApiCall.js";
 
