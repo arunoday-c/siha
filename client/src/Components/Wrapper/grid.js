@@ -45,7 +45,6 @@ class DataGrid extends PureComponent {
         resolve(true);
       }
     }).then(result => {
-      debugger;
       if (result === true) {
         algaehApiCall({
           uri: $this.props.dataSource.uri,

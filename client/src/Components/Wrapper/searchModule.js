@@ -31,11 +31,10 @@ class SearchModule extends Component {
         document.getElementById("closeSearch").click();
       }
     });
-    debugger;
+
     this.getUserSelectedValue(
       { searchName: this.props.searchName },
       response => {
-        debugger;
         let _searchBy = this.props.searchGrid.columns[0]["fieldName"];
         if (response.data.success === true) {
           if (response.data.records !== undefined) {
@@ -70,7 +69,6 @@ class SearchModule extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.getUserSelectedValue(nextProps, response => {
-      debugger;
       let _searchBy = nextProps.searchGrid.columns[0]["fieldName"];
       if (response.data.success === true) {
         if (response.data.records !== undefined) {
@@ -96,7 +94,6 @@ class SearchModule extends Component {
       },
       method: "POST",
       onSuccess: response => {
-        debugger;
         if (typeof callBack === "function") callBack(response);
       }
     });
@@ -151,7 +148,6 @@ class SearchModule extends Component {
               totalPages: "records.totalPages"
             },
             validateBeforeServiceCall: $this => {
-              debugger;
               if (
                 $this.props.dataSource.inputParam.searchName === undefined ||
                 $this.props.dataSource.inputParam.searchName === ""
