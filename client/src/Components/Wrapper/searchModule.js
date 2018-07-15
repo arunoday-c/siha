@@ -10,21 +10,18 @@ class SearchModule extends Component {
       open: false,
       title: "Algaeh Search",
       searchBy: "",
-      page: 0,
       searchName: "",
-      contentDivVisibility: false,
       contains: ""
     };
   }
 
   handleOpen = () => {
-    this.setState({ open: true, contentDivVisibility: false });
+    this.setState({ open: true });
   };
 
   handleClose = () => {
     this.setState({
-      open: false,
-      contentDivVisibility: false
+      open: false
     });
   };
 
@@ -34,24 +31,88 @@ class SearchModule extends Component {
         document.getElementById("closeSearch").click();
       }
     });
-    this.setState({
-      open: this.props.model.open,
-      searchName: this.props.searchName,
-      searchBy: this.props.searchGrid.columns[0]["fieldName"]
+    debugger;
+    this.getUserSelectedValue(
+      { searchName: this.props.searchName },
+      response => {
+        debugger;
+        let _searchBy = this.props.searchGrid.columns[0]["fieldName"];
+        if (response.data.success === true) {
+          if (response.data.records !== undefined) {
+            _searchBy = response.data.records.selectedValue;
+          }
+        }
+        this.setState({
+          open: this.props.model.open,
+          searchName: this.props.searchName,
+          searchBy: _searchBy
+        });
+      }
+    );
+  }
+  /*
+    to get the previously stored value into UserPreferences
+*/
+  getUserSelectedValue(nextProps, callBack) {
+    algaehApiCall({
+      uri: "/userPreferences/get",
+      data: {
+        screenName: "frontDesk",
+        identifier: nextProps.searchName,
+        userId: 1
+      },
+      method: "GET",
+      onSuccess: response => {
+        if (typeof callBack === "function") callBack(response);
+      }
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      open: nextProps.model.open,
-      searchName: nextProps.searchName,
-      searchBy: nextProps.searchGrid.columns[0]["fieldName"]
+    this.getUserSelectedValue(nextProps, response => {
+      debugger;
+      let _searchBy = nextProps.searchGrid.columns[0]["fieldName"];
+      if (response.data.success === true) {
+        if (response.data.records !== undefined) {
+          _searchBy = response.data.records.selectedValue;
+        }
+      }
+      this.setState({
+        open: nextProps.model.open,
+        searchName: nextProps.searchName,
+        searchBy: _searchBy
+      });
+    });
+  }
+
+  setUserSelectedValue(identifier, value, callBack) {
+    algaehApiCall({
+      uri: "/userPreferences/save",
+      data: {
+        screenName: "frontDesk",
+        identifier: identifier,
+        userId: 1,
+        value: value
+      },
+      method: "POST",
+      onSuccess: response => {
+        debugger;
+        if (typeof callBack === "function") callBack(response);
+      }
     });
   }
 
   handleOnchnageSearchBy(e) {
-    this.setState({ searchBy: e.target.value, contains: "" });
+    let $this = this;
+    let _value = e.target.value;
+    this.setUserSelectedValue(this.props.searchName, _value, response => {
+      this.setState({ searchBy: _value });
+    });
   }
+  /*
+       function handle onchange when user start typing a interval starts and
+       ends when it continue in typing if not service call in 500 ms
+   */
   handleSpotLightContains(e) {
     let contains = e.target.value;
     let $this = this;
@@ -59,51 +120,59 @@ class SearchModule extends Component {
     intervalId = setInterval(() => {
       if (typeof $this.props.onContainsChange === "function") {
         $this.props.onContainsChange(contains, $this.state.searchBy, vlaue => {
-          $this.setState({ contains: vlaue, contentDivVisibility: true });
+          $this.setState({ contains: vlaue });
         });
       } else {
-        $this.setState({ contains: contains, contentDivVisibility: true });
+        $this.setState({ contains: contains });
       }
       clearInterval(intervalId);
     }, 500);
   }
 
+  /*
+    soptlight content loaded area where grid is going to load with data
+ */
   loadContentDivision = () => {
-    if (this.state.contentDivVisibility) {
-      return (
-        <div id="spotlightResultArea" className="animated  fadeIn">
-          <AlgaehDataGrid
-            columns={this.props.searchGrid.columns}
-            dataSource={{
-              uri: this.props.uri,
-              inputParam: {
-                inputs: this.props.inputs,
-                fieldName: this.state.searchBy,
-                fieldContains: this.state.contains,
-                searchName: this.state.searchName
-              },
-              method: "GET",
-              responseSchema: {
-                data: "records.data",
-                totalPages: "records.totalPages"
-              }
-            }}
-            paging={{
-              page: 0,
-              rowsPerPage:
-                this.props.rowsPerPage !== undefined
-                  ? this.props.rowsPerPage
-                  : 5
-            }}
-            algaehSearch={true}
-            onRowSelect={row => {
-              this.props.onRowSelect(row);
-              this.setState({ open: false });
-            }}
-          />
-        </div>
-      );
-    }
+    return (
+      <div id="spotlightResultArea" className="animated  fadeIn">
+        <AlgaehDataGrid
+          columns={this.props.searchGrid.columns}
+          dataSource={{
+            uri: this.props.uri,
+            inputParam: {
+              inputs: this.props.inputs,
+              fieldName: this.state.searchBy,
+              fieldContains: this.state.contains,
+              searchName: this.state.searchName
+            },
+            method: "GET",
+            responseSchema: {
+              data: "records.data",
+              totalPages: "records.totalPages"
+            },
+            validateBeforeServiceCall: $this => {
+              debugger;
+              if (
+                $this.props.dataSource.inputParam.searchName === undefined ||
+                $this.props.dataSource.inputParam.searchName === ""
+              ) {
+                return false;
+              } else return true;
+            }
+          }}
+          paging={{
+            page: 0,
+            rowsPerPage:
+              this.props.rowsPerPage !== undefined ? this.props.rowsPerPage : 5
+          }}
+          algaehSearch={true}
+          onRowSelect={row => {
+            this.props.onRowSelect(row);
+            this.setState({ open: false });
+          }}
+        />
+      </div>
+    );
   };
 
   render() {

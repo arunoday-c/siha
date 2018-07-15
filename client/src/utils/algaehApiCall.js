@@ -59,9 +59,10 @@ export function algaehApiCall(options) {
     let str = [];
     for (let p in settings.data) {
       if (settings.data.hasOwnProperty(p)) {
-        str.push(
-          encodeURIComponent(p) + "=" + encodeURIComponent(settings.data[p])
-        );
+        if (settings.data[p] !== undefined)
+          str.push(
+            encodeURIComponent(p) + "=" + encodeURIComponent(settings.data[p])
+          );
       }
     }
     settings.data = {};

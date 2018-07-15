@@ -61,6 +61,7 @@ app.use((req, res, next) => {
   //     "*******"
   //   );
   // }
+
   let reqH = req.headers;
   let reqUser = "";
   if (req.url != "/api/v1/apiAuth") reqUser = jwtDecode(reqH["x-api-key"]).id;

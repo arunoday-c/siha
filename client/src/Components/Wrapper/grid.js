@@ -11,6 +11,7 @@ import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
 import "./wrapper.css";
 import { algaehApiCall } from "../../utils/algaehApiCall";
+import { resolve } from "path";
 class DataGrid extends PureComponent {
   constructor(props) {
     super(props);
@@ -36,28 +37,41 @@ class DataGrid extends PureComponent {
       ...inputProps,
       ...{ pageSize: $this.state.rowsPerPage, pageNo: page }
     };
-    algaehApiCall({
-      uri: $this.props.dataSource.uri,
-      data: input,
-      method: $this.props.dataSource.method
-        ? $this.props.dataSource.method
-        : "GET",
-      printInput: true,
-      onSuccess: response => {
-        if (response.data.success === true) {
-          let dataS = eval(
-            "response.data." + $this.props.dataSource.responseSchema.data
-          );
-          let total_pages = eval(
-            "response.data." + $this.props.dataSource.responseSchema.totalPages
-          );
-          callBack(dataS, total_pages);
-        } else {
-          console.error(response);
-        }
-      },
-      onFailure: data => {
-        console.error(data);
+
+    new Promise((resolve, reject) => {
+      if ($this.props.dataSource.validateBeforeServiceCall !== undefined) {
+        resolve($this.props.dataSource.validateBeforeServiceCall($this));
+      } else {
+        resolve(true);
+      }
+    }).then(result => {
+      debugger;
+      if (result === true) {
+        algaehApiCall({
+          uri: $this.props.dataSource.uri,
+          data: input,
+          method: $this.props.dataSource.method
+            ? $this.props.dataSource.method
+            : "GET",
+          printInput: true,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              let dataS = eval(
+                "response.data." + $this.props.dataSource.responseSchema.data
+              );
+              let total_pages = eval(
+                "response.data." +
+                  $this.props.dataSource.responseSchema.totalPages
+              );
+              callBack(dataS, total_pages);
+            } else {
+              console.error(response);
+            }
+          },
+          onFailure: data => {
+            console.error(data);
+          }
+        });
       }
     });
   };
