@@ -12,7 +12,6 @@ const texthandle = ($this, context, e) => {
 };
 
 const PatientSearch = ($this, context, e) => {
-  debugger;
   AlgaehSearch({
     searchGrid: {
       columns: FrontDesk

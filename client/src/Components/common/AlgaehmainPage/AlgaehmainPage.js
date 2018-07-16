@@ -258,7 +258,7 @@ class PersistentDrawer extends React.Component {
     var MenuListItems = LangSideMenu.map((data, idx) => {
       return (
         <div key={"side_menu_index" + idx}>
-          <div className="container-fluid" position>
+          <div className="container-fluid">
             <div className="row clearfix">
               <div className="col-xs-3 col-sm-3 col-md-3 text-right">
                 <span className="fas fa-th-large side-menu-title" />

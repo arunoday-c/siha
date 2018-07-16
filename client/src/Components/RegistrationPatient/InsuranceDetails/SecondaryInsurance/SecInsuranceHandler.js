@@ -26,6 +26,7 @@ const insurancehandle = ($this, context, e) => {
     secondary_sub_id: e.selected.sub_insurance_provider_id,
     secondary_network_id: e.selected.network_id,
     secondary_policy_num: e.selected.policy_number,
+    secondary_card_number: e.selected.card_number,
     secondary_effective_start_date: e.selected.effective_start_date,
     secondary_effective_end_date: e.selected.effective_end_date
   });
@@ -36,6 +37,7 @@ const insurancehandle = ($this, context, e) => {
       secondary_sub_id: e.selected.sub_insurance_provider_id,
       secondary_network_id: e.selected.network_id,
       secondary_policy_num: e.selected.policy_number,
+      secondary_card_number: e.selected.card_number,
       secondary_effective_start_date: e.selected.effective_start_date,
       secondary_effective_end_date: e.selected.effective_end_date
     });

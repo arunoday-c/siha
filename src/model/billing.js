@@ -421,7 +421,9 @@ let billingCalculations = (req, res, next) => {
       sendingObject.discount_amount = new LINQ(inputParam).Sum(
         d => d.discount_amout
       );
-      sendingObject.gross_total = new LINQ(inputParam).Sum(d => d.net_amout);
+      sendingObject.gross_total = new LINQ(inputParam).Sum(
+        d => d.patient_payable
+      );
 
       // Primary Insurance
       sendingObject.copay_amount = new LINQ(inputParam).Sum(
@@ -460,18 +462,18 @@ let billingCalculations = (req, res, next) => {
       sendingObject.patient_payable = new LINQ(inputParam).Sum(
         d => d.patient_payable
       );
-      sendingObject.company_payable = new LINQ(inputParam).Sum(
-        d => d.company_payable
+      sendingObject.company_payble = new LINQ(inputParam).Sum(
+        d => d.company_payble
       );
-      sendingObject.sec_company_payable = new LINQ(inputParam).Sum(
-        d => d.sec_company_payable
+      sendingObject.sec_company_paybale = new LINQ(inputParam).Sum(
+        d => d.sec_company_paybale
       );
       // Sheet Level Discount Nullify
       sendingObject.sheet_discount_amount = 0;
       sendingObject.sheet_discount_percentage = 0;
       sendingObject.advance_adjust = 0;
 
-      sendingObject.net_amount = sendingObject.gross_total;
+      sendingObject.net_amount = sendingObject.patient_payable;
       sendingObject.receiveable_amount = sendingObject.net_amount;
 
       //Reciept
@@ -676,6 +678,20 @@ let getBillDetails = (req, res, next) => {
             next(error);
           }
           let records = result[0];
+          //Calculation Declarations
+          let unit_cost = 0,
+            gross_amount = 0,
+            net_amout = 0;
+
+          let patient_resp = 0,
+            patient_payable = 0;
+
+          let copay_percentage = 0,
+            copay_amount = 0;
+
+          let comapany_resp = 0,
+            company_payble = 0;
+
           let quantity =
             servicesDetails.quantity === undefined
               ? 1
@@ -691,103 +707,88 @@ let getBillDetails = (req, res, next) => {
               ? 0
               : servicesDetails.discount_percentage;
 
-          let gross_amount = quantity * records.standard_fee;
+          let insured =
+            servicesDetails.insured === undefined
+              ? "N"
+              : servicesDetails.insured;
 
-          if (discount_amout > 0) {
-            discount_percentage = (discount_amout / gross_amount) * 100;
-          } else if (discount_percentage > 0) {
-            discount_amout = (gross_amount * discount_percentage) / 100;
+          //Calculation Starts
+          if (insured === "Y") {
+            debugLog("Insured:", quantity);
+            // if (records.price_from === "S") {
+            //   if (records.company_service_price_type === "G") {
+            //     unit_cost = records.company_gross_amt;
+            //   } else if (records.company_service_price_type === "N") {
+            //     unit_cost = records.company_net_amount;
+            //   }
+            // }
+
+            // if (records.price_from === "P") {
+            //   if (records.company_service_price_type === "G") {
+            //     unit_cost = records.network_gross_amt;
+            //   } else if (records.company_service_price_type === "N") {
+            //     unit_cost = records.network_net_amount;
+            //   }
+            // }
+            unit_cost = 500;
+            gross_amount = quantity * unit_cost;
+
+            debugLog("Gross:", gross_amount);
+
+            if (discount_amout > 0) {
+              discount_percentage = (discount_amout / gross_amount) * 100;
+            } else if (discount_percentage > 0) {
+              discount_amout = (gross_amount * discount_percentage) / 100;
+            }
+            net_amout = gross_amount - discount_amout;
+
+            //Patient And Company
+            if (servicesDetails.copay_status === "Y") {
+              // copay_amount = records.copay_amt;
+              copay_amount = 100;
+              copay_percentage = (copay_amount / net_amout) * 100;
+            } else {
+              // copay_percentage = copay_percentage;
+              copay_percentage = 10;
+              copay_amount = (net_amout * copay_percentage) / 100;
+              debugLog("Copay Amount:", copay_amount);
+            }
+
+            patient_resp = copay_amount;
+            patient_payable = copay_amount;
+            comapany_resp = net_amout - patient_resp;
+            company_payble = net_amout - patient_payable;
+          } else {
+            unit_cost = records.standard_fee;
+            gross_amount = quantity * records.standard_fee;
+
+            if (discount_amout > 0) {
+              discount_percentage = (discount_amout / gross_amount) * 100;
+            } else if (discount_percentage > 0) {
+              discount_amout = (gross_amount * discount_percentage) / 100;
+            }
+            net_amout = gross_amount - discount_amout;
+            patient_resp = net_amout;
+            patient_payable = net_amout;
           }
 
-          let net_amout = gross_amount - discount_amout;
           extend(billingDetailsModel, {
             service_type_id: result[0].service_type_id,
             services_id: servicesDetails.hims_d_services_id,
             quantity: quantity,
-            unit_cost: records.standard_fee,
+            unit_cost: unit_cost,
             gross_amount: gross_amount,
             discount_amout: discount_amout,
             discount_percentage: discount_percentage,
             net_amout: net_amout,
-            patient_resp: net_amout,
-            patient_payable: net_amout
+            patient_resp: patient_resp,
+            patient_payable: patient_payable,
+            copay_percentage: copay_percentage,
+            copay_amount: copay_amount,
+
+            comapany_resp: comapany_resp,
+            company_payble: company_payble
           });
-
-          // let sub_total_amount = new LINQ([billingDetailsModel]).Sum(
-          //   s => s.gross_amount
-          // );
-          // let gross_total = new LINQ([billingDetailsModel]).Sum(
-          //   s => s.net_amout
-          // );
-          // // debugLog("Net amount" + billingDetailsModel.);
-          // extend(
-          //   billingHeaderModel,
-          //   {
-          //     sub_total_amount: sub_total_amount,
-          //     gross_total: gross_total,
-          //     patient_res: gross_total,
-          //     patient_payable: gross_total,
-          //     sheet_discount_amount: 0,
-          //     sheet_discount_percentage: 0,
-          //     net_amount: 0,
-          //     receiveable_amount: 0
-          //   },
-          //   req.body
-          // );
-
-          // if (billingHeaderModel.sheet_discount_amount > 0) {
-          //   billingHeaderModel.sheet_discount_percentage =
-          //     (billingHeaderModel.sheet_discount_amount / gross_total) * 100;
-          // } else if (billingHeaderModel.sheet_discount_percentage > 0) {
-          //   billingHeaderModel.sheet_discount_amount =
-          //     (gross_total * billingHeaderModel.sheet_discount_percentage) /
-          //     100;
-          // }
-
-          // billingHeaderModel.advance_amount = records.advance_amount;
-
-          // billingHeaderModel.net_amount =
-          //   billingHeaderModel.gross_total -
-          //   billingHeaderModel.sheet_discount_amount;
-
-          // billingHeaderModel.receiveable_amount =
-          //   billingHeaderModel.net_amount -
-          //   billingHeaderModel.credit_amount -
-          //   billingHeaderModel.advance_adjust;
-
-          // debugLog("Sheet Amount ", billingHeaderModel.sheet_discount_amount);
-
-          // req.body.sheet_discount_amount =
-          //   billingHeaderModel.sheet_discount_amount;
-
-          // req.body.sheet_discount_percentage =
-          //   billingHeaderModel.sheet_discount_percentage;
-
-          // req.body.isReceipt =
-          //   req.body.isReceipt == null ? false : req.body.isReceipt;
-
-          // if (req.body.isReceipt == false) {
-          //   extend(receiptHeaderModel, req.body, {
-          //     total_amount: 0,
-          //     unbalanced_amount: 0,
-          //     cash_amount: billingHeaderModel.receiveable_amount,
-          //     card_amount: 0,
-          //     cheque_amount: 0
-          //   });
-          // } else {
-          //   extend(receiptHeaderModel, req.body);
-          // }
-
-          // debugLog("Receipt Log", receiptHeaderModel);
-
-          // receiptHeaderModel.total_amount =
-          //   receiptHeaderModel.cash_amount +
-          //   receiptHeaderModel.card_amount +
-          //   receiptHeaderModel.cheque_amount;
-
-          // receiptHeaderModel.unbalanced_amount =
-          //   billingHeaderModel.receiveable_amount -
-          //   receiptHeaderModel.total_amount;
 
           debugLog("Results are recorded...", result);
           req.records = extend({

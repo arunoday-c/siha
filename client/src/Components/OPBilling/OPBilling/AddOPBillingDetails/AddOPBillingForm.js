@@ -78,7 +78,11 @@ class AddOPBillingForm extends Component {
 
   ProcessToBill(context, e) {
     let $this = this;
-    let serviceInput = { hims_d_services_id: this.state.s_service };
+    let serviceInput = {
+      hims_d_services_id: this.state.s_service,
+      insured: "Y",
+      copay_status: "Y"
+    };
 
     this.props.generateBill({
       uri: "/billing/getBillDetails",
@@ -147,7 +151,6 @@ class AddOPBillingForm extends Component {
   }
 
   updateBillDetail(e) {
-    debugger;
     this.props.billingCalculations({
       uri: "/billing/billingCalculations",
       method: "POST",
@@ -937,7 +940,7 @@ class AddOPBillingForm extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-4", id: "widthDate" }}
+                          div={{ className: "col-lg-4" }}
                           label={{
                             fieldName: "credit_amount"
                           }}
@@ -960,7 +963,7 @@ class AddOPBillingForm extends Component {
                       <div className="row secondary-box-container">
                         <div className="col-lg-8"> &nbsp;</div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-4", id: "widthDate" }}
+                          div={{ className: "col-lg-4" }}
                           label={{
                             fieldName: "receiveable_amount"
                           }}

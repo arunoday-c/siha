@@ -432,7 +432,7 @@ class AddPatientForm extends PureComponent {
 
                     <div className="row primary-box-container">
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3", id: "widthDate" }}
+                        div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "contact_number",
                           isImp: true

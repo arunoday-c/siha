@@ -53,7 +53,6 @@ class AddSecInsuranceForm extends Component {
   }
 
   selectedValueInsurance(value, context, e) {
-    debugger;
     this.setState({
       sec_insured: value,
       sec_insuranceYes: !this.state.sec_insuranceYes
@@ -84,7 +83,7 @@ class AddSecInsuranceForm extends Component {
                           {INSURANCE_DECISION.map((data, idx) => {
                             return (
                               <div
-                                className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3"
+                                className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4"
                                 key={"index_value" + idx}
                               >
                                 <input

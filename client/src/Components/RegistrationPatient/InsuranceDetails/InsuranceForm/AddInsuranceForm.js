@@ -19,7 +19,12 @@ import {
   Tooltip
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { insurancehandle, texthandle, datehandle } from "./InsuranceHandler";
+import {
+  insurancehandle,
+  texthandle,
+  datehandle,
+  InsuranceDetails
+} from "./InsuranceHandler";
 
 const FORMAT_DEFAULT = [
   { name: "CSV", name: "CSV", value: 0 },
@@ -59,7 +64,6 @@ class AddInsuranceForm extends Component {
   }
 
   selectedValueInsurance(value, context, e) {
-    debugger;
     this.setState({
       insured: value,
       insuranceYes: !this.state.insuranceYes
@@ -90,7 +94,7 @@ class AddInsuranceForm extends Component {
                           {INSURANCE_DECISION.map((data, idx) => {
                             return (
                               <div
-                                className="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3"
+                                className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4"
                                 key={"index_value" + idx}
                               >
                                 <input
@@ -124,7 +128,9 @@ class AddInsuranceForm extends Component {
                             color="primary"
                             title="Add New"
                           >
-                            <AddCircle />
+                            <AddCircle
+                              onClick={InsuranceDetails.bind(this, this)}
+                            />
                           </IconButton>
                         </Tooltip>
                       </div>
@@ -249,7 +255,7 @@ class AddInsuranceForm extends Component {
                       />
 
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-2" }}
+                        div={{ className: "col-lg-3" }}
                         label={{ fieldName: "expiry_date" }}
                         textBox={{
                           className: "txt-fld",
@@ -261,13 +267,6 @@ class AddInsuranceForm extends Component {
                         }}
                         value={this.state.primary_effective_end_date}
                       />
-                      <div className="col-lg-1">
-                        <Tooltip id="tooltip-icon" title="Process">
-                          <IconButton className="go-button" color="primary">
-                            <PlayCircleFilled />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
                     </div>
                   </div>
 

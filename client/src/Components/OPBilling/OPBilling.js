@@ -87,11 +87,47 @@ class PatientDisplayDetails extends Component {
     }, 500);
   }
 
-  getCtrlCode(data) {
-    this.setState({
-      bill_number: data
-    });
+  // getCtrlCode(data) {
+  //   this.setState({
+  //     bill_number: data
+  //   });
+  // }
+
+  getCtrlCode(billcode) {
+    let $this = this;
+    clearInterval(intervalId);
+    intervalId = setInterval(() => {
+      this.props.getPatientDetails({
+        uri: "/opBilling/get",
+        method: "GET",
+        printInput: true,
+        data: { bill_number: billcode },
+        redux: {
+          type: "BILLS_GET_DATA",
+          mappingName: "bills"
+        },
+        afterSuccess: data => {
+          // data.patientRegistration.visitDetails = data.visitDetails;
+          // data.patientRegistration.patient_id =
+          //   data.patientRegistration.hims_d_patient_id;
+          // data.patientRegistration.existingPatient = true;
+          $this.setState(data);
+
+          // $this.props.getPatientInsurance({
+          //   uri: "/insurance/getPatientInsurance",
+          //   method: "GET",
+          //   data: { patient_id: data.patientRegistration.hims_d_patient_id },
+          //   redux: {
+          //     type: "EXIT_INSURANCE_GET_DATA",
+          //     mappingName: "existinsurance"
+          //   }
+          // });
+        }
+      });
+      clearInterval(intervalId);
+    }, 500);
   }
+
   GenerateReciept(callback) {
     if (this.state.total_amount > 0) {
       let obj = [];
@@ -187,6 +223,7 @@ class PatientDisplayDetails extends Component {
           ctrlDate={this.state.bill_date}
           ControlCode={this.getCtrlCode.bind(this)}
           selectedLang={this.state.selectedLang}
+          searchName="bills"
         />
         <div className="spacing-push">
           <MyContext.Provider

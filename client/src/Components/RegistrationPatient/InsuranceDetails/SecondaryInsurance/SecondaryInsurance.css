@@ -27,7 +27,8 @@
 .htpl-phase1-seconary-insurance-form .radio-design {
   position: absolute;
   top: 5px;
-  left: 36px; }
+  left: 36px;
+  font-size: 12px; }
 
 .htpl-phase1-seconary-insurance-form .go-button {
   cursor: pointer;
