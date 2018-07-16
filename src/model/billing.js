@@ -806,7 +806,7 @@ let getBillDetails = (req, res, next) => {
               debugFunction("inside result of first office  ");
 
               // if s
-              if (result != null && resultOffic.price_from == "s") {
+              if (resultOffic != null && resultOffic.price_from == "s") {
                 let insuranceModel = {
                   insurance_id: null
                 };
@@ -835,12 +835,12 @@ let getBillDetails = (req, res, next) => {
               }
 
               // if p
-              if (result != null && resultOffic.price_from == "P") {
+              if (resultOffic != null && resultOffic.price_from == "P") {
                 let networkModel = {
                   network_id: null
                 };
 
-                extend(insuranceModel, req.body.network_id);
+                extend(networkModel, req.body.network_id);
                 connection.query(
                   "select net.network_type, copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,\
               net_amount,gross_amt from hims_d_services_insurance_network Sin \
@@ -1358,80 +1358,6 @@ created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
   } catch (e) {
     next(e);
   }
-};
-
-let dummy = (req, res, next) => {
-  let NetOffModel = {
-    insurance_network_office_id: null
-  };
-  extend(insuranceModel, req.body.insurance_network_office_id);
-
-  connection.query(
-    "select price_from ,copay_consultation,copay_percent_rad,copay_percent_trt,copay_percent_dental,copay_medicine from hims_d_insurance_network_office where hims_d_insurance_network_office_id=?",
-    [NetOffModel.insurance_network_office_id],
-    (error, resultOffic) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
-
-      debugFunction("inside result of first office  ");
-
-      // if s
-      if (result != null && resultOffic.price_from == "s") {
-        let insuranceModel = {
-          insurance_id: null
-        };
-        extend(insuranceModel, req.body.insurance_id);
-
-        connection.query(
-          "select Inp.insurance_provider_name,copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,\
-                net_amount,gross_amt from hims_d_services_insurance sI\
-                inner join hims_d_insurance_provider Inp on\
-                 Inp.hims_d_insurance_provider_id=sI.insurance_id where sI.insurance_id =? and sI.record_status='A' and Inp.record_status='A'",
-          [insuranceModel.insurance_id],
-          (error, result_s) => {
-            if (error) {
-              releaseDBConnection(db, connection);
-              next(error);
-            }
-            debugFunction("inside result of second query if s is there  ");
-            debugLog("S is :", result_s);
-            req.records = extend({
-              insurence_result: result_s[0]
-            });
-          }
-        );
-      }
-
-      // if p
-      if (result != null && resultOffic.price_from == "P") {
-        let networkModel = {
-          network_id: null
-        };
-
-        extend(insuranceModel, req.body.network_id);
-        connection.query(
-          "select net.network_type, copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,\
-                net_amount,gross_amt from hims_d_services_insurance_network Sin \
-                inner join hims_d_insurance_network net on net.hims_d_insurance_network_id=Sin.network_id\
-                 where  Sin.network_id=? AND  Sin.record_status='A' and net.record_status='A'",
-          [networkModel.network_id],
-          (error, result_p) => {
-            if (error) {
-              releaseDBConnection(db, connection);
-              next(error);
-            }
-            debugLog("p is :", result_p);
-            debugFunction("inside result of second query if  p is there  ");
-            req.records = extend({
-              policy_result: result_p[0]
-            });
-          }
-        );
-      }
-    }
-  );
 };
 
 module.exports = {
