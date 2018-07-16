@@ -792,7 +792,7 @@ let getBillDetails = (req, res, next) => {
           let NetOffModel = {
             insurance_network_office_id: null
           };
-          extend(insuranceModel, req.body.insurance_network_office_id);
+          extend(NetOffModel, req.body.insurance_network_office_id);
 
           connection.query(
             "select price_from ,copay_consultation,copay_percent_rad,copay_percent_trt,copay_percent_dental,copay_medicine from hims_d_insurance_network_office where hims_d_insurance_network_office_id=?",
