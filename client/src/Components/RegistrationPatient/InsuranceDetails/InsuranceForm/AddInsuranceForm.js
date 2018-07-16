@@ -123,14 +123,8 @@ class AddInsuranceForm extends Component {
                       </div>
                       <div className="col-lg-1">
                         <Tooltip id="tooltip-icon" title="Add New">
-                          <IconButton
-                            className="go-button"
-                            color="primary"
-                            title="Add New"
-                          >
-                            <AddCircle
-                              onClick={InsuranceDetails.bind(this, this)}
-                            />
+                          <IconButton className="go-button" color="primary">
+                            <AddCircle />
                           </IconButton>
                         </Tooltip>
                       </div>

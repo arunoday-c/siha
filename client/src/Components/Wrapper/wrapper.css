@@ -14,13 +14,22 @@ div[numberbox="true"] input[type="text"] {
   background-color: #fbfbfb;
   min-width: 100%; }
 
-.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
-  background-color: #00bcb0 !important; }
-
-.DayPicker-TodayButton {
-  color: #00bcb0 !important;
-  padding-left: 70px;
-  font-weight: bold; }
+/*
+   React date picker customizing style
+*/
+.algaeh-datePicker {
+  border-bottom: 1px solid #6c757d;
+  background-color: #fbfbfb; }
+  .algaeh-datePicker .react-date-picker__button {
+    background-color: #fbfbfb;
+    border: none;
+    line-height: 1.9em; }
+    .algaeh-datePicker .react-date-picker__button .react-date-picker__clear-button {
+      visibility: hidden; }
+  .algaeh-datePicker .react-date-picker__button__input {
+    min-width: 75%; }
+  .algaeh-datePicker .react-calendar {
+    width: 250px; }
 
 .table {
   width: 100%;
