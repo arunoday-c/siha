@@ -33,7 +33,7 @@ export default {
       company_res: 0,
       sec_company_res: 0,
       patient_payable: 0,
-      company_payable: 0,
+      company_payble: 0,
       sec_company_payable: 0,
       patient_tax: 0,
       company_tax: 0,

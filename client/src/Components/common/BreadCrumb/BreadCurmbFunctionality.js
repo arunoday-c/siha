@@ -1,12 +1,15 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
+import Bills from "../../../Search/Bills.json";
 
 const SearchDetails = ($this, context, e) => {
-  debugger;
   let columnNames = [];
   if ($this.props.searchName === "patients") {
     columnNames = FrontDesk;
+  } else if ($this.props.searchName === "bills") {
+    columnNames = Bills;
   }
+
   AlgaehSearch({
     searchGrid: {
       columns: columnNames
@@ -20,12 +23,10 @@ const SearchDetails = ($this, context, e) => {
       if ($this.props.searchName === "patients") {
         $this.setState({ ctrlCode: row.patient_code });
         $this.props.ControlCode(row.patient_code);
+      } else if ($this.props.searchName === "bills") {
+        $this.setState({ ctrlCode: row.bill_number });
+        $this.props.ControlCode(row.bill_number);
       }
-
-      //   debugger;
-      //   var element = document.getElementById("exampleInputEmail1");
-      //   var event = new Event("change");
-      //   element.dispatchEvent(event);
     }
   });
 };

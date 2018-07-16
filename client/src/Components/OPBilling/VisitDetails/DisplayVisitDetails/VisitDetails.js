@@ -73,7 +73,6 @@ class DisplayVisitDetails extends Component {
     index = this.state.visitDetails.indexOf(row);
     this.state.visitDetails[index]["radioselect"] = 1;
 
-    debugger;
     this.setState(
       {
         incharge_or_provider: row.doctor_id,

@@ -148,7 +148,6 @@ class RegistrationPatient extends Component {
     }
   }
   SavePatientDetails(e) {
-    debugger;
     const err = Validations(this);
 
     if (!err) {
@@ -232,7 +231,6 @@ class RegistrationPatient extends Component {
     }
   }
   getCtrlCode(patcode) {
-    debugger;
     let $this = this;
     clearInterval(intervalId);
     intervalId = setInterval(() => {

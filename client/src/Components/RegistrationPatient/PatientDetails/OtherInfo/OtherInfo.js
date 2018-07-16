@@ -35,7 +35,7 @@ class OtherInfo extends Component {
             <div className="container-fluid">
               <div className="row">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3", id: "widthDate" }}
+                  div={{ className: "col-lg-3" }}
                   label={{
                     fieldName: "secondary_contact_number"
                   }}
@@ -56,7 +56,7 @@ class OtherInfo extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3", id: "widthDate" }}
+                  div={{ className: "col-lg-3" }}
                   label={{
                     fieldName: "emergency_contact_number"
                   }}
@@ -77,7 +77,7 @@ class OtherInfo extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3", id: "widthDate" }}
+                  div={{ className: "col-lg-3" }}
                   label={{
                     fieldName: "emergency_contact_name"
                   }}
@@ -98,7 +98,7 @@ class OtherInfo extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3", id: "widthDate" }}
+                  div={{ className: "col-lg-3" }}
                   label={{
                     fieldName: "relationship_with_patient"
                   }}
@@ -120,7 +120,7 @@ class OtherInfo extends Component {
               </div>
               <div className="row">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3", id: "widthDate" }}
+                  div={{ className: "col-lg-3" }}
                   label={{
                     fieldName: "email"
                   }}

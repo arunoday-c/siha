@@ -161,7 +161,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         />
                       </div>
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,
@@ -177,7 +177,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,
@@ -204,7 +204,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         />
                       </div>
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,
@@ -220,7 +220,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,
@@ -247,7 +247,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         />
                       </div>
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,
@@ -263,7 +263,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,
@@ -317,7 +317,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         />
                       </div>
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,
@@ -333,7 +333,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,
@@ -360,7 +360,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         />
                       </div>
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,
@@ -376,7 +376,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,
@@ -403,7 +403,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         />
                       </div>
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,
@@ -419,7 +419,7 @@ export default class DisplaySecondaryInsurance extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4", id: "widthDate" }}
+                        div={{ className: "col-lg-4" }}
                         textBox={{
                           decimal: { allowNegative: false },
                           value: this.state.unbalanced_amount,

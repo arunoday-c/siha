@@ -40,7 +40,8 @@
 .htpl-phase1-primary-insurance-form .radio-design {
   position: absolute;
   top: 5px;
-  left: 36px; }
+  left: 36px;
+  font-size: 12px; }
 
 .htpl-phase1-primary-insurance-form .refactor-design {
   min-height: 28px;

@@ -19,6 +19,7 @@ import patientType from "../controller/patientType";
 import globalSearch from "../controller/globalSearch";
 import insurance from "../controller/insurance";
 import opBilling from "../controller/opBilling";
+import userPreferences from "../controller/userPreferences";
 
 let router = express();
 
@@ -45,6 +46,7 @@ initializedDb(db => {
   router.use("/insurance", insurance({ config, db }));
   router.use("/gloabelSearch", globalSearch());
   router.use("/opBilling", opBilling({ config, db }));
+  router.use("/userPreferences", userPreferences());
 });
 
 export default router;

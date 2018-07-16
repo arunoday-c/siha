@@ -1,9 +1,29 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import "./insurancesetup.css";
 import "../../styles/site.css";
 import { Button, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
+import { AlgaehActions } from "../../actions/algaehActions";
 
 class InsuranceSetup extends Component {
+  componentDidMount() {
+    if (
+      this.props.insProviders === undefined ||
+      this.props.insProviders.length === 0
+    ) {
+      this.props.getInsuranceProviders({
+        uri: "/insurance/getListOfInsuranceProvider",
+        method: "GET",
+        redux: {
+          type: "INSURANCE_PROVIDER_GET_DATA",
+          mappingName: "insProviders"
+        }
+      });
+    }
+  }
   render() {
     return (
       <div className="insurancesetup">
@@ -39,17 +59,17 @@ class InsuranceSetup extends Component {
                 disabled: true
               },
               {
-                fieldName: "identity_document_code",
+                fieldName: "currency",
                 label: "Currency",
                 disabled: true
               },
               {
-                fieldName: "identity_document_code",
+                fieldName: "insurance_provider_name",
                 label: "Insurance Name",
                 disabled: true
               },
               {
-                fieldName: "identity_document_code",
+                fieldName: "insurance_provider_code",
                 label: "Provider ID",
                 disabled: true
               },
@@ -64,21 +84,24 @@ class InsuranceSetup extends Component {
                 disabled: true
               },
               {
-                fieldName: "identity_document_code",
+                fieldName: "effective_start_date",
                 label: "Active From",
                 disabled: true
               },
               {
-                fieldName: "identity_document_code",
+                fieldName: "effective_end_date",
                 label: "Valid Upto",
                 disabled: true
               }
             ]}
             keyId="identity_document_code"
             dataSource={{
-              data: this.props.idtypes === undefined ? [] : this.props.idtypes
+              data:
+                this.props.insProviders === undefined
+                  ? []
+                  : this.props.insProviders
             }}
-            isEditable={true}
+            // isEditable={true}
             paging={{ page: 0, rowsPerPage: 5 }}
           />
         </div>
@@ -98,4 +121,24 @@ class InsuranceSetup extends Component {
   }
 }
 
-export default InsuranceSetup;
+function mapStateToProps(state) {
+  return {
+    insProviders: state.insProviders
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getInsuranceProviders: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(InsuranceSetup)
+);

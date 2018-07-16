@@ -320,7 +320,7 @@ class AddReciptForm extends Component {
                     />
                   </div>
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3", id: "widthDate" }}
+                    div={{ className: "col-lg-3" }}
                     textBox={{
                       decimal: { allowNegative: false },
                       value: this.state.unbalanced_amount,
@@ -346,7 +346,7 @@ class AddReciptForm extends Component {
                   </div>
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3", id: "widthDate" }}
+                    div={{ className: "col-lg-3" }}
                     textBox={{
                       decimal: { allowNegative: false },
                       value: this.state.total_amount,

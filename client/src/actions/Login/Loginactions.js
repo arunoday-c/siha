@@ -7,7 +7,6 @@ import config from "../../utils/config.json";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 
 export function getTokenDetals() {
-  debugger;
   var auth_url = "/api/v1/apiAuth";
   var username = config.apiAuth.user;
   var password = config.apiAuth.password;

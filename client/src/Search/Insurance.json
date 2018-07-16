@@ -1,0 +1,18 @@
+[
+  {
+    "fieldName": "insurance_provider_name",
+    "label": "Insurance Provider_name"
+  },
+  {
+    "fieldName": "insurance_sub_name",
+    "label": "Sub Insurance Name"
+  },
+  {
+    "fieldName": "network_type",
+    "label": "Network Type"
+  },
+  {
+    "fieldName": "policy_number",
+    "label": "Policy Number"
+  }
+]

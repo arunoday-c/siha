@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import DisplayOPBilling from "../../../BillDetails/BillDetails";
 import "./AddBillingForm.css";
 import "./../../../../styles/site.css";
+import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
+import IconButton from "@material-ui/core/IconButton";
 
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
+  Tooltip
 } from "../../../Wrapper/algaehWrapper";
 import {
   texthandle,
@@ -19,7 +22,6 @@ import {
   adjustadvance
 } from "./AddBillingDetails";
 import MyContext from "../../../../utils/MyContext.js";
-import { generateBill } from "../../../../actions/RegistrationPatient/Billingactions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -99,7 +101,7 @@ class AddBillingForm extends Component {
                           value={this.state.bill_date}
                         />
 
-                        <div className="col-lg-3">
+                        <div className="col-lg-2">
                           <button
                             className="htpl1-phase1-btn-primary"
                             onClick={this.ShowBillDetails.bind(this)}
@@ -113,6 +115,13 @@ class AddBillingForm extends Component {
                             onClose={this.ShowBillDetails.bind(this)}
                           />
                         </div>
+                        <div className="col-lg-1">
+                          <Tooltip id="tooltip-icon" title="Process">
+                            <IconButton className="go-button" color="primary">
+                              <PlayCircleFilled />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
                       </div>
 
                       <div className="row primary-box-container">
@@ -124,7 +133,7 @@ class AddBillingForm extends Component {
                           />
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3", id: "widthDate" }}
+                          div={{ className: "col-lg-3" }}
                           textBox={{
                             decimal: { allowNegative: false },
                             value: this.state.gross_total,
@@ -150,7 +159,7 @@ class AddBillingForm extends Component {
                           />
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3", id: "widthDate" }}
+                          div={{ className: "col-lg-3" }}
                           textBox={{
                             decimal: { allowNegative: false },
                             value: this.state.patient_payable,
@@ -176,7 +185,7 @@ class AddBillingForm extends Component {
                         </div>
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3", id: "widthDate" }}
+                          div={{ className: "col-lg-3" }}
                           textBox={{
                             decimal: { allowNegative: false },
                             value: this.state.advance_amount,
@@ -199,7 +208,7 @@ class AddBillingForm extends Component {
                           />
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-2", id: "widthDate" }}
+                          div={{ className: "col-lg-2" }}
                           textBox={{
                             decimal: { allowNegative: false },
                             value: this.state.advance_adjust,
@@ -220,7 +229,7 @@ class AddBillingForm extends Component {
                           />
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3", id: "widthDate" }}
+                          div={{ className: "col-lg-3" }}
                           textBox={{
                             decimal: { allowNegative: false, suffix: " %" },
                             value: this.state.sheet_discount_percentage,
@@ -239,7 +248,7 @@ class AddBillingForm extends Component {
                           />
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-2", id: "widthDate" }}
+                          div={{ className: "col-lg-2" }}
                           textBox={{
                             decimal: { allowNegative: false },
                             value: this.state.sheet_discount_amount,
@@ -262,7 +271,7 @@ class AddBillingForm extends Component {
                           />
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3", id: "widthDate" }}
+                          div={{ className: "col-lg-3" }}
                           label={{
                             fieldName: "net_amount",
                             isImp: true
@@ -282,7 +291,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3", id: "widthDate" }}
+                          div={{ className: "col-lg-3" }}
                           label={{
                             fieldName: "credit_amount",
                             isImp: true
@@ -302,7 +311,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3", id: "widthDate" }}
+                          div={{ className: "col-lg-3" }}
                           label={{
                             fieldName: "receiveable_amount",
                             isImp: true
@@ -608,7 +617,7 @@ class AddBillingForm extends Component {
                           />
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3", id: "widthDate" }}
+                          div={{ className: "col-lg-3" }}
                           textBox={{
                             decimal: { allowNegative: false },
                             value: this.state.unbalanced_amount,
@@ -634,7 +643,7 @@ class AddBillingForm extends Component {
                         </div>
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3", id: "widthDate" }}
+                          div={{ className: "col-lg-3" }}
                           textBox={{
                             decimal: { allowNegative: false },
                             value: this.state.total_amount,
