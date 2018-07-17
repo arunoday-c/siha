@@ -671,16 +671,21 @@ let getBillDetails = (req, res, next) => {
           //Calculation Declarations
           let unit_cost = 0,
             gross_amount = 0,
-            net_amout = 0;
+            net_amout = 0,
+            sec_unit_cost = 0;
 
           let patient_resp = 0,
             patient_payable = 0;
 
           let copay_percentage = 0,
-            copay_amount = 0;
+            copay_amount = 0,
+            sec_copay_percntage = 0,
+            sec_copay_amount = 0;
 
           let comapany_resp = 0,
-            company_payble = 0;
+            company_payble = 0,
+            sec_company_res = 0,
+            sec_company_paybale = 0;
 
           let quantity =
             servicesDetails.quantity === undefined
@@ -702,21 +707,50 @@ let getBillDetails = (req, res, next) => {
               ? "N"
               : servicesDetails.insured;
 
+          let sec_insured =
+            servicesDetails.sec_insured === undefined
+              ? "N"
+              : servicesDetails.sec_insured;
+
           new Promise((resolve, reject) => {
             try {
-              resolve(insuranceServiceDetails(req, next, connection));
+              if (insured === "Y") {
+                // let callInsurance =
+
+                req.body.insurance_id = req.body.primary_insurance_provider_id;
+                req.body.hims_d_insurance_network_office_id =
+                  req.body.primary_network_office_id;
+                req.body.network_id = req.body.primary_network_id;
+
+                insuranceServiceDetails(req, next, connection, resolve);
+                //if (callInsurance != null) resolve(callInsurance);
+              } else if (sec_insured === "Y") {
+                req.body.insurance_id =
+                  req.body.secondary_insurance_provider_id;
+                req.body.hims_d_insurance_network_office_id =
+                  req.body.secondary_network_id;
+                req.body.network_id = req.body.secondary_network_office_id;
+
+                insuranceServiceDetails(req, next, connection, resolve);
+              } else {
+                resolve();
+              }
             } catch (e) {
               reject(e);
             }
           })
-            .then(result => {
-              debugLog("ander", result);
+            .then(policydtls => {
+              debugLog("ander", policydtls);
               //Calculation Starts
               if (insured === "Y") {
                 debugLog("Insured:", quantity);
 
+                if (policydtls.company_service_price_type == "N") {
+                  unit_cost = policydtls.net_amount;
+                } else {
+                  unit_cost = policydtls.gross_amt;
+                }
 
-                unit_cost = 500;
                 gross_amount = quantity * unit_cost;
 
                 debugLog("Gross:", gross_amount);
@@ -729,13 +763,11 @@ let getBillDetails = (req, res, next) => {
                 net_amout = gross_amount - discount_amout;
 
                 //Patient And Company
-                if (servicesDetails.copay_status === "Y") {
-                  // copay_amount = records.copay_amt;
-                  copay_amount = 100;
+                if (policydtls.copay_status === "Y") {
+                  copay_amount = policydtls.copay_amt;
                   copay_percentage = (copay_amount / net_amout) * 100;
                 } else {
-                  // copay_percentage = copay_percentage;
-                  copay_percentage = 10;
+                  copay_percentage = policydtls.copay_consultation;
                   copay_amount = (net_amout * copay_percentage) / 100;
                   debugLog("Copay Amount:", copay_amount);
                 }
@@ -744,6 +776,26 @@ let getBillDetails = (req, res, next) => {
                 patient_payable = copay_amount;
                 comapany_resp = net_amout - patient_resp;
                 company_payble = net_amout - patient_payable;
+
+                //If primary and secondary exists
+                if (sec_insured === "Y") {
+                  req.body.insurance_id =
+                    req.body.secondary_insurance_provider_id;
+                  req.body.hims_d_insurance_network_office_id =
+                    req.body.secondary_network_id;
+                  req.body.network_id = req.body.secondary_network_office_id;
+                  //Secondary Insurance
+                  return new Promise((resolve, reject) => {
+                    try {
+                      // let callInsurance =
+                      insuranceServiceDetails(req, next, connection, resolve);
+                      //if (callInsurance != null) resolve(callInsurance);
+                    } catch (e) {
+                      reject(e);
+                    }
+                  })
+                   
+                }
               } else {
                 unit_cost = records.standard_fee;
                 gross_amount = quantity * records.standard_fee;
@@ -757,9 +809,34 @@ let getBillDetails = (req, res, next) => {
                 patient_resp = net_amout;
                 patient_payable = net_amout;
               }
+            })
 
+            .then(secpolicydtls => {
+              debugLog("ander", secpolicydtls);
+
+              if(secpolicydtls != null)
+              {
+              //secondary Insurance
+              sec_unit_cost = patient_payable;
+
+              //Patient And Company
+              if (secpolicydtls.copay_status === "Y") {
+                sec_copay_amount = secpolicydtls.copay_amt;
+                sec_copay_percntage =
+                  (sec_copay_amount / sec_unit_cost) * 100;
+              } else {
+                sec_copay_percntage = secpolicydtls.copay_consultation;
+                sec_copay_amount =
+                  (sec_unit_cost * sec_copay_percntage) / 100;
+              }
+
+              patient_resp = sec_copay_amount;
+              patient_payable = sec_copay_amount;
+              sec_company_res = sec_unit_cost - patient_resp;
+              sec_company_paybale = sec_unit_cost - patient_payable;
+            }
               extend(billingDetailsModel, {
-                service_type_id: result[0].service_type_id,
+                service_type_id: records.service_type_id,
                 services_id: servicesDetails.hims_d_services_id,
                 quantity: quantity,
                 unit_cost: unit_cost,
@@ -773,7 +850,12 @@ let getBillDetails = (req, res, next) => {
                 copay_amount: copay_amount,
 
                 comapany_resp: comapany_resp,
-                company_payble: company_payble
+                company_payble: company_payble,
+
+                sec_copay_percntage: sec_copay_percntage,
+                sec_copay_amount: sec_copay_amount,
+                sec_company_res: sec_company_res,
+                sec_company_paybale: sec_company_paybale
               });
 
               debugLog("Results are recorded...", result);
@@ -785,6 +867,7 @@ let getBillDetails = (req, res, next) => {
             .catch(e => {
               next(httpStatus.generateError(httpStatus.badRequest, e));
             });
+           
         }
       );
     });
@@ -1275,7 +1358,7 @@ created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
   }
 };
 
-function insuranceServiceDetails(req, next, connection) {
+function insuranceServiceDetails(req, next, connection, resolve) {
   req = req;
   let db = req.db;
   debugLog("rquest sssss:", req.body);
@@ -1328,7 +1411,9 @@ function insuranceServiceDetails(req, next, connection) {
             // req.records = extend({
             //   insurence_result: result_s[0]
             // });
-            return result_s[0];
+
+            let result = extend(result_s[0], resultOffic[0]);
+            return resolve(result);
           }
         );
       }
@@ -1360,7 +1445,8 @@ function insuranceServiceDetails(req, next, connection) {
             // req.records = extend({
             //   policy_result: result_p[0]
             // });
-            return result_p[0];
+            extend(result_p, resultOffic);
+            return resolve(result_p);
           }
         );
       }
