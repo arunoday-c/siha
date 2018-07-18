@@ -22,6 +22,10 @@
     font-weight: 400;
     font-size: 11px;
   }
+  text {
+    color: #000;
+  }
+
   mark {
     background: none;
     color: red;
@@ -54,6 +58,7 @@
     border-right: 1px solid #e6e6e6;
   }
 }
+
 .insurance-amt-details {
   padding: 5px;
   padding-bottom: 5px;

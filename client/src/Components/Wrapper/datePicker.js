@@ -32,9 +32,18 @@ export default class DateHandler extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.value === this.state.value) return false;
+    if (
+      nextProps.value !== this.state.value ||
+      (nextProps.disabled != null &&
+        nextProps.disabled != this.state.disabled) ||
+      nextState != this.state.value
+    )
+      return true;
+    return false;
 
-    return true;
+    // if (nextProps.value === this.state.value) return false;
+
+    // return true;
   }
   onDayChange = (selected, modifiers) => {
     this.props.events !== undefined &&

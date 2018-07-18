@@ -15,6 +15,10 @@ export default class DisplaySecondaryInsurance extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState(nextProps.BillingIOputs);
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -28,12 +32,12 @@ export default class DisplaySecondaryInsurance extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
-                          forceLabel: "Insurance Company"
+                          fieldName: "insurance_company"
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "full_name",
-                          value: this.state.full_name,
+                          name: "secondary_insurance_provider_name",
+                          value: this.state.secondary_insurance_provider_name,
                           events: {
                             onChange: null
                           },
@@ -44,12 +48,13 @@ export default class DisplaySecondaryInsurance extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
-                          forceLabel: "Plan Description"
+                          fieldName: "sub_insurance_company"
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "full_name",
-                          value: this.state.full_name,
+                          name: "secondary_sub_insurance_provider_name",
+                          value: this.state
+                            .secondary_sub_insurance_provider_name,
                           events: {
                             onChange: null
                           },
@@ -61,12 +66,12 @@ export default class DisplaySecondaryInsurance extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
-                          forceLabel: "Policy No."
+                          fieldName: "plan_desc"
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "full_name",
-                          value: this.state.full_name,
+                          name: "secondary_network_type",
+                          value: this.state.secondary_network_type,
                           events: {
                             onChange: null
                           },
@@ -77,12 +82,12 @@ export default class DisplaySecondaryInsurance extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
-                          forceLabel: "Card No."
+                          fieldName: "policy_no"
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "full_name",
-                          value: this.state.full_name,
+                          name: "secondary_policy_number",
+                          value: this.state.secondary_policy_number,
                           events: {
                             onChange: null
                           },
@@ -95,12 +100,12 @@ export default class DisplaySecondaryInsurance extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
-                          forceLabel: "Start Date."
+                          fieldName: "card_no"
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "full_name",
-                          value: this.state.full_name,
+                          name: "card_number",
+                          value: this.state.card_number,
                           events: {
                             onChange: null
                           },
@@ -111,12 +116,12 @@ export default class DisplaySecondaryInsurance extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
-                          forceLabel: "End Date"
+                          fieldName: "ins_expiry_date"
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "full_name",
-                          value: this.state.full_name,
+                          name: "secondary_effective_end_date",
+                          value: this.state.secondary_effective_end_date,
                           events: {
                             onChange: null
                           },
@@ -339,7 +344,6 @@ export default class DisplaySecondaryInsurance extends Component {
                           value: this.state.unbalanced_amount,
                           className: "txt-fld",
                           name: "unbalanced_amount",
-
                           events: {
                             onChange: null
                           },

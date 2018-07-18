@@ -16,6 +16,9 @@
   font-weight: 400;
   font-size: 11px; }
 
+.hptl-phase1-op-add-billing-form text {
+  color: #000; }
+
 .hptl-phase1-op-add-billing-form mark {
   background: none;
   color: red; }

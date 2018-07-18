@@ -6,20 +6,27 @@ import { bindActionCreators } from "redux";
 import Dropzone from "react-dropzone";
 import "./SecondaryInsurance.css";
 import "../../../../styles/site.css";
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import AddCircle from "@material-ui/icons/AddCircle";
-import Tooltip from "@material-ui/core/Tooltip";
+// import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import MyContext from "../../../../utils/MyContext.js";
+import { successfulMessage } from "../../../../utils/GlobalFunctions";
 
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  Tooltip
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { insurancehandle, texthandle, datehandle } from "./SecInsuranceHandler";
+import {
+  insurancehandle,
+  texthandle,
+  datehandle,
+  InsuranceDetails,
+  selectedValueInsurance
+} from "./SecInsuranceHandler";
 
 const INSURANCE_DECISION = [
   { label: "Yes", value: "Y" },
@@ -53,15 +60,25 @@ class AddSecInsuranceForm extends Component {
   }
 
   selectedValueInsurance(value, context, e) {
-    this.setState({
-      sec_insured: value,
-      sec_insuranceYes: !this.state.sec_insuranceYes
-    });
-
-    if (context != null) {
-      context.updateState({
+    if (this.state.insured == "Y") {
+      this.setState({
         sec_insured: value,
         sec_insuranceYes: !this.state.sec_insuranceYes
+      });
+
+      if (context != null) {
+        context.updateState({
+          sec_insured: value,
+          sec_insuranceYes: !this.state.sec_insuranceYes
+        });
+      }
+    } else {
+      successfulMessage({
+        message:
+          "Invalid Input. With out primary insurance cannot select secondary insurance",
+        title: "Warning",
+        icon: "error"
+        // button: "false"
       });
     }
   }
@@ -112,8 +129,18 @@ class AddSecInsuranceForm extends Component {
                       </div>
                       <div className="col-lg-1">
                         <Tooltip id="tooltip-icon" title="Add New">
-                          <IconButton className="go-button" color="primary">
-                            <AddCircle />
+                          <IconButton
+                            className="go-button"
+                            color="primary"
+                            disabled={this.state.sec_insuranceYes}
+                          >
+                            <AddCircle
+                              onClick={InsuranceDetails.bind(
+                                this,
+                                this,
+                                context
+                              )}
+                            />
                           </IconButton>
                         </Tooltip>
                       </div>
@@ -130,7 +157,10 @@ class AddSecInsuranceForm extends Component {
                             textField: "insurance_provider_name",
                             // this.state.selectedLang == "en" ? "insurance_provider_name" : "name",
                             valueField: "insurance_provider_id",
-                            data: this.props.existinsurance
+                            data:
+                              this.props.existinsurance === undefined
+                                ? this.props.secondaryinsurance
+                                : this.props.existinsurance
                           },
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
@@ -151,7 +181,10 @@ class AddSecInsuranceForm extends Component {
                             textField: "sub_insurance_provider_name",
                             // this.state.selectedLang == "en" ? "sub_insurance_provider_name" : "name",
                             valueField: "sub_insurance_provider_id",
-                            data: this.props.existinsurance
+                            data:
+                              this.props.existinsurance === undefined
+                                ? this.props.secondaryinsurance
+                                : this.props.existinsurance
                           },
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
@@ -172,7 +205,10 @@ class AddSecInsuranceForm extends Component {
                             textField: "network_type",
                             // this.state.selectedLang == "en" ? "network_type" : "name",
                             valueField: "network_id",
-                            data: this.props.existinsurance
+                            data:
+                              this.props.existinsurance === undefined
+                                ? this.props.secondaryinsurance
+                                : this.props.existinsurance
                           },
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
@@ -195,7 +231,10 @@ class AddSecInsuranceForm extends Component {
                             textField: "policy_number",
                             // this.state.selectedLang == "en" ? "name" : "name",
                             valueField: "policy_number",
-                            data: this.props.existinsurance
+                            data:
+                              this.props.existinsurance === undefined
+                                ? this.props.secondaryinsurance
+                                : this.props.existinsurance
                           },
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
@@ -222,11 +261,11 @@ class AddSecInsuranceForm extends Component {
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "effective_start_date",
-                          name: "secondary_effective_start_date"
+                          fieldName: "effective_start_date"
                         }}
                         textBox={{
-                          className: "txt-fld"
+                          className: "txt-fld",
+                          name: "secondary_effective_start_date"
                         }}
                         maxDate={new Date()}
                         events={{
@@ -237,7 +276,7 @@ class AddSecInsuranceForm extends Component {
                       />
 
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-2" }}
+                        div={{ className: "col-lg-3" }}
                         label={{ fieldName: "expiry_date" }}
                         textBox={{
                           className: "txt-fld",
@@ -248,15 +287,16 @@ class AddSecInsuranceForm extends Component {
                           onChange: datehandle.bind(this, this, context)
                         }}
                         value={this.state.secondary_effective_end_date}
+                        disabled={this.state.sec_insuranceYes}
                       />
 
-                      <div className="col-lg-1">
+                      {/* <div className="col-lg-1">
                         <Tooltip id="tooltip-icon" title="Process">
                           <IconButton className="go-button" color="primary">
                             <PlayCircleFilled />
                           </IconButton>
                         </Tooltip>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
 
@@ -341,14 +381,16 @@ class AddSecInsuranceForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
+    secondaryinsurance: state.secondaryinsurance
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPatientInsurence: AlgaehActions
+      getPatientInsurence: AlgaehActions,
+      setSelectedInsurance: AlgaehActions
     },
     dispatch
   );

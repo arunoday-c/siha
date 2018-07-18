@@ -7,7 +7,7 @@ export function Validations(state) {
     isError = true;
     state.setState({
       open: true,
-      MandatoryMsg: "Invalid. Name Cannot be blank."
+      MandatoryMsg: "Invalid Input. Name Cannot be blank."
     });
     document.querySelector("[name='full_name']").focus();
     return isError;
@@ -17,25 +17,16 @@ export function Validations(state) {
     isError = true;
     state.setState({
       open: true,
-      MandatoryMsg: "Invalid. Title Cannot be blank."
+      MandatoryMsg: "Invalid Input. Title Cannot be blank."
     });
     return isError;
   }
-
-  // if (state.state.date_of_birth <= 0) {
-  //     isError = true;
-  //     state.setState({
-  //         open: true,
-  //         MandatoryMsg: "Invalid. DOB Cannot be blank."
-  //     });
-  //     return isError;
-  // }
 
   if (state.state.primary_identity_id <= 0) {
     isError = true;
     state.setState({
       open: true,
-      MandatoryMsg: "Invalid. Primary ID Cannot be blank."
+      MandatoryMsg: "Invalid Input. Primary ID Cannot be blank."
     });
     return isError;
   }
@@ -44,7 +35,7 @@ export function Validations(state) {
     isError = true;
     state.setState({
       open: true,
-      MandatoryMsg: "Invalid. Primary ID No. Cannot be blank."
+      MandatoryMsg: "Invalid Input. Primary ID No. Cannot be blank."
     });
     document.querySelector("[name='primary_id_no']").focus();
     return isError;
@@ -54,7 +45,7 @@ export function Validations(state) {
     isError = true;
     state.setState({
       open: true,
-      MandatoryMsg: "Invalid. Nationality Cannot be blank."
+      MandatoryMsg: "Invalid Input. Nationality Cannot be blank."
     });
     return isError;
   }
@@ -63,25 +54,7 @@ export function Validations(state) {
     isError = true;
     state.setState({
       open: true,
-      MandatoryMsg: "Invalid. Country Cannot be blank."
-    });
-    return isError;
-  }
-
-  if (state.state.counter_id == null) {
-    isError = true;
-    state.setState({
-      open: true,
-      MandatoryMsg: "Invalid. Counter ID Cannot be blank."
-    });
-    return isError;
-  }
-
-  if (state.state.shift_id == null) {
-    isError = true;
-    state.setState({
-      open: true,
-      MandatoryMsg: "Invalid. Shift ID Cannot be blank."
+      MandatoryMsg: "Invalid Input. Country Cannot be blank."
     });
     return isError;
   }
@@ -90,8 +63,9 @@ export function Validations(state) {
     isError = true;
     state.setState({
       open: true,
-      MandatoryMsg: "Invalid. Mobile No. Cannot be blank."
+      MandatoryMsg: "Invalid Input. Mobile No. Cannot be blank."
     });
+    document.querySelector("[name='contact_number']").focus();
     return isError;
   }
 
@@ -102,6 +76,7 @@ export function Validations(state) {
         open: true,
         MandatoryMsg: "Invalid. Card Number cannot be blank."
       });
+      document.querySelector("[name='card_number']").focus();
       return isError;
     }
 
@@ -111,6 +86,7 @@ export function Validations(state) {
         open: true,
         MandatoryMsg: "Invalid. Card Date Cannot be blank."
       });
+      document.querySelector("[name='card_date']").focus();
       return isError;
     }
   }
@@ -120,8 +96,9 @@ export function Validations(state) {
       isError = true;
       state.setState({
         open: true,
-        MandatoryMsg: "Invalid. Check Number cannot be blank."
+        MandatoryMsg: "Invalid Input. Check Number cannot be blank."
       });
+      document.querySelector("[name='cheque_number']").focus();
       return isError;
     }
 
@@ -129,10 +106,37 @@ export function Validations(state) {
       isError = true;
       state.setState({
         open: true,
-        MandatoryMsg: "Invalid. Cheque Date Cannot be blank."
+        MandatoryMsg: "Invalid Input. Cheque Date Cannot be blank."
       });
+      document.querySelector("[name='cheque_date']").focus();
       return isError;
     }
+  }
+
+  if (
+    state.state.insured == "Y" &&
+    (state.state.primary_insurance_provider_id == null ||
+      state.state.primary_network_office_id == null ||
+      state.state.primary_network_id == null)
+  ) {
+    successfulMessage({
+      message:
+        "Invalid Input. Please select the primary insurance details properly.",
+      title: "Error",
+      icon: "error"
+    });
+  } else if (
+    state.state.sec_insured == "Y" &&
+    (state.state.secondary_insurance_provider_id == null ||
+      state.state.secondary_network_office_id == null ||
+      state.state.secondary_network_id == null)
+  ) {
+    successfulMessage({
+      message:
+        "Invalid Input. Please select the secondary insurance details properly.",
+      title: "Error",
+      icon: "error"
+    });
   }
 
   if (state.state.unbalanced_amount > 0) {

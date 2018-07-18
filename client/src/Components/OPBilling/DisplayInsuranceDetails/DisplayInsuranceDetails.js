@@ -51,8 +51,12 @@ export default class DisplayInsuranceDetails extends Component {
           </ul>
         </div>
         <div className="display-insurance-section">
-          {this.state.actionPrimaryDesign ? <PrimaryInsurance /> : null}
-          {this.state.actionSecondaryDesign ? null : <SecondaryInsurance />}
+          {this.state.actionPrimaryDesign ? (
+            <PrimaryInsurance BillingIOputs={this.props.BillingIOputs} />
+          ) : null}
+          {this.state.actionSecondaryDesign ? null : (
+            <SecondaryInsurance BillingIOputs={this.props.BillingIOputs} />
+          )}
         </div>
       </div>
     );

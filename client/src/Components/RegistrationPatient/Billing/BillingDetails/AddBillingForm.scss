@@ -25,6 +25,11 @@
 
   .Paper {
     border: 1px solid #5f5f5f;
+    min-height: 336px;
+  }
+
+  .Paper-secondary {
+    border: 1px solid #5f5f5f;
   }
 
   label {
@@ -54,18 +59,6 @@
     min-height: 28px;
     background-color: #fbfbfb;
     border: 0px;
-  }
-  .file-name-upload {
-    margin-left: 4%;
-    margin-top: 2%;
-  }
-  .table-detail {
-    background: "#b4e2df";
-  }
-  th,
-  td {
-    border-right: 1px solid #e6e6e6;
-    font-size: 11px;
   }
 
   .modal-container {

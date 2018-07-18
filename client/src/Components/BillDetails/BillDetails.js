@@ -64,7 +64,6 @@ class DisplayOPBilling extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    // nextProps.BillingIOputs.patient_payable = 0;
     let InputOutput = nextProps.BillingIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -621,9 +620,9 @@ class DisplayOPBilling extends PureComponent {
                               }}
                               textBox={{
                                 decimal: { allowNegative: false },
-                                value: this.state.company_resp,
+                                value: this.state.comapany_resp,
                                 className: "txt-fld",
-                                name: "company_resp",
+                                name: "comapany_resp",
 
                                 events: {
                                   onChange: null

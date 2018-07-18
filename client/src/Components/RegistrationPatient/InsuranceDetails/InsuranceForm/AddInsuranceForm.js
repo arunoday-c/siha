@@ -26,12 +26,6 @@ import {
   InsuranceDetails
 } from "./InsuranceHandler";
 
-const FORMAT_DEFAULT = [
-  { name: "CSV", name: "CSV", value: 0 },
-  { name: "XML", name: "XML", value: 1 },
-  { name: "XLS", name: "XLS", value: 2 }
-];
-
 const INSURANCE_DECISION = [
   { label: "Yes", value: "Y" },
   { label: "No", value: "N" }
@@ -123,8 +117,18 @@ class AddInsuranceForm extends Component {
                       </div>
                       <div className="col-lg-1">
                         <Tooltip id="tooltip-icon" title="Add New">
-                          <IconButton className="go-button" color="primary">
-                            <AddCircle />
+                          <IconButton
+                            className="go-button"
+                            color="primary"
+                            disabled={this.state.insuranceYes}
+                          >
+                            <AddCircle
+                              onClick={InsuranceDetails.bind(
+                                this,
+                                this,
+                                context
+                              )}
+                            />
                           </IconButton>
                         </Tooltip>
                       </div>
@@ -141,7 +145,10 @@ class AddInsuranceForm extends Component {
                             textField: "insurance_provider_name",
                             // this.state.selectedLang == "en" ? "insurance_provider_name" : "name",
                             valueField: "insurance_provider_id",
-                            data: this.props.existinsurance
+                            data:
+                              this.props.existinsurance === undefined
+                                ? this.props.primaryinsurance
+                                : this.props.existinsurance
                           },
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
@@ -163,7 +170,10 @@ class AddInsuranceForm extends Component {
                             textField: "sub_insurance_provider_name",
                             // this.state.selectedLang == "en" ? "sub_insurance_provider_name" : "name",
                             valueField: "sub_insurance_provider_id",
-                            data: this.props.existinsurance
+                            data:
+                              this.props.existinsurance === undefined
+                                ? this.props.primaryinsurance
+                                : this.props.existinsurance
                           },
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
@@ -184,7 +194,10 @@ class AddInsuranceForm extends Component {
                             textField: "network_type",
                             // this.state.selectedLang == "en" ? "network_type" : "name",
                             valueField: "network_id",
-                            data: this.props.existinsurance
+                            data:
+                              this.props.existinsurance === undefined
+                                ? this.props.primaryinsurance
+                                : this.props.existinsurance
                           },
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
@@ -207,7 +220,10 @@ class AddInsuranceForm extends Component {
                             textField: "policy_number",
                             // this.state.selectedLang == "en" ? "name" : "name",
                             valueField: "policy_number",
-                            data: this.props.existinsurance
+                            data:
+                              this.props.existinsurance === undefined
+                                ? this.props.primaryinsurance
+                                : this.props.existinsurance
                           },
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
@@ -234,11 +250,11 @@ class AddInsuranceForm extends Component {
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "effective_start_date",
-                          name: "primary_effective_start_date"
+                          fieldName: "effective_start_date"
                         }}
                         textBox={{
-                          className: "txt-fld"
+                          className: "txt-fld",
+                          name: "primary_effective_start_date"
                         }}
                         maxDate={new Date()}
                         events={{
@@ -260,6 +276,7 @@ class AddInsuranceForm extends Component {
                           onChange: datehandle.bind(this, this, context)
                         }}
                         value={this.state.primary_effective_end_date}
+                        disabled={this.state.insuranceYes}
                       />
                     </div>
                   </div>
@@ -345,14 +362,16 @@ class AddInsuranceForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
+    primaryinsurance: state.primaryinsurance
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPatientInsurence: AlgaehActions
+      getPatientInsurence: AlgaehActions,
+      setSelectedInsurance: AlgaehActions
     },
     dispatch
   );

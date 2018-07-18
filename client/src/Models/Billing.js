@@ -1,4 +1,3 @@
-import moment from "moment";
 import { getCookie } from "../utils/algaehApiCall.js";
 
 export default {
@@ -31,6 +30,7 @@ export default {
       net_amount: 0,
       patient_res: 0,
       company_res: 0,
+
       sec_company_res: 0,
       patient_payable: 0,
       company_payble: 0,
@@ -62,7 +62,31 @@ export default {
       created_date: CurrentDate,
       updated_by: null,
       updated_date: null,
-      receiptdetails: []
+      receiptdetails: [],
+
+      card_number: null,
+      effective_end_date: null,
+      effective_start_date: null,
+      insurance_provider_id: null,
+      insurance_provider_name: null,
+      sub_insurance_provider_id: null,
+      sub_insurance_provider_name: null,
+      network_id: null,
+      network_type: null,
+      policy_number: null,
+      hims_d_insurance_network_office_id: null,
+
+      secondary_card_number: null,
+      secondary_effective_end_date: null,
+      secondary_effective_start_date: null,
+      secondary_insurance_provider_id: null,
+      secondary_insurance_provider_name: null,
+      secondary_network_id: null,
+      secondary_network_type: null,
+      secondary_policy_number: null,
+      secondary_sub_insurance_provider_id: null,
+      secondary_sub_insurance_provider_name: null,
+      secondary_network_office_id: null
     };
     return output;
   }

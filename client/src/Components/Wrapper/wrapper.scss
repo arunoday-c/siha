@@ -27,16 +27,22 @@ div[numberbox="true"] {
 .algaeh-datePicker {
   border-bottom: 1px solid #6c757d;
   background-color: #fbfbfb;
+  // max-width: 90%;
   .react-date-picker__button {
     background-color: #fbfbfb;
     border: none;
     line-height: 1.9em;
     .react-date-picker__clear-button {
-      visibility: hidden;
+      // visibility: hidden;
+      display: none;
     }
   }
   .react-date-picker__button__input {
-    min-width: 75%; //calc(4px + (4px * 3) + 10em + 5em);
+    // min-width: 75%; //calc(4px + (4px * 3) + 10em + 5em);
+  }
+  .react-date-picker__button__icon {
+    position: relative;
+    margin-left: 60%;
   }
   .react-calendar {
     width: 250px;

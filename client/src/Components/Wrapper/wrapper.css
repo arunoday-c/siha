@@ -25,9 +25,10 @@ div[numberbox="true"] input[type="text"] {
     border: none;
     line-height: 1.9em; }
     .algaeh-datePicker .react-date-picker__button .react-date-picker__clear-button {
-      visibility: hidden; }
-  .algaeh-datePicker .react-date-picker__button__input {
-    min-width: 75%; }
+      display: none; }
+  .algaeh-datePicker .react-date-picker__button__icon {
+    position: relative;
+    margin-left: 60%; }
   .algaeh-datePicker .react-calendar {
     width: 250px; }
 

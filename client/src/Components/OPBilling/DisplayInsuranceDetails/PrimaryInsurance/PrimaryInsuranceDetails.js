@@ -11,7 +11,7 @@ export default class InsuranceForm extends Component {
   render() {
     return (
       <div className="hptl-primary-insurance-form">
-        <DisInsuranceDetails />
+        <DisInsuranceDetails BillingIOputs={this.props.BillingIOputs} />
       </div>
     );
   }

@@ -11,7 +11,7 @@ export default class DisplaySecInsuranceForm extends Component {
   render() {
     return (
       <div className="hptl-phase1-secinsurancedis-form">
-        <DisplaySecondaryInsurance />
+        <DisplaySecondaryInsurance BillingIOputs={this.props.BillingIOputs} />
       </div>
     );
   }

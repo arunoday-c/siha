@@ -244,6 +244,7 @@ class RegistrationPatient extends Component {
           mappingName: "patients"
         },
         afterSuccess: data => {
+          debugger;
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;

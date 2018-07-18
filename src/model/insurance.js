@@ -58,7 +58,7 @@ let getPatientInsurance = (req, res, next) => {
          sIns.insurance_sub_name as secondary_sub_insurance_provider_name, \
          mIns.secondary_network_id ,\
          net.network_type as secondary_network_type,\
-         netoff.policy_number as secondary_policy_number ,mIns.secondary_card_number,mIns.secondary_inc_card_path,\
+         netoff.policy_number as secondary_policy_number,netoff.hims_d_insurance_network_office_id as secondary_network_office_id ,mIns.secondary_card_number,mIns.secondary_inc_card_path,\
         mIns.secondary_effective_start_date,mIns.secondary_effective_end_date from ((((\
         hims_d_insurance_provider Ins \
         INNER JOIN  hims_m_patient_insurance_mapping mIns ON mIns.secondary_insurance_provider_id=Ins.hims_d_insurance_provider_id)\
@@ -101,7 +101,8 @@ let getPatientInsurance = (req, res, next) => {
            union\
            (select  mIns.patient_id,mIns.secondary_insurance_provider_id , Ins.insurance_provider_name,\
             mIns.secondary_sub_id,sIns.insurance_sub_name, \
-            mIns.secondary_network_id, net.network_type,netoff.policy_number,netoff.hims_d_insurance_network_office_id,mIns.secondary_card_number,mIns.secondary_inc_card_path,\
+            mIns.secondary_network_id, net.network_type,netoff.policy_number,netoff.hims_d_insurance_network_office_id as\
+             secondary_network_office_id,mIns.secondary_card_number,mIns.secondary_inc_card_path,\
            mIns.secondary_effective_start_date,mIns.secondary_effective_end_date from ((((\
           hims_d_insurance_provider Ins \
           INNER JOIN  hims_m_patient_insurance_mapping mIns ON mIns.secondary_insurance_provider_id=Ins.hims_d_insurance_provider_id)\

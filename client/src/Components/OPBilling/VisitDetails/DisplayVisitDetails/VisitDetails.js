@@ -59,6 +59,7 @@ class DisplayVisitDetails extends Component {
   }
 
   handleChange(row, context, e) {
+    let $this = this;
     let x = Enumerable.from(this.state.visitDetails)
       .where(w => w.radioselect == 1)
       .toArray();
@@ -72,7 +73,6 @@ class DisplayVisitDetails extends Component {
     }
     index = this.state.visitDetails.indexOf(row);
     this.state.visitDetails[index]["radioselect"] = 1;
-
     this.setState(
       {
         incharge_or_provider: row.doctor_id,
@@ -87,17 +87,27 @@ class DisplayVisitDetails extends Component {
             method: "GET",
             data: {
               patient_id: this.state.hims_d_patient_id,
-              patient_visit_id: this.state.patient_visit_id
+              patient_visit_id: this.state.visit_id
             },
             redux: {
               type: "EXIT_INSURANCE_GET_DATA",
               mappingName: "existinsurance"
             }
+            // afterSuccess: data => {
+            //   debugger;
+            //   $this.setState(...$this.state, ...data[0]);
+
+            //   if (context != null) {
+            //     context.updateState({
+            //       data
+            //     });
+            //   }
+            // }
           });
         }
       }
     );
-
+    debugger;
     if (context != null) {
       context.updateState({
         incharge_or_provider: row.doctor_id,
