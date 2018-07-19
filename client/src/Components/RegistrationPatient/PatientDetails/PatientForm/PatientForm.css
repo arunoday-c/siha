@@ -16,8 +16,7 @@
   color: red; }
 
 .hptl-phase1-add-patient-form label {
-  font-weight: 400;
-  font-size: 11px; }
+  font-size: 0.7rem; }
 
 .hptl-phase1-add-patient-form .centerAlign {
   text-align: center; }
@@ -25,7 +24,7 @@
 .hptl-phase1-add-patient-form .text_field {
   width: 100% !important;
   background-color: #fbfbfb;
-  font-size: "12px";
+  font-size: "0.7rem";
   margin-right: "5px"; }
 
 .hptl-phase1-add-patient-form .secondary-details {

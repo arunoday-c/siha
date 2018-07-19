@@ -7,8 +7,16 @@ import "./insurancesetup.css";
 import "../../styles/site.css";
 import { Button, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
+import InsuranceAdd from "./InsuranceAdd/InsuranceAdd";
 
 class InsuranceSetup extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpen: false
+    };
+  }
+
   componentDidMount() {
     if (
       this.props.insProviders === undefined ||
@@ -24,16 +32,16 @@ class InsuranceSetup extends Component {
       });
     }
   }
+
+  ShowModel(e) {
+    this.setState({
+      ...this.state,
+      isOpen: !this.state.isOpen
+    });
+  }
   render() {
     return (
       <div className="insurancesetup">
-        {/* Bread Crumb Start */}
-        {/* <div
-          className="container-fluid"
-          style={{ height: "80px", backgroundColor: "#f8f8f8" }}
-        /> */}
-        {/* Bread Crumb end */}
-
         <div className="tab-container">
           <button className="tab-button active">
             Insurance Provider List{" "}
@@ -105,14 +113,22 @@ class InsuranceSetup extends Component {
             paging={{ page: 0, rowsPerPage: 5 }}
           />
         </div>
-
         {/* Footer Start */}
         <div className="fixed-bottom insurance-footer">
           <div className="float-right">
-            <Button style={{ margin: "10px" }} variant="raised" color="primary">
+            <Button
+              style={{ margin: "10px" }}
+              variant="raised"
+              color="primary"
+              onClick={this.ShowModel.bind(this)}
+            >
               ADD NEW
             </Button>
           </div>
+          <InsuranceAdd
+            open={this.state.isOpen}
+            onClose={this.ShowModel.bind(this)}
+          />
         </div>
 
         {/* Footer End */}

@@ -77,10 +77,9 @@ export function algaehApiCall(options) {
   if (settings.printInput) {
     console.log("Input data :", settings.data);
   }
-  let userDtl = getCookie("userDetails");
+  let userDtl = getCookie("UserID");
   let x_app_user_identity = JSON.stringify({
-    user_id:
-      userDtl !== undefined ? JSON.parse(userDtl).algaeh_d_app_user_id : ""
+    user_id: userDtl !== undefined ? userDtl : ""
   });
   console.log("x_app_user_identity", x_app_user_identity);
   if (settings.uri != null || settings.uri != "") {

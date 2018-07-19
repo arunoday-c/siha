@@ -256,12 +256,16 @@ class PersistentDrawer extends React.Component {
       LangSideMenu = sideMenuAr;
     }
     var MenuListItems = LangSideMenu.map((data, idx) => {
+      let icon = data.icon + " side-menu-title";
       return (
         <div key={"side_menu_index" + idx}>
           <div className="container-fluid">
             <div className="row clearfix">
-              <div className="col-xs-3 col-sm-3 col-md-3 text-right">
-                <span className="fas fa-th-large side-menu-title" />
+              <div
+                className="col-xs-2 col-sm-2 col-md-2"
+                style={{ marginTop: "2px" }}
+              >
+                <span className={icon} />
               </div>
               <div
                 className="col-xs-5 col-sm-5 col-md-5 side-menu-title"
@@ -270,7 +274,7 @@ class PersistentDrawer extends React.Component {
                 {data.label}
               </div>
 
-              <div className="col-xs-4 col-sm-4 col-md-4 side-menu-arrow text-right">
+              <div className="col-xs-5 col-sm-5 col-md-5 text-right">
                 {this.state.menuSelected === data.name &&
                 this.state.toggleSubMenu === false ? (
                   <span

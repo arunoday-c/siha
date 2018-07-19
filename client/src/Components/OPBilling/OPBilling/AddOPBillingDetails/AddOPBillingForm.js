@@ -79,12 +79,6 @@ class AddOPBillingForm extends Component {
 
   ProcessToBill(context, e) {
     let $this = this;
-    // let serviceInput = {
-    //   hims_d_services_id: this.state.s_service,
-    //   insured: this.state.insured,
-    //   insured: this.state.insured,
-    //   insured: this.state.insured
-    // };
     debugger;
     let serviceInput = {
       insured: this.state.insured,
