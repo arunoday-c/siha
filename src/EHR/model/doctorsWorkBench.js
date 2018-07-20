@@ -170,8 +170,116 @@ let physicalExaminationSubDetails = (req, res, next) => {
     next(e);
   }
 };
+
+//created by:irfan,to get physical examination header& details
+
+let getPhysicalExamination = (req, res, next) => {
+  let physicalExaminationHeaderModel = {
+    headerId: null
+  };
+
+  let physicalExaminationDetailsModel = {
+    hims_d_physical_examination_details_id: null,
+    physical_examination_header_id: null
+  };
+
+  let physicalExaminationSubDetailsModel = {
+    hims_d_physical_examination_subdetails_id: null,
+    physical_examination_details_id: null
+  };
+
+  debugFunction("getPhysicalExamination");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      //if headerId not received then send all details
+      if (req.query.headerId == null || req.query.headerId == undefined) {
+        connection.query(
+          " SELECT * FROM hims_d_physical_examination_header where record_status='A'",
+          (error, result) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      }
+      //if headerId  received then send specific details and sub details
+      else if (req.query.headerId != null) {
+        let headerInput = extend(physicalExaminationHeaderModel, req.query);
+
+        connection.query(
+          "SELECT * FROM hims_d_physical_examination_header \
+      where hims_d_physical_examination_header_id=? and record_status='A'",
+          [headerInput.headerId],
+          (error, headerResult) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            // req.records = detailResult;
+
+            connection.query(
+              "SELECT * FROM hims_d_physical_examination_details where \
+         physical_examination_header_id=? and record_status='A'",
+              [headerInput.headerId],
+              (error, detailResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+
+                if (detailResult != null) {
+                  let details_id =
+                    detailResult[0].hims_d_physical_examination_details_id;
+                  debugLog(
+                    "detailsId:",
+                    detailResult[0].hims_d_physical_examination_details_id
+                  );
+
+                  connection.query(
+                    "SELECT * FROM hims_d_physical_examination_subdetails where\
+                    physical_examination_details_id=? and record_status='A'",
+                    [details_id],
+                    (error, subDetailResult) => {
+                      if (error) {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      }
+
+                      req.records = {
+                        header: headerResult,
+                        detail: detailResult,
+                        subDetail: subDetailResult
+                      };
+                      next();
+                    }
+                  );
+                }
+              }
+            );
+          }
+        );
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
-  physicalExaminationSubDetails
+  physicalExaminationSubDetails,
+  getPhysicalExamination
 };

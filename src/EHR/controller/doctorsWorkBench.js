@@ -4,7 +4,8 @@ import httpStatus from "../../utils/httpStatus";
 import {
   physicalExaminationHeader,
   physicalExaminationDetails,
-  physicalExaminationSubDetails
+  physicalExaminationSubDetails,
+  getPhysicalExamination
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -43,6 +44,21 @@ export default ({ config, db }) => {
   api.post(
     "/physicalExaminationSubDetails/add",
     physicalExaminationSubDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to get physical examination
+  api.get(
+    "/getPhysicalExamination/get",
+    getPhysicalExamination,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
