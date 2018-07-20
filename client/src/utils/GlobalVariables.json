@@ -90,5 +90,16 @@
       "arabic_name": "خدمة مستوى السياسة السعر",
       "value": "P"
     }
+  ],
+  "FORMAT_PRIORITY": [
+    { "name": "All", "value": "1" },
+    { "name": "Stat", "value": "2" },
+    { "name": "Routine", "value": "3" }
+  ],
+  "FORMAT_TEST_STATUS": [
+    { "name": "All", "value": "1" },
+    { "name": "Ordered", "value": "2" },
+    { "name": "Collected", "value": "3" },
+    { "name": "Cancelled", "value": "4" }
   ]
 }
