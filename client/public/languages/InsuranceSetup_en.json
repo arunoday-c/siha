@@ -36,5 +36,7 @@
   "medicine": "Medicine",
   "deductible": "Deductible",
   "co_pay": "Co Pay",
-  "max_limit": "Max Limit"
+  "max_limit": "Max Limit",
+
+  "add_insurance": "Add Insurance"
 }

@@ -137,5 +137,7 @@
   "effective_start_date": "Effective Start Date",
   "attach_front": "Front Side",
   "attach_back": "Back Side",
-  "card_number": "Card Number"
+  "card_number": "Card Number",
+
+  "bill_details": "Bill Details"
 }

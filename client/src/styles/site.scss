@@ -662,3 +662,16 @@ DayPickerInput {
     cursor: pointer;
   }
 }
+.colorPrimary {
+  background-color: #dbad64;
+
+  h2 {
+    color: #fff;
+    font-size: 3rem;
+    label {
+      font-weight: 500;
+      font-size: 2rem;
+      padding-left: 10px;
+    }
+  }
+}

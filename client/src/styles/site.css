@@ -529,3 +529,13 @@ DayPickerInput {
     cursor: pointer; }
   .moveRadioButtons input[type="radio"] {
     cursor: pointer; }
+
+.colorPrimary {
+  background-color: #dbad64; }
+  .colorPrimary h2 {
+    color: #fff;
+    font-size: 3rem; }
+    .colorPrimary h2 label {
+      font-weight: 500;
+      font-size: 2rem;
+      padding-left: 10px; }

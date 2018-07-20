@@ -1,5 +1,5 @@
 import moment from "moment";
-import Enumerable from "linq";
+
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name;

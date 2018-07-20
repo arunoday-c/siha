@@ -2,9 +2,7 @@ import React, { PureComponent } from "react";
 import "./../../../styles/site.css";
 import { Button, Modal } from "../../Wrapper/algaehWrapper";
 
-import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-import Toolbar from "@material-ui/core/Toolbar";
 import InsuranceProvider from "../InsuranceProvider/InsuranceProvider";
 import SubInsurance from "../SubInsurance/SubInsurance";
 import NetworkPlan from "../NetworkPlan/NetworkPlan";
@@ -93,99 +91,96 @@ class InsuranceAdd extends PureComponent {
 
     return (
       <React.Fragment>
-        <div className="container-fluid">
+        <div className="">
           <Modal
             style={{
-              // position: "relative",
               margin: "0 auto",
               width: "150vh",
               height: "80vh",
               top: "10%"
-              // alignItems: "center",
-              // justifyContent: "center"
             }}
             open={this.props.open}
           >
             <div
               style={{
-                backgroundColor: "#fff",
-                padding: "10px"
+                backgroundColor: "#fff"
               }}
             >
               <div className="colorPrimary">
-                <AppBar position="static" style={{ boxShadow: "none" }}>
-                  <Toolbar>
-                    <Typography variant="title">Add Insurance</Typography>
-                  </Toolbar>
-                </AppBar>
+                <Typography variant="title">
+                  {this.props.HeaderCaption}
+                </Typography>
               </div>
+              <div className="container-fluid">
+                <Stepper activeStep={activeStep} alternativeLabel>
+                  {steps.map(label => {
+                    return (
+                      <Step key={label}>
+                        <StepLabel>{label}</StepLabel>
+                      </Step>
+                    );
+                  })}
+                </Stepper>
 
-              <Stepper activeStep={activeStep} alternativeLabel>
-                {steps.map(label => {
-                  return (
-                    <Step key={label}>
-                      <StepLabel>{label}</StepLabel>
-                    </Step>
-                  );
-                })}
-              </Stepper>
+                <div>
+                  {this.state.activeStep === steps.length ? (
+                    <div>
+                      <Typography className={classes.instructions}>
+                        All steps completed - you&quot;re finished
+                      </Typography>
+                      <Button onClick={this.handleReset}>Reset</Button>
+                    </div>
+                  ) : (
+                    <div>
+                      <Typography className={classes.instructions}>
+                        {getStepContent(activeStep)}
+                      </Typography>
+                    </div>
+                  )}
+                </div>
+                <br />
 
-              <div>
-                {this.state.activeStep === steps.length ? (
-                  <div>
-                    <Typography className={classes.instructions}>
-                      All steps completed - you&quot;re finished
-                    </Typography>
-                    <Button onClick={this.handleReset}>Reset</Button>
+                <div className="row" position="fixed">
+                  <div className="col-lg-1">
+                    <button
+                      // className="htpl1-phase1-btn-others"
+                      disabled={activeStep === 0}
+                      onClick={this.handleBack}
+                      className={
+                        classes.backButton + " htpl1-phase1-btn-others"
+                      }
+                    >
+                      Previous
+                    </button>
                   </div>
-                ) : (
-                  <div>
-                    <Typography className={classes.instructions}>
-                      {getStepContent(activeStep)}
-                    </Typography>
+                  <div className="col-lg-2">
+                    <button className="htpl1-phase1-btn-others" color="primary">
+                      Save & Close
+                    </button>
                   </div>
-                )}
-              </div>
-              <br />
+                  <div className="col-lg-6">&nbsp;</div>
+                  <div className="col-lg-1">
+                    <button
+                      className="htpl1-phase1-btn-others"
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
 
-              <div className="row" position="fixed">
-                <div className="col-lg-1">
-                  <button
-                    // className="htpl1-phase1-btn-others"
-                    disabled={activeStep === 0}
-                    onClick={this.handleBack}
-                    className={classes.backButton + " htpl1-phase1-btn-others"}
-                  >
-                    Previous
-                  </button>
-                </div>
-                <div className="col-lg-2">
-                  <button className="htpl1-phase1-btn-others" color="primary">
-                    Save & Close
-                  </button>
-                </div>
-                <div className="col-lg-6">&nbsp;</div>
-                <div className="col-lg-1">
-                  <button
-                    className="htpl1-phase1-btn-others"
-                    onClick={e => {
-                      this.onClose(e);
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-
-                <div className="col-lg-2">
-                  <button
-                    className="htpl1-phase1-btn-primary"
-                    style={{ float: "right" }}
-                    onClick={this.handleNext}
-                  >
-                    {activeStep === steps.length - 1
-                      ? "Save & Finish"
-                      : "Save & Next"}
-                  </button>
+                  <div className="col-lg-2">
+                    <button
+                      className="htpl1-phase1-btn-primary"
+                      style={{ float: "right" }}
+                      onClick={this.handleNext}
+                    >
+                      {activeStep === steps.length - 1
+                        ? "Save & Finish"
+                        : "Save & Next"}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

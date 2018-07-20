@@ -23,12 +23,3 @@
   min-height: 28px;
   background-color: #fbfbfb;
   border: 0px; }
-
-.hptl-phase1-add-recipt-form .file-name-upload {
-  margin-left: 4%;
-  margin-top: 2%; }
-
-.hptl-phase1-add-recipt-form th,
-.hptl-phase1-add-recipt-form td {
-  border-right: 1px solid #e6e6e6;
-  font-size: 11px; }

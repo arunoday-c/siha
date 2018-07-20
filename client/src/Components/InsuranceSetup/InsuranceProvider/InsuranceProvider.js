@@ -6,11 +6,9 @@ import { bindActionCreators } from "redux";
 import "./InsuranceProvider.css";
 import "./../../../styles/site.css";
 import {
-  AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  Button
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -344,9 +342,6 @@ class InsuranceProvider extends PureComponent {
                 }}
               />
             </div>
-            {/* Insurance Details */}
-
-            {/* Payables */}
           </div>
         </div>
       </React.Fragment>

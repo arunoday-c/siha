@@ -107,5 +107,7 @@
   "plan_desc": "Plan",
   "policy_no": "Policy Number",
   "card_no": "Card Number",
-  "ins_expiry_date": "Expiry Date"
+  "ins_expiry_date": "Expiry Date",
+
+  "bill_details": "Bill Details"
 }
