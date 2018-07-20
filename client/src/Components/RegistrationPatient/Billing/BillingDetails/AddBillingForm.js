@@ -88,7 +88,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlgaehDateHandler
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-4" }}
                           textBox={{
                             className: "txt-fld",
                             name: "bill_date"
@@ -102,7 +102,7 @@ class AddBillingForm extends Component {
                           value={this.state.bill_date}
                         />
 
-                        <div className="col-lg-3">
+                        <div className="col-lg-2">
                           <Tooltip id="tooltip-icon" title="Process Insurance">
                             <IconButton className="go-button" color="primary">
                               <PlayCircleFilled

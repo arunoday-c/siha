@@ -14,7 +14,6 @@
   .hptl-phase1-patientreg-details .text_field {
     width: 100% !important;
     background-color: #fbfbfb;
-    font-size: "11px";
     margin-right: "5px"; }
   .hptl-phase1-patientreg-details .paper {
     background-color: #292929 !important;
@@ -24,5 +23,20 @@
     display: flex;
     justify-content: center; }
 
+<<<<<<< HEAD
 .spacing-push {
   margin-top: 6em; }
+=======
+.hptl-phase1-footer .main {
+  background-color: #000000 !important;
+  border-top: 1px solid #0000;
+  padding: 10px;
+  height: 40px;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0; }
+
+.hptl-phase1-footer .app_bar {
+  background: #000000; }
+>>>>>>> e7f1255e5f00ec0475973eb0db07a87bf63e3df9

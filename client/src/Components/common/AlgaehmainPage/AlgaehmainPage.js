@@ -438,7 +438,7 @@ class PersistentDrawer extends React.Component {
               )}
             >
               <div className={classes.drawerHeader} />
-              <div className="container" style={{ minWidth: "100%" }}>
+              <div style={{ minWidth: "100%" }}>
                 <div className="row" id="hisapp">
                   <div className="col-lg-12">
                     {directRoutes(
