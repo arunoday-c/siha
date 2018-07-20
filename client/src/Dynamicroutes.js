@@ -16,6 +16,8 @@ import Experiment from "./Components/Experiment";
 import OPBilling from "./Components/OPBilling/OPBilling";
 import BillDetails from "./Components/BillDetails/BillDetails";
 import InsuranceSetup from "./Components/InsuranceSetup/InsuranceSetup";
+import MedicalWorkbenchSetup from "./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup";
+import DoctorsWorkbench from "./Components/DoctorsWorkbench/DoctorsWorkbench";
 
 function height() {
   let height =
@@ -32,7 +34,11 @@ const componts = selectedLang => {
     Experiment: <Experiment SelectLanguage={selectedLang} />,
     OPBilling: <OPBilling SelectLanguage={selectedLang} />,
     BillDetails: <BillDetails SelectLanguage={selectedLang} />,
-    InsuranceSetup: <InsuranceSetup SelectLanguage={selectedLang} />
+    InsuranceSetup: <InsuranceSetup SelectLanguage={selectedLang} />,
+    DoctorsWorkbench: <DoctorsWorkbench SelectLanguage={selectedLang} />,
+    MedicalWorkbenchSetup: (
+      <MedicalWorkbenchSetup SelectLanguage={selectedLang} />
+    )
   };
 };
 

@@ -235,6 +235,7 @@ class PersistentDrawer extends React.Component {
     // titlectrl.setAttribute("data-algeahtitle", e.currentTarget.innerText);
 
     // titlectrl.innerText = e.currentTarget.innerText;
+
     this.setState({
       toggleSubMenu: true,
       title: e.currentTarget.innerText,
@@ -438,7 +439,7 @@ class PersistentDrawer extends React.Component {
               )}
             >
               <div className={classes.drawerHeader} />
-              <div className="container" style={{ minWidth: "100%" }}>
+              <div style={{ minWidth: "100%" }}>
                 <div className="row" id="hisapp">
                   <div className="col-lg-12">
                     {directRoutes(

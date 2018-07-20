@@ -137,9 +137,9 @@
         "path": "/InitialStock"
       },
       {
-        "name": "Doctor Workbench",
+        "name": "Doctors Workbench",
         "label": "طبيب طاولة العمل",
-        "path": "/OrderEntry"
+        "path": "/DoctorsWorkbench"
       }
     ]
   },
