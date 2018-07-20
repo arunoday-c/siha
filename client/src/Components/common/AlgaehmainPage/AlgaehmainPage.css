@@ -1,52 +1,43 @@
 .hptl-phase1-sideMenuBar .sideMenu-header {
-  color: white;
-}
+  color: white; }
 
 .hptl-phase1-sideMenuBar .side-menu-title {
   padding-top: 15px;
   padding-bottom: 8px;
-  font-size: 14px;
-  cursor: pointer;
-}
-.hptl-phase1-sideMenuBar .side-menu-title span {
-  font-size: 10px;
-}
+  font-size: 0.8rem;
+  cursor: pointer; }
+  .hptl-phase1-sideMenuBar .side-menu-title span {
+    font-size: 0.8rem; }
 
 .hptl-phase1-sideMenuBar .side-menu-arrow {
-  margin-top: 5px;
-}
+  margin-top: 5px; }
 
 .hptl-phase1-sideMenuBar .side-menu-downIcon {
   padding-top: 5px;
   padding-right: 5px;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 .hptl-phase1-sideMenuBar .tree-structure-menu {
-  padding-left: 30px;
-}
+  padding-left: 30px; }
 
 .hptl-phase1-sideMenuBar .sub-menu-option {
   padding-top: 10px;
-  background: #000000;
-}
+  background: #000000; }
 
 .hptl-phase1-sideMenuBar ul {
   border-left: 1px solid #d3d3d3;
-  margin-top: -9px;
-}
+  margin-top: -9px; }
 
 .hptl-phase1-sideMenuBar ul ul {
-  margin-top: -1.25em;
-}
+  margin-top: -1.25em; }
 
 .hptl-phase1-sideMenuBar li {
   position: relative;
   color: white;
   list-style-type: none;
   cursor: pointer;
-  font-size: 14px;
-}
+  padding-top: 8px;
+  font-size: 0.7rem; }
 
 .hptl-phase1-sideMenuBar li:before {
   content: "";
@@ -56,8 +47,7 @@
   position: absolute;
   top: 15px;
   left: -2.75em;
-  border-top: 1px solid #d3d3d3;
-}
+  border-top: 1px solid #d3d3d3; }
 
 .hptl-phase1-sideMenuBar ul ul:before,
 .hptl-phase1-sideMenuBar h3:before,
@@ -67,30 +57,25 @@
   width: 1em;
   height: 1em;
   top: 1em;
-  left: 0.4em;
-}
+  left: 0.4em; }
 
 .hptl-phase1-sideMenuBar .close-menu {
   padding-top: 5px;
   cursor: pointer;
-  color: #fff;
-}
+  color: #fff; }
 
 .hptl-phase1-sideMenuBar .paper {
   background-color: #292929 !important;
   left: 0px;
-  width: 250px;
-}
+  width: 250px; }
 
 .hptl-phase1-sideMenuBar .menuBar-title {
   display: flex;
   padding: 5px;
-  font-size: 20px;
-}
+  font-size: 20px; }
 
 .hptl-phase1-sideMenuBar svg {
-  height: 23px;
-}
+  height: 23px; }
 
 .hptl-phase1-footer .main {
   background-color: #000000 !important;
@@ -100,9 +85,7 @@
   width: 100%;
   position: fixed;
   left: 0;
-  bottom: 0;
-}
+  bottom: 0; }
 
 .hptl-phase1-footer .app_bar {
-  background: #000000;
-}
+  background: #000000; }

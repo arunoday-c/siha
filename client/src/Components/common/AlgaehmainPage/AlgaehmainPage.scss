@@ -6,9 +6,9 @@
   .side-menu-title {
     padding-top: 15px;
     padding-bottom: 8px;
-    font-size: 14px;
+    font-size: 0.8rem;
     span {
-      font-size: 10px;
+      font-size: 0.8rem;
     }
     cursor: pointer;
   }
@@ -43,7 +43,8 @@
     color: white;
     list-style-type: none;
     cursor: pointer;
-    font-size: 14px;
+    padding-top: 8px;
+    font-size: 0.7rem;
   }
 
   li:before {
