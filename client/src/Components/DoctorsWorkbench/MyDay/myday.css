@@ -1,0 +1,72 @@
+.myday .top-bar {
+  padding: 5px;
+  background-color: #595959; }
+  .myday .top-bar .my-calendar {
+    padding: 1px;
+    /* Add media queries for smaller screens */ }
+    .myday .top-bar .my-calendar .month {
+      padding: 50px 25px;
+      width: 100%;
+      background: #1abc9c;
+      text-align: center; }
+    .myday .top-bar .my-calendar .month ul {
+      margin: 0;
+      padding: 0; }
+    .myday .top-bar .my-calendar .month ul li {
+      color: white;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: 3px; }
+    .myday .top-bar .my-calendar .month .prev {
+      float: left;
+      padding-top: 10px; }
+    .myday .top-bar .my-calendar .month .next {
+      float: right;
+      padding-top: 10px; }
+    .myday .top-bar .my-calendar .weekdays {
+      margin: 0;
+      padding: 10px 0;
+      background-color: #ddd; }
+    .myday .top-bar .my-calendar .weekdays li {
+      display: inline-block;
+      width: 13.6%;
+      color: #666;
+      text-align: center; }
+    .myday .top-bar .my-calendar .days {
+      padding: 10px 0;
+      background: #eee;
+      margin: 0; }
+    .myday .top-bar .my-calendar .days li {
+      list-style-type: none;
+      display: inline-block;
+      width: 13.6%;
+      text-align: center;
+      margin-bottom: 5px;
+      font-size: 12px;
+      color: #777; }
+    .myday .top-bar .my-calendar .days li .active {
+      padding: 5px;
+      background: #1abc9c;
+      color: white !important; }
+    @media screen and (max-width: 720px) {
+      .myday .top-bar .my-calendar .weekdays li,
+      .myday .top-bar .my-calendar .days li {
+        width: 13.1%; } }
+    @media screen and (max-width: 420px) {
+      .myday .top-bar .my-calendar .weekdays li,
+      .myday .top-bar .my-calendar .days li {
+        width: 12.5%; }
+      .myday .top-bar .my-calendar .days li .active {
+        padding: 2px; } }
+    @media screen and (max-width: 290px) {
+      .myday .top-bar .my-calendar .weekdays li,
+      .myday .top-bar .my-calendar .days li {
+        width: 12.2%; } }
+
+.myday .bottom-layout {
+  padding: 5px; }
+  .myday .bottom-layout .right-bottom-panel {
+    margin-top: 5px; }
+  .myday .bottom-layout .grey-label {
+    color: #6c757d;
+    padding-left: 10px; }
