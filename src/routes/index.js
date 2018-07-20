@@ -20,6 +20,7 @@ import globalSearch from "../controller/globalSearch";
 import insurance from "../controller/insurance";
 import opBilling from "../controller/opBilling";
 import userPreferences from "../controller/userPreferences";
+import doctorsWorkBench from "../EHR/controller/doctorsWorkBench";
 
 let router = express();
 
@@ -47,6 +48,7 @@ initializedDb(db => {
   router.use("/gloabelSearch", globalSearch());
   router.use("/opBilling", opBilling({ config, db }));
   router.use("/userPreferences", userPreferences());
+  router.use("/doctorsWorkBench", doctorsWorkBench({ config, db }));
 });
 
 export default router;

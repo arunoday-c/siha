@@ -1455,10 +1455,127 @@ function insuranceServiceDetails(req, next, connection, resolve) {
   );
 }
 
+//created by irfan to add episode and encounter
+let addEpisodeEncounter = (req, res, next) => {
+  let episodeModel = {
+    patient_id: null,
+    provider_id: null,
+    visit_id: null,
+    source: null,
+    status: null,
+    episode_id: null,
+    encounter_id: null,
+    checked_in: null,
+    nurse_examine: null,
+    age: null,
+    patient_type: null,
+    queue_no: null
+  };
+
+  debugFunction("addEpisode");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(episodeModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        let currentEncounterNo = null;
+        
+        connection.query(
+          "select encounter_id from hims_d_options where hims_d_options_id=1",
+          (error, result) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+
+            currentEncounterNo = result[0].encounter_id;
+            debugLog("currentEncounterNo:", currentEncounterNo);
+
+       if (currentEncounterNo > 0) {
+              let nextEncounterNo = currentEncounterNo + 1;
+              debugLog("nextEncounterNo:", nextEncounterNo);
+
+              connection.query(
+                "update hims_d_options set encounter_id=? where hims_d_options_id=1",
+                [nextEncounterNo],
+                (error, updateResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  if (updateResult != null) {
+                    connection.query(
+                      "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,status,\
+                       episode_id,encounter_id,checked_in,nurse_examine,age,patient_type,queue_no)values(\
+                        ?,?,?,?,?,?,?,?,?,?,?,?)",
+                      [
+                        input.patient_id,
+                        input.provider_id,
+                        input.visit_id,
+                        input.source,
+                        input.status,
+                        input.episode_id,
+                        currentEncounterNo,
+                        input.checked_in,
+                        input.nurse_examine,
+                        input.age,
+                        input.patient_type,
+                        input.queue_no
+                      ],
+                      (error, results) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        connection.commit(error => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          req.records = results;
+                          next();
+                        });
+                      }
+                    );
+                  }
+                }
+              );
+            }
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addBill,
   billingCalculations,
   getBillDetails,
   newReceipt,
-  patientAdvanceRefund
+  patientAdvanceRefund,
+  addEpisodeEncounter
 };
