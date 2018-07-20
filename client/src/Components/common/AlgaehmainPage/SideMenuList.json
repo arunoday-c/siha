@@ -1,8 +1,8 @@
 [
   {
-    "name": "GENERAL",
+    "name": "General",
     "label": "General",
-    "path": "/",
+    "icon": "fas fa-tachometer-alt",
     "subMenu": [
       {
         "name": "Dashboard",
@@ -15,7 +15,7 @@
   {
     "name": "Settings",
     "label": "Settings",
-    "path": "/appointment/",
+    "icon": "fas fa-cog",
     "subMenu": [
       {
         "name": "Business Setup",
@@ -44,10 +44,16 @@
     ]
   },
   {
-    "name": "FRONTDESK",
+    "name": "Front Desk",
     "label": "Front Desk",
-    "path": "/registration/",
+    "icon": "fas fa-user-plus",
     "subMenu": [
+      {
+        "name": "Appointment",
+        "label": "Appointment",
+        "arlabel": "موعد",
+        "path": "/Appointment"
+      },
       {
         "name": "Front Desk",
         "label": "Front Desk",
@@ -67,8 +73,9 @@
     ]
   },
   {
-    "name": "OP Billing",
-    "label": "OP Billing",
+    "name": "Billing",
+    "label": "Billing",
+    "icon": "fas fa-receipt",
     "subMenu": [
       {
         "name": "OP Billing",
@@ -91,6 +98,7 @@
   {
     "name": "laboratory",
     "label": "Laboratory",
+    "icon": "fas fa-flask",
     "subMenu": [
       {
         "name": "Sample Collection",
@@ -115,6 +123,7 @@
   {
     "name": "Radiology",
     "label": "Radiology",
+    "icon": "fas fa-x-ray",
     "subMenu": [
       {
         "name": "List",
@@ -131,8 +140,43 @@
     ]
   },
   {
+    "name": "Medical Workbench",
+    "label": "Medical Workbench",
+    "icon": "fas fa-user-md",
+    "subMenu": [
+      {
+        "name": "Nurse Workbench",
+        "label": "Nurse Workbench",
+        "arlabel": "ممرضة طاولة العمل",
+        "path": "/InitialStock"
+      },
+      {
+        "name": "Doctor Workbench",
+        "label": "Doctor Workbench",
+        "arlabel": "طبيب طاولة العمل",
+        "path": "/OrderEntry"
+      }
+    ]
+  },
+
+  {
+    "name": "Insurance",
+    "label": "Insurance",
+    "icon": "fas fa-file-contract",
+    "subMenu": [
+      {
+        "name": "Pre Approval",
+        "label": "Pre Approval",
+        "arlabel": "قبل الموافقة",
+        "path": "/InitialStock"
+      }
+    ]
+  },
+
+  {
     "name": "Pharmacy",
     "label": "Pharmacy",
+    "icon": "fas fa-briefcase-medical",
     "subMenu": [
       {
         "name": "Initial Stock",
@@ -144,7 +188,7 @@
         "name": "POS Entry",
         "label": "POS Entry",
         "arlabel": "دخول POS",
-        "path": "/ResultEntry"
+        "path": "/POSEntry"
       },
       {
         "name": "Sales Return",
@@ -153,11 +197,56 @@
         "path": "/SalesReturn"
       },
       {
-        "name": "Prescription",
-        "label": "Prescription",
-        "arlabel": "وصفة طبية",
+        "name": "Prescription List",
+        "label": "Prescription List",
+        "arlabel": "قائمة وصفة طبية",
         "path": "/Prescription"
       }
     ]
+  },
+
+  {
+    "name": "Inventory",
+    "label": "Inventory",
+    "icon": "fas fa-warehouse",
+    "subMenu": [
+      {
+        "name": "Initial Stock",
+        "label": "Initial Stock",
+        "arlabel": "الأسهم الأولية",
+        "path": "/InitialStock"
+      },
+      {
+        "name": "Order Entry",
+        "label": "Order Entry",
+        "arlabel": "دخول POS",
+        "path": "/OrderEntry"
+      }
+    ]
+  },
+  {
+    "name": "Finance",
+    "label": "Finance",
+    "icon": "fa fa-money-bill",
+    "subMenu": [
+      {
+        "name": "Account Payable",
+        "label": "Account Payable",
+        "arlabel": "دفع الحساب",
+        "path": "/InitialStock"
+      },
+      {
+        "name": "Account Receivable",
+        "label": "Account Receivable",
+        "arlabel": "حساب المستحق",
+        "path": "/OrderEntry"
+      }
+    ]
+  },
+  {
+    "name": "MRD",
+    "label": "MRD",
+    "icon": "fas fa-paste",
+    "subMenu": []
   }
 ]

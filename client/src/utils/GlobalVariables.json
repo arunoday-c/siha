@@ -48,5 +48,35 @@
   "FORMAT_STATUS": [
     { "name": "Active", "arabic_name": "نشيط", "value": "A" },
     { "name": "Inactive", "arabic_name": "غير نشط", "value": "I" }
+  ],
+
+  "FORMAT_SERVICE_PRICE": [
+    { "name": "Gross Amount", "arabic_name": "المبلغ الإجمالي", "value": "G" },
+    { "name": "Net Amount", "arabic_name": "كمية الشبكة", "value": "N" }
+  ],
+
+  "FORMAT_INSURANCE_TYPE": [
+    {
+      "name": "Insurance Company",
+      "arabic_name": "شركة التأمين",
+      "value": "I"
+    },
+    { "name": "TPA", "arabic_name": "TPA", "value": "T" },
+    {
+      "name": "Corporate Client",
+      "arabic_name": "العملاء من الشركات",
+      "value": "C"
+    }
+  ],
+
+  "FORMAT_PACKAGE_CLAIM": [
+    { "name": "Package Claim", "arabic_name": "نشيط", "value": "P" },
+    { "name": "Service Claim", "arabic_name": "الخدمات المطالبة", "value": "S" }
+  ],
+
+  "FORMAT_PAYMENT_TYPE": [
+    { "name": "Credit", "arabic_name": "ائتمان", "value": "CR" },
+    { "name": "Cash", "arabic_name": "السيولة النقدية", "value": "CH" },
+    { "name": "Discount", "arabic_name": "خصم", "value": "DI" }
   ]
 }

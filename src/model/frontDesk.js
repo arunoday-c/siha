@@ -3,7 +3,7 @@ import { insertVisitData } from "../model/visit";
 import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 import extend from "extend";
 import { addBill, newReceipt } from "../model/billing";
-import { addPatientInsurence } from "../model/insurance";
+import { addPatientInsurance } from "../model/insurance";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction } from "../utils/logging";
 
@@ -121,7 +121,7 @@ let addFrontDesk = (req, res, next) => {
                               //add patient insurance
 
                               if (req.body.insured == "Y") {
-                                addPatientInsurence(
+                                addPatientInsurance(
                                   connection,
                                   req,
                                   res,
@@ -365,7 +365,7 @@ let updateFrontDesk = (req, res, next) => {
                   //add patient insurance
 
                   if (req.body.insured == "Y") {
-                    addPatientInsurence(
+                    addPatientInsurance(
                       connection,
                       req,
                       res,
