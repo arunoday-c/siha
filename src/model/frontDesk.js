@@ -183,9 +183,12 @@ let addFrontDesk = (req, res, next) => {
                                           });
                                         }
                                         connection.commit(error => {
-                                          releaseDBConnection(db, connection);
                                           if (error) {
                                             connection.rollback(() => {
+                                              releaseDBConnection(
+                                                db,
+                                                connection
+                                              );
                                               next(error);
                                             });
                                           }
