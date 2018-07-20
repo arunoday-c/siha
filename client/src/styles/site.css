@@ -392,6 +392,32 @@
     transform: rotate(-405deg);
     -webkit-transform: rotate(-405deg); } }
 
+:global .hptl-phase1-footer .main {
+  background-color: #000000 !important;
+  border-top: 1px solid #0000;
+  padding: 10px;
+  height: 40px;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0; }
+
+:global .hptl-phase1-footer .app_bar {
+  background: #000000; }
+
+:global .hptl-phase1-master-footer .main {
+  background-color: #fff !important;
+  border-top: 1px solid #fff;
+  padding: 10px;
+  height: 40px;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0; }
+
+:global .hptl-phase1-master-footer .app_bar {
+  background: #000000; }
+
 body {
   background-color: #f2f2f2; }
 

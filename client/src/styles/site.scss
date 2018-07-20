@@ -494,6 +494,40 @@
       -webkit-transform: rotate(-405deg);
     }
   }
+
+  .hptl-phase1-footer {
+    .main {
+      background-color: #000000 !important;
+      border-top: 1px solid #0000;
+      padding: 10px;
+      height: 40px;
+      width: 100%;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+    }
+
+    .app_bar {
+      background: #000000;
+    }
+  }
+
+  .hptl-phase1-master-footer {
+    .main {
+      background-color: #fff !important;
+      border-top: 1px solid #fff;
+      padding: 10px;
+      height: 40px;
+      width: 100%;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+    }
+
+    .app_bar {
+      background: #000000;
+    }
+  }
 }
 
 body {

@@ -30,6 +30,7 @@
 
   ul {
     border-left: 1px solid #d3d3d3;
+    margin-top: -9px;
   }
 
   ul ul {
@@ -41,7 +42,9 @@
     color: white;
     list-style-type: none;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+    vertical-align: middle;
+    padding-top: 8px;
   }
 
   li:before {

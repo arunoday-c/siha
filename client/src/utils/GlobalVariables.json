@@ -78,5 +78,17 @@
     { "name": "Credit", "arabic_name": "ائتمان", "value": "CR" },
     { "name": "Cash", "arabic_name": "السيولة النقدية", "value": "CH" },
     { "name": "Discount", "arabic_name": "خصم", "value": "DI" }
+  ],
+  "FORMAT_PRICE_FROM": [
+    {
+      "name": "Company Level Service Price",
+      "arabic_name": "خدمة مستوى الشركة السعر",
+      "value": "P"
+    },
+    {
+      "name": "Policy Level Service Price",
+      "arabic_name": "خدمة مستوى السياسة السعر",
+      "value": "P"
+    }
   ]
 }

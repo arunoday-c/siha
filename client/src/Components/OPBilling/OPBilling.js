@@ -245,7 +245,7 @@ class PatientDisplayDetails extends Component {
           </MyContext.Provider>
         </div>
 
-        <div className="hptl-op-billing-footer">
+        <div className="hptl-phase1-footer">
           <br /> <br />
           <AppBar position="static" className="main">
             <div className="container-fluid">

@@ -19,5 +19,22 @@
   "insurance_sub_code": "Sub Insurance Code",
   "insurance_sub_name": "Sub Insurance Name",
   "transaction_number": "Transaction Number",
-  "card_format": "Card Format"
+  "card_format": "Card Format",
+
+  "network_type": "Network Type",
+  "insurance_sub_id": "Applicable For",
+  "employer": "Employer/Company",
+  "policy_number": "Policy Number",
+  "preapp_limit": "Pre-Approval Limit",
+  "price_from": "Price From",
+
+  "consultation": "Consultation",
+  "lab_desc": "Lab",
+  "radiology": "Radiology",
+  "OPD_services": "OPD Services",
+  "dental_OPD_services": "Dental OPD Services",
+  "medicine": "Medicine",
+  "deductible": "Deductible",
+  "co_pay": "Co Pay",
+  "max_limit": "Max Limit"
 }
