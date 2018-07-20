@@ -3,10 +3,11 @@
 
 .hptl-phase1-sideMenuBar .side-menu-title {
   padding-top: 15px;
-  font-size: 0.8rem;
+  padding-bottom: 8px;
+  font-size: 14px;
   cursor: pointer; }
   .hptl-phase1-sideMenuBar .side-menu-title span {
-    font-size: 0.8rem; }
+    font-size: 10px; }
 
 .hptl-phase1-sideMenuBar .side-menu-arrow {
   margin-top: 5px; }
@@ -34,7 +35,7 @@
   color: white;
   list-style-type: none;
   cursor: pointer;
-  font-size: 0.8rem; }
+  font-size: 14px; }
 
 .hptl-phase1-sideMenuBar li:before {
   content: "";
