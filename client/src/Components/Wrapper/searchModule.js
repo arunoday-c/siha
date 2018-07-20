@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "../Wrapper/spotlight.css";
 import { AlgaehDataGrid } from "../Wrapper/algaehWrapper";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, getCookie } from "../../utils/algaehApiCall";
 var intervalId;
 class SearchModule extends Component {
   constructor(props) {
@@ -53,12 +53,12 @@ class SearchModule extends Component {
     to get the previously stored value into UserPreferences
 */
   getUserSelectedValue(nextProps, callBack) {
+    let _screenName = getCookie("ScreenName").replace("/", "");
     algaehApiCall({
       uri: "/userPreferences/get",
       data: {
-        screenName: "frontDesk",
-        identifier: nextProps.searchName,
-        userId: 1
+        screenName: _screenName,
+        identifier: nextProps.searchName
       },
       method: "GET",
       onSuccess: response => {
@@ -84,12 +84,12 @@ class SearchModule extends Component {
   }
 
   setUserSelectedValue(identifier, value, callBack) {
+    let _screenName = getCookie("ScreenName").replace("/", "");
     algaehApiCall({
       uri: "/userPreferences/save",
       data: {
-        screenName: "frontDesk",
+        screenName: _screenName,
         identifier: identifier,
-        userId: 1,
         value: value
       },
       method: "POST",
@@ -100,7 +100,6 @@ class SearchModule extends Component {
   }
 
   handleOnchnageSearchBy(e) {
-    let $this = this;
     let _value = e.target.value;
     this.setUserSelectedValue(this.props.searchName, _value, response => {
       this.setState({ searchBy: _value });
@@ -123,7 +122,7 @@ class SearchModule extends Component {
         $this.setState({ contains: contains });
       }
       clearInterval(intervalId);
-    }, 500);
+    }, 1000);
   }
 
   /*

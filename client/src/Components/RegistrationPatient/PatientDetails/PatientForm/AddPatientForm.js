@@ -190,7 +190,7 @@ class AddPatientForm extends PureComponent {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 primary-details">
-                    <div className="row primary-box-container">
+                    <div className="row">
                       {/* <AlagehAutoComplete classes="" other="" /> */}
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
@@ -282,7 +282,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
                     </div>
-                    <div className="row primary-box-container">
+                    <div className="row">
                       <AlagehFormGroup
                         div={{ className: "col-lg-1" }}
                         label={{
@@ -430,7 +430,7 @@ class AddPatientForm extends PureComponent {
                       />
                     </div>
 
-                    <div className="row primary-box-container">
+                    <div className="row">
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -511,7 +511,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
                     </div>
-                    <div className="row primary-box-container">
+                    <div className="row">
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -643,7 +643,7 @@ class AddPatientForm extends PureComponent {
                       />
                     </div>
 
-                    <div className="row secondary-box-container">
+                    <div className="row">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-6" }}
                         label={{
@@ -688,7 +688,10 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
                     </div>
-                    <div className="row secondary-box-container">
+                    <div
+                      className="row secondary-box-container"
+                      style={{ paddingTop: "5px" }}
+                    >
                       <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                         <div className="image-drop-area">
                           <Dropzone
@@ -699,25 +702,25 @@ class AddPatientForm extends PureComponent {
                             multiple={false}
                             name="image"
                           >
-                            <div
-                              className="attach-design text-center"
-                              id="attach-width"
-                            >
+                            <img
+                              // className="preview-image"
+                              src={this.state.filePreview}
+                              style={{ width: "100%", height: "88px" }}
+                            />
+
+                            <div className="attach-design text-center">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "attach_photo"
+                                  fieldName: "attach_photo",
+                                  align: ""
                                 }}
                               />
                             </div>
                           </Dropzone>
                         </div>
-                        <div>
-                          <img
-                            className="preview-image"
-                            src={this.state.filePreview}
-                            style={{ width: this.widthImg }}
-                          />
-                        </div>
+                        {/* <div>
+                        
+                        </div> */}
                       </div>
                       <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                         <div className="image-drop-area">
@@ -733,25 +736,22 @@ class AddPatientForm extends PureComponent {
                             multiple={false}
                             name="image"
                           >
-                            <div
-                              className="attach-design text-center"
-                              id="attach-primary-id"
-                            >
+                            <img
+                              //className="preview-image"
+                              src={this.state.filePrimaryPreview}
+                              style={{ width: "100%", height: "88px" }}
+                            />
+                            <div className="attach-design text-center">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "attach_idcard"
+                                  fieldName: "attach_idcard",
+                                  align: ""
                                 }}
                               />
                             </div>
                           </Dropzone>
                         </div>
-                        <div>
-                          <img
-                            className="preview-image"
-                            src={this.state.filePrimaryPreview}
-                            style={{ width: this.widthImg }}
-                          />
-                        </div>
+                        <div />
                       </div>
                     </div>
                   </div>

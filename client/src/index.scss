@@ -1,7 +1,8 @@
+$forntSize: 0.7rem;
 :global {
   .tab-container {
     .tab-button {
-      font-size: 12px;
+      font-size: $forntSize;
       font-weight: normal;
       border-radius: 0px;
       background-color: #f3f3f3;
@@ -261,6 +262,6 @@
   }
 
   .spacing-push {
-    margin-top: 6em !important;
+    margin-top: 4.5em !important;
   }
 }

@@ -77,24 +77,28 @@ export function algaehApiCall(options) {
   if (settings.printInput) {
     console.log("Input data :", settings.data);
   }
-
+  let userDtl = getCookie("UserID");
+  let x_app_user_identity = JSON.stringify({
+    user_id: userDtl !== undefined ? userDtl : ""
+  });
+  console.log("x_app_user_identity", x_app_user_identity);
   if (settings.uri != null || settings.uri != "") {
     if (settings.isfetch) {
       return fetch(settings.baseUrl + settings.uri + queryParametres, {
         method: settings.method,
-        headers: { "x-api-key": headerToken },
+        headers: {
+          "x-api-key": headerToken,
+          "x-app-user-identity": x_app_user_identity
+        },
         body: JSON.stringify(settings.data)
       })
         .then(response => {
           if (response.status >= 200 && response.status < 300) {
-            console.log(response);
-            // dispatch(loginSuccess(response));
             if (typeof settings.onSuccess === "function")
               settings.onSuccess(response);
           } else {
             const error = new Error(response.statusText);
             error.response = response;
-            // dispatch(loginError(error));
             if (typeof settings.onFailure === "function")
               settings.onFailure(error);
             throw error;
@@ -108,7 +112,10 @@ export function algaehApiCall(options) {
     axios({
       method: settings.method,
       url: settings.baseUrl + settings.uri + queryParametres,
-      headers: { "x-api-key": headerToken },
+      headers: {
+        "x-api-key": headerToken,
+        "x-app-user-identity": x_app_user_identity
+      },
       data: settings.data,
       timeout: settings.timeout
     })

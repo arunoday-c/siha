@@ -4,10 +4,10 @@
 .hptl-phase1-sideMenuBar .side-menu-title {
   padding-top: 15px;
   padding-bottom: 8px;
-  font-size: 14px;
+  font-size: 0.8rem;
   cursor: pointer; }
   .hptl-phase1-sideMenuBar .side-menu-title span {
-    font-size: 10px; }
+    font-size: 0.8rem; }
 
 .hptl-phase1-sideMenuBar .side-menu-arrow {
   margin-top: 5px; }
@@ -25,7 +25,8 @@
   background: #000000; }
 
 .hptl-phase1-sideMenuBar ul {
-  border-left: 1px solid #d3d3d3; }
+  border-left: 1px solid #d3d3d3;
+  margin-top: -9px; }
 
 .hptl-phase1-sideMenuBar ul ul {
   margin-top: -1.25em; }
@@ -35,7 +36,8 @@
   color: white;
   list-style-type: none;
   cursor: pointer;
-  font-size: 14px; }
+  padding-top: 8px;
+  font-size: 0.7rem; }
 
 .hptl-phase1-sideMenuBar li:before {
   content: "";
@@ -47,13 +49,15 @@
   left: -2.75em;
   border-top: 1px solid #d3d3d3; }
 
-.hptl-phase1-sideMenuBar ul ul:before, .hptl-phase1-sideMenuBar h3:before, .hptl-phase1-sideMenuBar li:after {
-  content: '';
+.hptl-phase1-sideMenuBar ul ul:before,
+.hptl-phase1-sideMenuBar h3:before,
+.hptl-phase1-sideMenuBar li:after {
+  content: "";
   display: block;
   width: 1em;
   height: 1em;
   top: 1em;
-  left: .4em; }
+  left: 0.4em; }
 
 .hptl-phase1-sideMenuBar .close-menu {
   padding-top: 5px;
@@ -85,6 +89,3 @@
 
 .hptl-phase1-footer .app_bar {
   background: #000000; }
-
-.spacing-push {
-  margin-top: 6em; }

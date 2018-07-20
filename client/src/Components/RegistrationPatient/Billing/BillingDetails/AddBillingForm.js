@@ -19,7 +19,8 @@ import {
   cashtexthandle,
   cardtexthandle,
   chequetexthandle,
-  adjustadvance
+  adjustadvance,
+  ProcessInsurance
 } from "./AddBillingDetails";
 import MyContext from "../../../../utils/MyContext.js";
 import { withRouter } from "react-router-dom";
@@ -87,7 +88,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlgaehDateHandler
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-4" }}
                           textBox={{
                             className: "txt-fld",
                             name: "bill_date"
@@ -102,23 +103,15 @@ class AddBillingForm extends Component {
                         />
 
                         <div className="col-lg-2">
-                          <button
-                            className="htpl1-phase1-btn-primary"
-                            onClick={this.ShowBillDetails.bind(this)}
-                          >
-                            Details....
-                          </button>
-
-                          <DisplayOPBilling
-                            BillingIOputs={this.state}
-                            show={this.state.isOpen}
-                            onClose={this.ShowBillDetails.bind(this)}
-                          />
-                        </div>
-                        <div className="col-lg-1">
-                          <Tooltip id="tooltip-icon" title="Process">
+                          <Tooltip id="tooltip-icon" title="Process Insurance">
                             <IconButton className="go-button" color="primary">
-                              <PlayCircleFilled />
+                              <PlayCircleFilled
+                                onClick={ProcessInsurance.bind(
+                                  this,
+                                  this,
+                                  context
+                                )}
+                              />
                             </IconButton>
                           </Tooltip>
                         </div>
@@ -260,6 +253,32 @@ class AddBillingForm extends Component {
                             }
                           }}
                         />
+
+                        <div className="col-lg-2">
+                          <button
+                            className="htpl1-phase1-btn-primary"
+                            onClick={this.ShowBillDetails.bind(this)}
+                          >
+                            Details....
+                          </button>
+
+                          <DisplayOPBilling
+                            HeaderCaption={
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "bill_details",
+                                  align: "ltr"
+                                }}
+                              />
+                            }
+                            BillingIOputs={{
+                              selectedLang: this.state.selectedLang,
+                              billdetails: this.state.billdetails
+                            }}
+                            show={this.state.isOpen}
+                            onClose={this.ShowBillDetails.bind(this)}
+                          />
+                        </div>
                       </div>
                       <hr />
                       <div className="row last-box-container">
@@ -273,8 +292,7 @@ class AddBillingForm extends Component {
                         <AlagehFormGroup
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "net_amount",
-                            isImp: true
+                            fieldName: "net_amount"
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -293,8 +311,7 @@ class AddBillingForm extends Component {
                         <AlagehFormGroup
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "credit_amount",
-                            isImp: true
+                            fieldName: "credit_amount"
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -313,8 +330,7 @@ class AddBillingForm extends Component {
                         <AlagehFormGroup
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "receiveable_amount",
-                            isImp: true
+                            fieldName: "receiveable_amount"
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -341,8 +357,7 @@ class AddBillingForm extends Component {
                         <AlagehFormGroup
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "receipt_number",
-                            isImp: true
+                            fieldName: "receipt_number"
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -358,7 +373,7 @@ class AddBillingForm extends Component {
                         />
                         <AlgaehDateHandler
                           div={{ className: "col-lg-3" }}
-                          label={{ fieldName: "receipt_date", isImp: true }}
+                          label={{ fieldName: "receipt_date" }}
                           textBox={{
                             className: "txt-fld",
                             name: "receipt_date"
@@ -375,8 +390,7 @@ class AddBillingForm extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "counter_id",
-                            isImp: true
+                            fieldName: "counter_id"
                           }}
                           selector={{
                             name: "counter_id",
@@ -397,8 +411,7 @@ class AddBillingForm extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "shift_id",
-                            isImp: true
+                            fieldName: "shift_id"
                           }}
                           selector={{
                             name: "shift_id",
@@ -469,9 +482,6 @@ class AddBillingForm extends Component {
                             value: this.state.cash_amount,
                             events: {
                               onChange: cashtexthandle.bind(this, this, context)
-                            },
-                            others: {
-                              receipt: true
                             }
                           }}
                         />
@@ -533,9 +543,6 @@ class AddBillingForm extends Component {
                             value: this.state.card_amount,
                             events: {
                               onChange: cardtexthandle.bind(this, this, context)
-                            },
-                            others: {
-                              receipt: true
                             }
                           }}
                         />

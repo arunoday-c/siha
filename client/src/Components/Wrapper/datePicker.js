@@ -4,6 +4,8 @@ import TextField from "@material-ui/core/TextField";
 import DayPickerInput from "react-date-picker";
 // import "react-day-picker/lib/style.css";
 import "../Wrapper/wrapper.css";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import AccountCircle from "@material-ui/icons/AccountCircle";
 import { getCookie } from "../../utils/algaehApiCall.js";
 
 export default class DateHandler extends Component {
@@ -32,9 +34,18 @@ export default class DateHandler extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.value === this.state.value) return false;
+    if (
+      nextProps.value !== this.state.value ||
+      (nextProps.disabled != null &&
+        nextProps.disabled != this.state.disabled) ||
+      nextState != this.state.value
+    )
+      return true;
+    return false;
 
-    return true;
+    // if (nextProps.value === this.state.value) return false;
+
+    // return true;
   }
   onDayChange = (selected, modifiers) => {
     this.props.events !== undefined &&
@@ -44,29 +55,42 @@ export default class DateHandler extends Component {
   };
 
   renderDatePicker = () => {
+    // return (
+    //   <div className="algaeh-datePicker">
+    //     <TextField
+    //       InputProps={{
+    //         ...this.props.textBox.inputProps,
+    //         ...{
+    //           inputComponent: () => {
+    //             return (
+    //               <DayPickerInput
+    //                 value={this.state.value}
+    //                 onChange={this.onDayChange.bind(this)}
+    //                 className={this.props.textBox.className}
+    //                 disabled={this.props.disabled}
+    //                 maxDate={this.props.maxDate}
+    //                 minDate={this.props.minDate}
+    //                 {...this.props.textBox.others}
+    //               />
+    //             );
+    //           }
+    //         }
+
+    //       }}
+    //       error={this.props.error}
+    //       helperText={this.props.helperText}
+    //     />
+    //   </div>
+    // );
     return (
       <div className="algaeh-datePicker">
-        <TextField
-          InputProps={{
-            ...this.props.textBox.inputProps,
-            ...{
-              inputComponent: () => {
-                return (
-                  <DayPickerInput
-                    value={this.state.value}
-                    onChange={this.onDayChange.bind(this)}
-                    className={this.props.textBox.className}
-                    disabled={this.props.disabled}
-                    maxDate={this.props.maxDate}
-                    minDate={this.props.minDate}
-                    {...this.props.textBox.others}
-                  />
-                );
-              }
-            }
-          }}
-          error={this.props.error}
-          helperText={this.props.helperText}
+        <DayPickerInput
+          value={this.state.value}
+          onChange={this.onDayChange.bind(this)}
+          disabled={this.props.disabled}
+          maxDate={this.props.maxDate}
+          minDate={this.props.minDate}
+          {...this.props.textBox.others}
         />
       </div>
     );

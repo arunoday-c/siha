@@ -22,7 +22,8 @@
   "advance": "Advance",
   "advance_adjust": "Adjust",
   "bill_amount": "Bill Amount",
-  "net_amount": "Net Total",
+  "net_total": "Net Total",
+  "net_amount": "Net Amount",
   "credit_amount": "Credit",
   "receiveable_amount": "Receivable",
   "sub_total_amount": "Sub Total",
@@ -99,5 +100,14 @@
 
   "patient_lbl": "Patient",
   "company_lbl": "Primary Company",
-  "sec_comp_lbl": "Secondary Company"
+  "sec_comp_lbl": "Secondary Company",
+
+  "insurance_company": "Insurance Company",
+  "sub_insurance_company": "Sub Insurance Company",
+  "plan_desc": "Plan",
+  "policy_no": "Policy Number",
+  "card_no": "Card Number",
+  "ins_expiry_date": "Expiry Date",
+
+  "bill_details": "Bill Details"
 }

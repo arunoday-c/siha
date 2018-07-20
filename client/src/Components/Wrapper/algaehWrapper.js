@@ -7,6 +7,7 @@ import AutoComplete from "../Wrapper/autoComplete";
 import DataGrid from "../Wrapper/grid";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
+import Modal from "@material-ui/core/Modal";
 
 import "hijri-date";
 
@@ -33,5 +34,6 @@ export {
   AlagehAutoComplete,
   AlgaehDataGrid,
   Button,
-  Tooltip
+  Tooltip,
+  Modal
 };

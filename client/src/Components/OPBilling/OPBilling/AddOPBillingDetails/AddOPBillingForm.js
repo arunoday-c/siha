@@ -39,6 +39,7 @@ class AddOPBillingForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     this.setState(nextProps.BillingIOputs);
   }
 
@@ -78,10 +79,18 @@ class AddOPBillingForm extends Component {
 
   ProcessToBill(context, e) {
     let $this = this;
+    debugger;
     let serviceInput = {
+      insured: this.state.insured,
       hims_d_services_id: this.state.s_service,
-      insured: "Y",
-      copay_status: "Y"
+      primary_insurance_provider_id: this.state.insurance_provider_id,
+      primary_network_office_id: this.state.hims_d_insurance_network_office_id,
+      primary_network_id: this.state.network_id,
+      sec_insured: this.state.sec_insured,
+      secondary_insurance_provider_id: this.state
+        .secondary_insurance_provider_id,
+      secondary_network_id: this.state.secondary_network_id,
+      secondary_network_office_id: this.state.secondary_network_office_id
     };
 
     this.props.generateBill({
@@ -139,13 +148,7 @@ class AddOPBillingForm extends Component {
       },
       afterSuccess: data => {
         extend(row, data.billdetails[0]);
-
         $this.setState({});
-        // if (context != null) {
-        //   context.updateState({
-        //     billdetails: serviceDetails
-        //   });
-        // }
       }
     });
   }
@@ -298,7 +301,18 @@ class AddOPBillingForm extends Component {
                     </button>
 
                     <DisplayOPBilling
-                      BillingIOputs={this.state}
+                      HeaderCaption={
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "bill_details",
+                            align: "ltr"
+                          }}
+                        />
+                      }
+                      BillingIOputs={{
+                        selectedLang: this.state.selectedLang,
+                        billdetails: this.state.billdetails
+                      }}
                       show={this.state.isOpen}
                       onClose={this.ShowBillDetails.bind(this)}
                     />
@@ -500,7 +514,7 @@ class AddOPBillingForm extends Component {
                     />
                   </div>
                   <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col-lg-2 text" }}
                     textBox={{
                       decimal: { allowNegative: false },
                       value: this.state.sub_total_amount,
@@ -510,7 +524,8 @@ class AddOPBillingForm extends Component {
                         onChange: null
                       },
                       others: {
-                        disabled: true
+                        disabled: true,
+                        style: { color: "black" }
                       }
                     }}
                   />
@@ -543,7 +558,7 @@ class AddOPBillingForm extends Component {
                     <AlgaehLabel
                       label={{
                         // forceLabel: "Net Total"
-                        fieldName: "net_amount"
+                        fieldName: "net_total"
                       }}
                     />
                   </div>
@@ -552,9 +567,9 @@ class AddOPBillingForm extends Component {
                     div={{ className: "col-lg-2" }}
                     textBox={{
                       decimal: { allowNegative: false },
-                      value: this.state.net_amount,
+                      value: this.state.net_total,
                       className: "txt-fld",
-                      name: "net_amount",
+                      name: "net_total",
                       events: {
                         onChange: null
                       },
@@ -613,9 +628,9 @@ class AddOPBillingForm extends Component {
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
-                      value: this.state.sec_deductable_amount,
+                      value: this.state.sec_copay_amount,
                       className: "txt-fld",
-                      name: "sec_deductable_amount",
+                      name: "sec_copay_amount",
 
                       events: {
                         onChange: texthandle.bind(this, this, context)
@@ -629,7 +644,7 @@ class AddOPBillingForm extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "seco_deductable_amount"
+                      fieldName: "sec_deductable_amount"
                     }}
                     textBox={{
                       decimal: { allowNegative: false },

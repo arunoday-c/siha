@@ -412,7 +412,8 @@ let billingCalculations = (req, res, next) => {
     }
     let sendingObject = {};
 
-    debugLog("bool Value: ", inputParam.intCalculateall);
+    debugLog("bool Value: ", hasCalculateall);
+    debugLog("Input", req.body);
     if (hasCalculateall == true) {
       sendingObject.sub_total_amount = new LINQ(inputParam).Sum(
         d => d.gross_amount
@@ -728,8 +729,8 @@ let getBillDetails = (req, res, next) => {
                 req.body.insurance_id =
                   req.body.secondary_insurance_provider_id;
                 req.body.hims_d_insurance_network_office_id =
-                  req.body.secondary_network_id;
-                req.body.network_id = req.body.secondary_network_office_id;
+                  req.body.secondary_network_office_id;
+                req.body.network_id = req.body.secondary_network_id;
 
                 insuranceServiceDetails(req, next, connection, resolve);
               } else {
@@ -744,12 +745,15 @@ let getBillDetails = (req, res, next) => {
               //Calculation Starts
               if (insured === "Y") {
                 debugLog("Insured:", quantity);
+                debugLog("Unit cost", policydtls.gross_amt);
 
                 if (policydtls.company_service_price_type == "N") {
                   unit_cost = policydtls.net_amount;
                 } else {
                   unit_cost = policydtls.gross_amt;
                 }
+
+                debugLog("Unit cost", unit_cost);
 
                 gross_amount = quantity * unit_cost;
 
@@ -782,8 +786,8 @@ let getBillDetails = (req, res, next) => {
                   req.body.insurance_id =
                     req.body.secondary_insurance_provider_id;
                   req.body.hims_d_insurance_network_office_id =
-                    req.body.secondary_network_id;
-                  req.body.network_id = req.body.secondary_network_office_id;
+                    req.body.secondary_network_office_id;
+                  req.body.network_id = req.body.secondary_network_id;
                   //Secondary Insurance
                   return new Promise((resolve, reject) => {
                     try {

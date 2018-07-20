@@ -18,7 +18,7 @@ export const AlgaehActions = options => (dispatch, getgetState) => {
     },
     ...options
   };
-
+  debugger;
   if (settings.redux.data === undefined) {
     settings.onSuccess = response => {
       if (eval(settings.schema.successField)) {

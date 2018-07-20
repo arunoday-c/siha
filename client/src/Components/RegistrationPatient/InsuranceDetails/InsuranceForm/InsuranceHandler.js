@@ -32,7 +32,7 @@ const insurancehandle = ($this, context, e) => {
     primary_effective_start_date: e.selected.effective_start_date,
     primary_effective_end_date: e.selected.effective_end_date
   });
-
+  debugger;
   if (context != null) {
     context.updateState({
       primary_insurance_provider_id: e.selected.insurance_provider_id,
@@ -41,12 +41,14 @@ const insurancehandle = ($this, context, e) => {
       primary_policy_num: e.selected.policy_number,
       primary_card_number: e.selected.card_number,
       primary_effective_start_date: e.selected.effective_start_date,
-      primary_effective_end_date: e.selected.effective_end_date
+      primary_effective_end_date: e.selected.effective_end_date,
+      primary_network_office_id: e.selected.network_id
     });
   }
 };
 
 const datehandle = ($this, context, ctrl, e) => {
+  debugger;
   $this.setState({
     [e]: moment(ctrl)._d
   });
@@ -57,6 +59,7 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const InsuranceDetails = ($this, context, e) => {
+  debugger;
   AlgaehSearch({
     searchGrid: {
       columns: Insurance
@@ -67,27 +70,51 @@ const InsuranceDetails = ($this, context, e) => {
       callBack(text);
     },
     onRowSelect: row => {
+      debugger;
+
       let obj = {
         insurance_provider_id: row.hims_d_insurance_provider_id,
-        insurance_provider_name: row.hims_d_insurance_sub_id,
+        insurance_provider_name: row.insurance_provider_name,
 
         sub_insurance_provider_id: row.hims_d_insurance_sub_id,
-        sub_insurance_provider_name: row.hims_d_insurance_sub_id,
+        sub_insurance_provider_name: row.insurance_sub_name,
 
         network_id: row.hims_d_insurance_network_id,
-        network_type: row.hims_d_insurance_network_id,
+        network_type: row.network_type,
 
         policy_number: row.policy_number
       };
+
+      $this.props.setSelectedInsurance({
+        redux: {
+          type: "PRIMARY_INSURANCE_DATA",
+          mappingName: "primaryinsurance",
+          data: [obj]
+        }
+      });
 
       $this.setState({
         primary_insurance_provider_id: row.hims_d_insurance_provider_id,
         primary_sub_id: row.hims_d_insurance_sub_id,
         primary_network_id: row.hims_d_insurance_network_id,
-        primary_policy_num: row.policy_number
+        primary_policy_num: row.policy_number,
+        primary_network_office_id: row.hims_d_insurance_network_office_id
         // primary_effective_start_date: e.selected.effective_start_date,
         // primary_effective_end_date: e.selected.effective_end_date
       });
+
+      if (context != null) {
+        context.updateState({
+          primary_insurance_provider_id: row.hims_d_insurance_provider_id,
+          primary_sub_id: row.hims_d_insurance_sub_id,
+          primary_network_id: row.hims_d_insurance_network_id,
+          primary_policy_num: row.policy_number,
+          primary_network_office_id: row.hims_d_insurance_network_office_id
+
+          // primary_effective_start_date: e.selected.effective_start_date,
+          // primary_effective_end_date: e.selected.effective_end_date
+        });
+      }
     }
   });
 };

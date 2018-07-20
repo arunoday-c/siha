@@ -3,15 +3,7 @@
   border-radius: 5px; }
 
 .htpl-phase1-primary-secinsurancedis-form .primary-details {
-  padding: 5px;
   border-right: 1px solid #000; }
-  .htpl-phase1-primary-secinsurancedis-form .primary-details .primary-box-container {
-    padding: 5px; }
-
-.htpl-phase1-primary-secinsurancedis-form .secondary-details {
-  padding: 5px; }
-  .htpl-phase1-primary-secinsurancedis-form .secondary-details .secondary-box-container {
-    padding: 5px; }
 
 .htpl-phase1-primary-secinsurancedis-form label {
   font-weight: 400;

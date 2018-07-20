@@ -52,7 +52,6 @@ class DataGrid extends PureComponent {
           method: $this.props.dataSource.method
             ? $this.props.dataSource.method
             : "GET",
-          printInput: true,
           onSuccess: response => {
             if (response.data.success === true) {
               let dataS = eval(

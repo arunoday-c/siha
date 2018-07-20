@@ -23,19 +23,3 @@
   .hptl-opbilling-details .menuBar-title {
     display: flex;
     justify-content: center; }
-
-.hptl-op-billing-footer .main {
-  background-color: #000000 !important;
-  border-top: 1px solid #0000;
-  padding: 10px;
-  height: 40px;
-  width: 100%;
-  position: fixed;
-  left: 0;
-  bottom: 0; }
-
-.hptl-op-billing-footer .app_bar {
-  background: #000000; }
-
-.spacing-push {
-  margin-top: 6em; }

@@ -106,13 +106,24 @@ const calculateAge = ($this, context, e) => {
   let months = moment(toDate).diff(fromDate, "months");
   fromDate.add(months, "months");
   let days = moment(toDate).diff(fromDate, "days");
-
-  $this.setState({
-    age: years,
-    AGEMM: months,
-    AGEDD: days,
-    date_of_birth: moment(e)._d
-  });
+  if (e != null) {
+    $this.setState({
+      age: years,
+      AGEMM: months,
+      AGEDD: days,
+      date_of_birth: moment(e)._d
+    });
+  } else {
+    years = 0;
+    months = 0;
+    days = 0;
+    $this.setState({
+      age: years,
+      AGEMM: months,
+      AGEDD: days,
+      date_of_birth: moment(e)._d
+    });
+  }
   if (context != null) {
     context.updateState({
       date_of_birth: moment(e)._d,

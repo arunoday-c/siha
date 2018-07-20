@@ -1,7 +1,7 @@
 [
   {
     "fieldName": "insurance_provider_name",
-    "label": "Insurance Provider_name"
+    "label": "Insurance Provider Name"
   },
   {
     "fieldName": "insurance_sub_name",
@@ -14,5 +14,13 @@
   {
     "fieldName": "policy_number",
     "label": "Policy Number"
+  },
+  {
+    "fieldName": "effective_start_date",
+    "label": "Start Date"
+  },
+  {
+    "fieldName": "effective_end_date",
+    "label": "End Date"
   }
 ]

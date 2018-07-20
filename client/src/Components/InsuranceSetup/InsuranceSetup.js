@@ -5,10 +5,18 @@ import { bindActionCreators } from "redux";
 
 import "./insurancesetup.css";
 import "../../styles/site.css";
-import { Button, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
+import InsuranceAdd from "./InsuranceAdd/InsuranceAdd";
 
 class InsuranceSetup extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpen: false
+    };
+  }
+
   componentDidMount() {
     if (
       this.props.insProviders === undefined ||
@@ -24,16 +32,16 @@ class InsuranceSetup extends Component {
       });
     }
   }
+
+  ShowModel(e) {
+    this.setState({
+      ...this.state,
+      isOpen: !this.state.isOpen
+    });
+  }
   render() {
     return (
       <div className="insurancesetup">
-        {/* Bread Crumb Start */}
-        {/* <div
-          className="container-fluid"
-          style={{ height: "80px", backgroundColor: "#f8f8f8" }}
-        /> */}
-        {/* Bread Crumb end */}
-
         <div className="tab-container">
           <button className="tab-button active">
             Insurance Provider List{" "}
@@ -102,17 +110,32 @@ class InsuranceSetup extends Component {
                   : this.props.insProviders
             }}
             // isEditable={true}
-            paging={{ page: 0, rowsPerPage: 5 }}
+            paging={{ page: 0, rowsPerPage: 10 }}
           />
         </div>
-
         {/* Footer Start */}
         <div className="fixed-bottom insurance-footer">
           <div className="float-right">
-            <Button style={{ margin: "10px" }} variant="raised" color="primary">
+            <button
+              className="htpl1-phase1-btn-primary"
+              style={{ margin: "10px" }}
+              onClick={this.ShowModel.bind(this)}
+            >
               ADD NEW
-            </Button>
+            </button>
           </div>
+          <InsuranceAdd
+            HeaderCaption={
+              <AlgaehLabel
+                label={{
+                  fieldName: "add_insurance",
+                  align: "ltr"
+                }}
+              />
+            }
+            open={this.state.isOpen}
+            onClose={this.ShowModel.bind(this)}
+          />
         </div>
 
         {/* Footer End */}

@@ -1,5 +1,3 @@
-import extend from "extend";
-import moment from "moment";
 import { getCookie } from "../utils/algaehApiCall.js";
 
 export default {
@@ -105,6 +103,7 @@ export default {
       primary_effective_end_date: null,
       primary_inc_card_path: null,
       primary_card_number: null,
+      primary_network_office_id: null,
 
       secondary_insurance_provider_id: null,
       secondary_sub_id: null,
@@ -112,8 +111,8 @@ export default {
       secondary_effective_start_date: null,
       secondary_effective_end_date: null,
       secondary_policy_num: null,
-      secondary_inc_card_path: null,
-      secondary_card_number: null
+      secondary_card_number: null,
+      secondary_network_office_id: null
     };
     return output;
   }

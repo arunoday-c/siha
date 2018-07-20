@@ -17,7 +17,7 @@
   .text_field {
     width: 100% !important;
     background-color: #fbfbfb;
-    font-size: "11px";
+    //font-size: $fontSize;
     margin-right: "5px";
   }
 
@@ -33,22 +33,6 @@
   }
 }
 
-.hptl-phase1-footer {
-  .main {
-    background-color: #000000 !important;
-    border-top: 1px solid #0000;
-    padding: 10px;
-    height: 40px;
-    width: 100%;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-  }
-
-  .app_bar {
-    background: #000000;
-  }
-}
 .spacing-push {
-  margin-top: 6em;
+  // margin-top: 6em;
 }

@@ -1,0 +1,42 @@
+{
+  "insurance_provider_code": "Insurance Code",
+  "insurance_provider_name": "Insurance Name",
+  "insurance_type": "Insurance Type",
+  "package_claim": "Package Claim",
+  "credit_period": "Credit Period",
+  "insurance_limit": "Insurance Limit",
+  "payment_type": "Payment Type",
+  "cpt_mandate": "CPT Mandatory",
+  "preapp_valid_days": "Pre Approval Validity Days",
+  "claim_submit_days": "Claim Submission Days",
+  "lab_result_check": "Lab Result Check",
+  "resubmit_all": "Resubmit Type",
+  "company_service_price_type": "Service Price Type",
+  "payer_id": "Payer ID",
+  "effective_start_date": "Active From",
+  "effective_end_date": "Valid Upto",
+
+  "insurance_sub_code": "Sub Insurance Code",
+  "insurance_sub_name": "Sub Insurance Name",
+  "transaction_number": "Transaction Number",
+  "card_format": "Card Format",
+
+  "network_type": "Network Type",
+  "insurance_sub_id": "Applicable For",
+  "employer": "Employer/Company",
+  "policy_number": "Policy Number",
+  "preapp_limit": "Pre-Approval Limit",
+  "price_from": "Price From",
+
+  "consultation": "Consultation",
+  "lab_desc": "Lab",
+  "radiology": "Radiology",
+  "OPD_services": "OPD Services",
+  "dental_OPD_services": "Dental OPD Services",
+  "medicine": "Medicine",
+  "deductible": "Deductible",
+  "co_pay": "Co Pay",
+  "max_limit": "Max Limit",
+
+  "add_insurance": "Add Insurance"
+}

@@ -245,6 +245,74 @@ const datehandle = ($this, context, ctrl, e) => {
   }
 };
 
+const ProcessInsurance = ($this, context, ctrl, e) => {
+  debugger;
+
+  if (
+    $this.state.insured == "Y" &&
+    ($this.state.primary_insurance_provider_id == null ||
+      $this.state.primary_network_office_id == null ||
+      $this.state.primary_network_id == null)
+  ) {
+    successfulMessage({
+      message:
+        "Invalid Input. Please select the primary insurance details properly.",
+      title: "Error",
+      icon: "error"
+    });
+  } else if (
+    $this.state.sec_insured == "Y" &&
+    ($this.state.secondary_insurance_provider_id == null ||
+      $this.state.secondary_network_office_id == null ||
+      $this.state.secondary_network_id == null)
+  ) {
+    successfulMessage({
+      message:
+        "Invalid Input. Please select the secondary insurance details properly.",
+      title: "Error",
+      icon: "error"
+    });
+  } else {
+    debugger;
+    let serviceInput = {
+      insured: $this.state.insured,
+      hims_d_services_id: $this.state.hims_d_services_id,
+      primary_insurance_provider_id: $this.state.primary_insurance_provider_id,
+      primary_network_office_id: $this.state.primary_network_office_id,
+      primary_network_id: $this.state.primary_network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id
+    };
+    $this.props.generateBill({
+      uri: "/billing/getBillDetails",
+      method: "POST",
+      data: serviceInput,
+      redux: {
+        type: "BILL_GEN_GET_DATA",
+        mappingName: "xxx"
+      },
+      afterSuccess: data => {
+        if (context != null) {
+          context.updateState({ ...data });
+        }
+
+        $this.props.billingCalculations({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: data,
+          redux: {
+            type: "BILL_HEADER_GEN_GET_DATA",
+            mappingName: "genbill"
+          }
+        });
+      }
+    });
+  }
+};
+
 export {
   texthandle,
   datehandle,
@@ -252,5 +320,6 @@ export {
   cashtexthandle,
   cardtexthandle,
   chequetexthandle,
-  adjustadvance
+  adjustadvance,
+  ProcessInsurance
 };

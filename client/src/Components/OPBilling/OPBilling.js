@@ -59,9 +59,20 @@ class PatientDisplayDetails extends Component {
 
   componentWillReceiveProps(nextProps) {
     //this.setState(nextProps.patients[0]);
-    if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
-      this.setState({ ...this.state, ...nextProps.genbill });
+    debugger;
+    let output = {};
+    let billOut = {};
+    if (
+      nextProps.existinsurance !== undefined &&
+      nextProps.existinsurance.length !== 0
+    ) {
+      output = nextProps.existinsurance[0];
     }
+    if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
+      billOut = nextProps.genbill;
+    }
+
+    this.setState({ ...this.state, ...billOut, ...output });
   }
 
   getPatientDetails() {
@@ -107,21 +118,7 @@ class PatientDisplayDetails extends Component {
           mappingName: "bills"
         },
         afterSuccess: data => {
-          // data.patientRegistration.visitDetails = data.visitDetails;
-          // data.patientRegistration.patient_id =
-          //   data.patientRegistration.hims_d_patient_id;
-          // data.patientRegistration.existingPatient = true;
           $this.setState(data);
-
-          // $this.props.getPatientInsurance({
-          //   uri: "/insurance/getPatientInsurance",
-          //   method: "GET",
-          //   data: { patient_id: data.patientRegistration.hims_d_patient_id },
-          //   redux: {
-          //     type: "EXIT_INSURANCE_GET_DATA",
-          //     mappingName: "existinsurance"
-          //   }
-          // });
         }
       });
       clearInterval(intervalId);
@@ -230,6 +227,7 @@ class PatientDisplayDetails extends Component {
             value={{
               state: this.state,
               updateState: obj => {
+                debugger;
                 this.setState({ ...this.state, ...obj }, () => {
                   Object.keys(obj).map(key => {
                     if (key == "patient_code") {
@@ -247,7 +245,7 @@ class PatientDisplayDetails extends Component {
           </MyContext.Provider>
         </div>
 
-        <div className="hptl-op-billing-footer">
+        <div className="hptl-phase1-footer">
           <br /> <br />
           <AppBar position="static" className="main">
             <div className="container-fluid">
@@ -284,7 +282,8 @@ class PatientDisplayDetails extends Component {
 function mapStateToProps(state) {
   return {
     genbill: state.genbill,
-    patients: state.patients
+    patients: state.patients,
+    existinsurance: state.existinsurance
   };
 }
 

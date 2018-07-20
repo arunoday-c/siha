@@ -1,43 +1,16 @@
 .hptl-phase1-op-display-billing-form {
   background: #fff;
   border-radius: 5px; }
-  .hptl-phase1-op-display-billing-form label {
-    font-weight: 400;
-    font-size: 11px; }
   .hptl-phase1-op-display-billing-form mark {
     background: none;
     color: red; }
   .hptl-phase1-op-display-billing-form .form-details {
-    padding: 5px;
     padding-bottom: 0px;
     margin-top: 7px; }
-  .hptl-phase1-op-display-billing-form .lbl-milldle {
-    padding-top: 30px; }
-  .hptl-phase1-op-display-billing-form .lbl-resize label {
-    font-size: 16px;
-    background: #5f5f5f; }
-  .hptl-phase1-op-display-billing-form .form-details {
-    padding: 5px;
-    padding-bottom: 0px; }
   .hptl-phase1-op-display-billing-form .Paper {
     border: 1px solid #5f5f5f; }
-
-.bottom-details {
-  padding: 5px;
-  padding-bottom: 0px;
-  border-top: 1px solid #5f5f5f;
-  margin-top: 0.5%; }
-
-.first-form-details {
-  padding: 5px;
-  padding-bottom: 0px;
-  border: 1px solid #5f5f5f; }
-
-.insurance-details {
-  padding: 20px;
-  padding-bottom: 5px; }
-
-.colorPrimary div {
-  background-color: #dbad64; }
-  .colorPrimary div h2 {
-    color: #fff; }
+  .hptl-phase1-op-display-billing-form .insurance-details {
+    padding: 20px;
+    padding-bottom: 5px; }
+  .hptl-phase1-op-display-billing-form .button {
+    padding: 5px; }
