@@ -105,19 +105,12 @@ class Header extends PureComponent {
                 onClick={this.toggleDrawer.bind(this)}
                 color="inherit"
                 aria-label="Menu"
-                // style = {{outline: "none"}}
               >
                 <MenuIcon />
               </IconButton>
             </div>
             <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-              {/* <Typography
-                className="Typography"
-                variant="title"
-                color="inherit"
-              > */}
               <h5>{this.props.title}</h5>
-              {/* </Typography> */}
             </div>
             <div className="col-lg-5">
               <Button

@@ -88,7 +88,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlgaehDateHandler
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-4" }}
                           textBox={{
                             className: "txt-fld",
                             name: "bill_date"
@@ -102,7 +102,7 @@ class AddBillingForm extends Component {
                           value={this.state.bill_date}
                         />
 
-                        <div className="col-lg-3">
+                        <div className="col-lg-2">
                           <Tooltip id="tooltip-icon" title="Process Insurance">
                             <IconButton className="go-button" color="primary">
                               <PlayCircleFilled
@@ -263,6 +263,14 @@ class AddBillingForm extends Component {
                           </button>
 
                           <DisplayOPBilling
+                            HeaderCaption={
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "bill_details",
+                                  align: "ltr"
+                                }}
+                              />
+                            }
                             BillingIOputs={{
                               selectedLang: this.state.selectedLang,
                               billdetails: this.state.billdetails
@@ -474,9 +482,6 @@ class AddBillingForm extends Component {
                             value: this.state.cash_amount,
                             events: {
                               onChange: cashtexthandle.bind(this, this, context)
-                            },
-                            others: {
-                              receipt: true
                             }
                           }}
                         />
@@ -538,9 +543,6 @@ class AddBillingForm extends Component {
                             value: this.state.card_amount,
                             events: {
                               onChange: cardtexthandle.bind(this, this, context)
-                            },
-                            others: {
-                              receipt: true
                             }
                           }}
                         />

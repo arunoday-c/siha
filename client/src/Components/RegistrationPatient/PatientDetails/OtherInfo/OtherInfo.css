@@ -13,13 +13,9 @@
   .hptl-phase1-add-other-form mark {
     background: none;
     color: red; }
-  .hptl-phase1-add-other-form label {
-    font-weight: 400;
-    font-size: 12px; }
   .hptl-phase1-add-other-form .text_field {
     width: 100% !important;
     background-color: #fbfbfb;
-    font-size: "12px";
     margin-right: "5px"; }
   .hptl-phase1-add-other-form .secondary-details {
     padding: 10px; }
@@ -34,8 +30,7 @@
         top: 105px;
         cursor: pointer;
         margin-left: -1px;
-        margin-right: -1px;
-        font-size: 11px; }
+        margin-right: -1px; }
       .hptl-phase1-add-other-form .secondary-details .secondary-box-container .preview-image {
         position: absolute;
         top: -1px;

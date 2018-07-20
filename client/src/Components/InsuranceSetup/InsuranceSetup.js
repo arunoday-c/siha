@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 
 import "./insurancesetup.css";
 import "../../styles/site.css";
-import { Button, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import InsuranceAdd from "./InsuranceAdd/InsuranceAdd";
 
@@ -110,22 +110,29 @@ class InsuranceSetup extends Component {
                   : this.props.insProviders
             }}
             // isEditable={true}
-            paging={{ page: 0, rowsPerPage: 5 }}
+            paging={{ page: 0, rowsPerPage: 10 }}
           />
         </div>
         {/* Footer Start */}
         <div className="fixed-bottom insurance-footer">
           <div className="float-right">
-            <Button
+            <button
+              className="htpl1-phase1-btn-primary"
               style={{ margin: "10px" }}
-              variant="raised"
-              color="primary"
               onClick={this.ShowModel.bind(this)}
             >
               ADD NEW
-            </Button>
+            </button>
           </div>
           <InsuranceAdd
+            HeaderCaption={
+              <AlgaehLabel
+                label={{
+                  fieldName: "add_insurance",
+                  align: "ltr"
+                }}
+              />
+            }
             open={this.state.isOpen}
             onClose={this.ShowModel.bind(this)}
           />

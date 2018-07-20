@@ -4,11 +4,6 @@
 .imp {
   color: #ff063e; }
 
-label {
-  font-style: bold;
-  font-weight: 400;
-  font-size: 12px; }
-
 .txt-fld {
   background-color: #fbfbfb;
   width: 100%; }
@@ -21,25 +16,27 @@ label {
 .table-details {
   text-align: center; }
 
-.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-  background-color: #FCFFDE; }
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th {
+  background-color: #fcffde; }
 
 .form-details {
   margin-top: 20px;
   margin-left: "auto";
   margin-right: "auto"; }
 
-th, td {
+th,
+td {
   border-right: 1px solid #ffffff; }
 
 .radio [type="radio"]:checked + label:after {
-  border-color: #00BCB0;
-  background-color: #00BCB0; }
+  border-color: #00bcb0;
+  background-color: #00bcb0; }
 
 /*Gap*/
 .radio-gap [type="radio"].with-gap:checked + label:before {
-  border-color: #00BCB0; }
+  border-color: #00bcb0; }
 
 .radio-gap [type="radio"]:checked + label:after {
-  border-color: #00BCB0;
-  background-color: #00BCB0; }
+  border-color: #00bcb0;
+  background-color: #00bcb0; }

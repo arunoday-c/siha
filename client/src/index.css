@@ -1,5 +1,5 @@
 :global .tab-container .tab-button {
-  font-size: 12px;
+  font-size: 0.7rem;
   font-weight: normal;
   border-radius: 0px;
   background-color: #f3f3f3;
@@ -195,4 +195,4 @@
     padding-left: 0px; }
 
 :global .spacing-push {
-  margin-top: 6em !important; }
+  margin-top: 4.5em !important; }

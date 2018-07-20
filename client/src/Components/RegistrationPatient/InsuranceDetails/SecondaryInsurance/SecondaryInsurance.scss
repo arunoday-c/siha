@@ -5,20 +5,20 @@
 }
 .htpl-phase1-seconary-insurance-form {
   .primary-details {
-    padding: 5px;
+    //padding: 5px;
     padding-bottom: 15px;
     border-right: 1px solid #000;
-    @media only screen and (max-width: 904px) {
-      padding: 5px;
-    }
+    // @media only screen and (max-width: 904px) {
+    //   padding: 5px;
+    // }
     .primary-box-container {
-      padding: 5px;
+      //  padding: 5px;
     }
   }
-  label {
-    font-weight: 400;
-    font-size: 11px;
-  }
+  // label {
+  //   font-weight: 400;
+  //   font-size: 11px;
+  // }
   mark {
     background: none;
     color: red;
@@ -31,7 +31,7 @@
     position: absolute;
     top: 5px;
     left: 36px;
-    font-size: 12px;
+    // font-size: 12px;
   }
   .go-button {
     cursor: pointer;
@@ -47,21 +47,21 @@
     margin-top: 2%;
   }
   .secondary-details {
-    padding: 5px;
+    //padding: 5px;
     padding-bottom: 15px;
     .secondary-box-container {
-      padding: 5px;
+      // padding: 5px;
       .attach-design {
         background: #8c8c8c;
-        min-height: 30px;
+        // min-height: 30px;
         color: #fff;
-        padding: 5px;
+        //padding: 5px;
         position: relative;
-        top: 99px;
+        // top: 99px;
         cursor: pointer;
         margin-left: -1px;
         margin-right: -1px;
-        font-size: 11px;
+        // font-size: 11px;
       }
       .preview-image {
         position: absolute;

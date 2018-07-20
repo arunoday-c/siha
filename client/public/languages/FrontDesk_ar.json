@@ -147,5 +147,7 @@
   "patient_lbl": "صبور",
   "company_lbl": "الشركة الرئيسية",
   "sec_comp_lbl": "شركة ثانوية",
-  "card_number": "رقم البطاقة"
+  "card_number": "رقم البطاقة",
+
+  "bill_details": "تفاصيل الفاتورة"
 }

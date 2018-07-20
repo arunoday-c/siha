@@ -3,15 +3,7 @@
   border-radius: 5px; }
 
 .htpl-primary-display-insurance-form .primary-details {
-  padding: 5px;
   border-right: 1px solid #000; }
-  .htpl-primary-display-insurance-form .primary-details .primary-box-container {
-    padding: 5px; }
-
-.htpl-primary-display-insurance-form .secondary-details {
-  padding: 5px; }
-  .htpl-primary-display-insurance-form .secondary-details .secondary-box-container {
-    padding: 5px; }
 
 .htpl-primary-display-insurance-form mark {
   background: none;

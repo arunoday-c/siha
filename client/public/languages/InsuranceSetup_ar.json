@@ -22,5 +22,24 @@
   "insurance_sub_code": "التأمين الفرعي الشفرة",
   "insurance_sub_name": "اسم التأمين الفرعي",
   "transaction_number": "رقم التحويلة",
-  "card_format": "تنسيق البطاقة"
+  "card_format": "تنسيق البطاقة",
+
+  "network_type": "نوع الشبكة",
+  "insurance_sub_id": "تنطبق على",
+  "employer": "صاحب العمل / الشركة",
+  "policy_number": "رقم سياسات",
+  "preapp_limit": "حد الموافقة المسبقة",
+  "price_from": "من عند السعر",
+
+  "consultation": "تشاور",
+  "lab_desc": "مختبر",
+  "radiology": "طب إشعاعي",
+  "OPD_services": "خدمات OPD",
+  "dental_OPD_services": "خدمات طب الأسنان OPD",
+  "medicine": "دواء",
+  "deductible": "خصم",
+  "co_pay": "CoPay",
+  "max_limit": "الحد الأقصى",
+
+  "add_insurance": "إضافة التأمين"
 }

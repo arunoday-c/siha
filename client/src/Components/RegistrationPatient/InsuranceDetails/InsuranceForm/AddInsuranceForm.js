@@ -35,8 +35,8 @@ class AddInsuranceForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      frontSide: "",
-      backSide: ""
+      frontSide: null,
+      backSide: null
     };
     this.widthImg = "";
   }
@@ -84,7 +84,7 @@ class AddInsuranceForm extends Component {
                       <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 ">
                         <label>Insurance</label>
                         <br />
-                        <div className="row">
+                        <div className="row moveRadioButtons">
                           {INSURANCE_DECISION.map((data, idx) => {
                             return (
                               <div
@@ -284,21 +284,27 @@ class AddInsuranceForm extends Component {
                   {/* //effective_end_date// */}
 
                   <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 secondary-details">
-                    <div className="row secondary-box-container">
+                    <div
+                      className="row secondary-box-container"
+                      style={{ paddingTop: "5px" }}
+                    >
                       <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                         <div className="image-drop-area">
                           <Dropzone
                             onDrop={this.onDrop.bind(this, "frontSide")}
-                            className="dropzone"
                             id="attach-primary-id"
+                            className="dropzone"
                             accept="image/*"
                             multiple={false}
                             name="image"
                           >
-                            <div
-                              className="attach-design text-center"
-                              id="attach-width"
-                            >
+                            <img
+                              // className="preview-image"
+                              src={this.state.frontSide}
+                              style={{ width: "100%", height: "101px" }}
+                            />
+
+                            <div className="attach-design text-center">
                               <AlgaehLabel
                                 label={{
                                   fieldName: "attach_front"
@@ -307,30 +313,25 @@ class AddInsuranceForm extends Component {
                             </div>
                           </Dropzone>
                         </div>
-
-                        <div>
-                          <img
-                            className="preview-image"
-                            src={this.state.frontSide}
-                            style={{ width: this.widthImg }}
-                          />
-                        </div>
                       </div>
 
                       <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                         <div className="image-drop-area">
                           <Dropzone
                             onDrop={this.onDrop.bind(this, "backSide")}
+                            id="attach-width"
                             className="dropzone"
-                            id="attach-primary-id"
                             accept="image/*"
                             multiple={false}
                             name="image"
                           >
-                            <div
-                              className="attach-design text-center"
-                              id="attach-width"
-                            >
+                            <img
+                              // className="preview-image"
+                              src={this.state.backSide}
+                              style={{ width: "100%", height: "101px" }}
+                            />
+
+                            <div className="attach-design text-center">
                               <AlgaehLabel
                                 label={{
                                   fieldName: "attach_back"
@@ -340,13 +341,7 @@ class AddInsuranceForm extends Component {
                           </Dropzone>
                         </div>
 
-                        <div>
-                          <img
-                            className="preview-image"
-                            src={this.state.backSide}
-                            style={{ width: this.widthImg }}
-                          />
-                        </div>
+                        <div />
                       </div>
                     </div>
                   </div>

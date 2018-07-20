@@ -14,7 +14,6 @@
   .hptl-phase1-patientreg-details .text_field {
     width: 100% !important;
     background-color: #fbfbfb;
-    font-size: "11px";
     margin-right: "5px"; }
   .hptl-phase1-patientreg-details .paper {
     background-color: #292929 !important;
@@ -23,19 +22,3 @@
   .hptl-phase1-patientreg-details .menuBar-title {
     display: flex;
     justify-content: center; }
-
-.hptl-phase1-footer .main {
-  background-color: #000000 !important;
-  border-top: 1px solid #0000;
-  padding: 10px;
-  height: 40px;
-  width: 100%;
-  position: fixed;
-  left: 0;
-  bottom: 0; }
-
-.hptl-phase1-footer .app_bar {
-  background: #000000; }
-
-.spacing-push {
-  margin-top: 6em; }

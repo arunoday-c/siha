@@ -13,9 +13,6 @@
   .hptl-phase1-add-mlcpatient-form mark {
     background: none;
     color: red; }
-  .hptl-phase1-add-mlcpatient-form label {
-    font-weight: 400;
-    font-size: 12px; }
   .hptl-phase1-add-mlcpatient-form .secondary-details {
     padding: 10px; }
     .hptl-phase1-add-mlcpatient-form .secondary-details .secondary-box-container {
@@ -29,8 +26,7 @@
         top: 105px;
         cursor: pointer;
         margin-left: -1px;
-        margin-right: -1px;
-        font-size: 11px; }
+        margin-right: -1px; }
       .hptl-phase1-add-mlcpatient-form .secondary-details .secondary-box-container .preview-image {
         position: absolute;
         top: -1px;
