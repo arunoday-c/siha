@@ -2,16 +2,6 @@
   background: #fff;
   border-radius: 5px; }
 
-.hptl-phase1-op-add-billing-form .primary-details {
-  padding: 10px; }
-  .hptl-phase1-op-add-billing-form .primary-details .primary-box-container {
-    padding: 13px; }
-
-.hptl-phase1-op-add-billing-form .secondary-details {
-  padding: 10px; }
-  .hptl-phase1-op-add-billing-form .secondary-details .secondary-box-container {
-    padding: 5px; }
-
 .hptl-phase1-op-add-billing-form label {
   font-weight: 400;
   font-size: 11px; }

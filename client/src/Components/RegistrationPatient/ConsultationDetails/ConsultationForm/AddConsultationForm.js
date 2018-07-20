@@ -209,7 +209,7 @@ class AddConsultationForm extends Component {
                       value={this.state.visit_date}
                     />
                   </div>
-                  <div className="row primary-box-container">
+                  <div className="row">
                     <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                       <AlgaehLabel
                         label={{
@@ -217,7 +217,7 @@ class AddConsultationForm extends Component {
                         }}
                       />
                       <br />
-                      <div className="row">
+                      <div className="row moveRadioButtons">
                         {MATERNITY_PATIENT.map((data, idx) => {
                           return (
                             <div
@@ -226,6 +226,7 @@ class AddConsultationForm extends Component {
                             >
                               <input
                                 type="radio"
+                                id={"mat_pat_" + idx}
                                 name="MATERNITY_PATIENT"
                                 className="htpl-phase1-radio-btn"
                                 value={data.value}
@@ -233,7 +234,10 @@ class AddConsultationForm extends Component {
                                   data.value === "N" ? true : false
                                 }
                               />
-                              <label className="radio-design">
+                              <label
+                                className="radio-design"
+                                htmlFor={"mat_pat_" + idx}
+                              >
                                 {data.label}
                               </label>
                             </div>
