@@ -172,7 +172,6 @@ let physicalExaminationSubDetails = (req, res, next) => {
 };
 
 //created by:irfan,to get physical examination header& details
-
 let getPhysicalExamination = (req, res, next) => {
   let physicalExaminationHeaderModel = {
     headerId: null
@@ -277,9 +276,130 @@ let getPhysicalExamination = (req, res, next) => {
   }
 };
 
+//created by irfan: master of order table
+let addOrder = (req, res, next) => {
+  let hims_f_lab_orderModel = {
+    hims_f_lab_order_id: null,
+    patient_id: null,
+    visit_id: null,
+    provider_id: null,
+    service_id: null,
+    status: null,
+    billed: null,
+    cancelled: null,
+    ordered_date: null,
+    test_type: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addOrder");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(hims_f_lab_orderModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_f_lab_order(\
+          patient_id,visit_id,provider_id,service_id,status,billed,\
+          cancelled,ordered_date,test_type,created_by,updated_by)values(\
+              ?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.patient_id,
+          input.visit_id,
+          input.provider_id,
+          input.service_id,
+          input.status,
+          input.billed,
+          input.cancelled,
+          input.ordered_date,
+          input.test_type,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: master of sample table
+let addSample = (req, res, next) => {
+  let hims_d_lab_sampleModel = {
+    hims_d_lab_sample_id: null,
+    order_id: null,
+    sample_id: null,
+    status: null,
+    collected: null,
+    collected_date: null,
+    created_by: null,
+    updated_by
+  };
+
+  debugFunction("addSample");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(hims_d_lab_sampleModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_lab_sample(\
+          order_id,sample_id,status,collected,\
+          collected_date,created_by,updated_by)values(\
+              ?,?,?,?,?,?,?,?)",
+        [
+          input.order_id,
+          input.sample_id,
+          input.status,
+          input.collected,
+          input.collected_date,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
   physicalExaminationSubDetails,
-  getPhysicalExamination
+  getPhysicalExamination,
+  addOrder
 };

@@ -5,7 +5,8 @@ import {
   physicalExaminationHeader,
   physicalExaminationDetails,
   physicalExaminationSubDetails,
-  getPhysicalExamination
+  getPhysicalExamination,
+  addOrder
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -69,5 +70,36 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by irfan : master of order table
+  api.post(
+    "/addOrder",
+    addOrder,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : master of sample table
+  api.post(
+    "/addSample",
+    addOrder,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };
