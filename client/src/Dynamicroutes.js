@@ -16,6 +16,7 @@ import Experiment from "./Components/Experiment";
 import OPBilling from "./Components/OPBilling/OPBilling";
 import BillDetails from "./Components/BillDetails/BillDetails";
 import InsuranceSetup from "./Components/InsuranceSetup/InsuranceSetup";
+import SampleCollection from "./Components/Laboratory/SampleCollection/SampleCollection";
 import MedicalWorkbenchSetup from "./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup";
 import DoctorsWorkbench from "./Components/DoctorsWorkbench/DoctorsWorkbench";
 
@@ -35,6 +36,7 @@ const componts = selectedLang => {
     OPBilling: <OPBilling SelectLanguage={selectedLang} />,
     BillDetails: <BillDetails SelectLanguage={selectedLang} />,
     InsuranceSetup: <InsuranceSetup SelectLanguage={selectedLang} />,
+    SampleCollection: <SampleCollection SelectLanguage={selectedLang} />,
     DoctorsWorkbench: <DoctorsWorkbench SelectLanguage={selectedLang} />,
     MedicalWorkbenchSetup: (
       <MedicalWorkbenchSetup SelectLanguage={selectedLang} />

@@ -107,7 +107,7 @@
     "icon": "fas fa-flask",
     "subMenu": [
       {
-        "name": "Sample Collection",
+        "name": "SampleCollection",
         "label": "Sample Collection",
         "arlabel": "جمع العينات",
         "path": "/SampleCollection"

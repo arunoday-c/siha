@@ -1,0 +1,15 @@
+{
+  "patient_code": "رمز المريض",
+  "from_date": "من عند تاريخ",
+  "to_date": "إلى تاريخ",
+  "patient_name": "اسم المريض",
+  "proiorty": "أفضلية",
+  "status": "الحالة",
+
+  "investigation_code": "تحقيق",
+  "investigation_name": "اسم التحقيق",
+  "ordered_date": "تاريخ أمر",
+  "ordered_time": "أمر زمن",
+  "test_status": "حالة الاختبار",
+  "case_type": "نوع القضية"
+}
