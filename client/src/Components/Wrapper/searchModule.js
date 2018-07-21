@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import "../Wrapper/spotlight.css";
 import { AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { algaehApiCall, getCookie } from "../../utils/algaehApiCall";
+import IconButton from "@material-ui/core/IconButton";
+import MicOff from "@material-ui/icons/MicOff";
+import Mic from "@material-ui/icons/Mic";
+
 var intervalId;
 class SearchModule extends Component {
   constructor(props) {
@@ -11,7 +15,8 @@ class SearchModule extends Component {
       title: "Algaeh Search",
       searchBy: "",
       searchName: "",
-      contains: ""
+      contains: "",
+      isSpeakEnable: false
     };
   }
 
@@ -169,7 +174,10 @@ class SearchModule extends Component {
       </div>
     );
   };
-
+  speakInput(e) {
+    const isSpeak = !this.state.isSpeakEnable;
+    this.setState({ isSpeakEnable: isSpeak });
+  }
   render() {
     return (
       <div
@@ -189,6 +197,14 @@ class SearchModule extends Component {
             onChange={this.handleSpotLightContains.bind(this)}
           />
           <div id="spotlightFilterBy">
+            <IconButton title="Speak" onClick={this.speakInput.bind(this)}>
+              {this.state.isSpeakEnable ? (
+                <Mic color="secondary" className="animated  flash" />
+              ) : (
+                <MicOff />
+              )}
+            </IconButton>
+
             <select
               onChange={this.handleOnchnageSearchBy.bind(this)}
               value={this.state.searchBy}

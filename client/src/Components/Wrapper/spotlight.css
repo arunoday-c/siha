@@ -43,6 +43,8 @@
   #spotlightFilterBy select {
     border: none;
     background-color: transparent; }
+  #spotlightFilterBy button {
+    margin-top: -9px; }
 
 #spotlightResultArea {
   background-color: #f9f5f4;
