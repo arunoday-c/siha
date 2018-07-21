@@ -350,7 +350,7 @@ let addSample = (req, res, next) => {
     collected: null,
     collected_date: null,
     created_by: null,
-    updated_by
+    updated_by: null
   };
 
   debugFunction("addSample");
@@ -370,7 +370,7 @@ let addSample = (req, res, next) => {
         "insert into hims_d_lab_sample(\
           order_id,sample_id,status,collected,\
           collected_date,created_by,updated_by)values(\
-              ?,?,?,?,?,?,?,?)",
+              ?,?,?,?,?,?,?)",
         [
           input.order_id,
           input.sample_id,
@@ -401,5 +401,6 @@ module.exports = {
   physicalExaminationDetails,
   physicalExaminationSubDetails,
   getPhysicalExamination,
-  addOrder
+  addOrder,
+  addSample
 };

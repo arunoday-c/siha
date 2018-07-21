@@ -6,7 +6,8 @@ import {
   physicalExaminationDetails,
   physicalExaminationSubDetails,
   getPhysicalExamination,
-  addOrder
+  addOrder,
+  addSample
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -89,7 +90,7 @@ export default ({ config, db }) => {
   // created by irfan : master of sample table
   api.post(
     "/addSample",
-    addOrder,
+    addSample,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
