@@ -168,12 +168,6 @@ class AccessionAcknowledgement extends Component {
                   }
                 }}
               />
-
-              {/* <div className="col-lg-3">
-                <IconButton className="go-button" color="primary">
-                  <PlayCircleFilled />
-                </IconButton>
-              </div> */}
             </div>
             <div className="row form-details">
               <div className="col-lg-12">

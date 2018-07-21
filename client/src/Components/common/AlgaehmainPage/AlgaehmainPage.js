@@ -387,19 +387,23 @@ class PersistentDrawer extends React.Component {
             >
               <Toolbar disableGutters={!open}>
                 <div className="screenDisplay">
-                  <span>
-                    <IconButton
-                      color="inherit"
-                      aria-label="open drawer"
-                      onClick={this.handleDrawerOpen}
-                      className={classNames(
-                        classes.menuButton,
-                        open && classes.hide + "float - left"
-                      )}
-                    >
-                      <MenuIcon />
-                    </IconButton>
-                  </span>
+                  {this.state.open === false ? (
+                    <span>
+                      <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={this.handleDrawerOpen}
+                        className={classNames(
+                          classes.menuButton,
+                          open && classes.hide + "float - left"
+                        )}
+                      >
+                        <MenuIcon />
+                      </IconButton>
+                    </span>
+                  ) : (
+                    <div> </div>
+                  )}
                   <span>
                     <Typography variant="title" color="inherit" noWrap>
                       {this.state.title}

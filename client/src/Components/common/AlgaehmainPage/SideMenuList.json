@@ -18,10 +18,10 @@
     "icon": "fas fa-cog",
     "subMenu": [
       {
-        "name": "Business Setup",
-        "label": "Business Setup",
+        "name": "Business Setups",
+        "label": "Business Setups",
         "arlabel": "إعداد الأعمال",
-        "path": "/BusinessSetup"
+        "path": "/BusinessSetups"
       },
       {
         "name": "Common Setup",
