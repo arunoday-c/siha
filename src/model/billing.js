@@ -297,7 +297,7 @@ let newReceipt = (dataBase, req, res, callBack, next) => {
     counter_id: null,
     shift_id: null
   };
-
+  let db = req.db;
   try {
     debugFunction("newReceiptFUnc");
 
@@ -1457,7 +1457,7 @@ function insuranceServiceDetails(req, next, connection, resolve) {
 }
 
 //created by irfan to add episode and encounter
-let addEpisodeEncounter = (req, res, next) => {
+let addEpisodeEncounter = (connection, req, res, callBack, next) => {
   let episodeModel = {
     patient_id: null,
     provider_id: null,
@@ -1475,98 +1475,78 @@ let addEpisodeEncounter = (req, res, next) => {
 
   debugFunction("addEpisode");
   try {
-    if (req.db == null) {
+    if (connection == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
+
     let db = req.db;
     let input = extend(episodeModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
-      connection.beginTransaction(error => {
+
+    let currentEncounterNo = null;
+
+    connection.query(
+      "select encounter_id from hims_d_options where hims_d_options_id=1",
+      (error, result) => {
         if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
+          releaseDBConnection(db, connection);
+          next(error);
         }
 
-        let currentEncounterNo = null;
+        currentEncounterNo = result[0].encounter_id;
+        debugLog("currentEncounterNo:", currentEncounterNo);
 
-        connection.query(
-          "select encounter_id from hims_d_options where hims_d_options_id=1",
-          (error, result) => {
-            if (error) {
-              releaseDBConnection(db, connection);
-              next(error);
-            }
+        if (currentEncounterNo > 0) {
+          let nextEncounterNo = currentEncounterNo + 1;
+          debugLog("nextEncounterNo:", nextEncounterNo);
 
-            currentEncounterNo = result[0].encounter_id;
-            debugLog("currentEncounterNo:", currentEncounterNo);
+          connection.query(
+            "update hims_d_options set encounter_id=? where hims_d_options_id=1",
+            [nextEncounterNo],
+            (error, updateResult) => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
 
-            if (currentEncounterNo > 0) {
-              let nextEncounterNo = currentEncounterNo + 1;
-              debugLog("nextEncounterNo:", nextEncounterNo);
-
-              connection.query(
-                "update hims_d_options set encounter_id=? where hims_d_options_id=1",
-                [nextEncounterNo],
-                (error, updateResult) => {
-                  if (error) {
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-
-                  if (updateResult != null) {
-                    connection.query(
-                      "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,status,\
+              if (updateResult != null) {
+                connection.query(
+                  "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,status,\
                        episode_id,encounter_id,checked_in,nurse_examine,age,patient_type,queue_no)values(\
                         ?,?,?,?,?,?,?,?,?,?,?,?)",
-                      [
-                        input.patient_id,
-                        input.provider_id,
-                        input.visit_id,
-                        input.source,
-                        input.status,
-                        input.episode_id,
-                        currentEncounterNo,
-                        input.checked_in,
-                        input.nurse_examine,
-                        input.age,
-                        input.patient_type,
-                        input.queue_no
-                      ],
-                      (error, results) => {
-                        if (error) {
-                          connection.rollback(() => {
-                            releaseDBConnection(db, connection);
-                            next(error);
-                          });
-                        }
-                        connection.commit(error => {
-                          if (error) {
-                            connection.rollback(() => {
-                              releaseDBConnection(db, connection);
-                              next(error);
-                            });
-                          }
-                          req.records = results;
-                          next();
-                        });
-                      }
-                    );
+                  [
+                    input.patient_id,
+                    input.provider_id,
+                    input.visit_id,
+                    input.source,
+                    input.status,
+                    input.episode_id,
+                    currentEncounterNo,
+                    input.checked_in,
+                    input.nurse_examine,
+                    input.age,
+                    input.patient_type,
+                    input.queue_no
+                  ],
+                  (error, results) => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    if (typeof callBack == "function") {
+                      callBack(error, results);
+                    }
                   }
-                }
-              );
+                );
+              }
             }
-          }
-        );
-      });
-    });
+          );
+        }
+      }
+    );
   } catch (e) {
     next(e);
   }

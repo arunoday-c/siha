@@ -1,0 +1,7 @@
+.patient_chart .patient_demographics {
+  padding: 10px;
+  background-color: #595959;
+  color: #fff; }
+
+.patient_chart ul#menu li {
+  display: inline; }

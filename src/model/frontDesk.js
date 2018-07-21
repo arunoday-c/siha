@@ -2,7 +2,7 @@ import { insertData } from "../model/patientRegistration";
 import { insertVisitData } from "../model/visit";
 import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 import extend from "extend";
-import { addBill, newReceipt } from "../model/billing";
+import { addBill, newReceipt, addEpisodeEncounter } from "../model/billing";
 import { addPatientInsurance } from "../model/insurance";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction } from "../utils/logging";
@@ -182,24 +182,50 @@ let addFrontDesk = (req, res, next) => {
                                             next(error);
                                           });
                                         }
-                                        connection.commit(error => {
-                                          if (error) {
-                                            connection.rollback(() => {
-                                              releaseDBConnection(
-                                                db,
-                                                connection
-                                              );
-                                              next(error);
-                                            });
-                                          }
-                                          req.records = result;
-                                          next();
-                                        });
 
                                         debugLog(
                                           "succes result of query 4 : ",
                                           resultdata
                                         );
+
+                                        //call to addEpisodeEncounter
+
+                                        addEpisodeEncounter(
+                                          connection,
+                                          req,
+                                          res,
+                                          (error, resultEp) => {
+                                            if (error) {
+                                              connection.rollback(() => {
+                                                releaseDBConnection(
+                                                  db,
+                                                  connection
+                                                );
+                                                next(error);
+                                              });
+                                            }
+                                            connection.commit(error => {
+                                              if (error) {
+                                                connection.rollback(() => {
+                                                  releaseDBConnection(
+                                                    db,
+                                                    connection
+                                                  );
+                                                  next(error);
+                                                });
+                                              }
+                                              req.records = resultEp;
+                                              next();
+                                            });
+
+                                            debugLog(
+                                              "succes result of query 5 : ",
+                                              resultEp
+                                            );
+                                          },
+                                          next
+                                        );
+                                        //end of episode
                                       },
                                       next
                                     );
