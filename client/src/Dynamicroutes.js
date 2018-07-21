@@ -19,7 +19,7 @@ import InsuranceSetup from "./Components/InsuranceSetup/InsuranceSetup";
 import SampleCollection from "./Components/Laboratory/SampleCollection/SampleCollection";
 import MedicalWorkbenchSetup from "./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup";
 import DoctorsWorkbench from "./Components/DoctorsWorkbench/DoctorsWorkbench";
-
+import AccessionAcknowledgement from "./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement";
 function height() {
   let height =
     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -40,6 +40,9 @@ const componts = selectedLang => {
     DoctorsWorkbench: <DoctorsWorkbench SelectLanguage={selectedLang} />,
     MedicalWorkbenchSetup: (
       <MedicalWorkbenchSetup SelectLanguage={selectedLang} />
+    ),
+    AccessionAcknowledgement: (
+      <AccessionAcknowledgement SelectLanguage={selectedLang} />
     )
   };
 };

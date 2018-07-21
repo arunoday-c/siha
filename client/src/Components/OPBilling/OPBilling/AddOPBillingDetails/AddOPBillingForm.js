@@ -39,7 +39,6 @@ class AddOPBillingForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState(nextProps.BillingIOputs);
   }
 
@@ -79,7 +78,7 @@ class AddOPBillingForm extends Component {
 
   ProcessToBill(context, e) {
     let $this = this;
-    debugger;
+
     let serviceInput = {
       insured: this.state.insured,
       hims_d_services_id: this.state.s_service,

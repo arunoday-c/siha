@@ -32,7 +32,7 @@ const insurancehandle = ($this, context, e) => {
     primary_effective_start_date: e.selected.effective_start_date,
     primary_effective_end_date: e.selected.effective_end_date
   });
-  debugger;
+
   if (context != null) {
     context.updateState({
       primary_insurance_provider_id: e.selected.insurance_provider_id,
@@ -48,7 +48,6 @@ const insurancehandle = ($this, context, e) => {
 };
 
 const datehandle = ($this, context, ctrl, e) => {
-  debugger;
   $this.setState({
     [e]: moment(ctrl)._d
   });
@@ -59,7 +58,6 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const InsuranceDetails = ($this, context, e) => {
-  debugger;
   AlgaehSearch({
     searchGrid: {
       columns: Insurance
@@ -70,8 +68,6 @@ const InsuranceDetails = ($this, context, e) => {
       callBack(text);
     },
     onRowSelect: row => {
-      debugger;
-
       let obj = {
         insurance_provider_id: row.hims_d_insurance_provider_id,
         insurance_provider_name: row.insurance_provider_name,

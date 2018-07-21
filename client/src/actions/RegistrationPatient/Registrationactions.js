@@ -4,7 +4,6 @@
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function postPatientDetails(dataValue, callback) {
-  debugger;
   callback = callback || null;
 
   return function(dispatch) {

@@ -4,10 +4,10 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 
-import "./SampleCollection.css";
+import "./AccessionAcknowledgement.css";
 import "./../../../styles/site.css";
 
-import { texthandle, PatientSearch } from "./SampleCollectionHandaler";
+import { texthandle, PatientSearch } from "./AccessionAcknowledgementHandaler";
 
 import {
   AlgaehDataGrid,
@@ -17,22 +17,21 @@ import {
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
-import {
-  FORMAT_PRIORITY,
-  FORMAT_TEST_STATUS
-} from "../../../utils/GlobalVariables.json";
-
 import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import variableJson from "../../../utils/GlobalVariables.json";
 
 class SampleCollection extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      to_date: null,
-      from_date: null,
       patient_code: null,
-      patient_name: null
+      patient_name: null,
+      gender: null,
+      date_of_birth: 0,
+      age: null,
+      ordered_date: null,
+      ordered_by: null
     };
   }
 
@@ -41,29 +40,9 @@ class SampleCollection extends Component {
       this.state.billdetails === null ? [{}] : this.state.billdetails;
     return (
       <React.Fragment>
-        <div className="hptl-phase1-speciman-collection-form">
+        <div className="hptl-phase1-accession-acknowledgement-form">
           <div className="container-fluid">
             <div className="row">
-              <AlgaehDateHandler
-                div={{ className: "col-lg-3" }}
-                label={{ fieldName: "from_date" }}
-                textBox={{ className: "txt-fld" }}
-                events={{
-                  onChange: null
-                }}
-                value={this.state.from_date}
-              />
-
-              <AlgaehDateHandler
-                div={{ className: "col-lg-3" }}
-                label={{ fieldName: "to_date" }}
-                textBox={{ className: "txt-fld" }}
-                events={{
-                  onChange: null
-                }}
-                value={this.state.to_date}
-              />
-
               <AlagehFormGroup
                 div={{ className: "col-lg-2" }}
                 label={{
@@ -89,7 +68,7 @@ class SampleCollection extends Component {
               </div>
 
               <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
+                div={{ className: "col-lg-2" }}
                 label={{
                   fieldName: "patient_name"
                 }}
@@ -99,7 +78,59 @@ class SampleCollection extends Component {
                   name: "patient_name",
 
                   events: {
-                    onChange: texthandle.bind(this, this)
+                    onChange: null
+                  },
+                  others: {
+                    disabled: true
+                  }
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col-lg-2" }}
+                label={{
+                  fieldName: "gender",
+                  isImp: true
+                }}
+                selector={{
+                  name: "gender",
+                  className: "select-fld",
+                  value: this.state.gender,
+                  dataSource: {
+                    textField:
+                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                    valueField: "value",
+                    data: variableJson.FORMAT_GENDER
+                  },
+                  onChange: null,
+                  others: {
+                    disabled: true
+                  }
+                }}
+              />
+              <AlgaehDateHandler
+                div={{ className: "col-lg-s" }}
+                label={{ fieldName: "date_of_birth" }}
+                textBox={{ className: "txt-fld" }}
+                events={{
+                  onChange: null
+                }}
+                disabled={true}
+                value={this.state.date_of_birth}
+              />
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-2" }}
+                label={{
+                  fieldName: "age"
+                }}
+                textBox={{
+                  value: this.state.age,
+                  className: "txt-fld",
+                  name: "age",
+
+                  events: {
+                    onChange: null
                   },
                   others: {
                     disabled: true
@@ -108,49 +139,41 @@ class SampleCollection extends Component {
               />
             </div>
             <div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "proiorty",
-                  isImp: false
+              <AlgaehDateHandler
+                div={{ className: "col-lg-2" }}
+                label={{ fieldName: "ordered_date" }}
+                textBox={{ className: "txt-fld" }}
+                events={{
+                  onChange: null
                 }}
-                selector={{
-                  name: "proiorty",
-                  className: "select-fld",
-                  value: this.state.proiorty,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_PRIORITY
+                disabled={true}
+                value={this.state.ordered_date}
+              />
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-2" }}
+                label={{
+                  fieldName: "ordered_by"
+                }}
+                textBox={{
+                  value: this.state.ordered_by,
+                  className: "txt-fld",
+                  name: "ordered_by",
+
+                  events: {
+                    onChange: texthandle.bind(this, this)
                   },
-                  onChange: texthandle.bind(this, this)
+                  others: {
+                    disabled: true
+                  }
                 }}
               />
 
-              <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "status",
-                  isImp: false
-                }}
-                selector={{
-                  name: "status",
-                  className: "select-fld",
-                  value: this.state.status,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_TEST_STATUS
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
-              <div className="col-lg-3">
+              {/* <div className="col-lg-3">
                 <IconButton className="go-button" color="primary">
                   <PlayCircleFilled />
                 </IconButton>
-              </div>
+              </div> */}
             </div>
             <div className="row form-details">
               <div className="col-lg-12">
@@ -158,55 +181,33 @@ class SampleCollection extends Component {
                   id="samplecollection_grid"
                   columns={[
                     {
-                      fieldName: "patient_code",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                      ),
+                      fieldName: "collect",
+                      label: <AlgaehLabel label={{ fieldName: "collect" }} />,
                       disabled: false
                     },
                     {
-                      fieldName: "patient_name",
+                      fieldName: "reject",
+                      label: <AlgaehLabel label={{ fieldName: "reject" }} />,
+                      disabled: true
+                    },
+                    {
+                      fieldName: "speciman_status",
                       label: (
-                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                        <AlgaehLabel label={{ fieldName: "speciman_status" }} />
                       ),
                       disabled: true
                     },
                     {
-                      fieldName: "investigation_code",
+                      fieldName: "speciman",
+                      label: <AlgaehLabel label={{ fieldName: "speciman" }} />,
+                      disabled: true
+                    },
+                    {
+                      fieldName: "speciman_instruction",
                       label: (
                         <AlgaehLabel
-                          label={{ fieldName: "investigation_code" }}
+                          label={{ fieldName: "speciman_instruction" }}
                         />
-                      ),
-                      disabled: true
-                    },
-                    {
-                      fieldName: "investigation_name",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "investigation_name" }}
-                        />
-                      ),
-                      disabled: true
-                    },
-                    {
-                      fieldName: "ordered_date",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "ordered_date" }} />
-                      ),
-                      disabled: true
-                    },
-                    {
-                      fieldName: "ordered_time",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "ordered_time" }} />
-                      ),
-                      disabled: true
-                    },
-                    {
-                      fieldName: "test_status",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "test_status" }} />
                       ),
                       disabled: true
                     }
@@ -218,7 +219,7 @@ class SampleCollection extends Component {
                         ? []
                         : this.props.samplecollection
                   }}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  paging={{ page: 0, rowsPerPage: 5 }}
                 />
               </div>
             </div>

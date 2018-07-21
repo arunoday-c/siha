@@ -246,8 +246,6 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const ProcessInsurance = ($this, context, ctrl, e) => {
-  debugger;
-
   if (
     $this.state.insured == "Y" &&
     ($this.state.primary_insurance_provider_id == null ||
@@ -273,7 +271,6 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       icon: "error"
     });
   } else {
-    debugger;
     let serviceInput = {
       insured: $this.state.insured,
       hims_d_services_id: $this.state.hims_d_services_id,

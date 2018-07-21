@@ -236,7 +236,6 @@ class VisitType extends Component {
   }
 
   editTexts(a, b) {
-    debugger;
     // row[e.target.name] = e.target.value;
     // callback(row);
   }

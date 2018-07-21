@@ -113,7 +113,7 @@
         "path": "/SampleCollection"
       },
       {
-        "name": "Accession/Acknowledgement",
+        "name": "AccessionAcknowledgement",
         "label": "Accession/Acknowledgement",
         "arlabel": "لانضمام/إعتراف",
         "path": "/AccessionAcknowledgement"

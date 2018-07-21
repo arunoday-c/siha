@@ -1,0 +1,30 @@
+{
+  "patient_code": "Patient Code",
+  "patient_name": "Patient Name",
+  "gender": "Gender",
+  "date_of_birth": "Date Of Birth",
+  "age": "Age",
+  "ordered_date": "Ordered Date",
+  "ordered_by": "Ordered By",
+
+  "collect": "Collect",
+  "reject": "Reject",
+
+  "speciman_status": "Speciman Status",
+  "speciman": "Speciman",
+  "speciman_instruction": "Speciman Instruction",
+  "container": "Container",
+  "collected_by": "Collected By",
+  "collected_date": "Collected Date",
+  "collected_time": "Collected Time",
+  "required_volume": "Required Volume",
+  "no_of_tubes": "No. Of Tubes",
+
+  "sidn": "SIDN",
+  "bc": "BC #",
+
+  "rejected_by": "Rejected By",
+  "rejected_date": "Rejected Date",
+  "rejected_time": "Rejected Time",
+  "rejected_reason": "Rejected Reason"
+}

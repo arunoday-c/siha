@@ -93,21 +93,11 @@ class DisplayVisitDetails extends Component {
               type: "EXIT_INSURANCE_GET_DATA",
               mappingName: "existinsurance"
             }
-            // afterSuccess: data => {
-            //   debugger;
-            //   $this.setState(...$this.state, ...data[0]);
-
-            //   if (context != null) {
-            //     context.updateState({
-            //       data
-            //     });
-            //   }
-            // }
           });
         }
       }
     );
-    debugger;
+
     if (context != null) {
       context.updateState({
         incharge_or_provider: row.doctor_id,

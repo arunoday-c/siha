@@ -59,7 +59,7 @@ class PatientDisplayDetails extends Component {
 
   componentWillReceiveProps(nextProps) {
     //this.setState(nextProps.patients[0]);
-    debugger;
+
     let output = {};
     let billOut = {};
     if (
@@ -227,7 +227,6 @@ class PatientDisplayDetails extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-                debugger;
                 this.setState({ ...this.state, ...obj }, () => {
                   Object.keys(obj).map(key => {
                     if (key == "patient_code") {

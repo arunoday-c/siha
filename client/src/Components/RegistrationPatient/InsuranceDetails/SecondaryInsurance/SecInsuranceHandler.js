@@ -59,7 +59,6 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const InsuranceDetails = ($this, context, e) => {
-  debugger;
   AlgaehSearch({
     searchGrid: {
       columns: Insurance
@@ -70,8 +69,6 @@ const InsuranceDetails = ($this, context, e) => {
       callBack(text);
     },
     onRowSelect: row => {
-      debugger;
-
       let obj = {
         insurance_provider_id: row.hims_d_insurance_provider_id,
         insurance_provider_name: row.insurance_provider_name,
@@ -92,7 +89,7 @@ const InsuranceDetails = ($this, context, e) => {
           data: [obj]
         }
       });
-      debugger;
+
       $this.setState({
         secondary_insurance_provider_id: row.hims_d_insurance_provider_id,
         secondary_sub_id: row.hims_d_insurance_sub_id,

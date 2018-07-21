@@ -24,7 +24,6 @@ class PhysicalExamination extends Component {
   }
 
   changeStatus(row, status) {
-    debugger;
     this.setState({ pe_type: status.value });
   }
 
@@ -94,7 +93,7 @@ class PhysicalExamination extends Component {
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
-                fieldName: "name", 
+                fieldName: "name",
                 isImp: true
               }}
               textBox={{

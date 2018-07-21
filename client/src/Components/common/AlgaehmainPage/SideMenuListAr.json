@@ -93,12 +93,12 @@
     "icon": "fas fa-flask",
     "subMenu": [
       {
-        "name": "Sample Collection",
+        "name": "SampleCollection",
         "label": "جمع العينات",
         "path": "/SampleCollection"
       },
       {
-        "name": "Accession/Acknowledgement",
+        "name": "AccessionAcknowledgement",
         "label": "لانضمام/إعتراف",
         "path": "/AccessionAcknowledgement"
       },

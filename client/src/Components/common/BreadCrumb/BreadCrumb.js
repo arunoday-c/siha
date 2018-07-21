@@ -113,7 +113,7 @@ class BreadCrumb extends PureComponent {
                                       <label className="radio-design">
                                         {data.name}
                                         {/* {data => {
-                                        debugger;
+                                        
                                         return this.props.selectedLang == "en"
                                           ? data.name
                                           : data.arabic_name;

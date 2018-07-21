@@ -84,7 +84,6 @@ class InsuranceAdd extends PureComponent {
   };
 
   render() {
-    debugger;
     const { classes } = this.props;
     const steps = getSteps();
     const { activeStep } = this.state;
