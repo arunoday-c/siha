@@ -263,6 +263,14 @@ class AddBillingForm extends Component {
                           </button>
 
                           <DisplayOPBilling
+                            HeaderCaption={
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "bill_details",
+                                  align: "ltr"
+                                }}
+                              />
+                            }
                             BillingIOputs={{
                               selectedLang: this.state.selectedLang,
                               billdetails: this.state.billdetails
@@ -474,9 +482,6 @@ class AddBillingForm extends Component {
                             value: this.state.cash_amount,
                             events: {
                               onChange: cashtexthandle.bind(this, this, context)
-                            },
-                            others: {
-                              receipt: true
                             }
                           }}
                         />
@@ -538,9 +543,6 @@ class AddBillingForm extends Component {
                             value: this.state.card_amount,
                             events: {
                               onChange: cardtexthandle.bind(this, this, context)
-                            },
-                            others: {
-                              receipt: true
                             }
                           }}
                         />

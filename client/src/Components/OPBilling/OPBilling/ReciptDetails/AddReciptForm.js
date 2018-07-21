@@ -176,9 +176,6 @@ class AddReciptForm extends Component {
                       value: this.state.cash_amount,
                       events: {
                         onChange: cashtexthandle.bind(this, this, context)
-                      },
-                      others: {
-                        receipt: true
                       }
                     }}
                   />

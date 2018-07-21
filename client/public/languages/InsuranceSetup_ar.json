@@ -39,5 +39,7 @@
   "medicine": "دواء",
   "deductible": "خصم",
   "co_pay": "CoPay",
-  "max_limit": "الحد الأقصى"
+  "max_limit": "الحد الأقصى",
+
+  "add_insurance": "إضافة التأمين"
 }

@@ -190,7 +190,7 @@ class AddPatientForm extends PureComponent {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 primary-details">
-                    <div className="row primary-box-container">
+                    <div className="row">
                       {/* <AlagehAutoComplete classes="" other="" /> */}
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
@@ -282,7 +282,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
                     </div>
-                    <div className="row primary-box-container">
+                    <div className="row">
                       <AlagehFormGroup
                         div={{ className: "col-lg-1" }}
                         label={{
@@ -430,7 +430,7 @@ class AddPatientForm extends PureComponent {
                       />
                     </div>
 
-                    <div className="row primary-box-container">
+                    <div className="row">
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -511,7 +511,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
                     </div>
-                    <div className="row primary-box-container">
+                    <div className="row">
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{

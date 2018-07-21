@@ -248,6 +248,7 @@ class PersistentDrawer extends React.Component {
     // titlectrl.setAttribute("data-algeahtitle", e.currentTarget.innerText);
 
     // titlectrl.innerText = e.currentTarget.innerText;
+
     this.setState({
       toggleSubMenu: true,
       title: e.currentTarget.innerText,

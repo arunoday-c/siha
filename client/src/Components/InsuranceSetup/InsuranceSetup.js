@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 
 import "./insurancesetup.css";
 import "../../styles/site.css";
-import { Button, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import InsuranceAdd from "./InsuranceAdd/InsuranceAdd";
 
@@ -125,6 +125,14 @@ class InsuranceSetup extends Component {
             </button>
           </div>
           <InsuranceAdd
+            HeaderCaption={
+              <AlgaehLabel
+                label={{
+                  fieldName: "add_insurance",
+                  align: "ltr"
+                }}
+              />
+            }
             open={this.state.isOpen}
             onClose={this.ShowModel.bind(this)}
           />

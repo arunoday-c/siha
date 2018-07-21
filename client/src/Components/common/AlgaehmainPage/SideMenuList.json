@@ -40,6 +40,12 @@
         "label": "Investigation Setup",
         "arlabel": "إعداد التحقيق",
         "path": "/InvestigationSetup"
+      },
+      {
+        "name": "Medical Workbench Setup",
+        "label": "Medical Workbench Setup",
+        "arlabel": "إعداد منضدة طبية",
+        "path": "/MedicalWorkbenchSetup"
       }
     ]
   },
@@ -101,7 +107,7 @@
     "icon": "fas fa-flask",
     "subMenu": [
       {
-        "name": "Sample Collection",
+        "name": "SampleCollection",
         "label": "Sample Collection",
         "arlabel": "جمع العينات",
         "path": "/SampleCollection"
@@ -151,10 +157,10 @@
         "path": "/InitialStock"
       },
       {
-        "name": "Doctor Workbench",
+        "name": "DoctorsWorkbench",
         "label": "Doctor Workbench",
         "arlabel": "طبيب طاولة العمل",
-        "path": "/OrderEntry"
+        "path": "/DoctorsWorkbench"
       }
     ]
   },

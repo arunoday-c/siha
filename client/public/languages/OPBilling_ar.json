@@ -99,5 +99,7 @@
   "plan_desc": "خطة",
   "policy_no": "رقم مركز الشرطه",
   "card_no": "رقم البطاقة",
-  "ins_expiry_date": "تاريخ الانتهاء"
+  "ins_expiry_date": "تاريخ الانتهاء",
+
+  "bill_details": "تفاصيل الفاتورة"
 }

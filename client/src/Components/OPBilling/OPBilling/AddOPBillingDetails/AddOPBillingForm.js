@@ -301,7 +301,18 @@ class AddOPBillingForm extends Component {
                     </button>
 
                     <DisplayOPBilling
-                      BillingIOputs={this.state}
+                      HeaderCaption={
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "bill_details",
+                            align: "ltr"
+                          }}
+                        />
+                      }
+                      BillingIOputs={{
+                        selectedLang: this.state.selectedLang,
+                        billdetails: this.state.billdetails
+                      }}
                       show={this.state.isOpen}
                       onClose={this.ShowBillDetails.bind(this)}
                     />
