@@ -46,7 +46,8 @@ const doctorselectedHandeler = ($this, context, e) => {
               [e.name]: e.value,
               visittypeselect: false,
               hims_d_services_id: e.selected.services_id,
-              incharge_or_provider: e.value
+              incharge_or_provider: e.value,
+              provider_id: e.value
             },
             () => {
               generateBillDetails($this, context);
@@ -56,7 +57,8 @@ const doctorselectedHandeler = ($this, context, e) => {
             context.updateState({
               [e.name]: e.value,
               hims_d_services_id: e.selected.services_id,
-              incharge_or_provider: e.value
+              incharge_or_provider: e.value,
+              provider_id: e.value
             });
           }
         } else {
@@ -77,7 +79,8 @@ const doctorselectedHandeler = ($this, context, e) => {
         [e.name]: e.value,
         visittypeselect: false,
         hims_d_services_id: e.selected.services_id,
-        incharge_or_provider: e.value
+        incharge_or_provider: e.value,
+        provider_id: e.value
       },
       () => {
         generateBillDetails($this, context);
@@ -87,7 +90,8 @@ const doctorselectedHandeler = ($this, context, e) => {
       context.updateState({
         [e.name]: e.value,
         hims_d_services_id: e.selected.services_id,
-        incharge_or_provider: e.value
+        incharge_or_provider: e.value,
+        provider_id: e.value
       });
     }
   }

@@ -58,6 +58,12 @@ class AddInsuranceForm extends Component {
   }
 
   selectedValueInsurance(value, context, e) {
+    let PatType = null;
+    if ((value = "Y")) {
+      PatType = "I";
+    } else {
+      PatType = "S";
+    }
     this.setState({
       insured: value,
       insuranceYes: !this.state.insuranceYes
@@ -66,7 +72,8 @@ class AddInsuranceForm extends Component {
     if (context != null) {
       context.updateState({
         insured: value,
-        insuranceYes: !this.state.insuranceYes
+        insuranceYes: !this.state.insuranceYes,
+        patient_type: PatType
       });
     }
   }
