@@ -1,11 +1,16 @@
 .patient_chart {
+  padding: 10px;
+
   .patient_demographics {
     padding: 10px;
     background-color: #595959;
     color: #fff;
-  }
+    line-height: 14px;
+    min-width: 100%;
+    font-size: 10px;
 
-  ul#menu li {
-    display: inline;
+    span {
+      color: #1abc9c;
+    }
   }
 }
