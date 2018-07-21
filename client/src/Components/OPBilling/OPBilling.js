@@ -20,7 +20,7 @@ import { getCookie } from "../../utils/algaehApiCall";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { postBillDetsils } from "../../actions/RegistrationPatient/Billingactions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
-
+import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 var intervalId;
 
 class PatientDisplayDetails extends Component {
@@ -210,17 +210,64 @@ class PatientDisplayDetails extends Component {
               label={{ fieldName: "form_opbilling", align: "ltr" }}
             />
           }
-          ctrlName={<AlgaehLabel label={{ fieldName: "bill_number" }} />}
-          screenName={
-            <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+          breadStyle={this.props.breadStyle}
+          pageNavPath={[
+            {
+              pageName: (
+                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+              )
+            },
+            {
+              pageName: <AlgaehLabel label={{ fieldName: "bill_number" }} />
+            }
+          ]}
+          soptlightSearch={{
+            label: (
+              <AlgaehLabel
+                label={{ fieldName: "bill_number", returnText: true }}
+              />
+            ),
+            value: this.state.bill_number,
+            events: {
+              onChange: this.getCtrlCode.bind(this)
+            },
+            selectValue: "bill_number",
+            searchName: "bills",
+            jsonFile: {
+              fileName: "spotlightSearch",
+              fieldName: "billing.opBilling"
+            }
+          }}
+          userArea={
+            <AlgaehDateHandler
+              div={{ className: "col" }}
+              label={{
+                forceLabel: <AlgaehLabel label={{ fieldName: "bill_date" }} />,
+                className: "internal-label"
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "bread_bill_date"
+              }}
+              disabled={true}
+              events={{
+                onChange: null
+              }}
+              value={this.state.bill_date}
+            />
           }
-          dateLabel={<AlgaehLabel label={{ fieldName: "bill_date" }} />}
-          HideHalfbread={true}
-          ctrlCode={this.state.bill_number}
-          ctrlDate={this.state.bill_date}
-          ControlCode={this.getCtrlCode.bind(this)}
+          printArea={true}
+          // ctrlName={<AlgaehLabel label={{ fieldName: "bill_number" }} />}
+          // screenName={
+          //   <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+          // }
+          //  dateLabel={<AlgaehLabel label={{ fieldName: "bill_date" }} />}
+          //  HideHalfbread={true}
+          // ctrlCode={this.state.bill_number}
+          //  ctrlDate={this.state.bill_date}
+          // ControlCode={this.getCtrlCode.bind(this)}
           selectedLang={this.state.selectedLang}
-          searchName="bills"
+          // searchName="bills"
         />
         <div className="spacing-push">
           <MyContext.Provider

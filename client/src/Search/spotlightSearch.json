@@ -1,0 +1,46 @@
+{
+  "frontDesk": {
+    "patients": [
+      {
+        "fieldName": "patient_code",
+        "label": "Patient Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
+      },
+      {
+        "fieldName": "arabic_name",
+        "label": "Arabic Name"
+      },
+      {
+        "fieldName": "gender",
+        "label": "Gender"
+      },
+      {
+        "fieldName": "contact_number",
+        "label": "Contact Number"
+      }
+    ]
+  },
+  "billing": {
+    "opBilling": [
+      {
+        "fieldName": "bill_number",
+        "label": "Bill Number"
+      },
+      {
+        "fieldName": "visit_id",
+        "label": "Visit Id"
+      },
+      {
+        "fieldName": "patient_id",
+        "label": "Patient Id"
+      },
+      {
+        "fieldName": "bill_date",
+        "label": "Bill Date"
+      }
+    ]
+  }
+}

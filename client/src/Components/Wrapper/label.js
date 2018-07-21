@@ -59,18 +59,21 @@ class Label extends PureComponent {
 
   labelRender = () => {
     if (this.props.label != null) {
+      if (this.props.label.returnText !== undefined) {
+        return this.state.languageBind;
+      }
       if (this.state.languageBind != "&nbsp;") {
         return (
           <label
             className={
               this.props.label.align == null
                 ? this.state.Language == "ar"
-                  ? "float-right style_Label"
+                  ? "float-right style_Label " + this.props.label.className
                   : this.props.label.align == "rtl"
-                    ? "float-right style_Label"
+                    ? "float-right style_Label " + this.props.label.className
                     : this.props.label.align == "ltl"
-                      ? "float-left style_Label"
-                      : "style_Label"
+                      ? "float-left style_Label " + this.props.label.className
+                      : "style_Label " + this.props.label.className
                 : null
             }
             {...this.props.label.others}

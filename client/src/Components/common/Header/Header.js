@@ -1,41 +1,42 @@
-import React, { Component, PureComponent } from "react";
+import React, { PureComponent } from "react";
 import "./../SideMenuBar/SideMenuBar.js";
 import "./header.css";
 import MenuIcon from "@material-ui/icons/Menu";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
+
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
 import { setCookie, getCookie } from "../../../utils/algaehApiCall.js";
+
 // var noScroll = require('no-scroll');
 // noScroll.off();
 
-const appColor = {
-  background: "#292929"
-};
+// const appColor = {
+//   background: "#292929"
+// };
 
-const paper_style = {
-  height: 1350,
-  width: 200,
-  position: "absolute",
-  top: 0,
-  display: "inline-block",
-  zIndex: 10000
-};
+// const paper_style = {
+//   height: 1350,
+//   width: 200,
+//   position: "absolute",
+//   top: 0,
+//   display: "inline-block",
+//   zIndex: 10000
+// };
 
-const titleStyles = {
-  title: {
-    color: "#fff",
-    paddingLeft: 100
-  },
-  organisation: {
-    color: "#d3d3d3"
-  }
-};
+// const titleStyles = {
+//   title: {
+//     color: "#fff",
+//     paddingLeft: 100
+//   },
+//   organisation: {
+//     color: "#d3d3d3"
+//   }
+// };
 
 class Header extends PureComponent {
   constructor(props) {
@@ -54,11 +55,8 @@ class Header extends PureComponent {
         open: !this.state.open
       },
       () => {
-        if (this.state.open === true) {
-          this.props.SideMenuBarOpen(true);
-        } else {
-          this.props.SideMenuBarOpen(false);
-        }
+        const openState = !this.state.open;
+        this.props.SideMenuBarOpen(openState);
       }
     );
   }

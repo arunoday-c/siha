@@ -30,7 +30,7 @@ import AddAdvanceModal from "../Advance/AdvanceModal";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
-
+import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
@@ -58,6 +58,7 @@ class RegistrationPatient extends Component {
     this.setState({
       widthImg: width
     });
+
     if (this.state.saveEnable === "clear") {
       this.props.initialStatePatientData({
         redux: {
@@ -270,23 +271,70 @@ class RegistrationPatient extends Component {
       <div id="attach">
         {/* <Barcode value='PAT-A-000017'/> */}
         <BreadCrumb
-          width={this.state.breadCrumbWidth}
+          //  width={this.state.breadCrumbWidth}
           title={
             <AlgaehLabel
               label={{ fieldName: "form_patregister", align: "ltr" }}
             />
           }
-          ctrlName={<AlgaehLabel label={{ fieldName: "patient_code" }} />}
-          screenName={
-            <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+          breadStyle={this.props.breadStyle}
+          //breadWidth={this.props.breadWidth}
+          pageNavPath={[
+            {
+              pageName: (
+                <AlgaehLabel
+                  label={{
+                    fieldName: "form_home",
+                    align: "ltr"
+                  }}
+                />
+              )
+            },
+            {
+              pageName: (
+                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+              )
+            }
+          ]}
+          soptlightSearch={{
+            label: (
+              <AlgaehLabel
+                label={{ fieldName: "patient_code", returnText: true }}
+              />
+            ),
+            value: this.state.patient_code,
+            selectValue: "patient_code",
+            events: {
+              onChange: this.getCtrlCode.bind(this)
+            },
+            jsonFile: {
+              fileName: "spotlightSearch",
+              fieldName: "frontDesk.patients"
+            },
+            searchName: "patients"
+          }}
+          userArea={
+            <AlgaehDateHandler
+              div={{ className: "col" }}
+              label={{
+                forceLabel: (
+                  <AlgaehLabel label={{ fieldName: "registration_date" }} />
+                ),
+                className: "internal-label"
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "bread_registration_date"
+              }}
+              disabled={true}
+              events={{
+                onChange: null
+              }}
+              value={this.state.registration_date}
+            />
           }
-          dateLabel={<AlgaehLabel label={{ fieldName: "registration_date" }} />}
-          HideHalfbread={true}
-          ctrlCode={this.state.patient_code}
-          ctrlDate={this.state.registration_date}
-          ControlCode={this.getCtrlCode.bind(this)}
+          printArea={true}
           selectedLang={this.state.selectedLang}
-          searchName="patients"
         />
         <div className="spacing-push">
           <MyContext.Provider

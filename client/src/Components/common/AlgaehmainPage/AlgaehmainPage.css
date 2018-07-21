@@ -89,3 +89,16 @@
 
 .hptl-phase1-footer .app_bar {
   background: #000000; }
+
+.screenDisplay {
+  display: flex;
+  width: 100%; }
+  .screenDisplay span {
+    padding-top: 12px; }
+  .screenDisplay span:first-child {
+    padding-top: 0px; }
+  .screenDisplay span:last-child {
+    padding-top: 7px;
+    float: right;
+    position: absolute;
+    margin-left: 88%; }

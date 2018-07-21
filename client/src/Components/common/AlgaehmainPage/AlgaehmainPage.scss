@@ -111,3 +111,20 @@
 .spacing-push {
   // margin-top: 6em;
 }
+
+.screenDisplay {
+  display: flex;
+  width: 100%;
+  span {
+    padding-top: 12px;
+  }
+  span:first-child {
+    padding-top: 0px;
+  }
+  span:last-child {
+    padding-top: 7px;
+    float: right;
+    position: absolute;
+    margin-left: 88%;
+  }
+}

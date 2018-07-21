@@ -21,7 +21,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import variableJson from "../../../utils/GlobalVariables.json";
 
-class SampleCollection extends Component {
+class AccessionAcknowledgement extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -249,5 +249,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(SampleCollection)
+  )(AccessionAcknowledgement)
 );

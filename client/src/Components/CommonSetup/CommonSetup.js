@@ -40,8 +40,17 @@ class CommonSetup extends Component {
       <div className="common_setup">
         <BreadCrumb
           title="Common Setup"
-          screenName="Master Setup"
-          HideHalfbread={false}
+          breadStyle={this.props.breadStyle}
+          pageNavPath={[
+            {
+              pageName: "Settings"
+            },
+            {
+              pageName: "Common Setup"
+            }
+          ]}
+          //screenName="Master Setup"
+          //   HideHalfbread={false}
         />
         <div className="tab-container toggle-section spacing-push">
           <ul className="nav">

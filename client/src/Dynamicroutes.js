@@ -26,14 +26,23 @@ function height() {
   return height;
 }
 
-const componts = selectedLang => {
+const componts = (selectedLang, breadStyle) => {
+  debugger;
   return {
     Dashboard: <Dashboard SelectLanguage={selectedLang} />,
-    FrontDesk: <FrontDesk SelectLanguage={selectedLang} />,
-    BusinessSetup: <BusinessSetup SelectLanguage={selectedLang} />,
-    CommonSetup: <CommonSetup SelectLanguage={selectedLang} />,
+    FrontDesk: (
+      <FrontDesk SelectLanguage={selectedLang} breadStyle={breadStyle} />
+    ),
+    BusinessSetup: (
+      <BusinessSetup SelectLanguage={selectedLang} breadStyle={breadStyle} />
+    ),
+    CommonSetup: (
+      <CommonSetup SelectLanguage={selectedLang} breadStyle={breadStyle} />
+    ),
     Experiment: <Experiment SelectLanguage={selectedLang} />,
-    OPBilling: <OPBilling SelectLanguage={selectedLang} />,
+    OPBilling: (
+      <OPBilling SelectLanguage={selectedLang} breadStyle={breadStyle} />
+    ),
     BillDetails: <BillDetails SelectLanguage={selectedLang} />,
     InsuranceSetup: <InsuranceSetup SelectLanguage={selectedLang} />,
     SampleCollection: <SampleCollection SelectLanguage={selectedLang} />,
@@ -47,8 +56,8 @@ const componts = selectedLang => {
   };
 };
 
-const directRoutes = (componet, selectedLang) => {
-  const MyComponet = componts(selectedLang)[componet];
+const directRoutes = (componet, selectedLang, breadStyle) => {
+  const MyComponet = componts(selectedLang, breadStyle)[componet];
   return MyComponet;
 };
 
