@@ -49,7 +49,8 @@ class SearchModule extends Component {
         this.setState({
           open: this.props.model.open,
           searchName: this.props.searchName,
-          searchBy: _searchBy
+          searchBy: _searchBy,
+          isSpeakEnable: false
         });
       }
     );
@@ -83,7 +84,8 @@ class SearchModule extends Component {
       this.setState({
         open: nextProps.model.open,
         searchName: nextProps.searchName,
-        searchBy: _searchBy
+        searchBy: _searchBy,
+        isSpeakEnable: false
       });
     });
   }
