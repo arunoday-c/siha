@@ -396,11 +396,67 @@ let addSample = (req, res, next) => {
   }
 };
 
+//created by irfan: master of Analytes table
+let addAnalytes = (req, res, next) => {
+  let AnalytesModel = {
+    hims_d_lab_analytes_id: null,
+    sample_id: null,
+    analyte_id: null,
+    result: null,
+    text: null,
+    status: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addAnalytes");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(AnalytesModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_lab_analytes(\
+          sample_id,analyte_id,result,text,status,created_by,updated_by)values(\
+              ?,?,?,?,?,?,?)",
+        [
+          input.sample_id,
+          input.analyte_id,
+          input.result,
+          input.text,
+          input.status,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
   physicalExaminationSubDetails,
   getPhysicalExamination,
   addOrder,
-  addSample
+  addSample,
+  addAnalytes
 };
