@@ -4,10 +4,10 @@
 .hptl-phase1-sideMenuBar .side-menu-title {
   padding-top: 15px;
   padding-bottom: 8px;
-  font-size: 14px;
+  font-size: 0.8rem;
   cursor: pointer; }
   .hptl-phase1-sideMenuBar .side-menu-title span {
-    font-size: 10px; }
+    font-size: 0.8rem; }
 
 .hptl-phase1-sideMenuBar .side-menu-arrow {
   margin-top: 5px; }
@@ -36,7 +36,8 @@
   color: white;
   list-style-type: none;
   cursor: pointer;
-  font-size: 14px; }
+  padding-top: 8px;
+  font-size: 0.7rem; }
 
 .hptl-phase1-sideMenuBar li:before {
   content: "";
@@ -88,3 +89,16 @@
 
 .hptl-phase1-footer .app_bar {
   background: #000000; }
+
+.screenDisplay {
+  display: flex;
+  width: 100%; }
+  .screenDisplay span {
+    padding-top: 12px; }
+  .screenDisplay span:first-child {
+    padding-top: 0px; }
+  .screenDisplay span:last-child {
+    padding-top: 7px;
+    float: right;
+    position: absolute;
+    margin-left: 88%; }

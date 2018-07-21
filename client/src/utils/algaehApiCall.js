@@ -81,7 +81,7 @@ export function algaehApiCall(options) {
   let x_app_user_identity = JSON.stringify({
     user_id: userDtl !== undefined ? userDtl : ""
   });
-  console.log("x_app_user_identity", x_app_user_identity);
+
   if (settings.uri != null || settings.uri != "") {
     if (settings.isfetch) {
       return fetch(settings.baseUrl + settings.uri + queryParametres, {

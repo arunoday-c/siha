@@ -13,7 +13,7 @@ import "./AlgaehmainPage.css";
 import { setCookie, getCookie } from "../../../utils/algaehApiCall";
 import directRoutes from "../../../Dynamicroutes";
 import CancelIcon from "@material-ui/icons/Close";
-
+import { setGlobal } from "../../../utils/GlobalFunctions";
 import Button from "@material-ui/core/Button";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
@@ -133,7 +133,10 @@ class PersistentDrawer extends React.Component {
       languageName: "English",
       Language: "en",
       arlabl: "",
-      enlabl: ""
+      enlabl: "",
+      breadStyle: {
+        marginLeft: "250px"
+      }
     };
   }
 
@@ -197,11 +200,21 @@ class PersistentDrawer extends React.Component {
   };
 
   handleDrawerOpen = () => {
-    this.setState({ open: true });
+    this.setState({
+      open: true,
+      breadStyle: {
+        marginLeft: "250px"
+      }
+    });
   };
 
   handleDrawerClose = () => {
-    this.setState({ open: false });
+    this.setState({
+      open: false,
+      breadStyle: {
+        marginLeft: "0px"
+      }
+    });
   };
 
   handleChangeAnchor = event => {
@@ -372,26 +385,61 @@ class PersistentDrawer extends React.Component {
               })}
             >
               <Toolbar disableGutters={!open}>
-                <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                  <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={this.handleDrawerOpen}
-                    className={classNames(
-                      classes.menuButton,
-                      open && classes.hide
-                    )}
-                  >
-                    <MenuIcon />
-                  </IconButton>
-                </div>
-                <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                  <Typography variant="title" color="inherit" noWrap>
-                    {this.state.title}
-                  </Typography>
+                <div className="screenDisplay">
+                  <span>
+                    <IconButton
+                      color="inherit"
+                      aria-label="open drawer"
+                      onClick={this.handleDrawerOpen}
+                      className={classNames(
+                        classes.menuButton,
+                        open && classes.hide + "float - left"
+                      )}
+                    >
+                      <MenuIcon />
+                    </IconButton>
+                  </span>
+                  <span>
+                    <Typography variant="title" color="inherit" noWrap>
+                      {this.state.title}
+                    </Typography>
+                  </span>
+                  <span>
+                    <Button
+                      style={{ color: "#fff" }}
+                      aria-haspopup="true"
+                      className="float-right"
+                      onClick={this.handleOpenClick}
+                    >
+                      {this.state.languageName}
+                      &nbsp;&nbsp;{" "}
+                      <i
+                        className="fa fa-language"
+                        aria-hidden="true"
+                        style={{ fontSize: 18 }}
+                      />
+                    </Button>
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={this.state.anchorEl}
+                      open={Boolean(this.state.anchorEl)}
+                      onClose={this.handleClose}
+                    >
+                      <MenuItem onClick={this.handleClose.bind(this, "en")}>
+                        {this.state.languageName == "English"
+                          ? this.renderCheck()
+                          : null}&nbsp; English
+                      </MenuItem>
+                      <MenuItem onClick={this.handleClose.bind(this, "ar")}>
+                        {this.state.languageName == "عربي"
+                          ? this.renderCheck()
+                          : null}&nbsp; عربي
+                      </MenuItem>
+                    </Menu>
+                  </span>
                 </div>
 
-                <div className="col-lg-5">
+                {/* <div className="col-lg-5">
                   <Button
                     style={{ color: "#fff" }}
                     aria-haspopup="true"
@@ -423,7 +471,7 @@ class PersistentDrawer extends React.Component {
                         : null}&nbsp; عربي
                     </MenuItem>
                   </Menu>
-                </div>
+                </div> */}
               </Toolbar>
             </AppBar>
             {drawer}
@@ -443,7 +491,8 @@ class PersistentDrawer extends React.Component {
                   <div className="col-lg-12">
                     {directRoutes(
                       this.state.renderComponent,
-                      this.state.selectedLang
+                      this.state.selectedLang,
+                      this.state.breadStyle
                     )}
                   </div>
                 </div>
