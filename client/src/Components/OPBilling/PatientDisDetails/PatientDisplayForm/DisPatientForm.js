@@ -35,7 +35,7 @@ export default class DisPatientForm extends Component {
           {context => (
             <div className="hptl-phase1-display-patient-form">
               <div className="container-fluid">
-                <div className="row form-details">
+                <div className="row">
                   {/* Patient code */}
                   <AlagehFormGroup
                     div={{ className: "col-lg-2" }}

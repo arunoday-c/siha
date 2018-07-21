@@ -16,6 +16,7 @@ import { inflate } from "zlib";
 //AddBill
 let addBill = (dataBase, req, res, callBack, isCommited, next) => {
   isCommited = isCommited || false;
+  let db = req.db;
 
   let billingHeaderModel = {
     hims_f_billing_header_id: null,
@@ -1493,7 +1494,7 @@ let addEpisodeEncounter = (req, res, next) => {
         }
 
         let currentEncounterNo = null;
-        
+
         connection.query(
           "select encounter_id from hims_d_options where hims_d_options_id=1",
           (error, result) => {
@@ -1505,7 +1506,7 @@ let addEpisodeEncounter = (req, res, next) => {
             currentEncounterNo = result[0].encounter_id;
             debugLog("currentEncounterNo:", currentEncounterNo);
 
-       if (currentEncounterNo > 0) {
+            if (currentEncounterNo > 0) {
               let nextEncounterNo = currentEncounterNo + 1;
               debugLog("nextEncounterNo:", nextEncounterNo);
 

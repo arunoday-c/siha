@@ -140,45 +140,47 @@ class InsuranceAdd extends PureComponent {
                 <br />
 
                 <div className="row" position="fixed">
-                  <div className="col-lg-1">
-                    <button
-                      // className="htpl1-phase1-btn-others"
-                      disabled={activeStep === 0}
-                      onClick={this.handleBack}
-                      className={
-                        classes.backButton + " htpl1-phase1-btn-others"
-                      }
-                    >
-                      Previous
-                    </button>
-                  </div>
-                  <div className="col-lg-2">
-                    <button className="htpl1-phase1-btn-others" color="primary">
-                      Save & Close
-                    </button>
-                  </div>
-                  <div className="col-lg-6">&nbsp;</div>
-                  <div className="col-lg-1">
-                    <button
-                      className="htpl1-phase1-btn-others"
-                      onClick={e => {
-                        this.onClose(e);
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
+                  <div className="col-lg-12">
+                    <span className="float-left">
+                      <button
+                        // className="htpl1-phase1-btn-others"
+                        disabled={activeStep === 0}
+                        onClick={this.handleBack}
+                        className={
+                          classes.backButton + " htpl1-phase1-btn-others"
+                        }
+                      >
+                        Previous
+                      </button>
 
-                  <div className="col-lg-2">
-                    <button
-                      className="htpl1-phase1-btn-primary"
-                      style={{ float: "right" }}
-                      onClick={this.handleNext}
-                    >
-                      {activeStep === steps.length - 1
-                        ? "Save & Finish"
-                        : "Save & Next"}
-                    </button>
+                      <button
+                        className="htpl1-phase1-btn-others"
+                        color="primary"
+                      >
+                        Save & Close
+                      </button>
+                    </span>
+
+                    <span className="float-right">
+                      <button
+                        className="htpl1-phase1-btn-others"
+                        onClick={e => {
+                          this.onClose(e);
+                        }}
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        className="htpl1-phase1-btn-primary"
+                        style={{ float: "right" }}
+                        onClick={this.handleNext}
+                      >
+                        {activeStep === steps.length - 1
+                          ? "Save & Finish"
+                          : "Save & Next"}
+                      </button>
+                    </span>
                   </div>
                 </div>
               </div>

@@ -58,8 +58,6 @@ class PatientDisplayDetails extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    //this.setState(nextProps.patients[0]);
-
     let output = {};
     let billOut = {};
     if (
@@ -97,12 +95,6 @@ class PatientDisplayDetails extends Component {
       clearInterval(intervalId);
     }, 500);
   }
-
-  // getCtrlCode(data) {
-  //   this.setState({
-  //     bill_number: data
-  //   });
-  // }
 
   getCtrlCode(billcode) {
     let $this = this;
@@ -185,6 +177,7 @@ class PatientDisplayDetails extends Component {
 
   SaveBill(e) {
     this.GenerateReciept($this => {
+      debugger;
       $this.props.postBillDetsils($this.state, data => {
         $this.setState({
           bill_number: data.bill_number,
