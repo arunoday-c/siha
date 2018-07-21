@@ -1,7 +1,34 @@
 import React, { Component } from "react";
 import "./patient_chart.css";
 import Warning from "@material-ui/icons/Warning";
-import { AlgaehDataGrid, Button } from "../../Wrapper/algaehWrapper";
+import { AlgaehDataGrid, AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+
+const AllergyData = [
+  { food: "grapes/citrus", active: "Yes" },
+  { food: "Pollen", active: "Yes" },
+  { food: "Iodine", active: "Yes" }
+];
+
+const MainData = [
+  {
+    chief_complain: "Headache",
+    inactive: "Yes",
+    sevirity: "moderate",
+    pain: "4"
+  },
+  {
+    chief_complain: "Stomach Ache",
+    inactive: "No",
+    sevirity: "mild",
+    pain: "3"
+  },
+  {
+    chief_complain: " Chest Pain",
+    inactive: "Yes",
+    sevirity: "worse",
+    pain: "8"
+  }
+];
 
 class PatientChart extends Component {
   render() {
@@ -63,7 +90,7 @@ class PatientChart extends Component {
         </div>
         <div className="row">
           <div className="col card">
-            <label>Chief Complaint : Abnormal Breathing; Anorexia </label>
+            <label>Chief Complaint : Headache; Stomach Ache; Chest Pain </label>
           </div>
           <div className="col card">
             <label> Allergies :grapes/ citrus; Pollen; iodine;</label>
@@ -83,7 +110,7 @@ class PatientChart extends Component {
             id="patient_chart_grd"
             columns={[
               {
-                fieldName: "status",
+                fieldName: "chief_complain",
                 label: "Chief Complaint",
                 disabled: true
               },
@@ -100,11 +127,11 @@ class PatientChart extends Component {
                 label: "Interval"
               },
               {
-                fieldName: "time",
+                fieldName: "sevirity",
                 label: "Sevirity"
               },
               {
-                fieldName: "patient_type",
+                fieldName: "pain",
                 label: "Pain"
               },
               {
@@ -124,14 +151,13 @@ class PatientChart extends Component {
                 label: "Comment"
               },
               {
-                fieldName: "patient_type",
+                fieldName: "inactive",
                 label: "Inactive"
               }
             ]}
             keyId="code"
             dataSource={{
-              data:
-                this.props.visatypes === undefined ? [] : this.props.visatypes
+              data: MainData
             }}
             isEditable={false}
             paging={{ page: 0, rowsPerPage: 3 }}
@@ -149,7 +175,52 @@ class PatientChart extends Component {
         </div>
         <div className="card-deck" style={{ marginTop: "10px" }}>
           <div className="card">
-            <label> History of Present Illness</label>
+            <div style={{ padding: "5px" }}>
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "",
+                  isImp: true,
+                  forceLabel: "History of Present Illness"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "username",
+                  // value: this.state.username,
+                  events: {
+                    //  onChange: this.texthandle.bind(this)
+                  },
+                  others: {
+                    multiline: true,
+                    rows: "4"
+                  }
+                  // error: this.state.userError,
+                  // helperText: this.state.userErrorText
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "",
+                  isImp: true,
+                  forceLabel: "Subjective Notes"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "username",
+                  // value: this.state.username,
+                  events: {
+                    //  onChange: this.texthandle.bind(this)
+                  },
+                  others: {
+                    multiline: true,
+                    rows: "3"
+                  }
+                  // error: this.state.userError,
+                  // helperText: this.state.userErrorText
+                }}
+              />
+            </div>
           </div>
           <div className="card">
             <div>
@@ -159,7 +230,7 @@ class PatientChart extends Component {
               id="patient_chart_grd"
               columns={[
                 {
-                  fieldName: "status",
+                  fieldName: "food",
                   label: "Food",
                   disabled: true
                 },
@@ -172,14 +243,13 @@ class PatientChart extends Component {
                   label: "Comment"
                 },
                 {
-                  fieldName: "patient_id",
+                  fieldName: "active",
                   label: "Active"
                 }
               ]}
               keyId="code"
               dataSource={{
-                data:
-                  this.props.visatypes === undefined ? [] : this.props.visatypes
+                data: AllergyData
               }}
               isEditable={false}
               paging={{ page: 0, rowsPerPage: 3 }}
