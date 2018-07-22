@@ -7,6 +7,8 @@ import MicOff from "@material-ui/icons/MicOff";
 import Mic from "@material-ui/icons/Mic";
 
 var intervalId;
+window.SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition || null;
 class SearchModule extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +18,9 @@ class SearchModule extends Component {
       searchBy: "",
       searchName: "",
       contains: "",
-      isSpeakEnable: false
+      isSpeakEnable: false,
+      stop: false,
+      start: false
     };
   }
 
@@ -50,7 +54,9 @@ class SearchModule extends Component {
           open: this.props.model.open,
           searchName: this.props.searchName,
           searchBy: _searchBy,
-          isSpeakEnable: false
+          isSpeakEnable: false,
+          stop: false,
+          contains: ""
         });
       }
     );
@@ -85,7 +91,9 @@ class SearchModule extends Component {
         open: nextProps.model.open,
         searchName: nextProps.searchName,
         searchBy: _searchBy,
-        isSpeakEnable: false
+        isSpeakEnable: false,
+        stop: false,
+        contains: ""
       });
     });
   }
@@ -118,15 +126,15 @@ class SearchModule extends Component {
    */
   handleSpotLightContains(e) {
     let contains = e.target.value;
+    this.setState({ contains: contains });
+
     let $this = this;
     clearInterval(intervalId);
     intervalId = setInterval(() => {
       if (typeof $this.props.onContainsChange === "function") {
-        $this.props.onContainsChange(contains, $this.state.searchBy, vlaue => {
-          $this.setState({ contains: vlaue });
+        $this.props.onContainsChange(contains, $this.state.searchBy, value => {
+          return value;
         });
-      } else {
-        $this.setState({ contains: contains });
       }
       clearInterval(intervalId);
     }, 1000);
@@ -177,9 +185,40 @@ class SearchModule extends Component {
     );
   };
   speakInput(e) {
-    const isSpeak = !this.state.isSpeakEnable;
-    this.setState({ isSpeakEnable: isSpeak });
+    if (window.SpeechRecognition === null) {
+      alert(
+        "your browser not support this feature, please install latest version of chrome."
+      );
+    } else {
+      var recognizer = new window.SpeechRecognition();
+      const isSpeak = !this.state.isSpeakEnable;
+      this.setState({ isSpeakEnable: isSpeak });
+      if (isSpeak) this.startSpeaking(recognizer);
+      else recognizer.stop();
+    }
   }
+  startSpeaking(recognizer) {
+    let $this = this;
+    recognizer.start();
+    // true =Recogniser doesn't stop listening even if the user pauses
+    recognizer.continuous = false;
+    recognizer.onresult = event => {
+      for (var i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          $this.setState({
+            isSpeakEnable: false,
+            contains: event.results[i][0].transcript
+          });
+        }
+      }
+    };
+    recognizer.onerror = error => {
+      recognizer.stop();
+      $this.setState({ isSpeakEnable: false, contains: "" });
+      console.error("speach error : ", error);
+    };
+  }
+
   render() {
     return (
       <div
@@ -196,12 +235,15 @@ class SearchModule extends Component {
             id="spotlightInput"
             type="text"
             placeholder={this.state.title}
+            value={this.state.contains}
             onChange={this.handleSpotLightContains.bind(this)}
           />
           <div id="spotlightFilterBy">
             <IconButton title="Speak" onClick={this.speakInput.bind(this)}>
               {this.state.isSpeakEnable ? (
-                <Mic color="secondary" className="animated  flash" />
+                <React.Fragment>
+                  <Mic color="secondary" className="animated  flash" />
+                </React.Fragment>
               ) : (
                 <MicOff />
               )}
