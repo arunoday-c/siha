@@ -75,7 +75,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan : add order table
+  // created by irfan : add order
   api.post(
     "/addOrder",
     addOrder,
@@ -90,7 +90,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan : add sample table
+  // created by irfan : add sample
   api.post(
     "/addSample",
     addSample,
@@ -105,7 +105,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan : add analytes table
+  // created by irfan : add analytes
   api.post(
     "/addAnalytes",
     addAnalytes,
