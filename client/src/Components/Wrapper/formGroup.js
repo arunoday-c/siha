@@ -25,18 +25,40 @@ export default class FormGroup extends Component {
   };
 
   labelRender = () => {
-    return <Label label={this.props.label} />;
+    if (this.props.label !== undefined)
+      return <Label label={this.props.label} />;
   };
 
   componentWillMount() {
-    this.setState({ value: this.props.textBox.value });
+    let textTypeValue =
+      this.props.textBox.decimal !== undefined
+        ? 0.0
+        : this.props.textBox.number !== undefined
+          ? 0
+          : "";
+    this.setState({
+      value: this.props.textBox.value ? this.props.textBox.value : textTypeValue
+    });
   }
   componentWillReceiveProps(props) {
-    this.setState({
-      value: props.textBox.value,
-      error: props.textBox.error,
-      helperText: props.textBox.helperText
-    });
+    if (
+      props.textBox.value !== this.state.value ||
+      props.textBox.error !== this.state.error ||
+      props.textBox.helperText !== this.state.helperText
+    ) {
+      let textTypeValue =
+        props.textBox.decimal !== undefined
+          ? 0.0
+          : props.textBox.number !== undefined
+            ? 0
+            : "";
+
+      this.setState({
+        value: props.textBox.value ? props.textBox.value : textTypeValue,
+        error: props.textBox.error,
+        helperText: props.textBox.helperText
+      });
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -44,8 +66,11 @@ export default class FormGroup extends Component {
       nextProps.textBox.value !== this.state.value ||
       nextProps.textBox.error !== this.state.error ||
       nextProps.textBox.helperText !== this.state.helperText
-    )
+    ) {
+      console.log("inside should update true");
       return true;
+    }
+
     return false;
   }
 
@@ -83,7 +108,7 @@ export default class FormGroup extends Component {
                 : () => {}
             }
             className={this.props.textBox.className}
-            numberBox="true"
+            numberbox="true"
             prefix={this.props.textBox.decimal.prefix}
             suffix={this.props.textBox.decimal.suffix}
             value={
@@ -127,7 +152,7 @@ export default class FormGroup extends Component {
             }
             decimalScale={0}
             className={this.props.textBox.className}
-            numberBox="true"
+            numberbox="true"
             value={this.props.textBox.value}
             prefix={this.props.textBox.number.prefix}
             suffix={this.props.textBox.number.suffix}
@@ -229,9 +254,3 @@ export default class FormGroup extends Component {
     );
   }
 }
-FormGroup.propTypes = {
-  label: PropTypes.object,
-  textBox: PropTypes.object,
-  div: PropTypes.object,
-  language: PropTypes.object
-};

@@ -125,6 +125,7 @@ class AddInsuranceForm extends Component {
                       <div className="col-lg-1">
                         <Tooltip id="tooltip-icon" title="Add New">
                           <IconButton
+                            component="div"
                             className="go-button"
                             color="primary"
                             disabled={this.state.insuranceYes}

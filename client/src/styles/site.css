@@ -1,5 +1,6 @@
 body {
-  line-height: 1.2; }
+  line-height: 1.45;
+  font-family: "Open Sans", sans-serif; }
 
 :global .tab-container .tab-button {
   font-weight: normal;
@@ -423,13 +424,16 @@ body {
 
 label {
   margin-bottom: 0px;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
+  font-family: "Open Sans", sans-serif;
+  text-transform: uppercase;
   font-weight: 100;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased !important; }
 
 input[type="text"] {
-  font-size: 0.8rem; }
+  padding-left: 4px;
+  font-size: 0.85rem; }
 
 DayPickerInput {
   border-bottom: 1px dashed #000; }
@@ -441,10 +445,10 @@ DayPickerInput {
  for dropdown list
 */
 .Select-menu-outer {
-  font-size: 0.8rem; }
+  font-size: 0.85rem; }
 
 .Select-multi-value-wrapper {
-  font-size: 0.8rem; }
+  font-size: 0.85rem; }
 
 .Select-placeholder,
 .Select--single > .Select-control .Select-value {

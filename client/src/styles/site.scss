@@ -1,6 +1,7 @@
 @import "algaehCssVariables.scss";
 body {
-  line-height: 1.2;
+  line-height: 1.45;
+  font-family: $fontFamily;
 }
 :global {
   .tab-container {
@@ -545,6 +546,8 @@ body {
 label {
   margin-bottom: 0px;
   font-size: $fontSize;
+  font-family: $fontFamily;
+  text-transform: uppercase;
   font-weight: 100;
   -moz-osx-font-smoothing: $moz-osx-font-smoothing;
   -webkit-font-smoothing: $webkit-font-smoothing;
@@ -552,6 +555,7 @@ label {
 
 input[type="text"] {
   //padding-top: 3px;
+  padding-left: 4px;
   font-size: $textFontSize;
 }
 

@@ -49,7 +49,7 @@ const styles = theme => ({
       padding: theme.spacing.unit * 2
     },
 
-    ".Select-placeholder, .Select--single .Select-value": {
+    ".Select-placeholder, .Select--single .Select-value .Select-value-label": {
       position: "absolute",
       top: 0,
       left: 0,
@@ -57,13 +57,13 @@ const styles = theme => ({
       bottom: 0,
       display: "flex",
       alignItems: "center",
-      fontFamily: theme.typography.fontFamily,
+      //fontFamily: theme.typography.fontFamily,
       // fontSize: theme.typography.pxToRem(16),
-      padding: 0
+      paddingLeft: "4px"
     },
     ".Select-placeholder": {
-      opacity: 0.42,
-      color: theme.palette.common.black
+      opacity: 0.42
+      // color: theme.palette.common.black
     },
     ".Select-menu-outer": {
       backgroundColor: theme.palette.background.paper,

@@ -1,10 +1,6 @@
 import React, { PureComponent } from "react";
 import "./breadcrumb.css";
-import {
-  AlgaehLabel,
-  AlgaehDateHandler,
-  AlagehFormGroup
-} from "../../Wrapper/algaehWrapper";
+import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import { SearchDetails } from "./BreadCurmbFunctionality";
 import Tooltip from "@material-ui/core/Tooltip";
 
@@ -24,8 +20,6 @@ class BreadCrumb extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
-    console.log("Width", this.props.breadWidth);
     this.setState({
       value:
         nextProps.soptlightSearch !== undefined
@@ -90,8 +84,9 @@ class BreadCrumb extends PureComponent {
             </li>
             <li>
               <Tooltip title="Search">
-                <i
-                  className="fas fa-search fa-4x"
+                <img
+                  className="finderImg"
+                  src={require("../BreadCrumb/images/search.png")}
                   onClick={SearchDetails.bind(this, this)}
                 />
               </Tooltip>
@@ -131,7 +126,7 @@ class BreadCrumb extends PureComponent {
         >
           <div className="breadCrumb-Data">
             <div className="row">
-              <div className="col-lg-3 text">
+              <div className="col-lg-3 text hdg_bredcrump">
                 <div className="row">
                   <h5 className="header">{this.props.title}</h5>
                 </div>
@@ -139,7 +134,7 @@ class BreadCrumb extends PureComponent {
                   {this.props.pageNavPath !== undefined
                     ? this.props.pageNavPath.map((row, index) => {
                         return (
-                          <React.Fragment>
+                          <React.Fragment key={index}>
                             <li key={index}>
                               <a>{row.pageName}</a>
                             </li>
@@ -152,7 +147,6 @@ class BreadCrumb extends PureComponent {
                       })
                     : null}
                 </ul>
-                <span className="arrow" />
               </div>
 
               {this.showSpotlightSearch()}

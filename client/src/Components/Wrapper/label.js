@@ -1,10 +1,10 @@
 import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
+//import PropTypes from "prop-types";
 //import { readFiles } from "../Wrapper/languageIndexDB";
-import { getCookie, setCookie } from "../../utils/algaehApiCall.js";
+import { getCookie } from "../../utils/algaehApiCall.js";
 //import jQuery from "node-jquery";
 
-import { connct } from "react-redux";
+//import { connct } from "react-redux";
 class Label extends PureComponent {
   constructor(props) {
     super(props);
@@ -14,15 +14,15 @@ class Label extends PureComponent {
     };
   }
   getTargetLanguage = (fieldName, callBack) => {
-    if (fieldName != null && fieldName != "") {
+    if (fieldName !== undefined && fieldName !== "") {
       let langua = getCookie("Language");
       let screenName = getCookie("ScreenName") + "_";
       let fileName =
-        screenName + ((langua == null || langua) == "" ? "en" : langua);
+        screenName + (langua === undefined || langua == "" ? "en" : langua);
       let fileImport = "./languages/" + fileName + ".json";
 
       let savePage = window.localStorage.getItem(fileName);
-      if (savePage != null && savePage != "") {
+      if (savePage !== undefined && savePage !== "") {
         let getLanguageLables = JSON.parse(savePage);
         callBack(getLanguageLables[fieldName]);
         return;
@@ -42,7 +42,7 @@ class Label extends PureComponent {
     xobj.overrideMimeType("application/json");
     xobj.open("GET", file, true);
     xobj.onreadystatechange = function() {
-      if (xobj.readyState == 4 && xobj.status == "200") {
+      if (xobj.readyState === 4 && xobj.status === 200) {
         callback(JSON.parse(xobj.responseText));
       }
     };
@@ -50,7 +50,10 @@ class Label extends PureComponent {
   };
 
   important = () => {
-    if (this.props.label.isImp != null && this.props.label.isImp == true) {
+    if (
+      this.props.label.isImp !== undefined &&
+      this.props.label.isImp === true
+    ) {
       return <span className="imp">&nbsp;*</span>;
     } else {
       return null;
@@ -58,20 +61,20 @@ class Label extends PureComponent {
   };
 
   labelRender = () => {
-    if (this.props.label != null) {
+    if (this.props.label !== undefined) {
       if (this.props.label.returnText !== undefined) {
         return this.state.languageBind;
       }
-      if (this.state.languageBind != "&nbsp;") {
+      if (this.state.languageBind !== "&nbsp;") {
         return (
           <label
             className={
-              this.props.label.align == null
-                ? this.state.Language == "ar"
+              this.props.label.align === undefined
+                ? this.state.Language === "ar"
                   ? "float-right style_Label " + this.props.label.className
-                  : this.props.label.align == "rtl"
+                  : this.props.label.align === "rtl"
                     ? "float-right style_Label " + this.props.label.className
-                    : this.props.label.align == "ltl"
+                    : this.props.label.align === "ltl"
                       ? "float-left style_Label " + this.props.label.className
                       : "style_Label " + this.props.label.className
                 : null
@@ -90,14 +93,14 @@ class Label extends PureComponent {
     }
   };
   componentWillMount() {
-    if (this.props.label != null) {
-      if (this.props.label.language != null) {
+    if (this.props.label !== undefined) {
+      if (this.props.label.language !== undefined) {
         this.setState({ Language: this.props.label.language.fileName });
       } else {
         this.setState({ Language: getCookie("Language") });
       }
 
-      if (this.props.label.forceLabel == null) {
+      if (this.props.label.forceLabel === undefined) {
         this.getTargetLanguage(this.props.label.fieldName, data => {
           this.setState({ languageBind: data });
         });
@@ -107,10 +110,10 @@ class Label extends PureComponent {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps != null && nextProps != "") {
+    if (nextProps !== undefined) {
       if (this.currentPageCanRender()) {
-        if (this.props.label != null) {
-          if (this.props.label.forceLabel == null) {
+        if (this.props.label !== undefined) {
+          if (this.props.label.forceLabel === undefined) {
             this.getTargetLanguage(this.props.label.fieldName, data => {
               this.setState({ languageBind: data });
             });
@@ -137,9 +140,5 @@ class Label extends PureComponent {
     return <React.Fragment>{this.labelRender()}</React.Fragment>;
   }
 }
-
-Label.propTypes = {
-  label: PropTypes.object.isRequired
-};
 
 export default Label;

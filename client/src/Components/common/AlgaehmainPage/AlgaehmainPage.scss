@@ -1,3 +1,5 @@
+@import "../../../styles/algaehCssVariables.scss";
+
 .hptl-phase1-sideMenuBar {
   // line-height: 1;
   .sideMenu-header {
@@ -6,9 +8,10 @@
   .side-menu-title {
     padding-top: 15px;
     padding-bottom: 8px;
-    font-size: 0.8rem;
+    font-size: $mainMenu;
+    text-transform: uppercase;
     span {
-      font-size: 0.8rem;
+      font-size: $mainMenu;
     }
     cursor: pointer;
   }
@@ -44,7 +47,7 @@
     list-style-type: none;
     cursor: pointer;
     padding-top: 8px;
-    font-size: 0.7rem;
+    font-size: $subMenu;
   }
 
   li:before {

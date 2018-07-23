@@ -22,14 +22,15 @@ div[numberbox="true"] input[type="text"] {
   max-width: 100%; }
   .algaeh-datePicker .react-date-picker__button {
     border: none;
-    line-height: 1.8em; }
+    line-height: 1.94em; }
   .algaeh-datePicker .react-date-picker {
     width: 100%; }
   .algaeh-datePicker .react-date-picker__button {
     width: 100%; }
   .algaeh-datePicker .react-date-picker__button__input {
     margin-left: 0px;
-    min-width: inherit; }
+    min-width: inherit;
+    font-size: 0.85rem; }
   .algaeh-datePicker button {
     margin-left: 0px; }
 
