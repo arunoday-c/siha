@@ -11,7 +11,13 @@ import {
   addAnalytes,
   addReviewOfSysHeader,
   addReviewOfSysDetails,
-  getReviewOfSystem
+  getReviewOfSystem,
+  addAllergy,
+  getAllergyDetails,
+  addChronicalConditions,
+  getChronicalConditions,
+  addEncounterReview,
+  getEncounterReview
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -155,6 +161,96 @@ export default ({ config, db }) => {
   api.get(
     "/getReviewOfSystem",
     getReviewOfSystem,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : add Allergy
+  api.post(
+    "/addAllergy",
+    addAllergy,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : get Allergy details
+  api.get(
+    "/getAllergyDetails",
+    getAllergyDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :  addChronicalConditions
+  api.post(
+    "/addChronicalConditions",
+    addChronicalConditions,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : get ChronicalConditions
+  api.get(
+    "/getChronicalConditions",
+    getChronicalConditions,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :  addEncounterReview
+  api.post(
+    "/addEncounterReview",
+    addEncounterReview,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : get getEncounterReview
+  api.get(
+    "/getEncounterReview",
+    getEncounterReview,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

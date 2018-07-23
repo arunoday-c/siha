@@ -613,6 +613,246 @@ let getReviewOfSystem = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan:  to add allergic details
+let addAllergy = (req, res, next) => {
+  let AllergyModel = {
+    hims_d_allergiy_id: null,
+    allergy_type: null,
+    allergy_name: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addAllergy");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(AllergyModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_allergy(\
+          allergy_type,allergy_name,created_by,updated_by)values(\
+              ?,?,?,?)",
+        [
+          input.allergy_type,
+          input.allergy_name,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:  to get allergic details
+let getAllergyDetails = (req, res, next) => {
+  debugFunction("getAllergyDetails");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query("SELECT * FROM hims_d_allergy", (error, results) => {
+        if (error) {
+          next(error);
+          releaseDBConnection(db, connection);
+        }
+        debugLog("Results fetched");
+        req.records = results;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:  to add chronical conditions
+let addChronicalConditions = (req, res, next) => {
+  let ChronicalConditionsModel = {
+    hims_d_chronic_conditions_id: null,
+    name: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addChronicalConditions");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(ChronicalConditionsModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_chronic_conditions(\
+          name,created_by,updated_by)values(\
+              ?,?,?)",
+        [input.name, input.created_by, input.updated_by],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:  to get chronical conditions
+let getChronicalConditions = (req, res, next) => {
+  debugFunction("getChronicalConditions");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "SELECT * FROM hims_d_chronic_conditions;",
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results fetched");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:  to add encounter review
+let addEncounterReview = (req, res, next) => {
+  let EncounterReviewMOdel = {
+    hims_f_encounter_review_id: null,
+    encounter_id: null,
+    review_header_id: null,
+    review_details_id: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addEncounterReview");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(EncounterReviewMOdel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_f_encounter_review(\
+          encounter_id,review_header_id,review_details_id,created_by,updated_by)values(\
+              ?,?,?,?,?)",
+        [
+          input.encounter_id,
+          input.review_header_id,
+          input.review_details_id,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:  to getEncounterReview
+let getEncounterReview = (req, res, next) => {
+  debugFunction("getEncounterReview");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+      let encounter_id = req.query.encounter_id;
+      connection.query(
+        "SELECT * FROM hims_f_encounter_review where encounter_id=?",
+        [encounter_id],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results fetched");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -623,5 +863,11 @@ module.exports = {
   addAnalytes,
   addReviewOfSysHeader,
   addReviewOfSysDetails,
-  getReviewOfSystem
+  getReviewOfSystem,
+  addAllergy,
+  getAllergyDetails,
+  addChronicalConditions,
+  getChronicalConditions,
+  addEncounterReview,
+  getEncounterReview
 };
