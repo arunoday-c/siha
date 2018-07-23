@@ -12,7 +12,7 @@ import httpStatus from "../../utils/httpStatus";
 
 import { logger, debugFunction, debugLog } from "../../utils/logging";
 
-//created by irfan: to add master of physical_examination_header
+//created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
   let physicalExaminationHeaderModel = {
     hims_d_physical_examination_header: null,
@@ -68,7 +68,7 @@ let physicalExaminationHeader = (req, res, next) => {
   }
 };
 
-//created by irfan: to add master of physical_examination_details
+//created by irfan: to add  physical_examination_details
 let physicalExaminationDetails = (req, res, next) => {
   let physicalExaminationDetailsModel = {
     hims_d_physical_examination_details_id: null,
@@ -119,7 +119,7 @@ let physicalExaminationDetails = (req, res, next) => {
   }
 };
 
-//created by irfan: to add master of physical_examination_subdetails
+//created by irfan: to add  physical_examination_subdetails
 let physicalExaminationSubDetails = (req, res, next) => {
   let physicalExaminationSubDetailsModel = {
     hims_d_physical_examination_subdetails_id: null,
@@ -276,7 +276,7 @@ let getPhysicalExamination = (req, res, next) => {
   }
 };
 
-//created by irfan: master of order table
+//created by irfan:  to add order
 let addOrder = (req, res, next) => {
   let hims_f_lab_orderModel = {
     hims_f_lab_order_id: null,
@@ -340,7 +340,7 @@ let addOrder = (req, res, next) => {
   }
 };
 
-//created by irfan: master of sample table
+//created by irfan: to add sample
 let addSample = (req, res, next) => {
   let hims_d_lab_sampleModel = {
     hims_d_lab_sample_id: null,
@@ -396,7 +396,7 @@ let addSample = (req, res, next) => {
   }
 };
 
-//created by irfan: master of Analytes table
+//created by irfan: to add Analytes
 let addAnalytes = (req, res, next) => {
   let AnalytesModel = {
     hims_d_lab_analytes_id: null,
@@ -451,6 +451,96 @@ let addAnalytes = (req, res, next) => {
   }
 };
 
+//created by irfan: to add ReviewOfSysHeader
+let addReviewOfSysHeader = (req, res, next) => {
+  let reviewOfSysHeaderModel = {
+    description: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addReviewOfSysHeader");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(reviewOfSysHeaderModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_review_of_system_header(\
+          description,created_by,updated_by)values(\
+              ?,?,?)",
+        [input.description, input.created_by, input.updated_by],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add ReviewOfSysDetails
+let addReviewOfSysDetails = (req, res, next) => {
+  let reviewOfSysDetailsModel = {
+    review_of_system_heder_id: null,
+    description: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addReviewOfSysDetails");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(reviewOfSysDetailsModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_review_of_system_details(\
+          review_of_system_heder_id,description,created_by,updated_by)values(\
+              ?,?,?,?)",
+        [
+          input.review_of_system_heder_id,
+          input.description,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -458,5 +548,7 @@ module.exports = {
   getPhysicalExamination,
   addOrder,
   addSample,
-  addAnalytes
+  addAnalytes,
+  addReviewOfSysHeader,
+  addReviewOfSysDetails
 };

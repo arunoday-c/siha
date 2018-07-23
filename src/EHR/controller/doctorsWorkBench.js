@@ -8,12 +8,14 @@ import {
   getPhysicalExamination,
   addOrder,
   addSample,
-  addAnalytes
+  addAnalytes,
+  addReviewOfSysHeader,
+  addReviewOfSysDetails
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
 
-  // created by irfan : to add masters physical_examination_header
+  // created by irfan : to add  physical_examination_header
   api.post(
     "/physicalExaminationHeader/add",
     physicalExaminationHeader,
@@ -28,7 +30,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan : to add masters physical_examination_details
+  // created by irfan : to add  physical_examination_details
   api.post(
     "/physicalExaminationDetails/add",
     physicalExaminationDetails,
@@ -43,7 +45,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan : to add masters physical_examination_subdetails
+  // created by irfan : to add  physical_examination_subdetails
   api.post(
     "/physicalExaminationSubDetails/add",
     physicalExaminationSubDetails,
@@ -73,7 +75,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan : master of order table
+  // created by irfan : add order table
   api.post(
     "/addOrder",
     addOrder,
@@ -88,7 +90,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan : master of sample table
+  // created by irfan : add sample table
   api.post(
     "/addSample",
     addSample,
@@ -103,7 +105,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan : master of sample table
+  // created by irfan : add analytes table
   api.post(
     "/addAnalytes",
     addAnalytes,
@@ -118,5 +120,34 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan : add review_of_system_header
+  api.post(
+    "/addReviewOfSysHeader",
+    addReviewOfSysHeader,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : add review_of_system_details
+  api.post(
+    "/addReviewOfSysDetails",
+    addReviewOfSysDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };
