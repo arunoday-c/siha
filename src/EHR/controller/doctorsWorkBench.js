@@ -10,7 +10,8 @@ import {
   addSample,
   addAnalytes,
   addReviewOfSysHeader,
-  addReviewOfSysDetails
+  addReviewOfSysDetails,
+  getReviewOfSystem
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -149,5 +150,21 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by irfan : to  getReviewOfSystem
+  api.get(
+    "/getReviewOfSystem",
+    getReviewOfSystem,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };

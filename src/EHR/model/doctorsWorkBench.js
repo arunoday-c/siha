@@ -541,6 +541,78 @@ let addReviewOfSysDetails = (req, res, next) => {
   }
 };
 
+//created by:irfan,to get review of system header& details
+let getReviewOfSystem = (req, res, next) => {
+  let reviewOfSysHeaderModel = {
+    headerId: null
+  };
+
+  debugFunction("getReviewOfSystem");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      //if headerId not received then send all headers
+      if (req.query.headerId == null || req.query.headerId == undefined) {
+        connection.query(
+          " SELECT * FROM hims_d_review_of_system_header where record_status='A'",
+          (error, result) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      }
+      //if headerId  received then send specific details and sub details
+      else if (req.query.headerId != null) {
+        let headerInput = extend(reviewOfSysHeaderModel, req.query);
+
+        connection.query(
+          "SELECT * FROM hims_d_review_of_system_header \
+      where hims_d_review_of_system_header_id=? and record_status='A'",
+          [headerInput.headerId],
+          (error, headerResult) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            // req.records = detailResult;
+
+            connection.query(
+              "SELECT * FROM hims_d_review_of_system_details where \
+              review_of_system_heder_id=? and record_status='A'",
+              [headerInput.headerId],
+              (error, detailResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+
+                req.records = {
+                  header: headerResult,
+                  detail: detailResult
+                };
+                next();
+              }
+            );
+          }
+        );
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -550,5 +622,6 @@ module.exports = {
   addSample,
   addAnalytes,
   addReviewOfSysHeader,
-  addReviewOfSysDetails
+  addReviewOfSysDetails,
+  getReviewOfSystem
 };
