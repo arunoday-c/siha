@@ -173,7 +173,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
-  if ([e.target.name] == "sheet_discount_percentage") {
+  if ([e.target.name] === "sheet_discount_percentage") {
     sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
     sheet_discount_amount = 0;
   } else {
@@ -247,7 +247,7 @@ const datehandle = ($this, context, ctrl, e) => {
 
 const ProcessInsurance = ($this, context, ctrl, e) => {
   if (
-    $this.state.insured == "Y" &&
+    $this.state.insured === "Y" &&
     ($this.state.primary_insurance_provider_id == null ||
       $this.state.primary_network_office_id == null ||
       $this.state.primary_network_id == null)
@@ -259,7 +259,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       icon: "error"
     });
   } else if (
-    $this.state.sec_insured == "Y" &&
+    $this.state.sec_insured === "Y" &&
     ($this.state.secondary_insurance_provider_id == null ||
       $this.state.secondary_network_office_id == null ||
       $this.state.secondary_network_id == null)

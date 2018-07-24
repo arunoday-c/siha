@@ -18,7 +18,7 @@ class Label extends PureComponent {
       let langua = getCookie("Language");
       let screenName = getCookie("ScreenName") + "_";
       let fileName =
-        screenName + (langua === undefined || langua == "" ? "en" : langua);
+        screenName + (langua === undefined || langua === "" ? "en" : langua);
       let fileImport = "./languages/" + fileName + ".json";
 
       let savePage = window.localStorage.getItem(fileName);
@@ -129,7 +129,7 @@ class Label extends PureComponent {
   currentPageCanRender = () => {
     let currLang = getCookie("Language");
     let prevLang = getCookie("prevLanguage");
-    if (currLang != prevLang) {
+    if (currLang !== prevLang) {
       return true;
     } else {
       return false;

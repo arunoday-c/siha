@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import swal from "sweetalert";
+// import swal from "sweetalert";
 
 import "./ConsultationForm.css";
 import "./../../../../styles/site.css";
@@ -122,7 +122,7 @@ class AddConsultationForm extends Component {
                         value: this.state.visit_type,
                         dataSource: {
                           textField:
-                            this.state.selectedLang == "en"
+                            this.state.selectedLang === "en"
                               ? "visit_type_desc"
                               : "arabic_visit_type_desc",
                           valueField: "hims_d_visit_type_id",
@@ -144,7 +144,7 @@ class AddConsultationForm extends Component {
                         value: this.state.sub_department_id,
                         dataSource: {
                           textField:
-                            this.state.selectedLang == "en"
+                            this.state.selectedLang === "en"
                               ? "sub_department_name"
                               : "arabic_sub_department_name",
                           valueField: "sub_department_id",
@@ -173,7 +173,7 @@ class AddConsultationForm extends Component {
                         value: this.state.doctor_id,
                         dataSource: {
                           textField:
-                            this.state.selectedLang == "en"
+                            this.state.selectedLang === "en"
                               ? "full_name"
                               : "arabic_name",
                           valueField: "employee_id",
@@ -279,13 +279,13 @@ class AddConsultationForm extends Component {
                             this.props.visittypes === undefined
                               ? []
                               : this.props.visittypes.filter(
-                                  f => f.hims_d_visit_type_id == row.visit_type
+                                  f => f.hims_d_visit_type_id === row.visit_type
                                 );
 
                           return (
                             <span>
-                              {display != null && display.length != 0
-                                ? this.state.selectedLang == "en"
+                              {display !== null && display.length !== 0
+                                ? this.state.selectedLang === "en"
                                   ? display[0].visit_type_desc
                                   : display[0].arabic_visit_type_desc
                                 : ""}
@@ -305,13 +305,13 @@ class AddConsultationForm extends Component {
                             ? []
                             : (display = this.props.deptanddoctors.departmets.filter(
                                 f =>
-                                  f.sub_department_id == row.sub_department_id
+                                  f.sub_department_id === row.sub_department_id
                               ));
 
                           return (
                             <span>
-                              {display != null && display.length != 0
-                                ? this.state.selectedLang == "en"
+                              {display !== null && display.length !== 0
+                                ? this.state.selectedLang === "en"
                                   ? display[0].sub_department_name
                                   : display[0].arabic_sub_department_name
                                 : ""}
@@ -326,17 +326,17 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                         ),
                         displayTemplate: row => {
-                          let display;
+                          let display = [];
                           this.props.deptanddoctors === undefined
                             ? []
                             : (display = this.props.deptanddoctors.doctors.filter(
-                                f => f.employee_id == row.doctor_id
+                                f => f.employee_id === row.doctor_id
                               ));
 
                           return (
                             <span>
-                              {display != null && display.length != 0
-                                ? this.state.selectedLang == "en"
+                              {display !== null && display.length !== 0
+                                ? this.state.selectedLang === "en"
                                   ? display[0].full_name
                                   : display[0].arabic_name
                                 : ""}

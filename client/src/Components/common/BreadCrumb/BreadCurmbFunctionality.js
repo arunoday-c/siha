@@ -5,7 +5,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 
 const SearchDetails = ($this, context, e) => {
   let columnNames = [];
-
+  debugger;
   const jsonFileName = $this.props.soptlightSearch.jsonFile.fileName + ".json";
   let lodFile = require("../../../Search/" + jsonFileName);
   columnNames = eval(

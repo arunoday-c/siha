@@ -11,7 +11,7 @@ import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
 import "./wrapper.css";
 import { algaehApiCall } from "../../utils/algaehApiCall";
-import { resolve } from "path";
+// import { resolve } from "path";
 class DataGrid extends PureComponent {
   constructor(props) {
     super(props);
@@ -169,7 +169,7 @@ class DataGrid extends PureComponent {
       this.state.expanded.expandRows == null
         ? []
         : this.state.expanded.expandRows;
-    if (target == "E") {
+    if (target === "E") {
       currentArray.splice(0, 0, rowId);
     } else {
       var index = currentArray.indexOf(rowId);
@@ -187,13 +187,13 @@ class DataGrid extends PureComponent {
   expandButton = rowKey => {
     if (this.state.expanded) {
       if (
-        this.state.expanded.multiExpand != null &&
-        this.state.expanded.multiExpand == true
+        this.state.expanded.multiExpand !== null &&
+        this.state.expanded.multiExpand === true
       ) {
         let _expand = this.state.expanded.expandRows;
         if (_expand != null)
           _expand = this.state.expanded.expandRows.filter(
-            f => f == String(rowKey)
+            f => f === String(rowKey)
           );
         if (_expand != null && _expand.length > 0) {
           return (
@@ -303,7 +303,7 @@ class DataGrid extends PureComponent {
     return this.props.columns.map((row, i) => {
       return (
         <td key={i.toString()}>
-          {typeof row.label == "function" ? row.label() : row.label}
+          {typeof row.label === "function" ? row.label() : row.label}
         </td>
       );
     });
@@ -319,7 +319,7 @@ class DataGrid extends PureComponent {
     }
   };
   returnEditableButtons = (row, rowId) => {
-    if (this.state.isEditable != null && this.state.isEditable == true) {
+    if (this.state.isEditable !== null && this.state.isEditable === true) {
       return (
         <td width="10%">
           <IconButton row-key={rowId} onClick={this.handleDoneRow.bind(this)}>
@@ -340,7 +340,7 @@ class DataGrid extends PureComponent {
   };
   returnExpandButton = row => {
     if (this.state.expanded != null) {
-      if (this.state.isEditable != null && this.state.isEditable == true)
+      if (this.state.isEditable !== null && this.state.isEditable === true)
         return (
           <React.Fragment>
             {this.expandButton(row[[this.state.keyField]])}
@@ -385,7 +385,7 @@ class DataGrid extends PureComponent {
   };
 
   returnEditDeleteButtons = row => {
-    if (this.state.isEditable != null && this.state.isEditable == true) {
+    if (this.state.isEditable !== null && this.state.isEditable === true) {
       return (
         <td width="10%">
           {/* <IconButton
@@ -488,7 +488,7 @@ class DataGrid extends PureComponent {
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((n, i) => (
             <React.Fragment key={i.toString()}>
-              {isEditable && i == rowToIndexEdit ? (
+              {isEditable && i === rowToIndexEdit ? (
                 <React.Fragment key={i.toString()}>
                   {this.returnEditableStateRow(n, i)}
                   {this.renderDetailedTemplateRecords(n, i)}
@@ -525,7 +525,7 @@ class DataGrid extends PureComponent {
           {...this.props.others}
         />
       );
-    } else null;
+    }
   };
 
   render() {

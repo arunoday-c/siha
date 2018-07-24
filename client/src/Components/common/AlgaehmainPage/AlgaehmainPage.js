@@ -13,7 +13,7 @@ import "./AlgaehmainPage.css";
 import { setCookie, getCookie } from "../../../utils/algaehApiCall";
 import directRoutes from "../../../Dynamicroutes";
 import CancelIcon from "@material-ui/icons/Close";
-import { setGlobal } from "../../../utils/GlobalFunctions";
+// import { setGlobal } from "../../../utils/GlobalFunctions";
 import Button from "@material-ui/core/Button";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
@@ -192,7 +192,7 @@ class PersistentDrawer extends React.Component {
   handleClose = (seLang, e) => {
     this.setState({ anchorEl: null });
 
-    if (typeof e == "object") this.Languaue(seLang, e);
+    if (typeof e === "object") this.Languaue(seLang, e);
   };
 
   renderCheck = () => {
@@ -259,7 +259,7 @@ class PersistentDrawer extends React.Component {
     });
   }
   render() {
-    const { classes, theme } = this.props;
+    const { classes } = this.props;
     const { anchor, open } = this.state;
 
     let LangSideMenu = [];
@@ -431,12 +431,12 @@ class PersistentDrawer extends React.Component {
                       onClose={this.handleClose}
                     >
                       <MenuItem onClick={this.handleClose.bind(this, "en")}>
-                        {this.state.languageName == "English"
+                        {this.state.languageName === "English"
                           ? this.renderCheck()
                           : null}&nbsp; English
                       </MenuItem>
                       <MenuItem onClick={this.handleClose.bind(this, "ar")}>
-                        {this.state.languageName == "عربي"
+                        {this.state.languageName === "عربي"
                           ? this.renderCheck()
                           : null}&nbsp; عربي
                       </MenuItem>

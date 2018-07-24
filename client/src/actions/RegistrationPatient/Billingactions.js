@@ -1,4 +1,3 @@
-"use strict";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function postBillDetsils(dataValue, callback) {

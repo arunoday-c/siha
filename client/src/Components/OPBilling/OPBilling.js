@@ -268,7 +268,7 @@ class PatientDisplayDetails extends Component {
               updateState: obj => {
                 this.setState({ ...this.state, ...obj }, () => {
                   Object.keys(obj).map(key => {
-                    if (key == "patient_code") {
+                    if (key === "patient_code") {
                       this.getPatientDetails();
                     }
                   });
