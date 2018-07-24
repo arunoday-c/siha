@@ -178,8 +178,8 @@ class AutoComplete extends Component {
     if (
       nextProps.selector.value !== this.state.single ||
       (nextProps.selector.others != null &&
-        nextProps.selector.others.disabled != this.state.disabled) ||
-      nextState != this.state.single
+        nextProps.selector.others.disabled !== this.state.disabled) ||
+      nextState !== this.state.single
     )
       return true;
     return false;

@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import "./PatientDisplayForm.css";
 import {
-  AlgaehDateHandler,
   AlagehFormGroup,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
@@ -108,7 +104,7 @@ export default class DisPatientForm extends Component {
                       value: this.state.mode_of_pay,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "name"
                             : "arabic_name",
                         valueField: "value",

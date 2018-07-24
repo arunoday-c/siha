@@ -1,10 +1,10 @@
-import React, { Component, PureComponent } from "react";
-import Slide from "@material-ui/core/Slide";
+import React, { PureComponent } from "react";
+// import Slide from "@material-ui/core/Slide";
 import Snackbar from "@material-ui/core/Snackbar";
 
-function TransitionUp(props) {
-  return <Slide {...props} direction="up" />;
-}
+// function TransitionUp(props) {
+//   return <Slide {...props} direction="up" />;
+// }
 
 export default class AlgaehSnackBar extends PureComponent {
   constructor(args) {

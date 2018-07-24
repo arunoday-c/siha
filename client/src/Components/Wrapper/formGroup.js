@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 import NumberFormat from "react-number-format";
 import "./wrapper.css";
@@ -17,7 +17,7 @@ export default class FormGroup extends Component {
   }
 
   important = () => {
-    if (this.props.label.isImp != null && this.props.label.isImp == true) {
+    if (this.props.label.isImp != null && this.props.label.isImp === true) {
       return <span className="imp">&nbsp;*</span>;
     } else {
       return null;
