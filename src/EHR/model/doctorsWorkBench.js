@@ -12,7 +12,7 @@ import httpStatus from "../../utils/httpStatus";
 
 import { logger, debugFunction, debugLog } from "../../utils/logging";
 
-//created by irfan: to add master of physical_examination_header
+//created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
   let physicalExaminationHeaderModel = {
     hims_d_physical_examination_header: null,
@@ -68,7 +68,7 @@ let physicalExaminationHeader = (req, res, next) => {
   }
 };
 
-//created by irfan: to add master of physical_examination_details
+//created by irfan: to add  physical_examination_details
 let physicalExaminationDetails = (req, res, next) => {
   let physicalExaminationDetailsModel = {
     hims_d_physical_examination_details_id: null,
@@ -119,7 +119,7 @@ let physicalExaminationDetails = (req, res, next) => {
   }
 };
 
-//created by irfan: to add master of physical_examination_subdetails
+//created by irfan: to add  physical_examination_subdetails
 let physicalExaminationSubDetails = (req, res, next) => {
   let physicalExaminationSubDetailsModel = {
     hims_d_physical_examination_subdetails_id: null,
@@ -276,7 +276,7 @@ let getPhysicalExamination = (req, res, next) => {
   }
 };
 
-//created by irfan: master of order table
+//created by irfan:  to add order
 let addOrder = (req, res, next) => {
   let hims_f_lab_orderModel = {
     hims_f_lab_order_id: null,
@@ -340,7 +340,7 @@ let addOrder = (req, res, next) => {
   }
 };
 
-//created by irfan: master of sample table
+//created by irfan: to add sample
 let addSample = (req, res, next) => {
   let hims_d_lab_sampleModel = {
     hims_d_lab_sample_id: null,
@@ -396,7 +396,7 @@ let addSample = (req, res, next) => {
   }
 };
 
-//created by irfan: master of Analytes table
+//created by irfan: to add Analytes
 let addAnalytes = (req, res, next) => {
   let AnalytesModel = {
     hims_d_lab_analytes_id: null,
@@ -451,6 +451,408 @@ let addAnalytes = (req, res, next) => {
   }
 };
 
+//created by irfan: to add ReviewOfSysHeader
+let addReviewOfSysHeader = (req, res, next) => {
+  let reviewOfSysHeaderModel = {
+    description: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addReviewOfSysHeader");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(reviewOfSysHeaderModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_review_of_system_header(\
+          description,created_by,updated_by)values(\
+              ?,?,?)",
+        [input.description, input.created_by, input.updated_by],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add ReviewOfSysDetails
+let addReviewOfSysDetails = (req, res, next) => {
+  let reviewOfSysDetailsModel = {
+    review_of_system_heder_id: null,
+    description: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addReviewOfSysDetails");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(reviewOfSysDetailsModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_review_of_system_details(\
+          review_of_system_heder_id,description,created_by,updated_by)values(\
+              ?,?,?,?)",
+        [
+          input.review_of_system_heder_id,
+          input.description,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by:irfan,to get review of system header& details
+let getReviewOfSystem = (req, res, next) => {
+  let reviewOfSysHeaderModel = {
+    headerId: null
+  };
+
+  debugFunction("getReviewOfSystem");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      //if headerId not received then send all headers
+      if (req.query.headerId == null || req.query.headerId == undefined) {
+        connection.query(
+          " SELECT * FROM hims_d_review_of_system_header where record_status='A'",
+          (error, result) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      }
+      //if headerId  received then send specific details and sub details
+      else if (req.query.headerId != null) {
+        let headerInput = extend(reviewOfSysHeaderModel, req.query);
+
+        connection.query(
+          "SELECT * FROM hims_d_review_of_system_header \
+      where hims_d_review_of_system_header_id=? and record_status='A'",
+          [headerInput.headerId],
+          (error, headerResult) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            // req.records = detailResult;
+
+            connection.query(
+              "SELECT * FROM hims_d_review_of_system_details where \
+              review_of_system_heder_id=? and record_status='A'",
+              [headerInput.headerId],
+              (error, detailResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+
+                req.records = {
+                  header: headerResult,
+                  detail: detailResult
+                };
+                next();
+              }
+            );
+          }
+        );
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:  to add allergic details
+let addAllergy = (req, res, next) => {
+  let AllergyModel = {
+    hims_d_allergiy_id: null,
+    allergy_type: null,
+    allergy_name: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addAllergy");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(AllergyModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_allergy(\
+          allergy_type,allergy_name,created_by,updated_by)values(\
+              ?,?,?,?)",
+        [
+          input.allergy_type,
+          input.allergy_name,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:  to get allergic details
+let getAllergyDetails = (req, res, next) => {
+  debugFunction("getAllergyDetails");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query("SELECT * FROM hims_d_allergy", (error, results) => {
+        if (error) {
+          next(error);
+          releaseDBConnection(db, connection);
+        }
+        debugLog("Results fetched");
+        req.records = results;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:  to add chronical conditions
+let addChronicalConditions = (req, res, next) => {
+  let ChronicalConditionsModel = {
+    hims_d_chronic_conditions_id: null,
+    name: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addChronicalConditions");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(ChronicalConditionsModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_chronic_conditions(\
+          name,created_by,updated_by)values(\
+              ?,?,?)",
+        [input.name, input.created_by, input.updated_by],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:  to get chronical conditions
+let getChronicalConditions = (req, res, next) => {
+  debugFunction("getChronicalConditions");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "SELECT * FROM hims_d_chronic_conditions;",
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results fetched");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:  to add encounter review
+let addEncounterReview = (req, res, next) => {
+  let EncounterReviewMOdel = {
+    hims_f_encounter_review_id: null,
+    encounter_id: null,
+    review_header_id: null,
+    review_details_id: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addEncounterReview");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(EncounterReviewMOdel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_f_encounter_review(\
+          encounter_id,review_header_id,review_details_id,created_by,updated_by)values(\
+              ?,?,?,?,?)",
+        [
+          input.encounter_id,
+          input.review_header_id,
+          input.review_details_id,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:  to getEncounterReview
+let getEncounterReview = (req, res, next) => {
+  debugFunction("getEncounterReview");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+      let encounter_id = req.query.encounter_id;
+      connection.query(
+        "SELECT * FROM hims_f_encounter_review where encounter_id=?",
+        [encounter_id],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results fetched");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -458,5 +860,14 @@ module.exports = {
   getPhysicalExamination,
   addOrder,
   addSample,
-  addAnalytes
+  addAnalytes,
+  addReviewOfSysHeader,
+  addReviewOfSysDetails,
+  getReviewOfSystem,
+  addAllergy,
+  getAllergyDetails,
+  addChronicalConditions,
+  getChronicalConditions,
+  addEncounterReview,
+  getEncounterReview
 };
