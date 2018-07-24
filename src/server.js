@@ -24,6 +24,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.server = http.createServer(app);
+
 app.use(cors());
 //parse application json
 app.use(

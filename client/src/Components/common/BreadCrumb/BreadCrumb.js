@@ -108,7 +108,13 @@ class BreadCrumb extends PureComponent {
           <div>
             <ul>
               <li>
-                <i className="fa fa-print fa-2x" />
+                <Tooltip title="Print">
+                  <img
+                    className="printImg"
+                    src={require("../BreadCrumb/images/print.png")}
+                  />
+                  {/* <i className="fa fa-print fa-2x" /> */}
+                </Tooltip>
               </li>
             </ul>
           </div>

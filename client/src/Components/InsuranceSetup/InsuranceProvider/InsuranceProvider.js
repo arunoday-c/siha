@@ -108,7 +108,7 @@ class InsuranceProvider extends PureComponent {
                   dataSource: {
                     // textField: "service_name",
                     textField:
-                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                      this.state.selectedLang === "en" ? "name" : "arabic_name",
                     valueField: "value",
                     data: FORMAT_INSURANCE_TYPE
                   },
@@ -160,7 +160,7 @@ class InsuranceProvider extends PureComponent {
                   value: this.state.company_service_price_type,
                   dataSource: {
                     textField:
-                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                      this.state.selectedLang === "en" ? "name" : "arabic_name",
                     valueField: "value",
                     data: FORMAT_SERVICE_PRICE
                   },
@@ -176,7 +176,7 @@ class InsuranceProvider extends PureComponent {
                   onChange: null
                 }}
                 value={
-                  this.state.effective_start_date != null
+                  this.state.effective_start_date !== undefined
                     ? this.state.effective_start_date
                     : null
                 }
@@ -191,7 +191,7 @@ class InsuranceProvider extends PureComponent {
                   onChange: null
                 }}
                 value={
-                  this.state.effective_end_date != null
+                  this.state.effective_end_date !== undefined
                     ? this.state.effective_end_date
                     : null
                 }
@@ -209,7 +209,7 @@ class InsuranceProvider extends PureComponent {
                   value: this.state.package_claim,
                   dataSource: {
                     textField:
-                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                      this.state.selectedLang === "en" ? "name" : "arabic_name",
                     valueField: "value",
                     data: FORMAT_PACKAGE_CLAIM
                   },
@@ -228,7 +228,7 @@ class InsuranceProvider extends PureComponent {
                   value: this.state.payment_type,
                   dataSource: {
                     textField:
-                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                      this.state.selectedLang === "en" ? "name" : "arabic_name",
                     valueField: "value",
                     data: FORMAT_PAYMENT_TYPE
                   },
@@ -247,7 +247,7 @@ class InsuranceProvider extends PureComponent {
                   value: this.state.lab_result_check,
                   dataSource: {
                     textField:
-                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                      this.state.selectedLang === "en" ? "name" : "arabic_name",
                     valueField: "value",
                     data: FORMAT_YESNO
                   },
@@ -266,7 +266,7 @@ class InsuranceProvider extends PureComponent {
                   value: this.state.resubmit_all,
                   dataSource: {
                     textField:
-                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                      this.state.selectedLang === "en" ? "name" : "arabic_name",
                     valueField: "value",
                     data: FORMAT_YESNO
                   },
@@ -334,7 +334,7 @@ class InsuranceProvider extends PureComponent {
                   value: this.state.cpt_mandate,
                   dataSource: {
                     textField:
-                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                      this.state.selectedLang === "en" ? "name" : "arabic_name",
                     valueField: "value",
                     data: FORMAT_YESNO
                   },

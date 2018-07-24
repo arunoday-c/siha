@@ -1,42 +1,34 @@
 import moment from "moment";
-
+let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
-  let name;
-  let value;
-  if (e.name != null) {
-    name = e.name;
-    value = e.value;
-  } else {
-    name = e.target.name;
-    value = e.target.value;
-  }
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
 
   $this.setState({
     [name]: value
   });
 
-  if (context != null) {
-    context.updateState({ [name]: value });
-  }
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({ [name]: value });
+    }
+    clearInterval(texthandlerInterval);
+  }, 1000);
 };
 
 const countryStatehandle = ($this, context, e) => {
   let name;
   let value;
-  if (e.name != null) {
-    if (e.name == "country_id") {
+  if (e.name !== undefined) {
+    if (e.name === "country_id") {
       name = e.name;
       value = e.value;
-      $this.setState(
-        {
-          state_id: 0,
-          city_id: 0
-        },
-        () => {
-          console.log("State ID", $this.state.state_id);
-        }
-      );
-      if (context != null) {
+      $this.setState({
+        state_id: 0,
+        city_id: 0
+      });
+      if (context !== undefined) {
         context.updateState({
           state_id: null,
           city_id: null
@@ -50,13 +42,13 @@ const countryStatehandle = ($this, context, e) => {
           mappingName: "countrystates"
         }
       });
-    } else if (e.name == "state_id") {
+    } else if (e.name === "state_id") {
       name = e.name;
       value = e.value;
       $this.setState({
         city_id: null
       });
-      if (context != null) {
+      if (context !== undefined) {
         context.updateState({
           city_id: null
         });
@@ -75,7 +67,7 @@ const countryStatehandle = ($this, context, e) => {
     [name]: value
   });
 
-  if (context != null) {
+  if (context !== undefined) {
     context.updateState({ [name]: value });
   }
 };
@@ -83,9 +75,9 @@ const countryStatehandle = ($this, context, e) => {
 //Todo title and gender related chnage need to do
 const titlehandle = ($this, context, e) => {
   let setGender;
-  if (e.value == 1) {
+  if (e.value === 1) {
     setGender = "Male";
-  } else if (e.value == 2) {
+  } else if (e.value === 2) {
     setGender = "Female";
   }
   $this.setState({
@@ -93,7 +85,7 @@ const titlehandle = ($this, context, e) => {
     [e.name]: e.value
   });
 
-  if (context != null) {
+  if (context !== undefined) {
     context.updateState({ gender: setGender, [e.name]: e.value });
   }
 };
@@ -106,7 +98,7 @@ const calculateAge = ($this, context, e) => {
   let months = moment(toDate).diff(fromDate, "months");
   fromDate.add(months, "months");
   let days = moment(toDate).diff(fromDate, "days");
-  if (e != null) {
+  if (e !== undefined) {
     $this.setState({
       age: years,
       AGEMM: months,
@@ -124,7 +116,7 @@ const calculateAge = ($this, context, e) => {
       date_of_birth: moment(e)._d
     });
   }
-  if (context != null) {
+  if (context !== undefined) {
     context.updateState({
       date_of_birth: moment(e)._d,
       age: years,
@@ -138,13 +130,13 @@ const calculateAge = ($this, context, e) => {
 };
 
 const setAge = ($this, context, ctrl, e) => {
-  if (e !== null) {
+  if (e !== undefined) {
     let years = context.state.age;
     let months = context.state.AGEMM;
     let days = context.state.AGEDD;
-    if (e.target.name == "age") years = e.target.value;
-    if (e.target.name == "AGEMM") months = e.target.value;
-    if (e.target.name == "AGEDD") days = e.target.value;
+    if (e.target.name === "age") years = e.target.value;
+    if (e.target.name === "AGEMM") months = e.target.value;
+    if (e.target.name === "AGEDD") days = e.target.value;
     let y = moment(new Date()).add(-years, "years");
     let m = y.add(-months, "months");
     let d = m.add(-days, "days");
@@ -154,7 +146,7 @@ const setAge = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     });
 
-    if (context != null) {
+    if (context !== undefined) {
       context.updateState({
         [e.target.name]: e.target.value,
         date_of_birth: d._d
@@ -167,7 +159,7 @@ const numberSet = ($this, context, cntrl, e) => {
   $this.setState({
     [e.target.name]: e.target.value
   });
-  if (context != null) {
+  if (context !== undefined) {
     context.updateState({ [e.target.name]: e.target.value });
   }
 };

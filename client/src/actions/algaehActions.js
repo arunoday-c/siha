@@ -1,7 +1,7 @@
 import { algaehApiCall } from "../utils/algaehApiCall";
-import swal from "sweetalert";
+//import swal from "sweetalert";
 
-export const AlgaehActions = options => (dispatch, getgetState) => {
+export const AlgaehActions = options => dispatch => {
   let settings = {
     ...{
       uri: null,

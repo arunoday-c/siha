@@ -13,7 +13,7 @@ import { bindActionCreators } from "redux";
 // import Dialog from "@material-ui/core/Dialog";
 // import DialogActions from "@material-ui/core/DialogActions";
 // import DialogTitle from "@material-ui/core/DialogTitle";
-import Slide from "@material-ui/core/Slide";
+//import Slide from "@material-ui/core/Slide";
 import AppBar from "@material-ui/core/AppBar";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import {
@@ -31,9 +31,9 @@ import { successfulMessage } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
+// function Transition(props) {
+//   return <Slide direction="up" {...props} />;
+// }
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -50,15 +50,15 @@ class RegistrationPatient extends Component {
   componentWillMount() {
     let IOputs = emptyObject;
     this.setState(IOputs);
-
     setGlobal({ selectedLang: "en" });
   }
   componentDidMount() {
-    var width = document.getElementById("attach").offsetHeight;
-    this.setState({
-      widthImg: width
-    });
-
+    // var width = document.getElementById("attach").offsetHeight;
+    // this.setState({
+    //   widthImg: width
+    // });
+    let IOputs = emptyObject;
+    this.setState(IOputs);
     if (this.state.saveEnable === "clear") {
       this.props.initialStatePatientData({
         redux: {
@@ -68,9 +68,7 @@ class RegistrationPatient extends Component {
         }
       });
     }
-
     let prevLang = getCookie("Language");
-
     setGlobal({ selectedLang: prevLang });
     this.setState({
       selectedLang: prevLang
@@ -153,7 +151,7 @@ class RegistrationPatient extends Component {
 
     if (!err) {
       this.GenerateReciept($this => {
-        if ($this.state.hims_d_patient_id == null) {
+        if ($this.state.hims_d_patient_id === undefined) {
           $this.props.postPatientDetails($this.state, data => {
             $this.setState({
               patient_code: data.patient_code,
@@ -190,7 +188,10 @@ class RegistrationPatient extends Component {
   };
 
   ShowAdvanceScreen(e) {
-    if (this.state.patient_code != null && this.state.patient_code != "") {
+    if (
+      this.state.patient_code !== undefined &&
+      this.state.patient_code !== ""
+    ) {
       this.setState({
         ...this.state,
         AdvanceOpen: !this.state.AdvanceOpen
@@ -205,7 +206,10 @@ class RegistrationPatient extends Component {
   }
 
   ShowRefundScreen(e) {
-    if (this.state.patient_code != null && this.state.patient_code != "") {
+    if (
+      this.state.patient_code !== undefined &&
+      this.state.patient_code !== ""
+    ) {
       this.setState({
         ...this.state,
         RefundOpen: !this.state.RefundOpen
@@ -341,8 +345,9 @@ class RegistrationPatient extends Component {
             value={{
               state: this.state,
               updateState: obj => {
+                this.setState({ ...obj });
                 // extend(this.state, obj);
-                this.setState({ ...this.state, ...obj });
+                // this.setState({ ...this.state, ...obj });
               }
             }}
           >

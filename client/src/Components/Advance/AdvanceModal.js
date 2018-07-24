@@ -15,13 +15,13 @@ import {
 } from "../Wrapper/algaehWrapper";
 import variableJson from "../../utils/GlobalVariables.json";
 
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import AppBar from "@material-ui/core/AppBar";
+// import Dialog from "@material-ui/core/Dialog";
+// import DialogActions from "@material-ui/core/DialogActions";
+// import DialogContent from "@material-ui/core/DialogContent";
+// import DialogContentText from "@material-ui/core/DialogContentText";
+// import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-import Toolbar from "@material-ui/core/Toolbar";
+//import Toolbar from "@material-ui/core/Toolbar";
 
 import {
   texthandle,
@@ -238,7 +238,7 @@ class AddAdvanceModal extends PureComponent {
                       value: this.state.counter_id,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "name"
                             : "arabic_name",
                         valueField: "value",
@@ -261,7 +261,7 @@ class AddAdvanceModal extends PureComponent {
                       value: this.state.pay_cash,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "name"
                             : "arabic_name",
                         valueField: "value",
@@ -315,7 +315,7 @@ class AddAdvanceModal extends PureComponent {
                       value: this.state.pay_card,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "name"
                             : "arabic_name",
                         valueField: "value",
@@ -376,7 +376,7 @@ class AddAdvanceModal extends PureComponent {
                       value: this.state.pay_cheque,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "name"
                             : "arabic_name",
                         valueField: "value",

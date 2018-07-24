@@ -67,7 +67,6 @@ export default class FormGroup extends Component {
       nextProps.textBox.error !== this.state.error ||
       nextProps.textBox.helperText !== this.state.helperText
     ) {
-      console.log("inside should update true");
       return true;
     }
 

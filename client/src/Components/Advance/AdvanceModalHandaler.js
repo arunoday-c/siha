@@ -121,7 +121,10 @@ const Validations = ($this, e) => {
   }
 
   if ($this.state.card_amount > 0) {
-    if ($this.state.card_number == null || $this.state.card_number == "") {
+    if (
+      $this.state.card_number === undefined ||
+      $this.state.card_number === ""
+    ) {
       isError = true;
       $this.setState({
         open: true,
@@ -130,7 +133,7 @@ const Validations = ($this, e) => {
       return isError;
     }
 
-    if ($this.state.card_date == null || $this.state.card_date == "") {
+    if ($this.state.card_date === undefined || $this.state.card_date === "") {
       isError = true;
       $this.setState({
         open: true,
@@ -141,7 +144,10 @@ const Validations = ($this, e) => {
   }
 
   if ($this.state.cheque_amount > 0) {
-    if ($this.state.cheque_number == null || $this.state.cheque_number == "") {
+    if (
+      $this.state.cheque_number === undefined ||
+      $this.state.cheque_number === ""
+    ) {
       isError = true;
       $this.setState({
         open: true,
@@ -150,7 +156,10 @@ const Validations = ($this, e) => {
       return isError;
     }
 
-    if ($this.state.cheque_date == null || $this.state.cheque_date == "") {
+    if (
+      $this.state.cheque_date === undefined ||
+      $this.state.cheque_date === ""
+    ) {
       isError = true;
       $this.setState({
         open: true,

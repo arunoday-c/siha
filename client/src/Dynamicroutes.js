@@ -27,7 +27,6 @@ function height() {
 }
 
 const componts = (selectedLang, breadStyle) => {
-  debugger;
   return {
     Dashboard: <Dashboard SelectLanguage={selectedLang} />,
     FrontDesk: (

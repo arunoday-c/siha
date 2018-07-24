@@ -49,10 +49,10 @@ class AddPatientForm extends PureComponent {
     this.innerContext = {};
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    var width = document.getElementById("attach-width").offsetWidth;
-    this.widthImg = width + 1;
-  }
+  // componentWillUpdate(nextProps, nextState) {
+  //   var width = document.getElementById("attach-width").offsetWidth;
+  //   this.widthImg = width + 1;
+  // }
   componentWillMount() {
     let InputOutput = this.props.PatRegIOputs;
     this.setState({ ...this.state, ...InputOutput });
@@ -105,7 +105,11 @@ class AddPatientForm extends PureComponent {
         }
       });
     }
-    if (this.props.countries == undefined || this.props.countries.length == 0) {
+    debugger;
+    if (
+      this.props.countries === undefined ||
+      this.props.countries.length === 0
+    ) {
       this.props.getCountries({
         uri: "/masters/get/countryStateCity",
         method: "GET",
@@ -132,15 +136,17 @@ class AddPatientForm extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.PatRegIOputs, () => {
-      if (this.state.country_id != nextProps.country_id) {
+      if (this.state.country_id === null) return;
+      if (this.state.country_id !== nextProps.country_id) {
         let country = Enumerable.from(this.props.countries)
-          .where(w => w.hims_d_country_id == this.state.country_id)
+          .where(w => w.hims_d_country_id === this.state.country_id)
           .firstOrDefault();
-        let states = country != null ? country.states : [];
-        if (nextProps.state_id != this.state.state_id) {
+        let states = country !== undefined ? country.states : [];
+        if (nextProps.state_id !== this.state.state_id) {
           let cities = Enumerable.from(states)
-            .where(w => w.hims_d_state_id == this.state.state_id)
+            .where(w => w.hims_d_state_id === this.state.state_id)
             .firstOrDefault();
+
           this.props.getStates({
             redux: {
               data: states,
@@ -154,8 +160,6 @@ class AddPatientForm extends PureComponent {
             }
           });
           if (cities !== undefined) {
-            // this.props.getCities(cities.cities);
-
             this.props.getCities({
               redux: {
                 data: cities.cities,
@@ -172,7 +176,7 @@ class AddPatientForm extends PureComponent {
   numInput(e) {
     var inputKeyCode = e.keyCode ? e.keyCode : e.which;
 
-    if (inputKeyCode !== null) {
+    if (inputKeyCode !== undefined) {
       if (inputKeyCode >= 48 && inputKeyCode <= 57) {
       } else {
         e.preventDefault();
@@ -181,7 +185,6 @@ class AddPatientForm extends PureComponent {
   }
 
   render() {
-    // console.log("Date of birth", this.state.date_of_birth);
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -191,7 +194,6 @@ class AddPatientForm extends PureComponent {
                 <div className="row">
                   <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 primary-details">
                     <div className="row">
-                      {/* <AlagehAutoComplete classes="" other="" /> */}
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -204,7 +206,7 @@ class AddPatientForm extends PureComponent {
                           value: this.state.title_id,
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "title"
                                 : "arabic_title",
                             valueField: "his_d_title_id",
@@ -269,7 +271,7 @@ class AddPatientForm extends PureComponent {
                           value: this.state.gender,
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "name"
                                 : "arabic_name",
                             valueField: "value",
@@ -366,7 +368,7 @@ class AddPatientForm extends PureComponent {
                           value: this.state.marital_status,
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "name"
                                 : "arabic_name",
                             valueField: "value",
@@ -391,7 +393,7 @@ class AddPatientForm extends PureComponent {
                           value: this.state.religion_id,
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "religion_name"
                                 : "arabic_religion_name",
                             valueField: "hims_d_religion_id",
@@ -416,7 +418,7 @@ class AddPatientForm extends PureComponent {
 
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "visa_type"
                                 : "arabic_visa_type",
                             valueField: "hims_d_visa_type_id",
@@ -463,7 +465,7 @@ class AddPatientForm extends PureComponent {
                           value: this.state.nationality_id,
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "nationality"
                                 : "arabic_nationality",
                             valueField: "hims_d_nationality_id",
@@ -542,7 +544,7 @@ class AddPatientForm extends PureComponent {
                           value: this.state.country_id,
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "country_name"
                                 : "arabic_country_name",
                             valueField: "hims_d_country_id",
@@ -571,7 +573,7 @@ class AddPatientForm extends PureComponent {
                           value: this.state.state_id,
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "state_name"
                                 : "arabic_state_name",
                             valueField: "hims_d_state_id",
@@ -600,7 +602,7 @@ class AddPatientForm extends PureComponent {
                           value: this.state.city_id,
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "city_name"
                                 : "city_arabic_name",
                             valueField: "hims_d_city_id",
@@ -626,7 +628,7 @@ class AddPatientForm extends PureComponent {
                         }}
                         disabled={this.state.existingPatient}
                         value={
-                          this.state.date_of_birth != null
+                          this.state.date_of_birth !== undefined
                             ? this.state.date_of_birth
                             : null
                         }
@@ -636,7 +638,7 @@ class AddPatientForm extends PureComponent {
                         div={{ className: "col-lg-6" }}
                         label={{ fieldName: "hijiri_date", isImp: true }}
                         textBox={{ className: "txt-fld" }}
-                        maxDate={this.state.CurrentDate}
+                        //maxDate={this.state.CurrentDate}
                         disabled={this.state.existingPatient}
                         // events={{onChange: AddPatientHandlers(this,context).CalculateAge.bind(this)}}
                         value={this.state.hijiri_date}
@@ -656,7 +658,7 @@ class AddPatientForm extends PureComponent {
                           value: this.state.primary_identity_id,
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "identity_document_name"
                                 : "arabic_identity_document_name",
                             valueField: "hims_d_identity_document_id",

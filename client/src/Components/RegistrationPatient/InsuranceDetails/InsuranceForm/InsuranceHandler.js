@@ -2,25 +2,42 @@ import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Insurance from "../../../../Search/Insurance.json";
 
+let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
-  let name;
-  let value;
-  if (e.name != null) {
-    name = e.name;
-    value = e.value;
-  } else {
-    name = e.target.name;
-    value = e.target.value;
-  }
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
 
   $this.setState({
     [name]: value
   });
 
-  if (context != null) {
-    context.updateState({ [name]: value });
-  }
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({ [name]: value });
+    }
+    clearInterval(texthandlerInterval);
+  }, 1000);
 };
+// const texthandle = ($this, context, e) => {
+//   let name;
+//   let value;
+//   if (e.name != null) {
+//     name = e.name;
+//     value = e.value;
+//   } else {
+//     name = e.target.name;
+//     value = e.target.value;
+//   }
+
+//   $this.setState({
+//     [name]: value
+//   });
+
+//   if (context != null) {
+//     context.updateState({ [name]: value });
+//   }
+// };
 
 const insurancehandle = ($this, context, e) => {
   $this.setState({

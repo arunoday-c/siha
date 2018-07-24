@@ -2,7 +2,6 @@
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function postBillDetsils(dataValue, callback) {
-  debugger;
   callback = callback || null;
 
   return function(dispatch) {
