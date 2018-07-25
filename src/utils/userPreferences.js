@@ -3,6 +3,7 @@ import extend from "extend";
 import path from "path";
 import fs from "fs";
 import httpStatus from "../utils/httpStatus";
+import { debugLog } from "../utils/logging";
 let db = new loki("algaeh_users.json", { autoload: true });
 let saveUserPreferences = (req, res, next) => {
   let header = req.headers["x-app-user-identity"];
@@ -20,9 +21,21 @@ let saveUserPreferences = (req, res, next) => {
 
   settings.userId = header.user_id;
   //let db = new loki("algaeh_users.json", { autoload: true });
+
+  let collection = db.getCollection("User_" + settings.userId);
+
+  if (collection != null) {
+    let usedRow = collection.find({
+      screenName: settings.screenName,
+      identifier: settings.identifier
+    });
+    if (usedRow) collection.remove(usedRow);
+  }
+
   let userCollection = db.addCollection("User_" + settings.userId, {
     disableMeta: true
   });
+
   userCollection.insert({
     screenName: settings.screenName,
     identifier: settings.identifier,
