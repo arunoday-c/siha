@@ -219,6 +219,7 @@ export default class FormGroup extends Component {
                 ? this.props.textBox.disabled
                 : null
             }
+            autoComplete={"off"}
             ref={
               this.props.textBox.ref != null
                 ? ele => {
