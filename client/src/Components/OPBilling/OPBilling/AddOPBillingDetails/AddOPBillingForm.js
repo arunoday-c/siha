@@ -102,7 +102,7 @@ class AddOPBillingForm extends Component {
       },
       afterSuccess: data => {
         let existingservices = $this.state.billdetails;
-        if (data.billdetails.length != 0) {
+        if (data.billdetails.length !== 0) {
           existingservices.splice(0, 0, data.billdetails[0]);
         }
 
@@ -179,7 +179,7 @@ class AddOPBillingForm extends Component {
     });
 
     if (serviceDetails.length === 0) {
-      if (context != null) {
+      if (context !== undefined) {
         context.updateState({
           billdetails: serviceDetails,
           advance_amount: 0,
@@ -220,7 +220,7 @@ class AddOPBillingForm extends Component {
         });
       }
     } else {
-      if (context != null) {
+      if (context !== undefined) {
         context.updateState({
           billdetails: serviceDetails
         });
@@ -230,7 +230,7 @@ class AddOPBillingForm extends Component {
 
   render() {
     let serviceList =
-      this.state.billdetails === null ? [{}] : this.state.billdetails;
+      this.state.billdetails === undefined ? [{}] : this.state.billdetails;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -253,7 +253,7 @@ class AddOPBillingForm extends Component {
                       value: this.state.s_service_type,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "service_type"
                             : "arabic_service_type",
                         valueField: "hims_d_service_type_id",
@@ -271,7 +271,7 @@ class AddOPBillingForm extends Component {
                       value: this.state.s_service,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "service_name"
                             : "arabic_service_name",
                         valueField: "hims_d_services_id",
@@ -335,14 +335,14 @@ class AddOPBillingForm extends Component {
                                 ? []
                                 : this.props.servicetype.filter(
                                     f =>
-                                      f.hims_d_service_type_id ==
+                                      f.hims_d_service_type_id ===
                                       row.service_type_id
                                   );
 
                             return (
                               <span>
-                                {display != null && display.length != 0
-                                  ? this.state.selectedLang == "en"
+                                {display !== undefined && display.length !== 0
+                                  ? this.state.selectedLang === "en"
                                     ? display[0].service_type
                                     : display[0].arabic_service_type
                                   : ""}
@@ -362,13 +362,14 @@ class AddOPBillingForm extends Component {
                               this.props.services === undefined
                                 ? []
                                 : this.props.services.filter(
-                                    f => f.hims_d_services_id == row.services_id
+                                    f =>
+                                      f.hims_d_services_id === row.services_id
                                   );
 
                             return (
                               <span>
-                                {display != null && display.length != 0
-                                  ? this.state.selectedLang == "en"
+                                {display !== null && display.length !== 0
+                                  ? this.state.selectedLang === "en"
                                     ? display[0].service_name
                                     : display[0].arabic_service_name
                                   : ""}

@@ -111,11 +111,24 @@ const styles = theme => ({
 class AutoComplete extends Component {
   handleChange = value => {
     if (value !== null) {
-      this.props.selector.onChange({
-        selected: value,
-        value: value[this.props.selector.dataSource.valueField],
-        name: this.props.selector.name
-      });
+      if (
+        this.props.selector.multi !== undefined &&
+        this.props.selector.multi === true
+      ) {
+        this.setState({ single: value }, () => {
+          this.props.selector.onChange({
+            selected: value,
+            value: value[this.props.selector.dataSource.valueField],
+            name: this.props.selector.name
+          });
+        });
+      } else {
+        this.props.selector.onChange({
+          selected: value,
+          value: value[this.props.selector.dataSource.valueField],
+          name: this.props.selector.name
+        });
+      }
     } else {
       this.setState({ single: null });
     }
@@ -130,15 +143,29 @@ class AutoComplete extends Component {
   }
 
   componentWillReceiveProps(props) {
-    this.setState({
-      single: props.selector.value,
-      disabled:
-        props.selector.others != null
-          ? props.selector.others.disabled == null
-            ? false
-            : props.selector.others.disabled
-          : false
-    });
+    if (
+      this.props.selector.multi !== undefined &&
+      this.props.selector.multi === true
+    ) {
+      this.setState({
+        disabled:
+          props.selector.others != null
+            ? props.selector.others.disabled == null
+              ? false
+              : props.selector.others.disabled
+            : false
+      });
+    } else {
+      this.setState({
+        single: props.selector.value,
+        disabled:
+          props.selector.others != null
+            ? props.selector.others.disabled == null
+              ? false
+              : props.selector.others.disabled
+            : false
+      });
+    }
   }
 
   componentWillMount() {
@@ -151,8 +178,8 @@ class AutoComplete extends Component {
     if (
       nextProps.selector.value !== this.state.single ||
       (nextProps.selector.others != null &&
-        nextProps.selector.others.disabled != this.state.disabled) ||
-      nextState != this.state.single
+        nextProps.selector.others.disabled !== this.state.disabled) ||
+      nextState !== this.state.single
     )
       return true;
     return false;

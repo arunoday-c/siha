@@ -202,6 +202,7 @@ class SearchModule extends Component {
     recognizer.start();
     // true =Recogniser doesn't stop listening even if the user pauses
     recognizer.continuous = false;
+    // recognizer.lang = "ar-AE";
     recognizer.onresult = event => {
       for (var i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {

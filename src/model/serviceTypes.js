@@ -1,8 +1,8 @@
 import httpStatus from "../utils/httpStatus";
 import { whereCondition, releaseDBConnection, selectStatement } from "../utils";
 import extend from "extend";
-import { logger, debugLog, debugFunction } from "../utils/logging";
-import { validate } from "node-model-validation";
+// import { logger, debugLog, debugFunction } from "../utils/logging";
+// import { validate } from "node-model-validation";
 let inputServiceType = {
   hims_d_service_type_id: null,
   service_type_code: null,

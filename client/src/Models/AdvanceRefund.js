@@ -1,6 +1,3 @@
-import moment from "moment";
-import { getCookie } from "../utils/algaehApiCall.js";
-
 export default {
   inputParam: function() {
     var output;
@@ -8,7 +5,6 @@ export default {
     output = {
       hims_f_patient_advance_id: null,
       hims_f_patient_id: null,
-      hims_f_receipt_header_id: null,
       transaction_type: null, //A, R
       advance_amount: 0,
       created_by: null,

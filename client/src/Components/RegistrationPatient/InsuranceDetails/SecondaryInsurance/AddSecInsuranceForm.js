@@ -24,8 +24,7 @@ import {
   insurancehandle,
   texthandle,
   datehandle,
-  InsuranceDetails,
-  selectedValueInsurance
+  InsuranceDetails
 } from "./SecInsuranceHandler";
 
 const INSURANCE_DECISION = [

@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-import DeleteDialog from "../../../utils/DeleteDialog";
+//import DeleteDialog from "../../../utils/DeleteDialog";
 import swal from "sweetalert";
 import {
   AlagehFormGroup,
@@ -337,7 +337,7 @@ class IDType extends Component {
                       fieldName: "identity_status",
                       label: "ID Type Status",
                       displayTemplate: row => {
-                        return row.identity_status == "A"
+                        return row.identity_status === "A"
                           ? "Active"
                           : "Inactive";
                       },

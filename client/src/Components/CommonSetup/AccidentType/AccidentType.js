@@ -18,9 +18,9 @@ class AccidentType extends Component {
   changeStatus(e) {
     this.setState({ equipment_type_status: e.target.value });
 
-    if (e.target.value == "A")
+    if (e.target.value === "A")
       this.setState({ effective_end_date: "9999-12-31" });
-    else if (e.target.value == "I") {
+    else if (e.target.value === "I") {
       this.setState({
         effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
       });

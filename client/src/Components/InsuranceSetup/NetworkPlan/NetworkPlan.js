@@ -9,8 +9,7 @@ import {
   AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  Button
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -93,7 +92,7 @@ class NetworkPlan extends PureComponent {
                   dataSource: {
                     // textField: "service_name",
                     textField:
-                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                      this.state.selectedLang === "en" ? "name" : "arabic_name",
                     valueField: "value",
                     data: FORMAT_INSURANCE_TYPE
                   },
@@ -159,7 +158,7 @@ class NetworkPlan extends PureComponent {
                   onChange: null
                 }}
                 value={
-                  this.state.effective_start_date != null
+                  this.state.effective_start_date !== undefined
                     ? this.state.effective_start_date
                     : null
                 }
@@ -174,7 +173,7 @@ class NetworkPlan extends PureComponent {
                   onChange: null
                 }}
                 value={
-                  this.state.effective_end_date != null
+                  this.state.effective_end_date !== undefined
                     ? this.state.effective_end_date
                     : null
                 }
@@ -206,7 +205,7 @@ class NetworkPlan extends PureComponent {
                   value: this.state.price_from,
                   dataSource: {
                     textField:
-                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                      this.state.selectedLang === "en" ? "name" : "arabic_name",
                     valueField: "value",
                     data: FORMAT_PRICE_FROM
                   },

@@ -19,7 +19,7 @@ const AlgaehOptions = Options;
 const AlagehAutoComplete = AutoComplete;
 const AlgaehDataGrid = DataGrid;
 const AlgaehConvertToHijri = date => {
-  if (date != null && date != "") {
+  if (date !== null && date !== "") {
     let nowGreg = new Date(date);
     return nowGreg.toHijri();
   }

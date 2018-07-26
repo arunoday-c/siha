@@ -77,6 +77,12 @@
     color: #000000;
     padding-top: 25px; }
 
+.print-area .printImg {
+  height: 36px;
+  margin-top: 20px;
+  padding-left: 0px;
+  cursor: pointer; }
+
 .third-position {
   padding-top: 0.4%; }
   .third-position .internal-label label {

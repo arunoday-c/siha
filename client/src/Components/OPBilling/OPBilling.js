@@ -177,7 +177,6 @@ class PatientDisplayDetails extends Component {
 
   SaveBill(e) {
     this.GenerateReciept($this => {
-      debugger;
       $this.props.postBillDetsils($this.state, data => {
         $this.setState({
           bill_number: data.bill_number,
@@ -269,7 +268,7 @@ class PatientDisplayDetails extends Component {
               updateState: obj => {
                 this.setState({ ...this.state, ...obj }, () => {
                   Object.keys(obj).map(key => {
-                    if (key == "patient_code") {
+                    if (key === "patient_code") {
                       this.getPatientDetails();
                     }
                   });
