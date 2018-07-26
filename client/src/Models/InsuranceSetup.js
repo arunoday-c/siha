@@ -24,7 +24,7 @@ export default {
       effective_end_date: null,
       selectedLang: "en",
 
-      insurance_provider_id: null,
+      insurance_provider_id: 105,
 
       insurance_provider_saved: false,
       insurance_sub_saved: false,

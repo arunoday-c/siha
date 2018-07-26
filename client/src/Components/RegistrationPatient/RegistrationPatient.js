@@ -147,7 +147,7 @@ class RegistrationPatient extends Component {
 
     if (!err) {
       this.GenerateReciept($this => {
-        if ($this.state.hims_d_patient_id === undefined) {
+        if ($this.state.hims_d_patient_id === null) {
           $this.props.postPatientDetails($this.state, data => {
             $this.setState({
               patient_code: data.patient_code,

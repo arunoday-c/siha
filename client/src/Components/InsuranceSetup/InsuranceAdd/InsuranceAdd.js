@@ -55,8 +55,8 @@ class InsuranceAdd extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 0,
-      screenName: "InsuranceProvider",
+      activeStep: 1,
+      screenName: "SubInsurance",
       snackeropen: false
     };
   }

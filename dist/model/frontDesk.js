@@ -12,6 +12,8 @@ var _extend2 = _interopRequireDefault(_extend);
 
 var _billing = require("../model/billing");
 
+var _insurance = require("../model/insurance");
+
 var _httpStatus = require("../utils/httpStatus");
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
@@ -48,7 +50,7 @@ var addFrontDesk = function addFrontDesk(req, res, next) {
         //Patient Details Insertion
         //Start
         //Quwery:1
-        (0, _utils.runningNumber)(req.db, 1, "PATCODE_NUMGEN", function (error, records, newNumber) {
+        (0, _utils.runningNumber)(connection, 1, "PATCODE_NUMGEN", function (error, records, newNumber) {
           (0, _logging.debugLog)("newNumber:" + newNumber);
           if (error) {
             connection.rollback(function () {
@@ -102,10 +104,27 @@ var addFrontDesk = function addFrontDesk(req, res, next) {
                     if (resultdata != null && resultdata.length != 0) {
                       req.query.visit_id = resultdata["insertId"];
                       req.body.visit_id = resultdata["insertId"];
-
+                      req.body.patient_visit_id = resultdata["insertId"];
                       (0, _logging.debugLog)("req.body.visit_id:" + resultdata["insertId"]);
 
                       (0, _logging.debugLog)(" succes result of second query", resultdata);
+
+                      //add patient insurance
+
+                      if (req.body.insured == "Y") {
+                        (0, _insurance.addPatientInsurance)(connection, req, res, function (error, result) {
+                          if (error) {
+                            (0, _logging.debugLog)("error in adding insurence", error);
+                            connection.rollback(function () {
+                              (0, _utils.releaseDBConnection)(db, connection);
+                              next(error);
+                            });
+                          }
+
+                          (0, _logging.debugLog)("add insuence result:", result);
+                        });
+                      }
+
                       //call
                       (0, _billing.addBill)(connection, req, res, function (error, result) {
                         if (error) {
@@ -133,18 +152,32 @@ var addFrontDesk = function addFrontDesk(req, res, next) {
                                 next(error);
                               });
                             }
-                            connection.commit(function (error) {
-                              (0, _utils.releaseDBConnection)(db, connection);
+
+                            (0, _logging.debugLog)("succes result of query 4 : ", resultdata);
+
+                            //call to addEpisodeEncounter
+
+                            (0, _billing.addEpisodeEncounter)(connection, req, res, function (error, resultEp) {
                               if (error) {
                                 connection.rollback(function () {
+                                  (0, _utils.releaseDBConnection)(db, connection);
                                   next(error);
                                 });
                               }
-                              req.records = result;
-                              next();
-                            });
+                              connection.commit(function (error) {
+                                if (error) {
+                                  connection.rollback(function () {
+                                    (0, _utils.releaseDBConnection)(db, connection);
+                                    next(error);
+                                  });
+                                }
+                                req.records = resultEp;
+                                next();
+                              });
 
-                            (0, _logging.debugLog)("succes result of query 4 : ", resultdata);
+                              (0, _logging.debugLog)("succes result of query 5 : ", resultEp);
+                            }, next);
+                            //end of episode
                           }, next);
                         }
                       }, next);
@@ -199,7 +232,7 @@ var selectFrontDesk = function selectFrontDesk(req, res, next) {
           connection.query("SELECT 0 radioselect, `hims_f_patient_visit_id`, `patient_id`,`visit_code`\
             , `visit_type`, `visit_date`, `department_id`, `sub_department_id`\
             , `doctor_id`, `maternity_patient`, `is_mlc`, `mlc_accident_reg_no`\
-            , `mlc_police_station`, `mlc_wound_certified_date`\
+            , `mlc_police_station`, `mlc_wound_certified_date`, `insured`, `sec_insured`\
              FROM `hims_f_patient_visit` WHERE `record_status`='A' AND \
              patient_id=? ORDER BY hims_f_patient_visit_id desc ", [hims_d_patient_id], function (error, resultFields) {
             if (error) {
@@ -277,10 +310,27 @@ var updateFrontDesk = function updateFrontDesk(req, res, next) {
             if (resultdata != null && resultdata.length != 0) {
               req.query.visit_id = resultdata["insertId"];
               req.body.visit_id = resultdata["insertId"];
-
+              req.body.patient_visit_id = resultdata["insertId"];
               (0, _logging.debugLog)("req.body.visit_id:" + resultdata["insertId"]);
 
-              (0, _logging.debugLog)(" succes result of second query", resultdata);
+              (0, _logging.debugLog)(" result of visit func", resultdata);
+
+              //add patient insurance
+
+              if (req.body.insured == "Y") {
+                (0, _insurance.addPatientInsurance)(connection, req, res, function (error, result) {
+                  if (error) {
+                    (0, _logging.debugLog)("error in adding insurence", error);
+                    connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  (0, _logging.debugLog)("add insuence result:", result);
+                });
+              }
+
               //call
               (0, _billing.addBill)(connection, req, res, function (error, result) {
                 if (error) {

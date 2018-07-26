@@ -5,9 +5,7 @@ const handleNext = ($this, e) => {
   // setComponent($this);
   const err = Validations($this);
   if (!err) {
-    debugger;
     if ($this.state.screenName === "InsuranceProvider") {
-      debugger;
       if ($this.state.insurance_provider_saved === false) {
         //Save Insurance
         algaehApiCall({
@@ -27,10 +25,11 @@ const handleNext = ($this, e) => {
       }
     } else if ($this.state.screenName === "SubInsurance") {
       //Save Sub
+      debugger;
       if ($this.state.insurance_sub_saved === false) {
         algaehApiCall({
           uri: "/insurance/addSubInsuranceProvider",
-          data: $this.state,
+          data: $this.state.sub_insurance,
           onSuccess: response => {
             if (response.data.success === true) {
               setComponent($this, response.data.records);

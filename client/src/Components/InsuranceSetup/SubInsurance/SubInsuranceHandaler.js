@@ -1,6 +1,6 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import moment from "moment";
 
-const texthandle = ($this, e) => {
+const texthandle = ($this, context, e) => {
   let name;
   let value;
   if (e.name != null) {
@@ -25,39 +25,32 @@ const saveSubInsurance = ($this, context) => {
     transaction_number: $this.state.transaction_number,
     card_format: $this.state.card_format
   };
-
-  algaehApiCall({
-    uri: "/insurance/addSubInsuranceProvider",
-    data: $this.state,
-    onSuccess: response => {
-      if (response.data.success === true) {
-        let previous = $this.state.sub_insurance
-          ? $this.state.sub_insurance
-          : [];
-        previous.push(obj);
-        $this.setState({
-          insurance_sub_saved: true,
-          sub_insurance: previous
-        });
-        if (context !== undefined) {
-          context.updateState({ sub_insurance: previous });
-        }
-      }
-    },
-    onFailure: error => {
-      console.log(error);
-    }
+  let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
+  previous.push(obj);
+  $this.setState({
+    insurance_sub_saved: true,
+    sub_insurance: previous
   });
+  if (context !== undefined) {
+    context.updateState({ sub_insurance: previous });
+  }
+  addNewSubinsurance($this);
 };
 
 const addNewSubinsurance = $this => {
   $this.setState({
     insurance_sub_code: null,
     insurance_sub_name: null,
-    insurance_provider_id: null,
     transaction_number: null,
     card_format: null
   });
 };
 
-export { texthandle, saveSubInsurance, addNewSubinsurance };
+const datehandle = ($this, context, ctrl, e) => {
+  debugger;
+  $this.setState({
+    [e]: moment(ctrl)._d
+  });
+};
+
+export { texthandle, saveSubInsurance, addNewSubinsurance, datehandle };

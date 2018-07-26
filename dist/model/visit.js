@@ -102,6 +102,11 @@ var insertVisitData = function insertVisitData(dataBase, req, res, callBack) {
     visit_type: null,
     visit_date: null,
     visit_code: null,
+    age_in_years: null,
+    age_in_months: null,
+    age_in_days: null,
+    insured: null,
+    sec_insured: null,
     department_id: null,
     sub_department_id: null,
     doctor_id: null,
@@ -133,10 +138,11 @@ var insertVisitData = function insertVisitData(dataBase, req, res, callBack) {
       }
       inputParam.visit_expiery_date = (0, _moment2.default)(inputParam.visit_date).add(record != null && record.length != 0 ? parseInt(record[0]["param_value"]) : 0, "days")._d;
       dataBase.query("INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
+          `age_in_years`, `age_in_months`, `age_in_days`, `insured`,`sec_insured`,\
         `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
          `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
          `created_by`, `created_date`,`visit_code`,`visit_expiery_date`)\
-        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);", [inputParam.patient_id, inputParam.visit_type, inputParam.visit_date, inputParam.department_id, inputParam.sub_department_id, inputParam.doctor_id, inputParam.maternity_patient, inputParam.is_mlc, inputParam.mlc_accident_reg_no, inputParam.mlc_police_station, inputParam.mlc_wound_certified_date, inputParam.created_by, new Date(), inputParam.visit_code, inputParam.visit_expiery_date], function (error, result) {
+        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", [inputParam.patient_id, inputParam.visit_type, inputParam.age_in_years, inputParam.age_in_months, inputParam.age_in_days, inputParam.insured, inputParam.sec_insured, inputParam.visit_date, inputParam.department_id, inputParam.sub_department_id, inputParam.doctor_id, inputParam.maternity_patient, inputParam.is_mlc, inputParam.mlc_accident_reg_no, inputParam.mlc_police_station, inputParam.mlc_wound_certified_date, inputParam.created_by, new Date(), inputParam.visit_code, inputParam.visit_expiery_date], function (error, result) {
         if (error) {
           dataBase.rollback(function () {
             dataBase.release();

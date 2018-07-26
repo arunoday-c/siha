@@ -17,7 +17,8 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   texthandle,
   saveSubInsurance,
-  addNewSubinsurance
+  addNewSubinsurance,
+  datehandle
 } from "./SubInsuranceHandaler";
 import MyContext from "../../../utils/MyContext";
 
@@ -29,7 +30,9 @@ class SubInsurance extends PureComponent {
       insurance_sub_name: null,
       insurance_provider_id: null,
       transaction_number: null,
-      card_format: null
+      card_format: null,
+      effective_start_date: null,
+      effective_end_date: null
     };
   }
 
@@ -78,9 +81,11 @@ class SubInsurance extends PureComponent {
                       value: this.state.insurance_sub_code,
                       className: "txt-fld",
                       name: "insurance_sub_code",
-
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this, context)
+                      },
+                      others: {
+                        "data-subdata": true
                       }
                     }}
                   />
@@ -96,7 +101,10 @@ class SubInsurance extends PureComponent {
                       name: "insurance_sub_name",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this, context)
+                      },
+                      others: {
+                        "data-subdata": true
                       }
                     }}
                   />
@@ -112,7 +120,10 @@ class SubInsurance extends PureComponent {
                       name: "transaction_number",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this, context)
+                      },
+                      others: {
+                        "data-subdata": true
                       }
                     }}
                   />
@@ -128,7 +139,10 @@ class SubInsurance extends PureComponent {
                       name: "card_format",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this, context)
+                      },
+                      others: {
+                        "data-subdata": true
                       }
                     }}
                   />
@@ -137,10 +151,16 @@ class SubInsurance extends PureComponent {
                 <div className="row">
                   <AlgaehDateHandler
                     div={{ className: "col-lg-3" }}
-                    label={{ fieldName: "effective_start_date", isImp: true }}
-                    textBox={{ className: "txt-fld" }}
+                    label={{ fieldName: "effective_start_date" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "effective_start_date",
+                      others: {
+                        "data-subdata": true
+                      }
+                    }}
                     events={{
-                      onChange: null
+                      onChange: datehandle.bind(this, this, context)
                     }}
                     value={
                       this.state.effective_start_date != null
@@ -152,9 +172,15 @@ class SubInsurance extends PureComponent {
                   <AlgaehDateHandler
                     div={{ className: "col-lg-3" }}
                     label={{ fieldName: "effective_end_date", isImp: true }}
-                    textBox={{ className: "txt-fld" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "effective_end_date",
+                      others: {
+                        "data-subdata": true
+                      }
+                    }}
                     events={{
-                      onChange: null
+                      onChange: datehandle.bind(this, this, context)
                     }}
                     value={
                       this.state.effective_end_date != null
@@ -219,9 +245,9 @@ class SubInsurance extends PureComponent {
                       keyId="identity_document_code"
                       dataSource={{
                         data:
-                          this.props.insProviders === undefined
+                          this.state.sub_insurance === undefined
                             ? []
-                            : this.props.insProviders
+                            : this.state.sub_insurance
                       }}
                       // isEditable={true}
                       paging={{ page: 0, rowsPerPage: 5 }}
