@@ -1,4 +1,7 @@
 {
+  "form_name": "التأمين",
+  "form_home": "الصفحة الرئيسية",
+
   "insurance_provider_code": "قانون التأمين",
   "insurance_provider_name": "اسم التأمين",
   "insurance_type": "نوع التأمين",
@@ -41,5 +44,6 @@
   "co_pay": "CoPay",
   "max_limit": "الحد الأقصى",
 
-  "add_insurance": "إضافة التأمين"
+  "add_insurance": "إضافة التأمين",
+  "service_type": "نوع الخدمة"
 }

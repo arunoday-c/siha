@@ -22,7 +22,7 @@ class Label extends PureComponent {
       let fileImport = "./languages/" + fileName + ".json";
 
       let savePage = window.localStorage.getItem(fileName);
-      if (savePage !== undefined && savePage !== "") {
+      if (savePage !== null && savePage !== "") {
         let getLanguageLables = JSON.parse(savePage);
         callBack(getLanguageLables[fieldName]);
         return;

@@ -9,11 +9,12 @@ import {
   AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  Button
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { texthandle } from "./NetworkPlanHandaler";
+import { texthandle, saveNetworkPlan } from "./NetworkPlanHandaler";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import Paper from "@material-ui/core/Paper";
@@ -34,7 +35,6 @@ class NetworkPlan extends PureComponent {
 
       effective_start_date: null,
       effective_end_date: null,
-      selectedLang: "en",
 
       hims_d_insurance_network_office_id: null,
       network_id: null,
@@ -76,10 +76,27 @@ class NetworkPlan extends PureComponent {
   render() {
     return (
       <React.Fragment>
-        <div className="hptl-phase1-add-insurance-form">
+        <div className="hptl-phase1-network-plan-form">
           <div className="container-fluid">
             {/* Services Details */}
-            <div className="row form-details">
+            <div className="row insurance-details">
+              <div className="col-lg-12 button-details">
+                <AlgaehLabel label={{ forceLabel: "INSURSR: " }} />
+                <AlgaehLabel
+                  label={{ forceLabel: this.state.insurance_provider_name }}
+                />
+
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="primary"
+                  style={{ float: "right" }}
+                >
+                  Add New
+                </Button>
+              </div>
+            </div>
+            <div className="row">
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -147,8 +164,7 @@ class NetworkPlan extends PureComponent {
                 }}
               />
             </div>
-
-            <div className="row form-details">
+            <div className="row">
               <AlgaehDateHandler
                 div={{ className: "col-lg-3" }}
                 label={{ fieldName: "effective_start_date", isImp: true }}
@@ -217,7 +233,7 @@ class NetworkPlan extends PureComponent {
             <Paper className="Paper">
               {/* Company */}
               <div className="row">
-                <div className="col-lg-3">
+                <div className="col-lg-3 label-pad">
                   <AlgaehLabel
                     label={{
                       fieldName: "consultation"
@@ -525,6 +541,28 @@ class NetworkPlan extends PureComponent {
                 />
               </div>
             </Paper>
+            <div className="row">
+              <div className="col-lg-12 button-details">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="primary"
+                  style={{ float: "left" }}
+                  // onClick={saveNetworkPlan.bind(this, this)}
+                >
+                  View Plans
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="primary"
+                  style={{ float: "right" }}
+                  onClick={saveNetworkPlan.bind(this, this)}
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </React.Fragment>

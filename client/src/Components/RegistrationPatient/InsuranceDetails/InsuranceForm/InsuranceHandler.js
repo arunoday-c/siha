@@ -19,25 +19,6 @@ const texthandle = ($this, context, e) => {
     clearInterval(texthandlerInterval);
   }, 1000);
 };
-// const texthandle = ($this, context, e) => {
-//   let name;
-//   let value;
-//   if (e.name != null) {
-//     name = e.name;
-//     value = e.value;
-//   } else {
-//     name = e.target.name;
-//     value = e.target.value;
-//   }
-
-//   $this.setState({
-//     [name]: value
-//   });
-
-//   if (context != null) {
-//     context.updateState({ [name]: value });
-//   }
-// };
 
 const insurancehandle = ($this, context, e) => {
   $this.setState({
@@ -69,9 +50,13 @@ const datehandle = ($this, context, ctrl, e) => {
     [e]: moment(ctrl)._d
   });
 
-  if (context != null) {
-    context.updateState({ [e]: moment(ctrl)._d });
-  }
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({ [e]: moment(ctrl)._d });
+    }
+    clearInterval(texthandlerInterval);
+  }, 1000);
 };
 
 const InsuranceDetails = ($this, context, e) => {
