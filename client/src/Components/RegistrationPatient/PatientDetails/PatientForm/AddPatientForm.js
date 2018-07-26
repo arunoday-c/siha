@@ -105,7 +105,7 @@ class AddPatientForm extends PureComponent {
         }
       });
     }
-    debugger;
+
     if (
       this.props.countries === undefined ||
       this.props.countries.length === 0

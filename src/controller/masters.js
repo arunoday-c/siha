@@ -16,47 +16,110 @@ import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import path from "path";
 import fs from "fs";
+import { getCacheData, setCacheData } from "../utils/caching";
+import { debugLog } from "../utils/logging";
 export default () => {
   let api = Router();
 
   api.get(
     "/subDeptClinicalNonClinicalAll",
+    (req, res, next) => {
+      getCacheData({ key: "subDeptClinicalNonClinicalAll" }, result => {
+        if (result != null) {
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: result
+          });
+        } else {
+          next();
+        }
+      });
+    },
     clinicalNonClinicalAll,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
+      setCacheData(
+        {
+          key: "subDeptClinicalNonClinicalAll",
+          value: result
+        },
+        resultData => {
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: resultData
+          });
+          next();
+        }
+      );
     },
     releaseConnection
   );
 
   api.get(
     "/visa",
+    (req, res, next) => {
+      getCacheData({ key: "visa" }, result => {
+        if (result != null) {
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: result
+          });
+        } else {
+          next();
+        }
+      });
+    },
     visaMaster,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
+      setCacheData(
+        {
+          key: "visa",
+          value: result
+        },
+        resultData => {
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: resultData
+          });
+          next();
+        }
+      );
     },
     releaseConnection
   );
 
   api.get(
     "/title",
+    (req, res, next) => {
+      getCacheData({ key: "title" }, result => {
+        if (result != null) {
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: result
+          });
+        } else {
+          next();
+        }
+      });
+    },
     titleMaster,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
+
+      setCacheData(
+        {
+          key: "title",
+          value: result
+        },
+        resultData => {
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: resultData
+          });
+          next();
+        }
+      );
     },
     releaseConnection
   );
@@ -156,33 +219,79 @@ export default () => {
   );
   api.get(
     "/relegion",
+    (req, res, next) => {
+      getCacheData({ key: "relegion" }, result => {
+        if (result != null) {
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: result
+          });
+        } else {
+          next();
+        }
+      });
+    },
     relegionMaster,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
+
+      setCacheData(
+        {
+          key: "relegion",
+          value: result
+        },
+        resultData => {
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: resultData
+          });
+          next();
+        }
+      );
     },
     releaseConnection
   );
 
   api.get(
     "/nationality",
+    (req, res, next) => {
+      debugLog("Inside nationality ");
+      getCacheData({ key: "nationality" }, result => {
+        debugLog("Get nationality ", result);
+
+        if (result != null) {
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: result
+          });
+        } else {
+          next();
+        }
+      });
+    },
     nationalityMaster,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
+      debugLog("nationality ", result);
+      setCacheData(
+        {
+          key: "nationality",
+          value: result
+        },
+        resultData => {
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: resultData
+          });
+          next();
+        }
+      );
     },
     releaseConnection
   );
   api.get(
     "/autogen",
+
     autoGenMaster,
     (req, res, next) => {
       let result = req.records;
