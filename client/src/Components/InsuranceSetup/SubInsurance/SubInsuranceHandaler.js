@@ -1,4 +1,6 @@
-const texthandle = ($this, e) => {
+import moment from "moment";
+
+const texthandle = ($this, context, e) => {
   let name;
   let value;
   if (e.name != null) {
@@ -14,4 +16,41 @@ const texthandle = ($this, e) => {
   });
 };
 
-export { texthandle };
+const saveSubInsurance = ($this, context) => {
+  debugger;
+  let obj = {
+    insurance_sub_code: $this.state.insurance_sub_code,
+    insurance_sub_name: $this.state.insurance_sub_name,
+    insurance_provider_id: $this.state.insurance_provider_id,
+    transaction_number: $this.state.transaction_number,
+    card_format: $this.state.card_format
+  };
+  let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
+  previous.push(obj);
+  $this.setState({
+    insurance_sub_saved: true,
+    sub_insurance: previous
+  });
+  if (context !== undefined) {
+    context.updateState({ sub_insurance: previous });
+  }
+  addNewSubinsurance($this);
+};
+
+const addNewSubinsurance = $this => {
+  $this.setState({
+    insurance_sub_code: null,
+    insurance_sub_name: null,
+    transaction_number: null,
+    card_format: null
+  });
+};
+
+const datehandle = ($this, context, ctrl, e) => {
+  debugger;
+  $this.setState({
+    [e]: moment(ctrl)._d
+  });
+};
+
+export { texthandle, saveSubInsurance, addNewSubinsurance, datehandle };

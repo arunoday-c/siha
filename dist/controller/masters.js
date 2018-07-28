@@ -24,36 +24,89 @@ var _fs = require("fs");
 
 var _fs2 = _interopRequireDefault(_fs);
 
+var _caching = require("../utils/caching");
+
+var _logging = require("../utils/logging");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function () {
   var api = (0, _express.Router)();
 
-  api.get("/subDeptClinicalNonClinicalAll", _masters.clinicalNonClinicalAll, function (req, res, next) {
-    var result = req.records;
-    res.status(_httpStatus2.default.ok).json({
-      success: true,
-      records: result
+  api.get("/subDeptClinicalNonClinicalAll", function (req, res, next) {
+    (0, _caching.getCacheData)({ key: "subDeptClinicalNonClinicalAll" }, function (result) {
+      if (result != null) {
+        res.status(_httpStatus2.default.ok).json({
+          success: true,
+          records: result
+        });
+      } else {
+        next();
+      }
     });
-    next();
+  }, _masters.clinicalNonClinicalAll, function (req, res, next) {
+    var result = req.records;
+    (0, _caching.setCacheData)({
+      key: "subDeptClinicalNonClinicalAll",
+      value: result
+    }, function (resultData) {
+      res.status(_httpStatus2.default.ok).json({
+        success: true,
+        records: resultData
+      });
+      next();
+    });
   }, _utils.releaseConnection);
 
-  api.get("/visa", _masters.visaMaster, function (req, res, next) {
-    var result = req.records;
-    res.status(_httpStatus2.default.ok).json({
-      success: true,
-      records: result
+  api.get("/visa", function (req, res, next) {
+    (0, _caching.getCacheData)({ key: "visa" }, function (result) {
+      if (result != null) {
+        res.status(_httpStatus2.default.ok).json({
+          success: true,
+          records: result
+        });
+      } else {
+        next();
+      }
     });
-    next();
+  }, _masters.visaMaster, function (req, res, next) {
+    var result = req.records;
+    (0, _caching.setCacheData)({
+      key: "visa",
+      value: result
+    }, function (resultData) {
+      res.status(_httpStatus2.default.ok).json({
+        success: true,
+        records: resultData
+      });
+      next();
+    });
   }, _utils.releaseConnection);
 
-  api.get("/title", _masters.titleMaster, function (req, res, next) {
-    var result = req.records;
-    res.status(_httpStatus2.default.ok).json({
-      success: true,
-      records: result
+  api.get("/title", function (req, res, next) {
+    (0, _caching.getCacheData)({ key: "title" }, function (result) {
+      if (result != null) {
+        res.status(_httpStatus2.default.ok).json({
+          success: true,
+          records: result
+        });
+      } else {
+        next();
+      }
     });
-    next();
+  }, _masters.titleMaster, function (req, res, next) {
+    var result = req.records;
+
+    (0, _caching.setCacheData)({
+      key: "title",
+      value: result
+    }, function (resultData) {
+      res.status(_httpStatus2.default.ok).json({
+        success: true,
+        records: resultData
+      });
+      next();
+    });
   }, _utils.releaseConnection);
   api.get("/country", _masters.countryMaster, function (req, res, next) {
     var result = req.records;
@@ -123,22 +176,59 @@ exports.default = function () {
       next();
     }
   }, _utils.releaseConnection);
-  api.get("/relegion", _masters.relegionMaster, function (req, res, next) {
-    var result = req.records;
-    res.status(_httpStatus2.default.ok).json({
-      success: true,
-      records: result
+  api.get("/relegion", function (req, res, next) {
+    (0, _caching.getCacheData)({ key: "relegion" }, function (result) {
+      if (result != null) {
+        res.status(_httpStatus2.default.ok).json({
+          success: true,
+          records: result
+        });
+      } else {
+        next();
+      }
     });
-    next();
+  }, _masters.relegionMaster, function (req, res, next) {
+    var result = req.records;
+
+    (0, _caching.setCacheData)({
+      key: "relegion",
+      value: result
+    }, function (resultData) {
+      res.status(_httpStatus2.default.ok).json({
+        success: true,
+        records: resultData
+      });
+      next();
+    });
   }, _utils.releaseConnection);
 
-  api.get("/nationality", _masters.nationalityMaster, function (req, res, next) {
-    var result = req.records;
-    res.status(_httpStatus2.default.ok).json({
-      success: true,
-      records: result
+  api.get("/nationality", function (req, res, next) {
+    (0, _logging.debugLog)("Inside nationality ");
+    (0, _caching.getCacheData)({ key: "nationality" }, function (result) {
+      (0, _logging.debugLog)("Get nationality ", result);
+
+      if (result != null) {
+        res.status(_httpStatus2.default.ok).json({
+          success: true,
+          records: result
+        });
+      } else {
+        next();
+      }
     });
-    next();
+  }, _masters.nationalityMaster, function (req, res, next) {
+    var result = req.records;
+    (0, _logging.debugLog)("nationality ", result);
+    (0, _caching.setCacheData)({
+      key: "nationality",
+      value: result
+    }, function (resultData) {
+      res.status(_httpStatus2.default.ok).json({
+        success: true,
+        records: resultData
+      });
+      next();
+    });
   }, _utils.releaseConnection);
   api.get("/autogen", _masters.autoGenMaster, function (req, res, next) {
     var result = req.records;

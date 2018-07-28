@@ -43,7 +43,9 @@ const componts = (selectedLang, breadStyle) => {
       <OPBilling SelectLanguage={selectedLang} breadStyle={breadStyle} />
     ),
     BillDetails: <BillDetails SelectLanguage={selectedLang} />,
-    InsuranceSetup: <InsuranceSetup SelectLanguage={selectedLang} />,
+    InsuranceSetup: (
+      <InsuranceSetup SelectLanguage={selectedLang} breadStyle={breadStyle} />
+    ),
     SampleCollection: <SampleCollection SelectLanguage={selectedLang} />,
     DoctorsWorkbench: <DoctorsWorkbench SelectLanguage={selectedLang} />,
     MedicalWorkbenchSetup: (

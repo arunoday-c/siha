@@ -1,52 +1,17 @@
-.hptl-phase1-add-insurance-form {
+.hptl-phase1-add-sub-insurance-form {
   background: #fff;
   border-radius: 5px;
-  label {
-    font-size: 0.7rem;
-  }
+
   mark {
     background: none;
     color: red;
   }
   .form-details {
-    padding: 5px;
-    padding-bottom: 0px;
-    margin-top: 7px;
-  }
-  .lbl-milldle {
-    padding-top: 30px;
-  }
-  .lbl-resize {
-    label {
-      font-size: 16px;
-      background: #5f5f5f;
-    }
+    padding-top: 2px;
   }
 
-  .form-details {
-    padding: 5px;
-    padding-bottom: 0px;
-  }
-
-  .Paper {
-    border: 1px solid #5f5f5f;
-  }
-
-  .bottom-details {
-    padding: 5px;
-    padding-bottom: 0px;
-    border-top: 1px solid #5f5f5f;
-    margin-top: 0.5%;
-  }
-
-  .first-form-details {
-    padding: 5px;
-    padding-bottom: 0px;
-    border: 1px solid #5f5f5f;
-  }
   .insurance-details {
-    padding: 20px;
-    padding-bottom: 5px;
+    border-bottom: 1px solid #e6e6e6;
   }
 
   .colorPrimary {

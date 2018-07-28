@@ -10,10 +10,6 @@ import extend from "extend";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-// import Dialog from "@material-ui/core/Dialog";
-// import DialogActions from "@material-ui/core/DialogActions";
-// import DialogTitle from "@material-ui/core/DialogTitle";
-//import Slide from "@material-ui/core/Slide";
 import AppBar from "@material-ui/core/AppBar";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import {
@@ -151,7 +147,7 @@ class RegistrationPatient extends Component {
 
     if (!err) {
       this.GenerateReciept($this => {
-        if ($this.state.hims_d_patient_id === undefined) {
+        if ($this.state.hims_d_patient_id === null) {
           $this.props.postPatientDetails($this.state, data => {
             $this.setState({
               patient_code: data.patient_code,
@@ -346,8 +342,6 @@ class RegistrationPatient extends Component {
               state: this.state,
               updateState: obj => {
                 this.setState({ ...obj });
-                // extend(this.state, obj);
-                // this.setState({ ...this.state, ...obj });
               }
             }}
           >

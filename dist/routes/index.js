@@ -76,13 +76,29 @@ var _patientType = require("../controller/patientType");
 
 var _patientType2 = _interopRequireDefault(_patientType);
 
-var _insurence = require("../controller/insurence");
+var _globalSearch = require("../controller/globalSearch");
 
-var _insurence2 = _interopRequireDefault(_insurence);
+var _globalSearch2 = _interopRequireDefault(_globalSearch);
+
+var _insurance = require("../controller/insurance");
+
+var _insurance2 = _interopRequireDefault(_insurance);
 
 var _opBilling = require("../controller/opBilling");
 
 var _opBilling2 = _interopRequireDefault(_opBilling);
+
+var _userPreferences = require("../controller/userPreferences");
+
+var _userPreferences2 = _interopRequireDefault(_userPreferences);
+
+var _doctorsWorkBench = require("../EHR/controller/doctorsWorkBench");
+
+var _doctorsWorkBench2 = _interopRequireDefault(_doctorsWorkBench);
+
+var _episode = require("../EHR/controller/episode");
+
+var _episode2 = _interopRequireDefault(_episode);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -108,8 +124,12 @@ var router = (0, _express2.default)();
   router.use("/serviceType", (0, _serviceType2.default)({ config: _keys2.default, db: db }));
   router.use("/billing", (0, _billing2.default)({ config: _keys2.default, db: db }));
   router.use("/patientType", (0, _patientType2.default)({ config: _keys2.default, db: db }));
-  router.use("/insurence", (0, _insurence2.default)({ config: _keys2.default, db: db }));
+  router.use("/insurance", (0, _insurance2.default)({ config: _keys2.default, db: db }));
+  router.use("/gloabelSearch", (0, _globalSearch2.default)());
   router.use("/opBilling", (0, _opBilling2.default)({ config: _keys2.default, db: db }));
+  router.use("/userPreferences", (0, _userPreferences2.default)());
+  router.use("/doctorsWorkBench", (0, _doctorsWorkBench2.default)({ config: _keys2.default, db: db }));
+  router.use("/episode", (0, _episode2.default)({ config: _keys2.default, db: db }));
 });
 
 exports.default = router;

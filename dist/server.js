@@ -72,6 +72,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.server = _http2.default.createServer(app);
+
 app.use((0, _cors2.default)());
 //parse application json
 app.use(_bodyParser2.default.json({
@@ -102,6 +103,7 @@ app.use(function (req, res, next) {
   //     "*******"
   //   );
   // }
+
   var reqH = req.headers;
   var reqUser = "";
   if (req.url != "/api/v1/apiAuth") reqUser = (0, _jwtDecode2.default)(reqH["x-api-key"]).id;

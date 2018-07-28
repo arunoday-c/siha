@@ -1,5 +1,7 @@
 .insurancesetup {
-  padding: 1%; }
+  padding-top: 3%;
+  padding-right: 3px;
+  padding-left: 3px; }
   .insurancesetup .insurance-footer {
     height: "60px";
     background-color: #000; }

@@ -1,4 +1,7 @@
 {
+  "form_name": "Insurance",
+  "form_home": "Home",
+
   "insurance_provider_code": "Insurance Code",
   "insurance_provider_name": "Insurance Name",
   "insurance_type": "Insurance Type",
@@ -38,5 +41,6 @@
   "co_pay": "Co Pay",
   "max_limit": "Max Limit",
 
-  "add_insurance": "Add Insurance"
+  "add_insurance": "Add Insurance",
+  "service_type": "Service Type"
 }
