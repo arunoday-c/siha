@@ -99,7 +99,7 @@ let insertVisitData = (dataBase, req, res, callBack) => {
     hims_f_patient_visit_id: null,
     patient_id: null,
     visit_type: null,
-    visit_date: null,
+    visit_date: new Date(),
     visit_code: null,
     age_in_years: null,
     age_in_months: null,
@@ -122,7 +122,9 @@ let insertVisitData = (dataBase, req, res, callBack) => {
     patient_message: null,
     is_critical_message: null,
     message_active_till: null,
-    visit_expiery_date: null
+    visit_expiery_date: null,
+    episode_id: null,
+    consultation: null
   };
   try {
     debugFunction("insertVisitData");
@@ -131,91 +133,321 @@ let insertVisitData = (dataBase, req, res, callBack) => {
       req.query["data"] == null ? req.body : req.query
     );
 
-    dataBase.query(
-      "SELECT param_value from algaeh_d_app_config WHERE param_name=?",
-      ["VISITEXPERIDAY"],
-      (error, record) => {
-        if (error) {
-          dataBase.rollback(() => {
-            dataBase.release();
-            logger.log("error", "Add new visit %j", error);
-          });
-        }
-        inputParam.visit_expiery_date = moment(inputParam.visit_date).add(
-          record != null && record.length != 0
-            ? parseInt(record[0]["param_value"])
-            : 0,
-          "days"
-        )._d;
-        dataBase.query(
-          "INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
-          `age_in_years`, `age_in_months`, `age_in_days`, `insured`,`sec_insured`,\
-        `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
-         `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
-         `created_by`, `created_date`,`visit_code`,`visit_expiery_date`)\
-        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-          [
-            inputParam.patient_id,
-            inputParam.visit_type,
-            inputParam.age_in_years,
-            inputParam.age_in_months,
-            inputParam.age_in_days,
-            inputParam.insured,
-            inputParam.sec_insured,
-            inputParam.visit_date,
-            inputParam.department_id,
-            inputParam.sub_department_id,
-            inputParam.doctor_id,
-            inputParam.maternity_patient,
-            inputParam.is_mlc,
-            inputParam.mlc_accident_reg_no,
-            inputParam.mlc_police_station,
-            inputParam.mlc_wound_certified_date,
-            inputParam.created_by,
-            new Date(),
-            inputParam.visit_code,
-            inputParam.visit_expiery_date
-          ],
-          (error, result) => {
-            if (error) {
-              dataBase.rollback(() => {
-                dataBase.release();
-                logger.log("error", "Add new visit %j", error);
-              });
-            }
-            req.visit_id = result.insertId;
-            let patient_visit_id = result.insertId;
+    let today = moment().format("YYYY-MM-DD");
 
-            debugLog("patient_visit_id : " + patient_visit_id);
-
-            if (patient_visit_id != null) {
-              dataBase.query(
-                "INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
-      , `patient_message`, `is_critical_message`, `message_active_till`, `created_by`, `created_date`\
-      ) VALUES ( ?, ?, ?, ?, ?, ?);",
-                [
-                  patient_visit_id,
-                  inputParam.patient_message,
-                  inputParam.is_critical_message,
-                  inputParam.message_active_till,
-                  inputParam.created_by,
-                  new Date()
-                ],
-                (error, resultData) => {
-                  if (typeof callBack == "function") {
-                    callBack(error, result);
-                  }
-                }
-              );
-            }
+    //for consultaion
+    if (inputParam.consultation == "Y") {
+      dataBase.query(
+        " select max(visit_expiery_date) as visit_expiery_date,episode_id from hims_f_patient_visit where\
+         patient_id=? and doctor_id=? and record_status='A' group by patient_id, doctor_id;",
+        [inputParam.patient_id, inputParam.doctor_id],
+        (error, expResult) => {
+          if (error) {
+            dataBase.rollback(() => {
+              dataBase.release();
+              debugLog("error ", error);
+            });
           }
-        );
-      }
-    );
+
+          let existingExparyDate = null;
+          let currentPatientEpisodeNo = null;
+
+          //fetching expiry date and episode id for existing patient
+          if (expResult[0] != null || expResult.length != 0) {
+            existingExparyDate = moment(
+              expResult[0]["visit_expiery_date"]
+            ).format("YYYY-MM-DD");
+
+            debugLog("existingExparyDate:", existingExparyDate);
+
+            currentPatientEpisodeNo = expResult[0]["episode_id"];
+            debugLog("currentPatientEpisodeNo:", currentPatientEpisodeNo);
+          }
+
+          let currentEpisodeNo = null;
+
+          //checking expiry if expired or not_there create new expiry date
+          if (
+            existingExparyDate == null ||
+            existingExparyDate == undefined ||
+            existingExparyDate < today
+          ) {
+            //create new expiry date
+            dataBase.query(
+              "SELECT param_value from algaeh_d_app_config WHERE param_name=?",
+              ["VISITEXPERIDAY"],
+              (error, record) => {
+                if (error) {
+                  dataBase.rollback(() => {
+                    dataBase.release();
+                    logger.log("error", "Add new visit %j", error);
+                  });
+                }
+
+                inputParam.visit_expiery_date = moment()
+                  .add(
+                    record != null && record.length != 0
+                      ? parseInt(record[0]["param_value"])
+                      : 0,
+                    "days"
+                  )
+                  .format("YYYY-MM-DD");
+                debugLog(
+                  "new expiry date created:",
+                  inputParam.visit_expiery_date
+                );
+
+                // create new episode
+                dataBase.query(
+                  "select episode_id from algaeh_d_app_config where algaeh_d_app_config_id=11 and record_status='A'",
+                  (error, result) => {
+                    if (error) {
+                      releaseDBConnection(req.db, dataBase);
+                      next(error);
+                    }
+
+                    currentEpisodeNo = result[0].episode_id;
+                    debugLog("currentEpisodeNo:", currentEpisodeNo);
+
+                    //increament episode id
+                    if (currentEpisodeNo > 0) {
+                      let nextEpisodeNo = currentEpisodeNo + 1;
+                      debugLog("nextEpisodeNo :", nextEpisodeNo);
+                      inputParam.episode_id = currentEpisodeNo;
+
+                      dataBase.query(
+                        "update algaeh_d_app_config set episode_id=? where algaeh_d_app_config_id=11 and record_status='A' ",
+                        [nextEpisodeNo],
+                        (error, updateResult) => {
+                          if (error) {
+                            dataBase.rollback(() => {
+                              releaseDBConnection(req.db, dataBase);
+                              next(error);
+                            });
+                          }
+
+                          // inserting patient visit
+                          dataBase.query(
+                            "INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
+    `age_in_years`, `age_in_months`, `age_in_days`, `insured`,`sec_insured`,\
+  `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
+   `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
+   `created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`)\
+  VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
+                            [
+                              inputParam.patient_id,
+                              inputParam.visit_type,
+                              inputParam.age_in_years,
+                              inputParam.age_in_months,
+                              inputParam.age_in_days,
+                              inputParam.insured,
+                              inputParam.sec_insured,
+                              inputParam.visit_date,
+                              inputParam.department_id,
+                              inputParam.sub_department_id,
+                              inputParam.doctor_id,
+                              inputParam.maternity_patient,
+                              inputParam.is_mlc,
+                              inputParam.mlc_accident_reg_no,
+                              inputParam.mlc_police_station,
+                              inputParam.mlc_wound_certified_date,
+                              inputParam.created_by,
+                              new Date(),
+                              inputParam.visit_code,
+                              inputParam.visit_expiery_date,
+                              inputParam.episode_id
+                            ],
+                            (error, visitresult) => {
+                              if (error) {
+                                dataBase.rollback(() => {
+                                  dataBase.release();
+                                  logger.log(
+                                    "error",
+                                    "Add new visit %j",
+                                    error
+                                  );
+                                });
+                              }
+                              req.visit_id = visitresult.insertId;
+                              let patient_visit_id = visitresult.insertId;
+
+                              debugLog(
+                                "patient_visit_id : " + patient_visit_id
+                              );
+
+                              if (patient_visit_id != null) {
+                                dataBase.query(
+                                  "INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
+, `patient_message`, `is_critical_message`, `message_active_till`, `created_by`, `created_date`\
+) VALUES ( ?, ?, ?, ?, ?, ?);",
+                                  [
+                                    patient_visit_id,
+                                    inputParam.patient_message,
+                                    inputParam.is_critical_message,
+                                    inputParam.message_active_till,
+                                    inputParam.created_by,
+                                    new Date()
+                                  ],
+                                  (error, resultData) => {
+                                    if (typeof callBack == "function") {
+                                      callBack(error, visitresult);
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
+                      );
+                    }
+                  }
+                );
+              }
+            );
+          } else if (existingExparyDate > today) {
+            inputParam.visit_expiery_date = existingExparyDate;
+            inputParam.episode_id = currentPatientEpisodeNo;
+
+            // inserting patient visit
+            dataBase.query(
+              "INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
+            `age_in_years`, `age_in_months`, `age_in_days`, `insured`,`sec_insured`,\
+          `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
+           `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
+           `created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`)\
+          VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
+              [
+                inputParam.patient_id,
+                inputParam.visit_type,
+                inputParam.age_in_years,
+                inputParam.age_in_months,
+                inputParam.age_in_days,
+                inputParam.insured,
+                inputParam.sec_insured,
+                inputParam.visit_date,
+                inputParam.department_id,
+                inputParam.sub_department_id,
+                inputParam.doctor_id,
+                inputParam.maternity_patient,
+                inputParam.is_mlc,
+                inputParam.mlc_accident_reg_no,
+                inputParam.mlc_police_station,
+                inputParam.mlc_wound_certified_date,
+                inputParam.created_by,
+                new Date(),
+                inputParam.visit_code,
+                inputParam.visit_expiery_date,
+                inputParam.episode_id
+              ],
+              (error, visitresult) => {
+                if (error) {
+                  dataBase.rollback(() => {
+                    dataBase.release();
+                    logger.log("error", "Add new visit %j", error);
+                  });
+                }
+                req.visit_id = visitresult.insertId;
+                let patient_visit_id = visitresult.insertId;
+
+                debugLog("patient_visit_id : " + patient_visit_id);
+
+                if (patient_visit_id != null) {
+                  dataBase.query(
+                    "INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
+        , `patient_message`, `is_critical_message`, `message_active_till`, `created_by`, `created_date`\
+        ) VALUES ( ?, ?, ?, ?, ?, ?);",
+                    [
+                      patient_visit_id,
+                      inputParam.patient_message,
+                      inputParam.is_critical_message,
+                      inputParam.message_active_till,
+                      inputParam.created_by,
+                      new Date()
+                    ],
+                    (error, resultData) => {
+                      if (typeof callBack == "function") {
+                        callBack(error, visitresult);
+                      }
+                    }
+                  );
+                }
+              }
+            );
+          }
+        }
+      );
+    } //not for consultaion
+    else if (inputParam.consultation == "N") {
+      debugFunction("not for consultaion");
+      dataBase.query(
+        "INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
+      `age_in_years`, `age_in_months`, `age_in_days`, `insured`,`sec_insured`,\
+    `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
+     `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
+     `created_by`, `created_date`,`visit_code`,`visit_expiery_date`)\
+    VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
+        [
+          inputParam.patient_id,
+          inputParam.visit_type,
+          inputParam.age_in_years,
+          inputParam.age_in_months,
+          inputParam.age_in_days,
+          inputParam.insured,
+          inputParam.sec_insured,
+          inputParam.visit_date,
+          inputParam.department_id,
+          inputParam.sub_department_id,
+          inputParam.doctor_id,
+          inputParam.maternity_patient,
+          inputParam.is_mlc,
+          inputParam.mlc_accident_reg_no,
+          inputParam.mlc_police_station,
+          inputParam.mlc_wound_certified_date,
+          inputParam.created_by,
+          new Date(),
+          inputParam.visit_code,
+          today
+        ],
+        (error, result) => {
+          if (error) {
+            dataBase.rollback(() => {
+              dataBase.release();
+              logger.log("error", "Add new visit %j", error);
+            });
+          }
+          req.visit_id = result.insertId;
+          let patient_visit_id = result.insertId;
+
+          debugLog("patient_visit_id : " + patient_visit_id);
+
+          if (patient_visit_id != null) {
+            dataBase.query(
+              "INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
+  , `patient_message`, `is_critical_message`, `message_active_till`, `created_by`, `created_date`\
+  ) VALUES ( ?, ?, ?, ?, ?, ?);",
+              [
+                patient_visit_id,
+                inputParam.patient_message,
+                inputParam.is_critical_message,
+                inputParam.message_active_till,
+                inputParam.created_by,
+                new Date()
+              ],
+              (error, resultData) => {
+                if (typeof callBack == "function") {
+                  callBack(error, result);
+                }
+              }
+            );
+          }
+        }
+      );
+    }
   } catch (e) {
     next(e);
   }
 };
+
 let updateVisit = (req, res, next) => {
   try {
     if (req.db == null) {

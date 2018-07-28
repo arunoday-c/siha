@@ -340,6 +340,26 @@ let downloadFile = (req, res, callBack) => {
     callBack(error, req);
   });
 };
+/*
+   input as array of obejct and converting to single araay object
+*/
+let jsonArrayToObject = options => {
+  let outputObject = [];
+  for (let i = 0; i < options.arrayObj.length; i++) {
+    const item = options.arrayObj[i];
+    outputObject.push(
+      options.sampleInputObject.map(key => {
+        if (key == "created_by" || key == "updated_by") {
+          if (options.userId != null) {
+            return options.userId;
+          }
+        }
+        return item[key];
+      })
+    );
+  }
+  return outputObject;
+};
 
 let bulkInputArrayObject = (arrayObj, outArray, objectToChang) => {
   objectToChang = objectToChang || {};
@@ -385,5 +405,6 @@ module.exports = {
   uploadFile,
   downloadFile,
   bulkInputArrayObject,
-  bulkMasters
+  bulkMasters,
+  jsonArrayToObject
 };

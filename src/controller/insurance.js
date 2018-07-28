@@ -10,7 +10,8 @@ import {
   addInsuranceProvider,
   addSubInsuranceProvider,
   addNetwork,
-  NetworkOfficeMaster
+  NetworkOfficeMaster,
+  addPlanAndPolicy
 } from "../model/insurance";
 
 export default ({ config, db }) => {
@@ -120,5 +121,21 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by irfan: to add  both network and network office(insurence plan master)
+  api.post(
+    "/addPlanAndPolicy",
+    addPlanAndPolicy,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };

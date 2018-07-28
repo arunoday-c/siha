@@ -36,7 +36,7 @@ let addFrontDesk = (req, res, next) => {
         //Start
         //Quwery:1
         runningNumber(
-          connection,
+          req.db,
           1,
           "PATCODE_NUMGEN",
           (error, records, newNumber) => {
