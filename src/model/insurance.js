@@ -286,9 +286,7 @@ let addInsuranceProvider = (req, res, next) => {
     ins_rej_per: null,
     effective_start_date: null,
     effective_end_date: null,
-    created_date: null,
     created_by: null,
-    updated_date: null,
     updated_by: null
   };
 
@@ -308,9 +306,9 @@ let addInsuranceProvider = (req, res, next) => {
         "INSERT INTO hims_d_insurance_provider(`insurance_provider_code`,`insurance_provider_name`,\
         `deductible_proc`,`deductible_lab`,`co_payment`,`insurance_type`,`package_claim`,`hospital_id`,\
         `credit_period`,`insurance_limit`,`payment_type`,`insurance_remarks`,`cpt_mandate`,`child_id`,`currency`,\
-        `preapp_valid_days`,`claim_submit_days`,`lab_result_check`,`resubmit_all`,`ins_rej_per`,`effective_start_date`,\
-        `effective_end_date`,`created_date`,`created_by`,`updated_date`,`updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        `preapp_valid_days`,`claim_submit_days`,`lab_result_check`,`resubmit_all`,`company_service_price_type`,`ins_rej_per`,`effective_start_date`,\
+        `effective_end_date`,created_by`,`updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           inputparam.insurance_provider_code,
           inputparam.insurance_provider_name,
@@ -331,13 +329,101 @@ let addInsuranceProvider = (req, res, next) => {
           inputparam.claim_submit_days,
           inputparam.lab_result_check,
           inputparam.resubmit_all,
+          inputparam.company_service_price_type,
           inputparam.ins_rej_per,
           inputparam.effective_start_date,
           inputparam.effective_end_date,
-          new Date(),
           inputparam.created_by,
-          new Date(),
-          inputparam.updated_by
+          inputparam.created_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to Update insurence provider
+let updateInsuranceProvider = (req, res, next) => {
+  let insuranceProviderModel = {
+    hims_d_insurance_provider_id: null,
+    insurance_provider_code: null,
+    insurance_provider_name: null,
+    deductible_proc: null,
+    deductible_lab: null,
+    co_payment: null,
+    insurance_type: null,
+    package_claim: null,
+    hospital_id: null,
+    credit_period: null,
+    insurance_limit: null,
+    payment_type: null,
+    insurance_remarks: null,
+    cpt_mandate: null,
+    child_id: null,
+    currency: null,
+    preapp_valid_days: null,
+    claim_submit_days: null,
+    lab_result_check: null,
+    resubmit_all: null,
+    ins_rej_per: null,
+    effective_start_date: null,
+    effective_end_date: null,
+    updated_by: null
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend(insuranceProviderModel, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "update hims_d_insurance_provider SET `insurance_provider_code`=?,`insurance_provider_name`=?,\
+        `deductible_proc`=?,`deductible_lab`=?,`co_payment`=?,`insurance_type`=?,`package_claim`=?,`hospital_id`=?,\
+        `credit_period`=?,`insurance_limit`=?,`payment_type`=?,`insurance_remarks`=?,`cpt_mandate`=?,`child_id`=?,`currency`=?,\
+        `preapp_valid_days`=?,`claim_submit_days`=?,`lab_result_check`=?,`resubmit_all`=?,`company_service_price_type`=?,`ins_rej_per`=?,`effective_start_date`=?,\
+        `effective_end_date`=?,`updated_by`=? WHERE  `hims_d_insurance_provider_id`=? AND `record_status`='A'",
+        [
+          inputparam.insurance_provider_code,
+          inputparam.insurance_provider_name,
+          inputparam.deductible_proc,
+          inputparam.deductible_lab,
+          inputparam.co_payment,
+          inputparam.insurance_type,
+          inputparam.package_claim,
+          inputparam.hospital_id,
+          inputparam.credit_period,
+          inputparam.insurance_limit,
+          inputparam.payment_type,
+          inputparam.insurance_remarks,
+          inputparam.cpt_mandate,
+          inputparam.child_id,
+          inputparam.currency,
+          inputparam.preapp_valid_days,
+          inputparam.claim_submit_days,
+          inputparam.lab_result_check,
+          inputparam.resubmit_all,
+          inputparam.company_service_price_type,
+          inputparam.ins_rej_per,
+          inputparam.effective_start_date,
+          inputparam.effective_end_date,
+          inputparam.updated_by,
+          inputparam.hims_d_insurance_provider_id
         ],
         (error, result) => {
           if (error) {
@@ -372,6 +458,7 @@ let addSubInsuranceProvider = (req, res, next) => {
       const insurtColumns = [
         "insurance_sub_code",
         "insurance_sub_name",
+        "arabic_sub_name",
         "insurance_provider_id",
         "card_format",
         "transaction_number",
@@ -390,6 +477,53 @@ let addSubInsuranceProvider = (req, res, next) => {
             sampleInputObject: insurtColumns,
             arrayObj: req.body
           })
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to updateSubInsuranceProvider SUB-insurence provider
+
+let updateSubInsuranceProvider = (req, res, next) => {
+  let insuranceSubProviderModel = {};
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend(insuranceSubProviderModel, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "update hims_d_insurance_sub SET `insurance_sub_code`=?,`insurance_sub_name`=?,`arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,\
+        `transaction_number`=?,`effective_start_date`=?,`effective_end_date`=?,`updated_by`=? WHERE  `hims_d_insurance_sub_id`=? AND `record_status`='A'",
+        [
+          inputparam.insurance_sub_code,
+          inputparam.insurance_sub_name,
+          inputparam.arabic_sub_name,
+          inputparam.insurance_provider_id,
+          inputparam.card_format,
+          inputparam.transaction_number,
+          inputparam.effective_start_date,
+          inputparam.effective_end_date,
+          inputparam.updated_by,
+          inputparam.hims_d_insurance_sub_id
         ],
         (error, result) => {
           if (error) {
@@ -631,7 +765,8 @@ let NetworkOfficeMaster = (req, res, next) => {
   }
 };
 
-//created by irfan: to add  both network and network office(insurence plan master)
+//created by irfan: to add  both network and network office andservices
+//of hospital (insurence plan master)
 let addPlanAndPolicy = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -974,7 +1109,9 @@ module.exports = {
   addPatientInsurance,
   getListOfInsuranceProvider,
   addInsuranceProvider,
+  updateInsuranceProvider,
   addSubInsuranceProvider,
+  updateSubInsuranceProvider,
   addNetwork,
   NetworkOfficeMaster,
   addPlanAndPolicy

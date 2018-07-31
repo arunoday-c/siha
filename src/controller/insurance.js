@@ -8,7 +8,9 @@ import {
   addPatientInsurance,
   getListOfInsuranceProvider,
   addInsuranceProvider,
+  updateInsuranceProvider,
   addSubInsuranceProvider,
+  updateSubInsuranceProvider,
   addNetwork,
   NetworkOfficeMaster,
   addPlanAndPolicy
@@ -77,10 +79,40 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan : to update insurence provider
+  api.put(
+    "/updateInsuranceProvider",
+    updateInsuranceProvider,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   // created by irfan : to add SUB-insurence provider
   api.post(
     "/addSubInsuranceProvider",
     addSubInsuranceProvider,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to update SUB-insurence provider
+  api.put(
+    "/updateSubInsuranceProvider",
+    updateSubInsuranceProvider,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

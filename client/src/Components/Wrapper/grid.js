@@ -27,12 +27,13 @@ class DataGrid extends PureComponent {
       keyField: "",
       width: null,
       id: null,
-      inputParam: {}
+      editMode: false,
+      inputParam: {},
+      dummyChange: false
     };
   }
 
   apiCallingFunction = ($this, page, callBack, inputProps) => {
-    debugger;
     inputProps = inputProps || $this.state.inputParam;
     let input = {
       ...inputProps,
@@ -87,11 +88,12 @@ class DataGrid extends PureComponent {
             this.props.dataSource.responseSchema.totalPages === undefined
               ? data.length
               : totalPages,
-          page: page
+          page: page,
+          editMode: false
         });
       });
     } else {
-      this.setState({ page });
+      this.setState({ page: page, editMode: false });
     }
   };
 
@@ -107,7 +109,8 @@ class DataGrid extends PureComponent {
       {
         isEditable: true,
         rowToIndexEdit: rowId,
-        width: width
+        width: width,
+        editMode: false
       },
       () => {
         if (this.props.events != null) {
@@ -128,7 +131,8 @@ class DataGrid extends PureComponent {
             this.props.dataSource.responseSchema.totalPages === undefined
               ? data.length
               : totalPages,
-          page: 0
+          page: 0,
+          editMode: false
         });
       });
     }
@@ -139,25 +143,69 @@ class DataGrid extends PureComponent {
     let row = this.state.data[rowId];
     if (this.props.events != null) {
       if (this.props.events.onDelete) {
+        row["onDeleteFinish"] = () => {
+          if (this.props.dataSource.uri !== undefined) {
+            this.apiCallingFunction(
+              this,
+              this.state.page,
+              (data, totalPages) => {
+                this.setState({
+                  data: data,
+                  totalPages:
+                    this.props.dataSource.responseSchema.totalPages ===
+                    undefined
+                      ? data.length
+                      : totalPages,
+                  page: this.state.page,
+                  editMode: false
+                });
+              }
+            );
+          }
+        };
         this.props.events.onDelete(row, rowId);
       }
     }
   };
 
   handleCancelRow = event => {
-    this.setState({ rowToIndexEdit: -1, width: null });
     let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
     this.state.data[rowId] = JSON.parse(sessionStorage.getItem(this.state.id));
-    this.setState({ data: this.state.data });
+    this.setState({
+      data: this.state.data,
+      rowToIndexEdit: -1,
+      width: null,
+      editMode: false
+    });
     sessionStorage.removeItem(this.state.id);
   };
   handleDoneRow = event => {
     sessionStorage.removeItem(this.state.id);
-    this.setState({ rowToIndexEdit: -1, width: null });
+    this.setState({ rowToIndexEdit: -1, width: null, editMode: false });
     let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
     if (this.props.events != null) {
       if (this.props.events.onDone) {
         let row = this.state.data[rowId];
+        row["onDoneFinish"] = () => {
+          if (this.props.dataSource.uri !== undefined) {
+            this.apiCallingFunction(
+              this,
+              this.state.page,
+              (data, totalPages) => {
+                this.setState({
+                  data: data,
+                  totalPages:
+                    this.props.dataSource.responseSchema.totalPages ===
+                    undefined
+                      ? data.length
+                      : totalPages,
+                  page: this.state.page,
+                  editMode: false
+                });
+              }
+            );
+          }
+        };
         this.props.events.onDone(row);
       }
     }
@@ -268,24 +316,29 @@ class DataGrid extends PureComponent {
             }
           : null,
       id: nextProps.id ? "prevRecord_" + nextProps.id : "prevRecord",
-      inputParam: nextProps.dataSource.inputParam
+      inputParam: nextProps.dataSource.inputParam,
+      editMode: false
     });
     if (this.props.algaehSearch !== undefined) {
-      this.apiCallingFunction(
-        this,
-        0,
-        (data, totalPages) => {
-          this.setState({
-            data: data,
-            totalPages:
-              this.props.dataSource.responseSchema.totalPages === undefined
-                ? data.length
-                : totalPages,
-            page: 0
-          });
-        },
-        nextProps.dataSource.inputParam
-      );
+      if (!this.state.editMode) {
+        this.apiCallingFunction(
+          this,
+          0,
+          (data, totalPages) => {
+            this.setState({
+              data: data,
+              totalPages:
+                this.props.dataSource.responseSchema.totalPages === undefined
+                  ? data.length
+                  : totalPages,
+              page: 0
+            });
+          },
+          nextProps.dataSource.inputParam
+        );
+      } else {
+        this.setState({ data: this.state.data });
+      }
     }
   }
   componentWillMount() {
@@ -352,12 +405,14 @@ class DataGrid extends PureComponent {
   };
 
   returnTableRowWithColumns = (row, index) => {
-    row["callBack"] = editedRow => {
-      debugger;
-      row = editedRow;
+    row["onChangeFinish"] = editedRow => {
+      if (this.props.dataSource.uri !== undefined) {
+        row = editedRow;
+        const dChange = !this.state.dummyChange;
+        this.setState({ editMode: true, dummyChange: dChange });
+      }
     };
     return this.props.columns.map((col, ind) => {
-      debugger;
       return (
         <td key={ind}>
           {col.editorTemplate != null ? (
@@ -368,7 +423,6 @@ class DataGrid extends PureComponent {
               value={row[col.fieldName]}
               disabled={col.disabled}
               onChange={(control, $this = this) => {
-                debugger;
                 const value = control.target.value;
                 $this.state.data[index][col.fieldName] = value;
                 $this.setState({ data: $this.state.data });
