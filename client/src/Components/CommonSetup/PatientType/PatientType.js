@@ -73,7 +73,6 @@ class PatientType extends Component {
   }
 
   showconfirmDialog(id) {
-    debugger;
     swal({
       title: "Are you sure you want to delete this ID Types?",
       icon: "warning",
@@ -187,14 +186,15 @@ class PatientType extends Component {
             buttons: false,
             timer: 2000
           });
-          this.props.getPatienttypes({
-            uri: "/patientType/get",
-            method: "GET",
-            redux: {
-              type: "PAT_TYP_GET_DATA",
-              mappingName: "patienttypes"
-            }
-          });
+          data.onDoneFinish();
+          // this.props.getPatienttypes({
+          //   uri: "/patientType/get",
+          //   method: "GET",
+          //   redux: {
+          //     type: "PAT_TYP_GET_DATA",
+          //     mappingName: "patienttypes"
+          //   }
+          // });
         }
       },
       onFailure: error => {}
@@ -205,11 +205,10 @@ class PatientType extends Component {
     this.setState(this.baseState);
   }
   onchangegridcol(row, e) {
-    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    row.callBack(row);
+    row.onChangeFinish(row);
     // this.resetState();
   }
 
