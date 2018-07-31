@@ -456,6 +456,7 @@ let addSubInsuranceProvider = (req, res, next) => {
       const insurtColumns = [
         "insurance_sub_code",
         "insurance_sub_name",
+        "arabic_sub_name",
         "insurance_provider_id",
         "card_format",
         "transaction_number",
@@ -474,6 +475,53 @@ let addSubInsuranceProvider = (req, res, next) => {
             sampleInputObject: insurtColumns,
             arrayObj: req.body
           })
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to updateSubInsuranceProvider SUB-insurence provider
+
+let updateSubInsuranceProvider = (req, res, next) => {
+  let insuranceSubProviderModel = {};
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend(insuranceSubProviderModel, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "update hims_d_insurance_sub SET `insurance_sub_code`=?,`insurance_sub_name`=?,`arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,\
+        `transaction_number`=?,`effective_start_date`=?,`effective_end_date`=?,`updated_by`=? WHERE  `hims_d_insurance_sub_id`=? AND `record_status`='A'",
+        [
+          inputparam.insurance_sub_code,
+          inputparam.insurance_sub_name,
+          inputparam.arabic_sub_name,
+          inputparam.insurance_provider_id,
+          inputparam.card_format,
+          inputparam.transaction_number,
+          inputparam.effective_start_date,
+          inputparam.effective_end_date,
+          inputparam.updated_by,
+          inputparam.hims_d_insurance_sub_id
         ],
         (error, result) => {
           if (error) {
@@ -1061,6 +1109,7 @@ module.exports = {
   addInsuranceProvider,
   updateInsuranceProvider,
   addSubInsuranceProvider,
+  updateSubInsuranceProvider,
   addNetwork,
   NetworkOfficeMaster,
   addPlanAndPolicy
