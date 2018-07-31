@@ -45,5 +45,7 @@
   "max_limit": "الحد الأقصى",
 
   "add_insurance": "إضافة التأمين",
-  "service_type": "نوع الخدمة"
+  "service_type": "نوع الخدمة",
+
+  "arabic_provider_name": "الاسم العربي"
 }

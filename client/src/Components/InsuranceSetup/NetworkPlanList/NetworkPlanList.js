@@ -5,14 +5,18 @@ import { bindActionCreators } from "redux";
 
 import "./NetworkPlanList.css";
 import "./../../../styles/site.css";
-import { AlgaehLabel, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
+import {
+  AlgaehLabel,
+  AlgaehDataGrid,
+  Modal
+} from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { getCookie } from "../../../utils/algaehApiCall";
 
-class SubInsurance extends PureComponent {
+class NetworkPlanList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
@@ -27,74 +31,173 @@ class SubInsurance extends PureComponent {
     });
   }
 
+  onClose = e => {
+    this.props.onClose && this.props.onClose(e);
+  };
+
   render() {
     return (
       <React.Fragment>
-        <div className="hptl-phase1-add-insurance-form">
-          <div className="container-fluid">
-            {/* Services Details */}
+        <div>
+          <Modal
+            className="model-set"
+            open={this.props.show}
+            onClose={e => {
+              this.onClose(e);
+            }}
+          >
+            <div className="hptl-phase1-add-insurance-form">
+              <div className="container-fluid">
+                {/* Services Details */}
 
-            <div className="row">
-              <AlgaehDataGrid
-                id="sub_insurance_grid"
-                columns={[
-                  {
-                    fieldName: "insurance_sub_code",
-                    label: (
-                      <AlgaehLabel
-                        label={{ fieldName: "insurance_sub_code" }}
-                      />
-                    )
-                  },
-                  {
-                    fieldName: "insurance_sub_name",
-                    label: (
-                      <AlgaehLabel
-                        label={{ fieldName: "insurance_sub_name" }}
-                      />
-                    )
-                  },
-                  {
-                    fieldName: "transaction_number",
-                    label: (
-                      <AlgaehLabel
-                        label={{ fieldName: "transaction_number" }}
-                      />
-                    )
-                  },
-                  {
-                    fieldName: "card_format",
-                    label: <AlgaehLabel label={{ fieldName: "card_format" }} />
-                  },
-                  {
-                    fieldName: "effective_start_date",
-                    label: (
-                      <AlgaehLabel
-                        label={{ fieldName: "effective_start_date" }}
-                      />
-                    )
-                  },
-                  {
-                    fieldName: "effective_end_date",
-                    label: (
-                      <AlgaehLabel
-                        label={{ fieldName: "effective_end_date" }}
-                      />
-                    )
-                  }
-                ]}
-                keyId="identity_document_code"
-                dataSource={{
-                  data:
-                    this.props.insProviders === undefined
-                      ? []
-                      : this.props.insProviders
-                }}
-                // isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
-              />
+                <div className="row">
+                  <AlgaehDataGrid
+                    id="pla_list_grid"
+                    columns={[
+                      {
+                        fieldName: "network_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "network_type" }} />
+                        )
+                      },
+                      {
+                        fieldName: "employer",
+                        label: <AlgaehLabel label={{ fieldName: "employer" }} />
+                      },
+                      {
+                        fieldName: "policy_number",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "policy_number" }} />
+                        )
+                      },
+                      {
+                        fieldName: "effective_start_date",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "effective_start_date" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "effective_end_date",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "effective_end_date" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "preapp_limit",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "preapp_limit" }} />
+                        )
+                      },
+                      {
+                        fieldName: "price_from",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "price_from" }} />
+                        )
+                      },
+
+                      {
+                        fieldName: "deductible",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "deductible" }} />
+                        )
+                      },
+                      {
+                        fieldName: "copay_consultation",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "copay_consultation" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "max_limit",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "con_max_limit" }} />
+                        )
+                      },
+                      {
+                        fieldName: "copay_percent",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "copay_percent" }} />
+                        )
+                      },
+                      {
+                        fieldName: "lab_max",
+                        label: <AlgaehLabel label={{ fieldName: "lab_max" }} />
+                      },
+                      {
+                        fieldName: "copay_percent_rad",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "copay_percent_rad" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "rad_max",
+                        label: <AlgaehLabel label={{ fieldName: "rad_max" }} />
+                      },
+
+                      {
+                        fieldName: "copay_percent_trt",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "copay_percent_trt" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "trt_max",
+                        label: <AlgaehLabel label={{ fieldName: "trt_max" }} />
+                      },
+
+                      {
+                        fieldName: "copay_percent_dental",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "copay_percent_dental" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "dental_max",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "dental_max" }} />
+                        )
+                      },
+                      {
+                        fieldName: "copay_medicine",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "copay_medicine" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "medicine_max",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "medicine_max" }} />
+                        )
+                      }
+                    ]}
+                    keyId="identity_document_code"
+                    dataSource={{
+                      data:
+                        this.props.insProviders === undefined
+                          ? []
+                          : this.props.insProviders
+                    }}
+                    // isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 5 }}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
+          </Modal>
         </div>
       </React.Fragment>
     );
@@ -122,5 +225,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(SubInsurance)
+  )(NetworkPlanList)
 );

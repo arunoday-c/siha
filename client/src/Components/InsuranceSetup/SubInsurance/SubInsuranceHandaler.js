@@ -1,5 +1,5 @@
 import moment from "moment";
-
+import { Validations } from "./SubInsuranceValidation";
 const texthandle = ($this, context, e) => {
   let name;
   let value;
@@ -18,23 +18,35 @@ const texthandle = ($this, context, e) => {
 
 const saveSubInsurance = ($this, context) => {
   debugger;
-  let obj = {
-    insurance_sub_code: $this.state.insurance_sub_code,
-    insurance_sub_name: $this.state.insurance_sub_name,
-    insurance_provider_id: $this.state.insurance_provider_id,
-    transaction_number: $this.state.transaction_number,
-    card_format: $this.state.card_format
-  };
-  let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
-  previous.push(obj);
-  $this.setState({
-    insurance_sub_saved: true,
-    sub_insurance: previous
-  });
-  if (context !== undefined) {
-    context.updateState({ sub_insurance: previous });
+  const err = Validations($this);
+  if (!err) {
+    debugger;
+    let obj = {
+      insurance_sub_code: $this.state.insurance_sub_code,
+      insurance_sub_name: $this.state.insurance_sub_name,
+      insurance_provider_id: $this.state.insurance_provider_id,
+      transaction_number: $this.state.transaction_number,
+      card_format: $this.state.card_format,
+      effective_start_date:
+        $this.state.effective_start_date !== null
+          ? moment($this.state.effective_start_date)._d
+          : null,
+      effective_end_date:
+        $this.state.effective_end_date !== null
+          ? moment($this.state.effective_end_date)._d
+          : null
+    };
+    let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
+    previous.push(obj);
+    $this.setState({
+      insurance_sub_saved: true,
+      sub_insurance: previous
+    });
+    if (context !== undefined) {
+      context.updateState({ sub_insurance: previous });
+    }
+    addNewSubinsurance($this);
   }
-  addNewSubinsurance($this);
 };
 
 const addNewSubinsurance = $this => {
@@ -46,7 +58,7 @@ const addNewSubinsurance = $this => {
   });
 };
 
-const datehandle = ($this, context, ctrl, e) => {
+const datehandle = ($this, ctrl, e) => {
   debugger;
   $this.setState({
     [e]: moment(ctrl)._d

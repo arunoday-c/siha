@@ -5,21 +5,20 @@ import "./visatype.css";
 import Button from "@material-ui/core/Button";
 import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-import DeleteDialog from "../../../utils/DeleteDialog";
-import { getVisatypes } from "../../../actions/CommonSetup/Visatype.js";
+
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   AlagehFormGroup,
-  AlgaehOptions,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import swal from "sweetalert";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { getCookie } from "../../../utils/algaehApiCall.js";
 
 class VisaType extends Component {
   constructor(props) {
@@ -36,10 +35,15 @@ class VisaType extends Component {
       visa_type_code: "",
       visa_desc: "",
       record_Status: "",
+      arabic_visa_type: "",
+      created_by: getCookie("UserID"),
       row: [],
       id: "",
       openDialog: false,
-      buttonText: "ADD TO LIST"
+      buttonText: "ADD TO LIST",
+
+      visa_type_arabic_error: false,
+      visa_type_arabic_error_txt: ""
     };
     this.baseState = this.state;
   }
@@ -48,27 +52,32 @@ class VisaType extends Component {
     this.setState(this.baseState);
   }
 
-  getFullStatusText({ value }) {
-    if (value === "A") {
-      return "Active";
-    } else if (value === "I") {
-      return "Inactive";
-    } else {
-      return "";
-    }
-  }
+  // getFullStatusText({ value }) {
+  //   if (value === "A") {
+  //     return "Active";
+  //   } else if (value === "I") {
+  //     return "Inactive";
+  //   } else {
+  //     return "";
+  //   }
+  // }
 
   addVisaType(e) {
     e.preventDefault();
     if (this.state.visa_type_code.length == 0) {
       this.setState({
         visa_type_code_error: true,
-        visa_type_code_error_txt: "Visa Type cannot be empty"
+        visa_type_code_error_txt: "Code cannot be empty"
       });
     } else if (this.state.visa_type.length == 0) {
       this.setState({
         visa_type_error: true,
-        visa_type_error_txt: "Visa Type Code cannot be empty"
+        visa_type_error_txt: "Name cannot be empty"
+      });
+    } else if (this.state.arabic_visa_type.length == 0) {
+      this.setState({
+        visa_type_arabic_error: true,
+        visa_type_arabic_error_txt: "Arabic Name cannot be empty"
       });
     } else {
       algaehApiCall({
@@ -106,6 +115,8 @@ class VisaType extends Component {
   }
 
   updateVisaTypes(data) {
+    debugger;
+    data.updated_by = getCookie("UserID");
     algaehApiCall({
       uri: "/masters/set/update/visa",
       data: data,
@@ -151,28 +162,27 @@ class VisaType extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
     if (this.props.visatypes !== nextProps.visatypes) {
       return true;
     }
     return true;
   }
 
-  changeStatus(row, status) {
-    this.setState({ visa_status: status.value });
-    // console.log("Status:", this.state.visa_status);
-    if (status.value == "A")
-      this.setState({ effective_end_date: "9999-12-31" });
-    else if (status.value == "I") {
-      this.setState({
-        effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
-      });
-    }
-    row.visa_status = status.value;
-  }
+  // changeStatus(row, status) {
+  //   this.setState({ visa_status: status.value });
+
+  //   if (status.value == "A")
+  //     this.setState({ effective_end_date: "9999-12-31" });
+  //   else if (status.value == "I") {
+  //     this.setState({
+  //       effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
+  //     });
+  //   }
+  //   row.visa_status = status.value;
+  // }
 
   deleteVisaType(row) {
-    console.log("Delete Row ID: ", row.hims_d_visa_type_id);
     this.showconfirmDialog(row.hims_d_visa_type_id);
   }
 
@@ -219,12 +229,11 @@ class VisaType extends Component {
     return String(moment(value).format("DD-MM-YYYY"));
   }
 
-  handleDialogClose() {
-    this.setState({ openDialog: false });
-  }
-
-  getFormatedDate(date) {
-    return String(moment(date).format("YYYY-MM-DD"));
+  onchangegridcol(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    this.resetState();
   }
 
   render() {
@@ -241,7 +250,7 @@ class VisaType extends Component {
                 marginRight: "auto"
               }}
             >
-              <AlgaehOptions
+              {/* <AlgaehOptions
                 div={{ className: "col-lg-3" }}
                 label={{
                   fieldName: "status",
@@ -257,12 +266,12 @@ class VisaType extends Component {
                   ],
                   events: { onChange: this.changeStatus.bind(this) }
                 }}
-              />
+              /> */}
 
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  fieldName: "visa_type_code",
+                  fieldName: "type_code",
                   isImp: true
                 }}
                 textBox={{
@@ -280,7 +289,7 @@ class VisaType extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  fieldName: "visa_type",
+                  fieldName: "type_desc",
                   isImp: true
                 }}
                 textBox={{
@@ -292,6 +301,23 @@ class VisaType extends Component {
                   },
                   error: this.state.visa_type_error,
                   helperText: this.state.visa_type_error_txt
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "arabic_type_desc",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "arabic_visa_type",
+                  value: this.state.arabic_visa_type,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  },
+                  error: this.state.visa_type_arabic_error,
+                  helperText: this.state.visa_type_arabic_error_txt
                 }}
               />
 
@@ -310,89 +336,113 @@ class VisaType extends Component {
 
           <div className="row form-details">
             <div className="col">
-              <Paper>
-                <AlgaehDataGrid
-                  id="visa_grd"
-                  columns={[
-                    {
-                      fieldName: "visa_type_code",
-                      label: "Visa Type Code",
-                      disabled: true
-                    },
-                    {
-                      fieldName: "visa_type",
-                      label: "Visa Type Name"
-                    },
-                    {
-                      fieldName: "created_date",
-                      label: "Added Date",
-                      displayTemplate: row => {
-                        return (
-                          <span>{this.dateFormater(row.created_date)}</span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        return (
-                          <AlgaehDateHandler
-                            div={{}}
-                            textBox={{ className: "txt-fld" }}
-                            events={{
-                              onChange: selected => {
-                                row.created_date = selected._d;
-                              }
-                            }}
-                            value={this.getFormatedDate(row.created_date)}
-                          />
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "visa_status",
-                      label: "Visa Status",
-                      displayTemplate: row => {
-                        return row.visa_status == "A" ? "Active" : "Inactive";
-                      },
-                      editorTemplate: row => {
-                        return (
-                          <AlagehAutoComplete
-                            div={{}}
-                            selector={{
-                              className: "select-fld",
-                              value: row.visa_status,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.FORMAT_STATUS
-                              },
-                              onChange: this.changeStatus.bind(this, row),
-                              others: {
-                                disabled: this.state.existingPatient
-                              }
-                            }}
-                          />
-                        );
-                      }
+              <AlgaehDataGrid
+                id="visa_grd"
+                columns={[
+                  {
+                    fieldName: "visa_type_code",
+                    label: <AlgaehLabel label={{ fieldName: "type_code" }} />,
+                    disabled: true
+                  },
+                  {
+                    fieldName: "visa_type",
+                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            value: row.visa_type,
+                            className: "txt-fld",
+                            name: "visa_type",
+                            events: {
+                              onChange: this.onchangegridcol.bind(this, row)
+                            }
+                          }}
+                        />
+                      );
                     }
-                  ]}
-                  keyId="visa_type_code"
-                  dataSource={{
-                    data:
-                      this.props.visatypes === undefined
-                        ? []
-                        : this.props.visatypes
-                  }}
-                  isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 5 }}
-                  events={{
-                    onDelete: this.deleteVisaType.bind(this),
-                    onEdit: row => {},
-                    // onDone: row => {
-                    //   alert(JSON.stringify(row));
-                    // }
-                    onDone: this.updateVisaTypes.bind(this)
-                  }}
-                />
-              </Paper>
+                  },
+                  {
+                    fieldName: "arabic_visa_type",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "arabic_type_desc" }} />
+                    ),
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            value: row.arabic_visa_type,
+                            className: "txt-fld",
+                            name: "arabic_visa_type",
+                            events: {
+                              onChange: this.onchangegridcol.bind(this, row)
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "created_by",
+                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
+                    disabled: true
+                  },
+                  {
+                    fieldName: "created_date",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "created_date" }} />
+                    ),
+                    displayTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    },
+                    disabled: true
+                  },
+                  {
+                    fieldName: "visa_status",
+                    label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                    displayTemplate: row => {
+                      return row.visa_status == "A" ? "Active" : "Inactive";
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "visa_status",
+                            className: "select-fld",
+                            value: row.visa_status,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_STATUS
+                            },
+                            onChange: this.onchangegridcol.bind(this, row)
+                          }}
+                        />
+                      );
+                    }
+                  }
+                ]}
+                keyId="visa_type_code"
+                dataSource={{
+                  data:
+                    this.props.visatypes === undefined
+                      ? []
+                      : this.props.visatypes
+                }}
+                isEditable={true}
+                paging={{ page: 0, rowsPerPage: 5 }}
+                events={{
+                  onDelete: this.deleteVisaType.bind(this),
+                  onEdit: row => {},
+                  // onDone: row => {
+                  //   alert(JSON.stringify(row));
+                  // }
+                  onDone: this.updateVisaTypes.bind(this)
+                }}
+              />
             </div>
           </div>
         </Paper>

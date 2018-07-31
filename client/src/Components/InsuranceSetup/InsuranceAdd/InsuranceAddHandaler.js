@@ -2,7 +2,7 @@ import { Validations } from "./InsuranceAddValidation";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 const handleNext = ($this, e) => {
-  // setComponent($this);
+  // setComponent($this, {});
   const err = Validations($this);
   if (!err) {
     if ($this.state.screenName === "InsuranceProvider") {
@@ -26,51 +26,34 @@ const handleNext = ($this, e) => {
     } else if ($this.state.screenName === "SubInsurance") {
       //Save Sub
       debugger;
-      if ($this.state.insurance_sub_saved === false) {
-        algaehApiCall({
-          uri: "/insurance/addSubInsuranceProvider",
-          data: $this.state.sub_insurance,
-          onSuccess: response => {
-            if (response.data.success === true) {
-              setComponent($this, response.data.records);
-            }
-          },
-          onFailure: error => {
-            console.log(error);
+
+      algaehApiCall({
+        uri: "/insurance/addSubInsuranceProvider",
+        data: $this.state.sub_insurance,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            setComponent($this, response.data.records);
           }
-        });
-      } else {
-        setComponent($this, {});
-      }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
     } else if ($this.state.screenName === "NetworkPlan") {
+      debugger;
       //Save Network and Plan
-      if ($this.state.insurance_plan_saved === false) {
-        algaehApiCall({
-          uri: "/insurance/addNetwork",
-          data: $this.state,
-          onSuccess: response => {
-            if (response.data.success === true) {
-              algaehApiCall({
-                uri: "/insurance/NetworkOfficeMaster",
-                data: $this.state,
-                onSuccess: response => {
-                  if (response.data.success === true) {
-                    setComponent($this, response.data.records);
-                  }
-                },
-                onFailure: error => {
-                  console.log(error);
-                }
-              });
-            }
-          },
-          onFailure: error => {
-            console.log(error);
+      algaehApiCall({
+        uri: "/insurance/addPlanAndPolicy",
+        data: $this.state.network_plan,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            setComponent($this, response.data.records);
           }
-        });
-      } else {
-        setComponent($this, {});
-      }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
     } else if ($this.state.screenName === "Services") {
       //Save Services
       setComponent($this, {});
@@ -78,13 +61,12 @@ const handleNext = ($this, e) => {
   }
 };
 
-const setComponent = ($this, data) => {
+const setComponent = ($this, data, e) => {
   debugger;
   const { activeStep } = $this.state;
   $this.setState(
     {
-      activeStep: activeStep + 1,
-      insurance_provider_id: data.insertId
+      activeStep: activeStep + 1
     },
     () => {
       if ($this.state.activeStep === 0) {
@@ -92,7 +74,8 @@ const setComponent = ($this, data) => {
       } else if ($this.state.activeStep === 1) {
         $this.setState({
           screenName: "SubInsurance",
-          insurance_provider_saved: true
+          insurance_provider_saved: true,
+          insurance_provider_id: data.insertId
         });
       } else if ($this.state.activeStep === 2) {
         $this.setState({
@@ -101,6 +84,11 @@ const setComponent = ($this, data) => {
         });
       } else if ($this.state.activeStep === 3) {
         $this.setState({ screenName: "Services", insurance_plan_saved: true });
+      } else {
+        $this.setState({
+          activeStep: 0
+        });
+        $this.props.onClose && $this.props.onClose(e);
       }
     }
   );

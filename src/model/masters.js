@@ -252,7 +252,6 @@ let autoGenMaster = (req, res, next) => {
 let visaWhere = {
   hims_d_visa_type_id: "ALL",
   visa_type_code: "ALL",
-  visa_desc: "ALL",
   visa_type: "ALL"
 };
 let visaMaster = (req, res, next) => {
@@ -267,7 +266,7 @@ let visaMaster = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "SELECT `hims_d_visa_type_id`, `visa_type_code`, `visa_type`, `visa_desc`, `arabic_visa_type`, \
+        "SELECT `hims_d_visa_type_id`, `visa_type_code`, `visa_type`, `arabic_visa_type`, \
          `created_by`, `created_date`, `updated_by`, `updated_date`, `visa_status` FROM \
          `hims_d_visa_type` WHERE `record_status`='A' AND " +
           where.condition,

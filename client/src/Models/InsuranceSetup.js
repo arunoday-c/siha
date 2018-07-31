@@ -23,23 +23,19 @@ export default {
       effective_start_date: null,
       effective_end_date: null,
       selectedLang: "en",
+      arabic_provider_name: null,
 
-      insurance_provider_id: 105,
-
+      insurance_provider_id: 108, //105,
+      insurance_sub_id: 51,
       insurance_provider_saved: false,
       insurance_sub_saved: false,
       insurance_plan_saved: false,
 
-      // insurance_sub_code: null,
-      // insurance_sub_name: null,
-      // insurance_provider_id: null,
-      // transaction_number: null,
-      // card_format: null,
-
       sub_insurance: [],
       network_plan: [],
 
-      MandatoryMsg: null
+      MandatoryMsg: null,
+      snackeropen: false
     };
     return output;
   }

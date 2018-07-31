@@ -60,6 +60,7 @@ export default {
       patient_id: null,
       hims_d_services_id: null,
       patient_visit_id: null,
+      consultation: null,
 
       provider_id: null,
       source: "O",

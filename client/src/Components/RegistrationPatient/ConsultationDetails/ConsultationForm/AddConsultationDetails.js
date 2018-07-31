@@ -20,7 +20,10 @@ const selectedHandeler = ($this, context, e) => {
     visittypeselect: false
   });
   if (context != null) {
-    context.updateState({ [e.name]: e.value });
+    context.updateState({
+      [e.name]: e.value,
+      consultation: e.selected.consultation
+    });
   }
 };
 

@@ -65,7 +65,6 @@ class InsuranceProvider extends PureComponent {
                       }
                     }}
                   />
-
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -76,6 +75,23 @@ class InsuranceProvider extends PureComponent {
                       value: this.state.insurance_provider_name,
                       className: "txt-fld",
                       name: "insurance_provider_name",
+
+                      events: {
+                        onChange: texthandle.bind(this, this, context)
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "arabic_provider_name",
+                      isImp: true
+                    }}
+                    textBox={{
+                      value: this.state.arabic_provider_name,
+                      className: "txt-fld",
+                      name: "arabic_provider_name",
 
                       events: {
                         onChange: texthandle.bind(this, this, context)
@@ -105,7 +121,9 @@ class InsuranceProvider extends PureComponent {
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
+                </div>
 
+                <div className="row">
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -121,24 +139,7 @@ class InsuranceProvider extends PureComponent {
                       }
                     }}
                   />
-                </div>
 
-                <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "credit_period"
-                    }}
-                    textBox={{
-                      value: this.state.credit_period,
-                      className: "txt-fld",
-                      name: "credit_period",
-
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
-                    }}
-                  />
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -187,6 +188,21 @@ class InsuranceProvider extends PureComponent {
                   />
                 </div>
                 <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "credit_period"
+                    }}
+                    textBox={{
+                      value: this.state.credit_period,
+                      className: "txt-fld",
+                      name: "credit_period",
+
+                      events: {
+                        onChange: texthandle.bind(this, this, context)
+                      }
+                    }}
+                  />
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -231,7 +247,7 @@ class InsuranceProvider extends PureComponent {
                     }}
                   />
 
-                  <AlagehAutoComplete
+                  {/* <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "lab_result_check"
@@ -250,7 +266,7 @@ class InsuranceProvider extends PureComponent {
                       },
                       onChange: texthandle.bind(this, this, context)
                     }}
-                  />
+                  /> */}
 
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}

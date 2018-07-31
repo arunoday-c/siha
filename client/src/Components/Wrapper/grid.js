@@ -32,6 +32,7 @@ class DataGrid extends PureComponent {
   }
 
   apiCallingFunction = ($this, page, callBack, inputProps) => {
+    debugger;
     inputProps = inputProps || $this.state.inputParam;
     let input = {
       ...inputProps,
@@ -351,7 +352,12 @@ class DataGrid extends PureComponent {
   };
 
   returnTableRowWithColumns = (row, index) => {
+    row["callBack"] = editedRow => {
+      debugger;
+      row = editedRow;
+    };
     return this.props.columns.map((col, ind) => {
+      debugger;
       return (
         <td key={ind}>
           {col.editorTemplate != null ? (
@@ -362,6 +368,7 @@ class DataGrid extends PureComponent {
               value={row[col.fieldName]}
               disabled={col.disabled}
               onChange={(control, $this = this) => {
+                debugger;
                 const value = control.target.value;
                 $this.state.data[index][col.fieldName] = value;
                 $this.setState({ data: $this.state.data });

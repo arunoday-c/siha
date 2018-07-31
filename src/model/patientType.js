@@ -1,6 +1,13 @@
 import extend from "extend";
-import { whereCondition, releaseDBConnection, deleteRecord } from "../utils";
+import {
+  whereCondition,
+  releaseDBConnection,
+  deleteRecord,
+  selectStatement,
+  paging
+} from "../utils";
 import httpStatus from "../utils/httpStatus";
+import { debugLog } from "../utils/logging";
 
 let selectPattypeStatement = (req, res, next) => {
   try {
@@ -13,20 +20,29 @@ let selectPattypeStatement = (req, res, next) => {
       pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
     }
 
-    let condition = whereCondition(extend(departWhereCondition, req.query));
+    // let condition = whereCondition(extend({}, req.query));
+    let query =
+      "SELECT SQL_CALC_FOUND_ROWS `hims_d_patient_type_id`, `patient_type_code`, `patitent_type_desc`,`arabic_patitent_type_desc`\
+    , `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_patient_type`  WHERE record_status='A';" +
+      pagePaging +
+      " " +
+      "SELECT FOUND_ROWS() total_pages";
+
+    debugLog("Love", query);
     selectStatement(
       {
         db: req.db,
         query:
-          "SELECT `hims_d_patient_type_id`, `patient_type_code`, `patitent_type_desc`,`arabic_patitent_type_desc`\
-        , `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_patient_type`  WHERE record_status='A' AND " +
-          condition.condition +
+          "SELECT SQL_CALC_FOUND_ROWS `hims_d_patient_type_id`, `patient_type_code`, `patitent_type_desc`,`arabic_patitent_type_desc`\
+        , `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_patient_type`  WHERE record_status='A';" +
+          pagePaging +
           " " +
-          pagePaging,
-        values: condition.values
+          "SELECT FOUND_ROWS() total_pages"
       },
+
       result => {
         req.records = result;
+
         next();
       },
       error => {
@@ -94,7 +110,7 @@ let addPatientType = (req, res, next) => {
     connection.query(
       "INSERT INTO `hims_d_patient_type` (`patient_type_code`, `patitent_type_desc`, `arabic_patitent_type_desc`, `created_by` \
      , `created_date`) \
-   VALUES ( ?, ?, ?, ?, ?,?)",
+   VALUES ( ?, ?, ?, ?, ?)",
       [
         inputParam.patient_type_code,
         inputParam.patitent_type_desc,
@@ -146,7 +162,7 @@ let updatePatientType = (req, res, next) => {
         inputParam.arabic_patitent_type_desc,
         inputParam.updated_by,
         new Date(),
-        inputParam.hims_d_visit_type_id
+        inputParam.hims_d_patient_type_id
       ],
       (error, result) => {
         releaseDBConnection(db, connection);
@@ -168,11 +184,15 @@ let deletePatientType = (req, res, next) => {
       {
         db: req.db,
         tableName: "hims_d_patient_type",
-        id: req.body.hims_d_visit_type_id,
+        id: req.body.hims_d_patient_type_id,
         query:
           "UPDATE hims_d_patient_type SET  record_status='I', \
          updated_by=?,updated_date=? WHERE hims_d_patient_type_id=?",
-        values: [req.body.updated_by, new Date(), req.body.hims_d_visit_type_id]
+        values: [
+          req.body.updated_by,
+          new Date(),
+          req.body.hims_d_patient_type_id
+        ]
       },
       result => {
         req.records = result;

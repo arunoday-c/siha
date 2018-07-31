@@ -4,198 +4,514 @@ import "./patient_type.css";
 import Button from "@material-ui/core/Button";
 import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-import { AlagehFormGroup, AlgaehOptions } from "../../Wrapper/algaehWrapper";
-import DeleteDialog from "../../../utils/DeleteDialog";
+import {
+  AlagehAutoComplete,
+  AlagehFormGroup,
+  AlgaehDataGrid,
+  AlgaehLabel
+} from "../../Wrapper/algaehWrapper";
 
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
-
-let sel_id = "";
-let openDialog = false;
-let startDate = "";
+import GlobalVariables from "../../../utils/GlobalVariables";
+import swal from "sweetalert";
+import { getCookie } from "../../../utils/algaehApiCall.js";
 
 class PatientType extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      hims_d_visa_type_id: "",
-      visa_type: "",
-      visa_type_code: "",
-      visa_desc: "",
-      record_Status: "",
+      hims_d_patient_type_id: "",
+      patient_type_code: "",
+      patitent_type_desc: "",
+      arabic_patitent_type_desc: "",
+      created_by: getCookie("UserID"),
       row: [],
-      id: "",
-      openDialog: false
+
+      patient_type_code_error: false,
+      patient_type_code_error_txt: "",
+
+      patient_type_error: false,
+      patient_type_error_txt: "",
+
+      patient_type_arabic_error: false,
+      patient_type_arabic_error_txt: "",
+
+      gridrefresh: true
     };
+    this.baseState = this.state;
   }
 
   componentDidMount() {
-    if (
-      this.props.visatypes === undefined ||
-      this.props.visatypes.length === 0
-    ) {
-      this.props.getVisatypes({
-        uri: "/masters/get/visa",
-        method: "GET",
-        redux: {
-          type: "VISA_GET_DATA",
-          mappingName: "visatypes"
-        }
-      });
-    }
+    // if (
+    //   this.props.patienttypes === undefined ||
+    //   this.props.patienttypes.length === 0
+    // ) {
+    //   this.props.getPatienttypes({
+    //     uri: "/patientType/get",
+    //     method: "GET",
+    //     redux: {
+    //       type: "PAT_TYP_GET_DATA",
+    //       mappingName: "patienttypes"
+    //     }
+    //   });
+    // }
+
+    this.setState({
+      gridrefresh: !this.state.gridrefresh
+    });
   }
-
-  componentWillReceiveProps() {}
-
-  btnClick() {}
-
-  changeStatus(e) {
-    this.setState({ patient_type_status: e.target.value });
-
-    if (e.target.value == "A")
-      this.setState({ effective_end_date: "9999-12-31" });
-    else if (e.target.value == "I") {
-      this.setState({
-        effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
-      });
-    }
-  }
-
   dateFormater({ value }) {
     return String(moment(value).format("DD-MM-YYYY"));
-  }
-
-  handleConfirmDelete() {
-    // const data = { hims_d_visa_type_id: sel_id, updated_by: 1 };
-    // this.setState({ openDialog: false });
-    // algaehApiCall({
-    //   uri: "/masters/set/delete/visa",
-    //   data: data,
-    //   method: "DELETE",
-    //   onSuccess: response => {
-    //     this.setState({ open: false });
-    //     window.location.reload();
-    //   },
-    //   onFailure: error => {
-    //     this.setState({ open: false });
-    //   }
-    // });
-  }
-
-  handleDialogClose() {
-    this.setState({ openDialog: false });
   }
 
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  showconfirmDialog(id) {
+    debugger;
+    swal({
+      title: "Are you sure you want to delete this ID Types?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        let data = { hims_d_identity_document_id: id };
+        algaehApiCall({
+          uri: "/patientType/delete",
+          data: data,
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.success) {
+              swal("Record deleted successfully . .", {
+                icon: "success",
+                buttons: false,
+                timer: 2000
+              });
+              this.props.getPatienttypes({
+                uri: "/patientType/get",
+                method: "GET",
+                redux: {
+                  type: "PAT_TYP_GET_DATA",
+                  mappingName: "patienttypes"
+                }
+              });
+            }
+          },
+          onFailure: error => {}
+        });
+      } else {
+        swal("Delete request cancelled");
+      }
+    });
+  }
+
+  deletePatientType(row) {
+    this.showconfirmDialog(row.hims_d_patient_type_id);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.patienttypes !== nextProps.patienttypes) {
+      return true;
+    }
+    return true;
+  }
+
+  addPatientType(e) {
+    e.preventDefault();
+    if (this.state.patient_type_code.length == 0) {
+      this.setState({
+        patient_type_code_error: true,
+        patient_type_code_error_txt: "Code cannot be empty"
+      });
+    } else if (this.state.patitent_type_desc.length == 0) {
+      this.setState({
+        patient_type_error: true,
+        patient_type_error_txt: "Name cannot be empty"
+      });
+    } else if (this.state.patitent_type_desc.length == 0) {
+      this.setState({
+        patient_type_arabic_error: true,
+        patient_type_arabic_error_txt: "Arabic Name cannot be empty"
+      });
+    } else {
+      algaehApiCall({
+        uri: "/patientType/add",
+        data: this.state,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            //Handle Successful Add here
+            // this.props.getVisatypes({
+            //   uri: "/masters/get/visa",
+            //   method: "GET",
+            //   redux: {
+            //     type: "VISA_GET_DATA",
+            //     mappingName: "visatypes"
+            //   }
+            // });
+            // this.resetState();
+
+            swal({
+              title: "Success",
+              text: "Patient Type added successfully",
+              icon: "success",
+              button: false,
+              timer: 2500
+            });
+            this.resetState();
+          } else {
+            //Handle unsuccessful Add here.
+          }
+        },
+        onFailure: error => {
+          // Handle network error here.
+        }
+      });
+    }
+  }
+
+  updatePatientType(data) {
+    algaehApiCall({
+      uri: "/patientType/update",
+      data: data,
+      method: "PUT",
+      onSuccess: response => {
+        if (response.data.success) {
+          swal("Record updated successfully . .", {
+            icon: "success",
+            buttons: false,
+            timer: 2000
+          });
+          this.props.getPatienttypes({
+            uri: "/patientType/get",
+            method: "GET",
+            redux: {
+              type: "PAT_TYP_GET_DATA",
+              mappingName: "patienttypes"
+            }
+          });
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
+  resetState() {
+    this.setState(this.baseState);
+  }
+  onchangegridcol(row, e) {
+    debugger;
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.callBack(row);
+    // this.resetState();
+  }
+
   render() {
     return (
-      <div>
-        <DeleteDialog
-          handleConfirmDelete={this.handleConfirmDelete.bind(this)}
-          handleDialogClose={this.handleDialogClose.bind(this)}
-          openDialog={this.state.openDialog}
-        />
-        <div className="patient_type">
-          <Paper className="container-fluid">
-            <form>
-              <div
-                className="row"
-                style={{
-                  padding: 20,
-                  marginLeft: "auto",
-                  marginRight: "auto"
+      <div className="patient_type">
+        <Paper className="container-fluid">
+          <form>
+            <div
+              className="row"
+              style={{
+                padding: 20,
+                marginLeft: "auto",
+                marginRight: "auto"
+              }}
+            >
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "type_code",
+                  isImp: true
                 }}
-              >
-                <AlgaehOptions
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "status",
-                    isImp: true
-                  }}
-                  optionsType="radio"
-                  group={{
-                    name: "Status",
+                textBox={{
+                  className: "txt-fld",
+                  name: "patient_type_code",
+                  value: this.state.patient_type_code,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  },
+                  error: this.state.patient_type_code_error,
+                  helperText: this.state.patient_type_code_error_txt
+                }}
+              />
 
-                    controls: [
-                      { label: "Active", value: "A" },
-                      { label: "Inactive", value: "I" }
-                    ]
-                  }}
-                />
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "type_desc",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "patitent_type_desc",
+                  value: this.state.patitent_type_desc,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  },
+                  error: this.state.patient_type_error,
+                  helperText: this.state.patient_type_error_txt
+                }}
+              />
 
-                {/* <div className="col-lg-3">
-                  <label>
-                    PATIENT TYPE CODE <span className="imp">*</span>
-                  </label>
-                  <br />
-                  <TextField className="txt-fld" />
-                </div> */}
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "patient_type_code",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "patient_type_code",
-                    value: this.state.module_desc,
-                    events: {
-                      onChange: this.changeTexts.bind(this)
-                    }
-                  }}
-                />
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "arabic_type_desc",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "arabic_patitent_type_desc",
+                  value: this.state.arabic_patitent_type_desc,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  },
+                  error: this.state.patient_type_arabic_error,
+                  helperText: this.state.patient_type_arabic_error_txt
+                }}
+              />
 
-                {/* <div className="col-lg-3">
-                  <label>
-                    PATIENT TYPE NAME <span className="imp">*</span>
-                  </label>
-                  <br />
-                  <TextField className="txt-fld" />
-                </div> */}
-
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "patient_type_name",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "patient_type_name",
-                    value: this.state.patien_type_name,
-                    events: {
-                      onChange: this.changeTexts.bind(this)
-                    }
-                  }}
-                />
-
-                <div className="col-lg-3 align-middle">
-                  <br />
-                  <Button
-                    onClick={this.btnClick.bind(this)}
-                    variant="raised"
-                    color="primary"
-                  >
-                    ADD TO LIST
-                  </Button>
-                </div>
-              </div>
-            </form>
-
-            <div className="row form-details">
-              <div className="col">
-                <Paper />
+              <div className="col-lg-3 align-middle">
+                <br />
+                <Button
+                  onClick={this.addPatientType.bind(this)}
+                  variant="raised"
+                  color="primary"
+                >
+                  ADD TO LIST
+                </Button>
               </div>
             </div>
-          </Paper>
-        </div>
+          </form>
+
+          <div className="row form-details">
+            <div className="col">
+              <AlgaehDataGrid
+                id="patient_grd"
+                columns={[
+                  {
+                    fieldName: "patient_type_code",
+                    label: <AlgaehLabel label={{ fieldName: "type_code" }} />,
+                    disabled: true
+                  },
+                  {
+                    fieldName: "patitent_type_desc",
+                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            value: row.patitent_type_desc,
+                            className: "txt-fld",
+                            name: "patitent_type_desc",
+                            events: {
+                              onChange: this.onchangegridcol.bind(this, row)
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "arabic_patitent_type_desc",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "arabic_type_desc" }} />
+                    ),
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            value: row.arabic_patitent_type_desc,
+                            className: "txt-fld",
+                            name: "arabic_patitent_type_desc",
+                            events: {
+                              onChange: this.onchangegridcol.bind(this, row)
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "created_by",
+                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
+                    disabled: true
+                  },
+                  {
+                    fieldName: "created_date",
+                    label: "Added Date",
+                    displayTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    },
+                    disabled: true
+                  },
+                  {
+                    fieldName: "identity_status",
+                    label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                    displayTemplate: row => {
+                      return row.identity_status === "A"
+                        ? "Active"
+                        : "Inactive";
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "identity_status",
+                            className: "select-fld",
+                            value: row.identity_status,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_STATUS
+                            },
+                            onChange: this.onchangegridcol.bind(this, row)
+                          }}
+                        />
+                      );
+                    }
+                  }
+                ]}
+                // keyId="patient_type_code"
+                dataSource={{
+                  uri: "/patientType/get",
+                  method: "GET",
+                  responseSchema: {
+                    data: "records.data",
+                    totalPages: "records.totalPages"
+                  }
+                }}
+                // algaehSearch={true}
+                isEditable={true}
+                paging={{ page: 0, rowsPerPage: 5 }}
+                events={{
+                  onDelete: this.deletePatientType.bind(this),
+                  onEdit: row => {},
+                  onDone: this.updatePatientType.bind(this)
+                }}
+              />
+
+              {/* <AlgaehDataGrid
+                id="patient_grd"
+                columns={[
+                  {
+                    fieldName: "patient_type_code",
+                    label: <AlgaehLabel label={{ fieldName: "type_code" }} />,
+                    disabled: true
+                  },
+                  {
+                    fieldName: "patitent_type_desc",
+                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            value: row.patitent_type_desc,
+                            className: "txt-fld",
+                            name: "patitent_type_desc",
+                            events: {
+                              onChange: this.onchangegridcol.bind(this, row)
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "arabic_patitent_type_desc",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "arabic_type_desc" }} />
+                    ),
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            value: row.arabic_patitent_type_desc,
+                            className: "txt-fld",
+                            name: "arabic_patitent_type_desc",
+                            events: {
+                              onChange: this.onchangegridcol.bind(this, row)
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "created_by",
+                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
+                    disabled: true
+                  },
+                  {
+                    fieldName: "created_date",
+                    label: "Added Date",
+                    displayTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    },
+                    disabled: true
+                  },
+                  {
+                    fieldName: "identity_status",
+                    label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                    displayTemplate: row => {
+                      return row.identity_status === "A"
+                        ? "Active"
+                        : "Inactive";
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "identity_status",
+                            className: "select-fld",
+                            value: row.identity_status,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_STATUS
+                            },
+                            onChange: this.onchangegridcol.bind(this, row)
+                          }}
+                        />
+                      );
+                    }
+                  }
+                ]}
+                keyId="patient_type_code"
+                dataSource={{
+                  uri: "/patientType/get",
+                  method: "GET",
+                  responseSchema: {
+                    data: "records.data",
+                    totalPages: "records.totalPages"
+                  }
+                }}
+                isEditable={true}
+                paging={{ page: 0, rowsPerPage: 5 }}
+                events={{
+                  onDelete: this.deletePatientType.bind(this),
+                  onEdit: row => {},
+                  onDone: this.updatePatientType.bind(this)
+                }}
+              /> */}
+            </div>
+          </div>
+        </Paper>
       </div>
     );
   }
@@ -203,14 +519,14 @@ class PatientType extends Component {
 
 function mapStateToProps(state) {
   return {
-    visatypes: state.visatypes
+    patienttypes: state.patienttypes
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisatypes: AlgaehActions
+      getPatienttypes: AlgaehActions
     },
     dispatch
   );

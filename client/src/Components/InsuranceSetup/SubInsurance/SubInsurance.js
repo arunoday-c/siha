@@ -3,6 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
+import moment from "moment";
+import AHSnackbar from "../../common/Inputs/AHSnackbar";
 import "./SubInsurance.css";
 import "./../../../styles/site.css";
 import {
@@ -21,6 +23,8 @@ import {
   datehandle
 } from "./SubInsuranceHandaler";
 import MyContext from "../../../utils/MyContext";
+import { getCookie } from "../../../utils/algaehApiCall.js";
+import Options from "../../../Options.json";
 
 class SubInsurance extends PureComponent {
   constructor(props) {
@@ -28,11 +32,13 @@ class SubInsurance extends PureComponent {
     this.state = {
       insurance_sub_code: null,
       insurance_sub_name: null,
+      arabic_sub_name: null,
       insurance_provider_id: null,
       transaction_number: null,
       card_format: null,
       effective_start_date: null,
-      effective_end_date: null
+      effective_end_date: null,
+      created_by: getCookie("UserID")
     };
   }
 
@@ -43,6 +49,15 @@ class SubInsurance extends PureComponent {
   }
 
   componentDidMount() {}
+  handleClose = () => {
+    this.setState({ snackeropen: false });
+  };
+
+  changeDateFormat = date => {
+    if (date != null) {
+      return moment(date).format(Options.dateFormat);
+    }
+  };
 
   render() {
     console.log("Name", this.state.insurance_provider_id);
@@ -112,6 +127,23 @@ class SubInsurance extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
+                      fieldName: "arabic_provider_name",
+                      isImp: true
+                    }}
+                    textBox={{
+                      value: this.state.arabic_sub_name,
+                      className: "txt-fld",
+                      name: "arabic_sub_name",
+
+                      events: {
+                        onChange: texthandle.bind(this, this, context)
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
                       fieldName: "transaction_number"
                     }}
                     textBox={{
@@ -130,6 +162,39 @@ class SubInsurance extends PureComponent {
 
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
+                    textBox={{
+                      value: this.state.effective_start_date,
+                      className: "txt-fld d-none",
+                      name: "effective_start_date",
+
+                      events: {
+                        onChange: null
+                      },
+                      others: {
+                        "data-subdata": true
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    textBox={{
+                      value: this.state.effective_end_date,
+                      className: "txt-fld d-none",
+                      name: "effective_end_date",
+
+                      events: {
+                        onChange: null
+                      },
+                      others: {
+                        "data-subdata": true
+                      }
+                    }}
+                  />
+                </div>
+
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "card_format"
                     }}
@@ -146,24 +211,19 @@ class SubInsurance extends PureComponent {
                       }
                     }}
                   />
-                </div>
-
-                <div className="row">
                   <AlgaehDateHandler
                     div={{ className: "col-lg-3" }}
                     label={{ fieldName: "effective_start_date" }}
                     textBox={{
-                      className: "txt-fld",
-                      name: "effective_start_date",
-                      others: {
-                        "data-subdata": true
-                      }
+                      className: "txt-fld hidden",
+                      name: "effective_start_date"
                     }}
+                    maxDate={new Date()}
                     events={{
-                      onChange: datehandle.bind(this, this, context)
+                      onChange: datehandle.bind(this, this)
                     }}
                     value={
-                      this.state.effective_start_date != null
+                      this.state.effective_start_date !== null
                         ? this.state.effective_start_date
                         : null
                     }
@@ -174,16 +234,14 @@ class SubInsurance extends PureComponent {
                     label={{ fieldName: "effective_end_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
-                      name: "effective_end_date",
-                      others: {
-                        "data-subdata": true
-                      }
+                      name: "effective_end_date"
                     }}
+                    minDate={new Date()}
                     events={{
-                      onChange: datehandle.bind(this, this, context)
+                      onChange: datehandle.bind(this, this)
                     }}
                     value={
-                      this.state.effective_end_date != null
+                      this.state.effective_end_date !== null
                         ? this.state.effective_end_date
                         : null
                     }
@@ -227,19 +285,37 @@ class SubInsurance extends PureComponent {
                         },
                         {
                           fieldName: "effective_start_date",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {this.changeDateFormat(
+                                  row.effective_start_date
+                                )}
+                              </span>
+                            );
+                          },
                           label: (
                             <AlgaehLabel
                               label={{ fieldName: "effective_start_date" }}
                             />
-                          )
+                          ),
+                          disabled: true
                         },
                         {
                           fieldName: "effective_end_date",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {this.changeDateFormat(row.effective_end_date)}
+                              </span>
+                            );
+                          },
                           label: (
                             <AlgaehLabel
                               label={{ fieldName: "effective_end_date" }}
                             />
-                          )
+                          ),
+                          disabled: true
                         }
                       ]}
                       keyId="identity_document_code"
@@ -265,6 +341,11 @@ class SubInsurance extends PureComponent {
                     >
                       Save
                     </Button>
+                    <AHSnackbar
+                      open={this.state.snackeropen}
+                      handleClose={this.handleClose}
+                      MandatoryMsg={this.state.MandatoryMsg}
+                    />
                   </div>
                 </div>
               </div>

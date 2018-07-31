@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { releaseConnection } from "../utils";
-
+import { debugLog } from "../utils/logging";
 import {
   selectPattypeStatement,
   addPatientType,
@@ -26,15 +26,18 @@ export default ({ config, db }) => {
     "/get",
     selectPattypeStatement,
     (req, res, next) => {
-      let result = req.records;
-      if (result.length == 0) {
-        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
-      } else {
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: result
-        });
+      debugLog("Data: ", req.records);
+      let result;
+      if (req.records !== undefined) {
+        result = new Object();
+        result["totalPages"] = req.records[1][0].total_pages;
+        result["data"] = req.records[0];
       }
+      debugLog("Data: ", result);
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
       next();
     },
     releaseConnection

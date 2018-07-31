@@ -18,12 +18,20 @@
   "equipment_type_code": "Equipment Type Code",
   "equipment_type_name": "Equipment Type Name",
   "visit_type": "Visit Type",
-  "visit_type_code": "Visit Type Code",
-  "visit_type_name": "Visit Type Name",
+
   "visa_type": "Visa Type",
   "visa_type_code": "Visa Type Code",
   "visa_type_name": "Visa Type Name",
   "identification_type": "Identification Type",
   "identity_document_code": "ID Code",
-  "identity_document_name": "ID Name"
+  "identity_document_name": "ID Name",
+  "consultation": "Consultation",
+  "Addbutton": "Add to list",
+  "Updatebutton": "Update",
+
+  "type_code": "Code",
+  "type_desc": "Name",
+  "arabic_type_desc": "Arabic Name",
+  "created_by": "Created By",
+  "created_date": "Created Date"
 }

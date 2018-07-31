@@ -1,6 +1,8 @@
 import { runningNumber, releaseDBConnection, deleteRecord } from "../utils";
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
+import { deleteFromCache } from "../utils/caching";
+
 let modelAppGen = {
   hims_f_app_numgen_id: null,
   numgen_code: null,
@@ -161,6 +163,8 @@ let addVisa = (req, res, next) => {
           next();
         }
       );
+
+      deleteFromCache("visa");
     });
   } catch (e) {
     next(e);
@@ -180,12 +184,12 @@ let updateVisa = (req, res, next) => {
       let inputParam = extend(visaType, req.body);
       connection.query(
         "UPDATE `hims_d_visa_type` \
-        SET `visa_type`=?, `visa_desc`=?, `updated_by`=?, `updated_date`=? \
-        `visa_status` =? \
+        SET `visa_type`=?, `arabic_visa_type` = ?, `updated_by`=?, `updated_date`=? \
+        ,`visa_status` =? \
         WHERE `record_status`='A' and `hims_d_visa_type_id`=?",
         [
           inputParam.visa_type,
-          inputParam.visa_desc,
+          inputParam.arabic_visa_type,
           inputParam.updated_by,
           new Date(),
           inputParam.visa_status,
@@ -200,6 +204,7 @@ let updateVisa = (req, res, next) => {
           next();
         }
       );
+      deleteFromCache("visa");
     });
   } catch (e) {
     next(e);
@@ -229,6 +234,7 @@ let deleteVisa = (req, res, next) => {
         next(error);
       }
     );
+    deleteFromCache("visa");
   } catch (e) {
     next(e);
   }

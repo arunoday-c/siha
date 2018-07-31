@@ -18,9 +18,6 @@ import InsuranceSetup from "../../../Models/InsuranceSetup";
 import { handleNext, handleBack, handleReset } from "./InsuranceAddHandaler";
 import AHSnackbar from "../../common/Inputs/AHSnackbar";
 import MyContext from "../../../utils/MyContext";
-// import { Validations } from "./InsuranceAddValidation";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-// import { AlgaehDateHandler, AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { getCookie } from "../../../utils/algaehApiCall";
 
@@ -55,9 +52,11 @@ class InsuranceAdd extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 1,
-      screenName: "SubInsurance",
-      snackeropen: false
+      // activeStep: 0,
+      // screenName: "InsuranceProvider"
+
+      activeStep: 2,
+      screenName: "NetworkPlan"
     };
   }
 
@@ -80,6 +79,11 @@ class InsuranceAdd extends PureComponent {
   };
 
   onClose = e => {
+    if (this.state.screenName === "SubInsurance") {
+      if (this.state.sub_insurance.length === 0) {
+        handleNext.bind(this, this);
+      }
+    }
     this.setState({
       activeStep: 0
     });

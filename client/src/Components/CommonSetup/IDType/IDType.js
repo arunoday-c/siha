@@ -11,10 +11,9 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 import {
   AlagehFormGroup,
-  AlgaehOptions,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -34,37 +33,16 @@ class IDType extends Component {
       id_code_error: false,
       id_code_error_txt: "",
       id_name_error: false,
-      id_name_error_txt: ""
+      id_name_error_txt: "",
+      arabic_id_name_error: false,
+      arabic_id_name_error_txt: ""
     };
 
     this.baseState = this.state;
   }
 
-  getFullStatusText({ value }) {
-    if (value === "A") {
-      return "Active";
-    } else if (value === "I") {
-      return "Inactive";
-    } else {
-      return "";
-    }
-  }
-
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
-  }
-
-  changeStatus(row, status) {
-    this.setState({ identity_status: status.value });
-
-    if (status.value === "A")
-      this.setState({ effective_end_date: "9999-12-31" });
-    else if (status.value === "I") {
-      this.setState({
-        effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
-      });
-    }
-    row.identity_status = status.value;
   }
 
   dateFormater({ value }) {
@@ -80,12 +58,17 @@ class IDType extends Component {
     if (this.state.identity_document_code.length === 0) {
       this.setState({
         id_code_error: true,
-        id_code_error_txt: "ID Code cannot be empty"
+        id_code_error_txt: "Code cannot be empty"
       });
     } else if (this.state.identity_document_name.length === 0) {
       this.setState({
         id_name_error: true,
-        id_name_error_txt: "ID Name cannot be empty"
+        id_name_error_txt: "Name cannot be empty"
+      });
+    } else if (this.state.arabic_identity_document_name.length === 0) {
+      this.setState({
+        arabic_id_name_error: true,
+        arabic_id_name_error_txt: "Arabic Name cannot be empty"
       });
     } else {
       algaehApiCall({
@@ -210,8 +193,11 @@ class IDType extends Component {
     });
   }
 
-  getFormatedDate(date) {
-    return String(moment(date).format("YYYY-MM-DD"));
+  onchangegridcol(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    this.resetState();
   }
 
   render() {
@@ -227,7 +213,7 @@ class IDType extends Component {
                 marginRight: "auto"
               }}
             >
-              <AlgaehOptions
+              {/* <AlgaehOptions
                 div={{ className: "col-lg-3" }}
                 label={{
                   fieldName: "status",
@@ -243,12 +229,12 @@ class IDType extends Component {
                   ],
                   events: { onChange: this.changeStatus.bind(this) }
                 }}
-              />
+              /> */}
 
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  fieldName: "identity_document_code",
+                  fieldName: "type_code",
                   isImp: true
                 }}
                 textBox={{
@@ -267,18 +253,36 @@ class IDType extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  fieldName: "identity_document_name",
+                  fieldName: "type_desc",
                   isImp: true
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "identity_document_name",
-                  value: this.state.identity_document_name,
+                  value: this.state.arabic_identity_document_name,
                   events: {
                     onChange: this.changeTexts.bind(this)
                   },
                   error: this.state.id_name_error,
                   helperText: this.state.id_name_error_txt
+                }}
+              />
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "arabic_type_desc",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "arabic_identity_document_name",
+                  value: this.state.arabic_identity_document_name,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  },
+                  error: this.state.visa_type_error,
+                  helperText: this.state.visa_type_error_txt
                 }}
               />
 
@@ -297,90 +301,108 @@ class IDType extends Component {
 
           <div className="row form-details">
             <div className="col">
-              <Paper>
-                <AlgaehDataGrid
-                  id="identity_grd"
-                  columns={[
-                    {
-                      fieldName: "identity_document_code",
-                      label: "ID Type Code",
-                      disabled: true
-                    },
-                    {
-                      fieldName: "identity_document_name",
-                      label: "ID Type Name"
-                    },
-                    {
-                      fieldName: "created_date",
-                      label: "Added Date",
-                      displayTemplate: row => {
-                        return (
-                          <span>{this.dateFormater(row.created_date)}</span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        return (
-                          <AlgaehDateHandler
-                            div={{}}
-                            textBox={{ className: "txt-fld" }}
-                            events={{
-                              onChange: selected => {
-                                row.created_date = selected._d;
-                              }
-                            }}
-                            value={this.getFormatedDate(row.created_date)}
-                          />
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "identity_status",
-                      label: "ID Type Status",
-                      displayTemplate: row => {
-                        return row.identity_status === "A"
-                          ? "Active"
-                          : "Inactive";
-                      },
-                      editorTemplate: row => {
-                        return (
-                          <AlagehAutoComplete
-                            div={{}}
-                            selector={{
-                              className: "select-fld",
-                              value: row.identity_status,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.FORMAT_STATUS
-                              },
-                              onChange: this.changeStatus.bind(this, row),
-                              others: {
-                                disabled: this.state.existingPatient
-                              }
-                            }}
-                          />
-                        );
-                      }
+              <AlgaehDataGrid
+                id="identity_grd"
+                columns={[
+                  {
+                    fieldName: "identity_document_code",
+                    label: <AlgaehLabel label={{ fieldName: "type_code" }} />,
+                    disabled: true
+                  },
+                  {
+                    fieldName: "identity_document_name",
+                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            value: row.identity_document_name,
+                            className: "txt-fld",
+                            name: "identity_document_name",
+                            events: {
+                              onChange: this.onchangegridcol.bind(this, row)
+                            }
+                          }}
+                        />
+                      );
                     }
-                  ]}
-                  keyId="identity_document_code"
-                  dataSource={{
-                    data:
-                      this.props.idtypes === undefined ? [] : this.props.idtypes
-                  }}
-                  isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 5 }}
-                  events={{
-                    onDelete: this.deleteIDType.bind(this),
-                    onEdit: row => {},
-                    // onDone: row => {
-                    //   this.updateIDtypes.bind(this);
-                    //   //  alert(JSON.stringify(row));
-                    // }
-                    onDone: this.updateIDtypes.bind(this)
-                  }}
-                />
-              </Paper>
+                  },
+                  {
+                    fieldName: "arabic_identity_document_name",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "arabic_type_desc" }} />
+                    ),
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            value: row.arabic_identity_document_name,
+                            className: "txt-fld",
+                            name: "arabic_identity_document_name",
+                            events: {
+                              onChange: this.onchangegridcol.bind(this, row)
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "created_by",
+                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
+                    disabled: true
+                  },
+                  {
+                    fieldName: "created_date",
+                    label: "Added Date",
+                    displayTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    },
+                    disabled: true
+                  },
+                  {
+                    fieldName: "identity_status",
+                    label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                    displayTemplate: row => {
+                      return row.identity_status === "A"
+                        ? "Active"
+                        : "Inactive";
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "identity_status",
+                            className: "select-fld",
+                            value: row.identity_status,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_STATUS
+                            },
+                            onChange: this.onchangegridcol.bind(this, row)
+                          }}
+                        />
+                      );
+                    }
+                  }
+                ]}
+                keyId="identity_document_code"
+                dataSource={{
+                  data:
+                    this.props.idtypes === undefined ? [] : this.props.idtypes
+                }}
+                isEditable={true}
+                paging={{ page: 0, rowsPerPage: 5 }}
+                events={{
+                  onDelete: this.deleteIDType.bind(this),
+                  onEdit: row => {},
+                  onDone: this.updateIDtypes.bind(this)
+                }}
+              />
             </div>
           </div>
         </Paper>

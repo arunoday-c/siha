@@ -34,13 +34,26 @@
   "consultation": "Consultation",
   "lab_desc": "Lab",
   "radiology": "Radiology",
-  "OPD_services": "OPD Services",
-  "dental_OPD_services": "Dental OPD Services",
+  "opd_services": "OPD Services",
+  "dental_opd_services": "Dental OPD Services",
   "medicine": "Medicine",
   "deductible": "Deductible",
   "co_pay": "Co Pay",
   "max_limit": "Max Limit",
 
   "add_insurance": "Add Insurance",
-  "service_type": "Service Type"
+  "service_type": "Service Type",
+
+  "copay_consultation": "Consultation Copay",
+  "con_max_limit": "Consultation Max Limit",
+  "copay_percent": "Lab Copay",
+  "copay_percent_rad": "Rad Copay",
+  "rad_max": "Rad Max Limit",
+  "copay_percent_trt": "OPD Copay",
+  "trt_max": "OPD Max Limit",
+  "copay_percent_dental": "Debtal Copay",
+  "dental_max": "Dental Max Limit",
+  "copay_medicine": "Medicine Cooay",
+  "medicine_max": "Max Limit",
+  "arabic_provider_name": "Arabic Name"
 }
