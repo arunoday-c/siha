@@ -157,4 +157,8 @@ const getCtrlCode = ($this, insCode) => {
   // }, 500);
 };
 
-export { handleNext, handleBack, handleReset, getCtrlCode };
+const updatedata = $this => {
+  debugger;
+};
+
+export { handleNext, handleBack, handleReset, getCtrlCode, updatedata };

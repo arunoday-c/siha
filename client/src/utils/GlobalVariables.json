@@ -101,5 +101,27 @@
     { "name": "Ordered", "value": "2" },
     { "name": "Collected", "value": "3" },
     { "name": "Cancelled", "value": "4" }
+  ],
+  "FORMAT_INSURANCE_EDIT_OPTION": [
+    {
+      "name": "Insurance",
+      "arabic_name": "تأمين",
+      "value": "1"
+    },
+    {
+      "name": "Sub Insurance",
+      "arabic_name": "التأمين الفرعي",
+      "value": "2"
+    },
+    {
+      "name": "Network/Plan",
+      "arabic_name": "شبكة / خطة",
+      "value": "3"
+    },
+    {
+      "name": "Price List",
+      "arabic_name": "قائمة الاسعار",
+      "value": "4"
+    }
   ]
 }

@@ -221,8 +221,8 @@ let addPatientInsurance = (connection, req, res, next) => {
 
 //created by:irfan,to get list of all insurence providers
 let getListOfInsuranceProvider = (req, res, next) => {
-  let patientInsuranceModel = {
-    patient_id: null
+  let insuranceWhereCondition = {
+    hims_d_insurance_provider_id: "ALL"
   };
 
   debugFunction("getListOfInsurenceProvider");
@@ -236,11 +236,13 @@ let getListOfInsuranceProvider = (req, res, next) => {
       if (error) {
         next(error);
       }
-      extend(patientInsuranceModel, req.query);
+      // extend(insuranceWhereCondition, req.query);
+      let where = whereCondition(extend(insuranceWhereCondition, req.query));
 
       connection.query(
-        "select insurance_type,insurance_provider_name,insurance_provider_code,\
-        currency,effective_start_date,effective_end_date from hims_d_insurance_provider where record_status='A'",
+        "select * from hims_d_insurance_provider where record_status='A' AND" +
+          where.condition,
+        where.values,
 
         (error, result) => {
           if (error) {

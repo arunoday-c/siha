@@ -55,5 +55,6 @@
   "dental_max": "Dental Max Limit",
   "copay_medicine": "Medicine Cooay",
   "medicine_max": "Max Limit",
-  "arabic_provider_name": "Arabic Name"
+  "arabic_provider_name": "Arabic Name",
+  "update_insurance": "Update"
 }
