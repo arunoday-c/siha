@@ -631,77 +631,6 @@ let NetworkOfficeMaster = (req, res, next) => {
 
 //created by irfan: to add  both network and network office(insurence plan master)
 let addPlanAndPolicy = (req, res, next) => {
-  let Model = {
-    hims_d_insurance_network_id: null,
-    network_type: null,
-    insurance_provider_id: null,
-    insurance_sub_id: null,
-    effective_start_date: null,
-    effective_end_date: null,
-    sub_insurance_status: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null,
-    hims_d_insurance_network_office_id: null,
-    network_id: null,
-    hospital_id: null,
-    deductible: null,
-    deductable_type: null,
-    min_value: null,
-    max_value: null,
-    copay_consultation: null,
-    deductible_lab: null,
-    for_alllab: null,
-    copay_percent: null,
-    deductible_rad: null,
-    for_allrad: null,
-    copay_percent_rad: null,
-    copay_percent_trt: null,
-    copay_percent_dental: null,
-    copay_medicine: null,
-    insur_network_limit: null,
-    deductible_trt: null,
-    deductible_dental: null,
-    deductible_medicine: null,
-    lab_min: null,
-    lab_max: null,
-    rad_min: null,
-    rad_max: null,
-    trt_max: null,
-    trt_min: null,
-    dental_min: null,
-    dental_max: null,
-    medicine_min: null,
-    medicine_max: null,
-    invoice_max_liability: null,
-    for_alltrt: null,
-    for_alldental: null,
-    for_allmedicine: null,
-    invoice_max_deduct: null,
-    price_from: null,
-    employer: null,
-    policy_number: null,
-    follow_up: null,
-    preapp_limit: null,
-    deductible_ip: null,
-    copay_ip: null,
-    ip_min: null,
-    ip_max: null,
-    for_allip: null,
-    consult_limit: null,
-    preapp_limit_from: null,
-    copay_maternity: null,
-    maternity_min: null,
-    maternity_max: null,
-    copay_optical: null,
-    optical_min: null,
-    optical_max: null,
-    copay_diagnostic: null,
-    diagnostic_min: null,
-    diagnostic_max: null
-  };
-
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -720,18 +649,87 @@ let addPlanAndPolicy = (req, res, next) => {
           });
         }
 
-        let models = [];
+        let flag = 0;
 
-        let jsonArr = extend(models, req.body);
+        let jsonArr = req.body; //extend(models, req.body);
 
         for (let i = 0; i < jsonArr.length; i++) {
-          let obj = extend(Model, jsonArr[i]);
-          //  debugLog("single:", obj);
-
-          debugLog(
-            "mydate:",
-            moment(String(obj.effective_start_date)).format("YYYY-MM-DD")
+          let obj = extend(
+            {
+              hims_d_insurance_network_id: null,
+              network_type: null,
+              insurance_provider_id: null,
+              insurance_sub_id: null,
+              effective_start_date: null,
+              effective_end_date: null,
+              sub_insurance_status: null,
+              created_date: null,
+              created_by: null,
+              updated_date: null,
+              updated_by: null,
+              hims_d_insurance_network_office_id: null,
+              network_id: null,
+              hospital_id: null,
+              deductible: null,
+              deductable_type: null,
+              min_value: null,
+              max_value: null,
+              copay_consultation: null,
+              deductible_lab: null,
+              for_alllab: null,
+              copay_percent: null,
+              deductible_rad: null,
+              for_allrad: null,
+              copay_percent_rad: null,
+              copay_percent_trt: null,
+              copay_percent_dental: null,
+              copay_medicine: null,
+              insur_network_limit: null,
+              deductible_trt: null,
+              deductible_dental: null,
+              deductible_medicine: null,
+              lab_min: null,
+              lab_max: null,
+              rad_min: null,
+              rad_max: null,
+              trt_max: null,
+              trt_min: null,
+              dental_min: null,
+              dental_max: null,
+              medicine_min: null,
+              medicine_max: null,
+              invoice_max_liability: null,
+              for_alltrt: null,
+              for_alldental: null,
+              for_allmedicine: null,
+              invoice_max_deduct: null,
+              price_from: null,
+              employer: null,
+              policy_number: null,
+              follow_up: null,
+              preapp_limit: null,
+              deductible_ip: null,
+              copay_ip: null,
+              ip_min: null,
+              ip_max: null,
+              for_allip: null,
+              consult_limit: null,
+              preapp_limit_from: null,
+              copay_maternity: null,
+              maternity_min: null,
+              maternity_max: null,
+              copay_optical: null,
+              optical_min: null,
+              optical_max: null,
+              copay_diagnostic: null,
+              diagnostic_min: null,
+              diagnostic_max: null
+            },
+            jsonArr[i]
           );
+          debugLog("Raw Object :", jsonArr[i]);
+
+          debugLog("objects :", obj);
 
           connection.query(
             "INSERT INTO hims_d_insurance_network(`network_type`,`insurance_provider_id`,`insurance_sub_id`,\
@@ -755,11 +753,66 @@ let addPlanAndPolicy = (req, res, next) => {
               }
               // req.records = result;
               // next();
+
               if (result != null && result.length != 0) {
                 obj.network_id = result["insertId"];
 
-                // let squery = "SELECT hims_d_hospital_id from hims_d_hospital";
-                // let inputparam = extend(NetworkOfficeModel, req.body);
+                //----------------------------------begin of service insurance
+                if (jsonArr[i].price_from == "P") {
+                  connection.query(
+                    "INSERT INTO hims_d_services_insurance_network(`insurance_id`,`network_id`,`services_id`,`service_code`,`service_type_id`,`cpt_code`,`service_name`,`insurance_service_name`,\
+                    `hospital_id`,`gross_amt`,`net_amount`,`created_by`,`updated_by`)\
+                    SELECT " +
+                      obj.insurance_provider_id +
+                      "," +
+                      obj.network_id +
+                      ",hims_d_services_id,service_code,service_type_id,cpt_code,service_name,service_name,hospital_id,standard_fee,standard_fee," +
+                      obj.created_by +
+                      "," +
+                      obj.created_by +
+                      " from hims_d_services",
+                    (error, result_service_network) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+
+                      debugLog("result of pppp:", result_service_network);
+                    }
+                  );
+                }
+                if (jsonArr[i].price_from == "S" && flag == 0) {
+                  flag = 1;
+                  connection.query(
+                    "INSERT INTO hims_d_services_insurance(`insurance_id`,`services_id`,`service_code`,`service_type_id`,`cpt_code`,`service_name`,`insurance_service_name`,\
+                          `hospital_id`,`gross_amt`,`net_amount`,`created_by`,`updated_by`)\
+                          SELECT " +
+                      obj.insurance_provider_id +
+                      ",hims_d_services_id,service_code,service_type_id,cpt_code,service_name,service_name,hospital_id,standard_fee,standard_fee," +
+                      obj.created_by +
+                      "," +
+                      obj.created_by +
+                      " from hims_d_services",
+                    (error, result_service_Ins) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      debugLog("result of pppp:", result_service_Ins);
+                      //code
+                    }
+                  );
+
+                  //code
+                }
+                console.log("Defined price from ", obj.price_from);
+                console.log("emp m ", obj.employer);
+                //----------------------------------end of service insurance
+
                 connection.query(
                   "INSERT INTO hims_d_insurance_network_office(`network_id`,`hospital_id`,`deductible`,`deductable_type`,`min_value`,`max_value`,`copay_consultation`,\
               `deductible_lab`,`for_alllab`,`copay_percent`,`deductible_rad`,`for_allrad`,`copay_percent_rad`,`copay_percent_trt`,\
