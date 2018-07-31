@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
-import { addIcd } from "../model/episode";
+import { addIcd } from "../model/hpi";
 
 export default ({ config, db }) => {
   let api = Router();

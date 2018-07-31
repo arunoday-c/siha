@@ -21,7 +21,7 @@ import insurance from "../controller/insurance";
 import opBilling from "../controller/opBilling";
 import userPreferences from "../controller/userPreferences";
 import doctorsWorkBench from "../EHR/controller/doctorsWorkBench";
-import episode from "../EHR/controller/episode";
+import hpi from "../EHR/controller/hpi";
 
 let router = express();
 
@@ -50,7 +50,7 @@ initializedDb(db => {
   router.use("/opBilling", opBilling({ config, db }));
   router.use("/userPreferences", userPreferences());
   router.use("/doctorsWorkBench", doctorsWorkBench({ config, db }));
-  router.use("/episode", episode({ config, db }));
+  router.use("/hpi", hpi({ config, db }));
 });
 
 export default router;
