@@ -186,12 +186,16 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan: to delete sub insurance
   api.delete(
     "/deleteSubInsurance",
     deleteSubInsurance,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json(result);
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
       next();
     },
     releaseConnection

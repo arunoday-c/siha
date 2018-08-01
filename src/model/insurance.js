@@ -1152,7 +1152,6 @@ let deleteSubInsurance = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    // let inputparam = extend(insuranceProviderModel, req.body);
 
     db.getConnection((error, connection) => {
       if (error) {
