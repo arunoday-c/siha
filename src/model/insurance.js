@@ -1145,33 +1145,34 @@ let addPlanAndPolicy = (req, res, next) => {
   }
 };
 
+//delet sub insurance
 let deleteSubInsurance = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
-    deleteRecord(
-      {
-        db: req.db,
-        tableName: "hims_d_insurance_sub",
-        id: req.body.hims_d_insurance_sub_id,
-        query:
-          "UPDATE hims_d_insurance_sub SET  record_status='I', \
-         updated_by=?,updated_date=? WHERE hims_d_insurance_sub_id=?",
-        values: [
-          req.body.updated_by,
-          new Date(),
-          req.body.hims_d_insurance_sub_id
-        ]
-      },
-      result => {
-        req.records = result;
-        next();
-      },
-      error => {
+    let db = req.db;
+    // let inputparam = extend(insuranceProviderModel, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
         next(error);
       }
-    );
+
+      connection.query(
+        "UPDATE hims_d_insurance_sub SET  record_status='I', \
+         updated_by=?,updated_date=? WHERE hims_d_insurance_sub_id=?",
+        [req.body.updated_by, new Date(), req.body.hims_d_insurance_sub_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
   } catch (e) {
     next(e);
   }
