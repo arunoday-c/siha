@@ -1,5 +1,6 @@
 import { Validations } from "./InsuranceAddValidation";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert";
 
 const handleNext = ($this, e) => {
   // setComponent($this, {});
@@ -157,8 +158,50 @@ const getCtrlCode = ($this, insCode) => {
   // }, 500);
 };
 
-const updatedata = $this => {
+const updatedata = ($this, e) => {
   debugger;
+  if ($this.props.opencomponent === 1) {
+    algaehApiCall({
+      uri: "/insurance/updateInsuranceProvider",
+      method: "PUT",
+      data: $this.state,
+      onSuccess: response => {
+        if (response.data.success === true) {
+          swal("Updated successfully . .", {
+            icon: "success",
+            buttons: false,
+            timer: 2000
+          });
+          $this.props.onClose && $this.props.onClose(e);
+        }
+      },
+      onFailure: error => {
+        console.log(error);
+      }
+    });
+  }
+  if (
+    $this.props.opencomponent === 2 &&
+    $this.state.update_sub_insurance.length !== 0
+  ) {
+    debugger;
+    algaehApiCall({
+      uri: "/insurance/addSubInsuranceProvider",
+      data: $this.state.update_sub_insurance,
+      onSuccess: response => {
+        if (response.data.success === true) {
+          swal("Updated successfully . .", {
+            icon: "success",
+            buttons: false,
+            timer: 2000
+          });
+        }
+      },
+      onFailure: error => {
+        console.log(error);
+      }
+    });
+  }
 };
 
 export { handleNext, handleBack, handleReset, getCtrlCode, updatedata };

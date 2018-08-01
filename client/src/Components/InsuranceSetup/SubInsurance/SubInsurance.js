@@ -20,7 +20,10 @@ import {
   texthandle,
   saveSubInsurance,
   addNewSubinsurance,
-  datehandle
+  datehandle,
+  deleteSubInsurance,
+  updateSubInsurance,
+  onchangegridcol
 } from "./SubInsuranceHandaler";
 import MyContext from "../../../utils/MyContext";
 import { getCookie } from "../../../utils/algaehApiCall.js";
@@ -40,15 +43,35 @@ class SubInsurance extends PureComponent {
       effective_end_date: null,
       created_by: getCookie("UserID")
     };
+    this.baseState = this.state;
   }
 
   componentWillMount() {
-    debugger;
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    debugger;
+    if (this.state.insurance_provider_id !== null) {
+      this.props.getSubInsuranceDetails({
+        uri: "/insurance/getSubInsurance",
+        method: "GET",
+        printInput: true,
+        data: {
+          insurance_sub_code: this.state.insurance_provider_id
+        },
+        redux: {
+          type: "SUB_INSURANCE_GET_DATA",
+          mappingName: "subinsuranceprovider"
+        },
+        afterSuccess: data => {
+          debugger;
+          this.setState({ sub_insurance: data });
+        }
+      });
+    }
+  }
   handleClose = () => {
     this.setState({ snackeropen: false });
   };
@@ -250,7 +273,7 @@ class SubInsurance extends PureComponent {
 
                 <div className="row form-details">
                   <div className="col-lg-12">
-                    <AlgaehDataGrid
+                    {/* <AlgaehDataGrid
                       id="sub_insurance_grid"
                       columns={[
                         {
@@ -259,7 +282,8 @@ class SubInsurance extends PureComponent {
                             <AlgaehLabel
                               label={{ fieldName: "insurance_sub_code" }}
                             />
-                          )
+                          ),
+                          disabled: true
                         },
                         {
                           fieldName: "insurance_sub_name",
@@ -267,7 +291,53 @@ class SubInsurance extends PureComponent {
                             <AlgaehLabel
                               label={{ fieldName: "insurance_sub_name" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.insurance_sub_name,
+                                  className: "txt-fld",
+                                  name: "insurance_sub_name",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "arabic_sub_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "arabic_provider_name" }}
+                            />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.arabic_sub_name,
+                                  className: "txt-fld",
+                                  name: "arabic_sub_name",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "transaction_number",
@@ -275,13 +345,51 @@ class SubInsurance extends PureComponent {
                             <AlgaehLabel
                               label={{ fieldName: "transaction_number" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.transaction_number,
+                                  className: "txt-fld",
+                                  name: "transaction_number",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "card_format",
                           label: (
                             <AlgaehLabel label={{ fieldName: "card_format" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.card_format,
+                                  className: "txt-fld",
+                                  name: "card_format",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "effective_start_date",
@@ -318,15 +426,192 @@ class SubInsurance extends PureComponent {
                           disabled: true
                         }
                       ]}
-                      keyId="identity_document_code"
+                      // keyId="patient_type_code"
+                      dataSource={{
+                        uri: "/insurance/getSubInsurance",
+                        method: "GET",
+                        responseSchema: {
+                          data: "records.data",
+                          totalPages: "records.totalPages"
+                        }
+                      }}
+                      // algaehSearch={true}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 5 }}
+                      events={{
+                        onDelete: deleteSubInsurance.bind(this, this),
+                        onEdit: row => {},
+                        onDone: updateSubInsurance.bind(this, this)
+                      }}
+                    /> */}
+
+                    <AlgaehDataGrid
+                      id="sub_insurance_grid"
+                      columns={[
+                        {
+                          fieldName: "insurance_sub_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "insurance_sub_code" }}
+                            />
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "insurance_sub_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "insurance_sub_name" }}
+                            />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.insurance_sub_name,
+                                  className: "txt-fld",
+                                  name: "insurance_sub_name",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "arabic_sub_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "arabic_provider_name" }}
+                            />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.arabic_sub_name,
+                                  className: "txt-fld",
+                                  name: "arabic_sub_name",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "transaction_number",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "transaction_number" }}
+                            />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.transaction_number,
+                                  className: "txt-fld",
+                                  name: "transaction_number",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "card_format",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "card_format" }} />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.card_format,
+                                  className: "txt-fld",
+                                  name: "card_format",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "effective_start_date",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {this.changeDateFormat(
+                                  row.effective_start_date
+                                )}
+                              </span>
+                            );
+                          },
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "effective_start_date" }}
+                            />
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "effective_end_date",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {this.changeDateFormat(row.effective_end_date)}
+                              </span>
+                            );
+                          },
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "effective_end_date" }}
+                            />
+                          ),
+                          disabled: true
+                        }
+                      ]}
+                      keyId="insurance_sub_code"
                       dataSource={{
                         data:
                           this.state.sub_insurance === undefined
                             ? []
                             : this.state.sub_insurance
                       }}
-                      // isEditable={true}
+                      isEditable={true}
                       paging={{ page: 0, rowsPerPage: 5 }}
+                      events={{
+                        onDelete: deleteSubInsurance.bind(this, this),
+                        onEdit: row => {},
+                        onDone: updateSubInsurance.bind(this, this)
+                      }}
                     />
                   </div>
                 </div>
@@ -359,16 +644,14 @@ class SubInsurance extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    services: state.services
+    subinsuranceprovider: state.subinsuranceprovider
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
+      getSubInsuranceDetails: AlgaehActions
     },
     dispatch
   );

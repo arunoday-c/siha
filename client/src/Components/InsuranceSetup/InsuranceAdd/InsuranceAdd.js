@@ -25,6 +25,9 @@ import {
   handleReset,
   updatedata
 } from "./InsuranceAddHandaler";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert";
+
 import AHSnackbar from "../../common/Inputs/AHSnackbar";
 import MyContext from "../../../utils/MyContext";
 import { setGlobal } from "../../../utils/GlobalFunctions";
@@ -95,28 +98,12 @@ class InsuranceAdd extends PureComponent {
     ) {
       this.setState({ ...this.state, ...nextProps.insuranceprovider[0] });
     }
-
-    // if (
-    //   nextProps.insurance_provider_id !== null &&
-    //   nextProps.insurance_provider_id !== undefined
-    // ) {
-    //   this.props.getInsuranceDetails({
-    //     uri: "/insurance/getListOfInsuranceProvider",
-    //     method: "GET",
-    //     printInput: true,
-    //     data: {
-    //       hims_d_insurance_provider_id: nextProps.insurance_provider_id
-    //     },
-    //     redux: {
-    //       type: "INSURANCE_GET_DATA",
-    //       mappingName: "insuranceprovider"
-    //     },
-    //     afterSuccess: data => {
-    //       debugger;
-    //       this.setState(data[0]);
-    //     }
-    //   });
-    // }
+    if (
+      nextProps.subinsuranceprovider !== undefined &&
+      nextProps.subinsuranceprovider.length !== 0
+    ) {
+      this.setState({ sub_insurance: nextProps.subinsuranceprovider });
+    }
   }
 
   handleClose = () => {
@@ -124,11 +111,35 @@ class InsuranceAdd extends PureComponent {
   };
 
   onClose = e => {
+    debugger;
     if (this.state.screenName === "SubInsurance") {
       if (this.state.sub_insurance.length === 0) {
         handleNext.bind(this, this);
       }
     }
+
+    if (
+      this.state.buttonenable === true &&
+      this.state.update_sub_insurance.length !== 0
+    ) {
+      algaehApiCall({
+        uri: "/insurance/addSubInsuranceProvider",
+        data: this.state.update_sub_insurance,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Updated successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
+    }
+
     this.setState({
       activeStep: 0
     });
@@ -321,14 +332,16 @@ class InsuranceAdd extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    insuranceprovider: state.insuranceprovider
+    insuranceprovider: state.insuranceprovider,
+    subinsuranceprovider: state.subinsuranceprovider
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getInsuranceDetails: AlgaehActions
+      getInsuranceDetails: AlgaehActions,
+      getSubInsuranceDetails: AlgaehActions
     },
     dispatch
   );

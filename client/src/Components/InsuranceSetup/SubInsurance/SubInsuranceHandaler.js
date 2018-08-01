@@ -1,5 +1,9 @@
 import moment from "moment";
 import { Validations } from "./SubInsuranceValidation";
+import swal from "sweetalert";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { getCookie } from "../../../utils/algaehApiCall.js";
+
 const texthandle = ($this, context, e) => {
   let name;
   let value;
@@ -18,9 +22,11 @@ const texthandle = ($this, context, e) => {
 
 const saveSubInsurance = ($this, context) => {
   debugger;
+  let updatedata = [];
   const err = Validations($this);
   if (!err) {
     debugger;
+
     let obj = {
       insurance_sub_code: $this.state.insurance_sub_code,
       insurance_sub_name: $this.state.insurance_sub_name,
@@ -38,12 +44,19 @@ const saveSubInsurance = ($this, context) => {
     };
     let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
     previous.push(obj);
+    if ($this.state.buttonenable === true) {
+      updatedata.push(obj);
+    }
     $this.setState({
       insurance_sub_saved: true,
       sub_insurance: previous
     });
+
     if (context !== undefined) {
-      context.updateState({ sub_insurance: previous });
+      context.updateState({
+        sub_insurance: previous,
+        update_sub_insurance: updatedata
+      });
     }
     addNewSubinsurance($this);
   }
@@ -65,4 +78,113 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-export { texthandle, saveSubInsurance, addNewSubinsurance, datehandle };
+const showconfirmDialog = id => {
+  swal({
+    title: "Are you sure you want to delete this ID Types?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true
+  }).then(willDelete => {
+    if (willDelete) {
+      let data = {
+        hims_d_insurance_sub_id: id,
+        updated_by: getCookie("UserID")
+      };
+      algaehApiCall({
+        uri: "/insurance/deleteSubInsurance",
+        data: data,
+        method: "DELETE",
+        onSuccess: response => {
+          if (response.data.success) {
+            swal("Record deleted successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+            this.props.getSubInsuranceDetails({
+              uri: "/insurance/getSubInsurance",
+              method: "GET",
+              printInput: true,
+              data: {
+                insurance_sub_code: this.state.insurance_provider_id
+              },
+              redux: {
+                type: "SUB_INSURANCE_GET_DATA",
+                mappingName: "subinsuranceprovider"
+              },
+              afterSuccess: data => {
+                debugger;
+                this.setState({ sub_insurance: data });
+              }
+            });
+          }
+        },
+        onFailure: error => {}
+      });
+    } else {
+      swal("Delete request cancelled");
+    }
+  });
+};
+
+const deleteSubInsurance = row => {
+  showconfirmDialog(row.hims_d_insurance_sub_id);
+};
+
+const updateSubInsurance = ($this, data) => {
+  debugger;
+  algaehApiCall({
+    uri: "/insurance/updateSubInsuranceProvider",
+    data: data,
+    method: "PUT",
+    onSuccess: response => {
+      if (response.data.success) {
+        swal("Record updated successfully . .", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
+        this.props.getSubInsuranceDetails({
+          uri: "/insurance/getSubInsurance",
+          method: "GET",
+          printInput: true,
+          data: {
+            insurance_sub_code: this.state.insurance_provider_id
+          },
+          redux: {
+            type: "SUB_INSURANCE_GET_DATA",
+            mappingName: "subinsuranceprovider"
+          },
+          afterSuccess: data => {
+            debugger;
+            this.setState({ sub_insurance: data });
+          }
+        });
+      }
+    },
+    onFailure: error => {}
+  });
+};
+
+const resetState = $this => {
+  $this.setState($this.baseState);
+};
+
+const onchangegridcol = ($this, row, e) => {
+  debugger;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  // row.onChangeFinish(row);
+  resetState($this);
+};
+
+export {
+  texthandle,
+  saveSubInsurance,
+  addNewSubinsurance,
+  datehandle,
+  deleteSubInsurance,
+  updateSubInsurance,
+  onchangegridcol
+};

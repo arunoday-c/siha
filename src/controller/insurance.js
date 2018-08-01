@@ -11,6 +11,8 @@ import {
   updateInsuranceProvider,
   addSubInsuranceProvider,
   updateSubInsuranceProvider,
+  getSubInsurance,
+  deleteSubInsurance,
   addNetwork,
   NetworkOfficeMaster,
   addPlanAndPolicy
@@ -23,6 +25,21 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientInsurance",
     getPatientInsurance,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by nowshad : to fetch sub insurence
+  api.get(
+    "/getSubInsurance",
+    getSubInsurance,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -164,6 +181,17 @@ export default ({ config, db }) => {
         success: true,
         records: result
       });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.delete(
+    "/deleteSubInsurance",
+    deleteSubInsurance,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json(result);
       next();
     },
     releaseConnection

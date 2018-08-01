@@ -260,6 +260,47 @@ let getListOfInsuranceProvider = (req, res, next) => {
   }
 };
 
+//created by:nowshad,to get list of all sub insurence
+let getSubInsurance = (req, res, next) => {
+  let insuranceWhereCondition = {
+    insurance_sub_code: "ALL"
+  };
+
+  debugFunction("getSubInsurance");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      // extend(insuranceWhereCondition, req.query);
+      let where = whereCondition(extend(insuranceWhereCondition, req.query));
+
+      connection.query(
+        "select * from hims_d_insurance_sub where record_status='A' AND" +
+          where.condition,
+        where.values,
+
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 //created by irfan: to add new insurence provider
 let addInsuranceProvider = (req, res, next) => {
   let insuranceProviderModel = {
@@ -1104,6 +1145,38 @@ let addPlanAndPolicy = (req, res, next) => {
   }
 };
 
+let deleteSubInsurance = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_d_insurance_sub",
+        id: req.body.hims_d_insurance_sub_id,
+        query:
+          "UPDATE hims_d_insurance_sub SET  record_status='I', \
+         updated_by=?,updated_date=? WHERE hims_d_insurance_sub_id=?",
+        values: [
+          req.body.updated_by,
+          new Date(),
+          req.body.hims_d_insurance_sub_id
+        ]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      }
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientInsurance,
   addPatientInsurance,
@@ -1112,6 +1185,8 @@ module.exports = {
   updateInsuranceProvider,
   addSubInsuranceProvider,
   updateSubInsuranceProvider,
+  getSubInsurance,
+  deleteSubInsurance,
   addNetwork,
   NetworkOfficeMaster,
   addPlanAndPolicy
