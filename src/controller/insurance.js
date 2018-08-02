@@ -17,7 +17,8 @@ import {
   NetworkOfficeMaster,
   addPlanAndPolicy,
   getPriceList,
-  getNetworkAndNetworkOfficRecords
+  getNetworkAndNetworkOfficRecords,
+  updatePriceList
 } from "../model/insurance";
 
 export default ({ config, db }) => {
@@ -229,6 +230,24 @@ export default ({ config, db }) => {
         records: result
       });
       next();
+    },
+    releaseConnection
+  );
+
+  api.put(
+    "/updatePriceList",
+    updatePriceList,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
     },
     releaseConnection
   );

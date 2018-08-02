@@ -97,10 +97,10 @@ class NetworkPlan extends PureComponent {
         method: "GET",
         printInput: true,
         data: {
-          insurance_sub_code: this.state.insurance_provider_id
+          insuranceProviderId: this.state.insurance_provider_id
         },
         redux: {
-          type: "SUB_INSURANCE_GET_DATA",
+          type: "NETWORK_PLAN_GET_DATA",
           mappingName: "networkandplans"
         }
       });
@@ -496,7 +496,7 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
-                    {/* //Dummy Fields */}
+                    {/* //Dummy Fields Starts Here*/}
                     <AlagehFormGroup
                       div={{ className: "col-lg-3" }}
                       textBox={{
@@ -559,6 +559,7 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
+                    {/* Ends here */}
                   </div>
                   {/* OPD Services */}
                   <div className="row">

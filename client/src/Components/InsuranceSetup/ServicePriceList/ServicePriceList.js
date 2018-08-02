@@ -16,7 +16,11 @@ import {
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { texthandle } from "./ServicePriceListHandaler";
+import {
+  texthandle,
+  onchangegridcol,
+  updatePriceList
+} from "./ServicePriceListHandaler";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import Paper from "@material-ui/core/Paper";
 
@@ -28,6 +32,7 @@ class SubInsurance extends PureComponent {
       corporate_discount: 0,
       pre_approval: null
     };
+    this.baseState = this.state;
   }
 
   componentWillMount() {
@@ -192,7 +197,7 @@ class SubInsurance extends PureComponent {
                               className: "txt-fld",
                               name: "cpt_code",
                               events: {
-                                onChange: null
+                                onChange: onchangegridcol.bind(this, this, row)
                               }
                             }}
                           />
@@ -215,7 +220,7 @@ class SubInsurance extends PureComponent {
                               className: "txt-fld",
                               name: "insurance_service_name",
                               events: {
-                                onChange: null
+                                onChange: onchangegridcol.bind(this, this, row)
                               }
                             }}
                           />
@@ -303,7 +308,7 @@ class SubInsurance extends PureComponent {
                                 valueField: "value",
                                 data: GlobalVariables.FORMAT_YESNO
                               },
-                              onChange: null
+                              onChange: onchangegridcol.bind(this, this, row)
                             }}
                           />
                         );
@@ -325,7 +330,7 @@ class SubInsurance extends PureComponent {
                                 valueField: "value",
                                 data: GlobalVariables.FORMAT_YESNO
                               },
-                              onChange: null
+                              onChange: onchangegridcol.bind(this, this, row)
                             }}
                           />
                         );
@@ -341,6 +346,11 @@ class SubInsurance extends PureComponent {
                   }}
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 5 }}
+                  events={{
+                    // onDelete: this.deleteVisaType.bind(this),
+                    onEdit: row => {},
+                    onDone: updatePriceList.bind(this, this)
+                  }}
                 />
               </div>
             </div>

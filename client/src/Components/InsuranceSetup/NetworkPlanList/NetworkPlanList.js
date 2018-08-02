@@ -23,6 +23,10 @@ class NetworkPlanList extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
 
+  componentWillReceiveProps() {
+    debugger;
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -88,12 +92,12 @@ class NetworkPlanList extends PureComponent {
                         }
                       }
                     ]}
-                    keyId="identity_document_code"
+                    keyId="network_type"
                     dataSource={{
                       data:
-                        this.props.insProviders === undefined
+                        this.props.networkandplans === undefined
                           ? []
-                          : this.props.insProviders
+                          : this.props.networkandplans
                     }}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
