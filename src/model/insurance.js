@@ -1261,6 +1261,54 @@ let getNetworkAndNetworkOfficRecords = (req, res, next) => {
   }
 };
 
+let updatePriceList = (req, res, next) => {
+  let services_insurance = {
+    hims_d_services_insurance_id: null,
+    insurance_service_name: null,
+    cpt_code: null,
+    gross_amt: null,
+    corporate_discount_amt: null,
+    net_amount: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null
+  };
+
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+    let inputParam = extend(services_insurance, req.body);
+    connection.query(
+      "UPDATE `hims_d_services_insurance` \
+     SET `insurance_service_name`=?, `cpt_code`=?, `gross_amt`=?, `corporate_discount_amt`=?, net_amount`=?, \
+     `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `hims_d_services_insurance_id`=?",
+      [
+        inputParam.insurance_service_name,
+        inputParam.cpt_code,
+        inputParam.gross_amt,
+        inputParam.corporate_discount_amt,
+        inputParam.net_amount,
+        inputParam.updated_by,
+        new Date(),
+        inputParam.hims_d_services_insurance_id
+      ],
+      (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      }
+    );
+  });
+};
+
 module.exports = {
   getPatientInsurance,
   addPatientInsurance,
@@ -1275,5 +1323,6 @@ module.exports = {
   NetworkOfficeMaster,
   addPlanAndPolicy,
   getPriceList,
-  getNetworkAndNetworkOfficRecords
+  getNetworkAndNetworkOfficRecords,
+  updatePriceList
 };
