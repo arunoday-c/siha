@@ -44,8 +44,21 @@
   "co_pay": "CoPay",
   "max_limit": "الحد الأقصى",
 
-  "add_insurance": "إضافة التأمين",
+  "add_insurance": "تأمين",
   "service_type": "نوع الخدمة",
 
-  "arabic_provider_name": "الاسم العربي"
+  "arabic_provider_name": "الاسم العربي",
+
+  "service_name": "اسم الخدمة",
+  "cpt_code": "رمز CPT",
+  "insurance_service_name": "اسم خدمة التأمين",
+  "gross_amt": "المبلغ الإجمالي",
+  "corporate_discount_percent": "% خصم",
+  "corporate_discount_amt": "مقدار الخصم",
+  "net_amount": "مبلغ المطالبة",
+  "pre_approval": "قبل الموافقة",
+  "covered": "مغطى",
+
+  "corporate_discount": "خصم الشركات",
+  "applicable": "قابل للتطبيق"
 }

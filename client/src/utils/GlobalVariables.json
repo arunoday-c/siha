@@ -123,5 +123,9 @@
       "arabic_name": "قائمة الاسعار",
       "value": "4"
     }
+  ],
+  "FORMAT_DISCOUNT": [
+    { "name": "Percentage", "arabic_name": "نسبه مئويه", "value": "P" },
+    { "name": "Amount", "arabic_name": "مبلغ", "value": "A" }
   ]
 }

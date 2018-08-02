@@ -15,7 +15,8 @@ import {
   deleteSubInsurance,
   addNetwork,
   NetworkOfficeMaster,
-  addPlanAndPolicy
+  addPlanAndPolicy,
+  getPriceList
 } from "../model/insurance";
 
 export default ({ config, db }) => {
@@ -190,6 +191,21 @@ export default ({ config, db }) => {
   api.delete(
     "/deleteSubInsurance",
     deleteSubInsurance,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Noushad : to get all price list of selected insurance
+  api.get(
+    "/getPriceList",
+    getPriceList,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

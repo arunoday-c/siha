@@ -19,23 +19,6 @@ class NetworkPlanList extends PureComponent {
     this.state = {};
   }
 
-  componentDidMount() {
-    if (this.state.insurance_provider_id !== null) {
-      this.props.getNetworkPlans({
-        uri: "/insurance/getSubInsurance",
-        method: "GET",
-        printInput: true,
-        data: {
-          insurance_sub_code: this.state.insurance_provider_id
-        },
-        redux: {
-          type: "SUB_INSURANCE_GET_DATA",
-          mappingName: "networkandplans"
-        }
-      });
-    }
-  }
-
   onClose = e => {
     this.props.onClose && this.props.onClose(e);
   };
@@ -64,10 +47,7 @@ class NetworkPlanList extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "network_type" }} />
                         )
-                      },
-                      {
-                        fieldName: "employer",
-                        label: <AlgaehLabel label={{ fieldName: "employer" }} />
+                        // subinsuranceprovider
                       },
                       {
                         fieldName: "policy_number",
@@ -76,117 +56,36 @@ class NetworkPlanList extends PureComponent {
                         )
                       },
                       {
-                        fieldName: "effective_start_date",
+                        fieldName: "employer",
+                        label: <AlgaehLabel label={{ fieldName: "employer" }} />
+                      },
+                      {
+                        fieldName: "insurance_sub_id",
                         label: (
                           <AlgaehLabel
-                            label={{ fieldName: "effective_start_date" }}
+                            label={{ fieldName: "sub_insurance_id" }}
                           />
-                        )
-                      },
-                      {
-                        fieldName: "effective_end_date",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "effective_end_date" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "preapp_limit",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "preapp_limit" }} />
-                        )
-                      },
-                      {
-                        fieldName: "price_from",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "price_from" }} />
-                        )
-                      },
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.subinsuranceprovider === undefined
+                              ? []
+                              : this.props.subinsuranceprovider.filter(
+                                  f =>
+                                    f.hims_d_insurance_sub_id ===
+                                    row.insurance_sub_id
+                                );
 
-                      {
-                        fieldName: "deductible",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "deductible" }} />
-                        )
-                      },
-                      {
-                        fieldName: "copay_consultation",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "copay_consultation" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "max_limit",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "con_max_limit" }} />
-                        )
-                      },
-                      {
-                        fieldName: "copay_percent",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "copay_percent" }} />
-                        )
-                      },
-                      {
-                        fieldName: "lab_max",
-                        label: <AlgaehLabel label={{ fieldName: "lab_max" }} />
-                      },
-                      {
-                        fieldName: "copay_percent_rad",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "copay_percent_rad" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "rad_max",
-                        label: <AlgaehLabel label={{ fieldName: "rad_max" }} />
-                      },
-
-                      {
-                        fieldName: "copay_percent_trt",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "copay_percent_trt" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "trt_max",
-                        label: <AlgaehLabel label={{ fieldName: "trt_max" }} />
-                      },
-
-                      {
-                        fieldName: "copay_percent_dental",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "copay_percent_dental" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "dental_max",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "dental_max" }} />
-                        )
-                      },
-                      {
-                        fieldName: "copay_medicine",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "copay_medicine" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "medicine_max",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "medicine_max" }} />
-                        )
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].insurance_sub_name
+                                  : display[0].arabic_sub_name
+                                : ""}
+                            </span>
+                          );
+                        }
                       }
                     ]}
                     keyId="identity_document_code"
@@ -211,7 +110,8 @@ class NetworkPlanList extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    networkandplans: state.networkandplans
+    networkandplans: state.networkandplans,
+    subinsuranceprovider: state.subinsuranceprovider
   };
 }
 
