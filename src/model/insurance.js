@@ -1070,9 +1070,9 @@ let addPlanAndPolicy = (req, res, next) => {
                     obj.price_from +
                     "','" +
                     obj.employer +
-                    "'," +
+                    "','" +
                     obj.policy_number +
-                    "," +
+                    "'," +
                     obj.follow_up +
                     "," +
                     obj.preapp_limit +
