@@ -3,21 +3,31 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
+import IconButton from "@material-ui/core/IconButton";
+import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
+
 import "./ServicePriceList.css";
 import "./../../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { texthandle } from "./ServicePriceListHandaler";
+import GlobalVariables from "../../../utils/GlobalVariables";
+import Paper from "@material-ui/core/Paper";
 
 class SubInsurance extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      applicable: null,
+      corporate_discount: 0,
+      pre_approval: null
+    };
   }
 
   componentWillMount() {
@@ -27,27 +37,25 @@ class SubInsurance extends PureComponent {
 
   componentDidMount() {
     debugger;
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
+    if (this.state.insurance_provider_id !== null) {
+      this.props.getPriceList({
+        uri: "/insurance/getPriceList",
         method: "GET",
+        printInput: true,
+        data: {
+          insurance_id: this.state.insurance_provider_id
+        },
         redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
+          type: "PRICE_LIST_GET_DATA",
+          mappingName: "pricelist"
         }
       });
-    }
-    debugger;
-    if (this.props.services === undefined || this.props.services.length === 0) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        method: "GET",
+    } else {
+      this.props.initialPriceList({
         redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "services"
+          type: "PRICE_LIST_GET_DATA",
+          mappingName: "pricelist",
+          data: []
         }
       });
     }
@@ -57,32 +65,106 @@ class SubInsurance extends PureComponent {
     console.log("Name", this.state.insurance_provider_name);
     return (
       <React.Fragment>
-        <div className="hptl-phase1-add-sub-insurance-form">
+        <div className="hptl-phase1-price-insurance-form">
           <div className="container-fluid">
             {/* Services Details */}
+            <div style={{ paddingTop: "10px" }}>
+              <Paper style={{ padding: "15px", border: "1px solid #5f5f5f" }}>
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-2" }}
+                    label={{
+                      fieldName: "corporate_discount"
+                    }}
+                    textBox={{
+                      value: this.state.corporate_discount,
+                      className: "txt-fld",
+                      name: "corporate_discount",
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      }
+                    }}
+                  />
 
-            <div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "service_type",
-                  isImp: true
-                }}
-                selector={{
-                  name: "service_type",
-                  className: "select-fld",
-                  value: this.state.service_type,
-                  dataSource: {
-                    textField:
-                      this.state.selectedLang === "en"
-                        ? "service_type"
-                        : "arabic_service_type",
-                    valueField: "hims_d_service_type_id",
-                    data: this.props.servicetype
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-2" }}
+                    label={{
+                      fieldName: "applicable",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "applicable",
+                      className: "select-fld",
+                      value: this.state.applicable,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.FORMAT_DISCOUNT
+                      },
+                      onChange: texthandle.bind(this, this)
+                    }}
+                  />
+                  <div className="col-lg-1">
+                    <IconButton className="go-button" color="primary">
+                      <PlayCircleFilled
+                      // onClick={this.ProcessToBill.bind(this, context)}
+                      />
+                    </IconButton>
+                  </div>
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-2" }}
+                    label={{
+                      fieldName: "pre_approval",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "pre_approval",
+                      className: "select-fld",
+                      value: this.state.pre_approval,
+                      dataSource: {
+                        textField: "value",
+                        valueField: "value",
+                        data: GlobalVariables.FORMAT_YESNO
+                      },
+                      onChange: texthandle.bind(this, this)
+                    }}
+                  />
+                  <div className="col-lg-1">
+                    <IconButton className="go-button" color="primary">
+                      <PlayCircleFilled
+                      // onClick={this.ProcessToBill.bind(this, context)}
+                      />
+                    </IconButton>
+                  </div>
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-2" }}
+                    label={{
+                      fieldName: "covered",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "covered",
+                      className: "select-fld",
+                      value: this.state.covered,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.FORMAT_YESNO
+                      },
+                      onChange: texthandle.bind(this, this)
+                    }}
+                  />
+                  <div className="col-lg-1">
+                    <IconButton className="go-button" color="primary">
+                      <PlayCircleFilled
+                      // onClick={this.ProcessToBill.bind(this, context)}
+                      />
+                    </IconButton>
+                  </div>
+                </div>
+              </Paper>
             </div>
 
             <div className="row form-details">
@@ -94,49 +176,74 @@ class SubInsurance extends PureComponent {
                       fieldName: "service_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "service_name" }} />
-                      )
+                      ),
+                      disabled: true
+                    },
+
+                    {
+                      fieldName: "cpt_code",
+                      label: <AlgaehLabel label={{ fieldName: "cpt_code" }} />,
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              value: row.cpt_code,
+                              className: "txt-fld",
+                              name: "cpt_code",
+                              events: {
+                                onChange: null
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
                     {
-                      fieldName: "pre_approval",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "pre_approval" }} />
-                      )
-                    },
-                    {
-                      fieldName: "deductable_status",
+                      fieldName: "insurance_service_name",
                       label: (
                         <AlgaehLabel
-                          label={{ fieldName: "deductable_status" }}
+                          label={{ fieldName: "insurance_service_name" }}
                         />
-                      )
-                    },
-                    {
-                      fieldName: "deductable_amt",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "deductable_amt" }} />
-                      )
-                    },
-                    {
-                      fieldName: "copay_status",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "copay_status" }} />
-                      )
-                    },
-                    {
-                      fieldName: "copay_amt",
-                      label: <AlgaehLabel label={{ fieldName: "copay_amt" }} />
+                      ),
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              value: row.insurance_service_name,
+                              className: "txt-fld",
+                              name: "insurance_service_name",
+                              events: {
+                                onChange: null
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
                     {
                       fieldName: "gross_amt",
-                      label: <AlgaehLabel label={{ fieldName: "gross_amt" }} />
-                    },
-                    {
-                      fieldName: "corporate_discount_percent",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "corporate_discount_percent" }}
-                        />
-                      )
+                      label: <AlgaehLabel label={{ fieldName: "gross_amt" }} />,
+                      displayTemplate: row => {
+                        return row.gross_amt.toFixed(2);
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              decimal: { allowNegative: false },
+                              value: row.gross_amt,
+                              className: "txt-fld",
+                              name: "gross_amt",
+                              events: {
+                                onChange: null
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
                     {
                       fieldName: "corporate_discount_amt",
@@ -144,21 +251,95 @@ class SubInsurance extends PureComponent {
                         <AlgaehLabel
                           label={{ fieldName: "corporate_discount_amt" }}
                         />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return row.corporate_discount_amt.toFixed(2);
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              decimal: { allowNegative: false },
+                              value: row.corporate_discount_amt,
+                              className: "txt-fld",
+                              name: "corporate_discount_amt",
+                              events: {
+                                onChange: null
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
                     {
                       fieldName: "net_amount",
-                      label: <AlgaehLabel label={{ fieldName: "net_amount" }} />
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "net_amount" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.net_amount !== null
+                          ? row.net_amount.toFixed(2)
+                          : null;
+                      },
+
+                      disabled: true
+                    },
+                    {
+                      fieldName: "pre_approval",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "pre_approval" }} />
+                      ),
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "pre_approval",
+                              className: "select-fld",
+                              value: row.pre_approval,
+                              dataSource: {
+                                textField: "value",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_YESNO
+                              },
+                              onChange: null
+                            }}
+                          />
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "covered",
+                      label: <AlgaehLabel label={{ fieldName: "covered" }} />,
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "covered",
+                              className: "select-fld",
+                              value: row.covered,
+                              dataSource: {
+                                textField: "value",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_YESNO
+                              },
+                              onChange: null
+                            }}
+                          />
+                        );
+                      }
                     }
                   ]}
-                  keyId="identity_document_code"
+                  keyId="service_name"
                   dataSource={{
                     data:
-                      this.props.insProviders === undefined
+                      this.props.pricelist === undefined
                         ? []
-                        : this.props.insProviders
+                        : this.props.pricelist
                   }}
-                  // isEditable={true}
+                  isEditable={true}
                   paging={{ page: 0, rowsPerPage: 5 }}
                 />
               </div>
@@ -172,16 +353,15 @@ class SubInsurance extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    services: state.services
+    pricelist: state.pricelist
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
+      getPriceList: AlgaehActions,
+      initialPriceList: AlgaehActions
     },
     dispatch
   );

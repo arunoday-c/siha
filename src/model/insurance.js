@@ -1176,6 +1176,47 @@ let deleteSubInsurance = (req, res, next) => {
   }
 };
 
+//created by:nowshad,to get list of all Price List of selected insurance
+let getPriceList = (req, res, next) => {
+  let priselistWhereCondition = {
+    insurance_id: "ALL"
+  };
+
+  debugFunction("getPriceList");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      // extend(insuranceWhereCondition, req.query);
+      let where = whereCondition(extend(priselistWhereCondition, req.query));
+
+      connection.query(
+        "select * from hims_d_services_insurance where record_status='A' AND" +
+          where.condition,
+        where.values,
+
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 //created by:irfan,to get list of network and its network_office records
 // based on insuranceProvider id
 
@@ -1233,5 +1274,6 @@ module.exports = {
   addNetwork,
   NetworkOfficeMaster,
   addPlanAndPolicy,
+  getPriceList,
   getNetworkAndNetworkOfficRecords
 };

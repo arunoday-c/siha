@@ -21,10 +21,7 @@ import { setGlobal } from "../../../utils/GlobalFunctions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import Paper from "@material-ui/core/Paper";
 
-import {
-  FORMAT_INSURANCE_TYPE,
-  FORMAT_PRICE_FROM
-} from "../../../utils/GlobalVariables.json";
+import { FORMAT_PRICE_FROM } from "../../../utils/GlobalVariables.json";
 import MyContext from "../../../utils/MyContext";
 
 class NetworkPlan extends PureComponent {
@@ -94,6 +91,32 @@ class NetworkPlan extends PureComponent {
           mappingName: "subinsuranceprovider"
         }
       });
+
+      this.props.getNetworkPlans({
+        uri: "/insurance/getNetworkAndNetworkOfficRecords",
+        method: "GET",
+        printInput: true,
+        data: {
+          insurance_sub_code: this.state.insurance_provider_id
+        },
+        redux: {
+          type: "SUB_INSURANCE_GET_DATA",
+          mappingName: "networkandplans"
+        }
+      });
+
+      // this.props.getNetwork({
+      //   uri: "/insurance/getNetworkAndNetworkOfficRecords",
+      //   method: "GET",
+      //   printInput: true,
+      //   data: {
+      //     insurance_sub_code: this.state.insurance_provider_id
+      //   },
+      //   redux: {
+      //     type: "SUB_INSURANCE_GET_DATA",
+      //     mappingName: "networkplan"
+      //   }
+      // });
     }
   }
 
@@ -763,14 +786,16 @@ class NetworkPlan extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    subinsuranceprovider: state.subinsuranceprovider
+    subinsuranceprovider: state.subinsuranceprovider,
+    networkplan: state.networkplan
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getSubInsuranceDetails: AlgaehActions
+      getSubInsuranceDetails: AlgaehActions,
+      getNetworkPlans: AlgaehActions
     },
     dispatch
   );

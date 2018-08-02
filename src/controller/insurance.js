@@ -16,6 +16,7 @@ import {
   addNetwork,
   NetworkOfficeMaster,
   addPlanAndPolicy,
+  getPriceList,
   getNetworkAndNetworkOfficRecords
 } from "../model/insurance";
 
@@ -202,6 +203,20 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by Noushad : to get all price list of selected insurance
+  api.get(
+    "/getPriceList",
+    getPriceList,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
   // created by irfan : to get list of network and its network_office records
   // based on insuranceProvider id
   api.get(
