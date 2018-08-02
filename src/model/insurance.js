@@ -1217,6 +1217,46 @@ let getPriceList = (req, res, next) => {
   }
 };
 
+//created by:irfan,to get list of network and its network_office records
+// based on insuranceProvider id
+
+let getNetworkAndNetworkOfficRecords = (req, res, next) => {
+  debugFunction("getNetworkAndNetworkOfficRecords");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let insuranceProviderId = req.query.insuranceProviderId;
+
+      connection.query(
+        "SELECT hims_d_insurance_network_id,network_type,arabic_network_type,\
+        insurance_sub_id,insurance_provider_id,netoff.employer,netoff.policy_number\
+        FROM hims_d_insurance_network net,hims_d_insurance_network_office netoff\
+        where `insurance_provider_id`=? and netoff.network_id = net.hims_d_insurance_network_id\
+         and net.record_status='A' and netoff.record_status='A';",
+        [insuranceProviderId],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientInsurance,
   addPatientInsurance,
@@ -1230,5 +1270,6 @@ module.exports = {
   addNetwork,
   NetworkOfficeMaster,
   addPlanAndPolicy,
-  getPriceList
+  getPriceList,
+  getNetworkAndNetworkOfficRecords
 };
