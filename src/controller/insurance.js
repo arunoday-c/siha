@@ -15,7 +15,8 @@ import {
   deleteSubInsurance,
   addNetwork,
   NetworkOfficeMaster,
-  addPlanAndPolicy
+  addPlanAndPolicy,
+  getNetworkAndNetworkOfficRecords
 } from "../model/insurance";
 
 export default ({ config, db }) => {
@@ -190,6 +191,22 @@ export default ({ config, db }) => {
   api.delete(
     "/deleteSubInsurance",
     deleteSubInsurance,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to get list of network and its network_office records
+  // based on insuranceProvider id
+  api.get(
+    "/getNetworkAndNetworkOfficRecords",
+    getNetworkAndNetworkOfficRecords,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
