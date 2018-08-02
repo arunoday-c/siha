@@ -658,7 +658,7 @@ let getBillDetails = (req, res, next) => {
       debugLog("Service ID" + servicesDetails.hims_d_services_id);
 
       connection.query(
-        "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id`=? ",
+        "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id`=? AND record_status='A'",
         [servicesDetails.hims_d_services_id],
         (error, result) => {
           if (error) {
