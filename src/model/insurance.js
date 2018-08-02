@@ -1309,6 +1309,213 @@ let updatePriceList = (req, res, next) => {
   });
 };
 
+//created by irfan: to update Network And NetworkOffice
+
+let updateNetworkAndNetworkOffice = (req, res, next) => {
+  let networkAndNetworkOfficeModel = {
+    hims_d_insurance_network_id: null,
+    network_type: null,
+    insurance_provider_id: null,
+    insurance_sub_id: null,
+    effective_start_date: null,
+    effective_end_date: null,
+    sub_insurance_status: null,
+    created_date: null,
+    created_by: null,
+    updated_date: null,
+    updated_by: null,
+    hims_d_insurance_network_office_id: null,
+    network_id: null,
+    hospital_id: null,
+    deductible: null,
+    deductable_type: null,
+    min_value: null,
+    max_value: null,
+    copay_consultation: null,
+    deductible_lab: null,
+    for_alllab: null,
+    copay_percent: null,
+    deductible_rad: null,
+    for_allrad: null,
+    copay_percent_rad: null,
+    copay_percent_trt: null,
+    copay_percent_dental: null,
+    copay_medicine: null,
+    insur_network_limit: null,
+    deductible_trt: null,
+    deductible_dental: null,
+    deductible_medicine: null,
+    lab_min: null,
+    lab_max: null,
+    rad_min: null,
+    rad_max: null,
+    trt_max: null,
+    trt_min: null,
+    dental_min: null,
+    dental_max: null,
+    medicine_min: null,
+    medicine_max: null,
+    invoice_max_liability: null,
+    for_alltrt: null,
+    for_alldental: null,
+    for_allmedicine: null,
+    invoice_max_deduct: null,
+    price_from: null,
+    employer: null,
+    policy_number: null,
+    follow_up: null,
+    preapp_limit: null,
+    deductible_ip: null,
+    copay_ip: null,
+    ip_min: null,
+    ip_max: null,
+    for_allip: null,
+    consult_limit: null,
+    preapp_limit_from: null,
+    copay_maternity: null,
+    maternity_min: null,
+    maternity_max: null,
+    copay_optical: null,
+    optical_min: null,
+    optical_max: null,
+    copay_diagnostic: null,
+    diagnostic_min: null,
+    diagnostic_max: null,
+    arabic_network_type: null
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend(networkAndNetworkOfficeModel, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        connection.query(
+          "update hims_d_insurance_network SET `network_type`=?,`arabic_network_type`=?,insurance_provider_id`=?,`insurance_sub_id`=?,\
+        `effective_start_date`=?,`effective_end_date`=?, `updated_by`=? WHERE  `hims_d_insurance_network_id`=? AND `record_status`='A'",
+          [
+            inputparam.network_type,
+            arabic_network_type,
+            inputparam.insurance_provider_id,
+            inputparam.insurance_sub_id,
+            inputparam.effective_start_date,
+            inputparam.effective_end_date,
+            inputparam.updated_by,
+            inputparam.hims_d_insurance_network_id
+          ],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+
+            // req.records = result;
+            // next();
+            connection.query(
+              "update hims_d_insurance_network_office SET `network_id`=?,`hospital_id`=?,`deductible`=?,`deductable_type`=?,`min_value`=?,`max_value`=?,`copay_consultation`=?,\
+            `deductible_lab`=?,`for_alllab`=?,`copay_percent`=?,`deductible_rad`=?,`for_allrad`=?,`copay_percent_rad`=?,`copay_percent_trt`=?,\
+            `copay_percent_dental`=?,`copay_medicine`=?,`insur_network_limit`=?,`deductible_trt`=?,`deductible_dental`=?,`deductible_medicine`=?,`lab_min`=?,\
+            `lab_max`=?,`rad_min`=?,`rad_max`=?,`trt_max`=?,`trt_min`=?,`dental_min`=?,`dental_max`=?,`medicine_min`=?,`medicine_max`=?,`invoice_max_liability`=?,\
+            `for_alltrt`=?,`for_alldental`=?,`for_allmedicine`=?,`invoice_max_deduct`=?,`price_from`=?,`employer`=?,`policy_number`=?,`follow_up`=?,`preapp_limit`=?,\
+            `deductible_ip`=?,`copay_ip`=?,`ip_min`=?,`ip_max`=?,`for_allip`=?,`consult_limit`=?,`preapp_limit_from`=?,`copay_maternity`=?,`maternity_min`=?,`maternity_max`=?,\
+            `copay_optical`=?,`optical_min`=?,`optical_max`=?,`copay_diagnostic`=?,`diagnostic_min`=?,`diagnostic_max`=?,`updated_by`=? WHERE  `hims_d_insurance_network_office_id`=? AND `record_status`='A'",
+              [
+                inputparam.network_id,
+                inputparam.hospital_id,
+                inputparam.deductible,
+                inputparam.deductable_type,
+                inputparam.min_value,
+                inputparam.max_value,
+                inputparam.copay_consultation,
+                inputparam.deductible_lab,
+                inputparam.for_alllab,
+                inputparam.copay_percent,
+                inputparam.deductible_rad,
+                inputparam.for_allrad,
+                inputparam.copay_percent_rad,
+                inputparam.copay_percent_trt,
+                inputparam.copay_percent_dental,
+                inputparam.copay_medicine,
+                inputparam.insur_network_limit,
+                inputparam.deductible_trt,
+                inputparam.deductible_dental,
+                inputparam.deductible_medicine,
+                inputparam.lab_min,
+                inputparam.lab_max,
+                inputparam.rad_min,
+                inputparam.rad_max,
+                inputparam.trt_max,
+                inputparam.trt_min,
+                inputparam.dental_min,
+                inputparam.dental_max,
+                inputparam.medicine_min,
+                inputparam.medicine_max,
+                inputparam.invoice_max_liability,
+                inputparam.for_alltrt,
+                inputparam.for_alldental,
+                inputparam.for_allmedicine,
+                inputparam.invoice_max_deduct,
+                inputparam.price_from,
+                inputparam.employer,
+                inputparam.policy_number,
+                inputparam.follow_up,
+                inputparam.preapp_limit,
+                inputparam.deductible_ip,
+                inputparam.copay_ip,
+                inputparam.ip_min,
+                inputparam.ip_max,
+                inputparam.for_allip,
+                inputparam.consult_limit,
+                inputparam.preapp_limit_from,
+                inputparam.copay_maternity,
+                inputparam.maternity_min,
+                inputparam.maternity_max,
+                inputparam.copay_optical,
+                inputparam.optical_min,
+                inputparam.optical_max,
+                inputparam.copay_diagnostic,
+                inputparam.diagnostic_min,
+                inputparam.diagnostic_max,
+                inputparam.updated_by,
+                inputparam.hims_d_insurance_network_office_id
+              ],
+              (error, results) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                req.records = results;
+                next();
+              }
+            );
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientInsurance,
   addPatientInsurance,
@@ -1324,5 +1531,6 @@ module.exports = {
   addPlanAndPolicy,
   getPriceList,
   getNetworkAndNetworkOfficRecords,
-  updatePriceList
+  updatePriceList,
+  updateNetworkAndNetworkOffice
 };
