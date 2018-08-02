@@ -21,6 +21,7 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import { postBillDetsils } from "../../actions/RegistrationPatient/Billingactions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
+
 var intervalId;
 
 class PatientDisplayDetails extends Component {
@@ -55,6 +56,16 @@ class PatientDisplayDetails extends Component {
     this.setState({
       selectedLang: prevLang
     });
+
+    if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
+      this.props.initialbillingCalculations({
+        redux: {
+          type: "BILL_HEADER_GEN_GET_DATA",
+          mappingName: "genbill",
+          data: {}
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -329,7 +340,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientDetails: AlgaehActions,
-      postBillDetsils: postBillDetsils
+      postBillDetsils: postBillDetsils,
+      initialbillingCalculations: AlgaehActions
     },
     dispatch
   );

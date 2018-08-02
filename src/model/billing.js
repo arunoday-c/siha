@@ -714,6 +714,7 @@ let getBillDetails = (req, res, next) => {
               ? "N"
               : servicesDetails.sec_insured;
 
+          let pre_approval = "N";
           new Promise((resolve, reject) => {
             try {
               if (insured === "Y") {
@@ -744,7 +745,8 @@ let getBillDetails = (req, res, next) => {
             .then(policydtls => {
               debugLog("ander", policydtls);
               //Calculation Starts
-              if (insured === "Y") {
+              pre_approval = policydtls.pre_approval;
+              if (insured === "Y" && policydtls.pre_approval === "N") {
                 debugLog("Insured:", quantity);
                 debugLog("Unit cost", policydtls.gross_amt);
 
@@ -858,7 +860,8 @@ let getBillDetails = (req, res, next) => {
                 sec_copay_percntage: sec_copay_percntage,
                 sec_copay_amount: sec_copay_amount,
                 sec_company_res: sec_company_res,
-                sec_company_paybale: sec_company_paybale
+                sec_company_paybale: sec_company_paybale,
+                pre_approval: pre_approval
               });
 
               debugLog("Results are recorded...", result);

@@ -101,6 +101,7 @@ const doctorselectedHandeler = ($this, context, e) => {
 };
 
 const generateBillDetails = ($this, context) => {
+  debugger;
   let serviceInput = {
     insured: $this.state.insured,
     hims_d_services_id: $this.state.hims_d_services_id,

@@ -98,7 +98,7 @@ class SubInsurance extends PureComponent {
                       label={{ forceLabel: this.state.insurance_provider_name }}
                     />
 
-                    <Button
+                    {/* <Button
                       variant="outlined"
                       size="small"
                       color="primary"
@@ -106,7 +106,7 @@ class SubInsurance extends PureComponent {
                       onClick={addNewSubinsurance.bind(this, this)}
                     >
                       Add New
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
                 <div className="row">

@@ -49,7 +49,7 @@ function getSteps() {
 }
 
 function getStepContent(stepIndex, $this) {
-  stepIndex = stepIndex - 1;
+  $this.state.buttonenable === true ? (stepIndex = stepIndex - 1) : null;
   switch (stepIndex) {
     case 0:
       return <InsuranceProvider InsuranceSetup={$this.state} />;
@@ -66,7 +66,7 @@ class InsuranceAdd extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 1,
+      activeStep: 0,
       screenName: "InsuranceProvider",
       buttonenable: false
 
@@ -90,13 +90,16 @@ class InsuranceAdd extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
-
     if (
       nextProps.insuranceprovider !== undefined &&
       nextProps.insuranceprovider.length !== 0
     ) {
       this.setState({ ...this.state, ...nextProps.insuranceprovider[0] });
+    } else {
+      if (this.state.insurance_provider_saved === false) {
+        let IOputs = InsuranceSetup.inputParam();
+        this.setState(IOputs);
+      }
     }
     if (
       nextProps.subinsuranceprovider !== undefined &&
@@ -111,7 +114,6 @@ class InsuranceAdd extends PureComponent {
   };
 
   onClose = e => {
-    debugger;
     if (this.state.screenName === "SubInsurance") {
       if (this.state.sub_insurance.length === 0) {
         handleNext.bind(this, this);
@@ -139,6 +141,21 @@ class InsuranceAdd extends PureComponent {
         }
       });
     }
+    debugger;
+    if (this.state.buttonenable === true) {
+      if (
+        this.props.insuranceprovider !== undefined &&
+        this.props.insuranceprovider.length !== 0
+      ) {
+        this.props.initialStateInsurance({
+          redux: {
+            type: "INSURANCE_INT_DATA",
+            mappingName: "insuranceprovider",
+            data: []
+          }
+        });
+      }
+    }
 
     this.setState({
       activeStep: 0
@@ -152,9 +169,16 @@ class InsuranceAdd extends PureComponent {
     const { activeStep } = this.state;
 
     this.state.buttonenable = this.props.buttonenable;
-    this.props.insurance_provider_id !== null
-      ? (this.state.insurance_provider_id = this.props.insurance_provider_id)
-      : null;
+    debugger;
+    if (this.state.buttonenable === true) {
+      this.props.insurance_provider_id !== null
+        ? (this.state.insurance_provider_id = this.props.insurance_provider_id)
+        : (this.state.insurance_provider_id = null);
+
+      this.props.insurance_provider_name !== null
+        ? (this.state.insurance_provider_name = this.props.insurance_provider_name)
+        : (this.state.insurance_provider_id = null);
+    }
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-insurance-form">
@@ -341,7 +365,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getInsuranceDetails: AlgaehActions,
-      getSubInsuranceDetails: AlgaehActions
+      getSubInsuranceDetails: AlgaehActions,
+      initialStateInsurance: AlgaehActions
     },
     dispatch
   );

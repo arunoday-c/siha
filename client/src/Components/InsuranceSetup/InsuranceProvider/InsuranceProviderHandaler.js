@@ -18,12 +18,6 @@ const texthandle = ($this, context, e) => {
     }
     clearInterval(texthandlerInterval);
   }, 500);
-
-  // if ($this.state.buttonenable === true) {
-  //   if (context !== undefined) {
-  //     context.updateState($this.state);
-  //   }
-  // }
 };
 
 const numtexthandle = ($this, context, e) => {
@@ -38,12 +32,6 @@ const numtexthandle = ($this, context, e) => {
     }
     clearInterval(texthandlerInterval);
   }, 500);
-
-  // if ($this.state.buttonenable === true) {
-  //   if (context !== undefined) {
-  //     context.updateState($this.state);
-  //   }
-  // }
 };
 
 const datehandle = ($this, context, ctrl, e) => {
@@ -59,12 +47,6 @@ const datehandle = ($this, context, ctrl, e) => {
     }
     clearInterval(texthandlerInterval);
   }, 500);
-
-  // if ($this.state.buttonenable === true) {
-  //   if (context !== undefined) {
-  //     context.updateState($this.state);
-  //   }
-  // }
 };
 
 export { texthandle, numtexthandle, datehandle };

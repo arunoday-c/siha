@@ -78,7 +78,7 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const showconfirmDialog = id => {
+const showconfirmDialog = ($this, id) => {
   swal({
     title: "Are you sure you want to delete this ID Types?",
     icon: "warning",
@@ -101,12 +101,12 @@ const showconfirmDialog = id => {
               buttons: false,
               timer: 2000
             });
-            this.props.getSubInsuranceDetails({
+            $this.props.getSubInsuranceDetails({
               uri: "/insurance/getSubInsurance",
               method: "GET",
               printInput: true,
               data: {
-                insurance_sub_code: this.state.insurance_provider_id
+                insurance_sub_code: $this.state.insurance_provider_id
               },
               redux: {
                 type: "SUB_INSURANCE_GET_DATA",
@@ -114,7 +114,7 @@ const showconfirmDialog = id => {
               },
               afterSuccess: data => {
                 debugger;
-                this.setState({ sub_insurance: data });
+                $this.setState({ sub_insurance: data });
               }
             });
           }
@@ -127,8 +127,9 @@ const showconfirmDialog = id => {
   });
 };
 
-const deleteSubInsurance = row => {
-  showconfirmDialog(row.hims_d_insurance_sub_id);
+const deleteSubInsurance = ($this, row) => {
+  debugger;
+  showconfirmDialog($this, row.hims_d_insurance_sub_id);
 };
 
 const updateSubInsurance = ($this, data) => {
@@ -144,12 +145,12 @@ const updateSubInsurance = ($this, data) => {
           buttons: false,
           timer: 2000
         });
-        this.props.getSubInsuranceDetails({
+        $this.props.getSubInsuranceDetails({
           uri: "/insurance/getSubInsurance",
           method: "GET",
           printInput: true,
           data: {
-            insurance_sub_code: this.state.insurance_provider_id
+            insurance_sub_code: $this.state.insurance_provider_id
           },
           redux: {
             type: "SUB_INSURANCE_GET_DATA",
@@ -157,7 +158,7 @@ const updateSubInsurance = ($this, data) => {
           },
           afterSuccess: data => {
             debugger;
-            this.setState({ sub_insurance: data });
+            $this.setState({ sub_insurance: data });
           }
         });
       }

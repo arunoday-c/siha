@@ -41,7 +41,10 @@ class InsuranceProvider extends PureComponent {
   componentDidMount() {
     debugger;
     // console.log("Data : ", this.props.insuranceprovider);
-    if (this.state.insurance_provider_id !== null) {
+    if (
+      this.state.insurance_provider_id !== null &&
+      this.state.insurance_provider_id !== undefined
+    ) {
       this.props.getInsuranceDetails({
         uri: "/insurance/getListOfInsuranceProvider",
         method: "GET",
@@ -398,7 +401,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getInsuranceDetails: AlgaehActions
+      getInsuranceDetails: AlgaehActions,
+      initialStateInsurance: AlgaehActions
     },
     dispatch
   );

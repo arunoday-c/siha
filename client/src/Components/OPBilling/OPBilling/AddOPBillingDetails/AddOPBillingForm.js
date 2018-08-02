@@ -24,6 +24,7 @@ import {
 import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Paper from "@material-ui/core/Paper";
+import { successfulMessage } from "../../../../utils/GlobalFunctions";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
@@ -77,6 +78,7 @@ class AddOPBillingForm extends Component {
   }
 
   ProcessToBill(context, e) {
+    debugger;
     let $this = this;
 
     let serviceInput = {
@@ -105,7 +107,14 @@ class AddOPBillingForm extends Component {
         if (data.billdetails.length !== 0) {
           existingservices.splice(0, 0, data.billdetails[0]);
         }
-
+        debugger;
+        if (existingservices[0].pre_approval === "Y") {
+          successfulMessage({
+            message: "Selected Service is Pre-Approval required.",
+            title: "Warning",
+            icon: "warning"
+          });
+        }
         if (context != null) {
           context.updateState({ billdetails: existingservices });
         }

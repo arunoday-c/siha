@@ -348,8 +348,8 @@ let addInsuranceProvider = (req, res, next) => {
         `deductible_proc`,`deductible_lab`,`co_payment`,`insurance_type`,`package_claim`,`hospital_id`,\
         `credit_period`,`insurance_limit`,`payment_type`,`insurance_remarks`,`cpt_mandate`,`child_id`,`currency`,\
         `preapp_valid_days`,`claim_submit_days`,`lab_result_check`,`resubmit_all`,`company_service_price_type`,`ins_rej_per`,`effective_start_date`,\
-        `effective_end_date`,created_by`,`updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        `effective_end_date`,`created_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           inputparam.insurance_provider_code,
           inputparam.insurance_provider_name,
@@ -374,7 +374,6 @@ let addInsuranceProvider = (req, res, next) => {
           inputparam.ins_rej_per,
           inputparam.effective_start_date,
           inputparam.effective_end_date,
-          inputparam.created_by,
           inputparam.created_by
         ],
         (error, result) => {

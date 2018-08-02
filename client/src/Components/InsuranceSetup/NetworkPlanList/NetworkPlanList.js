@@ -13,9 +13,6 @@ import {
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 
-import { setGlobal } from "../../../utils/GlobalFunctions";
-import { getCookie } from "../../../utils/algaehApiCall";
-
 class NetworkPlanList extends PureComponent {
   constructor(props) {
     super(props);
@@ -23,12 +20,20 @@ class NetworkPlanList extends PureComponent {
   }
 
   componentDidMount() {
-    let prevLang = getCookie("Language");
-
-    setGlobal({ selectedLang: prevLang });
-    this.setState({
-      selectedLang: prevLang
-    });
+    if (this.state.insurance_provider_id !== null) {
+      this.props.getNetworkPlans({
+        uri: "/insurance/getSubInsurance",
+        method: "GET",
+        printInput: true,
+        data: {
+          insurance_sub_code: this.state.insurance_provider_id
+        },
+        redux: {
+          type: "SUB_INSURANCE_GET_DATA",
+          mappingName: "networkandplans"
+        }
+      });
+    }
   }
 
   onClose = e => {
@@ -206,16 +211,14 @@ class NetworkPlanList extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    services: state.services
+    networkandplans: state.networkandplans
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
+      getNetworkPlans: AlgaehActions
     },
     dispatch
   );

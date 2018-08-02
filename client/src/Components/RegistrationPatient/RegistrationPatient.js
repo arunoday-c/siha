@@ -69,6 +69,16 @@ class RegistrationPatient extends Component {
     this.setState({
       selectedLang: prevLang
     });
+
+    if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
+      this.props.initialbillingCalculations({
+        redux: {
+          type: "BILL_HEADER_GEN_GET_DATA",
+          mappingName: "genbill",
+          data: {}
+        }
+      });
+    }
   }
 
   ClearData(e) {
@@ -497,7 +507,8 @@ function mapDispatchToProps(dispatch) {
       postVisitDetails: postVisitDetails,
       generateBill: AlgaehActions,
       initialStateBillGen: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getPatientInsurance: AlgaehActions,
+      initialbillingCalculations: AlgaehActions
     },
     dispatch
   );

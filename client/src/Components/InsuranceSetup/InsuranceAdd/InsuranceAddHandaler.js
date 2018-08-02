@@ -27,34 +27,42 @@ const handleNext = ($this, e) => {
     } else if ($this.state.screenName === "SubInsurance") {
       //Save Sub
       debugger;
-
-      algaehApiCall({
-        uri: "/insurance/addSubInsuranceProvider",
-        data: $this.state.sub_insurance,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            setComponent($this, response.data.records);
+      if ($this.state.insurance_sub_saved === false) {
+        algaehApiCall({
+          uri: "/insurance/addSubInsuranceProvider",
+          data: $this.state.sub_insurance,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              setComponent($this, response.data.records);
+            }
+          },
+          onFailure: error => {
+            console.log(error);
           }
-        },
-        onFailure: error => {
-          console.log(error);
-        }
-      });
+        });
+      } else {
+        setComponent($this, {});
+      }
     } else if ($this.state.screenName === "NetworkPlan") {
       debugger;
       //Save Network and Plan
-      algaehApiCall({
-        uri: "/insurance/addPlanAndPolicy",
-        data: $this.state.network_plan,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            setComponent($this, response.data.records);
+
+      if ($this.state.insurance_plan_saved === false) {
+        algaehApiCall({
+          uri: "/insurance/addPlanAndPolicy",
+          data: $this.state.network_plan,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              setComponent($this, response.data.records);
+            }
+          },
+          onFailure: error => {
+            console.log(error);
           }
-        },
-        onFailure: error => {
-          console.log(error);
-        }
-      });
+        });
+      } else {
+        setComponent($this, {});
+      }
     } else if ($this.state.screenName === "Services") {
       //Save Services
       setComponent($this, {});
@@ -65,18 +73,21 @@ const handleNext = ($this, e) => {
 const setComponent = ($this, data, e) => {
   debugger;
   const { activeStep } = $this.state;
+  let insurance_provider_id =
+    data.insertId || $this.state.insurance_provider_id;
   $this.setState(
     {
-      activeStep: activeStep + 1
+      activeStep: activeStep + 1,
+      insurance_provider_id: insurance_provider_id
     },
     () => {
+      debugger;
       if ($this.state.activeStep === 0) {
         $this.setState({ screenName: "InsuranceProvider" });
       } else if ($this.state.activeStep === 1) {
         $this.setState({
           screenName: "SubInsurance",
-          insurance_provider_saved: true,
-          insurance_provider_id: data.insertId
+          insurance_provider_saved: true
         });
       } else if ($this.state.activeStep === 2) {
         $this.setState({

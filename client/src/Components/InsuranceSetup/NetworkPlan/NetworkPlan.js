@@ -79,7 +79,23 @@ class NetworkPlan extends PureComponent {
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    debugger;
+    if (this.state.insurance_provider_id !== null) {
+      this.props.getSubInsuranceDetails({
+        uri: "/insurance/getSubInsurance",
+        method: "GET",
+        printInput: true,
+        data: {
+          insurance_sub_code: this.state.insurance_provider_id
+        },
+        redux: {
+          type: "SUB_INSURANCE_GET_DATA",
+          mappingName: "subinsuranceprovider"
+        }
+      });
+    }
+  }
 
   handleClose = () => {
     this.setState({ snackeropen: false });
@@ -112,14 +128,14 @@ class NetworkPlan extends PureComponent {
                       }}
                     />
 
-                    <Button
+                    {/* <Button
                       variant="outlined"
                       size="small"
                       color="primary"
                       style={{ float: "right" }}
                     >
                       Add New
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
                 <div className="row">
@@ -133,13 +149,12 @@ class NetworkPlan extends PureComponent {
                       className: "select-fld",
                       value: this.state.insurance_sub_id,
                       dataSource: {
-                        // textField: "service_name",
                         textField:
                           this.state.selectedLang === "en"
-                            ? "name"
-                            : "arabic_name",
-                        valueField: "value",
-                        data: FORMAT_INSURANCE_TYPE
+                            ? "insurance_sub_name"
+                            : "arabic_sub_name",
+                        valueField: "hims_d_insurance_sub_id",
+                        data: this.props.subinsuranceprovider
                       },
                       onChange: texthandle.bind(this, this)
                     }}
@@ -748,16 +763,14 @@ class NetworkPlan extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    services: state.services
+    subinsuranceprovider: state.subinsuranceprovider
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
+      getSubInsuranceDetails: AlgaehActions
     },
     dispatch
   );

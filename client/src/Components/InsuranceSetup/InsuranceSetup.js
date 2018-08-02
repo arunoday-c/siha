@@ -46,12 +46,20 @@ class InsuranceSetup extends Component {
   }
 
   ShowModel(e) {
-    this.setState({
-      ...this.state,
-      isOpen: !this.state.isOpen,
-      addfunctionality: true,
-      buttonenable: false
-    });
+    debugger;
+    this.setState(
+      {
+        ...this.state,
+        isOpen: !this.state.isOpen,
+        addfunctionality: true,
+        buttonenable: false,
+        insurance_provider_id: null,
+        insurance_provider_name: null
+      },
+      () => {
+        debugger;
+      }
+    );
   }
   getCtrlCode(insCode) {
     debugger;
@@ -68,6 +76,7 @@ class InsuranceSetup extends Component {
       opencomponent: e.value,
       buttonenable: true,
       insurance_provider_id: row.hims_d_insurance_provider_id,
+      insurance_provider_name: row.insurance_provider_name,
       isOpen: true,
       addfunctionality: false
     });
@@ -286,6 +295,7 @@ class InsuranceSetup extends Component {
             addfunctionality={this.state.addfunctionality}
             buttonenable={this.state.buttonenable}
             insurance_provider_id={this.state.insurance_provider_id}
+            insurance_provider_name={this.state.insurance_provider_name}
           />
         </div>
 
