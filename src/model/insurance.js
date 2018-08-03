@@ -1236,7 +1236,7 @@ let getNetworkAndNetworkOfficRecords = (req, res, next) => {
 
       connection.query(
         "SELECT hims_d_insurance_network_id,network_type,arabic_network_type,insurance_sub_id,insurance_provider_id,\
-        netoff.employer,netoff.policy_number,effective_start_date,effective_end_date,netoff.preapp_limit,netoff.price_from,netoff.deductible,\
+        netoff.hospital_id, netoff.hims_d_insurance_network_office_id, netoff.employer,netoff.policy_number,effective_start_date,effective_end_date,netoff.preapp_limit,netoff.price_from,netoff.deductible,\
         netoff.copay_consultation,netoff.max_value,netoff.deductible_lab,netoff.copay_percent,\
         netoff.lab_max,netoff.deductible_rad,netoff.copay_percent_rad,netoff.rad_max,netoff.deductible_trt,\
         netoff.copay_percent_trt,netoff.trt_max,netoff.deductible_dental,\
@@ -1285,7 +1285,7 @@ let updatePriceList = (req, res, next) => {
     let inputParam = extend(services_insurance, req.body);
     connection.query(
       "UPDATE `hims_d_services_insurance` \
-     SET `insurance_service_name`=?, `cpt_code`=?, `gross_amt`=?, `corporate_discount_amt`=?, net_amount`=?, \
+     SET `insurance_service_name`=?, `cpt_code`=?, `gross_amt`=?, `corporate_discount_amt`=?, `net_amount`=?, \
      `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `hims_d_services_insurance_id`=?",
       [
         inputParam.insurance_service_name,

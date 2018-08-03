@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent, Component } from "react";
 // import ClearIcon from "@material-ui/icons/Clear";
 // import CancelIcon from "@material-ui/icons/Cancel";
 // import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
@@ -108,7 +108,7 @@ const styles = theme => ({
     }
   }
 });
-class AutoComplete extends Component {
+class AutoComplete extends PureComponent {
   handleChange = value => {
     if (value !== null) {
       if (
@@ -143,6 +143,7 @@ class AutoComplete extends Component {
   }
 
   componentWillReceiveProps(props) {
+    debugger;
     if (
       this.props.selector.multi !== undefined &&
       this.props.selector.multi === true
@@ -174,16 +175,17 @@ class AutoComplete extends Component {
     });
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (
-      nextProps.selector.value !== this.state.single ||
-      (nextProps.selector.others != null &&
-        nextProps.selector.others.disabled !== this.state.disabled) ||
-      nextState !== this.state.single
-    )
-      return true;
-    return false;
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   debugger;
+  //   if (
+  //     nextProps.selector.value !== this.state.single ||
+  //     (nextProps.selector.others != null &&
+  //       nextProps.selector.others.disabled !== this.state.disabled) ||
+  //     nextState !== this.state.single
+  //   )
+  //     return true;
+  //   return false;
+  // }
 
   renderAutoComplete = () => {
     return (

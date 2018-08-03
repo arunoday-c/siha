@@ -59,7 +59,7 @@ class SubInsurance extends PureComponent {
         method: "GET",
         printInput: true,
         data: {
-          insurance_sub_code: this.state.insurance_provider_id
+          insurance_provider_id: this.state.insurance_provider_id
         },
         redux: {
           type: "SUB_INSURANCE_GET_DATA",

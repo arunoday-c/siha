@@ -34,6 +34,7 @@ export default {
       sub_insurance: [],
       network_plan: [],
       update_sub_insurance: [],
+      update_network_plan_insurance: [],
 
       MandatoryMsg: null,
       snackeropen: false

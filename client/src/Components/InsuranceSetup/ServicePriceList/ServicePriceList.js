@@ -19,7 +19,8 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   texthandle,
   onchangegridcol,
-  updatePriceList
+  updatePriceList,
+  onchangecalculation
 } from "./ServicePriceListHandaler";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import Paper from "@material-ui/core/Paper";
@@ -30,7 +31,9 @@ class SubInsurance extends PureComponent {
     this.state = {
       applicable: null,
       corporate_discount: 0,
-      pre_approval: null
+      dummy: true
+      // pre_approval: null,
+      // insurance_service_name: ""
     };
     this.baseState = this.state;
   }
@@ -154,7 +157,7 @@ class SubInsurance extends PureComponent {
                       className: "select-fld",
                       value: this.state.covered,
                       dataSource: {
-                        textField: "name",
+                        textField: "value",
                         valueField: "value",
                         data: GlobalVariables.FORMAT_YESNO
                       },
@@ -243,7 +246,11 @@ class SubInsurance extends PureComponent {
                               className: "txt-fld",
                               name: "gross_amt",
                               events: {
-                                onChange: null
+                                onChange: onchangecalculation.bind(
+                                  this,
+                                  this,
+                                  row
+                                )
                               }
                             }}
                           />
@@ -270,7 +277,11 @@ class SubInsurance extends PureComponent {
                               className: "txt-fld",
                               name: "corporate_discount_amt",
                               events: {
-                                onChange: null
+                                onChange: onchangecalculation.bind(
+                                  this,
+                                  this,
+                                  row
+                                )
                               }
                             }}
                           />
