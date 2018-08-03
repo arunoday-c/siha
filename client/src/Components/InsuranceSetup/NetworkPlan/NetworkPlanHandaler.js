@@ -18,7 +18,7 @@ const texthandle = ($this, ctrl, e) => {
 const saveNetworkPlan = ($this, context) => {
   debugger;
   const err = Validations($this);
-  let updatedata = [];
+  let newdata = [];
   if (!err) {
     let obj = {
       hims_d_insurance_network_id: null,
@@ -61,11 +61,25 @@ const saveNetworkPlan = ($this, context) => {
     let previous = $this.state.network_plan ? $this.state.network_plan : [];
     previous.push(obj);
 
-    if (
-      $this.state.buttonenable === true &&
-      $this.state.hims_d_insurance_network_id === null
-    ) {
-      updatedata.push(obj);
+    if ($this.state.buttonenable === true) {
+      newdata.push(obj);
+
+      algaehApiCall({
+        uri: "/insurance/addPlanAndPolicy",
+        data: newdata,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Added successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
     }
 
     $this.setState({
@@ -74,8 +88,7 @@ const saveNetworkPlan = ($this, context) => {
     });
     if (context !== undefined) {
       context.updateState({
-        network_plan: previous,
-        update_network_plan_insurance: updatedata
+        network_plan: previous
       });
     }
     addNewNetwork($this);
@@ -116,7 +129,9 @@ const addNewNetwork = $this => {
     employer: null,
     policy_number: null,
     preapp_limit: null,
-    hospital_id: null
+    hospital_id: null,
+    saveupdate: false,
+    btnupdate: true
   });
 };
 
@@ -170,24 +185,26 @@ const UpdateNetworkPlan = ($this, context) => {
       invoice_max_deduct: $this.state.invoice_max_deduct,
       preapp_limit_from: $this.state.preapp_limit_from
     };
-
-    algaehApiCall({
-      uri: "/insurance/updateNetworkAndNetworkOffice",
-      data: updateobj,
-      method: "PUT",
-      onSuccess: response => {
-        if (response.data.success === true) {
-          swal("Updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
-          });
+    if ($this.state.hims_d_insurance_network_id !== null) {
+      algaehApiCall({
+        uri: "/insurance/updateNetworkAndNetworkOffice",
+        data: updateobj,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Updated successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
         }
-      },
-      onFailure: error => {
-        console.log(error);
-      }
-    });
+      });
+    }
+
     addNewNetwork($this);
   }
 };

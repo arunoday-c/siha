@@ -46,6 +46,22 @@ const saveSubInsurance = ($this, context) => {
     previous.push(obj);
     if ($this.state.buttonenable === true) {
       updatedata.push(obj);
+      algaehApiCall({
+        uri: "/insurance/addSubInsuranceProvider",
+        data: updatedata,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Added successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
     }
     $this.setState({
       insurance_sub_saved: true,
@@ -54,8 +70,7 @@ const saveSubInsurance = ($this, context) => {
 
     if (context !== undefined) {
       context.updateState({
-        sub_insurance: previous,
-        update_sub_insurance: updatedata
+        sub_insurance: previous
       });
     }
     addNewSubinsurance($this);

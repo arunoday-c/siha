@@ -121,45 +121,6 @@ class InsuranceAdd extends PureComponent {
     }
 
     if (this.state.buttonenable === true) {
-      if (this.state.update_sub_insurance.length !== 0) {
-        algaehApiCall({
-          uri: "/insurance/addSubInsuranceProvider",
-          data: this.state.update_sub_insurance,
-          onSuccess: response => {
-            if (response.data.success === true) {
-              swal("Updated successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
-              });
-            }
-          },
-          onFailure: error => {
-            console.log(error);
-          }
-        });
-      }
-      if (this.state.update_network_plan_insurance.length !== 0) {
-        algaehApiCall({
-          uri: "/insurance/addPlanAndPolicy",
-          data: this.state.update_network_plan_insurance,
-          onSuccess: response => {
-            if (response.data.success === true) {
-              swal("Updated successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
-              });
-            }
-          },
-          onFailure: error => {
-            console.log(error);
-          }
-        });
-      }
-    }
-
-    if (this.state.buttonenable === true) {
       if (
         this.props.insuranceprovider !== undefined &&
         this.props.insuranceprovider.length !== 0
@@ -324,7 +285,6 @@ class InsuranceAdd extends PureComponent {
                   </div>
 
                   <div>{getStepContent(this.props.opencomponent, this)}</div>
-                  {/* <InsuranceProvider InsuranceSetup={this.state} /> */}
 
                   <br />
 
@@ -340,16 +300,17 @@ class InsuranceAdd extends PureComponent {
                           Close
                         </button>
                       </span>
-
-                      <span className="float-right">
-                        <button
-                          style={{ marginRight: "15px" }}
-                          className="htpl1-phase1-btn-primary"
-                          onClick={updatedata.bind(this, this)}
-                        >
-                          Update
-                        </button>
-                      </span>
+                      {this.props.opencomponent === "1" ? (
+                        <span className="float-right">
+                          <button
+                            style={{ marginRight: "15px" }}
+                            className="htpl1-phase1-btn-primary"
+                            onClick={updatedata.bind(this, this)}
+                          >
+                            Update
+                          </button>
+                        </span>
+                      ) : null}
                     </div>
                   </div>
                 </MyContext.Provider>

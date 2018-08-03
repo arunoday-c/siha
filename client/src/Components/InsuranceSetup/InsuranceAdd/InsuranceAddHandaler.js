@@ -137,7 +137,8 @@ const handleReset = ($this, e) => {
 };
 
 const updatedata = ($this, e) => {
-  if ($this.props.opencomponent === 1) {
+  debugger;
+  if ($this.props.opencomponent === "1") {
     algaehApiCall({
       uri: "/insurance/updateInsuranceProvider",
       method: "PUT",
@@ -156,48 +157,6 @@ const updatedata = ($this, e) => {
         console.log(error);
       }
     });
-  } else if ($this.props.opencomponent === 2) {
-    if ($this.state.update_sub_insurance.length !== 0) {
-      algaehApiCall({
-        uri: "/insurance/addSubInsuranceProvider",
-        data: $this.state.update_sub_insurance,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            swal("Updated successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
-            });
-            $this.props.onClose && $this.props.onClose(e);
-          }
-        },
-        onFailure: error => {
-          console.log(error);
-        }
-      });
-    }
-  } else if ($this.props.opencomponent === 3) {
-    if ($this.state.update_network_plan_insurance.length !== 0) {
-      algaehApiCall({
-        uri: "/insurance/addPlanAndPolicy",
-        data: $this.state.update_network_plan_insurance,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            swal("Updated successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
-            });
-            $this.props.onClose && $this.props.onClose(e);
-          }
-        },
-        onFailure: error => {
-          console.log(error);
-        }
-      });
-    }
-  } else if ($this.props.opencomponent === 4) {
-    $this.props.onClose && $this.props.onClose(e);
   }
 };
 

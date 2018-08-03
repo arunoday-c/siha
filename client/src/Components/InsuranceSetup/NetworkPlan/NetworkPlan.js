@@ -72,7 +72,9 @@ class NetworkPlan extends PureComponent {
       hospital_id: null,
       preapp_limit_from: "GROSS",
 
-      PlanList: false
+      PlanList: false,
+      saveupdate: false,
+      btnupdate: true
     };
   }
 
@@ -117,20 +119,30 @@ class NetworkPlan extends PureComponent {
     this.setState({ snackeropen: false });
   };
 
-  ShowPlanListScreen(e) {
+  ShowPlanListScreen(dataclear, e) {
     debugger;
     let rowSelected = {};
+    let saveupdate = false,
+      btnupdate = true;
     if (
       e.hims_d_insurance_network_id !== undefined &&
       e.hims_d_insurance_network_id !== null
     ) {
       rowSelected = e;
+      saveupdate = true;
+      btnupdate = false;
+      // addNewNetwork(this, this);
     }
     this.setState({
       ...this.state,
       PlanList: !this.state.PlanList,
+      saveupdate: saveupdate,
+      btnupdate: btnupdate,
       ...rowSelected
     });
+    if (dataclear === "Y") {
+      addNewNetwork(this, this);
+    }
   }
 
   render() {
@@ -768,14 +780,13 @@ class NetworkPlan extends PureComponent {
                       size="small"
                       color="primary"
                       style={{ float: "left" }}
-                      onClick={this.ShowPlanListScreen.bind(this)}
+                      onClick={this.ShowPlanListScreen.bind(this, "Y")}
                     >
                       View Plans
                     </Button>
-
                     <NetworkPlanList
                       show={this.state.PlanList}
-                      onClose={this.ShowPlanListScreen.bind(this)}
+                      onClose={this.ShowPlanListScreen.bind(this, "N")}
                       selectedLang={this.state.selectedLang}
                       inputsparameters={this.state.network_plan}
                     />
@@ -785,19 +796,23 @@ class NetworkPlan extends PureComponent {
                       color="primary"
                       style={{ float: "right" }}
                       onClick={saveNetworkPlan.bind(this, this, context)}
+                      disabled={this.state.saveupdate}
                     >
                       Save
                     </Button>
+                    {this.state.buttonenable === true ? (
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="primary"
+                        style={{ float: "right" }}
+                        onClick={UpdateNetworkPlan.bind(this, this, context)}
+                        disabled={this.state.btnupdate}
+                      >
+                        Update
+                      </Button>
+                    ) : null}
 
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="primary"
-                      style={{ float: "right" }}
-                      onClick={UpdateNetworkPlan.bind(this, this, context)}
-                    >
-                      Update
-                    </Button>
                     <AHSnackbar
                       open={this.state.snackeropen}
                       handleClose={this.handleClose}
