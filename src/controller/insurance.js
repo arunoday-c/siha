@@ -18,7 +18,8 @@ import {
   addPlanAndPolicy,
   getPriceList,
   getNetworkAndNetworkOfficRecords,
-  updatePriceList
+  updatePriceList,
+  updateNetworkAndNetworkOffice
 } from "../model/insurance";
 
 export default ({ config, db }) => {
@@ -248,6 +249,21 @@ export default ({ config, db }) => {
       } else {
         next(httpStatus.generateError(httpStatus.notFound, "No records found"));
       }
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to  update Network And NetworkOffice
+  api.put(
+    "/updateNetworkAndNetworkOffice",
+    updateNetworkAndNetworkOffice,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
     },
     releaseConnection
   );
