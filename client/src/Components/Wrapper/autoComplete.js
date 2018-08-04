@@ -108,7 +108,7 @@ const styles = theme => ({
     }
   }
 });
-class AutoComplete extends PureComponent {
+class AutoComplete extends Component {
   handleChange = value => {
     if (value !== null) {
       if (
@@ -143,7 +143,6 @@ class AutoComplete extends PureComponent {
   }
 
   componentWillReceiveProps(props) {
-    // debugger;
     if (
       this.props.selector.multi !== undefined &&
       this.props.selector.multi === true
@@ -175,17 +174,16 @@ class AutoComplete extends PureComponent {
     });
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   debugger;
-  //   if (
-  //     nextProps.selector.value !== this.state.single ||
-  //     (nextProps.selector.others != null &&
-  //       nextProps.selector.others.disabled !== this.state.disabled) ||
-  //     nextState !== this.state.single
-  //   )
-  //     return true;
-  //   return false;
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      nextProps.selector.value !== this.state.single ||
+      (nextProps.selector.others != null &&
+        nextProps.selector.others.disabled !== this.state.disabled) ||
+      nextState !== this.state.single
+    )
+      return true;
+    return false;
+  }
 
   renderAutoComplete = () => {
     return (

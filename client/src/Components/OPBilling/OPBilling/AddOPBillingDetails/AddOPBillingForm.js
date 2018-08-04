@@ -78,7 +78,6 @@ class AddOPBillingForm extends Component {
   }
 
   ProcessToBill(context, e) {
-    debugger;
     let $this = this;
 
     let serviceInput = {
@@ -115,7 +114,6 @@ class AddOPBillingForm extends Component {
           if (data.billdetails.length !== 0) {
             existingservices.splice(0, 0, data.billdetails[0]);
           }
-          debugger;
 
           if (context != null) {
             context.updateState({ billdetails: existingservices });

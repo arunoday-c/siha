@@ -52,7 +52,6 @@ class SubInsurance extends PureComponent {
   }
 
   componentDidMount() {
-    debugger;
     if (this.state.insurance_provider_id !== null) {
       this.props.getSubInsuranceDetails({
         uri: "/insurance/getSubInsurance",
@@ -66,7 +65,6 @@ class SubInsurance extends PureComponent {
           mappingName: "subinsuranceprovider"
         },
         afterSuccess: data => {
-          debugger;
           this.setState({ sub_insurance: data });
         }
       });

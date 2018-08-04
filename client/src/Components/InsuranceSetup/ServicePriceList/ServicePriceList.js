@@ -46,7 +46,6 @@ class SubInsurance extends PureComponent {
   }
 
   componentDidMount() {
-    debugger;
     if (this.state.insurance_provider_id !== null) {
       this.props.getPriceList({
         uri: "/insurance/getPriceList",

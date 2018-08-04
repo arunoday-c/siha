@@ -10,7 +10,6 @@ const texthandle = ($this, context, e) => {
 
   clearInterval(texthandlerInterval);
   texthandlerInterval = setInterval(() => {
-    debugger;
     if (context !== undefined) {
       context.updateState({ [name]: value });
     }

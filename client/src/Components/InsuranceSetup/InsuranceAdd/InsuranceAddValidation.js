@@ -1,7 +1,6 @@
 import moment from "moment";
 
 const Validations = ($this, e) => {
-  debugger;
   let isError = false;
 
   if ($this.state.screenName === "InsuranceProvider") {
@@ -71,7 +70,6 @@ const Validations = ($this, e) => {
   }
   //Sub Insurance
   else if ($this.state.screenName === "SubInsurance") {
-    debugger;
     let obj = {};
     let previous = $this.state.sub_insurance || [];
     const x = document.querySelectorAll("[data-subdata = 'true']");
@@ -121,7 +119,6 @@ const Validations = ($this, e) => {
   }
   //NetWork and Network Office
   else if ($this.state.screenName === "NetworkPlan") {
-    debugger;
     let obj1 = {};
     let previous1 = $this.state.network_plan || [];
     const y = document.querySelectorAll("[data-netdata = 'true']");

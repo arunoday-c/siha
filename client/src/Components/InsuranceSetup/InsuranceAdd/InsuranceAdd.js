@@ -147,7 +147,7 @@ class InsuranceAdd extends PureComponent {
     const { activeStep } = this.state;
 
     this.state.buttonenable = this.props.buttonenable;
-    debugger;
+
     if (this.state.buttonenable === true) {
       this.props.insurance_provider_id !== null
         ? (this.state.insurance_provider_id = this.props.insurance_provider_id)
@@ -171,7 +171,6 @@ class InsuranceAdd extends PureComponent {
                   value={{
                     state: this.state,
                     updateState: obj => {
-                      debugger;
                       this.setState({ ...obj });
                     }
                   }}
@@ -273,7 +272,6 @@ class InsuranceAdd extends PureComponent {
                   value={{
                     state: this.state,
                     updateState: obj => {
-                      debugger;
                       this.setState({ ...obj });
                     }
                   }}

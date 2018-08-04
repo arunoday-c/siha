@@ -100,7 +100,6 @@ class NetworkPlanList extends PureComponent {
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
                     onRowSelect={row => {
-                      debugger;
                       this.onClose(row);
                     }}
                   />

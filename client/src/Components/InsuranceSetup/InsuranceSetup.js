@@ -46,7 +46,6 @@ class InsuranceSetup extends Component {
   }
 
   ShowModel(e) {
-    debugger;
     this.setState(
       {
         ...this.state,
@@ -56,14 +55,10 @@ class InsuranceSetup extends Component {
         insurance_provider_id: null,
         insurance_provider_name: null
       },
-      () => {
-        debugger;
-      }
+      () => {}
     );
   }
-  getCtrlCode(insCode) {
-    debugger;
-  }
+  getCtrlCode(insCode) {}
 
   changeDateFormat = date => {
     if (date != null) {

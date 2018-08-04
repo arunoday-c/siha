@@ -4,7 +4,6 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 
 const texthandle = ($this, ctrl, e) => {
-  debugger;
   e = e || ctrl;
 
   let name = e.name || e.target.name;
@@ -16,7 +15,6 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const saveNetworkPlan = ($this, context) => {
-  debugger;
   const err = Validations($this);
   let newdata = [];
   if (!err) {
@@ -136,14 +134,12 @@ const addNewNetwork = $this => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  debugger;
   $this.setState({
     [e]: moment(ctrl)._d
   });
 };
 
 const UpdateNetworkPlan = ($this, context) => {
-  debugger;
   const err = Validations($this);
   if (!err) {
     let updateobj = {

@@ -16,7 +16,6 @@ const resetState = $this => {
 };
 
 const onchangecalculation = ($this, row, ctrl, e) => {
-  debugger;
   let netamount = 0;
   // let discountAmt =
   if (e.target.name === "corporate_discount_amt") {
@@ -37,7 +36,6 @@ const onchangecalculation = ($this, row, ctrl, e) => {
   resetState($this);
 };
 const onchangegridcol = ($this, row, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;
@@ -46,7 +44,6 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updatePriceList = ($this, data) => {
-  debugger;
   data.updated_by = getCookie("UserID");
   algaehApiCall({
     uri: "/insurance/updatePriceList",
@@ -79,7 +76,6 @@ const updatePriceList = ($this, data) => {
 };
 
 const bulkUpdate = ($this, data) => {
-  debugger;
   let updateobj = {};
 
   if (data === "pre_approval") {

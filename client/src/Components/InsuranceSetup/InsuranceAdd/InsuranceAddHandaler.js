@@ -25,7 +25,7 @@ const handleNext = ($this, e) => {
       }
     } else if ($this.state.screenName === "SubInsurance") {
       //Save Sub
-      debugger;
+
       if ($this.state.insurance_sub_saved === false) {
         algaehApiCall({
           uri: "/insurance/addSubInsuranceProvider",
@@ -43,7 +43,6 @@ const handleNext = ($this, e) => {
         setComponent($this, {});
       }
     } else if ($this.state.screenName === "NetworkPlan") {
-      debugger;
       //Save Network and Plan
 
       if ($this.state.insurance_plan_saved === false) {
@@ -137,7 +136,6 @@ const handleReset = ($this, e) => {
 };
 
 const updatedata = ($this, e) => {
-  debugger;
   if ($this.props.opencomponent === "1") {
     algaehApiCall({
       uri: "/insurance/updateInsuranceProvider",

@@ -39,7 +39,6 @@ class InsuranceProvider extends PureComponent {
   }
 
   componentDidMount() {
-    debugger;
     // console.log("Data : ", this.props.insuranceprovider);
     if (
       this.state.insurance_provider_id !== null &&

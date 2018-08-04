@@ -89,7 +89,6 @@ class OrderingServices extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // debugger;
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0

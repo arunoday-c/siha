@@ -2,12 +2,14 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert";
 
+//Text Handaler Change
 const texthandle = ($this, e) => {
   $this.setState({
     [e.target.name]: e.target.value
   });
 };
 
+// When Service Type selects respective Service Type theService to be filter
 const serviceTypeHandeler = ($this, e) => {
   $this.setState(
     {
@@ -179,12 +181,12 @@ const VisitSearch = ($this, e) => {
   });
 };
 
-const deleteServices = ($this, row) => {
+const deleteServices = ($this, row, rowId) => {
   debugger;
   let orderservices = $this.state.orderservices;
   let preserviceInput = $this.state.preserviceInput;
 
-  orderservices.splice(row, 1);
+  orderservices.splice(rowId, 1);
 
   // preserviceInput.splice(row, 1);
 
@@ -192,15 +194,14 @@ const deleteServices = ($this, row) => {
   for (var i = 0; i < preserviceInput.length; i++) {
     if (preserviceInput[i].hims_d_services_id === row["services_id"]) {
       preserviceInput.splice(i, 1);
-    } else {
-      if (app_amt < $this.state.preapp_limit_amount) {
-        preserviceInput[i].approval_limit_yesno = "N";
-      }
     }
   }
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
       debugger;
+      for (var i = 0; i < preserviceInput.length; i++) {
+        preserviceInput[i].approval_limit_yesno = "N";
+      }
     }
   }
 
