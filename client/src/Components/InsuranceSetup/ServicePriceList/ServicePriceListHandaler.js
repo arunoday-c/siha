@@ -78,10 +78,87 @@ const updatePriceList = ($this, data) => {
   });
 };
 
+const bulkUpdate = ($this, data) => {
+  debugger;
+  let updateobj = {};
+
+  if (data === "pre_approval") {
+    updateobj = {
+      update: data,
+      pre_approval: $this.state.pre_approval,
+      updated_by: getCookie("UserID"),
+      insurance_id: $this.state.insurance_provider_id
+    };
+  } else if (data === "covered") {
+    updateobj = {
+      update: data,
+      covered: $this.state.covered,
+      updated_by: getCookie("UserID"),
+      insurance_id: $this.state.insurance_provider_id
+    };
+  } else if (data === "corporate_discount") {
+    if ($this.state.applicable === null) {
+      successfulMessage({
+        message: "Records updated successfully . .",
+        title: "Warning",
+        icon: "warning"
+      });
+      return;
+    } else {
+      if ($this.state.applicable === "P") {
+        updateobj = {
+          discountType: $this.state.applicable,
+          update: data,
+          corporate_discount: $this.state.corporate_discount,
+          updated_by: getCookie("UserID"),
+          insurance_id: $this.state.insurance_provider_id
+        };
+      } else if ($this.state.applicable === "A") {
+        updateobj = {
+          discountType: $this.state.applicable,
+          update: data,
+          corporate_discount: $this.state.corporate_discount,
+          updated_by: getCookie("UserID"),
+          insurance_id: $this.state.insurance_provider_id
+        };
+      }
+    }
+  }
+  algaehApiCall({
+    uri: "/insurance/updatePriceListBulk",
+    data: updateobj,
+    method: "PUT",
+    onSuccess: response => {
+      if (response.data.success) {
+        successfulMessage({
+          message: "Records updated successfully . .",
+          title: "Success",
+          icon: "success"
+        });
+
+        $this.props.getPriceList({
+          uri: "/insurance/getPriceList",
+          method: "GET",
+          printInput: true,
+          data: {
+            insurance_id: $this.state.insurance_provider_id
+          },
+          redux: {
+            type: "PRICE_LIST_GET_DATA",
+            mappingName: "pricelist"
+          }
+        });
+      }
+    },
+    onFailure: error => {}
+  });
+};
+
 export {
   texthandle,
   onchangegridcol,
   resetState,
   updatePriceList,
-  onchangecalculation
+  onchangecalculation,
+  bulkUpdate
 };

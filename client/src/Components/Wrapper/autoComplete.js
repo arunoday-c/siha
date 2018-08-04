@@ -143,7 +143,7 @@ class AutoComplete extends PureComponent {
   }
 
   componentWillReceiveProps(props) {
-    debugger;
+    // debugger;
     if (
       this.props.selector.multi !== undefined &&
       this.props.selector.multi === true

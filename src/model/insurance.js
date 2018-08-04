@@ -1269,6 +1269,8 @@ let updatePriceList = (req, res, next) => {
     gross_amt: null,
     corporate_discount_amt: null,
     net_amount: null,
+    pre_approval: null,
+    covered: null,
     updated_by: null,
     updated_date: null,
     record_status: null
@@ -1285,14 +1287,17 @@ let updatePriceList = (req, res, next) => {
     let inputParam = extend(services_insurance, req.body);
     connection.query(
       "UPDATE `hims_d_services_insurance` \
-     SET `insurance_service_name`=?, `cpt_code`=?, `gross_amt`=?, `corporate_discount_amt`=?, `net_amount`=?, \
-     `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `hims_d_services_insurance_id`=?",
+     SET `insurance_service_name`=?, `cpt_code`=?, `gross_amt`=?, `corporate_discount_amt`=?, `net_amount`=?,\
+     `pre_approval`=?,`covered`=?,`updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
+     `hims_d_services_insurance_id`=?",
       [
         inputParam.insurance_service_name,
         inputParam.cpt_code,
         inputParam.gross_amt,
         inputParam.corporate_discount_amt,
         inputParam.net_amount,
+        inputParam.pre_approval,
+        inputParam.covered,
         inputParam.updated_by,
         new Date(),
         inputParam.hims_d_services_insurance_id
@@ -1528,6 +1533,95 @@ let updateNetworkAndNetworkOffice = (req, res, next) => {
   }
 };
 
+let updatePriceListBulk = (req, res, next) => {
+  let services_insurance = {
+    hims_d_services_insurance_id: null,
+    corporate_discount_percent: null,
+    corporate_discount_amt: null,
+    net_amount: null,
+    pre_approval: null,
+    covered: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null
+  };
+
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  let inputParam = extend(services_insurance, req.body);
+  let strQuery = "";
+  let parameters = [];
+  if (inputParam.update === "pre_approval") {
+    strQuery =
+      "UPDATE `hims_d_services_insurance` \
+    SET `pre_approval`=?,`updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
+    `insurance_id`=?";
+    parameters = [
+      inputParam.pre_approval,
+      inputParam.updated_by,
+      new Date(),
+      inputParam.insurance_id
+    ];
+  } else if (inputParam.update === "covered") {
+    strQuery =
+      "UPDATE `hims_d_services_insurance` \
+    SET `covered`=?,`updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
+    `insurance_id`=?";
+    parameters = [
+      inputParam.pre_approval,
+      inputParam.updated_by,
+      new Date(),
+      inputParam.insurance_id
+    ];
+  } else if (inputParam.update === "corporate_discount") {
+    if (inputParam.discountType === "P") {
+      strQuery =
+        "UPDATE `hims_d_services_insurance` \
+        SET `corporate_discount_percent`=?, `corporate_discount_amt`=(gross_amt*?)/100,`net_amount`=(gross_amt-(gross_amt*?)/100),\
+        `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?";
+
+      parameters = [
+        inputParam.corporate_discount,
+        inputParam.corporate_discount,
+        inputParam.corporate_discount,
+        inputParam.updated_by,
+        new Date(),
+        inputParam.insurance_id
+      ];
+    } else if (inputParam.discountType === "A") {
+      strQuery =
+        "UPDATE `hims_d_services_insurance` \
+        SET `corporate_discount_amt`=?, `corporate_discount_percent`=(?/gross_amt)*100,`net_amount`=gross_amt-?, \
+        `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?";
+
+      parameters = [
+        inputParam.corporate_discount,
+        inputParam.corporate_discount,
+        inputParam.corporate_discount,
+        inputParam.updated_by,
+        new Date(),
+        inputParam.insurance_id
+      ];
+    }
+  }
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+
+    connection.query(strQuery, parameters, (error, result) => {
+      releaseDBConnection(db, connection);
+      if (error) {
+        next(error);
+      }
+      req.records = result;
+      next();
+    });
+  });
+};
+
 module.exports = {
   getPatientInsurance,
   addPatientInsurance,
@@ -1544,5 +1638,6 @@ module.exports = {
   getPriceList,
   getNetworkAndNetworkOfficRecords,
   updatePriceList,
-  updateNetworkAndNetworkOffice
+  updateNetworkAndNetworkOffice,
+  updatePriceListBulk
 };

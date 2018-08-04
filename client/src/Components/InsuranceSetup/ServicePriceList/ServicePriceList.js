@@ -12,7 +12,8 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
+  Tooltip
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -20,7 +21,8 @@ import {
   texthandle,
   onchangegridcol,
   updatePriceList,
-  onchangecalculation
+  onchangecalculation,
+  bulkUpdate
 } from "./ServicePriceListHandaler";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import Paper from "@material-ui/core/Paper";
@@ -113,11 +115,17 @@ class SubInsurance extends PureComponent {
                     }}
                   />
                   <div className="col-lg-1">
-                    <IconButton className="go-button" color="primary">
-                      <PlayCircleFilled
-                      // onClick={this.ProcessToBill.bind(this, context)}
-                      />
-                    </IconButton>
+                    <Tooltip id="tooltip-icon" title="Apply">
+                      <IconButton className="go-button" color="primary">
+                        <PlayCircleFilled
+                          onClick={bulkUpdate.bind(
+                            this,
+                            this,
+                            "corporate_discount"
+                          )}
+                        />
+                      </IconButton>
+                    </Tooltip>
                   </div>
 
                   <AlagehAutoComplete
@@ -139,11 +147,13 @@ class SubInsurance extends PureComponent {
                     }}
                   />
                   <div className="col-lg-1">
-                    <IconButton className="go-button" color="primary">
-                      <PlayCircleFilled
-                      // onClick={this.ProcessToBill.bind(this, context)}
-                      />
-                    </IconButton>
+                    <Tooltip id="tooltip-icon" title="Apply">
+                      <IconButton className="go-button" color="primary">
+                        <PlayCircleFilled
+                          onClick={bulkUpdate.bind(this, this, "pre_approval")}
+                        />
+                      </IconButton>
+                    </Tooltip>
                   </div>
 
                   <AlagehAutoComplete
@@ -165,11 +175,13 @@ class SubInsurance extends PureComponent {
                     }}
                   />
                   <div className="col-lg-1">
-                    <IconButton className="go-button" color="primary">
-                      <PlayCircleFilled
-                      // onClick={this.ProcessToBill.bind(this, context)}
-                      />
-                    </IconButton>
+                    <Tooltip id="tooltip-icon" title="Apply">
+                      <IconButton className="go-button" color="primary">
+                        <PlayCircleFilled
+                          onClick={bulkUpdate.bind(this, this, "covered")}
+                        />
+                      </IconButton>
+                    </Tooltip>
                   </div>
                 </div>
               </Paper>

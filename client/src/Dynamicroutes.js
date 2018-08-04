@@ -20,6 +20,8 @@ import SampleCollection from "./Components/Laboratory/SampleCollection/SampleCol
 import MedicalWorkbenchSetup from "./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup";
 import DoctorsWorkbench from "./Components/DoctorsWorkbench/DoctorsWorkbench";
 import AccessionAcknowledgement from "./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement";
+import OrderingServices from "./Components/DoctorsWorkbench/OrderingServices/OrderingServices";
+
 function height() {
   let height =
     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -46,13 +48,27 @@ const componts = (selectedLang, breadStyle) => {
     InsuranceSetup: (
       <InsuranceSetup SelectLanguage={selectedLang} breadStyle={breadStyle} />
     ),
-    SampleCollection: <SampleCollection SelectLanguage={selectedLang} />,
-    DoctorsWorkbench: <DoctorsWorkbench SelectLanguage={selectedLang} />,
+    SampleCollection: (
+      <SampleCollection SelectLanguage={selectedLang} breadStyle={breadStyle} />
+    ),
+    DoctorsWorkbench: (
+      <DoctorsWorkbench SelectLanguage={selectedLang} breadStyle={breadStyle} />
+    ),
     MedicalWorkbenchSetup: (
-      <MedicalWorkbenchSetup SelectLanguage={selectedLang} />
+      <MedicalWorkbenchSetup
+        SelectLanguage={selectedLang}
+        breadStyle={breadStyle}
+      />
     ),
     AccessionAcknowledgement: (
-      <AccessionAcknowledgement SelectLanguage={selectedLang} />
+      <AccessionAcknowledgement
+        SelectLanguage={selectedLang}
+        breadStyle={breadStyle}
+      />
+    ),
+
+    OrderingServices: (
+      <OrderingServices SelectLanguage={selectedLang} breadStyle={breadStyle} />
     )
   };
 };

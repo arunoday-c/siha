@@ -714,8 +714,19 @@ let getBillDetails = (req, res, next) => {
               ? "N"
               : servicesDetails.sec_insured;
 
+          let approval_amt =
+            servicesDetails.approval_amt === undefined
+              ? 0
+              : servicesDetails.approval_amt;
+          let approval_limit_yesno =
+            servicesDetails.approval_limit_yesno === undefined
+              ? "N"
+              : servicesDetails.approval_limit_yesno;
+
+          let preapp_limit_exceed = "N";
           let pre_approval = "N";
           let covered = "Y";
+          let preapp_limit_amount = 0;
           new Promise((resolve, reject) => {
             try {
               if (insured === "Y") {
@@ -750,14 +761,24 @@ let getBillDetails = (req, res, next) => {
                 policydtls !== null ? policydtls.pre_approval : "N";
 
               covered = policydtls !== null ? policydtls.covered : "Y";
+              if (covered === "N") {
+                debugLog("not covered", {});
+                insured = "N";
+              }
+
+              if (approval_limit_yesno === "Y") {
+                pre_approval = "Y";
+              }
+
+              debugLog("Insured", insured);
+              debugLog("Pre Approval", policydtls.pre_approval);
+              debugLog("Covered", policydtls.covered);
+
               if (
                 insured === "Y" &&
                 policydtls.pre_approval === "N" &&
-                policydtls.covered === "N"
+                policydtls.covered === "Y"
               ) {
-                debugLog("Insured:", quantity);
-                debugLog("Unit cost", policydtls.gross_amt);
-
                 if (policydtls.company_service_price_type == "N") {
                   unit_cost = policydtls.net_amount;
                 } else {
@@ -791,6 +812,15 @@ let getBillDetails = (req, res, next) => {
                 patient_payable = copay_amount;
                 comapany_resp = net_amout - patient_resp;
                 company_payble = net_amout - patient_payable;
+
+                debugLog("Pre Approval limit:", policydtls.preapp_limit);
+                preapp_limit_amount = policydtls.preapp_limit;
+                if (policydtls.preapp_limit !== 0) {
+                  approval_amt = approval_amt + company_payble;
+                  if (approval_amt > policydtls.preapp_limit) {
+                    preapp_limit_exceed = "Y";
+                  }
+                }
 
                 //If primary and secondary exists
                 if (sec_insured === "Y") {
@@ -864,12 +894,18 @@ let getBillDetails = (req, res, next) => {
 
                 comapany_resp: comapany_resp,
                 company_payble: company_payble,
+                dummy_company_payble: company_payble,
 
                 sec_copay_percntage: sec_copay_percntage,
                 sec_copay_amount: sec_copay_amount,
                 sec_company_res: sec_company_res,
                 sec_company_paybale: sec_company_paybale,
-                pre_approval: pre_approval
+                pre_approval: pre_approval,
+                insurance_yesno: insured,
+                preapp_limit_exceed: preapp_limit_exceed,
+                approval_amt: approval_amt,
+                preapp_limit_amount: preapp_limit_amount,
+                approval_limit_yesno: approval_limit_yesno
               });
 
               debugLog("Results are recorded...", result);
@@ -1383,7 +1419,7 @@ function insuranceServiceDetails(req, next, connection, resolve) {
 
   connection.query(
     "select price_from ,copay_consultation,copay_percent_rad,copay_percent_trt,copay_percent_dental,\
-    copay_medicine from hims_d_insurance_network_office where hims_d_insurance_network_office_id=?",
+    copay_medicine, preapp_limit from hims_d_insurance_network_office where hims_d_insurance_network_office_id=?",
     [input.hims_d_insurance_network_office_id],
     (error, resultOffic) => {
       if (error) {
@@ -1405,7 +1441,7 @@ function insuranceServiceDetails(req, next, connection, resolve) {
         debugLog("val:", inputparam.insurance_id);
 
         connection.query(
-          "select Inp.company_service_price_type,copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,\
+          "select Inp.company_service_price_type,copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,covered,\
            net_amount,gross_amt from hims_d_services_insurance sI inner join hims_d_insurance_provider Inp on\
            Inp.hims_d_insurance_provider_id=sI.insurance_id where sI.insurance_id =? and sI.service_type_id =? and \
            sI.services_id =?  and sI.record_status='A' and Inp.record_status='A'",

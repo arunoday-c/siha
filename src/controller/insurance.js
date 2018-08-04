@@ -19,7 +19,8 @@ import {
   getPriceList,
   getNetworkAndNetworkOfficRecords,
   updatePriceList,
-  updateNetworkAndNetworkOffice
+  updateNetworkAndNetworkOffice,
+  updatePriceListBulk
 } from "../model/insurance";
 
 export default ({ config, db }) => {
@@ -257,6 +258,21 @@ export default ({ config, db }) => {
   api.put(
     "/updateNetworkAndNetworkOffice",
     updateNetworkAndNetworkOffice,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad : to  update bulk Services price list
+  api.put(
+    "/updatePriceListBulk",
+    updatePriceListBulk,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

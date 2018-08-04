@@ -67,9 +67,9 @@
         "path": "/FrontDesk"
       },
       {
-        "name": "Patient List",
-        "label": "Patient List",
-        "path": "/PatientList"
+        "name": "OrderingServices",
+        "label": "Ordering Services",
+        "path": "/OrderingServices"
       },
       {
         "name": "Patient Recall",
