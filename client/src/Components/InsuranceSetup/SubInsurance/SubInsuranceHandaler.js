@@ -21,12 +21,9 @@ const texthandle = ($this, context, e) => {
 };
 
 const saveSubInsurance = ($this, context) => {
-  debugger;
   let updatedata = [];
   const err = Validations($this);
   if (!err) {
-    debugger;
-
     let obj = {
       insurance_sub_code: $this.state.insurance_sub_code,
       insurance_sub_name: $this.state.insurance_sub_name,
@@ -46,6 +43,22 @@ const saveSubInsurance = ($this, context) => {
     previous.push(obj);
     if ($this.state.buttonenable === true) {
       updatedata.push(obj);
+      algaehApiCall({
+        uri: "/insurance/addSubInsuranceProvider",
+        data: updatedata,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Added successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
     }
     $this.setState({
       insurance_sub_saved: true,
@@ -54,8 +67,7 @@ const saveSubInsurance = ($this, context) => {
 
     if (context !== undefined) {
       context.updateState({
-        sub_insurance: previous,
-        update_sub_insurance: updatedata
+        sub_insurance: previous
       });
     }
     addNewSubinsurance($this);
@@ -72,7 +84,6 @@ const addNewSubinsurance = $this => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  debugger;
   $this.setState({
     [e]: moment(ctrl)._d
   });
@@ -113,7 +124,6 @@ const showconfirmDialog = ($this, id) => {
                 mappingName: "subinsuranceprovider"
               },
               afterSuccess: data => {
-                debugger;
                 $this.setState({ sub_insurance: data });
               }
             });
@@ -128,12 +138,10 @@ const showconfirmDialog = ($this, id) => {
 };
 
 const deleteSubInsurance = ($this, row) => {
-  debugger;
   showconfirmDialog($this, row.hims_d_insurance_sub_id);
 };
 
 const updateSubInsurance = ($this, data) => {
-  debugger;
   algaehApiCall({
     uri: "/insurance/updateSubInsuranceProvider",
     data: data,
@@ -157,7 +165,6 @@ const updateSubInsurance = ($this, data) => {
             mappingName: "subinsuranceprovider"
           },
           afterSuccess: data => {
-            debugger;
             $this.setState({ sub_insurance: data });
           }
         });
@@ -172,11 +179,9 @@ const resetState = $this => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;
-  // row.onChangeFinish(row);
   resetState($this);
 };
 

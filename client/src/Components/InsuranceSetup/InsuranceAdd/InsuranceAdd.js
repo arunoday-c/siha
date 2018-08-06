@@ -70,8 +70,8 @@ class InsuranceAdd extends PureComponent {
       screenName: "InsuranceProvider",
       buttonenable: false
 
-      // activeStep: 2,
-      // screenName: "NetworkPlan"
+      // activeStep: 3,
+      // screenName: "Services"
     };
   }
 
@@ -120,28 +120,6 @@ class InsuranceAdd extends PureComponent {
       }
     }
 
-    if (
-      this.state.buttonenable === true &&
-      this.state.update_sub_insurance.length !== 0
-    ) {
-      algaehApiCall({
-        uri: "/insurance/addSubInsuranceProvider",
-        data: this.state.update_sub_insurance,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            swal("Updated successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
-            });
-          }
-        },
-        onFailure: error => {
-          console.log(error);
-        }
-      });
-    }
-    debugger;
     if (this.state.buttonenable === true) {
       if (
         this.props.insuranceprovider !== undefined &&
@@ -169,7 +147,7 @@ class InsuranceAdd extends PureComponent {
     const { activeStep } = this.state;
 
     this.state.buttonenable = this.props.buttonenable;
-    debugger;
+
     if (this.state.buttonenable === true) {
       this.props.insurance_provider_id !== null
         ? (this.state.insurance_provider_id = this.props.insurance_provider_id)
@@ -193,7 +171,6 @@ class InsuranceAdd extends PureComponent {
                   value={{
                     state: this.state,
                     updateState: obj => {
-                      debugger;
                       this.setState({ ...obj });
                     }
                   }}
@@ -223,16 +200,7 @@ class InsuranceAdd extends PureComponent {
                   </div>
                   <div className="container-fluid">
                     <div>
-                      {this.state.activeStep === steps.length ? (
-                        <div>
-                          <Typography className={classes.instructions}>
-                            All steps completed - you&quot;re finished
-                          </Typography>
-                          <Button onClick={handleReset.bind(this, this)}>
-                            Reset
-                          </Button>
-                        </div>
-                      ) : (
+                      {this.state.activeStep === steps.length ? null : (
                         <div>{getStepContent(activeStep, this)}</div>
                       )}
                     </div>
@@ -277,7 +245,7 @@ class InsuranceAdd extends PureComponent {
                             onClick={handleNext.bind(this, this)}
                           >
                             {activeStep === steps.length - 1
-                              ? "Save & Finish"
+                              ? "Finish"
                               : "Save & Next"}
                           </button>
 
@@ -304,7 +272,6 @@ class InsuranceAdd extends PureComponent {
                   value={{
                     state: this.state,
                     updateState: obj => {
-                      debugger;
                       this.setState({ ...obj });
                     }
                   }}
@@ -316,7 +283,6 @@ class InsuranceAdd extends PureComponent {
                   </div>
 
                   <div>{getStepContent(this.props.opencomponent, this)}</div>
-                  {/* <InsuranceProvider InsuranceSetup={this.state} /> */}
 
                   <br />
 
@@ -332,16 +298,17 @@ class InsuranceAdd extends PureComponent {
                           Close
                         </button>
                       </span>
-
-                      <span className="float-right">
-                        <button
-                          style={{ marginRight: "15px" }}
-                          className="htpl1-phase1-btn-primary"
-                          onClick={updatedata.bind(this, this)}
-                        >
-                          Update
-                        </button>
-                      </span>
+                      {this.props.opencomponent === "1" ? (
+                        <span className="float-right">
+                          <button
+                            style={{ marginRight: "15px" }}
+                            className="htpl1-phase1-btn-primary"
+                            onClick={updatedata.bind(this, this)}
+                          >
+                            Update
+                          </button>
+                        </span>
+                      ) : null}
                     </div>
                   </div>
                 </MyContext.Provider>

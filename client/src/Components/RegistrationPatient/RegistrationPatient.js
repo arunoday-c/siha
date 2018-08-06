@@ -372,7 +372,9 @@ class RegistrationPatient extends Component {
                         className="htpl1-phase1-btn-others"
                         onClick={this.ShowAdvanceScreen.bind(this)}
                       >
-                        Advance
+                        <AlgaehLabel
+                          label={{ fieldName: "btn_advance", returnText: true }}
+                        />
                       </button>
 
                       <AddAdvanceModal
@@ -405,7 +407,9 @@ class RegistrationPatient extends Component {
                         className="htpl1-phase1-btn-others"
                         onClick={this.ShowRefundScreen.bind(this)}
                       >
-                        Refund
+                        <AlgaehLabel
+                          label={{ fieldName: "btn_refund", returnText: true }}
+                        />
                       </button>
 
                       <AddAdvanceModal
@@ -440,7 +444,9 @@ class RegistrationPatient extends Component {
                         className="htpl1-phase1-btn-secondary"
                         onClick={this.ClearData.bind(this)}
                       >
-                        Clear
+                        <AlgaehLabel
+                          label={{ fieldName: "btn_clear", returnText: true }}
+                        />
                       </button>
                     </div>
                     <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-12">
@@ -449,7 +455,9 @@ class RegistrationPatient extends Component {
                         onClick={this.SavePatientDetails.bind(this)}
                         disabled={this.state.saveEnable}
                       >
-                        Save
+                        <AlgaehLabel
+                          label={{ fieldName: "btn_save", returnText: true }}
+                        />
                       </button>
 
                       <AHSnackbar

@@ -46,7 +46,6 @@ class InsuranceSetup extends Component {
   }
 
   ShowModel(e) {
-    debugger;
     this.setState(
       {
         ...this.state,
@@ -56,14 +55,10 @@ class InsuranceSetup extends Component {
         insurance_provider_id: null,
         insurance_provider_name: null
       },
-      () => {
-        debugger;
-      }
+      () => {}
     );
   }
-  getCtrlCode(insCode) {
-    debugger;
-  }
+  getCtrlCode(insCode) {}
 
   changeDateFormat = date => {
     if (date != null) {
@@ -85,7 +80,7 @@ class InsuranceSetup extends Component {
   render() {
     return (
       <div className="insurancesetup">
-        <BreadCrumb
+        {/* <BreadCrumb
           //  width={this.state.breadCrumbWidth}
           title={
             <AlgaehLabel
@@ -155,6 +150,31 @@ class InsuranceSetup extends Component {
           }
           printArea={true}
           selectedLang={this.state.selectedLang}
+        /> */}
+        <BreadCrumb
+          title={
+            <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+          }
+          breadStyle={this.props.breadStyle}
+          pageNavPath={[
+            {
+              pageName: (
+                <AlgaehLabel
+                  label={{
+                    fieldName: "form_home",
+                    align: "ltr"
+                  }}
+                />
+              )
+            },
+            {
+              pageName: (
+                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+              )
+            }
+          ]}
+          //screenName="Master Setup"
+          //   HideHalfbread={false}
         />
         <div className="row insurancesetup">
           <div className="col-lg-12">

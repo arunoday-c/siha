@@ -66,7 +66,6 @@ class VisitType extends Component {
   }
 
   showconfirmDialog(id) {
-    debugger;
     swal({
       title: "Are you sure you want to delete this Visit Type?",
       icon: "warning",
@@ -103,7 +102,6 @@ class VisitType extends Component {
   }
 
   deleteVisitType(row) {
-    debugger;
     //console.log("Delete Row ID: ", row.hims_d_visit_type_id);
     this.showconfirmDialog(row.hims_d_visit_type_id);
   }
@@ -135,7 +133,6 @@ class VisitType extends Component {
   }
 
   changeTexts(e) {
-    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     this.setState({ [name]: value });
@@ -146,7 +143,6 @@ class VisitType extends Component {
   }
 
   componentDidMount() {
-    debugger;
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
     this.setState({
@@ -173,7 +169,6 @@ class VisitType extends Component {
   }
 
   addVisit(e) {
-    debugger;
     e.preventDefault();
     if (this.state.visit_type_code.length == 0) {
       this.setState({
@@ -259,7 +254,6 @@ class VisitType extends Component {
   }
 
   updateVisitType(data) {
-    debugger;
     data.updated_by = getCookie("UserID");
 
     algaehApiCall({
@@ -298,7 +292,6 @@ class VisitType extends Component {
   }
 
   onchangegridcol(row, e) {
-    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;

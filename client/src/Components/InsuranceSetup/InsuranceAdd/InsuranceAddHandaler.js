@@ -3,7 +3,6 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 
 const handleNext = ($this, e) => {
-  // setComponent($this, {});
   const err = Validations($this);
   if (!err) {
     if ($this.state.screenName === "InsuranceProvider") {
@@ -26,7 +25,7 @@ const handleNext = ($this, e) => {
       }
     } else if ($this.state.screenName === "SubInsurance") {
       //Save Sub
-      debugger;
+
       if ($this.state.insurance_sub_saved === false) {
         algaehApiCall({
           uri: "/insurance/addSubInsuranceProvider",
@@ -44,7 +43,6 @@ const handleNext = ($this, e) => {
         setComponent($this, {});
       }
     } else if ($this.state.screenName === "NetworkPlan") {
-      debugger;
       //Save Network and Plan
 
       if ($this.state.insurance_plan_saved === false) {
@@ -65,23 +63,26 @@ const handleNext = ($this, e) => {
       }
     } else if ($this.state.screenName === "Services") {
       //Save Services
-      setComponent($this, {});
+
+      $this.onClose(e);
     }
   }
 };
 
 const setComponent = ($this, data, e) => {
-  debugger;
   const { activeStep } = $this.state;
-  let insurance_provider_id =
-    data.insertId || $this.state.insurance_provider_id;
+  let insurance_provider_id = 0;
+  if ($this.state.activeStep === 0) {
+    insurance_provider_id = data.insertId || $this.state.insurance_provider_id;
+  } else {
+    insurance_provider_id = $this.state.insurance_provider_id;
+  }
   $this.setState(
     {
       activeStep: activeStep + 1,
       insurance_provider_id: insurance_provider_id
     },
     () => {
-      debugger;
       if ($this.state.activeStep === 0) {
         $this.setState({ screenName: "InsuranceProvider" });
       } else if ($this.state.activeStep === 1) {
@@ -134,44 +135,8 @@ const handleReset = ($this, e) => {
   });
 };
 
-const getCtrlCode = ($this, insCode) => {
-  debugger;
-  // clearInterval(intervalId);
-  // intervalId = setInterval(() => {
-  //   this.props.getPatientDetails({
-  //     uri: "/frontDesk/get",
-  //     method: "GET",
-  //     printInput: true,
-  //     data: { patient_code: insCode },
-  //     redux: {
-  //       type: "PAT_GET_DATA",
-  //       mappingName: "patients"
-  //     },
-  //     afterSuccess: data => {
-  //       data.patientRegistration.visitDetails = data.visitDetails;
-  //       data.patientRegistration.patient_id =
-  //         data.patientRegistration.hims_d_patient_id;
-  //       data.patientRegistration.existingPatient = true;
-  //       $this.setState(data.patientRegistration);
-
-  //       $this.props.getPatientInsurance({
-  //         uri: "/insurance/getPatientInsurance",
-  //         method: "GET",
-  //         data: { patient_id: data.patientRegistration.hims_d_patient_id },
-  //         redux: {
-  //           type: "EXIT_INSURANCE_GET_DATA",
-  //           mappingName: "existinsurance"
-  //         }
-  //       });
-  //     }
-  //   });
-  //   clearInterval(intervalId);
-  // }, 500);
-};
-
 const updatedata = ($this, e) => {
-  debugger;
-  if ($this.props.opencomponent === 1) {
+  if ($this.props.opencomponent === "1") {
     algaehApiCall({
       uri: "/insurance/updateInsuranceProvider",
       method: "PUT",
@@ -191,28 +156,6 @@ const updatedata = ($this, e) => {
       }
     });
   }
-  if (
-    $this.props.opencomponent === 2 &&
-    $this.state.update_sub_insurance.length !== 0
-  ) {
-    debugger;
-    algaehApiCall({
-      uri: "/insurance/addSubInsuranceProvider",
-      data: $this.state.update_sub_insurance,
-      onSuccess: response => {
-        if (response.data.success === true) {
-          swal("Updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
-          });
-        }
-      },
-      onFailure: error => {
-        console.log(error);
-      }
-    });
-  }
 };
 
-export { handleNext, handleBack, handleReset, getCtrlCode, updatedata };
+export { handleNext, handleBack, handleReset, updatedata };

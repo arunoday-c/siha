@@ -37,7 +37,15 @@ let algaehSearchConfig = searchName => {
           net.insurance_sub_id=sIns.hims_d_insurance_sub_id)INNER JOIN hims_d_insurance_provider Ins ON \
           sIns.insurance_provider_id=Ins.hims_d_insurance_provider_id) where netoff.record_status='A' GROUP By netoff.hims_d_insurance_network_office_id",
         orderBy: "netoff.hims_d_insurance_network_office_id desc"
+      },
+      {
+        searchName: "visit",
+        searchQuery:
+          "SELECT full_name, patient_code, pv.visit_code, pv.patient_id, pv.hims_f_patient_visit_id, pv.insured \
+          FROM hims_f_patient inner join hims_f_patient_visit pv on pv.patient_id=hims_f_patient.hims_d_patient_id",
+        orderBy: "pv.hims_f_patient_visit_id desc"
       }
+      // visit
     ]
   };
 

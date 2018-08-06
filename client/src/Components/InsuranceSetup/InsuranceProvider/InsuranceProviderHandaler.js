@@ -2,7 +2,6 @@ import moment from "moment";
 let texthandlerInterval = null;
 
 const texthandle = ($this, context, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -12,7 +11,6 @@ const texthandle = ($this, context, e) => {
 
   clearInterval(texthandlerInterval);
   texthandlerInterval = setInterval(() => {
-    debugger;
     if (context !== undefined) {
       context.updateState({ [name]: value });
     }
@@ -35,7 +33,6 @@ const numtexthandle = ($this, context, e) => {
 };
 
 const datehandle = ($this, context, ctrl, e) => {
-  debugger;
   $this.setState({
     [e]: moment(ctrl)._d
   });

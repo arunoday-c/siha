@@ -78,7 +78,6 @@ class AddOPBillingForm extends Component {
   }
 
   ProcessToBill(context, e) {
-    debugger;
     let $this = this;
 
     let serviceInput = {
@@ -103,31 +102,33 @@ class AddOPBillingForm extends Component {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        let existingservices = $this.state.billdetails;
-        if (data.billdetails.length !== 0) {
-          existingservices.splice(0, 0, data.billdetails[0]);
-        }
-        debugger;
-        if (existingservices[0].pre_approval === "Y") {
+        if (data.billdetails[0].pre_approval === "Y") {
           successfulMessage({
-            message: "Selected Service is Pre-Approval required.",
+            message:
+              "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
             title: "Warning",
             icon: "warning"
           });
-        }
-        if (context != null) {
-          context.updateState({ billdetails: existingservices });
-        }
-
-        $this.props.billingCalculations({
-          uri: "/billing/billingCalculations",
-          method: "POST",
-          data: { billdetails: existingservices },
-          redux: {
-            type: "BILL_HEADER_GEN_GET_DATA",
-            mappingName: "genbill"
+        } else {
+          let existingservices = $this.state.billdetails;
+          if (data.billdetails.length !== 0) {
+            existingservices.splice(0, 0, data.billdetails[0]);
           }
-        });
+
+          if (context != null) {
+            context.updateState({ billdetails: existingservices });
+          }
+
+          $this.props.billingCalculations({
+            uri: "/billing/billingCalculations",
+            method: "POST",
+            data: { billdetails: existingservices },
+            redux: {
+              type: "BILL_HEADER_GEN_GET_DATA",
+              mappingName: "genbill"
+            }
+          });
+        }
       }
     });
   }

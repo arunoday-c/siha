@@ -12,14 +12,17 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
+  Tooltip
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   texthandle,
   onchangegridcol,
-  updatePriceList
+  updatePriceList,
+  onchangecalculation,
+  bulkUpdate
 } from "./ServicePriceListHandaler";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import Paper from "@material-ui/core/Paper";
@@ -30,7 +33,9 @@ class SubInsurance extends PureComponent {
     this.state = {
       applicable: null,
       corporate_discount: 0,
-      pre_approval: null
+      dummy: true
+      // pre_approval: null,
+      // insurance_service_name: ""
     };
     this.baseState = this.state;
   }
@@ -41,7 +46,6 @@ class SubInsurance extends PureComponent {
   }
 
   componentDidMount() {
-    debugger;
     if (this.state.insurance_provider_id !== null) {
       this.props.getPriceList({
         uri: "/insurance/getPriceList",
@@ -110,11 +114,17 @@ class SubInsurance extends PureComponent {
                     }}
                   />
                   <div className="col-lg-1">
-                    <IconButton className="go-button" color="primary">
-                      <PlayCircleFilled
-                      // onClick={this.ProcessToBill.bind(this, context)}
-                      />
-                    </IconButton>
+                    <Tooltip id="tooltip-icon" title="Apply">
+                      <IconButton className="go-button" color="primary">
+                        <PlayCircleFilled
+                          onClick={bulkUpdate.bind(
+                            this,
+                            this,
+                            "corporate_discount"
+                          )}
+                        />
+                      </IconButton>
+                    </Tooltip>
                   </div>
 
                   <AlagehAutoComplete
@@ -136,11 +146,13 @@ class SubInsurance extends PureComponent {
                     }}
                   />
                   <div className="col-lg-1">
-                    <IconButton className="go-button" color="primary">
-                      <PlayCircleFilled
-                      // onClick={this.ProcessToBill.bind(this, context)}
-                      />
-                    </IconButton>
+                    <Tooltip id="tooltip-icon" title="Apply">
+                      <IconButton className="go-button" color="primary">
+                        <PlayCircleFilled
+                          onClick={bulkUpdate.bind(this, this, "pre_approval")}
+                        />
+                      </IconButton>
+                    </Tooltip>
                   </div>
 
                   <AlagehAutoComplete
@@ -154,7 +166,7 @@ class SubInsurance extends PureComponent {
                       className: "select-fld",
                       value: this.state.covered,
                       dataSource: {
-                        textField: "name",
+                        textField: "value",
                         valueField: "value",
                         data: GlobalVariables.FORMAT_YESNO
                       },
@@ -162,11 +174,13 @@ class SubInsurance extends PureComponent {
                     }}
                   />
                   <div className="col-lg-1">
-                    <IconButton className="go-button" color="primary">
-                      <PlayCircleFilled
-                      // onClick={this.ProcessToBill.bind(this, context)}
-                      />
-                    </IconButton>
+                    <Tooltip id="tooltip-icon" title="Apply">
+                      <IconButton className="go-button" color="primary">
+                        <PlayCircleFilled
+                          onClick={bulkUpdate.bind(this, this, "covered")}
+                        />
+                      </IconButton>
+                    </Tooltip>
                   </div>
                 </div>
               </Paper>
@@ -243,7 +257,11 @@ class SubInsurance extends PureComponent {
                               className: "txt-fld",
                               name: "gross_amt",
                               events: {
-                                onChange: null
+                                onChange: onchangecalculation.bind(
+                                  this,
+                                  this,
+                                  row
+                                )
                               }
                             }}
                           />
@@ -270,7 +288,11 @@ class SubInsurance extends PureComponent {
                               className: "txt-fld",
                               name: "corporate_discount_amt",
                               events: {
-                                onChange: null
+                                onChange: onchangecalculation.bind(
+                                  this,
+                                  this,
+                                  row
+                                )
                               }
                             }}
                           />

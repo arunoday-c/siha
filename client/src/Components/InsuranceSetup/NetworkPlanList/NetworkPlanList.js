@@ -21,11 +21,8 @@ class NetworkPlanList extends PureComponent {
 
   onClose = e => {
     this.props.onClose && this.props.onClose(e);
+    // this.props.onSelectdata && this.props.onSelectdata;
   };
-
-  componentWillReceiveProps() {
-    debugger;
-  }
 
   render() {
     return (
@@ -99,8 +96,12 @@ class NetworkPlanList extends PureComponent {
                           ? []
                           : this.props.networkandplans
                     }}
+                    algaehSearch={true}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
+                    onRowSelect={row => {
+                      this.onClose(row);
+                    }}
                   />
                 </div>
               </div>

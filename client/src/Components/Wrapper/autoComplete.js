@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent, Component } from "react";
 // import ClearIcon from "@material-ui/icons/Clear";
 // import CancelIcon from "@material-ui/icons/Cancel";
 // import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
