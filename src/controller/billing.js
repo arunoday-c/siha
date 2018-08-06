@@ -73,5 +73,6 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
   return api;
 };
