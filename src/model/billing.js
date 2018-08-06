@@ -637,7 +637,28 @@ let getBillDetails = (req, res, next) => {
             debugLog("reslt my lenth:", result.length);
             debugLog("reslt my:", result[m]);
 
-            let servicesDetails = extend(servicesModel, req.body[m]);
+            let servicesDetails = extend(
+              {
+                hims_d_services_id: null,
+                service_code: null,
+                cpt_code: null,
+                service_name: null,
+                service_desc: null,
+                sub_department_id: null,
+                hospital_id: null,
+                service_type_id: null,
+                standard_fee: null,
+                discount: null,
+                effective_start_date: null,
+                effectice_end_date: null,
+                created_by: null,
+                created_date: null,
+                updated_by: null,
+                updated_date: null,
+                record_status: null
+              },
+              req.body[m]
+            );
 
             let records = result[m];
             req.body[m].service_type_id = result[m].service_type_id;
@@ -876,35 +897,74 @@ let getBillDetails = (req, res, next) => {
                   sec_company_res = sec_unit_cost - patient_resp;
                   sec_company_paybale = sec_unit_cost - patient_payable;
                 }
-                extend(billingDetailsModel, {
-                  service_type_id: records.service_type_id,
-                  services_id: servicesDetails.hims_d_services_id,
-                  quantity: quantity,
-                  unit_cost: unit_cost,
-                  gross_amount: gross_amount,
-                  discount_amout: discount_amout,
-                  discount_percentage: discount_percentage,
-                  net_amout: net_amout,
-                  patient_resp: patient_resp,
-                  patient_payable: patient_payable,
-                  copay_percentage: copay_percentage,
-                  copay_amount: copay_amount,
+                let out = extend(
+                  {
+                    hims_f_billing_details_id: null,
+                    hims_f_billing_header_id: null,
+                    service_type_id: null,
+                    services_id: null,
+                    quantity: 0,
+                    unit_cost: 0,
+                    insurance_yesno: null,
+                    gross_amount: 0,
+                    discount_amout: 0,
+                    discount_percentage: 0,
+                    net_amout: 0,
+                    copay_percentage: 0,
+                    copay_amount: 0,
+                    deductable_amount: 0,
+                    deductable_percentage: 0,
+                    tax_inclusive: "N",
+                    patient_tax: 0,
+                    company_tax: 0,
+                    total_tax: 0,
+                    patient_resp: 0,
+                    patient_payable: 0,
+                    comapany_resp: 0,
+                    company_payble: 0,
+                    sec_company: 0,
+                    sec_deductable_percentage: 0,
+                    sec_deductable_amount: 0,
+                    sec_company_res: 0,
+                    sec_company_tax: 0,
+                    sec_company_paybale: 0,
+                    sec_copay_percntage: 0,
+                    sec_copay_amount: 0,
+                    created_by: null,
+                    created_date: null,
+                    updated_by: null,
+                    updated_date: null
+                  },
+                  {
+                    service_type_id: records.service_type_id,
+                    services_id: servicesDetails.hims_d_services_id,
+                    quantity: quantity,
+                    unit_cost: unit_cost,
+                    gross_amount: gross_amount,
+                    discount_amout: discount_amout,
+                    discount_percentage: discount_percentage,
+                    net_amout: net_amout,
+                    patient_resp: patient_resp,
+                    patient_payable: patient_payable,
+                    copay_percentage: copay_percentage,
+                    copay_amount: copay_amount,
 
-                  comapany_resp: comapany_resp,
-                  company_payble: company_payble,
-                  dummy_company_payble: company_payble,
+                    comapany_resp: comapany_resp,
+                    company_payble: company_payble,
+                    dummy_company_payble: company_payble,
 
-                  sec_copay_percntage: sec_copay_percntage,
-                  sec_copay_amount: sec_copay_amount,
-                  sec_company_res: sec_company_res,
-                  sec_company_paybale: sec_company_paybale,
-                  pre_approval: pre_approval,
-                  insurance_yesno: insured,
-                  preapp_limit_exceed: preapp_limit_exceed,
-                  approval_amt: approval_amt,
-                  preapp_limit_amount: preapp_limit_amount,
-                  approval_limit_yesno: approval_limit_yesno
-                });
+                    sec_copay_percntage: sec_copay_percntage,
+                    sec_copay_amount: sec_copay_amount,
+                    sec_company_res: sec_company_res,
+                    sec_company_paybale: sec_company_paybale,
+                    pre_approval: pre_approval,
+                    insurance_yesno: insured,
+                    preapp_limit_exceed: preapp_limit_exceed,
+                    approval_amt: approval_amt,
+                    preapp_limit_amount: preapp_limit_amount,
+                    approval_limit_yesno: approval_limit_yesno
+                  }
+                );
 
                 // debugLog("Results are recorded...", result);
                 // outputArray = {
@@ -912,12 +972,15 @@ let getBillDetails = (req, res, next) => {
                 // };
                 // debugLog("Results are outputArray...", outputArray);
                 // next();
-                debugLog("Results are recorded...", outputArray);
-                outputArray.push(billingDetailsModel);
+                debugLog("out Result...", out);
+                outputArray.push(out);
               })
               .then(() => {
                 if (m == result.length - 1) {
+<<<<<<< HEAD
                   // req.records = outputArray;
+=======
+>>>>>>> 9e298566e8661bb1870a8693ae3579fed8f03bd6
                   req.records = { billdetails: outputArray };
                   debugLog("final Result..", outputArray);
                   next();
