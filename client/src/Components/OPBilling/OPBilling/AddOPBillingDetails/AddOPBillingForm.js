@@ -78,20 +78,24 @@ class AddOPBillingForm extends Component {
   }
 
   ProcessToBill(context, e) {
+    debugger;
     let $this = this;
 
-    let serviceInput = {
-      insured: this.state.insured,
-      hims_d_services_id: this.state.s_service,
-      primary_insurance_provider_id: this.state.insurance_provider_id,
-      primary_network_office_id: this.state.hims_d_insurance_network_office_id,
-      primary_network_id: this.state.network_id,
-      sec_insured: this.state.sec_insured,
-      secondary_insurance_provider_id: this.state
-        .secondary_insurance_provider_id,
-      secondary_network_id: this.state.secondary_network_id,
-      secondary_network_office_id: this.state.secondary_network_office_id
-    };
+    let serviceInput = [
+      {
+        insured: this.state.insured,
+        hims_d_services_id: this.state.s_service,
+        primary_insurance_provider_id: this.state.insurance_provider_id,
+        primary_network_office_id: this.state
+          .hims_d_insurance_network_office_id,
+        primary_network_id: this.state.network_id,
+        sec_insured: this.state.sec_insured,
+        secondary_insurance_provider_id: this.state
+          .secondary_insurance_provider_id,
+        secondary_network_id: this.state.secondary_network_id,
+        secondary_network_office_id: this.state.secondary_network_office_id
+      }
+    ];
 
     this.props.generateBill({
       uri: "/billing/getBillDetails",

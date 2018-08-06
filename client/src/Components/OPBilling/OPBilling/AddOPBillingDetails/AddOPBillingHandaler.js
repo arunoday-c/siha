@@ -124,6 +124,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const billheaderCalculation = ($this, context) => {
+  debugger;
   var intervalId;
   let serviceInput = {
     isReceipt: false,

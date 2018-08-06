@@ -538,48 +538,6 @@ let billingCalculations = (req, res, next) => {
 };
 
 let getBillDetails = (req, res, next) => {
-  // let billingHeaderModel = {
-  //   hims_f_billing_header_id: null,
-  //   patient_id: null,
-  //   billing_type_id: null,
-  //   visit_id: null,
-  //   bill_number: null,
-  //   incharge_or_provider: null,
-  //   bill_date: new Date(),
-  //   advance_amount: 0,
-  //   discount_amount: 0,
-  //   sub_total_amount: 0,
-  //   total_tax: 0,
-  //   net_total: 0,
-  //   billing_status: null,
-  //   copay_amount: 0,
-  //   deductable_amount: 0,
-  //   gross_total: 0,
-  //   sheet_discount_amount: 0,
-  //   sheet_discount_percentage: 0,
-  //   net_amount: 0,
-  //   patient_res: 0,
-  //   company_res: 0,
-  //   sec_company_res: 0,
-  //   patient_payable: 0,
-  //   company_payable: 0,
-  //   sec_company_payable: 0,
-  //   patient_tax: 0,
-  //   company_tax: 0,
-  //   sec_company_tax: 0,
-  //   net_tax: 0,
-  //   credit_amount: 0,
-  //   receiveable_amount: 0,
-  //   created_by: null,
-  //   created_date: null,
-  //   updated_by: null,
-  //   updated_date: null,
-  //   record_status: null,
-  //   cancel_remarks: null,
-  //   cancel_by: null,
-  //   bill_comments: null
-  // };
-
   let billingDetailsModel = {
     hims_f_billing_details_id: null,
     hims_f_billing_header_id: null,
@@ -798,10 +756,18 @@ let getBillDetails = (req, res, next) => {
                 if (approval_limit_yesno === "Y") {
                   pre_approval = "Y";
                 }
+
+                debugLog("Insured", insured);
+                debugLog("Pre Approval", pre_approval);
+
+                debugLog("Limit", approval_limit_yesno);
+
+                debugLog("Covered", covered);
+
                 if (
                   insured === "Y" &&
-                  policydtls.pre_approval === "N" &&
-                  policydtls.covered === "N"
+                  pre_approval === "N" &&
+                  policydtls.covered === "Y"
                 ) {
                   debugLog("Insured:", quantity);
                   debugLog("Unit cost", policydtls.gross_amt);
@@ -951,7 +917,8 @@ let getBillDetails = (req, res, next) => {
               })
               .then(() => {
                 if (m == result.length - 1) {
-                  req.records = outputArray;
+                  // req.records = outputArray;
+                  req.records = { billdetails: outputArray };
                   debugLog("final Result..", outputArray);
                   next();
                 }

@@ -38,20 +38,22 @@ const serviceHandeler = ($this, e) => {
 const ProcessService = ($this, e) => {
   debugger;
   let preserviceInput = $this.state.preserviceInput || [];
-  let serviceInput = {
-    insured: $this.state.insured,
-    hims_d_services_id: $this.state.s_service,
-    primary_insurance_provider_id: $this.state.insurance_provider_id,
-    primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
-    primary_network_id: $this.state.network_id,
-    sec_insured: $this.state.sec_insured,
-    secondary_insurance_provider_id:
-      $this.state.secondary_insurance_provider_id,
-    secondary_network_id: $this.state.secondary_network_id,
-    secondary_network_office_id: $this.state.secondary_network_office_id,
-    approval_amt: $this.state.approval_amt
-  };
-  preserviceInput.push(serviceInput);
+  let serviceInput = [
+    {
+      insured: $this.state.insured,
+      hims_d_services_id: $this.state.s_service,
+      primary_insurance_provider_id: $this.state.insurance_provider_id,
+      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
+      primary_network_id: $this.state.network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+      approval_amt: $this.state.approval_amt
+    }
+  ];
+  preserviceInput.push(serviceInput[0]);
 
   $this.props.generateBill({
     uri: "/billing/getBillDetails",
@@ -77,15 +79,30 @@ const ProcessService = ($this, e) => {
           dangerMode: true
         }).then(willProceed => {
           if (willProceed) {
+            let approval_amt = data.billdetails[0].approval_amt;
+            let approval_limit_yesno = data.billdetails[0].preapp_limit_exceed;
             let existingservices = $this.state.orderservices;
             if (data.billdetails.length !== 0) {
               existingservices.splice(0, 0, data.billdetails[0]);
             }
 
             debugger;
+            $this.props.generateBill({
+              uri: "/billing/getBillDetails",
+              method: "POST",
+              data: preserviceInput,
+              redux: {
+                type: "BILL_GEN_GET_DATA",
+                mappingName: "xxx"
+              },
+              afterSuccess: data => {
+                let existingservices = $this.state.orderservices;
+                if (data.billdetails.length !== 0) {
+                  existingservices.splice(0, 0, data.billdetails[0]);
+                }
+              }
+            });
 
-            let approval_amt = data.billdetails[0].approval_amt;
-            let approval_limit_yesno = data.billdetails[0].preapp_limit_exceed;
             $this.setState({
               orderservices: existingservices,
               approval_amt: approval_amt,
