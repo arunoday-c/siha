@@ -12,7 +12,7 @@ import {
 import moment from "moment";
 
 import httpStatus from "../utils/httpStatus";
-//import { LINQ } from "node-linq";
+import { LINQ } from "node-linq";
 
 import { logger, debugFunction, debugLog } from "../utils/logging";
 
@@ -1533,6 +1533,7 @@ let updateNetworkAndNetworkOffice = (req, res, next) => {
   }
 };
 
+//created by nowshad
 let updatePriceListBulk = (req, res, next) => {
   let services_insurance = {
     hims_d_services_insurance_id: null,
@@ -1622,6 +1623,235 @@ let updatePriceListBulk = (req, res, next) => {
   });
 };
 
+//insert ordered services and pre-approval services for insurance
+let insertOrderedServices = (req, res, next) => {
+  const insurtColumns = [
+    "patient_id",
+    "visit_id",
+    "doctor_id",
+    "service_type_id",
+    "services_id",
+    "insurance_yesno",
+    "insurance_company",
+    "insurance_sub_company",
+    "network_id",
+    "policy_number",
+    "pre_approval",
+    "quantity",
+    "unit_cost",
+    "gross_amount",
+    "discount_amout",
+    "discount_percentage",
+    "net_amout",
+    "copay_percentage",
+    "copay_amount",
+    "deductable_amount",
+    "deductable_percentage",
+    "tax_inclusive",
+    "patient_tax",
+    "company_tax",
+    "total_tax",
+    "patient_resp",
+    "patient_payable",
+    "comapany_resp",
+    "company_payble",
+    "sec_company",
+    "sec_deductable_percentage",
+    "sec_deductable_amount",
+    "sec_company_res",
+    "sec_company_tax",
+    "sec_company_paybale",
+    "sec_copay_percntage",
+    "sec_copay_amount",
+    "created_by",
+    "updated_by"
+  ];
+
+  debugFunction("insertOrderedServices");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        connection.query(
+          "INSERT INTO hims_f_ordered_services(" +
+            insurtColumns.join(",") +
+            ") VALUES ?",
+          [
+            jsonArrayToObject({
+              sampleInputObject: insurtColumns,
+              arrayObj: req.body
+            })
+          ],
+          (error, resultOrder) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+
+            let servicesForPreAproval = new LINQ(req.body)
+              .Where(g => g.pre_approval == "Y")
+              .ToArray();
+            debugLog("i approval Y: ", servicesForPreAproval.length);
+
+            //if request for pre-aproval needed
+            if (servicesForPreAproval.length > 0) {
+              const insurtCols = [
+                "service_id",
+                "service_price",
+                "icd_code",
+                "requested_date",
+                "requested_by",
+                "requested_mode",
+                "requested_quantity",
+                "submission_type",
+                "insurance_service_name",
+                "doctor_id",
+                "patient_id",
+                "refer_no",
+                "gross_amt",
+                "net_amount",
+                "approved_amount",
+                "approved_no",
+                "apprv_remarks",
+                "apprv_date",
+                "rejected_reason",
+                "apprv_status",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_f_service_approval(" +
+                  insurtCols.join(",") +
+                  ") VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtCols,
+                    arrayObj: servicesForPreAproval
+                  })
+                ],
+                (error, resultPreAprvl) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    req.records = resultPreAprvl;
+                    next();
+                  });
+                }
+              );
+            } else {
+              connection.commit(error => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                req.records = resultOrder;
+                next();
+              });
+              // req.records = result;
+              // next();
+            }
+          }
+        );
+      });
+
+      // connection.query(
+      //   "insert into hims_f_ordered_services(\
+      //     patient_id,visit_id,doctor_id,service_type_id,services_id,insurance_yesno,insurance_company,\
+      //     insurance_sub_company,network_id,policy_number,pre_approval,quantity,unit_cost,gross_amount,\
+      //     discount_amout,discount_percentage,net_amout,copay_percentage,copay_amount,deductable_amount,\
+      //     deductable_percentage,tax_inclusive,patient_tax,company_tax,total_tax,patient_resp,patient_payable,\
+      //     comapany_resp,company_payble,sec_company,sec_deductable_percentage,sec_deductable_amount,\
+      //     sec_company_res,sec_company_tax,sec_company_paybale,sec_copay_percntage,sec_copay_amount,created_by,updated_by )values(\
+      //       ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      //   [
+      //     input.patient_id,
+      //     input.visit_id,
+      //     input.doctor_id,
+      //     input.service_type_id,
+      //     input.services_id,
+      //     input.insurance_yesno,
+      //     input.insurance_company,
+      //     input.insurance_sub_company,
+      //     input.network_id,
+      //     input.policy_number,
+      //     input.pre_approval,
+      //     input.quantity,
+      //     input.unit_cost,
+      //     input.gross_amount,
+      //     input.discount_amout,
+      //     input.discount_percentage,
+      //     input.net_amout,
+      //     input.copay_percentage,
+      //     input.copay_amount,
+      //     input.deductable_amount,
+      //     input.deductable_percentage,
+      //     input.tax_inclusive,
+      //     input.patient_tax,
+      //     input.company_tax,
+      //     input.total_tax,
+      //     input.patient_resp,
+      //     input.patient_payable,
+      //     input.comapany_resp,
+      //     input.company_payble,
+      //     input.sec_company,
+      //     input.sec_deductable_percentage,
+      //     input.sec_deductable_amount,
+      //     input.sec_company_res,
+      //     input.sec_company_tax,
+      //     input.sec_company_paybale,
+      //     input.sec_copay_percntage,
+      //     input.sec_copay_amount,
+      //     input.created_by,
+      //     input.created_by
+      //   ],
+      //   (error, results) => {
+      //     releaseDBConnection(db, connection);
+      //     if (error) {
+      //       next(error);
+      //     }
+      //     debugLog("Results are recorded...");
+      //     req.records = results;
+      //     next();
+      //   }
+      // );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientInsurance,
   addPatientInsurance,
@@ -1639,5 +1869,6 @@ module.exports = {
   getNetworkAndNetworkOfficRecords,
   updatePriceList,
   updateNetworkAndNetworkOffice,
-  updatePriceListBulk
+  updatePriceListBulk,
+  insertOrderedServices
 };
