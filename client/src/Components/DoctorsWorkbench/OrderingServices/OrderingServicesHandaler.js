@@ -36,7 +36,6 @@ const serviceHandeler = ($this, e) => {
 };
 
 const ProcessService = ($this, e) => {
-  debugger;
   let preserviceInput = $this.state.preserviceInput || [];
   let serviceInput = [
     {
@@ -50,10 +49,11 @@ const ProcessService = ($this, e) => {
         $this.state.secondary_insurance_provider_id,
       secondary_network_id: $this.state.secondary_network_id,
       secondary_network_office_id: $this.state.secondary_network_office_id,
-      approval_amt: $this.state.approval_amt
+      approval_amt: $this.state.approval_amt,
+      approval_limit_yesno: $this.state.approval_limit_yesno,
+      preapp_limit_amount: $this.state.preapp_limit_amount
     }
   ];
-  preserviceInput.push(serviceInput[0]);
 
   $this.props.generateBill({
     uri: "/billing/getBillDetails",
@@ -66,11 +66,19 @@ const ProcessService = ($this, e) => {
     afterSuccess: data => {
       debugger;
 
-      if (data.billdetails[0].preapp_limit_exceed === "Y") {
+      if (
+        data.billdetails[0].preapp_limit_exceed === "Y" &&
+        $this.state.approval_limit_yesno === "N"
+      ) {
+        serviceInput[0].dummy_company_payble =
+          data.billdetails[0].dummy_company_payble;
+
+        preserviceInput.push(serviceInput[0]);
         for (let i = 0; i < preserviceInput.length; i++) {
           preserviceInput[i].approval_limit_yesno =
             data.billdetails[0].preapp_limit_exceed;
         }
+
         swal({
           title:
             "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pro aproved and will be as cash.",
@@ -81,10 +89,6 @@ const ProcessService = ($this, e) => {
           if (willProceed) {
             let approval_amt = data.billdetails[0].approval_amt;
             let approval_limit_yesno = data.billdetails[0].preapp_limit_exceed;
-            let existingservices = $this.state.orderservices;
-            if (data.billdetails.length !== 0) {
-              existingservices.splice(0, 0, data.billdetails[0]);
-            }
 
             debugger;
             $this.props.generateBill({
@@ -96,18 +100,13 @@ const ProcessService = ($this, e) => {
                 mappingName: "xxx"
               },
               afterSuccess: data => {
-                let existingservices = $this.state.orderservices;
-                if (data.billdetails.length !== 0) {
-                  existingservices.splice(0, 0, data.billdetails[0]);
-                }
+                $this.setState({
+                  orderservices: data.billdetails,
+                  approval_amt: approval_amt,
+                  preserviceInput: preserviceInput,
+                  approval_limit_yesno: approval_limit_yesno
+                });
               }
-            });
-
-            $this.setState({
-              orderservices: existingservices,
-              approval_amt: approval_amt,
-              preserviceInput: preserviceInput,
-              approval_limit_yesno: approval_limit_yesno
             });
           }
         });
@@ -117,7 +116,10 @@ const ProcessService = ($this, e) => {
           existingservices.splice(0, 0, data.billdetails[0]);
         }
         debugger;
-        if (data.billdetails[0].pre_approval === "Y") {
+        if (
+          data.billdetails[0].pre_approval === "Y" &&
+          $this.state.approval_limit_yesno === "N"
+        ) {
           successfulMessage({
             message: "Selected Service is Pre-Approval required.",
             title: "Warning",
@@ -126,6 +128,11 @@ const ProcessService = ($this, e) => {
         }
         let approval_amt = data.billdetails[0].approval_amt;
         let preapp_limit_amount = data.billdetails[0].preapp_limit_amount;
+
+        serviceInput[0].dummy_company_payble =
+          data.billdetails[0].dummy_company_payble;
+
+        preserviceInput.push(serviceInput[0]);
         $this.setState({
           orderservices: existingservices,
           approval_amt: approval_amt,
@@ -205,8 +212,6 @@ const deleteServices = ($this, row, rowId) => {
 
   orderservices.splice(rowId, 1);
 
-  // preserviceInput.splice(row, 1);
-
   let app_amt = $this.state.approval_amt - row["dummy_company_payble"];
   for (var i = 0; i < preserviceInput.length; i++) {
     if (preserviceInput[i].hims_d_services_id === row["services_id"]) {
@@ -219,19 +224,36 @@ const deleteServices = ($this, row, rowId) => {
       for (var i = 0; i < preserviceInput.length; i++) {
         preserviceInput[i].approval_limit_yesno = "N";
       }
+      $this.props.generateBill({
+        uri: "/billing/getBillDetails",
+        method: "POST",
+        data: preserviceInput,
+        redux: {
+          type: "BILL_GEN_GET_DATA",
+          mappingName: "xxx"
+        },
+        afterSuccess: data => {
+          $this.setState({
+            orderservices: data.billdetails,
+            approval_amt: app_amt,
+            preserviceInput: preserviceInput
+          });
+        }
+      });
+    } else {
+      $this.setState({
+        orderservices: orderservices,
+        preserviceInput: preserviceInput,
+        approval_amt: app_amt
+      });
     }
-  }
-
-  $this.setState(
-    {
+  } else {
+    $this.setState({
       orderservices: orderservices,
       preserviceInput: preserviceInput,
       approval_amt: app_amt
-    },
-    () => {
-      debugger;
-    }
-  );
+    });
+  }
 };
 
 export {

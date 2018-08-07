@@ -89,6 +89,7 @@ class OrderingServices extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -101,6 +102,7 @@ class OrderingServices extends Component {
   render() {
     let orderedList =
       this.state.orderservices === undefined ? [{}] : this.state.orderservices;
+
     return (
       <div className="hptl-phase1-ordering-services-form">
         {/* <div className="main-details" /> */}

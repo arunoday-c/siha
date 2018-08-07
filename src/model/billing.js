@@ -718,10 +718,17 @@ let getBillDetails = (req, res, next) => {
                 : servicesDetails.approval_limit_yesno;
 
             let preapp_limit_exceed = "N";
+            let dummy_company_payble =
+              servicesDetails.dummy_company_payble === undefined
+                ? 0
+                : servicesDetails.dummy_company_payble;
 
             let pre_approval = "N";
             let covered = "Y";
-            let preapp_limit_amount = 0;
+            let preapp_limit_amount =
+              servicesDetails.preapp_limit_amount === undefined
+                ? 0
+                : servicesDetails.preapp_limit_amount;
             new Promise((resolve, reject) => {
               try {
                 if (insured === "Y") {
@@ -826,7 +833,7 @@ let getBillDetails = (req, res, next) => {
                   patient_payable = copay_amount;
                   comapany_resp = net_amout - patient_resp;
                   company_payble = net_amout - patient_payable;
-
+                  dummy_company_payble = company_payble;
                   preapp_limit_amount = policydtls.preapp_limit;
                   if (policydtls.preapp_limit !== 0) {
                     approval_amt = approval_amt + company_payble;
@@ -951,7 +958,7 @@ let getBillDetails = (req, res, next) => {
 
                     comapany_resp: comapany_resp,
                     company_payble: company_payble,
-                    dummy_company_payble: company_payble,
+                    dummy_company_payble: dummy_company_payble,
 
                     sec_copay_percntage: sec_copay_percntage,
                     sec_copay_amount: sec_copay_amount,
@@ -977,10 +984,6 @@ let getBillDetails = (req, res, next) => {
               })
               .then(() => {
                 if (m == result.length - 1) {
-<<<<<<< HEAD
-                  // req.records = outputArray;
-=======
->>>>>>> 9e298566e8661bb1870a8693ae3579fed8f03bd6
                   req.records = { billdetails: outputArray };
                   debugLog("final Result..", outputArray);
                   next();
