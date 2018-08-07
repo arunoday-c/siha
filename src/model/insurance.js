@@ -1623,7 +1623,7 @@ let updatePriceListBulk = (req, res, next) => {
   });
 };
 
-//insert ordered services and pre-approval services for insurance
+//created by irfan: insert ordered services and pre-approval services for insurance
 let insertOrderedServices = (req, res, next) => {
   const insurtColumns = [
     "patient_id",
@@ -1852,6 +1852,48 @@ let insertOrderedServices = (req, res, next) => {
   }
 };
 
+//created by irfan: check pre-aproval status and get PreAproval List
+
+let getPreAprovalList = (req, res, next) => {
+  let preAprovalWhere = {
+    service_id: "ALL",
+    doctor_id: "ALL",
+    patient_id: "ALL",
+    requested_date: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(preAprovalWhere, req.query));
+    debugLog("where re:", preAprovalWhere);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      db.query(
+        "SELECT * FROM `hims_f_service_approval` WHERE `record_status`='A' AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientInsurance,
   addPatientInsurance,
@@ -1870,5 +1912,6 @@ module.exports = {
   updatePriceList,
   updateNetworkAndNetworkOffice,
   updatePriceListBulk,
-  insertOrderedServices
+  insertOrderedServices,
+  getPreAprovalList
 };

@@ -21,7 +21,8 @@ import {
   updatePriceList,
   updateNetworkAndNetworkOffice,
   updatePriceListBulk,
-  insertOrderedServices
+  insertOrderedServices,
+  getPreAprovalList
 } from "../model/insurance";
 
 export default ({ config, db }) => {
@@ -289,6 +290,21 @@ export default ({ config, db }) => {
   api.post(
     "/insertOrderedServices",
     insertOrderedServices,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to fetch pre approval list
+  api.get(
+    "/getPreAprovalList",
+    getPreAprovalList,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
