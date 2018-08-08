@@ -20,9 +20,7 @@ import {
   getNetworkAndNetworkOfficRecords,
   updatePriceList,
   updateNetworkAndNetworkOffice,
-  updatePriceListBulk,
-  insertOrderedServices,
-  getPreAprovalList
+  updatePriceListBulk
 } from "../model/insurance";
 
 export default ({ config, db }) => {
@@ -275,36 +273,6 @@ export default ({ config, db }) => {
   api.put(
     "/updatePriceListBulk",
     updatePriceListBulk,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
-
-  // created by irfan: to  insertOrderedServices
-  api.post(
-    "/insertOrderedServices",
-    insertOrderedServices,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
-
-  // created by irfan : to fetch pre approval list
-  api.get(
-    "/getPreAprovalList",
-    getPreAprovalList,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

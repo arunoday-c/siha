@@ -1,0 +1,259 @@
+"use strict";
+import extend from "extend";
+import {
+  selectStatement,
+  paging,
+  whereCondition,
+  deleteRecord,
+  bulkInputArrayObject,
+  releaseDBConnection,
+  jsonArrayToObject
+} from "../utils";
+import moment from "moment";
+
+import httpStatus from "../utils/httpStatus";
+import { LINQ } from "node-linq";
+
+import { logger, debugFunction, debugLog } from "../utils/logging";
+
+//created by irfan: insert ordered services and pre-approval services for insurance
+let insertOrderedServices = (req, res, next) => {
+  const insurtColumns = [
+    "patient_id",
+    "visit_id",
+    "doctor_id",
+    "service_type_id",
+    "services_id",
+    "insurance_yesno",
+    "insurance_company",
+    "insurance_sub_company",
+    "network_id",
+    "policy_number",
+    "pre_approval",
+    "quantity",
+    "unit_cost",
+    "gross_amount",
+    "discount_amout",
+    "discount_percentage",
+    "net_amout",
+    "copay_percentage",
+    "copay_amount",
+    "deductable_amount",
+    "deductable_percentage",
+    "tax_inclusive",
+    "patient_tax",
+    "company_tax",
+    "total_tax",
+    "patient_resp",
+    "patient_payable",
+    "comapany_resp",
+    "company_payble",
+    "sec_company",
+    "sec_deductable_percentage",
+    "sec_deductable_amount",
+    "sec_company_res",
+    "sec_company_tax",
+    "sec_company_paybale",
+    "sec_copay_percntage",
+    "sec_copay_amount",
+    "created_by",
+    "updated_by"
+  ];
+
+  debugFunction("insertOrderedServices");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        connection.query(
+          "INSERT INTO hims_f_ordered_services(" +
+            insurtColumns.join(",") +
+            ") VALUES ?",
+          [
+            jsonArrayToObject({
+              sampleInputObject: insurtColumns,
+              arrayObj: req.body
+            })
+          ],
+          (error, resultOrder) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+
+            let servicesForPreAproval = new LINQ(req.body)
+              .Where(g => g.pre_approval == "Y")
+              .ToArray();
+
+            //if request for pre-aproval needed
+            if (servicesForPreAproval.length > 0) {
+              const insurtCols = [
+                "service_id",
+                "icd_code",
+                "insurance_service_name",
+                "doctor_id",
+                "patient_id",
+                "gross_amt",
+                "net_amount",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_f_service_approval(" +
+                  insurtCols.join(",") +
+                  ") VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtCols,
+                    arrayObj: servicesForPreAproval,
+                    replaceObject: [
+                      {
+                        originalKey: "service_id",
+                        NewKey: "services_id"
+                      },
+                      {
+                        originalKey: "gross_amt",
+                        NewKey: "ser_gross_amt"
+                      },
+                      {
+                        originalKey: "net_amount",
+                        NewKey: "ser_net_amount"
+                      }
+                    ]
+                  })
+                ],
+                (error, resultPreAprvl) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  debugLog(
+                    "my array:",
+                    jsonArrayToObject({
+                      sampleInputObject: insurtCols,
+                      arrayObj: servicesForPreAproval,
+                      replaceObject: [
+                        {
+                          originalKey: "service_id",
+                          NewKey: "services_id"
+                        },
+                        {
+                          originalKey: "gross_amt",
+                          NewKey: "services_id"
+                        },
+                        {
+                          originalKey: "net_amount",
+                          NewKey: "services_id"
+                        }
+                      ]
+                    })
+                  );
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    req.records = resultPreAprvl;
+                    next();
+                  });
+                }
+              );
+            } else {
+              connection.commit(error => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                req.records = resultOrder;
+                next();
+              });
+              // req.records = result;
+              // next();
+            }
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: check pre-aproval status and get PreAproval List
+let getPreAprovalList = (req, res, next) => {
+  let preAprovalWhere = {
+    service_id: "ALL",
+    doctor_id: "ALL",
+    patient_id: "ALL",
+    requested_date: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    // if (req.query.requested_date != null)
+    //   req.query.requested_date = moment(req.query.requested_date).format(
+    //     "YYYY-MM-DD"
+    //   );
+
+    // debugLog("mooo:", req.query.requested_date);
+
+    let where = whereCondition(extend(preAprovalWhere, req.query));
+
+    debugLog("where re:", where);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      db.query(
+        "SELECT * FROM `hims_f_service_approval` WHERE `record_status`='A' AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  insertOrderedServices,
+  getPreAprovalList
+};
