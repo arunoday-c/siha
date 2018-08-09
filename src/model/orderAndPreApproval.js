@@ -209,12 +209,14 @@ let getPreAprovalList = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT count(*) number_of_Services,hims_f_service_approval_id,insurance_provider_id,insurance_network_office_id, service_id, icd_code, requested_date, requested_by, requested_mode,\
+        "SELECT SQL_CALC_FOUND_ROWS hims_f_service_approval_id,insurance_provider_id,insurance_network_office_id, service_id, icd_code, requested_date, requested_by, requested_mode,\
         requested_quantity, submission_type, insurance_service_name, doctor_id, patient_id, PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
         net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason, apprv_status,SA.created_date,SA.created_by\
         from hims_f_service_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id WHERE SA.record_status='A' AND " +
-          where.condition,
+          where.condition +
+          ";SELECT FOUND_ROWS() number_of_Services;",
         where.values,
+
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
