@@ -1,11 +1,7 @@
 "use strict";
 import extend from "extend";
 import {
-  selectStatement,
-  paging,
   whereCondition,
-  deleteRecord,
-  bulkInputArrayObject,
   releaseDBConnection,
   jsonArrayToObject
 } from "../utils";
@@ -107,6 +103,8 @@ let insertOrderedServices = (req, res, next) => {
             if (servicesForPreAproval.length > 0) {
               const insurtCols = [
                 "service_id",
+                "insurance_provider_id",
+                "insurance_network_office_id",
                 "icd_code",
                 "insurance_service_name",
                 "doctor_id",
@@ -149,27 +147,6 @@ let insertOrderedServices = (req, res, next) => {
                     });
                   }
 
-                  debugLog(
-                    "my array:",
-                    jsonArrayToObject({
-                      sampleInputObject: insurtCols,
-                      arrayObj: servicesForPreAproval,
-                      replaceObject: [
-                        {
-                          originalKey: "service_id",
-                          NewKey: "services_id"
-                        },
-                        {
-                          originalKey: "gross_amt",
-                          NewKey: "services_id"
-                        },
-                        {
-                          originalKey: "net_amount",
-                          NewKey: "services_id"
-                        }
-                      ]
-                    })
-                  );
                   connection.commit(error => {
                     if (error) {
                       connection.rollback(() => {
@@ -232,7 +209,7 @@ let getPreAprovalList = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT hims_f_service_approval_id, service_id, icd_code, requested_date, requested_by, requested_mode,\
+        "SELECT count(*) number_of_Services,hims_f_service_approval_id,insurance_provider_id,insurance_network_office_id, service_id, icd_code, requested_date, requested_by, requested_mode,\
         requested_quantity, submission_type, insurance_service_name, doctor_id, patient_id, PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
         net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason, apprv_status,SA.created_date,SA.created_by\
         from hims_f_service_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id WHERE SA.record_status='A' AND " +
