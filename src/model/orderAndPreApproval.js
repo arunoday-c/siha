@@ -210,8 +210,7 @@ let getPreAprovalList = (req, res, next) => {
   let preAprovalWhere = {
     service_id: "ALL",
     doctor_id: "ALL",
-    patient_id: "ALL",
-    requested_date: "ALL"
+    patient_id: "ALL"
   };
 
   try {
@@ -219,16 +218,15 @@ let getPreAprovalList = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    // if (req.query.requested_date != null)
-    //   req.query.requested_date = moment(req.query.requested_date).format(
-    //     "YYYY-MM-DD"
-    //   );
 
-    // debugLog("mooo:", req.query.requested_date);
+    req.query["date(SA.created_date)"] = req.query.created_date;
+    delete req.query.created_date;
+
+    debugLog("req query:", req.query);
 
     let where = whereCondition(extend(preAprovalWhere, req.query));
 
-    debugLog("where re:", where);
+    debugLog("where conditn:", where);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
