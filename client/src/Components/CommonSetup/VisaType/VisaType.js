@@ -115,7 +115,6 @@ class VisaType extends Component {
   }
 
   updateVisaTypes(data) {
-    debugger;
     data.updated_by = getCookie("UserID");
     algaehApiCall({
       uri: "/masters/set/update/visa",

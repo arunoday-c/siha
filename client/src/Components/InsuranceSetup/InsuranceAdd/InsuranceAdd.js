@@ -1,4 +1,8 @@
 import React, { PureComponent } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import "./../../../styles/site.css";
 import "./InsuranceAdd.css";
 import { Button, Modal } from "../../Wrapper/algaehWrapper";
@@ -15,11 +19,20 @@ import StepLabel from "@material-ui/core/StepLabel";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import InsuranceSetup from "../../../Models/InsuranceSetup";
-import { handleNext, handleBack, handleReset } from "./InsuranceAddHandaler";
+import {
+  handleNext,
+  handleBack,
+  handleReset,
+  updatedata
+} from "./InsuranceAddHandaler";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert";
+
 import AHSnackbar from "../../common/Inputs/AHSnackbar";
 import MyContext from "../../../utils/MyContext";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { getCookie } from "../../../utils/algaehApiCall";
+import { AlgaehActions } from "../../../actions/algaehActions";
 
 const styles = theme => ({
   instructions: {
@@ -36,6 +49,7 @@ function getSteps() {
 }
 
 function getStepContent(stepIndex, $this) {
+  $this.state.buttonenable === true ? (stepIndex = stepIndex - 1) : null;
   switch (stepIndex) {
     case 0:
       return <InsuranceProvider InsuranceSetup={$this.state} />;
@@ -52,11 +66,12 @@ class InsuranceAdd extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // activeStep: 0,
-      // screenName: "InsuranceProvider"
+      activeStep: 0,
+      screenName: "InsuranceProvider",
+      buttonenable: false
 
-      activeStep: 2,
-      screenName: "NetworkPlan"
+      // activeStep: 3,
+      // screenName: "Services"
     };
   }
 
@@ -74,6 +89,26 @@ class InsuranceAdd extends PureComponent {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.insuranceprovider !== undefined &&
+      nextProps.insuranceprovider.length !== 0
+    ) {
+      this.setState({ ...this.state, ...nextProps.insuranceprovider[0] });
+    } else {
+      if (this.state.insurance_provider_saved === false) {
+        let IOputs = InsuranceSetup.inputParam();
+        this.setState(IOputs);
+      }
+    }
+    if (
+      nextProps.subinsuranceprovider !== undefined &&
+      nextProps.subinsuranceprovider.length !== 0
+    ) {
+      this.setState({ sub_insurance: nextProps.subinsuranceprovider });
+    }
+  }
+
   handleClose = () => {
     this.setState({ snackeropen: false });
   };
@@ -84,6 +119,22 @@ class InsuranceAdd extends PureComponent {
         handleNext.bind(this, this);
       }
     }
+
+    if (this.state.buttonenable === true) {
+      if (
+        this.props.insuranceprovider !== undefined &&
+        this.props.insuranceprovider.length !== 0
+      ) {
+        this.props.initialStateInsurance({
+          redux: {
+            type: "INSURANCE_INT_DATA",
+            mappingName: "insuranceprovider",
+            data: []
+          }
+        });
+      }
+    }
+
     this.setState({
       activeStep: 0
     });
@@ -95,126 +146,206 @@ class InsuranceAdd extends PureComponent {
     const steps = getSteps();
     const { activeStep } = this.state;
 
+    this.state.buttonenable = this.props.buttonenable;
+
+    if (this.state.buttonenable === true) {
+      this.props.insurance_provider_id !== null
+        ? (this.state.insurance_provider_id = this.props.insurance_provider_id)
+        : (this.state.insurance_provider_id = null);
+
+      this.props.insurance_provider_name !== null
+        ? (this.state.insurance_provider_name = this.props.insurance_provider_name)
+        : (this.state.insurance_provider_id = null);
+    }
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-insurance-form">
-          <Modal className="model-set" open={this.props.open}>
-            <div
-              style={{
-                backgroundColor: "#fff"
-              }}
-            >
-              <MyContext.Provider
-                value={{
-                  state: this.state,
-                  updateState: obj => {
-                    debugger;
-                    this.setState({ ...obj });
-                  }
+          {this.props.addfunctionality === true ? (
+            <Modal className="model-set" open={this.props.open}>
+              <div
+                style={{
+                  backgroundColor: "#fff"
                 }}
               >
-                <div className="colorPrimary">
-                  <Typography variant="title">
-                    {this.props.HeaderCaption}
-                  </Typography>
-                </div>
-                <div className="stepper-set">
-                  <Stepper
-                    activeStep={activeStep}
-                    alternativeLabel
-                    style={{
-                      backgroundColor: "#DFFFFD",
-                      borderBottom: "1px solid #E6E6E6"
-                    }}
-                  >
-                    {steps.map(label => {
-                      return (
-                        <Step key={label}>
-                          <StepLabel>{label}</StepLabel>
-                        </Step>
-                      );
-                    })}
-                  </Stepper>
-                </div>
-                <div className="container-fluid">
-                  <div>
-                    {this.state.activeStep === steps.length ? (
-                      <div>
-                        <Typography className={classes.instructions}>
-                          All steps completed - you&quot;re finished
-                        </Typography>
-                        <Button onClick={handleReset.bind(this, this)}>
-                          Reset
-                        </Button>
-                      </div>
-                    ) : (
-                      <div>{getStepContent(activeStep, this)}</div>
-                    )}
+                <MyContext.Provider
+                  value={{
+                    state: this.state,
+                    updateState: obj => {
+                      this.setState({ ...obj });
+                    }
+                  }}
+                >
+                  <div className="colorPrimary">
+                    <Typography variant="title">
+                      {this.props.HeaderCaption}
+                    </Typography>
                   </div>
+                  <div className="stepper-set">
+                    <Stepper
+                      activeStep={activeStep}
+                      alternativeLabel
+                      style={{
+                        backgroundColor: "#DFFFFD",
+                        borderBottom: "1px solid #E6E6E6"
+                      }}
+                    >
+                      {steps.map(label => {
+                        return (
+                          <Step key={label}>
+                            <StepLabel>{label}</StepLabel>
+                          </Step>
+                        );
+                      })}
+                    </Stepper>
+                  </div>
+                  <div className="container-fluid">
+                    <div>
+                      {this.state.activeStep === steps.length ? null : (
+                        <div>{getStepContent(activeStep, this)}</div>
+                      )}
+                    </div>
+                    <br />
+
+                    <div className="row" position="fixed">
+                      <div className="col-lg-12">
+                        <span className="float-left">
+                          <button
+                            // className="htpl1-phase1-btn-others"
+                            disabled={activeStep === 0}
+                            onClick={handleBack.bind(this, this)}
+                            className={
+                              classes.backButton + " htpl1-phase1-btn-others"
+                            }
+                          >
+                            Previous
+                          </button>
+
+                          <button
+                            className="htpl1-phase1-btn-others"
+                            color="primary"
+                            onClick={handleNext.bind(this, this)}
+                          >
+                            Save & Close
+                          </button>
+                        </span>
+
+                        <span className="float-right">
+                          <button
+                            className="htpl1-phase1-btn-others"
+                            onClick={e => {
+                              this.onClose(e);
+                            }}
+                          >
+                            Cancel
+                          </button>
+
+                          <button
+                            className="htpl1-phase1-btn-primary"
+                            style={{ float: "right" }}
+                            onClick={handleNext.bind(this, this)}
+                          >
+                            {activeStep === steps.length - 1
+                              ? "Finish"
+                              : "Save & Next"}
+                          </button>
+
+                          <AHSnackbar
+                            open={this.state.snackeropen}
+                            handleClose={this.handleClose}
+                            MandatoryMsg={this.state.MandatoryMsg}
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </MyContext.Provider>
+              </div>
+            </Modal>
+          ) : (
+            <Modal className="model-set" open={this.props.open}>
+              <div
+                style={{
+                  backgroundColor: "#fff"
+                }}
+              >
+                <MyContext.Provider
+                  value={{
+                    state: this.state,
+                    updateState: obj => {
+                      this.setState({ ...obj });
+                    }
+                  }}
+                >
+                  <div className="colorPrimary">
+                    <Typography variant="title">
+                      {this.props.HeaderCaption}
+                    </Typography>
+                  </div>
+
+                  <div>{getStepContent(this.props.opencomponent, this)}</div>
+
                   <br />
 
                   <div className="row" position="fixed">
                     <div className="col-lg-12">
                       <span className="float-left">
                         <button
-                          // className="htpl1-phase1-btn-others"
-                          disabled={activeStep === 0}
-                          onClick={handleBack.bind(this, this)}
-                          className={
-                            classes.backButton + " htpl1-phase1-btn-others"
-                          }
-                        >
-                          Previous
-                        </button>
-
-                        <button
-                          className="htpl1-phase1-btn-others"
-                          color="primary"
-                          onClick={handleNext.bind(this, this)}
-                        >
-                          Save & Close
-                        </button>
-                      </span>
-
-                      <span className="float-right">
-                        <button
                           className="htpl1-phase1-btn-others"
                           onClick={e => {
                             this.onClose(e);
                           }}
                         >
-                          Cancel
+                          Close
                         </button>
-
-                        <button
-                          className="htpl1-phase1-btn-primary"
-                          style={{ float: "right" }}
-                          onClick={handleNext.bind(this, this)}
-                        >
-                          {activeStep === steps.length - 1
-                            ? "Save & Finish"
-                            : "Save & Next"}
-                        </button>
-
-                        <AHSnackbar
-                          open={this.state.snackeropen}
-                          handleClose={this.handleClose}
-                          MandatoryMsg={this.state.MandatoryMsg}
-                        />
                       </span>
+                      {this.props.opencomponent === "1" ? (
+                        <span className="float-right">
+                          <button
+                            style={{ marginRight: "15px" }}
+                            className="htpl1-phase1-btn-primary"
+                            onClick={updatedata.bind(this, this)}
+                          >
+                            Update
+                          </button>
+                        </span>
+                      ) : null}
                     </div>
                   </div>
-                </div>
-              </MyContext.Provider>
-            </div>
-          </Modal>
+                </MyContext.Provider>
+              </div>
+            </Modal>
+          )}
         </div>
       </React.Fragment>
     );
   }
 }
-// InsuranceAdd.propTypes = {
-//   classes: PropTypes.object
-// };
 
-export default withStyles(styles)(InsuranceAdd);
+function mapStateToProps(state) {
+  return {
+    insuranceprovider: state.insuranceprovider,
+    subinsuranceprovider: state.subinsuranceprovider
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getInsuranceDetails: AlgaehActions,
+      getSubInsuranceDetails: AlgaehActions,
+      initialStateInsurance: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withStyles(styles)(
+  withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(InsuranceAdd)
+  )
+);
+
+// export default withStyles(styles)(InsuranceAdd);

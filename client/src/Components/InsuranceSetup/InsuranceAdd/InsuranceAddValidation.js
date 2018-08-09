@@ -1,7 +1,6 @@
 import moment from "moment";
 
 const Validations = ($this, e) => {
-  debugger;
   let isError = false;
 
   if ($this.state.screenName === "InsuranceProvider") {
@@ -71,7 +70,6 @@ const Validations = ($this, e) => {
   }
   //Sub Insurance
   else if ($this.state.screenName === "SubInsurance") {
-    debugger;
     let obj = {};
     let previous = $this.state.sub_insurance || [];
     const x = document.querySelectorAll("[data-subdata = 'true']");
@@ -121,7 +119,6 @@ const Validations = ($this, e) => {
   }
   //NetWork and Network Office
   else if ($this.state.screenName === "NetworkPlan") {
-    debugger;
     let obj1 = {};
     let previous1 = $this.state.network_plan || [];
     const y = document.querySelectorAll("[data-netdata = 'true']");
@@ -181,14 +178,11 @@ const Validations = ($this, e) => {
         return isError;
       } else {
         obj1.insurance_provider_id = $this.state.insurance_provider_id;
-        obj1.insurance_sub_id = $this.state.insurance_sub_id;
         previous1.push(obj1);
         $this.setState({ network_plan: previous1 });
       }
     } else {
       obj1.insurance_provider_id = $this.state.insurance_provider_id;
-      obj1.insurance_sub_id = $this.state.insurance_sub_id;
-      obj1.hospital_id = 1;
       obj1.invoice_max_deduct = 0;
       obj1.preapp_limit_from = "GROSS";
       previous1.push(obj1);

@@ -25,14 +25,17 @@ export default {
       selectedLang: "en",
       arabic_provider_name: null,
 
-      insurance_provider_id: 108, //105,
-      insurance_sub_id: 51,
+      insurance_provider_id: null, //105,
+      insurance_sub_id: null,
       insurance_provider_saved: false,
       insurance_sub_saved: false,
       insurance_plan_saved: false,
 
       sub_insurance: [],
       network_plan: [],
+      update_sub_insurance: [],
+      new_network_plan_insurance: [],
+      update_network_plan_insurance: [],
 
       MandatoryMsg: null,
       snackeropen: false

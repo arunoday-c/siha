@@ -8,17 +8,24 @@ import "../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlagehAutoComplete
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import InsuranceAdd from "./InsuranceAdd/InsuranceAdd";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
+import GlobalVariables from "../../utils/GlobalVariables";
+import moment from "moment";
+import Options from "../../Options.json";
 
 class InsuranceSetup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      opencomponent: 0,
+      addfunctionality: true,
+      buttonenable: false
     };
   }
 
@@ -39,19 +46,41 @@ class InsuranceSetup extends Component {
   }
 
   ShowModel(e) {
-    this.setState({
-      ...this.state,
-      isOpen: !this.state.isOpen
-    });
+    this.setState(
+      {
+        ...this.state,
+        isOpen: !this.state.isOpen,
+        addfunctionality: true,
+        buttonenable: false,
+        insurance_provider_id: null,
+        insurance_provider_name: null
+      },
+      () => {}
+    );
   }
-  getCtrlCode(insCode) {
-    debugger;
+  getCtrlCode(insCode) {}
+
+  changeDateFormat = date => {
+    if (date != null) {
+      return moment(date).format(Options.dateFormat);
+    }
+  };
+
+  setUpdateComponent(row, e) {
+    this.setState({
+      opencomponent: e.value,
+      buttonenable: true,
+      insurance_provider_id: row.hims_d_insurance_provider_id,
+      insurance_provider_name: row.insurance_provider_name,
+      isOpen: true,
+      addfunctionality: false
+    });
   }
 
   render() {
     return (
       <div className="insurancesetup">
-        <BreadCrumb
+        {/* <BreadCrumb
           //  width={this.state.breadCrumbWidth}
           title={
             <AlgaehLabel
@@ -121,6 +150,31 @@ class InsuranceSetup extends Component {
           }
           printArea={true}
           selectedLang={this.state.selectedLang}
+        /> */}
+        <BreadCrumb
+          title={
+            <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+          }
+          breadStyle={this.props.breadStyle}
+          pageNavPath={[
+            {
+              pageName: (
+                <AlgaehLabel
+                  label={{
+                    fieldName: "form_home",
+                    align: "ltr"
+                  }}
+                />
+              )
+            },
+            {
+              pageName: (
+                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+              )
+            }
+          ]}
+          //screenName="Master Setup"
+          //   HideHalfbread={false}
         />
         <div className="row insurancesetup">
           <div className="col-lg-12">
@@ -134,19 +188,42 @@ class InsuranceSetup extends Component {
                 id="insurance_grid"
                 columns={[
                   {
-                    fieldName: "identity_document_code",
+                    fieldName: "edit_option",
                     label: "Actions",
-                    disabled: false
+                    disabled: false,
+                    displayTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "edit_option",
+                            className: "select-fld",
+                            value: row.edit_option,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_INSURANCE_EDIT_OPTION
+                            },
+                            onChange: this.setUpdateComponent.bind(this, row)
+                          }}
+                        />
+                      );
+                    }
                   },
                   {
-                    fieldName: "identity_document_code",
+                    fieldName: "sl_no",
                     label: "#",
                     disabled: true
                   },
                   {
-                    fieldName: "identity_document_code",
+                    fieldName: "insurance_type",
                     label: "Type",
-                    disabled: true
+                    disabled: true,
+                    displayTemplate: row => {
+                      return row.insurance_type === "I"
+                        ? "Insurance Company"
+                        : "Inactive";
+                    }
                   },
                   {
                     fieldName: "currency",
@@ -164,23 +241,37 @@ class InsuranceSetup extends Component {
                     disabled: true
                   },
                   {
-                    fieldName: "identity_document_code",
+                    fieldName: "payment_type",
                     label: "Payment Type",
                     disabled: true
                   },
                   {
-                    fieldName: "identity_document_code",
+                    fieldName: "credit_period",
                     label: "Credit Period",
                     disabled: true
                   },
                   {
                     fieldName: "effective_start_date",
                     label: "Active From",
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {this.changeDateFormat(row.effective_start_date)}
+                        </span>
+                      );
+                    },
                     disabled: true
                   },
                   {
                     fieldName: "effective_end_date",
                     label: "Valid Upto",
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {this.changeDateFormat(row.effective_end_date)}
+                        </span>
+                      );
+                    },
                     disabled: true
                   }
                 ]}
@@ -192,7 +283,7 @@ class InsuranceSetup extends Component {
                       : this.props.insProviders
                 }}
                 // isEditable={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
+                paging={{ page: 0, rowsPerPage: 6 }}
               />
             </div>
           </div>
@@ -208,6 +299,7 @@ class InsuranceSetup extends Component {
               ADD NEW
             </button>
           </div>
+
           <InsuranceAdd
             HeaderCaption={
               <AlgaehLabel
@@ -219,6 +311,11 @@ class InsuranceSetup extends Component {
             }
             open={this.state.isOpen}
             onClose={this.ShowModel.bind(this)}
+            opencomponent={this.state.opencomponent}
+            addfunctionality={this.state.addfunctionality}
+            buttonenable={this.state.buttonenable}
+            insurance_provider_id={this.state.insurance_provider_id}
+            insurance_provider_name={this.state.insurance_provider_name}
           />
         </div>
 

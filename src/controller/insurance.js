@@ -8,10 +8,19 @@ import {
   addPatientInsurance,
   getListOfInsuranceProvider,
   addInsuranceProvider,
+  updateInsuranceProvider,
   addSubInsuranceProvider,
+  updateSubInsuranceProvider,
+  getSubInsurance,
+  deleteSubInsurance,
   addNetwork,
   NetworkOfficeMaster,
-  addPlanAndPolicy
+  addPlanAndPolicy,
+  getPriceList,
+  getNetworkAndNetworkOfficRecords,
+  updatePriceList,
+  updateNetworkAndNetworkOffice,
+  updatePriceListBulk
 } from "../model/insurance";
 
 export default ({ config, db }) => {
@@ -21,6 +30,21 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientInsurance",
     getPatientInsurance,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by nowshad : to fetch sub insurence
+  api.get(
+    "/getSubInsurance",
+    getSubInsurance,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -77,10 +101,40 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan : to update insurence provider
+  api.put(
+    "/updateInsuranceProvider",
+    updateInsuranceProvider,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   // created by irfan : to add SUB-insurence provider
   api.post(
     "/addSubInsuranceProvider",
     addSubInsuranceProvider,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to update SUB-insurence provider
+  api.put(
+    "/updateSubInsuranceProvider",
+    updateSubInsuranceProvider,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -126,6 +180,99 @@ export default ({ config, db }) => {
   api.post(
     "/addPlanAndPolicy",
     addPlanAndPolicy,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan: to delete sub insurance
+  api.delete(
+    "/deleteSubInsurance",
+    deleteSubInsurance,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Noushad : to get all price list of selected insurance
+  api.get(
+    "/getPriceList",
+    getPriceList,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan : to get list of network and its network_office records
+  // based on insuranceProvider id
+  api.get(
+    "/getNetworkAndNetworkOfficRecords",
+    getNetworkAndNetworkOfficRecords,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.put(
+    "/updatePriceList",
+    updatePriceList,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to  update Network And NetworkOffice
+  api.put(
+    "/updateNetworkAndNetworkOffice",
+    updateNetworkAndNetworkOffice,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad : to  update bulk Services price list
+  api.put(
+    "/updatePriceListBulk",
+    updatePriceListBulk,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

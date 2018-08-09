@@ -16,15 +16,18 @@ import {
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { texthandle, saveNetworkPlan, datehandle } from "./NetworkPlanHandaler";
+import {
+  texthandle,
+  saveNetworkPlan,
+  datehandle,
+  addNewNetwork,
+  UpdateNetworkPlan
+} from "./NetworkPlanHandaler";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import Paper from "@material-ui/core/Paper";
 
-import {
-  FORMAT_INSURANCE_TYPE,
-  FORMAT_PRICE_FROM
-} from "../../../utils/GlobalVariables.json";
+import { FORMAT_PRICE_FROM } from "../../../utils/GlobalVariables.json";
 import MyContext from "../../../utils/MyContext";
 
 class NetworkPlan extends PureComponent {
@@ -66,30 +69,77 @@ class NetworkPlan extends PureComponent {
       policy_number: null,
       preapp_limit: null,
       created_by: getCookie("UserID"),
-      hospital_id: 1,
+      hospital_id: null,
       preapp_limit_from: "GROSS",
 
-      PlanList: false
+      PlanList: false,
+      saveupdate: false,
+      btnupdate: true
     };
   }
 
   componentWillMount() {
-    debugger;
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (this.state.insurance_provider_id !== null) {
+      this.props.getSubInsuranceDetails({
+        uri: "/insurance/getSubInsurance",
+        method: "GET",
+        printInput: true,
+        data: {
+          insurance_provider_id: this.state.insurance_provider_id
+        },
+        redux: {
+          type: "SUB_INSURANCE_GET_DATA",
+          mappingName: "subinsuranceprovider"
+        }
+      });
+
+      this.props.getNetworkPlans({
+        uri: "/insurance/getNetworkAndNetworkOfficRecords",
+        method: "GET",
+        printInput: true,
+        data: {
+          insuranceProviderId: this.state.insurance_provider_id
+        },
+        redux: {
+          type: "NETWORK_PLAN_GET_DATA",
+          mappingName: "networkandplans"
+        }
+      });
+    }
+  }
 
   handleClose = () => {
     this.setState({ snackeropen: false });
   };
 
-  ShowPlanListScreen(e) {
+  ShowPlanListScreen(dataclear, e) {
+    let rowSelected = {};
+    let saveupdate = false,
+      btnupdate = true;
+    if (
+      e.hims_d_insurance_network_id !== undefined &&
+      e.hims_d_insurance_network_id !== null
+    ) {
+      rowSelected = e;
+      saveupdate = true;
+      btnupdate = false;
+      // addNewNetwork(this, this);
+    }
     this.setState({
       ...this.state,
-      PlanList: !this.state.PlanList
+      PlanList: !this.state.PlanList,
+      saveupdate: saveupdate,
+      btnupdate: btnupdate,
+      ...rowSelected
     });
+    if (dataclear === "Y") {
+      addNewNetwork(this, this);
+    }
   }
 
   render() {
@@ -117,6 +167,7 @@ class NetworkPlan extends PureComponent {
                       size="small"
                       color="primary"
                       style={{ float: "right" }}
+                      onClick={addNewNetwork.bind(this, this)}
                     >
                       Add New
                     </Button>
@@ -133,13 +184,12 @@ class NetworkPlan extends PureComponent {
                       className: "select-fld",
                       value: this.state.insurance_sub_id,
                       dataSource: {
-                        // textField: "service_name",
                         textField:
                           this.state.selectedLang === "en"
-                            ? "name"
-                            : "arabic_name",
-                        valueField: "value",
-                        data: FORMAT_INSURANCE_TYPE
+                            ? "insurance_sub_name"
+                            : "arabic_sub_name",
+                        valueField: "hims_d_insurance_sub_id",
+                        data: this.props.subinsuranceprovider
                       },
                       onChange: texthandle.bind(this, this)
                     }}
@@ -458,7 +508,23 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
-                    {/* //Dummy Fields */}
+                    {/* //Dummy Fields Starts Here*/}
+
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-3" }}
+                      textBox={{
+                        value: this.state.insurance_sub_id,
+                        className: "txt-fld d-none",
+                        name: "insurance_sub_id",
+
+                        events: {
+                          onChange: null
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
                     <AlagehFormGroup
                       div={{ className: "col-lg-3" }}
                       textBox={{
@@ -521,6 +587,7 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
+                    {/* Ends here */}
                   </div>
                   {/* OPD Services */}
                   <div className="row">
@@ -710,14 +777,13 @@ class NetworkPlan extends PureComponent {
                       size="small"
                       color="primary"
                       style={{ float: "left" }}
-                      onClick={this.ShowPlanListScreen.bind(this)}
+                      onClick={this.ShowPlanListScreen.bind(this, "Y")}
                     >
                       View Plans
                     </Button>
-
                     <NetworkPlanList
                       show={this.state.PlanList}
-                      onClose={this.ShowPlanListScreen.bind(this)}
+                      onClose={this.ShowPlanListScreen.bind(this, "N")}
                       selectedLang={this.state.selectedLang}
                       inputsparameters={this.state.network_plan}
                     />
@@ -727,9 +793,23 @@ class NetworkPlan extends PureComponent {
                       color="primary"
                       style={{ float: "right" }}
                       onClick={saveNetworkPlan.bind(this, this, context)}
+                      disabled={this.state.saveupdate}
                     >
                       Save
                     </Button>
+                    {this.state.buttonenable === true ? (
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="primary"
+                        style={{ float: "right" }}
+                        onClick={UpdateNetworkPlan.bind(this, this, context)}
+                        disabled={this.state.btnupdate}
+                      >
+                        Update
+                      </Button>
+                    ) : null}
+
                     <AHSnackbar
                       open={this.state.snackeropen}
                       handleClose={this.handleClose}
@@ -748,16 +828,16 @@ class NetworkPlan extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    services: state.services
+    subinsuranceprovider: state.subinsuranceprovider,
+    networkplan: state.networkplan
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
+      getSubInsuranceDetails: AlgaehActions,
+      getNetworkPlans: AlgaehActions
     },
     dispatch
   );

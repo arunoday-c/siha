@@ -538,48 +538,6 @@ let billingCalculations = (req, res, next) => {
 };
 
 let getBillDetails = (req, res, next) => {
-  let billingHeaderModel = {
-    hims_f_billing_header_id: null,
-    patient_id: null,
-    billing_type_id: null,
-    visit_id: null,
-    bill_number: null,
-    incharge_or_provider: null,
-    bill_date: new Date(),
-    advance_amount: 0,
-    discount_amount: 0,
-    sub_total_amount: 0,
-    total_tax: 0,
-    net_total: 0,
-    billing_status: null,
-    copay_amount: 0,
-    deductable_amount: 0,
-    gross_total: 0,
-    sheet_discount_amount: 0,
-    sheet_discount_percentage: 0,
-    net_amount: 0,
-    patient_res: 0,
-    company_res: 0,
-    sec_company_res: 0,
-    patient_payable: 0,
-    company_payable: 0,
-    sec_company_payable: 0,
-    patient_tax: 0,
-    company_tax: 0,
-    sec_company_tax: 0,
-    net_tax: 0,
-    credit_amount: 0,
-    receiveable_amount: 0,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null,
-    cancel_remarks: null,
-    cancel_by: null,
-    bill_comments: null
-  };
-
   let billingDetailsModel = {
     hims_f_billing_details_id: null,
     hims_f_billing_header_id: null,
@@ -637,239 +595,404 @@ let getBillDetails = (req, res, next) => {
     record_status: null
   };
 
-  let receiptHeaderModel = {
-    total_amount: 0,
-    unbalanced_amount: 0,
-    cash_amount: 0,
-    card_amount: 0,
-    cheque_amount: 0
-  };
   debugFunction("getBillDetails");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let servicesDetails = extend(servicesModel, req.body);
+    // let servicesDetails = extend(servicesModel, req.body);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
       }
-      debugLog("Service ID" + servicesDetails.hims_d_services_id);
+      // debugLog("Service ID:",  servicesDetails.hims_d_services_id);
+      let service_ids = null;
+      let questions = "?";
+
+      if (Array.isArray(req.body)) {
+        let len = req.body.length;
+        debugLog("len:", len);
+        service_ids = new LINQ(req.body).Select(g => g.hims_d_services_id);
+        debugLog("serrvicesidss:", service_ids.items);
+
+        for (let i = 1; i < len; i++) {
+          questions += ",?";
+          debugLog("ques:", questions);
+        }
+      }
 
       connection.query(
-        "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id`=? ",
-        [servicesDetails.hims_d_services_id],
+        "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id` IN (" +
+          questions +
+          ") AND record_status='A'",
+        service_ids.items,
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
           }
-          let records = result[0];
+          let outputArray = [];
+          for (let m = 0; m < result.length; m++) {
+            debugLog("reslt my lenth:", result.length);
+            debugLog("reslt my:", result[m]);
 
-          req.body.service_type_id = result[0].service_type_id;
-          req.body.services_id = servicesDetails.hims_d_services_id;
+            let servicesDetails = extend(
+              {
+                hims_d_services_id: null,
+                service_code: null,
+                cpt_code: null,
+                service_name: null,
+                service_desc: null,
+                sub_department_id: null,
+                hospital_id: null,
+                service_type_id: null,
+                standard_fee: null,
+                discount: null,
+                effective_start_date: null,
+                effectice_end_date: null,
+                created_by: null,
+                created_date: null,
+                updated_by: null,
+                updated_date: null,
+                record_status: null
+              },
+              req.body[m]
+            );
 
-          //Calculation Declarations
-          let unit_cost = 0,
-            gross_amount = 0,
-            net_amout = 0,
-            sec_unit_cost = 0;
+            let records = result[m];
+            req.body[m].service_type_id = result[m].service_type_id;
+            req.body[m].services_id = servicesDetails.hims_d_services_id;
 
-          let patient_resp = 0,
-            patient_payable = 0;
+            //Calculation Declarations
+            let unit_cost = 0,
+              gross_amount = 0,
+              net_amout = 0,
+              sec_unit_cost = 0;
 
-          let copay_percentage = 0,
-            copay_amount = 0,
-            sec_copay_percntage = 0,
-            sec_copay_amount = 0;
+            let patient_resp = 0,
+              patient_payable = 0;
 
-          let comapany_resp = 0,
-            company_payble = 0,
-            sec_company_res = 0,
-            sec_company_paybale = 0;
+            let copay_percentage = 0,
+              copay_amount = 0,
+              sec_copay_percntage = 0,
+              sec_copay_amount = 0;
 
-          let quantity =
-            servicesDetails.quantity === undefined
-              ? 1
-              : servicesDetails.quantity;
+            let comapany_resp = 0,
+              company_payble = 0,
+              sec_company_res = 0,
+              sec_company_paybale = 0;
 
-          let discount_amout =
-            servicesDetails.discount_amout === undefined
-              ? 0
-              : servicesDetails.discount_amout;
+            let quantity =
+              servicesDetails.quantity === undefined
+                ? 1
+                : servicesDetails.quantity;
 
-          let discount_percentage =
-            servicesDetails.discount_percentage === undefined
-              ? 0
-              : servicesDetails.discount_percentage;
+            let discount_amout =
+              servicesDetails.discount_amout === undefined
+                ? 0
+                : servicesDetails.discount_amout;
 
-          let insured =
-            servicesDetails.insured === undefined
-              ? "N"
-              : servicesDetails.insured;
+            let discount_percentage =
+              servicesDetails.discount_percentage === undefined
+                ? 0
+                : servicesDetails.discount_percentage;
 
-          let sec_insured =
-            servicesDetails.sec_insured === undefined
-              ? "N"
-              : servicesDetails.sec_insured;
+            let insured =
+              servicesDetails.insured === undefined
+                ? "N"
+                : servicesDetails.insured;
 
-          new Promise((resolve, reject) => {
-            try {
-              if (insured === "Y") {
-                // let callInsurance =
+            let sec_insured =
+              servicesDetails.sec_insured === undefined
+                ? "N"
+                : servicesDetails.sec_insured;
 
-                req.body.insurance_id = req.body.primary_insurance_provider_id;
-                req.body.hims_d_insurance_network_office_id =
-                  req.body.primary_network_office_id;
-                req.body.network_id = req.body.primary_network_id;
+            let approval_amt =
+              servicesDetails.approval_amt === undefined
+                ? 0
+                : servicesDetails.approval_amt;
+            let approval_limit_yesno =
+              servicesDetails.approval_limit_yesno === undefined
+                ? "N"
+                : servicesDetails.approval_limit_yesno;
 
-                insuranceServiceDetails(req, next, connection, resolve);
-                //if (callInsurance != null) resolve(callInsurance);
-              } else if (sec_insured === "Y") {
-                req.body.insurance_id =
-                  req.body.secondary_insurance_provider_id;
-                req.body.hims_d_insurance_network_office_id =
-                  req.body.secondary_network_office_id;
-                req.body.network_id = req.body.secondary_network_id;
+            let preapp_limit_exceed = "N";
+            let dummy_company_payble =
+              servicesDetails.dummy_company_payble === undefined
+                ? 0
+                : servicesDetails.dummy_company_payble;
 
-                insuranceServiceDetails(req, next, connection, resolve);
-              } else {
-                resolve();
+            let pre_approval = "N";
+            let covered = "Y";
+            let preapp_limit_amount =
+              servicesDetails.preapp_limit_amount === undefined
+                ? 0
+                : servicesDetails.preapp_limit_amount;
+            new Promise((resolve, reject) => {
+              try {
+                if (insured === "Y") {
+                  // let callInsurance =
+
+                  req.body[m].insurance_id =
+                    req.body[m].primary_insurance_provider_id;
+                  req.body[m].hims_d_insurance_network_office_id =
+                    req.body[m].primary_network_office_id;
+                  req.body[m].network_id = req.body[m].primary_network_id;
+
+                  insuranceServiceDetails(
+                    req.body[m],
+                    req.db,
+                    next,
+                    connection,
+                    resolve
+                  );
+                  //if (callInsurance != null) resolve(callInsurance);
+                } else if (sec_insured === "Y") {
+                  req.body[m].insurance_id =
+                    req.body[m].secondary_insurance_provider_id;
+                  req.body[m].hims_d_insurance_network_office_id =
+                    req.body[m].secondary_network_office_id;
+                  req.body[m].network_id = req.body[m].secondary_network_id;
+
+                  insuranceServiceDetails(
+                    req.body[m],
+                    req.db,
+                    next,
+                    connection,
+                    resolve
+                  );
+                } else {
+                  resolve({});
+                }
+              } catch (e) {
+                reject(e);
               }
-            } catch (e) {
-              reject(e);
-            }
-          })
-            .then(policydtls => {
-              debugLog("ander", policydtls);
-              //Calculation Starts
-              if (insured === "Y") {
-                debugLog("Insured:", quantity);
-                debugLog("Unit cost", policydtls.gross_amt);
+            })
+              .then(policydtls => {
+                debugLog("inside 1st then", policydtls);
+                //Calculation Starts
+                pre_approval =
+                  policydtls !== null ? policydtls.pre_approval : "N";
 
-                if (policydtls.company_service_price_type == "N") {
-                  unit_cost = policydtls.net_amount;
-                } else {
-                  unit_cost = policydtls.gross_amt;
+                covered = policydtls !== null ? policydtls.covered : "Y";
+                if (covered === "N") {
+                  debugLog("not covered", {});
+                  insured = "N";
                 }
 
-                debugLog("Unit cost", unit_cost);
-
-                gross_amount = quantity * unit_cost;
-
-                debugLog("Gross:", gross_amount);
-
-                if (discount_amout > 0) {
-                  discount_percentage = (discount_amout / gross_amount) * 100;
-                } else if (discount_percentage > 0) {
-                  discount_amout = (gross_amount * discount_percentage) / 100;
-                }
-                net_amout = gross_amount - discount_amout;
-
-                //Patient And Company
-                if (policydtls.copay_status === "Y") {
-                  copay_amount = policydtls.copay_amt;
-                  copay_percentage = (copay_amount / net_amout) * 100;
-                } else {
-                  copay_percentage = policydtls.copay_consultation;
-                  copay_amount = (net_amout * copay_percentage) / 100;
-                  debugLog("Copay Amount:", copay_amount);
+                if (approval_limit_yesno === "Y") {
+                  pre_approval = "Y";
                 }
 
-                patient_resp = copay_amount;
-                patient_payable = copay_amount;
-                comapany_resp = net_amout - patient_resp;
-                company_payble = net_amout - patient_payable;
+                debugLog("Insured", insured);
+                debugLog("Pre Approval", pre_approval);
 
-                //If primary and secondary exists
-                if (sec_insured === "Y") {
-                  req.body.insurance_id =
-                    req.body.secondary_insurance_provider_id;
-                  req.body.hims_d_insurance_network_office_id =
-                    req.body.secondary_network_office_id;
-                  req.body.network_id = req.body.secondary_network_id;
-                  //Secondary Insurance
-                  return new Promise((resolve, reject) => {
-                    try {
-                      // let callInsurance =
-                      insuranceServiceDetails(req, next, connection, resolve);
-                      //if (callInsurance != null) resolve(callInsurance);
-                    } catch (e) {
-                      reject(e);
+                debugLog("Limit", approval_limit_yesno);
+
+                debugLog("Covered", covered);
+
+                if (
+                  insured === "Y" &&
+                  pre_approval === "N" &&
+                  policydtls.covered === "Y"
+                ) {
+                  debugLog("Insured:", quantity);
+                  debugLog("Unit cost", policydtls.gross_amt);
+
+                  if (policydtls.company_service_price_type == "N") {
+                    unit_cost = policydtls.net_amount;
+                  } else {
+                    unit_cost = policydtls.gross_amt;
+                  }
+
+                  debugLog("Unit cost", unit_cost);
+
+                  gross_amount = quantity * unit_cost;
+
+                  debugLog("Gross:", gross_amount);
+
+                  if (discount_amout > 0) {
+                    discount_percentage = (discount_amout / gross_amount) * 100;
+                  } else if (discount_percentage > 0) {
+                    discount_amout = (gross_amount * discount_percentage) / 100;
+                  }
+                  net_amout = gross_amount - discount_amout;
+
+                  //Patient And Company
+                  if (policydtls.copay_status === "Y") {
+                    copay_amount = policydtls.copay_amt;
+                    copay_percentage = (copay_amount / net_amout) * 100;
+                  } else {
+                    copay_percentage = policydtls.copay_consultation;
+                    copay_amount = (net_amout * copay_percentage) / 100;
+                    debugLog("Copay Amount:", copay_amount);
+                  }
+
+                  patient_resp = copay_amount;
+                  patient_payable = copay_amount;
+                  comapany_resp = net_amout - patient_resp;
+                  company_payble = net_amout - patient_payable;
+                  dummy_company_payble = company_payble;
+                  preapp_limit_amount = policydtls.preapp_limit;
+                  if (policydtls.preapp_limit !== 0) {
+                    approval_amt = approval_amt + company_payble;
+                    if (approval_amt > policydtls.preapp_limit) {
+                      preapp_limit_exceed = "Y";
                     }
-                  });
-                }
-              } else {
-                unit_cost = records.standard_fee;
-                gross_amount = quantity * records.standard_fee;
+                  }
 
-                if (discount_amout > 0) {
-                  discount_percentage = (discount_amout / gross_amount) * 100;
-                } else if (discount_percentage > 0) {
-                  discount_amout = (gross_amount * discount_percentage) / 100;
-                }
-                net_amout = gross_amount - discount_amout;
-                patient_resp = net_amout;
-                patient_payable = net_amout;
-              }
-            })
-
-            .then(secpolicydtls => {
-              debugLog("ander", secpolicydtls);
-
-              if (secpolicydtls != null) {
-                //secondary Insurance
-                sec_unit_cost = patient_payable;
-
-                //Patient And Company
-                if (secpolicydtls.copay_status === "Y") {
-                  sec_copay_amount = secpolicydtls.copay_amt;
-                  sec_copay_percntage =
-                    (sec_copay_amount / sec_unit_cost) * 100;
+                  //If primary and secondary exists
+                  if (sec_insured === "Y") {
+                    req.body[m].insurance_id =
+                      req.body[m].secondary_insurance_provider_id;
+                    req.body[m].hims_d_insurance_network_office_id =
+                      req.body[m].secondary_network_office_id;
+                    req.body[m].network_id = req.body[m].secondary_network_id;
+                    //Secondary Insurance
+                    return new Promise((resolve, reject) => {
+                      try {
+                        // let callInsurance =
+                        insuranceServiceDetails(
+                          req.body[m],
+                          req.db,
+                          next,
+                          connection,
+                          resolve
+                        );
+                        //if (callInsurance != null) resolve(callInsurance);
+                      } catch (e) {
+                        reject(e);
+                      }
+                    });
+                  }
                 } else {
-                  sec_copay_percntage = secpolicydtls.copay_consultation;
-                  sec_copay_amount =
-                    (sec_unit_cost * sec_copay_percntage) / 100;
+                  unit_cost = records.standard_fee;
+                  gross_amount = quantity * records.standard_fee;
+
+                  if (discount_amout > 0) {
+                    discount_percentage = (discount_amout / gross_amount) * 100;
+                  } else if (discount_percentage > 0) {
+                    discount_amout = (gross_amount * discount_percentage) / 100;
+                  }
+                  net_amout = gross_amount - discount_amout;
+                  patient_resp = net_amout;
+                  patient_payable = net_amout;
                 }
+              })
 
-                patient_resp = sec_copay_amount;
-                patient_payable = sec_copay_amount;
-                sec_company_res = sec_unit_cost - patient_resp;
-                sec_company_paybale = sec_unit_cost - patient_payable;
-              }
-              extend(billingDetailsModel, {
-                service_type_id: records.service_type_id,
-                services_id: servicesDetails.hims_d_services_id,
-                quantity: quantity,
-                unit_cost: unit_cost,
-                gross_amount: gross_amount,
-                discount_amout: discount_amout,
-                discount_percentage: discount_percentage,
-                net_amout: net_amout,
-                patient_resp: patient_resp,
-                patient_payable: patient_payable,
-                copay_percentage: copay_percentage,
-                copay_amount: copay_amount,
+              .then(secpolicydtls => {
+                debugLog("ander", secpolicydtls);
 
-                comapany_resp: comapany_resp,
-                company_payble: company_payble,
+                if (secpolicydtls != null) {
+                  //secondary Insurance
+                  sec_unit_cost = patient_payable;
 
-                sec_copay_percntage: sec_copay_percntage,
-                sec_copay_amount: sec_copay_amount,
-                sec_company_res: sec_company_res,
-                sec_company_paybale: sec_company_paybale
+                  //Patient And Company
+                  if (secpolicydtls.copay_status === "Y") {
+                    sec_copay_amount = secpolicydtls.copay_amt;
+                    sec_copay_percntage =
+                      (sec_copay_amount / sec_unit_cost) * 100;
+                  } else {
+                    sec_copay_percntage = secpolicydtls.copay_consultation;
+                    sec_copay_amount =
+                      (sec_unit_cost * sec_copay_percntage) / 100;
+                  }
+
+                  patient_resp = sec_copay_amount;
+                  patient_payable = sec_copay_amount;
+                  sec_company_res = sec_unit_cost - patient_resp;
+                  sec_company_paybale = sec_unit_cost - patient_payable;
+                }
+                let out = extend(
+                  {
+                    hims_f_billing_details_id: null,
+                    hims_f_billing_header_id: null,
+                    service_type_id: null,
+                    services_id: null,
+                    quantity: 0,
+                    unit_cost: 0,
+                    insurance_yesno: null,
+                    gross_amount: 0,
+                    discount_amout: 0,
+                    discount_percentage: 0,
+                    net_amout: 0,
+                    copay_percentage: 0,
+                    copay_amount: 0,
+                    deductable_amount: 0,
+                    deductable_percentage: 0,
+                    tax_inclusive: "N",
+                    patient_tax: 0,
+                    company_tax: 0,
+                    total_tax: 0,
+                    patient_resp: 0,
+                    patient_payable: 0,
+                    comapany_resp: 0,
+                    company_payble: 0,
+                    sec_company: 0,
+                    sec_deductable_percentage: 0,
+                    sec_deductable_amount: 0,
+                    sec_company_res: 0,
+                    sec_company_tax: 0,
+                    sec_company_paybale: 0,
+                    sec_copay_percntage: 0,
+                    sec_copay_amount: 0,
+                    created_by: null,
+                    created_date: null,
+                    updated_by: null,
+                    updated_date: null
+                  },
+                  {
+                    service_type_id: records.service_type_id,
+                    services_id: servicesDetails.hims_d_services_id,
+                    quantity: quantity,
+                    unit_cost: unit_cost,
+                    gross_amount: gross_amount,
+                    discount_amout: discount_amout,
+                    discount_percentage: discount_percentage,
+                    net_amout: net_amout,
+                    patient_resp: patient_resp,
+                    patient_payable: patient_payable,
+                    copay_percentage: copay_percentage,
+                    copay_amount: copay_amount,
+
+                    comapany_resp: comapany_resp,
+                    company_payble: company_payble,
+                    dummy_company_payble: dummy_company_payble,
+
+                    sec_copay_percntage: sec_copay_percntage,
+                    sec_copay_amount: sec_copay_amount,
+                    sec_company_res: sec_company_res,
+                    sec_company_paybale: sec_company_paybale,
+                    pre_approval: pre_approval,
+                    insurance_yesno: insured,
+                    preapp_limit_exceed: preapp_limit_exceed,
+                    approval_amt: approval_amt,
+                    preapp_limit_amount: preapp_limit_amount,
+                    approval_limit_yesno: approval_limit_yesno
+                  }
+                );
+
+                // debugLog("Results are recorded...", result);
+                // outputArray = {
+                //   billdetails: [billingDetailsModel]
+                // };
+                // debugLog("Results are outputArray...", outputArray);
+                // next();
+                debugLog("out Result...", out);
+                outputArray.push(out);
+              })
+              .then(() => {
+                if (m == result.length - 1) {
+                  req.records = { billdetails: outputArray };
+                  debugLog("final Result..", outputArray);
+                  next();
+                }
+              })
+              .catch(e => {
+                next(httpStatus.generateError(httpStatus.badRequest, e));
               });
-
-              debugLog("Results are recorded...", result);
-              req.records = extend({
-                billdetails: [billingDetailsModel]
-              });
-              next();
-            })
-            .catch(e => {
-              next(httpStatus.generateError(httpStatus.badRequest, e));
-            });
+          }
         }
       );
     });
@@ -1360,19 +1483,23 @@ created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
   }
 };
 
-function insuranceServiceDetails(req, next, connection, resolve) {
-  req = req;
-  let db = req.db;
-  debugLog("rquest sssss:", req.body);
+function insuranceServiceDetails(body, db, next, connection, resolve) {
+  // req = req;
+  // let db = req.db;
+  debugLog("reqbodyin insurance func:", body);
   let NetOffModel = {
     hims_d_insurance_network_office_id: null
   };
-  let input = extend(NetOffModel, req.body);
-  debugLog("val:", input.hims_d_insurance_network_office_id);
+  let input = extend(NetOffModel, body);
+  debugLog(
+    "hims_d_insurance_network_office_id:",
+    input.hims_d_insurance_network_office_id
+  );
 
+  debugLog("connection string:", connection);
   connection.query(
     "select price_from ,copay_consultation,copay_percent_rad,copay_percent_trt,copay_percent_dental,\
-    copay_medicine from hims_d_insurance_network_office where hims_d_insurance_network_office_id=?",
+    copay_medicine, preapp_limit from hims_d_insurance_network_office where hims_d_insurance_network_office_id=?",
     [input.hims_d_insurance_network_office_id],
     (error, resultOffic) => {
       if (error) {
@@ -1390,11 +1517,11 @@ function insuranceServiceDetails(req, next, connection, resolve) {
           service_type_id: null,
           services_id: null
         };
-        let inputparam = extend(insuranceModel, req.body);
-        debugLog("val:", inputparam.insurance_id);
+        let inputparam = extend(insuranceModel, body);
+        debugLog("val second:", inputparam.insurance_id);
 
         connection.query(
-          "select Inp.company_service_price_type,copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,\
+          "select Inp.company_service_price_type,copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,covered,\
            net_amount,gross_amt from hims_d_services_insurance sI inner join hims_d_insurance_provider Inp on\
            Inp.hims_d_insurance_provider_id=sI.insurance_id where sI.insurance_id =? and sI.service_type_id =? and \
            sI.services_id =?  and sI.record_status='A' and Inp.record_status='A'",
@@ -1428,7 +1555,7 @@ function insuranceServiceDetails(req, next, connection, resolve) {
           services_id: null
         };
 
-        let input = extend(networkModel, req.body);
+        let input = extend(networkModel, body);
         connection.query(
           "select Inp.insurance_provider_name, Inp.company_service_price_type, net.network_type, \
           copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,\
@@ -1455,7 +1582,6 @@ function insuranceServiceDetails(req, next, connection, resolve) {
     }
   );
 }
-
 //created by irfan to add episode and encounter
 let addEpisodeEncounter = (connection, req, res, callBack, next) => {
   let episodeModel = {

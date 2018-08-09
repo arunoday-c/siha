@@ -1,5 +1,4 @@
 const Validations = ($this, e) => {
-  debugger;
   let isError = false;
 
   if ($this.state.insurance_sub_code === null) {

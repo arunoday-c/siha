@@ -101,18 +101,21 @@ const doctorselectedHandeler = ($this, context, e) => {
 };
 
 const generateBillDetails = ($this, context) => {
-  let serviceInput = {
-    insured: $this.state.insured,
-    hims_d_services_id: $this.state.hims_d_services_id,
-    primary_insurance_provider_id: $this.state.primary_insurance_provider_id,
-    primary_network_office_id: $this.state.primary_network_office_id,
-    primary_network_id: $this.state.primary_network_id,
-    sec_insured: $this.state.sec_insured,
-    secondary_insurance_provider_id:
-      $this.state.secondary_insurance_provider_id,
-    secondary_network_id: $this.state.secondary_network_id,
-    secondary_network_office_id: $this.state.secondary_network_office_id
-  };
+  debugger;
+  let serviceInput = [
+    {
+      insured: $this.state.insured,
+      hims_d_services_id: $this.state.hims_d_services_id,
+      primary_insurance_provider_id: $this.state.primary_insurance_provider_id,
+      primary_network_office_id: $this.state.primary_network_office_id,
+      primary_network_id: $this.state.primary_network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id
+    }
+  ];
   $this.props.generateBill({
     uri: "/billing/getBillDetails",
     method: "POST",

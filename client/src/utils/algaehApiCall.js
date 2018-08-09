@@ -27,7 +27,10 @@ export function algaehApiCall(options) {
       return;
     }
 
-    if (window.navigator.connection.effectiveType == "2g") {
+    if (
+      window.navigator.connection !== undefined &&
+      window.navigator.connection.effectiveType === "2g"
+    ) {
       <Slide
         open={true}
         direction="up"

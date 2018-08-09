@@ -6,7 +6,7 @@ import path from "path";
 import mkdirp from "mkdirp";
 import { logger, debugFunction, debugLog } from "./logging";
 import fs from "fs";
-//import { LINQ } from "node-linq";
+import { LINQ } from "node-linq";
 import _ from "underscore";
 let paging = options => {
   let pageLimit = options.paging.pageNo * options.paging.pageSize;
@@ -347,6 +347,7 @@ let jsonArrayToObject = options => {
   let outputObject = [];
   for (let i = 0; i < options.arrayObj.length; i++) {
     const item = options.arrayObj[i];
+
     outputObject.push(
       options.sampleInputObject.map(key => {
         if (key == "created_by" || key == "updated_by") {
@@ -354,6 +355,21 @@ let jsonArrayToObject = options => {
             return options.userId;
           }
         }
+        if (
+          options.replaceObject != null &&
+          options.replaceObject.length != 0
+        ) {
+          let replacer = new LINQ(options.replaceObject)
+            .Where(w => w.originalKey == key)
+            .FirstOrDefault();
+
+          if (replacer != null) {
+            if (replacer.NewKey != null) {
+              key = replacer.NewKey;
+            }
+          }
+        }
+
         return item[key];
       })
     );

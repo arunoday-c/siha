@@ -1,8 +1,15 @@
 const Validations = ($this, e) => {
-  debugger;
   let isError = false;
 
-  if ($this.state.network_type === null) {
+  if ($this.state.insurance_sub_id === null) {
+    isError = true;
+    $this.setState({
+      snackeropen: true,
+      MandatoryMsg: "Invalid Input. Select Sub-Insurance(Appilicable for)."
+    });
+
+    return isError;
+  } else if ($this.state.network_type === null) {
     isError = true;
     $this.setState({
       snackeropen: true,

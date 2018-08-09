@@ -45,25 +45,7 @@ class PatientType extends Component {
     this.baseState = this.state;
   }
 
-  componentDidMount() {
-    // if (
-    //   this.props.patienttypes === undefined ||
-    //   this.props.patienttypes.length === 0
-    // ) {
-    //   this.props.getPatienttypes({
-    //     uri: "/patientType/get",
-    //     method: "GET",
-    //     redux: {
-    //       type: "PAT_TYP_GET_DATA",
-    //       mappingName: "patienttypes"
-    //     }
-    //   });
-    // }
-
-    this.setState({
-      gridrefresh: !this.state.gridrefresh
-    });
-  }
+  componentDidMount() {}
   dateFormater({ value }) {
     return String(moment(value).format("DD-MM-YYYY"));
   }
@@ -144,17 +126,6 @@ class PatientType extends Component {
         data: this.state,
         onSuccess: response => {
           if (response.data.success === true) {
-            //Handle Successful Add here
-            // this.props.getVisatypes({
-            //   uri: "/masters/get/visa",
-            //   method: "GET",
-            //   redux: {
-            //     type: "VISA_GET_DATA",
-            //     mappingName: "visatypes"
-            //   }
-            // });
-            // this.resetState();
-
             swal({
               title: "Success",
               text: "Patient Type added successfully",
@@ -187,14 +158,6 @@ class PatientType extends Component {
             timer: 2000
           });
           data.onDoneFinish();
-          // this.props.getPatienttypes({
-          //   uri: "/patientType/get",
-          //   method: "GET",
-          //   redux: {
-          //     type: "PAT_TYP_GET_DATA",
-          //     mappingName: "patienttypes"
-          //   }
-          // });
         }
       },
       onFailure: error => {}
@@ -209,7 +172,6 @@ class PatientType extends Component {
     let value = e.value || e.target.value;
     row[name] = value;
     row.onChangeFinish(row);
-    // this.resetState();
   }
 
   render() {
@@ -392,7 +354,7 @@ class PatientType extends Component {
                     totalPages: "records.totalPages"
                   }
                 }}
-                // algaehSearch={true}
+                algaehSearch={true}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{

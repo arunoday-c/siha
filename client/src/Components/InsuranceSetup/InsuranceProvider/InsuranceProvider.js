@@ -38,7 +38,29 @@ class InsuranceProvider extends PureComponent {
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    // console.log("Data : ", this.props.insuranceprovider);
+    if (
+      this.state.insurance_provider_id !== null &&
+      this.state.insurance_provider_id !== undefined
+    ) {
+      this.props.getInsuranceDetails({
+        uri: "/insurance/getListOfInsuranceProvider",
+        method: "GET",
+        printInput: true,
+        data: {
+          hims_d_insurance_provider_id: this.state.insurance_provider_id
+        },
+        redux: {
+          type: "INSURANCE_GET_DATA",
+          mappingName: "insuranceprovider"
+        },
+        afterSuccess: data => {
+          this.setState(data[0]);
+        }
+      });
+    }
+  }
 
   render() {
     return (
@@ -191,7 +213,8 @@ class InsuranceProvider extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "credit_period"
+                      fieldName: "credit_period",
+                      isImp: true
                     }}
                     textBox={{
                       value: this.state.credit_period,
@@ -370,16 +393,15 @@ class InsuranceProvider extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    services: state.services
+    insuranceprovider: state.insuranceprovider
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
+      getInsuranceDetails: AlgaehActions,
+      initialStateInsurance: AlgaehActions
     },
     dispatch
   );
