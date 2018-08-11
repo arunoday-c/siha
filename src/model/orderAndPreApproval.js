@@ -285,6 +285,39 @@ let updatePreApproval = (req, res, next) => {
           inputParam[i].gross_amt +
           "',net_amount='" +
           inputParam[i].net_amount +
+          "',requested_date=\
+          '" +
+          inputParam[i].requested_date +
+          "',requested_by=\
+          '" +
+          inputParam[i].requested_by +
+          "',requested_mode=\
+          '" +
+          inputParam[i].requested_mode +
+          "',requested_quantity=\
+          '" +
+          inputParam[i].requested_quantity +
+          "',submission_type=\
+          '" +
+          inputParam[i].submission_type +
+          "',refer_no=\
+          '" +
+          inputParam[i].refer_no +
+          "',approved_amount=\
+          '" +
+          inputParam[i].approved_amount +
+          "',apprv_remarks=\
+          '" +
+          inputParam[i].apprv_remarks +
+          "',apprv_date=\
+          '" +
+          inputParam[i].apprv_date +
+          "',rejected_reason=\
+          '" +
+          inputParam[i].rejected_reason +
+          "',apprv_status=\
+          '" +
+          inputParam[i].apprv_status +
           "',updated_date='" +
           new Date() +
           "',updated_by='" +
