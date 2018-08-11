@@ -323,7 +323,7 @@ let updatePreApproval = (req, res, next) => {
           "',updated_by='" +
           inputParam[i].updated_by +
           "' WHERE hims_f_service_approval_id='" +
-          inputParam.hims_f_service_approval_id +
+          inputParam[i].hims_f_service_approval_id +
           "';";
       }
 
