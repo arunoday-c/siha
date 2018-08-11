@@ -6,7 +6,8 @@ import { LINQ } from "node-linq";
 import {
   insertOrderedServices,
   getPreAprovalList,
-  updatePreApproval
+  updatePreApproval,
+  addorder
 } from "../model/orderAndPreApproval";
 
 export default ({ config, db }) => {
@@ -55,5 +56,21 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by irfan: to  addorder
+  api.post(
+    "/addorder",
+    addorder,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };
