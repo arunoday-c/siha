@@ -1,6 +1,7 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert";
+import { algaehApiCall, getCookie } from "../../../utils/algaehApiCall";
 
 //Text Handaler Change
 const texthandle = ($this, e) => {
@@ -30,8 +31,10 @@ const serviceTypeHandeler = ($this, e) => {
 };
 
 const serviceHandeler = ($this, e) => {
+  debugger;
   $this.setState({
-    [e.name]: e.value
+    [e.name]: e.value,
+    insurance_service_name: e.selected.service_name
   });
 };
 
@@ -54,6 +57,7 @@ const ProcessService = ($this, e) => {
       preapp_limit_amount: $this.state.preapp_limit_amount
     }
   ];
+  debugger;
 
   $this.props.generateBill({
     uri: "/billing/getBillDetails",
@@ -70,9 +74,6 @@ const ProcessService = ($this, e) => {
         data.billdetails[0].preapp_limit_exceed === "Y" &&
         $this.state.approval_limit_yesno === "N"
       ) {
-        serviceInput[0].dummy_company_payble =
-          data.billdetails[0].dummy_company_payble;
-
         preserviceInput.push(serviceInput[0]);
         for (let i = 0; i < preserviceInput.length; i++) {
           preserviceInput[i].approval_limit_yesno =
@@ -89,6 +90,17 @@ const ProcessService = ($this, e) => {
           if (willProceed) {
             let approval_amt = data.billdetails[0].approval_amt;
             let approval_limit_yesno = data.billdetails[0].preapp_limit_exceed;
+
+            data.billdetails[0].visit_id = $this.state.visit_id;
+            data.billdetails[0].patient_id = $this.state.patient_id;
+            data.billdetails[0].doctor_id = $this.state.doctor_id;
+            data.billdetails[0].insurance_company =
+              $this.state.insurance_provider_id;
+            data.billdetails[0].insurance_sub_company =
+              $this.state.sub_insurance_provider_id;
+            data.billdetails[0].network_id = $this.state.network_id;
+            data.billdetails[0].policy_number = $this.state.policy_number;
+            data.billdetails[0].created_by = getCookie("UserID");
 
             debugger;
             $this.props.generateBill({
@@ -111,7 +123,26 @@ const ProcessService = ($this, e) => {
           }
         });
       } else {
+        debugger;
         let existingservices = $this.state.orderservices;
+
+        data.billdetails[0].visit_id = $this.state.visit_id;
+        data.billdetails[0].patient_id = $this.state.patient_id;
+        data.billdetails[0].doctor_id = $this.state.doctor_id;
+        data.billdetails[0].insurance_company =
+          $this.state.insurance_provider_id;
+        data.billdetails[0].insurance_sub_company =
+          $this.state.sub_insurance_provider_id;
+        data.billdetails[0].network_id = $this.state.network_id;
+        data.billdetails[0].policy_number = $this.state.policy_number;
+        data.billdetails[0].created_by = getCookie("UserID");
+        data.billdetails[0].insurance_service_name =
+          $this.state.insurance_service_name;
+        data.billdetails[0].icd_code =
+          data.billdetails[0].icd_code === ""
+            ? null
+            : data.billdetails[0].icd_code;
+
         if (data.billdetails.length !== 0) {
           existingservices.splice(0, 0, data.billdetails[0]);
         }
@@ -128,9 +159,6 @@ const ProcessService = ($this, e) => {
         }
         let approval_amt = data.billdetails[0].approval_amt;
         let preapp_limit_amount = data.billdetails[0].preapp_limit_amount;
-
-        serviceInput[0].dummy_company_payble =
-          data.billdetails[0].dummy_company_payble;
 
         preserviceInput.push(serviceInput[0]);
         $this.setState({
@@ -177,7 +205,7 @@ const VisitSearch = ($this, e) => {
           patient_code: row.patient_code,
           full_name: row.full_name,
           patient_id: row.patient_id,
-          patient_visit_id: row.hims_f_patient_visit_id,
+          visit_id: row.hims_f_patient_visit_id,
           insured: row.insured
         },
         () => {
@@ -212,7 +240,7 @@ const deleteServices = ($this, row, rowId) => {
 
   orderservices.splice(rowId, 1);
 
-  let app_amt = $this.state.approval_amt - row["dummy_company_payble"];
+  let app_amt = $this.state.approval_amt - row["company_payble"];
   for (var i = 0; i < preserviceInput.length; i++) {
     if (preserviceInput[i].hims_d_services_id === row["services_id"]) {
       preserviceInput.splice(i, 1);
@@ -256,11 +284,31 @@ const deleteServices = ($this, row, rowId) => {
   }
 };
 
+const SaveOrdersServices = ($this, e) => {
+  debugger;
+  algaehApiCall({
+    uri: "/orderAndPreApproval/insertOrderedServices",
+    data: $this.state.orderservices,
+    method: "POST",
+    onSuccess: response => {
+      if (response.data.success) {
+        successfulMessage({
+          message: "Ordered Successfully...",
+          title: "Success",
+          icon: "success"
+        });
+      }
+    },
+    onFailure: error => {}
+  });
+};
+
 export {
   serviceTypeHandeler,
   serviceHandeler,
   texthandle,
   ProcessService,
   VisitSearch,
-  deleteServices
+  deleteServices,
+  SaveOrdersServices
 };

@@ -153,7 +153,7 @@ class NetworkPlan extends PureComponent {
                 <div className="row insurance-details">
                   <div className="col-lg-12 button-details">
                     <AlgaehLabel
-                      label={{ fieldName: "", forceLabel: "INSURSR: " }}
+                      label={{ fieldName: "", forceLabel: "INSURAR: " }}
                     />
                     <AlgaehLabel
                       label={{

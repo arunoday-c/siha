@@ -402,7 +402,7 @@ class VisaType extends Component {
                     fieldName: "visa_status",
                     label: <AlgaehLabel label={{ fieldName: "status" }} />,
                     displayTemplate: row => {
-                      return row.visa_status == "A" ? "Active" : "Inactive";
+                      return row.visa_status === "A" ? "Active" : "Inactive";
                     },
                     editorTemplate: row => {
                       return (
