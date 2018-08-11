@@ -13,7 +13,7 @@ import { LINQ } from "node-linq";
 import { logger, debugFunction, debugLog } from "../utils/logging";
 
 //created by irfan: insert ordered services and pre-approval services for insurance
-let insertOrderedServices = (req, res, next) => {
+let oldinsert = (req, res, next) => {
   const insurtColumns = [
     "patient_id",
     "visit_id",
@@ -354,7 +354,7 @@ let updatePreApproval = (req, res, next) => {
 };
 
 //created by irfan: insert ordered services and pre-approval services for insurance
-let addorder = (req, res, next) => {
+let insertOrderedServices = (req, res, next) => {
   const insurtColumns = [
     "patient_id",
     "visit_id",
@@ -597,6 +597,6 @@ let addorder = (req, res, next) => {
 module.exports = {
   insertOrderedServices,
   getPreAprovalList,
-  updatePreApproval,
-  addorder
+  updatePreApproval
+  
 };
