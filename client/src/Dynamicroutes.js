@@ -21,6 +21,7 @@ import MedicalWorkbenchSetup from "./Components/MedicalWorkbenchSetup/MedicalWor
 import DoctorsWorkbench from "./Components/DoctorsWorkbench/DoctorsWorkbench";
 import AccessionAcknowledgement from "./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement";
 import OrderingServices from "./Components/DoctorsWorkbench/OrderingServices/OrderingServices";
+import PreApproval from "./Components/PreApproval/PreApproval";
 
 function height() {
   let height =
@@ -69,6 +70,9 @@ const componts = (selectedLang, breadStyle) => {
 
     OrderingServices: (
       <OrderingServices SelectLanguage={selectedLang} breadStyle={breadStyle} />
+    ),
+    PreApproval: (
+      <PreApproval SelectLanguage={selectedLang} breadStyle={breadStyle} />
     )
   };
 };

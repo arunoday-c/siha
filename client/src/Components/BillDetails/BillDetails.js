@@ -124,9 +124,8 @@ class DisplayOPBilling extends PureComponent {
           <Modal
             style={{
               margin: "0 auto",
-              width: "150vh",
-              height: "80vh",
-              top: "10%"
+              width: "150vh"
+              // height: "80vh"
             }}
             open={this.props.show}
           >

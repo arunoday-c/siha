@@ -5,6 +5,10 @@
     background-color: #dbad64; }
     .hptl-phase1-add-insurance-form .colorPrimary div h2 {
       color: #fff; }
+  .hptl-phase1-add-insurance-form th,
+  .hptl-phase1-add-insurance-form td {
+    font-size: 11px;
+    border-right: 1px solid #e6e6e6; }
 
 .model-set {
   margin: 0 auto;

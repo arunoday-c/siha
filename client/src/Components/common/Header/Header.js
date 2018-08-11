@@ -12,32 +12,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 import { setCookie, getCookie } from "../../../utils/algaehApiCall.js";
 
-// var noScroll = require('no-scroll');
-// noScroll.off();
-
-// const appColor = {
-//   background: "#292929"
-// };
-
-// const paper_style = {
-//   height: 1350,
-//   width: 200,
-//   position: "absolute",
-//   top: 0,
-//   display: "inline-block",
-//   zIndex: 10000
-// };
-
-// const titleStyles = {
-//   title: {
-//     color: "#fff",
-//     paddingLeft: 100
-//   },
-//   organisation: {
-//     color: "#d3d3d3"
-//   }
-// };
-
 class Header extends PureComponent {
   constructor(props) {
     super(props);

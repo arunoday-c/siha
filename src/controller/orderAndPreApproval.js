@@ -6,7 +6,8 @@ import { LINQ } from "node-linq";
 import {
   insertOrderedServices,
   getPreAprovalList,
-  updatePreApproval
+  updatePreApproval,
+  selectOrderServices
 } from "../model/orderAndPreApproval";
 
 export default ({ config, db }) => {
@@ -45,6 +46,20 @@ export default ({ config, db }) => {
   api.put(
     "/updatePreApproval",
     updatePreApproval,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/selectOrderServices",
+    selectOrderServices,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

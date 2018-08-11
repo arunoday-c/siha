@@ -594,9 +594,44 @@ let insertOrderedServices = (req, res, next) => {
   }
 };
 
+let selectOrderServices = (req, res, next) => {
+  let selectWhere = {
+    visit_id: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let where = whereCondition(extend(selectWhere, req.query));
+      connection.query(
+        "SELECT  * FROM `hims_f_ordered_services` \
+       WHERE `record_status`='A' AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   insertOrderedServices,
   getPreAprovalList,
-  updatePreApproval
-  
+  updatePreApproval,
+  selectOrderServices
 };
