@@ -232,7 +232,84 @@ let getPreAprovalList = (req, res, next) => {
   }
 };
 
+//created by irfan:UPDATE PREAPPROVAL
+let updatePreApproval = (req, res, next) => {
+  const insurtCols = [
+    "service_id",
+    "insurance_provider_id",
+    "insurance_network_office_id",
+    "icd_code",
+    "insurance_service_name",
+    "doctor_id",
+    "patient_id",
+    "gross_amt",
+    "net_amount",
+    "created_by",
+    "updated_by"
+  ];
+  debugFunction("updatePreApproval");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      let inputParam = extend({}, req.body);
+
+      let qry = "";
+
+      for (let i = 0; i < req.body.length; i++) {
+        qry +=
+          " UPDATE `hims_f_service_approval` SET service_id='" +
+          inputParam[i].service_id +
+          "',insurance_provider_id='" +
+          inputParam[i].insurance_provider_id +
+          "',insurance_network_office_id=\
+'" +
+          inputParam[i].insurance_network_office_id +
+          "', icd_code='" +
+          inputParam[i].icd_code +
+          "',insurance_service_name=\
+'" +
+          inputParam[i].insurance_service_name +
+          "',doctor_id='" +
+          inputParam[i].doctor_id +
+          "',patient_id='" +
+          inputParam[i].patient_id +
+          "'\
+,gross_amt='" +
+          inputParam[i].gross_amt +
+          "',net_amount='" +
+          inputParam[i].net_amount +
+          "',updated_date='" +
+          new Date() +
+          "',updated_by='" +
+          inputParam[i].updated_by +
+          "' WHERE hims_f_service_approval_id='" +
+          inputParam.hims_f_service_approval_id +
+          "';";
+      }
+
+      connection.query(qry, (error, result) => {
+        if (error) {
+          releaseDBConnection(db, connection);
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   insertOrderedServices,
-  getPreAprovalList
+  getPreAprovalList,
+  updatePreApproval
 };

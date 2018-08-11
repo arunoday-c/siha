@@ -1,0 +1,159 @@
+
+Pinging 192.168.1.0 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.0:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.1 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.1:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.2 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.2:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.3 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.3:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.4 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.4:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.5 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.5:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.6 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.6:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.7 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.7:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.8 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.8:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.9 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.9:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.10 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.10:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.11 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.11:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.12 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.12:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.13 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.13:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.14 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.14:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.15 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.15:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.16 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.16:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.17 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.17:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.18 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.18:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.19 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.19:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.20 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.20:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.21 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.21:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.22 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.22:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.23 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.23:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.24 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.24:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.25 with 32 bytes of data:
+Request timed out.
+
+Ping statistics for 192.168.1.25:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+
+Pinging 192.168.1.26 with 32 bytes of data:
+Control-C
