@@ -31,6 +31,9 @@ class MyDay extends Component {
                 <AlgaehLabel label={{ fieldName: "total_encounters" }} /> : 5{" "}
               </div>
             </div>
+            <div className="row">
+              <div> </div>
+            </div>
             <AlgaehDataGrid
               className=""
               id="encounter_table"
