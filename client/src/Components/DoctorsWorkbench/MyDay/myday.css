@@ -1,6 +1,10 @@
 .myday {
   margin-right: 10px;
   margin-left: 10px; }
+  .myday .encounters-panel {
+    padding: 10px; }
+  .myday .panel-layout {
+    margin-top: 10px; }
   .myday .top-bar {
     padding: 10px;
     background-color: #595959; }

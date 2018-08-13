@@ -2,6 +2,13 @@
   margin-right: 10px;
   margin-left: 10px;
 
+  .encounters-panel {
+    padding: 10px;
+  }
+  .panel-layout {
+    margin-top: 10px;
+  }
+
   .top-bar {
     padding: 10px;
     background-color: #595959;
@@ -229,8 +236,6 @@
           left: 0%;
         }
       }
-    }
-    .encounters-panel {
     }
 
     .grey-label {
