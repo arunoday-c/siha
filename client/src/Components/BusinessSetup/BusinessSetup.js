@@ -28,18 +28,6 @@ class BusinessSetup extends Component {
     });
   }
 
-  openTab(e) {
-    var element = document.querySelectorAll("[alagehtabs]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
-    }
-    e.target.classList.add("active");
-    var specified = e.target.attributes["alagehtabs"].value;
-    this.setState({
-      pageDisplay: specified
-    });
-  }
-
   SideMenuBarOpen(sidOpen) {
     this.setState({
       sidBarOpen: sidOpen
@@ -51,8 +39,17 @@ class BusinessSetup extends Component {
       <div className="business_setup">
         <BreadCrumb
           title="Business Setup"
-          screenName="Master Setup"
-          HideHalfbread={false}
+          breadStyle={this.props.breadStyle}
+          pageNavPath={[
+            {
+              pageName: "Settings"
+            },
+            {
+              pageName: "Business Setup"
+            }
+          ]}
+          //screenName="Master Setup"
+          //   HideHalfbread={false}
         />
 
         <div className="tab-container toggle-section spacing-push">
@@ -75,7 +72,7 @@ class BusinessSetup extends Component {
             <li
               algaehtabs={"OptionsTabs"}
               style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
+              className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
               {
@@ -89,7 +86,7 @@ class BusinessSetup extends Component {
             <li
               algaehtabs={"Holiday"}
               style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
+              className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
               {
@@ -103,7 +100,7 @@ class BusinessSetup extends Component {
             <li
               algaehtabs={"Shift"}
               style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
+              className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
               {
@@ -117,7 +114,7 @@ class BusinessSetup extends Component {
             <li
               algaehtabs={"Counter"}
               style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
+              className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
               {
