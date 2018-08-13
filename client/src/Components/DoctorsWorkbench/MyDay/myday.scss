@@ -1,7 +1,4 @@
 .myday {
-  margin-right: 10px;
-  margin-left: 10px;
-
   .encounters-panel {
     padding: 10px;
   }
@@ -9,102 +6,135 @@
     margin-top: 10px;
   }
 
-  .top-bar {
-    padding: 10px;
-    background-color: #595959;
-    .my-calendar {
-      padding: 1px;
-      .month {
-        padding: 50px 25px;
-        width: 100%;
-        background: #1abc9c;
-        text-align: center;
-      }
+  .my-calendar {
+    text-align: center;
+    background: #3bb3b7;
+    color: #fff;
 
-      .month ul {
-        margin: 0;
-        padding: 0;
-      }
+    .myDay_date {
+      float: none;
+      margin: 4px auto 2px;
+    }
 
-      .month ul li {
-        color: white;
-        font-size: 20px;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-      }
+    .myDay_date input {
+      border: 1px solid #2a9a9e;
+      background: #3bb3b7;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 13px;
+      padding: 2px 5px;
+      text-align: center;
+    }
 
-      .month .prev {
-        float: left;
-        padding-top: 10px;
-      }
+    .arrow-box {
+      width: 60px;
+      cursor: pointer;
+    }
+    .arrow-box:hover {
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .arrow-box-left {
+      float: left;
+    }
+    .arrow-box-right {
+      float: right;
+    }
+    .calendar {
+      width: 100%;
+      overflow: hidden;
+      float: left;
+    }
+    .calendar > ol {
+      margin: 0;
+      padding: 0;
+      width: 1559px;
+    }
 
-      .month .next {
-        float: right;
-        padding-top: 10px;
-      }
+    .calendar > ol > li {
+      display: inline-block;
+      border: 1px solid #35a3a7;
+      padding: 2px 3px;
+      width: 50px;
+      font-size: 1.3rem;
+    }
+    .calendar > ol > li.selectedDate {
+      background: #2a9a9e;
+    }
 
-      .weekdays {
-        margin: 0;
-        padding: 10px 0;
-        background-color: transparent;
-      }
+    .calendar > ol > li:hover {
+      background: #2a9a9e;
+      cursor: pointer;
+    }
 
-      .weekdays li {
-        display: inline-block;
-        width: 13.6%;
-        color: #ffffff;
-        text-align: center;
-      }
+    .calendar > ol > li > span {
+      padding: 0;
+      margin: 0;
+      display: block;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+    }
+  }
 
-      .days {
-        padding: 10px 0;
-        background: transparent;
-        margin: 0;
-      }
-
-      .days li {
-        list-style-type: none;
-        display: inline-block;
-        width: 13.6%;
-        text-align: center;
-        margin-bottom: 5px;
-        font-size: 12px;
-        color: #ffffff;
-      }
-
-      .days li .active {
-        padding: 5px;
-        background: white;
-        color: #1abc9c !important;
-      }
-
-      /* Add media queries for smaller screens */
-      @media screen and (max-width: 720px) {
-        .weekdays li,
-        .days li {
-          width: 13.1%;
+  .opPatientList {
+    .opList {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      li {
+        margin: 4px 0;
+        padding: 3px 0;
+        list-style: none;
+        border: 1px solid #f2f2f2;
+        border-radius: 5px;
+        .op-sec-1 {
+          width: 10px;
+          width: 20%;
+          vertical-align: text-top;
+          display: inline-block;
+          text-align: center;
+          border-right: 1px solid grey;
+          margin-right: 10px;
+          i {
+            width: 30px;
+            background: yellow;
+            height: 30px;
+            display: block;
+            margin: auto;
+          }
+          .opTime {
+            font-size: 0.7rem;
+          }
         }
-      }
-
-      @media screen and (max-width: 420px) {
-        .weekdays li,
-        .days li {
-          width: 12.5%;
+        .op-sec-2 {
+          width: 10px;
+          width: 56%;
+          vertical-align: text-top;
+          display: inline-block;
+          .opPatientName {
+            display: block;
+            font-size: 1rem;
+            margin-top: 5px;
+          }
+          .opStatus {
+            display: block;
+            font-size: 0.7rem;
+          }
         }
-        .days li .active {
-          padding: 2px;
-        }
-      }
-
-      @media screen and (max-width: 290px) {
-        .weekdays li,
-        .days li {
-          width: 12.2%;
+        .op-sec-3 {
+          width: 20%;
+          line-height: 53px;
+          vertical-align: text-top;
+          display: inline-block;
+          text-align: center;
+          .opPatientStatus {
+            display: block;
+            font-size: 0.7rem;
+          }
         }
       }
     }
   }
-
   .bottom-layout {
     padding: 5px;
 
