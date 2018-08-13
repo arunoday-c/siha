@@ -137,9 +137,8 @@ class AddAdvanceModal extends PureComponent {
           <Modal
             style={{
               margin: "0 auto",
-              width: "100vh",
-              height: "80vh",
-              top: "10%"
+              width: "100vh"
+              // height: "80vh"
             }}
             open={this.props.show}
           >

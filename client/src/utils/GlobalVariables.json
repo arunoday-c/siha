@@ -139,5 +139,32 @@
       "value": "8"
     },
     { "name": "Hurts Worst", "arabic_name": "يسيء أسوأ", "value": "10" }
+  ],
+  "FORMAT_SUMISSION": [
+    { "name": "Submit", "arabic_name": "ادة تقديم", "value": "S" },
+    { "name": "ReSubmit", "arabic_name": "إعادة تقديم", "value": "RS" },
+    { "name": "Cancel", "arabic_name": "إلغاء", "value": "C" },
+    {
+      "name": "Cancel and Submit",
+      "arabic_name": "إلغاء وإرسال",
+      "value": "CS"
+    },
+    {
+      "name": "Cancel and ReSubmit",
+      "arabic_name": "إلغاء وإعادة إرسال",
+      "value": "CRS"
+    }
+  ],
+  "FORMAT_APPSTATUS": [
+    { "name": "Not Requested", "value": "NR" },
+    { "name": "Awaiting Approval", "value": "AW" },
+    { "name": "Approved", "value": "AP" },
+    { "name": "Rejected", "value": "RJ" }
+  ],
+  "FORMAT_REQMODE": [
+    { "name": "Online", "value": "O" },
+    { "name": "Emial", "value": "E" },
+    { "name": "Telephone", "value": "T" },
+    { "name": "Fax", "value": "F" }
   ]
 }

@@ -91,7 +91,7 @@ class SubInsurance extends PureComponent {
                 {/* Services Details */}
                 <div className="row insurance-details">
                   <div className="col-lg-12">
-                    <AlgaehLabel label={{ forceLabel: "INSURSR: " }} />
+                    <AlgaehLabel label={{ forceLabel: "INSURAR: " }} />
                     <AlgaehLabel
                       label={{ forceLabel: this.state.insurance_provider_name }}
                     />

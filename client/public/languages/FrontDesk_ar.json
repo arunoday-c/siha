@@ -42,6 +42,9 @@
   "visit_code": "رمز الزيارة",
   "btn_save": "حفظ",
   "btn_clear": "واضح",
+  "btn_advance": "تقدم",
+  "btn_refund": "إعادة مال",
+
   "tab_patdtls": "تفاصيل المريض",
   "tab_othinf": "معلومات أخرى",
   "tab_condtls": "تفاصيل التشاور",

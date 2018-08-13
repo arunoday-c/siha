@@ -10,6 +10,7 @@ import "./../../../../styles/site.css";
 import Enumerable from "linq";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext.js";
+import { successfulMessage } from "../../../../utils/GlobalFunctions";
 
 class DisplayVisitDetails extends Component {
   constructor(props) {
@@ -73,6 +74,7 @@ class DisplayVisitDetails extends Component {
     }
     index = this.state.visitDetails.indexOf(row);
     this.state.visitDetails[index]["radioselect"] = 1;
+
     this.setState(
       {
         incharge_or_provider: row.doctor_id,
@@ -95,6 +97,47 @@ class DisplayVisitDetails extends Component {
             }
           });
         }
+
+        this.props.getPatientInsurance({
+          uri: "/orderAndPreApproval/selectOrderServices",
+          method: "GET",
+          data: {
+            visit_id: this.state.visit_id
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "existinsurance"
+          },
+          afterSuccess: data => {
+            debugger;
+            let pre_approval_Required = Enumerable.from(data)
+              .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
+              .toArray();
+
+            if (pre_approval_Required.length > 0) {
+              successfulMessage({
+                message:
+                  "Invalid Input. Some of the service is Pre-Approval required, Please wait for Approval.",
+                title: "Warning",
+                icon: "warning"
+              });
+            } else {
+              if (context != null) {
+                context.updateState({ billdetails: data });
+              }
+
+              $this.props.billingCalculations({
+                uri: "/billing/billingCalculations",
+                method: "POST",
+                data: { billdetails: data },
+                redux: {
+                  type: "BILL_HEADER_GEN_GET_DATA",
+                  mappingName: "genbill"
+                }
+              });
+            }
+          }
+        });
       }
     );
 
@@ -269,7 +312,8 @@ function mapStateToProps(state) {
   return {
     visittypes: state.visittypes,
     deptanddoctors: state.deptanddoctors,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
+    genbill: state.genbill
   };
 }
 
@@ -278,7 +322,8 @@ function mapDispatchToProps(dispatch) {
     {
       getVisittypes: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getPatientInsurance: AlgaehActions,
+      billingCalculations: AlgaehActions
     },
     dispatch
   );
