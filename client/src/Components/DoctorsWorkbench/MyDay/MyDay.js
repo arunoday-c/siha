@@ -8,11 +8,9 @@ class MyDay extends Component {
   render() {
     return (
       <div className="myday">
-        {/* <div className="row top-bar">
-          <div className="my-calendar">
-            Put the Calendar Strip here
-          </div>
-        </div> */}
+        <div className="row top-bar">
+          <div className="my-calendar" />
+        </div>
 
         <div className="row card-deck panel-layout">
           {/* Left Pane Start */}
