@@ -494,28 +494,14 @@ let insertOrderedServices = (req, res, next) => {
                     "insurance_provider_id",
                     "insurance_network_office_id",
                     "icd_code",
-                    "requested_date",
-                    "requested_by",
-                    "requested_mode",
                     "requested_quantity",
-                    "submission_type",
                     "insurance_service_name",
                     "doctor_id",
                     "patient_id",
-                    "refer_no",
                     "gross_amt",
                     "net_amount",
-                    "approved_amount",
-                    "approved_no",
-                    "apprv_remarks",
-                    "apprv_date",
-                    "rejected_reason",
-                    "apprv_status",
-                    "created_date",
                     "created_by",
-                    "updated_date",
-                    "updated_by",
-                    "record_status"
+                    "updated_by"
                   ];
 
                   connection.query(
