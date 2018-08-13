@@ -1,215 +1,116 @@
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import { algaehApiCall } from "../utils/algaehApiCall";
-import AlgaehSearch from "../Components/Wrapper/globalSearch";
-import {
-  AlagehAutoComplete,
-  AlgaehDataGrid
-} from "../Components/Wrapper/algaehWrapper";
-var intervalId;
+import "./experiment.css";
+import Slider from "react-rangeslider";
+import "react-rangeslider/lib/index.css";
+import { AlagehAutoComplete } from "./Wrapper/algaehWrapper";
+import GlobalVariables from "../utils/GlobalVariables.json";
+
 class DeptMaster extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      textboxField: "",
-      openFinder: false,
-      dropDownValue: "patient_code",
-      loadedData: this.dummyRows(),
-      gridData: this.dummyRows(),
-      searchByDropDown: [
-        { name: "Patient Code", value: "patient_code" },
-        { name: "First Name", value: "patient_fname" },
-        { name: "Middle Name", value: "patient_mname" },
-        { name: "Last Name", value: "patient_lname" },
-        { name: "Gender", value: "patient_gender" }
-      ]
+      pain: 0
     };
   }
 
-  dummyRows = () => {
-    let arrayObj = [];
-    for (var i = 0; i <= 20; i++) {
-      arrayObj.push({
-        patient_code: "PAT-A-" + i,
-        patient_fname: "F Patient-" + i,
-        patient_mname: "M Patient-" + i,
-        patient_lname: "L Patient-" + i,
-        patient_gender: i % 2 == 0 ? "M" : "F"
-      });
-    }
-    return arrayObj;
+  handleChangeStart = () => {
+    console.log("Change event started");
   };
-  //onClickAway={this.handleCloseFinder.bind(this)}
-  openFinderForm = () => {
-    return (
-      <div className="col-lg-6">
-        {/* <ClickAwayListener> */}
-        <AlgaehDataGrid
-          columns={[
-            {
-              fieldName: "patient_code",
-              label: "Patient Code"
-            },
-            {
-              fieldName: "patient_fname",
-              label: "Patient First Name"
-            },
-            {
-              fieldName: "patient_mname",
-              label: "Patient Middle Name"
-            },
-            {
-              fieldName: "patient_lname",
-              label: "Patient Last Name"
-            },
-            {
-              fieldName: "patient_gender",
-              label: "Gender"
-            }
-          ]}
-          dataSource={{
-            data: this.state.gridData
-          }}
-          paging={{ page: 0, rowsPerPage: 5 }}
-        />
-        {/* </ClickAwayListener> */}
-      </div>
-    );
-  };
-  handleCloseFinder() {
+
+  handleChange = pain => {
     this.setState({
-      openFinder: false
-    });
-  }
-  handleOpenFinder() {
-    AlgaehSearch({
-      searchGrid: {
-        columns: [
-          {
-            fieldName: "patient_code",
-            label: "Patient Code"
-          },
-          {
-            fieldName: "full_name",
-            label: "Name"
-          },
-          {
-            fieldName: "arabic_name",
-            label: "Arabic Name"
-          },
-          {
-            fieldName: "gender",
-            label: "Gender"
-          },
-          {
-            fieldName: "contact_number",
-            label: "Contact Number"
-          }
-        ]
-      },
-      searchName: "patients",
-      uri: "/gloabelSearch/get",
-      inputs: "country_id=2",
-      onContainsChange: (text, serchBy, callBack) => {
-        callBack(text);
-      },
-      onRowSelect: row => {
-        this.setState({ textboxField: row.patient_code });
-      }
-    });
-  }
-
-  handleSearchChange(e) {
-    let filterData = this.state.loadedData.filter(f => {
-      if (f[this.state.dropDownValue].indexOf(e.target.value) > -1) {
-        return f;
-      }
-    });
-    if (filterData.length === 0) {
-      clearInterval(intervalId);
-      intervalId = setInterval(() => {
-        this.apiCallingFunction(e.target.value);
-        clearInterval(intervalId);
-      }, 500);
-    } else this.setState({ gridData: filterData });
-  }
-
-  apiCallingFunction = contains => {
-    algaehApiCall({
-      uri: "/globalSearch",
-      data: {
-        fieldName: this.state.dropDownValue,
-        fieldContains: contains
-      },
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success === true) {
-          this.setState({
-            loadedData: response.data.records,
-            gridData: response.data.records
-          });
-        } else {
-          console.error(response);
-          alert(response.data.message);
-        }
-      },
-      onFailure: data => {
-        console.error(data);
-        alert(data);
-      }
+      pain: pain
     });
   };
 
-  dropDownFilterBy() {
-    return (
-      <div className="col-lg-2">
-        <AlagehAutoComplete
-          selector={{
-            className: "select-fld",
-            value: this.state.dropDownValue,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: this.state.searchByDropDown
-            },
-            onChange: selected => {
-              this.setState({ dropDownValue: selected.value });
-            }
-          }}
-        />
-      </div>
-    );
+  handleChangeComplete = () => {
+    console.log("Change event completed");
+  };
+
+  setPainScale(pain_number, e) {
+    var element = document.querySelectorAll("[painTab]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
+    }
+    e.currentTarget.classList.add("active");
+    this.setState({ pain: pain_number });
   }
 
   render() {
     return (
-      <Paper style={{ height: "700px" }}>
+      <div className="experiment">
+        <div>PAIN SCALE {" " + this.state.pain} </div>
+        <br />
         <div className="row">
-          <div className="col-lg-4">
-            <TextField
-              style={{ width: "100%" }}
-              onChange={this.handleSearchChange.bind(this)}
-              value={this.state.textboxField}
+          <div className="pain_slider col">
+            <Slider
+              step={2}
+              min={0}
+              max={10}
+              value={this.state.pain}
+              onChangeStart={this.handleChangeStart}
+              onChange={this.handleChange}
+              onChangeComplete={this.handleChangeComplete}
             />
           </div>
-          {this.state.openFinder ? this.dropDownFilterBy() : null}
 
-          <div className="col-lg-6">
-            <Button
-              value="Show Search"
-              onClick={this.handleOpenFinder.bind(this)}
-            >
-              Show Search
-            </Button>
-          </div>
+          <AlagehAutoComplete
+            div={{ className: "col-lg-3" }}
+            label={{
+              fieldName: "pain",
+              forceLabel: "Pain",
+              isImp: true
+            }}
+            selector={{
+              name: "pain",
+              className: "select-fld",
+              value: this.state.pain,
+              dataSource: {
+                textField:
+                  this.state.selectedLang === "en" ? "name" : "arabic_name",
+                valueField: "value",
+                data: GlobalVariables.PAIN_SCALE
+              }
+              // onChange: texthandle.bind(this, this)
+            }}
+          />
         </div>
-        <div />
-        {this.state.openFinder ? this.openFinderForm() : null}
-      </Paper>
+
+        <div>
+          <ul className="pain-scale-ul">
+            <li
+              className="pain-1"
+              painTab="1"
+              onClick={this.setPainScale.bind(this, 0)}
+            />
+            <li
+              className="pain-2"
+              painTab="2"
+              onClick={this.setPainScale.bind(this, 2)}
+            />
+            <li
+              className="pain-3"
+              painTab="3"
+              onClick={this.setPainScale.bind(this, 4)}
+            />
+            <li
+              className="pain-4"
+              painTab="4"
+              onClick={this.setPainScale.bind(this, 6)}
+            />
+            <li
+              className="pain-5"
+              painTab="5"
+              onClick={this.setPainScale.bind(this, 8)}
+            />
+            <li
+              className="pain-6"
+              painTab="6"
+              onClick={this.setPainScale.bind(this, 10)}
+            />
+          </ul>
+        </div>
+      </div>
     );
   }
 }

@@ -36,8 +36,17 @@ class MedicalWorkbenchSetup extends Component {
       <div className="medical_wb_setup">
         <BreadCrumb
           title="Medical Workbench Setup"
-          screenName="Medical Workbench Setup"
-          HideHalfbread={false}
+          breadStyle={this.props.breadStyle}
+          pageNavPath={[
+            {
+              pageName: "Settings"
+            },
+            {
+              pageName: "Medical Workbench Setup"
+            }
+          ]}
+          //screenName="Master Setup"
+          //   HideHalfbread={false}
         />
 
         <div className="tab-container toggle-section spacing-push">
