@@ -458,12 +458,13 @@ let updateOrderedServices = (req, res, next) => {
       }).then(result => {
         let inputParam = result.billdetails[0];
         debugLog("call back result", inputParam);
+
         let input = extend({}, req.body[0]);
         debugLog("id:", input.hims_f_ordered_services_id);
 
         connection.query(
-          "UPDATE hims_f_ordered_services SET service_type_id=?,services_id=?,insurance_yesno=?,insurance_provider_id=?,insurance_sub_id=?,network_id=?,\
-          insurance_network_office_id=?,policy_number=?,pre_approval=?,apprv_status=?,billed=?,quantity=?,unit_cost=?,gross_amount=?,discount_amout=?,discount_percentage=?,net_amout=?,\
+          "UPDATE hims_f_ordered_services SET service_type_id=?,services_id=?,insurance_yesno=?,\
+          pre_approval=?,apprv_status=?,billed=?,quantity=?,unit_cost=?,gross_amount=?,discount_amout=?,discount_percentage=?,net_amout=?,\
           copay_percentage=?,copay_amount=?,deductable_amount=?,deductable_percentage=?,tax_inclusive=?,patient_tax=?,company_tax=?,total_tax=?,patient_resp=?,patient_payable=?,\
           comapany_resp=?,company_payble=?,sec_company=?,sec_deductable_percentage=?,sec_deductable_amount=?,sec_company_res=?,sec_company_tax=?,sec_company_paybale=?,\
           sec_copay_percntage=?,sec_copay_amount=?,updated_date=?, updated_by=? WHERE `record_status`='A' AND `hims_f_ordered_services_id`=? ",
@@ -471,13 +472,8 @@ let updateOrderedServices = (req, res, next) => {
             inputParam.service_type_id,
             inputParam.services_id,
             inputParam.insurance_yesno,
-            inputParam.insurance_provider_id,
-            inputParam.insurance_sub_id,
-            inputParam.network_id,
-            inputParam.insurance_network_office_id,
-            inputParam.policy_number,
             inputParam.pre_approval,
-            inputParam.apprv_status,
+            input.apprv_status,
             inputParam.billed,
             inputParam.quantity,
             inputParam.unit_cost,
