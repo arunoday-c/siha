@@ -5,6 +5,9 @@
     padding: 10px; }
   .myday .panel-layout {
     margin-top: 10px; }
+  .myday .go-button {
+    cursor: pointer;
+    margin-top: 15px; }
   .myday .top-bar {
     padding: 10px;
     background-color: #595959; }

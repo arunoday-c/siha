@@ -166,5 +166,14 @@
     { "name": "Emial", "value": "E" },
     { "name": "Telephone", "value": "T" },
     { "name": "Fax", "value": "F" }
+  ],
+  "DOC_WRK_BNCH_FILTER_CONDITIONS": [
+    { "name": "All", "value": "A" },
+    { "name": "WIP", "value": "WIP" },
+    { "name": "Under Review", "value": "UR" },
+    { "name": "Close", "value": "C" },
+    { "name": "Cancel", "value": "Ca" },
+    { "name": "Reopen", "value": "RO" },
+    { "name": "Req Reopen", "value": "RRO" }
   ]
 }
