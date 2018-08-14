@@ -1,0 +1,19 @@
+{
+  "my_day": "My Day",
+  "patient_chart": "Patient Chart",
+  "checked_in_patient_summary": "Checked In Patient Summary",
+  "visit_and_admission_history": "Visit and Admission History",
+  "encounter_list": "Encounter List",
+  "patients_list": "Patient List",
+  "status": "Status",
+  "patient_code": "Patient Code",
+  "patient_name": "Patient Name",
+  "date": "Date",
+  "time": "Time",
+  "case_type": "Case Type",
+  "transfer_status": "Transfer Status",
+  "policy_group_description": "Policy Group Description",
+  "total_encounters": "Total Number of Encounters",
+  "from_date": "From Date",
+  "to_date": "To Date"
+}

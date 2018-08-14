@@ -2,249 +2,397 @@ import React, { Component } from "react";
 import "./myday.css";
 import Paper from "@material-ui/core/Paper";
 import { Timeline, TimelineEvent } from "react-event-timeline";
-import { AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
+import {
+  AlgaehDataGrid,
+  AlgaehLabel,
+  Tooltip,
+  AlagehAutoComplete,
+  AlgaehDateHandler,
+  AlagehFormGroup
+} from "../../Wrapper/algaehWrapper";
+import IconButton from "@material-ui/core/IconButton";
+import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
+import Search from "@material-ui/icons/Search";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class MyDay extends Component {
   render() {
     return (
       <div className="myday">
-        <div className="row top-bar">
-          <div className="my-calendar">
+        <div className="row">
+          <div className="my-calendar col-lg-12">
+            <div style={{ width: "calc(100% - 185px)", height: "34px" }}>
+              <div className="arrow-box arrow-box-left">
+                <i class="fas fa-angle-left fa-2x" />
+              </div>
+              <div className="arrow-box arrow-box-right">
+                <i class="fas fa-angle-right fa-2x" />
+              </div>
+              <div className="myDay_date">
+                <input type="month" />
+              </div>
+            </div>
+            <div class="calendar">
+              <ol>
+                <li>
+                  1<span>Wed</span>
+                </li>
+                <li>
+                  2<span>Thu</span>
+                </li>
+                <li>
+                  3<span>Fri</span>
+                </li>
+                <li>
+                  4<span>Sat</span>
+                </li>
+                <li>
+                  5<span>Sun</span>
+                </li>
+                <li>
+                  6<span>Mon</span>
+                </li>
+                <li>
+                  7<span>Tue</span>
+                </li>
+                <li>
+                  8<span>Wed</span>
+                </li>
+                <li>
+                  9<span>Thu</span>
+                </li>
+                <li>
+                  10
+                  <span>Fri</span>
+                </li>
+                <li>
+                  11
+                  <span>Sat</span>
+                </li>
+                <li>
+                  12
+                  <span>Sun</span>
+                </li>
+                <li className="selectedDate">
+                  13
+                  <span>Mon</span>
+                </li>
+                <li>
+                  14
+                  <span>Tue</span>
+                </li>
+                <li>
+                  15
+                  <span>Wed</span>
+                </li>
+                <li>
+                  16
+                  <span>Thu</span>
+                </li>
+                <li>
+                  17
+                  <span>Fri</span>
+                </li>
+                <li>
+                  18
+                  <span>Sat</span>
+                </li>
+                <li>
+                  19
+                  <span>Sun</span>
+                </li>
+                <li>
+                  20
+                  <span>Mon</span>
+                </li>
+                <li>
+                  21
+                  <span>Tue</span>
+                </li>
+                <li>
+                  22
+                  <span>Wed</span>
+                </li>
+                <li>
+                  23
+                  <span>Thu</span>
+                </li>
+                <li>
+                  24
+                  <span>Fri</span>
+                </li>
+                <li>
+                  25
+                  <span>Sat</span>
+                </li>
+                <li>
+                  26
+                  <span>Sun</span>
+                </li>
+                <li>
+                  27
+                  <span>Mon</span>
+                </li>
+                <li>
+                  28
+                  <span>Tue</span>
+                </li>
+                <li>
+                  29
+                  <span>Wed</span>
+                </li>
+                <li>
+                  30
+                  <span>Thu</span>
+                </li>
+                <li>
+                  31
+                  <span>Fri</span>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div className="row card-deck panel-layout">
+          {/* Left Pane Start */}
+          <div className="col-lg-4 card box-shadow-normal">
+            <AlgaehLabel label={{ fieldName: "patients_list" }} />
+            <div className="opPatientList">
+              <ul className="opList">
+                <li>
+                  <span className="op-sec-1">
+                    <i className="walking-icon" />
+                    <span className="opTime">11:44:00</span>
+                  </span>
+                  <span className="op-sec-2">
+                    <span className="opPatientName">Laura Zahra Bayokhi</span>
+                    <span className="opStatus nursing">Nursing Done</span>
+                  </span>
+                  <span className="op-sec-3">
+                    <span className="opPatientStatus newVisit">New Visit</span>
+                  </span>
+                </li>
+                <li>
+                  <span className="op-sec-1">
+                    <i className="walking-icon" />
+                    <span className="opTime">11:44:00</span>
+                  </span>
+                  <span className="op-sec-2">
+                    <span className="opPatientName">Laura Zahra Bayokhi</span>
+                    <span className="opStatus nursing">Nursing Done</span>
+                  </span>
+                  <span className="op-sec-3">
+                    <span className="opPatientStatus newVisit">New Visit</span>
+                  </span>
+                </li>
+                <li>
+                  <span className="op-sec-1">
+                    <i className="appointment-icon" />
+                    <span className="opTime">11:44:00</span>
+                  </span>
+                  <span className="op-sec-2">
+                    <span className="opPatientName">Laura Zahra Bayokhi</span>
+                    <span className="opStatus nursing">Nursing Done</span>
+                  </span>
+                  <span className="op-sec-3">
+                    <span className="opPatientStatus followUp">Follow Up</span>
+                  </span>
+                </li>
+                <li>
+                  <span className="op-sec-1">
+                    <i className="walking-icon" />
+                    <span className="opTime">11:44:00</span>
+                  </span>
+                  <span className="op-sec-2">
+                    <span className="opPatientName">Laura Zahra Bayokhi</span>
+                    <span className="opStatus checkedIn">Checked In</span>
+                  </span>
+                  <span className="op-sec-3">
+                    <span className="opPatientStatus followUp">Follow Up</span>
+                  </span>
+                </li>
+                <li>
+                  <span className="op-sec-1">
+                    <i className="walking-icon" />
+                    <span className="opTime">11:44:00</span>
+                  </span>
+                  <span className="op-sec-2">
+                    <span className="opPatientName">Laura Zahra Bayokhi</span>
+                    <span className="opStatus checkedIn">Checked In</span>
+                  </span>
+                  <span className="op-sec-3">
+                    <span className="opPatientStatus newVisit">New Visit</span>
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          {/* Left Pane End */}
+
+          {/* Right Pane Start */}
+
+          {/* <div className="col-lg-8 card encounters-panel">
+            <div className="card-body box-shadow-normal">
+              <h6 className="card-subtitle mb-2 text-muted">All Patients</h6> */}
+
+          <div className="col-lg-8 card box-shadow-normal encounters-panel">
             <div className="row">
-              <div className="col month">
-                <ul style={{ listStyle: "none" }}>
-                  <li className="prev">&#10094;</li>
-                  <li className="next">&#10095;</li>
-                  <li>
-                    July <br />
-                    <span style={{ fontSize: "9px" }}>2018</span> <br />
-                  </li>
-                </ul>
-
-                <span
-                  style={{
-                    fontSize: "12px",
-                    color: "#ffffff",
-                    paddingTop: "20px"
-                  }}
-                >
-                  22 Patients Today
-                </span>
+              <div className="col-lg-3">
+                {" "}
+                <AlgaehLabel label={{ fieldName: "encounter_list" }} />
               </div>
-
-              <div className="col">
-                <ul className="weekdays">
-                  <li>Mo</li>
-                  <li>Tu</li>
-                  <li>We</li>
-                  <li>Th</li>
-                  <li>Fr</li>
-                  <li>Sa</li>
-                  <li>Su</li>
-                </ul>
-
-                <ul className="days">
-                  <li>1</li>
-                  <li>2</li>
-                  <li>3</li>
-                  <li>4</li>
-                  <li>5</li>
-                  <li>6</li>
-                  <li>7</li>
-                  <li>8</li>
-                  <li>9</li>
-                  <li>10</li>
-                  <li>11</li>
-                  <li>12</li>
-                  <li>13</li>
-                  <li>14</li>
-                  <li>15</li>
-                  <li>16</li>
-                  <li>17</li>
-                  <li>18</li>
-                  <li>19</li>
-                  <li>20</li>
-                  <li>
-                    <span className="active">21</span>
-                  </li>
-                  <li>22</li>
-                  <li>23</li>
-                  <li>24</li>
-                  <li>25</li>
-                  <li>26</li>
-                  <li>27</li>
-                  <li>28</li>
-                  <li>29</li>
-                  <li>30</li>
-                  <li>31</li>
-                </ul>
+              <div className="col-lg-5">
+                {" "}
+                <AlgaehLabel label={{ fieldName: "total_encounters" }} /> : 8
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Bottom Layout Starts */}
-        <div className="row bottom-layout">
-          {/* Appointment Panel Starts */}
-          <div className="col-lg-4 appointment-panel">
-            <Paper style={{ height: "470px", overflow: "scroll" }}>
-              <div
-                className="sticky-top"
-                style={{ backgroundColor: "#ffffff" }}
-              >
-                <label className="grey-label"> Scheduled Appointments</label>
-                {/* <label className="grey-label-right float-right">
-                  {" "}
-                  Walk In Appointments
-                </label> */}
-              </div>
-
-              {/* Timeline Starts */}
-              <Timeline>
-                <TimelineEvent
-                  title="Completed"
-                  createdAt="10:00 - 10:15"
-                  icon="S"
-                >
-                  Peter
-                </TimelineEvent>
-                <TimelineEvent
-                  title="Treating Now"
-                  createdAt="10:15 - 10:30"
-                  icon="T"
-                  orientation="left"
-                  iconColor="blue"
-                >
-                  <span> James Marry </span>
-                </TimelineEvent>
-                <TimelineEvent
-                  title="Nursing Done"
-                  createdAt="10:30 - 10:45"
-                  icon="W"
-                  orientation="left"
-                  iconColor="#2f2f2f"
-                >
-                  <span> James Marry </span>
-                </TimelineEvent>
-                <TimelineEvent
-                  title="Waiting"
-                  createdAt="10:45 - 11:00"
-                  icon="W"
-                  orientation="left"
-                  iconColor="#2f2f2f"
-                >
-                  <span> James Marry </span>
-                </TimelineEvent>
-                <TimelineEvent
-                  title="Completed"
-                  createdAt="11:00 - 11:15"
-                  icon="S"
-                >
-                  Peter
-                </TimelineEvent>
-                <TimelineEvent
-                  title="Treating Now"
-                  createdAt="11:15 - 11:30"
-                  icon="T"
-                  orientation="left"
-                  iconColor="blue"
-                >
-                  <span> James Marry </span>
-                </TimelineEvent>
-                <TimelineEvent
-                  title="Nursing Done"
-                  createdAt="11:45 - 12:00"
-                  icon="W"
-                  orientation="left"
-                  iconColor="#2f2f2f"
-                >
-                  <span> James Marry </span>
-                </TimelineEvent>
-                <TimelineEvent
-                  title="Waiting"
-                  createdAt="12:00 - 12:15"
-                  icon="W"
-                  orientation="left"
-                  iconColor="#2f2f2f"
-                >
-                  <span> James Marry </span>
-                </TimelineEvent>
-              </Timeline>
-              {/* Timeline Ends */}
-            </Paper>
-          </div>
-          {/* Appointment Panel Ends */}
-
-          <div className="col-lg-8 encounters-panel">
-            <Paper style={{ height: "300px" }}>
-              <label className="grey-label">Encounters</label>
-              {/*  Grid  */}
-              <AlgaehDataGrid
-                id="speciality_grd"
-                columns={[
-                  {
-                    fieldName: "status",
-                    label: "Status",
-                    disabled: true
-                  },
-                  {
-                    fieldName: "date",
-                    label: "Date"
-                  },
-                  {
-                    fieldName: "first_name",
-                    label: "Patient Name"
-                  },
-                  {
-                    fieldName: "patient_id",
-                    label: "Patient ID"
-                  },
-                  {
-                    fieldName: "time",
-                    label: "Time"
-                  },
-                  {
-                    fieldName: "patient_type",
-                    label: "Patient Type"
-                  }
-                ]}
-                keyId="code"
-                dataSource={{
-                  data:
-                    this.props.visatypes === undefined
-                      ? []
-                      : this.props.visatypes
+            <div className="divider" />
+            <div className="row">
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "status"
                 }}
-                isEditable={false}
-                paging={{ page: 0, rowsPerPage: 3 }}
-                events={
-                  {
-                    // onDelete: this.deleteVisaType.bind(this),
-                    // onEdit: row => {},
-                    // onDone: row => {
-                    //   alert(JSON.stringify(row));
-                    // }
-                    // onDone: this.updateVisaTypes.bind(this)
-                  }
-                }
+                selector={{
+                  name: "status",
+                  className: "select-fld",
+                  //value: this.state.consultation,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: GlobalVariables.DOC_WRK_BNCH_FILTER_CONDITIONS
+                  },
+                  //onChange: this.changeTexts.bind(this)
+                  onChange: () => {}
+                }}
               />
-            </Paper>
+              <AlgaehDateHandler
+                div={{ className: "col" }}
+                label={{ fieldName: "from_date", isImp: true }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "from_date"
+                }}
+                maxDate={new Date()}
+                events={{
+                  //onChange: datehandle.bind(this, this)
+                  onChange: () => {}
+                }}
+                // value={this.state.receipt_date}
+              />
 
-            <div className="right-bottom-panel row">
-              <div className="col">
-                <Paper style={{ height: "150px" }}>
-                  <label className="grey-label">Others</label>
-                </Paper>
+              <AlgaehDateHandler
+                div={{ className: "col" }}
+                label={{ fieldName: "to_date", isImp: true }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "to_date"
+                }}
+                maxDate={new Date()}
+                events={{
+                  //onChange: datehandle.bind(this, this)
+                  onChange: () => {}
+                }}
+                // value={this.state.receipt_date}
+              />
+
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "patient_code",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "patient_code",
+                  // value: this.state.visit_type_code,
+                  //error: this.state.visit_type_code_error,
+                  //helperText: this.state.visit_type_code_error_txt,
+                  events: {
+                    //onChange: this.changeTexts.bind(this)
+                    onChange: () => {}
+                  }
+                }}
+              />
+              <div className="col-lg-1">
+                <Tooltip id="tooltip-icon" title="Search">
+                  <IconButton className="go-button" color="#000">
+                    <Search onClick={() => {}} />
+                  </IconButton>
+                </Tooltip>
               </div>
-              <div className="col">
-                <Paper style={{ height: "150px" }}>
-                  <label className="grey-label">Scheduled Surgeries</label>
-                </Paper>
+
+              <div className="col-lg-1">
+                <Tooltip id="tooltip-icon" title="Go">
+                  <IconButton className="go-button" color="primary">
+                    <PlayCircleFilled onClick={() => {}} />
+                  </IconButton>
+                </Tooltip>
               </div>
             </div>
+
+            <AlgaehDataGrid
+              id="encounter_table"
+              columns={[
+                {
+                  fieldName: "encounter_code",
+                  label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                  disabled: true
+                },
+                {
+                  fieldName: "patient_code",
+                  label: <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                },
+                {
+                  fieldName: "patient_name",
+                  label: <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                },
+                {
+                  fieldName: "date",
+                  label: <AlgaehLabel label={{ fieldName: "date" }} />
+                },
+                {
+                  fieldName: "time",
+                  label: <AlgaehLabel label={{ fieldName: "time" }} />
+                },
+                {
+                  fieldName: "case_type",
+                  label: <AlgaehLabel label={{ fieldName: "case_type" }} />
+                },
+                {
+                  fieldName: "transfer_status",
+                  label: (
+                    <AlgaehLabel label={{ fieldName: "transfer_status" }} />
+                  )
+                },
+                {
+                  fieldName: "policy_group_description",
+                  label: (
+                    <AlgaehLabel
+                      label={{ fieldName: "policy_group_description" }}
+                    />
+                  )
+                }
+              ]}
+              keyId="encounter_code"
+              dataSource={{
+                data:
+                  this.props.encounterlist === undefined
+                    ? []
+                    : this.props.encounterlist
+              }}
+              isEditable={false}
+              paging={{ page: 0, rowsPerPage: 10 }}
+              events={{
+                onDelete: row => {},
+                onEdit: row => {},
+                onDone: row => {}
+              }}
+            />
           </div>
+          {/* Right Pane End */}
         </div>
-        {/* Bottom layout Ends */}
       </div>
     );
   }

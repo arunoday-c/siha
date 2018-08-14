@@ -4,6 +4,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import MyDay from "./MyDay/MyDay";
 import PatientChart from "./PatientChart/PatientChart";
+import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 class DoctorsWorkbench extends Component {
   constructor(props) {
@@ -42,10 +43,42 @@ class DoctorsWorkbench extends Component {
             textColor="primary"
             onChange={this.handleChange}
           >
-            <Tab label="My Day" />
-            <Tab label="Patient Chart" />
-            <Tab label="Checked In Patient Summary" />
-            <Tab label="Visit and Admission History" />
+            <Tab
+              label={
+                <AlgaehLabel
+                  label={{
+                    fieldName: "my_day"
+                  }}
+                />
+              }
+            />
+            <Tab
+              label={
+                <AlgaehLabel
+                  label={{
+                    fieldName: "patient_chart"
+                  }}
+                />
+              }
+            />
+            <Tab
+              label={
+                <AlgaehLabel
+                  label={{
+                    fieldName: "checked_in_patient_summary"
+                  }}
+                />
+              }
+            />
+            <Tab
+              label={
+                <AlgaehLabel
+                  label={{
+                    fieldName: "visit_and_admission_history"
+                  }}
+                />
+              }
+            />
           </Tabs>
         </div>
         <div>
