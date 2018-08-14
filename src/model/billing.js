@@ -722,6 +722,10 @@ let getBillDetails = (req, res, next) => {
                 ? "NR"
                 : servicesDetails.apprv_status;
 
+            let approved_amount =
+              servicesDetails.approved_amount === undefined
+                ? 0
+                : servicesDetails.approved_amount;
             debugLog("Pre app", servicesDetails.pre_approval);
             let pre_approval =
               servicesDetails.pre_approval === undefined
@@ -781,13 +785,15 @@ let getBillDetails = (req, res, next) => {
                 debugLog("inside 1st then", policydtls);
                 //Calculation Starts
 
-                debugLog("Appto", apprv_status);
-                debugLog("iPre", pre_approval);
+                // debugLog("Appto", apprv_status);
+                // debugLog("iPre", pre_approval);
+
+                //Not Covered and if approval rejected
                 if (
                   covered === "N" ||
                   (pre_approval === "Y" && apprv_status === "RJ")
                 ) {
-                  debugLog("not covered", {});
+                  // debugLog("not covered", {});
                   insured = "N";
                 }
 
@@ -802,12 +808,12 @@ let getBillDetails = (req, res, next) => {
 
                 covered = policydtls !== null ? policydtls.covered : "Y";
 
-                debugLog("Insured", insured);
-                debugLog("Pre Approval", pre_approval);
+                // debugLog("Insured", insured);
+                // debugLog("Pre Approval", pre_approval);
 
-                debugLog("Limit", approval_limit_yesno);
+                // debugLog("Limit", approval_limit_yesno);
 
-                debugLog("Covered", covered);
+                // debugLog("Covered", covered);
                 icd_code =
                   policydtls.cpt_code !== null
                     ? policydtls.cpt_code
@@ -852,6 +858,18 @@ let getBillDetails = (req, res, next) => {
                   patient_resp = copay_amount;
                   patient_payable = copay_amount;
                   comapany_resp = net_amout - patient_resp;
+                  debugLog("COmpany Amount:", comapany_resp);
+                  debugLog("Approved:", approved_amount);
+                  if (
+                    approved_amount !== 0 &&
+                    approved_amount < comapany_resp
+                  ) {
+                    let diff_val = comapany_resp - approved_amount;
+                    patient_payable = patient_payable + diff_val;
+                    patient_resp = patient_resp + diff_val;
+                    comapany_resp = approved_amount;
+                  }
+
                   company_payble = net_amout - patient_payable;
 
                   preapp_limit_amount = policydtls.preapp_limit;

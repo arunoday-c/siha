@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import Edit from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 import Send from "@material-ui/icons/Send";
+import Update from "@material-ui/icons/Update";
 
 import "./PreApproval.css";
 import "../../styles/site.css";
@@ -20,7 +21,14 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import SubmitRequest from "./SubmitRequest/SubmitRequest";
 import PreApprovalStatus from "./PreApprovalStatus/PreApprovalStatus";
-import { texthandle, datehandle, PatientSearch } from "./PreApprovalHandaler";
+import UpdateOrders from "./UpdateOrders/UpdateOrders";
+import {
+  texthandle,
+  datehandle,
+  PatientSearch,
+  VerifyOrderModel,
+  CloseOrderModel
+} from "./PreApprovalHandaler";
 import moment from "moment";
 import Options from "../../Options.json";
 import variableJson from "../../utils/GlobalVariables.json";
@@ -31,6 +39,7 @@ class PreApproval extends Component {
     this.state = {
       isOpen: false,
       isEditOpen: false,
+      isVerifyOpen: false,
       patient_code: null,
       patient_id: null,
       date: moment(new Date())._d,
@@ -340,6 +349,12 @@ class PreApproval extends Component {
                                 onClick={this.ShowSubmitModel.bind(this, row)}
                               />
                             </IconButton>
+
+                            <IconButton color="primary" title="Process To Bill">
+                              <Update
+                                onClick={VerifyOrderModel.bind(this, this, row)}
+                              />
+                            </IconButton>
                           </span>
                         );
                       }
@@ -369,7 +384,6 @@ class PreApproval extends Component {
           open={this.state.isOpen}
           onClose={this.CloseSubmitModel.bind(this)}
           selected_services={this.state.selected_services}
-          form="Submit"
         />
 
         <PreApprovalStatus
@@ -384,7 +398,19 @@ class PreApproval extends Component {
           open={this.state.isEditOpen}
           onClose={this.CloseEditModel.bind(this)}
           selected_services={this.state.selected_services}
-          form="Edit"
+        />
+        <UpdateOrders
+          HeaderCaption={
+            <AlgaehLabel
+              label={{
+                fieldName: "updateorders",
+                align: "ltr"
+              }}
+            />
+          }
+          open={this.state.isVerifyOpen}
+          onClose={CloseOrderModel.bind(this, this)}
+          selected_services={this.state.selected_services}
         />
       </div>
     );
