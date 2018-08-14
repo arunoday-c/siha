@@ -210,3 +210,8 @@
 
 :global .row-bottom-space {
   margin-bottom: 15px; }
+
+:global .divider {
+  height: 1px;
+  background-color: #485a63;
+  margin: 1px; }

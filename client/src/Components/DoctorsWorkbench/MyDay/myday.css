@@ -4,6 +4,10 @@
 .myday .panel-layout {
   margin-top: 10px; }
 
+.myday .go-button {
+  cursor: pointer;
+  margin-top: 15px; }
+
 .myday .my-calendar {
   text-align: center;
   background: #3bb3b7;

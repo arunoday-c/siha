@@ -13,5 +13,7 @@
   "case_type": "Case Type",
   "transfer_status": "Transfer Status",
   "policy_group_description": "Policy Group Description",
-  "total_encounters": "Total Number of Encounters"
+  "total_encounters": "Total Number of Encounters",
+  "from_date": "From Date",
+  "to_date": "To Date"
 }
