@@ -15,7 +15,9 @@ import { UpdatePreApproval } from "./PreApprovalStatusEvent";
 export default class PreApprovalStatus extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      update_pre_approval_service: []
+    };
   }
 
   onClose = e => {

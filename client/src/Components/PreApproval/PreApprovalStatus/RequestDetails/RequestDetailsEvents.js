@@ -17,12 +17,14 @@ const datehandle = ($this, row, ctrl, e) => {
 
 const updateServices = ($this, context, row) => {
   debugger;
+  let service_array = [];
   row.requested_date = moment(new Date())._d;
   row.updated_by = getCookie("UserID");
   row.requested_by = getCookie("UserID");
+  service_array.push(row);
   if (context != null) {
     context.updateState({
-      services_details: $this.state.services_details
+      update_pre_approval_service: service_array
     });
   }
 };

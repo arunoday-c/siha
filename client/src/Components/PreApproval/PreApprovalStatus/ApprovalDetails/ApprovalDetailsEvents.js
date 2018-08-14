@@ -1,4 +1,5 @@
 import moment from "moment";
+import { getCookie } from "../../../../utils/algaehApiCall.js";
 
 const texthandle = ($this, row, e) => {
   debugger;
@@ -17,10 +18,14 @@ const datehandle = ($this, row, ctrl, e) => {
 
 const updateServices = ($this, context, row) => {
   debugger;
-  row.requested_date = moment(new Date())._d;
+  let service_array = [];
+  row.apprv_date = moment(new Date())._d;
+  row.updated_by = getCookie("UserID");
+
+  service_array.push(row);
   if (context != null) {
     context.updateState({
-      services_details: $this.state.services_details
+      update_pre_approval_service: service_array
     });
   }
 };

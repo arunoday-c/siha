@@ -179,6 +179,20 @@ export default class VerifyOrders extends PureComponent {
                     </div>
                   </div>
                 </div>
+                <div className="row" position="fixed">
+                  <div className="col-lg-12">
+                    <span className="float-left">
+                      <button
+                        className="htpl1-phase1-btn-others"
+                        onClick={e => {
+                          this.onClose(e);
+                        }}
+                      >
+                        <AlgaehLabel label={{ fieldName: "btnclose" }} />
+                      </button>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </Modal>
