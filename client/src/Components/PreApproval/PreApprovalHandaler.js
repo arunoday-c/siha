@@ -51,8 +51,6 @@ const PatientSearch = ($this, e) => {
           getPreAprovalList($this);
         }
       );
-
-      // patient_id
     }
   });
 };
@@ -89,15 +87,6 @@ const getPreAprovalList = $this => {
       mappingName: "preapprovallist"
     },
     afterSuccess: data => {
-      debugger;
-      // let no_of_Services = data[1][0];
-      // let pre_approval_Services = data[0];
-
-      // for (let i = 0; i < pre_approval_Services.length; i++) {
-      //   pre_approval_Services[i].number_of_Services =
-      //     no_of_Services.number_of_Services;
-      // }
-
       let pre_approval_Services = Enumerable.from(data)
         .groupBy("$.patient_id", null, (k, g) => {
           debugger;
@@ -123,4 +112,24 @@ const getPreAprovalList = $this => {
   });
 };
 
-export { texthandle, datehandle, PatientSearch, getPreAprovalList };
+const VerifyOrderModel = ($this, row, e) => {
+  debugger;
+  $this.setState({
+    isVerifyOpen: !$this.state.isVerifyOpen,
+    selected_services: row
+  });
+};
+const CloseOrderModel = ($this, e) => {
+  $this.setState({
+    isVerifyOpen: !$this.state.isVerifyOpen
+  });
+};
+
+export {
+  texthandle,
+  datehandle,
+  PatientSearch,
+  getPreAprovalList,
+  VerifyOrderModel,
+  CloseOrderModel
+};

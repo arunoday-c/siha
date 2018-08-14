@@ -38,7 +38,9 @@ const serviceHandeler = ($this, e) => {
   });
 };
 
+//Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
+  debugger;
   let preserviceInput = $this.state.preserviceInput || [];
   let serviceInput = [
     {
@@ -69,7 +71,7 @@ const ProcessService = ($this, e) => {
     },
     afterSuccess: data => {
       debugger;
-
+      //If Limit exceed then all the selected services convert to pre-approval
       if (
         data.billdetails[0].preapp_limit_exceed === "Y" &&
         $this.state.approval_limit_yesno === "N"
@@ -93,14 +95,28 @@ const ProcessService = ($this, e) => {
 
             data.billdetails[0].visit_id = $this.state.visit_id;
             data.billdetails[0].patient_id = $this.state.patient_id;
-            data.billdetails[0].doctor_id = $this.state.doctor_id;
-            data.billdetails[0].insurance_company =
+            // data.billdetails[0].doctor_id = $this.state.doctor_id;
+            data.billdetails[0].doctor_id = "2";
+            data.billdetails[0].insurance_provider_id =
               $this.state.insurance_provider_id;
-            data.billdetails[0].insurance_sub_company =
+            data.billdetails[0].insurance_sub_id =
               $this.state.sub_insurance_provider_id;
             data.billdetails[0].network_id = $this.state.network_id;
             data.billdetails[0].policy_number = $this.state.policy_number;
             data.billdetails[0].created_by = getCookie("UserID");
+            data.billdetails[0].insurance_service_name =
+              $this.state.insurance_service_name;
+            data.billdetails[0].icd_code = "1";
+            // data.billdetails[0].icd_code === ""
+            //   ? null
+            //   : data.billdetails[0].icd_code;
+            //Approval Table
+
+            data.billdetails[0].insurance_network_office_id =
+              $this.state.hims_d_insurance_network_office_id;
+
+            data.billdetails[0].requested_quantity =
+              data.billdetails[0].quantity;
 
             debugger;
             $this.props.generateBill({
@@ -124,29 +140,38 @@ const ProcessService = ($this, e) => {
         });
       } else {
         debugger;
+
         let existingservices = $this.state.orderservices;
 
         data.billdetails[0].visit_id = $this.state.visit_id;
         data.billdetails[0].patient_id = $this.state.patient_id;
-        data.billdetails[0].doctor_id = $this.state.doctor_id;
-        data.billdetails[0].insurance_company =
+        // data.billdetails[0].doctor_id = $this.state.doctor_id;
+        data.billdetails[0].doctor_id = "2";
+        data.billdetails[0].insurance_provider_id =
           $this.state.insurance_provider_id;
-        data.billdetails[0].insurance_sub_company =
+        data.billdetails[0].insurance_sub_id =
           $this.state.sub_insurance_provider_id;
         data.billdetails[0].network_id = $this.state.network_id;
         data.billdetails[0].policy_number = $this.state.policy_number;
         data.billdetails[0].created_by = getCookie("UserID");
         data.billdetails[0].insurance_service_name =
           $this.state.insurance_service_name;
-        data.billdetails[0].icd_code =
-          data.billdetails[0].icd_code === ""
-            ? null
-            : data.billdetails[0].icd_code;
+        data.billdetails[0].icd_code = "1";
+        // data.billdetails[0].icd_code === ""
+        //   ? null
+        //   : data.billdetails[0].icd_code;
+        //Approval Table
 
+        data.billdetails[0].insurance_network_office_id =
+          $this.state.hims_d_insurance_network_office_id;
+
+        data.billdetails[0].requested_quantity = data.billdetails[0].quantity;
+        data.billdetails[0].doctor_id = "2";
         if (data.billdetails.length !== 0) {
           existingservices.splice(0, 0, data.billdetails[0]);
         }
         debugger;
+        //If pre-approval required for selected service
         if (
           data.billdetails[0].pre_approval === "Y" &&
           $this.state.approval_limit_yesno === "N"
@@ -233,6 +258,7 @@ const VisitSearch = ($this, e) => {
   });
 };
 
+//if services got delete and if pre apprival limit exceed
 const deleteServices = ($this, row, rowId) => {
   debugger;
   let orderservices = $this.state.orderservices;
@@ -283,7 +309,7 @@ const deleteServices = ($this, row, rowId) => {
     });
   }
 };
-
+//Save Order
 const SaveOrdersServices = ($this, e) => {
   debugger;
   algaehApiCall({
