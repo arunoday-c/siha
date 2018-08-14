@@ -2,7 +2,6 @@ import moment from "moment";
 import { getCookie } from "../../../../utils/algaehApiCall.js";
 
 const texthandle = ($this, row, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -16,7 +15,6 @@ const datehandle = ($this, row, ctrl, e) => {
 };
 
 const updateServices = ($this, context, row) => {
-  debugger;
   let service_array = [];
   row.requested_date = moment(new Date())._d;
   row.updated_by = getCookie("UserID");

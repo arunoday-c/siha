@@ -31,7 +31,6 @@ const serviceTypeHandeler = ($this, e) => {
 };
 
 const serviceHandeler = ($this, e) => {
-  debugger;
   $this.setState({
     [e.name]: e.value,
     insurance_service_name: e.selected.service_name
@@ -40,7 +39,6 @@ const serviceHandeler = ($this, e) => {
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
-  debugger;
   let preserviceInput = $this.state.preserviceInput || [];
   let serviceInput = [
     {
@@ -59,7 +57,6 @@ const ProcessService = ($this, e) => {
       preapp_limit_amount: $this.state.preapp_limit_amount
     }
   ];
-  debugger;
 
   $this.props.generateBill({
     uri: "/billing/getBillDetails",
@@ -70,7 +67,6 @@ const ProcessService = ($this, e) => {
       mappingName: "orderservices"
     },
     afterSuccess: data => {
-      debugger;
       //If Limit exceed then all the selected services convert to pre-approval
       if (
         data.billdetails[0].preapp_limit_exceed === "Y" &&
@@ -93,32 +89,6 @@ const ProcessService = ($this, e) => {
             let approval_amt = data.billdetails[0].approval_amt;
             let approval_limit_yesno = data.billdetails[0].preapp_limit_exceed;
 
-            data.billdetails[0].visit_id = $this.state.visit_id;
-            data.billdetails[0].patient_id = $this.state.patient_id;
-            // data.billdetails[0].doctor_id = $this.state.doctor_id;
-            data.billdetails[0].doctor_id = "2";
-            data.billdetails[0].insurance_provider_id =
-              $this.state.insurance_provider_id;
-            data.billdetails[0].insurance_sub_id =
-              $this.state.sub_insurance_provider_id;
-            data.billdetails[0].network_id = $this.state.network_id;
-            data.billdetails[0].policy_number = $this.state.policy_number;
-            data.billdetails[0].created_by = getCookie("UserID");
-            data.billdetails[0].insurance_service_name =
-              $this.state.insurance_service_name;
-            data.billdetails[0].icd_code = "1";
-            // data.billdetails[0].icd_code === ""
-            //   ? null
-            //   : data.billdetails[0].icd_code;
-            //Approval Table
-
-            data.billdetails[0].insurance_network_office_id =
-              $this.state.hims_d_insurance_network_office_id;
-
-            data.billdetails[0].requested_quantity =
-              data.billdetails[0].quantity;
-
-            debugger;
             $this.props.generateBill({
               uri: "/billing/getBillDetails",
               method: "POST",
@@ -128,8 +98,33 @@ const ProcessService = ($this, e) => {
                 mappingName: "xxx"
               },
               afterSuccess: data => {
+                for (let i = 0; i < data.billdetails.length; i++) {
+                  data.billdetails[i].visit_id = $this.state.visit_id;
+                  data.billdetails[i].patient_id = $this.state.patient_id;
+
+                  data.billdetails[i].doctor_id = "2";
+                  data.billdetails[i].insurance_provider_id =
+                    $this.state.insurance_provider_id;
+                  data.billdetails[i].insurance_sub_id =
+                    $this.state.sub_insurance_provider_id;
+                  data.billdetails[i].network_id = $this.state.network_id;
+                  data.billdetails[i].policy_number = $this.state.policy_number;
+                  data.billdetails[i].created_by = getCookie("UserID");
+                  data.billdetails[i].insurance_service_name =
+                    $this.state.insurance_service_name;
+
+                  // data.billdetails[i].icd_code === data.billdetails[0].icd_code;
+                  // Approval Table
+
+                  data.billdetails[i].insurance_network_office_id =
+                    $this.state.hims_d_insurance_network_office_id;
+
+                  data.billdetails[i].requested_quantity =
+                    data.billdetails[i].quantity;
+                }
+
                 $this.setState({
-                  orderservices: data.billdetails,
+                  orderservicesdata: data.billdetails,
                   approval_amt: approval_amt,
                   preserviceInput: preserviceInput,
                   approval_limit_yesno: approval_limit_yesno
@@ -139,9 +134,7 @@ const ProcessService = ($this, e) => {
           }
         });
       } else {
-        debugger;
-
-        let existingservices = $this.state.orderservices;
+        let existingservices = $this.state.orderservicesdata;
 
         data.billdetails[0].visit_id = $this.state.visit_id;
         data.billdetails[0].patient_id = $this.state.patient_id;
@@ -170,7 +163,7 @@ const ProcessService = ($this, e) => {
         if (data.billdetails.length !== 0) {
           existingservices.splice(0, 0, data.billdetails[0]);
         }
-        debugger;
+
         //If pre-approval required for selected service
         if (
           data.billdetails[0].pre_approval === "Y" &&
@@ -187,7 +180,7 @@ const ProcessService = ($this, e) => {
 
         preserviceInput.push(serviceInput[0]);
         $this.setState({
-          orderservices: existingservices,
+          orderservicesdata: existingservices,
           approval_amt: approval_amt,
           preserviceInput: preserviceInput,
           preapp_limit_amount: preapp_limit_amount
@@ -198,7 +191,6 @@ const ProcessService = ($this, e) => {
 };
 
 const VisitSearch = ($this, e) => {
-  debugger;
   AlgaehSearch({
     searchGrid: {
       columns: [
@@ -219,11 +211,9 @@ const VisitSearch = ($this, e) => {
     searchName: "visit",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
-      debugger;
       callBack(text);
     },
     onRowSelect: row => {
-      debugger;
       $this.setState(
         {
           visit_code: row.visit_code,
@@ -234,7 +224,6 @@ const VisitSearch = ($this, e) => {
           insured: row.insured
         },
         () => {
-          debugger;
           if ($this.state.insured === "Y") {
             $this.props.getPatientInsurance({
               uri: "/insurance/getPatientInsurance",
@@ -246,9 +235,6 @@ const VisitSearch = ($this, e) => {
               redux: {
                 type: "EXIT_INSURANCE_GET_DATA",
                 mappingName: "existinginsurance"
-              },
-              afterSuccess: data => {
-                debugger;
               }
             });
           }
@@ -260,11 +246,10 @@ const VisitSearch = ($this, e) => {
 
 //if services got delete and if pre apprival limit exceed
 const deleteServices = ($this, row, rowId) => {
-  debugger;
-  let orderservices = $this.state.orderservices;
+  let orderservicesdata = $this.state.orderservicesdata;
   let preserviceInput = $this.state.preserviceInput;
 
-  orderservices.splice(rowId, 1);
+  orderservicesdata.splice(rowId, 1);
 
   let app_amt = $this.state.approval_amt - row["company_payble"];
   for (var i = 0; i < preserviceInput.length; i++) {
@@ -274,7 +259,6 @@ const deleteServices = ($this, row, rowId) => {
   }
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
-      debugger;
       for (var i = 0; i < preserviceInput.length; i++) {
         preserviceInput[i].approval_limit_yesno = "N";
       }
@@ -288,7 +272,7 @@ const deleteServices = ($this, row, rowId) => {
         },
         afterSuccess: data => {
           $this.setState({
-            orderservices: data.billdetails,
+            orderservicesdata: data.billdetails,
             approval_amt: app_amt,
             preserviceInput: preserviceInput
           });
@@ -296,14 +280,14 @@ const deleteServices = ($this, row, rowId) => {
       });
     } else {
       $this.setState({
-        orderservices: orderservices,
+        orderservicesdata: orderservicesdata,
         preserviceInput: preserviceInput,
         approval_amt: app_amt
       });
     }
   } else {
     $this.setState({
-      orderservices: orderservices,
+      orderservicesdata: orderservicesdata,
       preserviceInput: preserviceInput,
       approval_amt: app_amt
     });
@@ -311,10 +295,9 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
-  debugger;
   algaehApiCall({
     uri: "/orderAndPreApproval/insertOrderedServices",
-    data: $this.state.orderservices,
+    data: $this.state.orderservicesdata,
     method: "POST",
     onSuccess: response => {
       if (response.data.success) {

@@ -44,7 +44,6 @@ class PatientDetails extends PureComponent {
   };
 
   componentDidMount() {
-    debugger;
     let InputOutput = this.props.selected_services;
     this.setState({ ...this.state, ...InputOutput });
   }

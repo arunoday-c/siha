@@ -52,7 +52,6 @@ class PatientDisplayDetails extends Component {
   }
 
   componentDidMount() {
-    debugger;
     let prevLang = getCookie("Language");
     this.setState({
       selectedLang: prevLang

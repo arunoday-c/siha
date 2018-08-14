@@ -5,7 +5,6 @@ import Options from "../../Options.json";
 import Enumerable from "linq";
 
 const texthandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -31,7 +30,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const PatientSearch = ($this, e) => {
-  debugger;
   AlgaehSearch({
     searchGrid: {
       columns: FrontDesk
@@ -56,7 +54,6 @@ const PatientSearch = ($this, e) => {
 };
 
 const getPreAprovalList = $this => {
-  debugger;
   let inputobj = {};
 
   if ($this.state.date !== null) {
@@ -89,7 +86,6 @@ const getPreAprovalList = $this => {
     afterSuccess: data => {
       let pre_approval_Services = Enumerable.from(data)
         .groupBy("$.patient_id", null, (k, g) => {
-          debugger;
           let firstRecordSet = Enumerable.from(g).firstOrDefault();
           return {
             patient_code: firstRecordSet.patient_code,
@@ -113,7 +109,6 @@ const getPreAprovalList = $this => {
 };
 
 const VerifyOrderModel = ($this, row, e) => {
-  debugger;
   $this.setState({
     isVerifyOpen: !$this.state.isVerifyOpen,
     selected_services: row

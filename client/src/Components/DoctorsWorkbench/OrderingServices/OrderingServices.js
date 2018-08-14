@@ -52,7 +52,7 @@ class OrderingServices extends Component {
       sec_policy_number: null,
       secondary_network_id: null,
       secondary_network_office_id: null,
-      orderservices: [],
+      orderservicesdata: [],
       approval_amt: 0,
       preapp_limit_amount: 0,
       preserviceInput: [],
@@ -100,7 +100,6 @@ class OrderingServices extends Component {
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
     ) {
-      debugger;
       let output = nextProps.existinginsurance[0];
       this.setState({ ...output });
     }
@@ -111,7 +110,9 @@ class OrderingServices extends Component {
 
   render() {
     let orderedList =
-      this.state.orderservices === undefined ? [{}] : this.state.orderservices;
+      this.state.orderservicesdata === undefined
+        ? [{}]
+        : this.state.orderservicesdata;
 
     return (
       <div className="hptl-phase1-ordering-services-form">

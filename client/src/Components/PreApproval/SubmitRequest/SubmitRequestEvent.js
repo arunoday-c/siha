@@ -13,7 +13,6 @@ const texthandle = ($this, e) => {
 };
 
 const SubmitRequestUpdate = ($this, e) => {
-  debugger;
   if ($this.state.submission_type !== null) {
     // row.updated_by = getCookie("UserID");
     let InputOutput = $this.state.services_details;

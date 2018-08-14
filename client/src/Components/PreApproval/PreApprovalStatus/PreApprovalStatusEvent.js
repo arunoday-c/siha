@@ -2,7 +2,6 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 
 const UpdatePreApproval = ($this, e) => {
-  debugger;
   algaehApiCall({
     uri: "/orderAndPreApproval/updatePreApproval",
     data: $this.state.update_pre_approval_service,

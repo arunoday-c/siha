@@ -43,13 +43,11 @@ class PatientDetails extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
   componentDidMount() {
-    debugger;
     let InputOutput = this.props.selected_services;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   changeDateFormat = date => {
-    debugger;
     if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }

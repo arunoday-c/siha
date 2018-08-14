@@ -44,7 +44,6 @@ class RegistrationPatient extends Component {
   }
 
   componentWillMount() {
-    debugger;
     let IOputs = emptyObject;
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
@@ -54,7 +53,7 @@ class RegistrationPatient extends Component {
     // this.setState({
     //   widthImg: width
     // });
-    debugger;
+
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
     this.setState({
@@ -160,7 +159,6 @@ class RegistrationPatient extends Component {
     if (!err) {
       this.GenerateReciept($this => {
         if ($this.state.hims_d_patient_id === null) {
-          debugger;
           $this.props.postPatientDetails($this.state, data => {
             $this.setState({
               patient_code: data.patient_code,

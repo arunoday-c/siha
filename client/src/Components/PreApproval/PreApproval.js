@@ -82,7 +82,6 @@ class PreApproval extends Component {
   }
 
   ShowSubmitModel(row, e) {
-    debugger;
     this.setState({
       isOpen: !this.state.isOpen,
       selected_services: row
