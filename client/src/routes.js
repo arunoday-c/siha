@@ -17,6 +17,7 @@ import CommonSetup from "./Components/CommonSetup/CommonSetup";
 import Experiment from "./Components/Experiment";
 import AlgaehMainpg from "./Components/common/AlgaehmainPage/AlgaehmainPage";
 import DoctorsWorkbench from "./Components/DoctorsWorkbench/DoctorsWorkbench";
+import PatientProfile from "./Components/PatientProfile/PatientProfile";
 
 function height() {
   let height =
@@ -69,6 +70,11 @@ const appRoutes = [
     path: "/DW",
     isExactPath: true,
     component: <DoctorsWorkbench />
+  },
+  {
+    path: "/PP",
+    isExactPath: true,
+    component: <PatientProfile />
   }
 ];
 
