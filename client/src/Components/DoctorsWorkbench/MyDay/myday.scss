@@ -102,6 +102,16 @@
             display: block;
             margin: auto;
           }
+          .appointment-icon {
+            background: url("../../../assets/icons/appointment-icon.svg")
+              no-repeat center;
+            background-size: 80%;
+          }
+          .walking-icon {
+            background: url("../../../assets/icons/walking-icon.svg") no-repeat
+              center;
+            background-size: 80%;
+          }
           .opTime {
             font-size: 0.7rem;
           }
@@ -120,6 +130,12 @@
             display: block;
             font-size: 0.7rem;
           }
+          .nursing {
+            color: #34b8bc;
+          }
+          .checkedIn {
+            color: #00bb4b;
+          }
         }
         .op-sec-3 {
           width: 20%;
@@ -131,7 +147,17 @@
             display: block;
             font-size: 0.7rem;
           }
+          .newVisit {
+            color: #ff8800;
+          }
+          .followUp {
+            color: #ff005f;
+          }
         }
+      }
+      li:hover {
+        background: #ebfeff;
+        cursor: pointer;
       }
     }
   }
