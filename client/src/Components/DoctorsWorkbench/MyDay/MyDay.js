@@ -167,10 +167,10 @@ class MyDay extends Component {
                   </span>
                   <span className="op-sec-2">
                     <span className="opPatientName">Laura Zahra Bayokhi</span>
-                    <span className="opStatus">Nursing Done</span>
+                    <span className="opStatus nursing">Nursing Done</span>
                   </span>
                   <span className="op-sec-3">
-                    <span className="opPatientStatus">New Visit</span>
+                    <span className="opPatientStatus newVisit">New Visit</span>
                   </span>
                 </li>
                 <li>
@@ -180,10 +180,23 @@ class MyDay extends Component {
                   </span>
                   <span className="op-sec-2">
                     <span className="opPatientName">Laura Zahra Bayokhi</span>
-                    <span className="opStatus">Nursing Done</span>
+                    <span className="opStatus nursing">Nursing Done</span>
                   </span>
                   <span className="op-sec-3">
-                    <span className="opPatientStatus">New Visit</span>
+                    <span className="opPatientStatus newVisit">New Visit</span>
+                  </span>
+                </li>
+                <li>
+                  <span className="op-sec-1">
+                    <i className="appointment-icon" />
+                    <span className="opTime">11:44:00</span>
+                  </span>
+                  <span className="op-sec-2">
+                    <span className="opPatientName">Laura Zahra Bayokhi</span>
+                    <span className="opStatus nursing">Nursing Done</span>
+                  </span>
+                  <span className="op-sec-3">
+                    <span className="opPatientStatus followUp">Follow Up</span>
                   </span>
                 </li>
                 <li>
@@ -193,10 +206,10 @@ class MyDay extends Component {
                   </span>
                   <span className="op-sec-2">
                     <span className="opPatientName">Laura Zahra Bayokhi</span>
-                    <span className="opStatus">Nursing Done</span>
+                    <span className="opStatus checkedIn">Checked In</span>
                   </span>
                   <span className="op-sec-3">
-                    <span className="opPatientStatus">New Visit</span>
+                    <span className="opPatientStatus followUp">Follow Up</span>
                   </span>
                 </li>
                 <li>
@@ -206,23 +219,10 @@ class MyDay extends Component {
                   </span>
                   <span className="op-sec-2">
                     <span className="opPatientName">Laura Zahra Bayokhi</span>
-                    <span className="opStatus">Nursing Done</span>
+                    <span className="opStatus checkedIn">Checked In</span>
                   </span>
                   <span className="op-sec-3">
-                    <span className="opPatientStatus">New Visit</span>
-                  </span>
-                </li>
-                <li>
-                  <span className="op-sec-1">
-                    <i className="walking-icon" />
-                    <span className="opTime">11:44:00</span>
-                  </span>
-                  <span className="op-sec-2">
-                    <span className="opPatientName">Laura Zahra Bayokhi</span>
-                    <span className="opStatus">Nursing Done</span>
-                  </span>
-                  <span className="op-sec-3">
-                    <span className="opPatientStatus">New Visit</span>
+                    <span className="opPatientStatus newVisit">New Visit</span>
                   </span>
                 </li>
               </ul>

@@ -83,6 +83,12 @@
         height: 30px;
         display: block;
         margin: auto; }
+      .myday .opPatientList .opList li .op-sec-1 .appointment-icon {
+        background: url("../../../assets/icons/appointment-icon.svg") no-repeat center;
+        background-size: 80%; }
+      .myday .opPatientList .opList li .op-sec-1 .walking-icon {
+        background: url("../../../assets/icons/walking-icon.svg") no-repeat center;
+        background-size: 80%; }
       .myday .opPatientList .opList li .op-sec-1 .opTime {
         font-size: 0.7rem; }
     .myday .opPatientList .opList li .op-sec-2 {
@@ -97,6 +103,10 @@
       .myday .opPatientList .opList li .op-sec-2 .opStatus {
         display: block;
         font-size: 0.7rem; }
+      .myday .opPatientList .opList li .op-sec-2 .nursing {
+        color: #34b8bc; }
+      .myday .opPatientList .opList li .op-sec-2 .checkedIn {
+        color: #00bb4b; }
     .myday .opPatientList .opList li .op-sec-3 {
       width: 20%;
       line-height: 53px;
@@ -106,6 +116,13 @@
       .myday .opPatientList .opList li .op-sec-3 .opPatientStatus {
         display: block;
         font-size: 0.7rem; }
+      .myday .opPatientList .opList li .op-sec-3 .newVisit {
+        color: #ff8800; }
+      .myday .opPatientList .opList li .op-sec-3 .followUp {
+        color: #ff005f; }
+  .myday .opPatientList .opList li:hover {
+    background: #ebfeff;
+    cursor: pointer; }
 
 .myday .bottom-layout {
   padding: 5px; }
