@@ -536,8 +536,8 @@ let billingCalculations = (req, res, next) => {
     next(e);
   }
 };
-
-let getBillDetails = (req, res, next) => {
+//logic part for getBill details API
+let getBillDetailsFunctionality = (req, res, next, resolve) => {
   let billingDetailsModel = {
     hims_f_billing_details_id: null,
     hims_f_billing_header_id: null,
@@ -595,7 +595,7 @@ let getBillDetails = (req, res, next) => {
     record_status: null
   };
 
-  debugFunction("getBillDetails");
+  debugFunction("getBillDetailsFunctionality");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -1024,7 +1024,9 @@ let getBillDetails = (req, res, next) => {
               })
               .then(() => {
                 if (m == result.length - 1) {
-                  req.records = { billdetails: outputArray };
+                  //first commented
+                  //  req.records = { billdetails: outputArray };
+                  return resolve({ billdetails: outputArray });
                   debugLog("final Result..", outputArray);
                   next();
                 }
@@ -1718,11 +1720,42 @@ let addEpisodeEncounter = (connection, req, res, callBack, next) => {
   }
 };
 
+//get bill details
+let getBillDetails = (req, res, next) => {
+  debugFunction("getBillDetails");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      new Promise((resolve, reject) => {
+        try {
+          getBillDetailsFunctionality(req, res, next, resolve);
+        } catch (e) {
+          reject(e);
+        }
+      }).then(result => {
+        debugLog("result", result);
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addBill,
   billingCalculations,
   getBillDetails,
   newReceipt,
   patientAdvanceRefund,
-  addEpisodeEncounter
+  addEpisodeEncounter,
+  getBillDetailsFunctionality
 };

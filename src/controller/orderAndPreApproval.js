@@ -7,7 +7,8 @@ import {
   insertOrderedServices,
   getPreAprovalList,
   updatePreApproval,
-  selectOrderServices
+  selectOrderServices,
+  updateOrderedServices
 } from "../model/orderAndPreApproval";
 
 export default ({ config, db }) => {
@@ -60,6 +61,21 @@ export default ({ config, db }) => {
   api.get(
     "/selectOrderServices",
     selectOrderServices,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by irfan :to update OrderedServices
+  api.put(
+    "/updateOrderedServices",
+    updateOrderedServices,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

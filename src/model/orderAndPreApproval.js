@@ -7,192 +7,12 @@ import {
 } from "../utils";
 import moment from "moment";
 
+import { getBillDetails, getBillDetailsFunctionality } from "../model/billing";
+
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 
 import { logger, debugFunction, debugLog } from "../utils/logging";
-
-//created by irfan: insert ordered services and pre-approval services for insurance
-let oldinsert = (req, res, next) => {
-  const insurtColumns = [
-    "patient_id",
-    "visit_id",
-    "doctor_id",
-    "service_type_id",
-    "services_id",
-    "insurance_yesno",
-    "insurance_company",
-    "insurance_sub_company",
-    "network_id",
-    "policy_number",
-    "pre_approval",
-    "quantity",
-    "unit_cost",
-    "gross_amount",
-    "discount_amout",
-    "discount_percentage",
-    "net_amout",
-    "copay_percentage",
-    "copay_amount",
-    "deductable_amount",
-    "deductable_percentage",
-    "tax_inclusive",
-    "patient_tax",
-    "company_tax",
-    "total_tax",
-    "patient_resp",
-    "patient_payable",
-    "comapany_resp",
-    "company_payble",
-    "sec_company",
-    "sec_deductable_percentage",
-    "sec_deductable_amount",
-    "sec_company_res",
-    "sec_company_tax",
-    "sec_company_paybale",
-    "sec_copay_percntage",
-    "sec_copay_amount",
-    "created_by",
-    "updated_by"
-  ];
-
-  debugFunction("insertOrderedServices");
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
-
-      connection.beginTransaction(error => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-
-        connection.query(
-          "INSERT INTO hims_f_ordered_services(" +
-            insurtColumns.join(",") +
-            ") VALUES ?",
-          [
-            jsonArrayToObject({
-              sampleInputObject: insurtColumns,
-              arrayObj: req.body
-            })
-          ],
-          (error, resultOrder) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-
-            let servicesForPreAproval = new LINQ(req.body)
-              .Where(g => g.pre_approval == "Y")
-              .ToArray();
-
-            //if request for pre-aproval needed
-            if (servicesForPreAproval.length > 0) {
-              const insurtCols = [
-                "service_id",
-                "insurance_provider_id",
-                "insurance_network_office_id",
-                "icd_code",
-                "requested_date",
-                "requested_by",
-                "requested_mode",
-                "requested_quantity",
-                "submission_type",
-                "insurance_service_name",
-                "doctor_id",
-                "patient_id",
-                "refer_no",
-                "gross_amt",
-                "net_amount",
-                "approved_amount",
-                "approved_no",
-                "apprv_remarks",
-                "apprv_date",
-                "rejected_reason",
-                "apprv_status",
-                "created_by",
-                "updated_by"
-              ];
-
-              connection.query(
-                "INSERT INTO hims_f_service_approval(" +
-                  insurtCols.join(",") +
-                  ") VALUES ?",
-                [
-                  jsonArrayToObject({
-                    sampleInputObject: insurtCols,
-                    arrayObj: servicesForPreAproval,
-                    replaceObject: [
-                      {
-                        originalKey: "service_id",
-                        NewKey: "services_id"
-                      },
-                      {
-                        originalKey: "gross_amt",
-                        NewKey: "ser_gross_amt"
-                      },
-                      {
-                        originalKey: "net_amount",
-                        NewKey: "ser_net_amount"
-                      }
-                    ]
-                  })
-                ],
-                (error, resultPreAprvl) => {
-                  if (error) {
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-
-                  connection.commit(error => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
-                    }
-                    req.records = resultPreAprvl;
-                    next();
-                  });
-                }
-              );
-            } else {
-              connection.commit(error => {
-                if (error) {
-                  connection.rollback(() => {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  });
-                }
-                req.records = resultOrder;
-                next();
-              });
-              // req.records = result;
-              // next();
-            }
-          }
-        );
-      });
-    });
-  } catch (e) {
-    next(e);
-  }
-};
 
 //created by irfan: check pre-aproval status and get PreAproval List
 let getPreAprovalList = (req, res, next) => {
@@ -362,9 +182,10 @@ let insertOrderedServices = (req, res, next) => {
     "service_type_id",
     "services_id",
     "insurance_yesno",
-    "insurance_company",
-    "insurance_sub_company",
+    "insurance_provider_id",
+    "insurance_sub_id",
     "network_id",
+    "insurance_network_office_id",
     "policy_number",
     "pre_approval",
     "quantity",
@@ -615,9 +436,99 @@ let selectOrderServices = (req, res, next) => {
   }
 };
 
+//ordered services update
+let updateOrderedServices = (req, res, next) => {
+  debugFunction("updateOrderedServices");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      new Promise((resolve, reject) => {
+        try {
+          getBillDetailsFunctionality(req, res, next, resolve);
+        } catch (e) {
+          reject(e);
+        }
+      }).then(result => {
+        let inputParam = result.billdetails[0];
+        debugLog("call back result", inputParam);
+        let input = extend({}, req.body[0]);
+        debugLog("id:", input.hims_f_ordered_services_id);
+
+        connection.query(
+          "UPDATE hims_f_ordered_services SET service_type_id=?,services_id=?,insurance_yesno=?,insurance_provider_id=?,insurance_sub_id=?,network_id=?,\
+          insurance_network_office_id=?,policy_number=?,pre_approval=?,apprv_status=?,billed=?,quantity=?,unit_cost=?,gross_amount=?,discount_amout=?,discount_percentage=?,net_amout=?,\
+          copay_percentage=?,copay_amount=?,deductable_amount=?,deductable_percentage=?,tax_inclusive=?,patient_tax=?,company_tax=?,total_tax=?,patient_resp=?,patient_payable=?,\
+          comapany_resp=?,company_payble=?,sec_company=?,sec_deductable_percentage=?,sec_deductable_amount=?,sec_company_res=?,sec_company_tax=?,sec_company_paybale=?,\
+          sec_copay_percntage=?,sec_copay_amount=?,updated_date=?, updated_by=? WHERE `record_status`='A' AND `hims_f_ordered_services_id`=? ",
+          [
+            inputParam.service_type_id,
+            inputParam.services_id,
+            inputParam.insurance_yesno,
+            inputParam.insurance_provider_id,
+            inputParam.insurance_sub_id,
+            inputParam.network_id,
+            inputParam.insurance_network_office_id,
+            inputParam.policy_number,
+            inputParam.pre_approval,
+            inputParam.apprv_status,
+            inputParam.billed,
+            inputParam.quantity,
+            inputParam.unit_cost,
+            inputParam.gross_amount,
+            inputParam.discount_amout,
+            inputParam.discount_percentage,
+            inputParam.net_amout,
+            inputParam.copay_percentage,
+            inputParam.copay_amount,
+            inputParam.deductable_amount,
+            inputParam.deductable_percentage,
+            inputParam.tax_inclusive,
+            inputParam.patient_tax,
+            inputParam.company_tax,
+            inputParam.total_tax,
+            inputParam.patient_resp,
+            inputParam.patient_payable,
+            inputParam.comapany_resp,
+            inputParam.company_payble,
+            inputParam.sec_company,
+            inputParam.sec_deductable_percentage,
+            inputParam.sec_deductable_amount,
+            inputParam.sec_company_res,
+            inputParam.sec_company_tax,
+            inputParam.sec_company_paybale,
+            inputParam.sec_copay_percntage,
+            inputParam.sec_copay_amount,
+            new Date(),
+            input.updated_by,
+            input.hims_f_ordered_services_id
+          ],
+          (error, result) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   insertOrderedServices,
   getPreAprovalList,
   updatePreApproval,
-  selectOrderServices
+  selectOrderServices,
+  updateOrderedServices
 };
