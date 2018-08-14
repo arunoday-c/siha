@@ -19,14 +19,214 @@ class MyDay extends Component {
   render() {
     return (
       <div className="myday">
-        <div className="row top-bar">
-          <div className="my-calendar" />
+        <div className="row">
+          <div className="my-calendar col-lg-12">
+            <div style={{ width: "calc(100% - 185px)", height: "34px" }}>
+              <div className="arrow-box arrow-box-left">
+                <i class="fas fa-angle-left fa-2x" />
+              </div>
+              <div className="arrow-box arrow-box-right">
+                <i class="fas fa-angle-right fa-2x" />
+              </div>
+              <div className="myDay_date">
+                <input type="month" />
+              </div>
+            </div>
+            <div class="calendar">
+              <ol>
+                <li>
+                  1<span>Wed</span>
+                </li>
+                <li>
+                  2<span>Thu</span>
+                </li>
+                <li>
+                  3<span>Fri</span>
+                </li>
+                <li>
+                  4<span>Sat</span>
+                </li>
+                <li>
+                  5<span>Sun</span>
+                </li>
+                <li>
+                  6<span>Mon</span>
+                </li>
+                <li>
+                  7<span>Tue</span>
+                </li>
+                <li>
+                  8<span>Wed</span>
+                </li>
+                <li>
+                  9<span>Thu</span>
+                </li>
+                <li>
+                  10
+                  <span>Fri</span>
+                </li>
+                <li>
+                  11
+                  <span>Sat</span>
+                </li>
+                <li>
+                  12
+                  <span>Sun</span>
+                </li>
+                <li className="selectedDate">
+                  13
+                  <span>Mon</span>
+                </li>
+                <li>
+                  14
+                  <span>Tue</span>
+                </li>
+                <li>
+                  15
+                  <span>Wed</span>
+                </li>
+                <li>
+                  16
+                  <span>Thu</span>
+                </li>
+                <li>
+                  17
+                  <span>Fri</span>
+                </li>
+                <li>
+                  18
+                  <span>Sat</span>
+                </li>
+                <li>
+                  19
+                  <span>Sun</span>
+                </li>
+                <li>
+                  20
+                  <span>Mon</span>
+                </li>
+                <li>
+                  21
+                  <span>Tue</span>
+                </li>
+                <li>
+                  22
+                  <span>Wed</span>
+                </li>
+                <li>
+                  23
+                  <span>Thu</span>
+                </li>
+                <li>
+                  24
+                  <span>Fri</span>
+                </li>
+                <li>
+                  25
+                  <span>Sat</span>
+                </li>
+                <li>
+                  26
+                  <span>Sun</span>
+                </li>
+                <li>
+                  27
+                  <span>Mon</span>
+                </li>
+                <li>
+                  28
+                  <span>Tue</span>
+                </li>
+                <li>
+                  29
+                  <span>Wed</span>
+                </li>
+                <li>
+                  30
+                  <span>Thu</span>
+                </li>
+                <li>
+                  31
+                  <span>Fri</span>
+                </li>
+              </ol>
+            </div>
+          </div>
         </div>
 
         <div className="row card-deck panel-layout">
           {/* Left Pane Start */}
           <div className="col-lg-4 card box-shadow-normal">
             <AlgaehLabel label={{ fieldName: "patients_list" }} />
+            <div className="opPatientList">
+              <ul className="opList">
+                <li>
+                  <span className="op-sec-1">
+                    <i className="walking-icon" />
+                    <span className="opTime">11:44:00</span>
+                  </span>
+                  <span className="op-sec-2">
+                    <span className="opPatientName">Laura Zahra Bayokhi</span>
+                    <span className="opStatus">Nursing Done</span>
+                  </span>
+                  <span className="op-sec-3">
+                    <span className="opPatientStatus">New Visit</span>
+                  </span>
+                </li>
+                <li>
+                  <span className="op-sec-1">
+                    <i className="walking-icon" />
+                    <span className="opTime">11:44:00</span>
+                  </span>
+                  <span className="op-sec-2">
+                    <span className="opPatientName">Laura Zahra Bayokhi</span>
+                    <span className="opStatus">Nursing Done</span>
+                  </span>
+                  <span className="op-sec-3">
+                    <span className="opPatientStatus">New Visit</span>
+                  </span>
+                </li>
+                <li>
+                  <span className="op-sec-1">
+                    <i className="walking-icon" />
+                    <span className="opTime">11:44:00</span>
+                  </span>
+                  <span className="op-sec-2">
+                    <span className="opPatientName">Laura Zahra Bayokhi</span>
+                    <span className="opStatus">Nursing Done</span>
+                  </span>
+                  <span className="op-sec-3">
+                    <span className="opPatientStatus">New Visit</span>
+                  </span>
+                </li>
+                <li>
+                  <span className="op-sec-1">
+                    <i className="walking-icon" />
+                    <span className="opTime">11:44:00</span>
+                  </span>
+                  <span className="op-sec-2">
+                    <span className="opPatientName">Laura Zahra Bayokhi</span>
+                    <span className="opStatus">Nursing Done</span>
+                  </span>
+                  <span className="op-sec-3">
+                    <span className="opPatientStatus">New Visit</span>
+                  </span>
+                </li>
+                <li>
+                  <span className="op-sec-1">
+                    <i className="walking-icon" />
+                    <span className="opTime">11:44:00</span>
+                  </span>
+                  <span className="op-sec-2">
+                    <span className="opPatientName">Laura Zahra Bayokhi</span>
+                    <span className="opStatus">Nursing Done</span>
+                  </span>
+                  <span className="op-sec-3">
+                    <span className="opPatientStatus">New Visit</span>
+                  </span>
+                </li>
+              </ul>
+            </div>
           </div>
           {/* Left Pane End */}
 
