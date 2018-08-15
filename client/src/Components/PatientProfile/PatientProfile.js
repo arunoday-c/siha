@@ -1,7 +1,33 @@
 import React, { Component } from "react";
 import "./patientprofile.css";
+import Overview from "./Overview/Overview";
+import Subjective from "./Subjective/Subjective";
+import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
+import Assesment from "./Assessment/Assessment";
+import Plan from "./Plan/Plan";
 
 class PatientProfile extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      pageDisplay: "overview"
+    };
+    this.changeTabs = this.changeTabs.bind(this);
+  }
+
+  changeTabs(e) {
+    var element = document.querySelectorAll("[algaehsoap]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
+    }
+    e.currentTarget.classList.add("active");
+    var page = e.currentTarget.getAttribute("algaehsoap");
+    this.setState({
+      pageDisplay: page
+    });
+  }
+
   render() {
     return (
       <div className="patientProfile">
@@ -71,31 +97,64 @@ class PatientProfile extends Component {
         <div className="patientTopNav box-shadow-normal">
           <ul className="nav">
             <li className="nav-item">
-              <a className="nav-link active" href="#">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="overview"
+                className="nav-link active"
+              >
                 Overview
-              </a>
+              </span>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="subjective"
+                className="nav-link"
+              >
                 Subjective
-              </a>
+              </span>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="phy_exam"
+                className="nav-link"
+              >
                 Physical Examination
-              </a>
+              </span>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="assesment"
+                className="nav-link"
+              >
                 Assesment
-              </a>
+              </span>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="plan"
+                className="nav-link"
+              >
                 Plan
-              </a>
+              </span>
             </li>
           </ul>
+        </div>
+        <div className="container-fluid">
+          {this.state.pageDisplay === "overview" ? (
+            <Overview />
+          ) : this.state.pageDisplay === "subjective" ? (
+            <Subjective />
+          ) : this.state.pageDisplay === "phy_exam" ? (
+            <PhysicalExamination />
+          ) : this.state.pageDisplay === "assesment" ? (
+            <Assesment />
+          ) : this.state.pageDisplay === "plan" ? (
+            <Plan />
+          ) : null}
         </div>
       </div>
     );

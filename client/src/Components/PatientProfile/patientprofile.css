@@ -95,14 +95,15 @@
   color: #797979;
   font-size: 1rem;
   text-transform: uppercase; }
-  .patientProfile .patientTopNav ul li a {
+  .patientProfile .patientTopNav ul li span {
     font-size: 0.8rem;
     text-transform: uppercase;
     padding: 5px 15px;
     color: #858585; }
-  .patientProfile .patientTopNav ul li a.active {
+  .patientProfile .patientTopNav ul li span.active {
     border-bottom: 3px solid #34b8bc;
     color: #000; }
-  .patientProfile .patientTopNav ul li a:hover {
+  .patientProfile .patientTopNav ul li span:hover {
     border-bottom: 3px solid #34b8bc;
-    color: #000; }
+    color: #000;
+    cursor: pointer; }

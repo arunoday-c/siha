@@ -122,19 +122,20 @@
     text-transform: uppercase;
     ul {
       li {
-        a {
+        span {
           font-size: 0.8rem;
           text-transform: uppercase;
           padding: 5px 15px;
           color: #858585;
         }
-        a.active {
+        span.active {
           border-bottom: 3px solid #34b8bc;
           color: #000;
         }
-        a:hover {
+        span:hover {
           border-bottom: 3px solid #34b8bc;
           color: #000;
+          cursor: pointer;
         }
       }
     }
