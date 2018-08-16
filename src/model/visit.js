@@ -127,7 +127,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
                     req.options.onFailure(eror);
                   }
                 } else {
-                  req.options.onSuccess(resultData);
+                  req.options.onSuccess(visitresult);
                 }
               }
             );

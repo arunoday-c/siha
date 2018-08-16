@@ -131,6 +131,7 @@ let addFrontDesk = (req, res, next) => {
                       .Where(w => w.module_desc == "PAT_BILL")
                       .FirstOrDefault();
                     req.bill_number = bill.completeNumber;
+                    req.body.bill_number = bill.completeNumber;
                     //Bill generation
                     return new Promise((resolve, reject) => {
                       debugLog("Inside Billing");
