@@ -9,102 +9,8 @@ import { getOptions } from "../../../../actions/BusinessSetup/Options.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import Done from "@material-ui/icons/Done";
-import CancelIcon from "@material-ui/icons/Cancel";
-// import {
-//   EditingState,
-//   DataTypeProvider,
-//   SearchState,
-//   IntegratedFiltering
-// } from "@devexpress/dx-react-grid";
-import { withStyles } from "@material-ui/core/styles";
-// import {
-//   Grid,
-//   Table,
-//   Toolbar,
-//   SearchPanel,
-//   TableHeaderRow,
-//   TableEditRow,
-//   TableEditColumn,
-//   VirtualTable
-// } from "@devexpress/dx-react-grid-@material-ui/core";
-
-//Grid Logic Start here
-let sel_id = "";
-
-// const TableRow = ({ row, ...restProps }) => (
-//   <Table.Row
-//     {...restProps}
-//     onClick={control => {
-//       sel_id = JSON.stringify(row.hims_d_identity_document_id);
-//     }}
-//     style={{
-//       cursor: "pointer"
-//     }}
-//   />
-// );
-
-// const styles = theme => ({
-//   tableStriped: {
-//     "& tbody tr:nth-of-type(odd)": {
-//       backgroundColor: "#fbfbfb"
-//     }
-//   }
-// });
-
-// const TableComponentBase = ({ classes, ...restProps }) => (
-//   <Table.Table {...restProps} className={classes.tableStriped} />
-// );
-
-// export const TableComponent = withStyles(styles, { name: "TableComponent" })(
-//   TableComponentBase
-// );
-
-// const EditButton = ({ onExecute }) => (
-//   <IconButton onClick={onExecute} algaeh-command="edit" title="Edit row">
-//     <EditIcon />
-//   </IconButton>
-// );
-
-// const DeleteButton = ({ onExecute }) => (
-//   <IconButton onClick={onExecute} algaeh-command="delete" title="Delete row">
-//     <DeleteIcon />
-//   </IconButton>
-// );
-
-// const CommitButton = ({ onExecute }) => (
-//   <IconButton onClick={onExecute} algaeh-command="submit" title="Save changes">
-//     <Done />
-//   </IconButton>
-// );
-
-// const CancelButton = ({ onExecute }) => (
-//   <IconButton
-//     color="secondary"
-//     algaeh-command="cancel"
-//     onClick={onExecute}
-//     title="Cancel changes"
-//   >
-//     <CancelIcon />
-//   </IconButton>
-// );
-
-// const commandComponents = {
-//   edit: EditButton,
-//   delete: DeleteButton,
-//   commit: CommitButton,
-//   cancel: CancelButton
-// };
-
-// const Command = ({ id, onExecute }) => {
-//   const CommandButton = commandComponents[id];
-//   return <CommandButton onExecute={onExecute} />;
-// };
-
-//Grid Logic Ends here
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
 
 class Numbering extends Component {
   constructor(props) {
@@ -139,71 +45,65 @@ class Numbering extends Component {
       current_num_error: false
     };
   }
-
   // changeTexts(e) {
   //   this.setState({ [e.target.name]: e.target.value });
   // }
 
-  // add(e) {
-  //   e.preventDefault();
+  add(e) {
+    e.preventDefault();
 
-  //   if (this.state.numgen_code.length === 0) {
-  //     this.setState({ numgen_code_error: true });
-  //   } else if (this.state.module_desc.length === 0) {
-  //     this.setState({ module_desc_error: true });
-  //   } else if (this.state.prefix.length === 0) {
-  //     this.setState({ prefix_error: true });
-  //   } else if (this.state.intermediate_series.length === 0) {
-  //     this.setState({ intermediate_series_error: true });
-  //   } else if (this.state.postfix.length === 0) {
-  //     this.setState({ postfix_error: true });
-  //   } else if (this.state.length.length === 0) {
-  //     this.setState({ length_error: true });
-  //   } else if (this.state.increment_by.length === 0) {
-  //     this.setState({ increment_by_error: true });
-  //   } else if (this.state.numgen_seperator.length === 0) {
-  //     this.setState({ numgen_seperator_error: true });
-  //   } else if (this.state.postfix_start.length === 0) {
-  //     this.setState({ postfix_start_error: true });
-  //   } else if (this.state.postfix_end.length === 0) {
-  //     this.setState({ postfix_end_error: true });
-  //   } else if (this.state.current_num.length === 0) {
-  //     this.setState({ current_num_error: true });
-  //   }
-  //   algaehApiCall({
-  //     uri: "/masters/set/autogen",
-  //     data: this.state,
+    if (this.state.numgen_code.length === 0) {
+      this.setState({ numgen_code_error: true });
+    } else if (this.state.module_desc.length === 0) {
+      this.setState({ module_desc_error: true });
+    } else if (this.state.prefix.length === 0) {
+      this.setState({ prefix_error: true });
+    } else if (this.state.intermediate_series.length === 0) {
+      this.setState({ intermediate_series_error: true });
+    } else if (this.state.postfix.length === 0) {
+      this.setState({ postfix_error: true });
+    } else if (this.state.length.length === 0) {
+      this.setState({ length_error: true });
+    } else if (this.state.increment_by.length === 0) {
+      this.setState({ increment_by_error: true });
+    } else if (this.state.numgen_seperator.length === 0) {
+      this.setState({ numgen_seperator_error: true });
+    } else if (this.state.postfix_start.length === 0) {
+      this.setState({ postfix_start_error: true });
+    } else if (this.state.postfix_end.length === 0) {
+      this.setState({ postfix_end_error: true });
+    } else if (this.state.current_num.length === 0) {
+      this.setState({ current_num_error: true });
+    }
+    algaehApiCall({
+      uri: "/masters/set/autogen",
+      data: this.state,
 
-  //     onSuccess: response => {
-  //       if (response.data.success === true) {
-  //         window.location.reload();
-  //       } else {
-  //         //Handle unsuccessful Login here.
-  //       }
-  //     },
-  //     onFailure: error => {
-  //       // Handle network error here.
-  //     }
-  //   });
-  // }
+      onSuccess: response => {
+        if (response.data.success === true) {
+          window.location.reload();
+        } else {
+          //Handle unsuccessful Login here.
+        }
+      },
+      onFailure: error => {
+        // Handle network error here.
+      }
+    });
+  }
 
   // componentDidMount() {
   //   this.props.getOptions();
   // }
 
-  // onCommitChanges({ added, changed, deleted }) {
-  //   if (added) {
-  //   }
-  //   if (changed) {
-  //   }
-  //   if (deleted) {
-  //   }
-  // }
+  changeTexts(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
 
   render() {
     return (
       <div className="numbering">
-        {/* <Paper className="container-fluid">
+        <Paper className="container-fluid">
           <form>
             <div
               className="row"
@@ -228,7 +128,6 @@ class Numbering extends Component {
                   }
                 }}
               />
-
 
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
@@ -430,47 +329,9 @@ class Numbering extends Component {
           </form>
 
           <div className="row form-details">
-            <div className="col">
-              <Grid
-                rows={this.props.options}
-                columns={[
-                  { name: "numgen_code", title: "OPTIONS CODE" },
-                  { name: "module_desc", title: "OPTIONS NAME" },
-                  { name: "prefix", title: "PREFIX" },
-                  { name: "intermediate_series", title: "INTERMEDIATE SERIES" },
-                  { name: "postfix", title: "POSTFIX" },
-                  { name: "length", title: "LENGTH" },
-                  { name: "increment_by", title: "INCREMENT BY" },
-                  { name: "numgen_seperator", title: "SEPERATOR" },
-                  { name: "postfix_start", title: "POSTFIX START" },
-                  { name: "postfix_end", title: "POSTFIX END" },
-                  { name: "current_num", title: "CURRENT NUMBER" }
-                ]}
-              >
-                <SearchState />
-                <IntegratedFiltering />
-                <Toolbar />
-                <SearchPanel />
-                <VirtualTable
-                  tableComponent={TableComponent}
-                  rowComponent={TableRow}
-                  height={400}
-                />
-                <TableHeaderRow />
-                <EditingState
-                  onCommitChanges={this.onCommitChanges.bind(this)}
-                />
-                <TableEditRow />
-                <TableEditColumn
-                  width={120}
-                  showEditCommand
-                  showDeleteCommand
-                  commandComponent={Command}
-                />
-              </Grid>
-            </div>
+            <div className="col" />
           </div>
-        </Paper> */}
+        </Paper>
       </div>
     );
   }
@@ -478,7 +339,7 @@ class Numbering extends Component {
 
 function mapStateToProps(state) {
   return {
-    options: state.options.options
+    //    options: state.options.options
   };
 }
 

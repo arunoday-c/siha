@@ -23,6 +23,7 @@ import userPreferences from "../controller/userPreferences";
 import doctorsWorkBench from "../EHR/controller/doctorsWorkBench";
 import hpi from "../EHR/controller/hpi";
 import orderAndPreApproval from "../controller/orderAndPreApproval";
+import laboratory from "../controller/laboratory";
 
 let router = express();
 
@@ -53,6 +54,7 @@ initializedDb(db => {
   router.use("/doctorsWorkBench", doctorsWorkBench({ config, db }));
   router.use("/hpi", hpi({ config, db }));
   router.use("/orderAndPreApproval", orderAndPreApproval({ config, db }));
+  router.use("/laboratory", laboratory({ config, db }));
 });
 
 export default router;

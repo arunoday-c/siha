@@ -14,7 +14,7 @@ import {
 import { AlgaehActions } from "../../actions/algaehActions";
 import InsuranceAdd from "./InsuranceAdd/InsuranceAdd";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
-import GlobalVariables from "../../utils/GlobalVariables";
+import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
 
@@ -178,11 +178,14 @@ class InsuranceSetup extends Component {
         />
         <div className="row insurancesetup">
           <div className="col-lg-12">
-            <div className="tab-container">
-              <button className="tab-button active">
-                Insurance Provider List{" "}
-              </button>
+            <div className="tab-container toggle-section">
+              <ul className="nav">
+                <li className={"nav-item tab-button active"}>
+                  Insurance Provider List
+                </li>
+              </ul>
             </div>
+
             <div className="insurance-section">
               <AlgaehDataGrid
                 id="insurance_grid"

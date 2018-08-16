@@ -315,7 +315,8 @@ class AddInsuranceForm extends Component {
                             <div className="attach-design text-center">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "attach_front"
+                                  fieldName: "attach_front",
+                                  align: ""
                                 }}
                               />
                             </div>
@@ -342,7 +343,8 @@ class AddInsuranceForm extends Component {
                             <div className="attach-design text-center">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "attach_back"
+                                  fieldName: "attach_back",
+                                  align: ""
                                 }}
                               />
                             </div>

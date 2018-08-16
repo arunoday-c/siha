@@ -78,7 +78,7 @@ class AddOPBillingForm extends Component {
   }
 
   ProcessToBill(context, e) {
-    debugger;
+    
     let $this = this;
 
     let serviceInput = [

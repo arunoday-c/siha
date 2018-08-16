@@ -53,6 +53,12 @@ class RegistrationPatient extends Component {
     // this.setState({
     //   widthImg: width
     // });
+
+    let prevLang = getCookie("Language");
+    setGlobal({ selectedLang: prevLang });
+    this.setState({
+      selectedLang: prevLang
+    });
     let IOputs = emptyObject;
     this.setState(IOputs);
     if (this.state.saveEnable === "clear") {
@@ -64,11 +70,6 @@ class RegistrationPatient extends Component {
         }
       });
     }
-    let prevLang = getCookie("Language");
-    setGlobal({ selectedLang: prevLang });
-    this.setState({
-      selectedLang: prevLang
-    });
 
     if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
       this.props.initialbillingCalculations({
@@ -281,7 +282,6 @@ class RegistrationPatient extends Component {
       <div id="attach">
         {/* <Barcode value='PAT-A-000017'/> */}
         <BreadCrumb
-          //  width={this.state.breadCrumbWidth}
           title={
             <AlgaehLabel
               label={{ fieldName: "form_patregister", align: "ltr" }}

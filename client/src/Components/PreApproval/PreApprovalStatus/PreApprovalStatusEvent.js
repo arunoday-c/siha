@@ -1,0 +1,23 @@
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert";
+
+const UpdatePreApproval = ($this, e) => {
+  algaehApiCall({
+    uri: "/orderAndPreApproval/updatePreApproval",
+    data: $this.state.update_pre_approval_service,
+    method: "PUT",
+    onSuccess: response => {
+      if (response.data.success) {
+        swal("Updated successfully . .", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
+        $this.props.onClose && $this.props.onClose(e);
+      }
+    },
+    onFailure: error => {}
+  });
+};
+
+export { UpdatePreApproval };

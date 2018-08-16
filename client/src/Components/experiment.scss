@@ -1,0 +1,46 @@
+.experiment {
+  padding: 10px;
+  .pain-scale-ul {
+    margin: auto;
+    padding: auto;
+    list-style: none;
+
+    li {
+      background: url("../assets/images/pain_scale.png") no-repeat center
+        transparent;
+      width: 31px;
+      height: 31px;
+      display: inline-block;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .pain-1 {
+      background-position: 0px 0px;
+    }
+    .pain-2 {
+      background-position: 0px -33px;
+    }
+    .pain-3 {
+      background-position: 0px -65px;
+    }
+    .pain-4 {
+      background-position: 0px -98px;
+    }
+    .pain-5 {
+      background-position: 0px -130px;
+    }
+    .pain-6 {
+      background-position: 0px -163px;
+    }
+    .active {
+      border-radius: 100%;
+      box-shadow: 0 3px 8px #00000063;
+    }
+  }
+
+  .pain_slider {
+    max-width: 350px;
+    margin: 20px;
+    padding: auto;
+  }
+}

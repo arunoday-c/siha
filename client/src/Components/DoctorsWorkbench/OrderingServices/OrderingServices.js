@@ -19,7 +19,8 @@ import {
   texthandle,
   ProcessService,
   VisitSearch,
-  deleteServices
+  deleteServices,
+  SaveOrdersServices
 } from "./OrderingServicesHandaler";
 import "./OrderingServices.css";
 import "../../../styles/site.css";
@@ -36,22 +37,28 @@ class OrderingServices extends Component {
       selectedLang: "en",
 
       patient_id: null,
-      patient_visit_id: null,
+      visit_id: null,
+      doctor_id: null,
 
       insured: null,
       insurance_provider_id: null,
       hims_d_insurance_network_office_id: null,
+      sub_insurance_provider_id: null,
+      policy_number: null,
       network_id: null,
       sec_insured: null,
       secondary_insurance_provider_id: null,
+      sec_sub_insurance_provider_id: null,
+      sec_policy_number: null,
       secondary_network_id: null,
       secondary_network_office_id: null,
-      orderservices: [],
+      orderservicesdata: [],
       approval_amt: 0,
       preapp_limit_amount: 0,
       preserviceInput: [],
       dummy_company_payble: 0,
-      approval_limit_yesno: "N"
+      approval_limit_yesno: "N",
+      insurance_service_name: null
     };
   }
 
@@ -89,7 +96,6 @@ class OrderingServices extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -98,10 +104,15 @@ class OrderingServices extends Component {
       this.setState({ ...output });
     }
   }
+  playclick() {
+    debugger;
+  }
 
   render() {
     let orderedList =
-      this.state.orderservices === undefined ? [{}] : this.state.orderservices;
+      this.state.orderservicesdata === undefined
+        ? [{}]
+        : this.state.orderservicesdata;
 
     return (
       <div className="hptl-phase1-ordering-services-form">
@@ -363,7 +374,7 @@ class OrderingServices extends Component {
                     fieldName: "insurance_yesno",
                     label: <AlgaehLabel label={{ fieldName: "insurance" }} />,
                     displayTemplate: row => {
-                      return row.insurance_yesno == "Y"
+                      return row.insurance_yesno === "Y"
                         ? "Covered"
                         : "Not Covered";
                     },
@@ -374,11 +385,22 @@ class OrderingServices extends Component {
                     label: (
                       <AlgaehLabel label={{ fieldName: "pre_approval" }} />
                     ),
-                    // displayTemplate: row => {
-                    //   <IconButton className="go-button" color="primary">
-                    //     <PlayCircleFilled />
-                    //   </IconButton>;
-                    // },
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.pre_approval === "Y"
+                            ? "Required"
+                            : "Not Required"}
+                          {row.pre_approval === "Y" ? (
+                            <IconButton className="go-button" color="primary">
+                              <PlayCircleFilled
+                                onClick={this.playclick.bind(this)}
+                              />
+                            </IconButton>
+                          ) : null}
+                        </span>
+                      );
+                    },
                     disabled: true
                   },
                   {
@@ -411,6 +433,20 @@ class OrderingServices extends Component {
             </div>
           </div>
           <br />
+        </div>
+
+        <div className="row" position="fixed">
+          <div className="col-lg-12">
+            <span className="float-right">
+              <button
+                style={{ marginRight: "15px" }}
+                className="htpl1-phase1-btn-primary"
+                onClick={SaveOrdersServices.bind(this, this)}
+              >
+                <AlgaehLabel label={{ fieldName: "btnsave" }} />
+              </button>
+            </span>
+          </div>
         </div>
       </div>
     );

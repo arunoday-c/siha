@@ -18,10 +18,10 @@
     "icon": "fas fa-cog",
     "subMenu": [
       {
-        "name": "Business Setups",
-        "label": "Business Setups",
+        "name": "Business Setup",
+        "label": "Business Setup",
         "arlabel": "إعداد الأعمال",
-        "path": "/BusinessSetups"
+        "path": "/BusinessSetup"
       },
       {
         "name": "Common Setup",
@@ -171,10 +171,10 @@
     "icon": "fas fa-file-contract",
     "subMenu": [
       {
-        "name": "Pre Approval",
+        "name": "PreApproval",
         "label": "Pre Approval",
         "arlabel": "قبل الموافقة",
-        "path": "/InitialStock"
+        "path": "/PreApproval"
       }
     ]
   },

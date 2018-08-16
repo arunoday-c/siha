@@ -1,5 +1,7 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
+import moment from "moment";
+import Options from "../../../Options.json";
 
 const texthandle = ($this, e) => {
   let name;
@@ -28,9 +30,52 @@ const PatientSearch = ($this, e) => {
       callBack(text);
     },
     onRowSelect: row => {
-      $this.setState({ patient_code: row.patient_code });
+      $this.setState(
+        {
+          patient_code: row.patient_code,
+          patient_id: row.hims_d_patient_id
+        },
+        () => {
+          getSampleCollectionDetails($this);
+        }
+      );
     }
   });
 };
 
-export { texthandle, PatientSearch };
+const datehandle = ($this, ctrl, e) => {
+  $this.setState(
+    {
+      [e]: moment(ctrl)._d
+    },
+    () => {
+      getSampleCollectionDetails($this);
+    }
+  );
+};
+
+const getSampleCollectionDetails = $this => {
+  let inputobj = {};
+
+  if ($this.state.from_date !== null) {
+    inputobj.ordered_date = moment($this.state.from_date).format(
+      Options.dateFormatYear
+    );
+  }
+
+  if ($this.state.patient_id !== null) {
+    inputobj.patient_id = $this.state.patient_id;
+  }
+
+  $this.props.getSampleCollection({
+    uri: "/laboratory/getLabOrderedServices",
+    method: "GET",
+    data: inputobj,
+    redux: {
+      type: "SAMPLE_COLLECT_GET_DATA",
+      mappingName: "samplecollection"
+    }
+  });
+};
+
+export { texthandle, PatientSearch, datehandle, getSampleCollectionDetails };

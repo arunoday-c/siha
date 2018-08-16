@@ -1,0 +1,47 @@
+.hptl-phase1-pre-approval-attachment-form {
+  background: #ffff;
+  border-radius: 5px;
+  .primary-details {
+    padding-bottom: 15px;
+    border-right: 1px solid #000;
+  }
+  .form-details {
+    padding-bottom: 0px;
+  }
+
+  .attachment-section {
+    border: 1px solid #d3d3d3;
+    margin: 10px;
+    margin-top: 0px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    background: #ffff;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .toggle-section {
+    margin: 10px;
+    margin-bottom: 0px;
+  }
+
+  .secondary-details {
+    //padding-top: 5px;
+    padding-bottom: 15px;
+    .secondary-box-container {
+      .preview-image {
+        position: absolute;
+        top: -1px;
+        left: 15px;
+        height: 101px;
+      }
+    }
+  }
+
+  .ins-attach-area {
+    border: 1px solid #93a4ad;
+    min-height: 27px;
+    position: relative;
+    background-color: #eaeaea;
+  }
+}

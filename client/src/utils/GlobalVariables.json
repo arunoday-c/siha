@@ -127,5 +127,53 @@
   "FORMAT_DISCOUNT": [
     { "name": "Percentage", "arabic_name": "نسبه مئويه", "value": "P" },
     { "name": "Amount", "arabic_name": "مبلغ", "value": "A" }
+  ],
+  "PAIN_SCALE": [
+    { "name": "No Hurt", "arabic_name": "لا ألم", "value": "0" },
+    { "name": "Hurts Little Bit", "arabic_name": "يؤلم قليلا", "value": "2" },
+    { "name": "Hurts Little More", "arabic_name": "يؤلمني أكثر", "value": "4" },
+    { "name": "Hurts Even More", "arabic_name": "يضر أكثر", "value": "6" },
+    {
+      "name": "Hurts Whole Lot",
+      "arabic_name": "يؤلم الجامع الكثير",
+      "value": "8"
+    },
+    { "name": "Hurts Worst", "arabic_name": "يسيء أسوأ", "value": "10" }
+  ],
+  "FORMAT_SUMISSION": [
+    { "name": "Submit", "arabic_name": "ادة تقديم", "value": "S" },
+    { "name": "ReSubmit", "arabic_name": "إعادة تقديم", "value": "RS" },
+    { "name": "Cancel", "arabic_name": "إلغاء", "value": "C" },
+    {
+      "name": "Cancel and Submit",
+      "arabic_name": "إلغاء وإرسال",
+      "value": "CS"
+    },
+    {
+      "name": "Cancel and ReSubmit",
+      "arabic_name": "إلغاء وإعادة إرسال",
+      "value": "CRS"
+    }
+  ],
+  "FORMAT_APPSTATUS": [
+    { "name": "Not Requested", "value": "NR" },
+    { "name": "Awaiting Approval", "value": "AW" },
+    { "name": "Approved", "value": "AP" },
+    { "name": "Rejected", "value": "RJ" }
+  ],
+  "FORMAT_REQMODE": [
+    { "name": "Online", "value": "O" },
+    { "name": "Emial", "value": "E" },
+    { "name": "Telephone", "value": "T" },
+    { "name": "Fax", "value": "F" }
+  ],
+  "DOC_WRK_BNCH_FILTER_CONDITIONS": [
+    { "name": "All", "value": "A" },
+    { "name": "WIP", "value": "WIP" },
+    { "name": "Under Review", "value": "UR" },
+    { "name": "Close", "value": "C" },
+    { "name": "Cancel", "value": "Ca" },
+    { "name": "Reopen", "value": "RO" },
+    { "name": "Req Reopen", "value": "RRO" }
   ]
 }
