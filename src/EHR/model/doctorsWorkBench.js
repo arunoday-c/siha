@@ -853,6 +853,78 @@ let getEncounterReview = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: get MYDAY in doctors work bench , to show list todays patients
+let getMyDay = (req, res, next) => {
+  let getMydayWhere = {
+    provider_id: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let dateDiff = "";
+    if (req.query.fromDate != null && req.query.toDate != null) {
+      dateDiff +=
+        " date(E.created_date) BETWEEN date('" +
+        req.query.fromDate +
+        "') AND date('" +
+        req.query.toDate +
+        "')";
+      delete req.query.fromDate;
+      delete req.query.toDate;
+    } else if (req.query.toDate != null) {
+      dateDiff = " date(E.created_date) = date('" + req.query.toDate + "')";
+
+      delete req.query.toDate;
+    }
+
+    let statusFlag = "";
+    if (req.query.status == "A") {
+      statusFlag = " status <> 'V'";
+      delete req.query.status;
+    } else {
+      statusFlag = " status='V'";
+      delete req.query.status;
+    }
+
+    debugLog("req query:", req.query);
+    let where = whereCondition(extend(getMydayWhere, req.query));
+
+    debugLog("where conditn:", where);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      db.query(
+        "select P.patient_code,P.full_name,E.patient_id ,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
+         E.patient_type,E.episode_id,E.encounter_id,E.`source`,E.created_date from hims_f_patient_encounter E\
+         INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id  where E.record_status='A' AND " +
+          statusFlag +
+          "AND" +
+          dateDiff +
+          " AND " +
+          where.condition,
+        where.values,
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -869,5 +941,6 @@ module.exports = {
   addChronicalConditions,
   getChronicalConditions,
   addEncounterReview,
-  getEncounterReview
+  getEncounterReview,
+  getMyDay
 };

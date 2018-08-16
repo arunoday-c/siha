@@ -17,7 +17,8 @@ import {
   addChronicalConditions,
   getChronicalConditions,
   addEncounterReview,
-  getEncounterReview
+  getEncounterReview,
+  getMyDay
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -262,5 +263,18 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  api.get(
+    "/getMyDay",
+    getMyDay,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };
