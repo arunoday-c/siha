@@ -135,6 +135,99 @@ let getPatientInsurance = (req, res, next) => {
   }
 };
 
+//Addded by noor code modification
+let addPatientInsuranceData = (req, res, next) => {
+  try {
+    let db = req.options == null ? req.db : req.options;
+    let input = extend(
+      {
+        hims_f_patient_insurance_mapping_id: null,
+        patient_id: null,
+        patient_visit_id: null,
+        primary_insurance_provider_id: null,
+        primary_sub_id: null,
+        primary_network_id: null,
+        primary_inc_card_path: null,
+        primary_policy_num: null,
+        primary_effective_start_date: null,
+        primary_effective_end_date: null,
+        primary_card_number: null,
+        secondary_insurance_provider_id: null,
+        secondary_sub_id: null,
+        secondary_network_id: null,
+        secondary_effective_start_date: null,
+        secondary_effective_end_date: null,
+        secondary_card_number: null,
+        secondary_inc_card_path: null,
+        secondary_policy_num: null,
+        created_by: null,
+        created_date: null,
+        updated_by: null,
+        updated_date: null,
+        record_status: null
+      },
+      req.body
+    );
+
+    db.query(
+      "INSERT INTO hims_m_patient_insurance_mapping(`patient_id`,`patient_visit_id`,\
+                `primary_insurance_provider_id`,`primary_sub_id`,`primary_network_id`,\
+                `primary_inc_card_path`,`primary_policy_num`,`primary_effective_start_date`,\
+                `primary_effective_end_date`,`primary_card_number`,`secondary_insurance_provider_id`,`secondary_sub_id`,\
+                `secondary_network_id`,`secondary_effective_start_date`,`secondary_effective_end_date`,\
+                `secondary_card_number`,`secondary_inc_card_path`,`secondary_policy_num`,`created_by`,`created_date`,`updated_by`,\
+                `updated_date`)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      [
+        input.patient_id,
+        input.patient_visit_id,
+        input.primary_insurance_provider_id,
+        input.primary_sub_id,
+        input.primary_network_id,
+        input.primary_inc_card_path,
+        input.primary_policy_num,
+        input.primary_effective_start_date,
+        input.primary_effective_end_date,
+        input.primary_card_number,
+        input.secondary_insurance_provider_id,
+        input.secondary_sub_id,
+        input.secondary_network_id,
+        input.secondary_effective_start_date,
+        input.secondary_effective_end_date,
+        input.secondary_card_number,
+        input.secondary_inc_card_path,
+        input.secondary_policy_num,
+        input.created_by,
+        new Date(),
+        input.updated_by,
+        new Date()
+      ],
+      (error, resdata) => {
+        if (error) {
+          if (req.options == null) {
+            db.rollback(() => {
+              releaseDBConnection(req.db, db);
+              next(error);
+            });
+          } else {
+            req.options.onFailure(error);
+          }
+        } else {
+          if (req.options == null) {
+            req.records = resdata;
+            next();
+          } else {
+            req.options.onSuccess(resdata);
+          }
+        }
+      }
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+//Code modification end
+
 //created by irfan: to add(save) patient insurence  details to DB
 let addPatientInsurance = (connection, req, res, next) => {
   let patientInsuranceMappingModel = {
@@ -1640,7 +1733,8 @@ module.exports = {
   getNetworkAndNetworkOfficRecords,
   updatePriceList,
   updateNetworkAndNetworkOffice,
-  updatePriceListBulk
+  updatePriceListBulk,
+  addPatientInsuranceData
   // insertOrderedServices,
   // getPreAprovalList
 };

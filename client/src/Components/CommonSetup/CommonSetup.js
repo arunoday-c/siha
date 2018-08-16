@@ -71,7 +71,7 @@ class CommonSetup extends Component {
             <li
               style={{ marginRight: 2 }}
               algaehtabs={"VisaType"}
-              className={"nav-item tab-button "}
+              className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
               {
@@ -85,7 +85,7 @@ class CommonSetup extends Component {
             <li
               style={{ marginRight: 2 }}
               algaehtabs={"IDType"}
-              className={"nav-item tab-button "}
+              className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
               {
@@ -113,7 +113,7 @@ class CommonSetup extends Component {
             <li
               algaehtabs={"AccidentType"}
               style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
+              className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
               {
@@ -126,7 +126,7 @@ class CommonSetup extends Component {
             </li>
             <li
               style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
+              className={"nav-item tab-button"}
               algaehtabs={"EquipmentType"}
               onClick={this.openTab.bind(this)}
             >

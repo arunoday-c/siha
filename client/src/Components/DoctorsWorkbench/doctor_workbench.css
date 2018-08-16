@@ -1,0 +1,236 @@
+.doctor_workbench .encounters-panel {
+  padding: 10px; }
+
+.doctor_workbench .panel-layout {
+  margin-top: 10px; }
+
+.doctor_workbench .go-button {
+  cursor: pointer;
+  margin-top: 15px; }
+
+.doctor_workbench .my-calendar {
+  text-align: center;
+  background: #3bb3b7;
+  color: #fff; }
+  .doctor_workbench .my-calendar .myDay_date {
+    float: none;
+    margin: 4px auto 2px; }
+  .doctor_workbench .my-calendar .myDay_date input {
+    border: 1px solid #2a9a9e;
+    background: #3bb3b7;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 13px;
+    padding: 2px 5px;
+    text-align: center; }
+  .doctor_workbench .my-calendar .arrow-box {
+    width: 60px;
+    cursor: pointer; }
+  .doctor_workbench .my-calendar .arrow-box:hover {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+  .doctor_workbench .my-calendar .arrow-box-left {
+    float: left; }
+  .doctor_workbench .my-calendar .arrow-box-right {
+    float: right; }
+  .doctor_workbench .my-calendar .calendar {
+    width: 100%;
+    overflow: hidden;
+    float: left; }
+  .doctor_workbench .my-calendar .calendar > ol {
+    margin: 0;
+    padding: 0;
+    width: 1559px; }
+  .doctor_workbench .my-calendar .calendar > ol > li {
+    display: inline-block;
+    border: 1px solid #35a3a7;
+    padding: 2px 3px;
+    width: 50px;
+    font-size: 1.3rem; }
+  .doctor_workbench .my-calendar .calendar > ol > li.selectedDate {
+    background: #2a9a9e; }
+  .doctor_workbench .my-calendar .calendar > ol > li:hover {
+    background: #2a9a9e;
+    cursor: pointer; }
+  .doctor_workbench .my-calendar .calendar > ol > li > span {
+    padding: 0;
+    margin: 0;
+    display: block;
+    font-size: 0.6rem;
+    text-transform: uppercase; }
+
+.doctor_workbench .opPatientList .opList {
+  margin: 0;
+  padding: 0;
+  list-style: none; }
+  .doctor_workbench .opPatientList .opList li {
+    margin: 4px 0;
+    padding: 3px 0;
+    list-style: none;
+    border: 1px solid #f2f2f2;
+    border-radius: 5px; }
+    .doctor_workbench .opPatientList .opList li .op-sec-1 {
+      width: 10px;
+      width: 20%;
+      vertical-align: text-top;
+      display: inline-block;
+      text-align: center;
+      border-right: 1px solid grey;
+      margin-right: 10px; }
+      .doctor_workbench .opPatientList .opList li .op-sec-1 i {
+        width: 30px;
+        background: yellow;
+        height: 30px;
+        display: block;
+        margin: auto; }
+      .doctor_workbench .opPatientList .opList li .op-sec-1 .appointment-icon {
+        background: url("../../assets/icons/appointment-icon.svg") no-repeat center;
+        background-size: 80%; }
+      .doctor_workbench .opPatientList .opList li .op-sec-1 .walking-icon {
+        background: url("../../assets/icons/walking-icon.svg") no-repeat center;
+        background-size: 80%; }
+      .doctor_workbench .opPatientList .opList li .op-sec-1 .opTime {
+        font-size: 0.7rem; }
+    .doctor_workbench .opPatientList .opList li .op-sec-2 {
+      width: 10px;
+      width: 56%;
+      vertical-align: text-top;
+      display: inline-block; }
+      .doctor_workbench .opPatientList .opList li .op-sec-2 .opPatientName {
+        display: block;
+        font-size: 1rem;
+        margin-top: 5px; }
+      .doctor_workbench .opPatientList .opList li .op-sec-2 .opStatus {
+        display: block;
+        font-size: 0.7rem; }
+      .doctor_workbench .opPatientList .opList li .op-sec-2 .nursing {
+        color: #34b8bc; }
+      .doctor_workbench .opPatientList .opList li .op-sec-2 .checkedIn {
+        color: #00bb4b; }
+    .doctor_workbench .opPatientList .opList li .op-sec-3 {
+      width: 20%;
+      line-height: 53px;
+      vertical-align: text-top;
+      display: inline-block;
+      text-align: center; }
+      .doctor_workbench .opPatientList .opList li .op-sec-3 .opPatientStatus {
+        display: block;
+        font-size: 0.7rem; }
+      .doctor_workbench .opPatientList .opList li .op-sec-3 .newVisit {
+        color: #ff8800; }
+      .doctor_workbench .opPatientList .opList li .op-sec-3 .followUp {
+        color: #ff005f; }
+  .doctor_workbench .opPatientList .opList li:hover {
+    background: #ebfeff;
+    cursor: pointer; }
+
+.doctor_workbench .bottom-layout {
+  padding: 5px; }
+  .doctor_workbench .bottom-layout .right-bottom-panel {
+    margin-top: 5px; }
+  .doctor_workbench .bottom-layout .appointment-panel {
+    /* The actual timeline (the vertical ruler) */
+    /* Container around content */
+    /* The circles on the timeline */
+    /* Place the container to the left */
+    /* Place the container to the right */
+    /* Add arrows to the left container (pointing right) */
+    /* Add arrows to the right container (pointing left) */
+    /* Fix the circle for containers on the right side */
+    /* The actual content */
+    /* Media queries - Responsive timeline on screens less than 600px wide */ }
+    .doctor_workbench .bottom-layout .appointment-panel .timeline {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto; }
+    .doctor_workbench .bottom-layout .appointment-panel .timeline::after {
+      content: "";
+      position: absolute;
+      width: 2px;
+      background-color: #000;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -3px; }
+    .doctor_workbench .bottom-layout .appointment-panel .container {
+      padding: 10px 40px;
+      position: relative;
+      background-color: inherit;
+      width: 50%; }
+    .doctor_workbench .bottom-layout .appointment-panel .container::after {
+      content: "";
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      right: -17px;
+      background-color: white;
+      border: 4px solid #ff9f55;
+      top: 15px;
+      border-radius: 50%;
+      z-index: 1; }
+    .doctor_workbench .bottom-layout .appointment-panel .left {
+      left: 0; }
+    .doctor_workbench .bottom-layout .appointment-panel .right {
+      left: 50%; }
+    .doctor_workbench .bottom-layout .appointment-panel .left::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      right: 30px;
+      border: medium solid white;
+      border-width: 10px 0 10px 10px;
+      border-color: transparent transparent transparent white; }
+    .doctor_workbench .bottom-layout .appointment-panel .right::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      left: 30px;
+      border: medium solid white;
+      border-width: 10px 10px 10px 0;
+      border-color: transparent white transparent transparent; }
+    .doctor_workbench .bottom-layout .appointment-panel .right::after {
+      left: -16px; }
+    .doctor_workbench .bottom-layout .appointment-panel .content {
+      padding: 20px 30px;
+      background-color: white;
+      position: relative;
+      border-radius: 6px; }
+    @media screen and (max-width: 600px) {
+      .doctor_workbench .bottom-layout .appointment-panel {
+        /* Place the timelime to the left */
+        /* Full-width containers */
+        /* Make sure that all arrows are pointing leftwards */
+        /* Make sure all circles are at the same spot */
+        /* Make all right containers behave like the left ones */ }
+        .doctor_workbench .bottom-layout .appointment-panel .timeline::after {
+          left: 31px; }
+        .doctor_workbench .bottom-layout .appointment-panel .container {
+          width: 100%;
+          padding-left: 70px;
+          padding-right: 25px; }
+        .doctor_workbench .bottom-layout .appointment-panel .container::before {
+          left: 60px;
+          border: medium solid white;
+          border-width: 10px 10px 10px 0;
+          border-color: transparent white transparent transparent; }
+        .doctor_workbench .bottom-layout .appointment-panel .left::after,
+        .doctor_workbench .bottom-layout .appointment-panel .right::after {
+          left: 15px; }
+        .doctor_workbench .bottom-layout .appointment-panel .right {
+          left: 0%; } }
+  .doctor_workbench .bottom-layout .grey-label {
+    color: #292929;
+    padding-left: 10px;
+    padding-top: 5px;
+    font-style: bolder; }
+  .doctor_workbench .bottom-layout .grey-label-right {
+    color: #292929;
+    padding-right: 10px;
+    padding-top: 5px;
+    font-style: bolder; }
