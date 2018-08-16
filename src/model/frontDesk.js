@@ -1,12 +1,29 @@
-import { insertData } from "../model/patientRegistration";
-import { insertVisitData } from "../model/visit";
-import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
+import { insertData, insertPatientData } from "../model/patientRegistration";
+import { insertVisitData, insertPatientVisitData } from "../model/visit";
+import {
+  whereCondition,
+  runningNumber,
+  runningNumberGen,
+  releaseDBConnection
+} from "../utils";
 import extend from "extend";
-import { addBill, newReceipt, addEpisodeEncounter } from "../model/billing";
-import { addPatientInsurance } from "../model/insurance";
+import {
+  addBill,
+  newReceipt,
+  addEpisodeEncounter,
+  addBillData,
+  newReceiptData,
+  addEpisodeEncounterData
+} from "../model/billing";
+import {
+  addPatientInsurance,
+  addPatientInsuranceData
+} from "../model/insurance";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction } from "../utils/logging";
-
+import Promise from "bluebird";
+import { LINQ } from "node-linq";
+import { release } from "os";
 //created by irfan :to save front desk data inputs
 let addFrontDesk = (req, res, next) => {
   debugFunction("addFrontDesk");
@@ -31,223 +48,161 @@ let addFrontDesk = (req, res, next) => {
             next(error);
           });
         }
-        //Front Desk Insertion
-        //Patient Details Insertion
-        //Start
-        //Quwery:1
-        runningNumber(
-          req.db,
-          1,
-          "PATCODE_NUMGEN",
-          (error, records, newNumber) => {
-            debugLog("newNumber:" + newNumber);
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
+        return new Promise((resolve, reject) => {
+          runningNumberGen({
+            db: connection,
+            module_desc: ["PAT_REGS", "PAT_VISIT", "PAT_BILL", "RECEIPT"],
+            onFailure: error => {
+              reject(error);
+            },
+            onSuccess: result => {
+              resolve(result);
             }
-            if (records.length != 0) {
-              req.query.patient_code = newNumber;
-              req.body.patient_code = newNumber;
+          });
+        })
+          .then(output => {
+            //Calling Patient Registration function
+            let patients = new LINQ(output)
+              .Where(w => w.module_desc == "PAT_REGS")
+              .FirstOrDefault();
 
-              //call
-              insertData(
-                connection,
-                req,
-                res,
-                (error, result) => {
-                  if (error) {
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-
-                  if (result != null && result.length != 0) {
-                    req.query.patient_id = result[0][0]["hims_d_patient_id"];
-                    req.body.patient_id = result[0][0]["hims_d_patient_id"];
-                    debugLog(
-                      "req.body.patient_id:" + result[0][0]["hims_d_patient_id"]
-                    );
-                    debugLog(" succes result of first query", result);
-
-                    //Visit Insertion
-                    //query 2
-                    runningNumber(
-                      req.db,
-                      2,
-                      "VISIT_NUMGEN",
-                      (error, patResults, completeNum) => {
-                        if (error) {
-                          connection.rollback(() => {
-                            releaseDBConnection(db, connection);
-                            next(error);
-                          });
-                        }
-                        req.query.visit_code = completeNum;
-                        req.body.visit_code = completeNum;
-                        debugLog("req.body.visit_code : " + completeNum);
-
-                        //call
-                        insertVisitData(
-                          connection,
-                          req,
-                          res,
-                          (error, resultdata) => {
-                            if (error) {
-                              connection.rollback(() => {
-                                releaseDBConnection(db, connection);
-                                next(error);
-                              });
-                            }
-
-                            //Billing Insertion
-                            //Quwery:3
-                            if (resultdata != null && resultdata.length != 0) {
-                              req.query.visit_id = resultdata["insertId"];
-                              req.body.visit_id = resultdata["insertId"];
-                              req.body.patient_visit_id =
-                                resultdata["insertId"];
-                              debugLog(
-                                "req.body.visit_id:" + resultdata["insertId"]
-                              );
-
-                              debugLog(
-                                " succes result of second query",
-                                resultdata
-                              );
-
-                              //add patient insurance
-
-                              if (req.body.insured == "Y") {
-                                addPatientInsurance(
-                                  connection,
-                                  req,
-                                  res,
-                                  (error, result) => {
-                                    if (error) {
-                                      debugLog(
-                                        "error in adding insurence",
-                                        error
-                                      );
-                                      connection.rollback(() => {
-                                        releaseDBConnection(db, connection);
-                                        next(error);
-                                      });
-                                    }
-
-                                    debugLog("add insuence result:", result);
-                                  }
-                                );
-                              }
-
-                              //call
-                              addBill(
-                                connection,
-                                req,
-                                res,
-                                (error, result) => {
-                                  if (error) {
-                                    connection.rollback(() => {
-                                      releaseDBConnection(db, connection);
-                                      next(error);
-                                    });
-                                  }
-
-                                  //Query :4
-                                  //insert receipt
-
-                                  if (result != null && result.length != 0) {
-                                    req.query.billing_header_id =
-                                      result.insertId;
-                                    req.body.billing_header_id =
-                                      result.insertId;
-
-                                    debugLog(
-                                      "  req.body.billing_header_id:" +
-                                        result["insertId"]
-                                    );
-
-                                    //call
-
-                                    newReceipt(
-                                      connection,
-                                      req,
-                                      res,
-                                      (error, resultdata) => {
-                                        if (error) {
-                                          connection.rollback(() => {
-                                            releaseDBConnection(db, connection);
-                                            next(error);
-                                          });
-                                        }
-
-                                        debugLog(
-                                          "succes result of query 4 : ",
-                                          resultdata
-                                        );
-
-                                        //call to addEpisodeEncounter
-
-                                        addEpisodeEncounter(
-                                          connection,
-                                          req,
-                                          res,
-                                          (error, resultEp) => {
-                                            if (error) {
-                                              connection.rollback(() => {
-                                                releaseDBConnection(
-                                                  db,
-                                                  connection
-                                                );
-                                                next(error);
-                                              });
-                                            }
-                                            connection.commit(error => {
-                                              if (error) {
-                                                connection.rollback(() => {
-                                                  releaseDBConnection(
-                                                    db,
-                                                    connection
-                                                  );
-                                                  next(error);
-                                                });
-                                              }
-                                              req.records = resultEp;
-                                              next();
-                                            });
-
-                                            debugLog(
-                                              "succes result of query 5 : ",
-                                              resultEp
-                                            );
-                                          },
-                                          next
-                                        );
-                                        //end of episode
-                                      },
-                                      next
-                                    );
-                                  }
-                                },
-
-                                next
-                              );
-                            }
-                          }
-                        );
-                      }
-                    );
-                  }
+            req.query.patient_code = patients.completeNumber;
+            req.body.patient_code = patients.completeNumber;
+            return new Promise((resolve, reject) => {
+              req.options = {
+                db: connection,
+                onFailure: error => {
+                  reject(error);
                 },
-                true,
-                next
-              );
-            }
-          }
-        );
-        //ruunin
+                onSuccess: result => {
+                  resolve(result);
+                }
+              };
+              insertPatientData(req, res, next);
+            })
+              .then(patientInsertedRecord => {
+                //Get  new visit running number.
+                let visit = new LINQ(output)
+                  .Where(w => w.module_desc == "PAT_VISIT")
+                  .FirstOrDefault();
+                debugLog("patientInsertedRecord ", patientInsertedRecord);
+
+                req.query.visit_code = visit.completeNumber;
+                req.body.visit_code = visit.completeNumber;
+                delete req["options"]["onFailure"];
+                delete req["options"]["onSuccess"];
+                //Visit Promise
+                return new Promise((resolve, reject) => {
+                  debugLog("Inside Visit");
+                  req.options.onFailure = error => {
+                    reject(error);
+                  };
+                  req.options.onSuccess = result => {
+                    resolve(result);
+                  };
+                  // Calling Visit
+                  insertPatientVisitData(req, res, next);
+                }).then(visitData => {
+                  req.query.visit_id = visitData["insertId"];
+                  req.visit_id = visitData["insertId"];
+                  req.body.visit_id = visitData["insertId"];
+                  req.body.patient_visit_id = visitData["insertId"];
+                  debugLog("Gen Visit ", visitData);
+                  //Insurance Promise
+                  return new Promise((resolve, reject) => {
+                    debugLog("Inside Insurance");
+                    if (req.body.insured == "Y") {
+                      delete req["options"]["onFailure"];
+                      delete req["options"]["onSuccess"];
+                      req.options.onFailure = error => {
+                        reject(error);
+                      };
+                      req.options.onSuccess = data => {
+                        resolve(data);
+                      };
+                      //Check for insurace
+                      addPatientInsuranceData(req, res, next);
+                    } else {
+                      resolve({});
+                    }
+                  }).then(insuredRecords => {
+                    debugLog("Orver all records number gen", output);
+                    let bill = new LINQ(output)
+                      .Where(w => w.module_desc == "PAT_BILL")
+                      .FirstOrDefault();
+                    req.bill_number = bill.completeNumber;
+                    //Bill generation
+                    return new Promise((resolve, reject) => {
+                      debugLog("Inside Billing");
+                      delete req["options"]["onFailure"];
+                      delete req["options"]["onSuccess"];
+                      req.options.onFailure = error => {
+                        reject(error);
+                      };
+                      req.options.onSuccess = data => {
+                        resolve(data);
+                      };
+
+                      addBillData(req, res, next);
+                    }).then(billOutput => {
+                      req.query.billing_header_id = billOutput.insertId;
+                      req.body.billing_header_id = billOutput.insertId;
+
+                      let receipt = new LINQ(output)
+                        .Where(w => w.module_desc == "RECEIPT")
+                        .FirstOrDefault();
+                      req.body.receipt_number = receipt.completeNumber;
+                      return new Promise((resolve, reject) => {
+                        debugLog("Inside Receipts");
+                        delete req["options"]["onFailure"];
+                        delete req["options"]["onSuccess"];
+                        req.options.onFailure = error => {
+                          reject(error);
+                        };
+                        req.options.onSuccess = records => {
+                          resolve(records);
+                        };
+                        newReceiptData(req, res, next);
+                      }).then(records => {
+                        return new Promise((resolve, reject) => {
+                          debugLog("Inside Episode");
+                          delete req["options"]["onFailure"];
+                          delete req["options"]["onSuccess"];
+                          req.options.onFailure = error => {
+                            reject(error);
+                          };
+                          req.options.onSuccess = records => {
+                            resolve(records);
+                          };
+                          addEpisodeEncounterData(req, res, next);
+                        }).then(encounterResult => {
+                          connection.commit(error => {
+                            if (error) {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            }
+                            req.records = encounterResult;
+                            next();
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              })
+              .catch(error => {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              });
+          })
+          .catch(error => {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          });
       });
       //bign tr
     });

@@ -7,6 +7,7 @@ import mkdirp from "mkdirp";
 import { logger, debugFunction, debugLog } from "./logging";
 import fs from "fs";
 import { LINQ } from "node-linq";
+import Promise from "bluebird";
 import _ from "underscore";
 let paging = options => {
   let pageLimit = options.paging.pageNo * options.paging.pageSize;
@@ -166,6 +167,73 @@ let releaseConnection = req => {
 };
 let checkIsNull = (input, defaultType) => {
   return input == null || input == "" ? defaultType : input;
+};
+
+let runningNumberGen = options => {
+  const db = options.db;
+
+  db.query(
+    "SELECT  `module_desc`,`hims_f_app_numgen_id`, `prefix`, `intermediate_series`, `postfix`\
+, `length`, `increment_by`, `numgen_seperator`, `postfix_start`\
+,`postfix_end`, `current_num`, `pervious_num` FROM `hims_f_app_numgen`\
+ WHERE record_status='A' AND `module_desc` in (?)AND  \
+ `postfix` >= `postfix_start` AND `postfix` <= `postfix_end`",
+    [options.module_desc],
+    (error, result) => {
+      if (error) {
+        options.onFailure(error);
+      }
+
+      if (result.length == 0) {
+        options.onFailure(
+          "Generation series for '" +
+            options.module_desc +
+            "' not exist please contact administrator."
+        );
+      } else {
+        let resultNumbers = [];
+        result.map((item, index) => {
+          let prefix = item["prefix"];
+          let numgenId = item["hims_f_app_numgen_id"];
+          let intermediate_series = item["intermediate_series"];
+          let postfix = item["postfix"];
+          let length = parseInt(item["length"]) - parseInt(prefix.length);
+          let increment_by = item["increment_by"];
+          let numgen_seperator = item["numgen_seperator"];
+          let newNumber = parseInt(postfix) + parseInt(increment_by);
+
+          let paddedNumber = padString(String(newNumber), length, "0");
+          let queryAtt =
+            "UPDATE `hims_f_app_numgen` \
+    SET `current_num`=?, `pervious_num`=?,postfix=? \
+    WHERE  `record_status`='A' AND `hims_f_app_numgen_id`=?";
+          db.query(
+            queryAtt,
+            [paddedNumber, postfix, paddedNumber, numgenId],
+            (error, numUpdate) => {
+              if (error) {
+                options.onFailure(error);
+              }
+              let completeNumber =
+                prefix +
+                numgen_seperator +
+                intermediate_series +
+                numgen_seperator +
+                paddedNumber;
+              resultNumbers.push({
+                completeNumber: completeNumber,
+                module_desc: item["module_desc"]
+              });
+
+              if (index == result.length - 1) {
+                options.onSuccess(resultNumbers);
+              }
+            }
+          );
+        });
+      }
+    }
+  );
 };
 
 let runningNumber = (
@@ -381,7 +449,7 @@ let bulkInputArrayObject = (arrayObj, outArray, objectToChang) => {
   objectToChang = objectToChang || {};
   _.each(arrayObj, (item, index) => {
     outArray.push(
-      Object.keys(item).map(key => {
+      Object.keys(item).map((key, keyIndex) => {
         if (objectToChang[key] != null) {
           return objectToChang[key];
         }
@@ -422,5 +490,6 @@ module.exports = {
   downloadFile,
   bulkInputArrayObject,
   bulkMasters,
-  jsonArrayToObject
+  jsonArrayToObject,
+  runningNumberGen
 };

@@ -4,6 +4,274 @@ import { debugLog, debugFunction, logger } from "../utils/logging";
 import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 import moment from "moment";
 
+//Added by noor for code optimization
+let insertPatientVisitData = (req, res, next) => {
+  try {
+    debugFunction("insertPatientVisitData");
+    let inputParam = extend(
+      {
+        hims_f_patient_visit_id: null,
+        patient_id: null,
+        visit_type: null,
+        visit_date: new Date(),
+        visit_code: null,
+        age_in_years: null,
+        age_in_months: null,
+        age_in_days: null,
+        insured: null,
+        sec_insured: null,
+        department_id: null,
+        sub_department_id: null,
+        doctor_id: null,
+        maternity_patient: null,
+        is_mlc: null,
+        mlc_accident_reg_no: null,
+        mlc_police_station: null,
+        mlc_wound_certified_date: null,
+        created_by: null,
+        created_date: null,
+        updated_by: null,
+        updated_date: null,
+        record_status: null,
+        patient_message: null,
+        is_critical_message: null,
+        message_active_till: null,
+        visit_expiery_date: null,
+        episode_id: null,
+        consultation: null
+      },
+      req.query["data"] == null ? req.body : req.query
+    );
+
+    let db = req.options != null ? req.options.db : req.db;
+
+    const internalInsertPatientVisitData = () => {
+      inputParam.patient_id = req.patient_id;
+      if (inputParam.age_in_years == null) {
+        let fromDate = moment(inputParam.date_of_birth);
+        let toDate = new Date();
+        let years = moment(toDate).diff(fromDate, "year");
+        fromDate.add(years, "years");
+        let months = moment(toDate).diff(fromDate, "months");
+        fromDate.add(months, "months");
+        let days = moment(toDate).diff(fromDate, "days");
+        inputParam.age_in_years = years;
+        inputParam.age_in_months = months;
+        inputParam.age_in_days = days;
+      }
+      debugLog("inside internalInsertPatientVisitData");
+      db.query(
+        "INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
+`age_in_years`, `age_in_months`, `age_in_days`, `insured`,`sec_insured`,\
+`visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
+`is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
+`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`)\
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
+        [
+          inputParam.patient_id,
+          inputParam.visit_type,
+          inputParam.age_in_years,
+          inputParam.age_in_months,
+          inputParam.age_in_days,
+          inputParam.insured,
+          inputParam.sec_insured,
+          inputParam.visit_date,
+          inputParam.department_id,
+          inputParam.sub_department_id,
+          inputParam.doctor_id,
+          inputParam.maternity_patient,
+          inputParam.is_mlc,
+          inputParam.mlc_accident_reg_no,
+          inputParam.mlc_police_station,
+          inputParam.mlc_wound_certified_date,
+          inputParam.created_by,
+          new Date(),
+          inputParam.visit_code,
+          inputParam.visit_expiery_date,
+          inputParam.episode_id
+        ],
+        (error, visitresult) => {
+          if (error) {
+            if (req.options == null) {
+              db.rollback(() => {
+                releaseDBConnection(req.db, db);
+              });
+            } else {
+              req.options.onFailure(error);
+            }
+          }
+          req.visit_id = visitresult.insertId;
+          let patient_visit_id = visitresult.insertId;
+
+          if (patient_visit_id != null) {
+            db.query(
+              "INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
+, `patient_message`, `is_critical_message`, `message_active_till`, `created_by`, `created_date`\
+) VALUES ( ?, ?, ?, ?, ?, ?);",
+              [
+                patient_visit_id,
+                inputParam.patient_message,
+                inputParam.is_critical_message,
+                inputParam.message_active_till,
+                inputParam.created_by,
+                new Date()
+              ],
+              (error, resultData) => {
+                if (error) {
+                  if (req.options == null) {
+                    db.rollback(() => {
+                      releaseDBConnection(req.db, db);
+                      next(error);
+                    });
+                  } else {
+                    req.options.onFailure(eror);
+                  }
+                } else {
+                  req.options.onSuccess(resultData);
+                }
+              }
+            );
+          }
+        }
+      );
+    };
+    //for consultaion
+    if (inputParam.consultation == "Y") {
+      debugLog("In consultation == Y ");
+      db.query(
+        " select max(visit_expiery_date) as visit_expiery_date,episode_id from hims_f_patient_visit where\
+         patient_id=? and doctor_id=? and record_status='A' group by patient_id, doctor_id;",
+        [inputParam.patient_id, inputParam.doctor_id],
+        (error, expResult) => {
+          debugLog("In consultation Query");
+          if (error) {
+            if (req.options == null) {
+              db.rollback(() => {
+                releaseDBConnection(req.db, db);
+              });
+            } else {
+              req.options.onFailure(error);
+            }
+          } else {
+            let existingExparyDate = null;
+            // let currentPatientEpisodeNo = null;
+            //fetching expiry date and episode id for existing patient
+            if (expResult[0] != null || expResult.length != 0) {
+              existingExparyDate = moment(
+                expResult[0]["visit_expiery_date"]
+              ).format("YYYY-MM-DD");
+              currentPatientEpisodeNo = expResult[0]["episode_id"];
+            }
+            let currentEpisodeNo = null;
+            //checking expiry if expired or not_there create new expiry date
+            if (
+              existingExparyDate == null ||
+              existingExparyDate == undefined ||
+              existingExparyDate < today
+            ) {
+              //create new expiry date
+              db.query(
+                "SELECT param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
+    and record_status='A'",
+                (error, record) => {
+                  debugLog("In Expiry date records ", record);
+                  if (error) {
+                    if (req.options == null) {
+                      db.rollback(() => {
+                        releaseDBConnection(req.db, db);
+                        next(error);
+                      });
+                    } else {
+                      req.options.onFailure(error);
+                    }
+                  } else {
+                    if (record.length == 0) {
+                      if (req.options == null) {
+                        db.rollback(() => {
+                          releaseDBConnection(req.db, db);
+                          next(
+                            httpStatus.generateError(
+                              httpStatus.notModified,
+                              "Episode value not found.Please contact administrator."
+                            )
+                          );
+                        });
+                      } else {
+                        req.options.onFailure(
+                          httpStatus.generateError(
+                            httpStatus.notModified,
+                            "Episode value not found.Please contact administrator."
+                          )
+                        );
+                      }
+                    }
+                    inputParam.visit_expiery_date = moment()
+                      .add(parseInt(record[0]["param_value"]), "days")
+                      .format("YYYY-MM-DD");
+                    currentEpisodeNo = record[0].episode_id;
+
+                    if (currentEpisodeNo > 0) {
+                      let nextEpisodeNo = currentEpisodeNo + 1;
+                      inputParam.episode_id = currentEpisodeNo;
+                      db.query(
+                        "update algaeh_d_app_config set episode_id=? where algaeh_d_app_config_id=11 and record_status='A' ",
+                        [nextEpisodeNo],
+                        (error, updateResult) => {
+                          if (error) {
+                            if (req.options == null) {
+                              db.rollback(() => {
+                                releaseDBConnection(req.db, dataBase);
+                                next(error);
+                              });
+                            } else {
+                              req.options.onFailure(error);
+                            }
+                          } else {
+                            internalInsertPatientVisitData();
+                          }
+                        }
+                      );
+                    }
+                  }
+                }
+              );
+            }
+          }
+        }
+      );
+    }
+    //for non consultaion
+    else if (inputParam.consultation == "N") {
+      inputParam.visit_expiery_date = new Date();
+      inputParam.episode_id = null;
+      internalInsertPatientVisitData();
+    } else {
+      if (req.options == null) {
+        db.rollback(() => {
+          releaseDBConnection(req.db, db);
+          next(
+            httpStatus.generateError(
+              httpStatus.noContent,
+              "Please select consultation type"
+            )
+          );
+        });
+      } else {
+        req.options.onFailure(
+          httpStatus.generateError(
+            httpStatus.noContent,
+            "Please select consultation type"
+          )
+        );
+      }
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//----end
+
 let addVisit = (req, res, next) => {
   try {
     debugFunction("addVisit");
@@ -581,5 +849,6 @@ module.exports = {
   addVisit,
   updateVisit,
   insertVisitData,
-  checkVisitExists
+  checkVisitExists,
+  insertPatientVisitData
 };
