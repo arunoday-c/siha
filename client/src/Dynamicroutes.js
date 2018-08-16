@@ -22,6 +22,7 @@ import DoctorsWorkbench from "./Components/DoctorsWorkbench/DoctorsWorkbench";
 import AccessionAcknowledgement from "./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement";
 import OrderingServices from "./Components/DoctorsWorkbench/OrderingServices/OrderingServices";
 import PreApproval from "./Components/PreApproval/PreApproval";
+import InvestigationSetup from "./Components/InvestigationSetup/InvestigationSetup";
 
 function height() {
   let height =
@@ -73,6 +74,12 @@ const componts = (selectedLang, breadStyle) => {
     ),
     PreApproval: (
       <PreApproval SelectLanguage={selectedLang} breadStyle={breadStyle} />
+    ),
+    InvestigationSetup: (
+      <InvestigationSetup
+        SelectLanguage={selectedLang}
+        breadStyle={breadStyle}
+      />
     )
   };
 };

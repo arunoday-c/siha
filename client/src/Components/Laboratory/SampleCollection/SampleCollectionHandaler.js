@@ -55,10 +55,16 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const getSampleCollectionDetails = $this => {
+  debugger;
   let inputobj = {};
 
   if ($this.state.from_date !== null) {
-    inputobj.ordered_date = moment($this.state.from_date).format(
+    inputobj.from_date = moment($this.state.from_date).format(
+      Options.dateFormatYear
+    );
+  }
+  if ($this.state.to_date !== null) {
+    inputobj.to_date = moment($this.state.to_date).format(
       Options.dateFormatYear
     );
   }

@@ -3,6 +3,7 @@ import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import { addOpBIlling, selectBill } from "../model/opBilling";
+import { insertLadOrderedServices } from "../model/laboratory";
 import { debugFunction, debugLog } from "../utils/logging";
 import extend from "extend";
 export default ({ config, db }) => {
@@ -12,6 +13,7 @@ export default ({ config, db }) => {
   api.post(
     "/addOpBIlling",
     addOpBIlling,
+    insertLadOrderedServices,
     (req, res, next) => {
       res.status(httpStatus.ok).json({
         success: true,

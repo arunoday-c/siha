@@ -188,6 +188,7 @@ class PatientDisplayDetails extends Component {
 
   SaveBill(e) {
     this.GenerateReciept($this => {
+      debugger;
       $this.props.postBillDetsils($this.state, data => {
         $this.setState({
           bill_number: data.bill_number,

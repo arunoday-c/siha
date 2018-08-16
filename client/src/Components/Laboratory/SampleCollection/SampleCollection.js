@@ -36,9 +36,11 @@ import Options from "../../../Options.json";
 class SampleCollection extends Component {
   constructor(props) {
     super(props);
+    let month = moment().format("MM");
+    let year = moment().format("YYYY");
     this.state = {
-      to_date: null,
-      from_date: null,
+      to_date: new Date(),
+      from_date: moment("01" + month + year, "DDMMYYYY")._d,
       patient_code: null,
       patient_name: null,
       patient_id: null
@@ -108,28 +110,9 @@ class SampleCollection extends Component {
                 <span
                   className="fas fa-search fa-2x"
                   onClick={PatientSearch.bind(this, this)}
-                  // onClick={this.PatientSearch.bind(this)}
                 />
               </div>
 
-              {/* <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "patient_name"
-                }}
-                textBox={{
-                  value: this.state.full_name,
-                  className: "txt-fld",
-                  name: "full_name",
-
-                  events: {
-                    onChange: null
-                  },
-                  others: {
-                    disabled: true
-                  }
-                }}
-              /> */}
               <AlagehAutoComplete
                 div={{ className: "col-lg-2" }}
                 label={{
@@ -170,55 +153,13 @@ class SampleCollection extends Component {
 
               <div className="col-lg-1">
                 <IconButton className="go-button" color="primary">
-                  <PlayCircleFilled />
+                  <PlayCircleFilled
+                    onClick={getSampleCollectionDetails.bind(this, this)}
+                  />
                 </IconButton>
               </div>
             </div>
-            {/* <div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "proiorty",
-                  isImp: false
-                }}
-                selector={{
-                  name: "proiorty",
-                  className: "select-fld",
-                  value: this.state.proiorty,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_PRIORITY
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
 
-              <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "status",
-                  isImp: false
-                }}
-                selector={{
-                  name: "status",
-                  className: "select-fld",
-                  value: this.state.status,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_TEST_STATUS
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
-              <div className="col-lg-3">
-                <IconButton className="go-button" color="primary">
-                  <PlayCircleFilled />
-                </IconButton>
-              </div>
-            </div> */}
             <div className="row form-details">
               <div className="col-lg-12">
                 <AlgaehDataGrid

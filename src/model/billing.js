@@ -2,7 +2,6 @@ import httpStatus from "../utils/httpStatus";
 import extend from "extend";
 import {
   bulkInputArrayObject,
-  jsonArrayToObject,
   runningNumber,
   releaseDBConnection
 } from "../utils";
@@ -11,278 +10,7 @@ import moment from "moment";
 import { debugLog, debugFunction } from "../utils/logging";
 
 import { LINQ } from "node-linq";
-//import { inflate } from "zlib";
-
-//Added by noor
-let addBillData = (req, res, next) => {
-  let db = req.options == null ? req.db : req.options.db;
-  try {
-    let inputParam = extend(
-      {
-        hims_f_billing_header_id: null,
-        patient_id: null,
-        billing_type_id: null,
-        visit_id: null,
-        bill_number: null,
-        incharge_or_provider: null,
-        bill_date: null,
-        advance_amount: 0,
-        discount_amount: 0,
-        sub_total_amount: 0,
-        total_tax: 0,
-        net_total: 0,
-        billing_status: null,
-        copay_amount: 0,
-        deductable_amount: 0,
-        gross_total: 0,
-        sheet_discount_amount: 0,
-        sheet_discount_percentage: 0,
-        net_amount: 0,
-        patient_res: 0,
-        company_res: 0,
-        sec_company_res: 0,
-        patient_payable: 0,
-        company_payable: 0,
-        sec_company_payable: 0,
-        patient_tax: 0,
-        company_tax: 0,
-        sec_company_tax: 0,
-        net_tax: 0,
-        credit_amount: 0,
-        receiveable_amount: 0,
-        created_by: null,
-        created_date: null,
-        updated_by: null,
-        updated_date: null,
-        record_status: null,
-        cancel_remarks: null,
-        cancel_by: null,
-        bill_comments: null,
-        advance_adjust: 0
-      },
-      req.body
-    );
-
-    if (inputParam.billdetails == null || inputParam.billdetails.length == 0) {
-      const errorGen = httpStatus.generateError(
-        httpStatus.badRequest,
-        "Please select atleast one service."
-      );
-      if (req.options == null) {
-        next(errorGen);
-      } else {
-        req.options.onFailure(errorGen);
-      }
-    }
-    inputParam.hims_f_patient_visit_id = req.body.patient_visit_id;
-    inputParam.patient_id = req.body.patient_id;
-    if (
-      inputParam.sheet_discount_amount != 0 &&
-      inputParam.bill_comments == ""
-    ) {
-      const errorGene = httpStatus.generateError(
-        httpStatus.badRequest,
-        "Please enter sheet level discount comments. "
-      );
-      if (req.options == null) {
-        next(errorGene);
-      } else {
-        req.options.onFailure(errorGene);
-      }
-    }
-    inputParam.bill_number = req.bill_number;
-    inputParam.patient_id = req.patient_id;
-    inputParam.visit_id = req.body.visit_id;
-    db.query(
-      "INSERT INTO hims_f_billing_header ( patient_id, visit_id, bill_number,\
-            incharge_or_provider, bill_date, advance_amount,advance_adjust, discount_amount \
-            , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount \
-            , company_res, sec_company_res, patient_payable, company_payable, sec_company_payable \
-            , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount \
-            , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
-              ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      [
-        inputParam.patient_id,
-        inputParam.visit_id,
-        inputParam.bill_number,
-        inputParam.incharge_or_provider,
-        inputParam.bill_date,
-        inputParam.advance_amount,
-        inputParam.advance_adjust,
-        inputParam.discount_amount,
-        inputParam.total_tax,
-        inputParam.billing_status,
-        inputParam.sheet_discount_amount,
-        inputParam.sheet_discount_percentage,
-        inputParam.net_amount,
-        inputParam.company_res,
-        inputParam.sec_company_res,
-        inputParam.patient_payable,
-        inputParam.company_payable,
-        inputParam.sec_company_payable,
-        inputParam.patient_tax,
-        inputParam.company_tax,
-        inputParam.sec_company_tax,
-        inputParam.net_tax,
-        inputParam.credit_amount,
-        inputParam.receiveable_amount,
-        inputParam.created_by,
-        inputParam.created_date,
-        inputParam.updated_by,
-        inputParam.updated_date,
-        inputParam.copay_amount,
-        inputParam.deductable_amount
-      ],
-      (error, headerResult) => {
-        debugLog("Header status", error, headerResult);
-        if (error) {
-          if (req.options == null) {
-            db.rollback(() => {
-              releaseDBConnection(req.db, db);
-              next(error);
-            });
-          } else {
-            req.options.onFailure(error);
-          }
-        } else {
-          // if a patient utilizing his advance amount for his current payment
-          if (
-            headerResult.insertId != null &&
-            headerResult.insertId != "" &&
-            inputParam.advance_adjust > 0
-          ) {
-            db.query(
-              "SELECT advance_amount FROM hims_f_patient WHERE hims_d_patient_id=?",
-              [inputParam.patient_id],
-              (error, result) => {
-                if (error) {
-                  if (req.options == null) {
-                    releaseDBConnection(req.db, db);
-                    next(error);
-                  } else {
-                    req.options.onFailure(error);
-                  }
-                }
-                let existingAdvance = result[0].advance_amount;
-
-                if (result.length != 0) {
-                  inputParam.advance_amount =
-                    existingAdvance - inputParam.advance_adjust;
-                  db.query(
-                    "UPDATE  `hims_f_patient` SET  `advance_amount`=?, \
-                    `updated_by`=?, `updated_date`=? WHERE `hims_d_patient_id`=?",
-                    [
-                      inputParam.advance_amount,
-                      inputParam.updated_by,
-                      new Date(),
-                      inputParam.patient_id
-                    ],
-                    (error, subtractAdvance) => {
-                      if (error) {
-                        if (req.options == null) {
-                          db.rollback(() => {
-                            releaseDBConnection(req.db, db);
-                            next(error);
-                          });
-                        } else {
-                          req.options.onFailure(error);
-                        }
-                      }
-                    }
-                  );
-                }
-              }
-            );
-          }
-
-          let header = req.headers["x-app-user-identity"];
-          header = JSON.parse(header);
-          req.billing_header_id = headerResult.insertId;
-          debugLog("Billing Header ", headerResult.insertId);
-          let newDtls = new LINQ(inputParam.billdetails)
-            .Select(s => {
-              return {
-                hims_f_billing_header_id: headerResult.insertId,
-                service_type_id: s.service_type_id,
-                services_id: s.services_id,
-                quantity: s.quantity,
-                unit_cost: s.unit_cost,
-                insurance_yesno: s.insurance_yesno,
-                gross_amount: s.gross_amount,
-                " discount_amout": s.discount_amout,
-                discount_percentage: s.discount_percentage,
-                net_amout: s.net_amout,
-                copay_percentage: s.copay_percentage,
-                copay_amount: s.copay_amount,
-                deductable_amount: s.deductable_amount,
-                deductable_percentage: s.deductable_percentage,
-                tax_inclusive: s.tax_inclusive,
-                patient_tax: s.patient_tax,
-                company_tax: s.company_tax,
-                total_tax: s.total_tax,
-                patient_resp: s.patient_resp,
-                patient_payable: s.patient_payable,
-                comapany_resp: s.comapany_resp,
-                company_payble: s.company_payble,
-                sec_company: s.sec_company,
-                sec_deductable_percentage: s.sec_deductable_percentage,
-                sec_deductable_amount: s.sec_deductable_amount,
-                sec_company_res: s.sec_company_res,
-                sec_company_tax: s.sec_company_tax,
-                sec_company_paybale: s.sec_company_paybale,
-                sec_copay_percntage: s.sec_copay_percntage,
-                sec_copay_amount: s.sec_copay_amount,
-                created_by: header.user_id,
-                created_date: new Date(),
-                updated_by: header.user_id,
-                updated_date: new Date()
-              };
-            })
-            .ToArray();
-
-          let detailsInsert = [];
-          debugLog("befor Detail Insert Data", newDtls);
-          bulkInputArrayObject(newDtls, detailsInsert);
-
-          debugLog("Detail Insert Data", detailsInsert);
-
-          db.query(
-            "INSERT  INTO hims_f_billing_details (hims_f_billing_header_id, service_type_id,\
-                     services_id, quantity, unit_cost,insurance_yesno,gross_amount, discount_amout, \
-                     discount_percentage, net_amout, copay_percentage, copay_amount, \
-                     deductable_amount, deductable_percentage, tax_inclusive, patient_tax, \
-                     company_tax, total_tax, patient_resp, patient_payable, comapany_resp,\
-                     company_payble, sec_company, sec_deductable_percentage, sec_deductable_amount,\
-                     sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage, \
-                     sec_copay_amount, created_by, created_date, updated_by, updated_date) VALUES ? ",
-            [detailsInsert],
-            (error, detailsRecords) => {
-              if (error) {
-                if (req.options == null) {
-                  db.rollback(() => {
-                    releaseDBConnection(req.db, db);
-                    next(error);
-                  });
-                } else {
-                  req.options.onFailure(error);
-                }
-              }
-              if (req.options == null) {
-                req.records = headerResult;
-                next();
-              } else {
-                req.options.onSuccess(headerResult);
-              }
-            }
-          );
-        }
-      }
-    );
-  } catch (e) {
-    next(e);
-  }
-};
-// end added
+import { inflate } from "zlib";
 
 //created by irfan: Adding bill headder and bill details
 //AddBill
@@ -356,7 +84,9 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
       "select hims_f_patient_visit_id,visit_expiery_date from hims_f_patient_visit where hims_f_patient_visit_id=? \
            and record_status='A'",
       [inputParam.hims_f_patient_visit_id],
+
       (error, records) => {
+        debugFunction("Test", error, records);
         if (error) {
           dataBase.rollback(() => {
             releaseDBConnection(db, dataBase);
@@ -551,112 +281,6 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
     next(e);
   }
 };
-//Created by noor for synchronus
-let newReceiptData = (req, res, next) => {
-  try {
-    debugFunction("newReceiptFUnc");
-
-    let db = req.options == null ? req.db : req.options.db;
-
-    let inputParam = extend(
-      {
-        hims_f_receipt_header_id: null,
-        receipt_number: null,
-        receipt_date: null,
-        billing_header_id: null,
-        total_amount: null,
-        created_by: null,
-        created_date: null,
-        updated_by: null,
-        updated_date: null,
-        record_status: null,
-        counter_id: null,
-        shift_id: null
-      },
-      req.body
-    );
-    if (
-      inputParam.receiptdetails == null ||
-      inputParam.receiptdetails.length == 0
-    ) {
-      const genErr = httpStatus.generateError(
-        httpStatus.badRequest,
-        "Please select atleast one payment mode."
-      );
-      if (req.options == null) {
-        next(genErr);
-      } else {
-        req.options.onFailure(genErr);
-      }
-    }
-    inputParam.receipt_number = req.body.receipt_number;
-    db.query(
-      "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, billing_header_id, total_amount,\
-       created_by, created_date, updated_by, updated_date,  counter_id, shift_id) VALUES (?,?,?\
-    ,?,?,?,?,?,?,?)",
-      [
-        inputParam.receipt_number,
-        new Date(),
-        inputParam.billing_header_id,
-        inputParam.total_amount,
-        inputParam.created_by,
-        new Date(),
-        inputParam.updated_by,
-        new Date(),
-        inputParam.counter_id,
-        inputParam.shift_id
-      ],
-      (error, headerRcptResult) => {
-        if (error) {
-          if (req.options == null) {
-            db.rollback(() => {
-              releaseDBConnection(req.db, db);
-              next(error);
-            });
-          } else {
-            req.options.onSuccess(headerRcptResult);
-          }
-        }
-        if (
-          headerRcptResult.insertId != null &&
-          headerRcptResult.insertId != ""
-        ) {
-          let detailsInsert = [];
-
-          bulkInputArrayObject(inputParam.receiptdetails, detailsInsert, {
-            hims_f_receipt_header_id: headerRcptResult.insertId
-          });
-
-          db.query(
-            "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
-            created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
-            [detailsInsert],
-            (error, RcptDetailsRecords) => {
-              if (error) {
-                if (req.options == null) {
-                  db.rollback(() => {
-                    releaseDBConnection(req.db, db);
-                    next(error);
-                  });
-                } else {
-                  req.options.onFailure(error);
-                }
-              }
-              if (req.options == null) {
-                req.records = headerRcptResult;
-              } else {
-                req.options.onSuccess(headerRcptResult);
-              }
-            }
-          );
-        }
-      }
-    );
-  } catch (e) {
-    next(e);
-  }
-};
-//End synchronus
 
 //created by:irfan, add receipt headder and details
 //AddReceipt
@@ -691,7 +315,7 @@ let newReceipt = (dataBase, req, res, callBack, next) => {
       next(
         httpStatus.generateError(
           httpStatus.badRequest,
-          "Please select atleast one payment mode."
+          "Please select atleast one service."
         )
       );
     }
@@ -2226,7 +1850,6 @@ let getBillDetails = (req, res, next) => {
     next(e);
   }
 };
-//End synchronus
 
 module.exports = {
   addBill,
@@ -2235,9 +1858,5 @@ module.exports = {
   newReceipt,
   patientAdvanceRefund,
   addEpisodeEncounter,
-
-  addBillData,
-  newReceiptData,
-  addEpisodeEncounterData,
   getBillDetailsFunctionality
 };

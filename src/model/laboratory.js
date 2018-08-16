@@ -4,27 +4,27 @@ import { whereCondition, releaseDBConnection } from "../utils";
 
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
-
+import appsettings from "../utils/appsettings.json";
 import { logger, debugFunction, debugLog } from "../utils/logging";
 
 //created by nowshad: to get lad orders for sample collection
 let getLabOrderedServices = (req, res, next) => {
-  let preAprovalWhere = {
-    patient_id: "ALL"
-  };
-
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
 
-    req.query["date(ordered_date)"] = req.query.ordered_date;
-    // delete req.query.ordered_date;
+    let whereOrder =
+      "date(ordered_date) between date('" +
+      req.query.from_date +
+      "') AND date('" +
+      req.query.to_date +
+      "')";
 
-    debugLog("req query:", req.query);
-
-    let where = whereCondition(extend(preAprovalWhere, req.query));
+    delete req.query.from_date;
+    delete req.query.to_date;
+    let where = whereCondition(req.query);
 
     debugLog("where conditn:", where);
     db.getConnection((error, connection) => {
@@ -36,7 +36,8 @@ let getLabOrderedServices = (req, res, next) => {
         status, cancelled, ordered_date, test_type, PAT.patient_code,PAT.full_name\
         from ((hims_f_lab_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
         hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE SA.record_status='A' AND " +
-          where.condition,
+          whereOrder +
+          (where.condition == "" ? "" : " AND " + where.condition),
         where.values,
 
         (error, result) => {
@@ -55,6 +56,70 @@ let getLabOrderedServices = (req, res, next) => {
   }
 };
 
+let insertLadOrderedServices = (req, res, next) => {
+  const insurtColumns = [
+    "patient_id",
+    "visit_id",
+    "provider_id",
+    "services_id",
+    "billed",
+    "ordered_date",
+    "created_by"
+  ];
+  let header = req.headers["x-app-user-identity"];
+  header = JSON.parse(header);
+
+  debugLog("Requested Data:", req.body);
+  let labServices = new LINQ(req.body.billdetails)
+    .Where(
+      w =>
+        w.service_type_id == appsettings.hims_d_service_type.service_type_id.Lab
+    )
+    .Select(s => {
+      return {
+        patient_id: req.body.patient_id,
+        doctor_id: req.body.incharge_or_provider,
+        visit_id: req.body.visit_id,
+        services_id: s.services_id,
+        billed: "Y",
+        ordered_date: new Date(),
+        created_by: header.user_id
+      };
+    })
+    .ToArray();
+
+  debugLog("Services:", labServices);
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+
+    connection.query(
+      "INSERT INTO hims_f_lab_order(" + insurtColumns.join(",") + ") VALUES ?",
+      [
+        jsonArrayToObject({
+          sampleInputObject: insurtColumns,
+          arrayObj: labServices
+        })
+      ],
+
+      (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      }
+    );
+  });
+};
+
 module.exports = {
-  getLabOrderedServices
+  getLabOrderedServices,
+  insertLadOrderedServices
 };
