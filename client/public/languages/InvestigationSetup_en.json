@@ -1,0 +1,18 @@
+{
+  "investigation_setup": "Investigation Setup",
+  "lab_settings": "Settings",
+  "lab_section": "Lab Section",
+  "lab_container": "Lab Container",
+  "lab_specimen": "Lab Specimen",
+  "lab_equipment": "Equipment",
+  "lab_analyte": "Analyte",
+
+  "Addbutton": "Add to list",
+  "Updatebutton": "Update",
+
+  "type_code": "Code",
+  "type_desc": "Name",
+  "arabic_type_desc": "Arabic Name",
+  "created_by": "Created By",
+  "created_date": "Created Date"
+}

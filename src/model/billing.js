@@ -84,7 +84,9 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
       "select hims_f_patient_visit_id,visit_expiery_date from hims_f_patient_visit where hims_f_patient_visit_id=? \
            and record_status='A'",
       [inputParam.hims_f_patient_visit_id],
+
       (error, records) => {
+        debugFunction("Test", error, records);
         if (error) {
           dataBase.rollback(() => {
             releaseDBConnection(db, dataBase);
