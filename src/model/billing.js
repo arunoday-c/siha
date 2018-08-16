@@ -2101,101 +2101,102 @@ let addEpisodeEncounter = (connection, req, res, callBack, next) => {
 //Created by noor for synchronus
 let addEpisodeEncounterData = (req, res, next) => {
   debugFunction("addEpisode");
-  try {
-    let db = req.options == null ? req.db : req.options.db;
-    let input = extend(
-      {
-        patient_id: null,
-        provider_id: null,
-        visit_id: null,
-        source: null,
-        status: null,
-        episode_id: null,
-        encounter_id: null,
-        checked_in: null,
-        nurse_examine: null,
-        age: null,
-        patient_type: null,
-        queue_no: null
-      },
-      req.body
-    );
 
-    let currentEncounterNo = null;
+  let db = req.options == null ? req.db : req.options.db;
+  let input = extend(
+    {
+      patient_id: null,
+      provider_id: null,
+      visit_id: null,
+      source: null,
+      status: null,
+      episode_id: null,
+      encounter_id: null,
+      checked_in: null,
+      nurse_examine: null,
+      age: null,
+      patient_type: null,
+      queue_no: null
+    },
+    req.body
+  );
 
-    db.query(
-      "select encounter_id from hims_d_options where hims_d_options_id=1",
-      (error, result) => {
-        if (error) {
-          if (req.options == null) {
-            releaseDBConnection(req.db, db);
-            next(error);
-          } else {
-            req.options.onFailure(error);
-          }
-        }
+  let currentEncounterNo = null;
 
-        currentEncounterNo = result[0].encounter_id;
-        if (currentEncounterNo > 0) {
-          let nextEncounterNo = currentEncounterNo + 1;
-
-          db.query(
-            "update hims_d_options set encounter_id=? where hims_d_options_id=1",
-            [nextEncounterNo],
-            (error, updateResult) => {
-              if (error) {
-                if (req.options == null) {
-                  db.rollback(() => {
-                    releaseDBConnection(req.db, db);
-                    next(error);
-                  });
-                } else {
-                  req.options.onFailure(error);
-                }
-              }
-
-              if (updateResult != null) {
-                db.query(
-                  "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,status,\
-                       episode_id,encounter_id,checked_in,nurse_examine,age,patient_type,queue_no)values(\
-                        ?,?,?,?,?,?,?,?,?,?,?,?)",
-                  [
-                    input.patient_id,
-                    input.provider_id,
-                    input.visit_id,
-                    input.source,
-                    input.status,
-                    input.episode_id,
-                    currentEncounterNo,
-                    input.checked_in,
-                    input.nurse_examine,
-                    input.age,
-                    input.patient_type,
-                    input.queue_no
-                  ],
-                  (error, results) => {
-                    if (error) {
-                      if (req.options == null) {
-                        connection.rollback(() => {
-                          releaseDBConnection(req.db, db);
-                          next(error);
-                        });
-                      }
-                    }
-                    if (req.options == null) {
-                      req.records = results;
-                    } else {
-                      req.options.onSuccess(results);
-                    }
-                  }
-                );
-              }
-            }
-          );
+  db.query(
+    "select encounter_id from hims_d_options where hims_d_options_id=1",
+    (error, result) => {
+      if (error) {
+        if (req.options == null) {
+          releaseDBConnection(req.db, db);
+          next(error);
+        } else {
+          req.options.onFailure(error);
         }
       }
-    );
-=======
+
+      currentEncounterNo = result[0].encounter_id;
+      if (currentEncounterNo > 0) {
+        let nextEncounterNo = currentEncounterNo + 1;
+
+        db.query(
+          "update hims_d_options set encounter_id=? where hims_d_options_id=1",
+          [nextEncounterNo],
+          (error, updateResult) => {
+            if (error) {
+              if (req.options == null) {
+                db.rollback(() => {
+                  releaseDBConnection(req.db, db);
+                  next(error);
+                });
+              } else {
+                req.options.onFailure(error);
+              }
+            }
+
+            if (updateResult != null) {
+              db.query(
+                "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,status,\
+                       episode_id,encounter_id,checked_in,nurse_examine,age,patient_type,queue_no)values(\
+                        ?,?,?,?,?,?,?,?,?,?,?,?)",
+                [
+                  input.patient_id,
+                  input.provider_id,
+                  input.visit_id,
+                  input.source,
+                  input.status,
+                  input.episode_id,
+                  currentEncounterNo,
+                  input.checked_in,
+                  input.nurse_examine,
+                  input.age,
+                  input.patient_type,
+                  input.queue_no
+                ],
+                (error, results) => {
+                  if (error) {
+                    if (req.options == null) {
+                      connection.rollback(() => {
+                        releaseDBConnection(req.db, db);
+                        next(error);
+                      });
+                    }
+                  }
+                  if (req.options == null) {
+                    req.records = results;
+                  } else {
+                    req.options.onSuccess(results);
+                  }
+                }
+              );
+            }
+          }
+        );
+      }
+    }
+  );
+};
+
 //get bill details
 let getBillDetails = (req, res, next) => {
   debugFunction("getBillDetails");
@@ -2221,7 +2222,6 @@ let getBillDetails = (req, res, next) => {
         next();
       });
     });
->>>>>>> b5f5c85aab88fcc708868c71f40e5b2951ac5cd8
   } catch (e) {
     next(e);
   }
