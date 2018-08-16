@@ -1,9 +1,4 @@
 .patientProfile {
-  div {
-    float: left;
-    color: #858585;
-  }
-
   .patientInfo-Top {
     background: white;
     height: 70px;
@@ -11,6 +6,11 @@
     width: 100%;
     position: relative;
     z-index: 1;
+
+    div {
+      float: left;
+      color: #858585;
+    }
 
     .backBtn {
       border-right: 1px solid #e1e1e1;

@@ -1,2 +1,5 @@
-.subjective {
-  min-width: 100%; }
+.subjective .left-pane {
+  padding: 5px; }
+
+.subjective .right-pane {
+  padding: 5px; }

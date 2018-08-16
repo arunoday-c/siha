@@ -433,12 +433,14 @@ class PersistentDrawer extends React.Component {
                       <MenuItem onClick={this.handleClose.bind(this, "en")}>
                         {this.state.languageName === "English"
                           ? this.renderCheck()
-                          : null}&nbsp; English
+                          : null}
+                        &nbsp; English
                       </MenuItem>
                       <MenuItem onClick={this.handleClose.bind(this, "ar")}>
                         {this.state.languageName === "عربي"
                           ? this.renderCheck()
-                          : null}&nbsp; عربي
+                          : null}
+                        &nbsp; عربي
                       </MenuItem>
                     </Menu>
                   </span>
@@ -492,14 +494,12 @@ class PersistentDrawer extends React.Component {
             >
               <div className={classes.drawerHeader} />
               <div style={{ minWidth: "100%" }}>
-                <div className="row" id="hisapp">
-                  <div className="col-lg-12">
-                    {directRoutes(
-                      this.state.renderComponent,
-                      this.state.selectedLang,
-                      this.state.breadStyle
-                    )}
-                  </div>
+                <div className="container-fluid" id="hisapp">
+                  {directRoutes(
+                    this.state.renderComponent,
+                    this.state.selectedLang,
+                    this.state.breadStyle
+                  )}
                 </div>
               </div>
             </main>

@@ -156,7 +156,9 @@ class DeptMaster extends Component {
                 columns={[
                   {
                     fieldName: "dept_type_code",
-                    label: <AlgaehLabel label={{ fieldName: "type_code" }} />,
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "dept_type_code" }} />
+                    ),
                     disabled: true
                   }
                 ]}
@@ -169,6 +171,7 @@ class DeptMaster extends Component {
                   //: this.props.visatypes
                 }}
                 isEditable={true}
+                multiExpand={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{
                   // onDelete: this.deleteVisaType.bind(this),
