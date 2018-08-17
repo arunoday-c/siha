@@ -20,14 +20,15 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import { getCookie } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
-
+import moment from "moment";
 class DoctorsWorkbench extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       my_daylist: [],
-      selectedLang: "en"
+      selectedLang: "en",
+      selectedHDate: new Date()
     };
   }
 
@@ -61,6 +62,45 @@ class DoctorsWorkbench extends Component {
     });
   }
 
+  liGenerate() {
+    let initialDate = moment(this.state.selectedHDate)._d;
+    let endDate = moment(this.state.selectedHDate).add(30, "days")._d;
+
+    let generatedLi = new Array();
+
+    while (initialDate <= endDate) {
+      let dt = moment(initialDate);
+      generatedLi.push({
+        day: dt.format("DD"),
+        currentdate: dt._d,
+        dayName: dt.format("ddd")
+      });
+      initialDate.setDate(initialDate.getDate() + 1);
+    }
+    return generatedLi;
+  }
+  generateHorizontalDateBlocks() {
+    return (
+      <div className="calendar">
+        <ol>
+          {this.liGenerate().map((row, index) => {
+            return (
+              <li key={index} currentdate={row.currentdate}>
+                {row.day}
+                <span>{row.dayName}</span>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    );
+  }
+
+  monthChangeHandler(e) {
+    let dt = e.target.value + "-01";
+    this.setState({ selectedHDate: moment(dt, "YYYY-MM-DD")._d });
+  }
+
   render() {
     return (
       <div className="doctor_workbench">
@@ -74,128 +114,15 @@ class DoctorsWorkbench extends Component {
                 <i className="fas fa-angle-right fa-2x" />
               </div>
               <div className="myDay_date">
-                <input type="month" />
+                <input
+                  className="calender-date"
+                  type="month"
+                  onChange={this.monthChangeHandler.bind(this)}
+                  value={moment(this.state.selectedHDate).format("YYYY-MM")}
+                />
               </div>
             </div>
-            <div className="calendar">
-              <ol>
-                <li>
-                  1<span>Wed</span>
-                </li>
-                <li>
-                  2<span>Thu</span>
-                </li>
-                <li>
-                  3<span>Fri</span>
-                </li>
-                <li>
-                  4<span>Sat</span>
-                </li>
-                <li>
-                  5<span>Sun</span>
-                </li>
-                <li>
-                  6<span>Mon</span>
-                </li>
-                <li>
-                  7<span>Tue</span>
-                </li>
-                <li>
-                  8<span>Wed</span>
-                </li>
-                <li>
-                  9<span>Thu</span>
-                </li>
-                <li>
-                  10
-                  <span>Fri</span>
-                </li>
-                <li>
-                  11
-                  <span>Sat</span>
-                </li>
-                <li>
-                  12
-                  <span>Sun</span>
-                </li>
-                <li className="selectedDate">
-                  13
-                  <span>Mon</span>
-                </li>
-                <li>
-                  14
-                  <span>Tue</span>
-                </li>
-                <li>
-                  15
-                  <span>Wed</span>
-                </li>
-                <li>
-                  16
-                  <span>Thu</span>
-                </li>
-                <li>
-                  17
-                  <span>Fri</span>
-                </li>
-                <li>
-                  18
-                  <span>Sat</span>
-                </li>
-                <li>
-                  19
-                  <span>Sun</span>
-                </li>
-                <li>
-                  20
-                  <span>Mon</span>
-                </li>
-                <li>
-                  21
-                  <span>Tue</span>
-                </li>
-                <li>
-                  22
-                  <span>Wed</span>
-                </li>
-                <li>
-                  23
-                  <span>Thu</span>
-                </li>
-                <li>
-                  24
-                  <span>Fri</span>
-                </li>
-                <li>
-                  25
-                  <span>Sat</span>
-                </li>
-                <li>
-                  26
-                  <span>Sun</span>
-                </li>
-                <li>
-                  27
-                  <span>Mon</span>
-                </li>
-                <li>
-                  28
-                  <span>Tue</span>
-                </li>
-                <li>
-                  29
-                  <span>Wed</span>
-                </li>
-                <li>
-                  30
-                  <span>Thu</span>
-                </li>
-                <li>
-                  31
-                  <span>Fri</span>
-                </li>
-              </ol>
-            </div>
+            {this.generateHorizontalDateBlocks()}
           </div>
         </div>
 
