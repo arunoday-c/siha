@@ -64,7 +64,7 @@ let insertPatientVisitData = (req, res, next) => {
         inputParam.age_in_months = months;
         inputParam.age_in_days = days;
       }
-      if (existingExparyDate == null || existingExparyDate == undefined) {
+      if (existingExparyDate != null || existingExparyDate != undefined) {
         inputParam.visit_expiery_date = existingExparyDate;
         inputParam.episode_id = currentPatientEpisodeNo;
       }
