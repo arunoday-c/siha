@@ -96,9 +96,17 @@ var _doctorsWorkBench = require("../EHR/controller/doctorsWorkBench");
 
 var _doctorsWorkBench2 = _interopRequireDefault(_doctorsWorkBench);
 
-var _episode = require("../EHR/controller/episode");
+var _hpi = require("../EHR/controller/hpi");
 
-var _episode2 = _interopRequireDefault(_episode);
+var _hpi2 = _interopRequireDefault(_hpi);
+
+var _orderAndPreApproval = require("../controller/orderAndPreApproval");
+
+var _orderAndPreApproval2 = _interopRequireDefault(_orderAndPreApproval);
+
+var _laboratory = require("../controller/laboratory");
+
+var _laboratory2 = _interopRequireDefault(_laboratory);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -129,7 +137,9 @@ var router = (0, _express2.default)();
   router.use("/opBilling", (0, _opBilling2.default)({ config: _keys2.default, db: db }));
   router.use("/userPreferences", (0, _userPreferences2.default)());
   router.use("/doctorsWorkBench", (0, _doctorsWorkBench2.default)({ config: _keys2.default, db: db }));
-  router.use("/episode", (0, _episode2.default)({ config: _keys2.default, db: db }));
+  router.use("/hpi", (0, _hpi2.default)({ config: _keys2.default, db: db }));
+  router.use("/orderAndPreApproval", (0, _orderAndPreApproval2.default)({ config: _keys2.default, db: db }));
+  router.use("/laboratory", (0, _laboratory2.default)({ config: _keys2.default, db: db }));
 });
 
 exports.default = router;

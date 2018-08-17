@@ -20,6 +20,14 @@ var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
 var _logging = require("../utils/logging");
 
+var _bluebird = require("bluebird");
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
+
+var _nodeLinq = require("node-linq");
+
+var _os = require("os");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //created by irfan :to save front desk data inputs
@@ -46,149 +54,158 @@ var addFrontDesk = function addFrontDesk(req, res, next) {
             next(error);
           });
         }
-        //Front Desk Insertion
-        //Patient Details Insertion
-        //Start
-        //Quwery:1
-        (0, _utils.runningNumber)(connection, 1, "PATCODE_NUMGEN", function (error, records, newNumber) {
-          (0, _logging.debugLog)("newNumber:" + newNumber);
-          if (error) {
+        return new _bluebird2.default(function (resolve, reject) {
+          (0, _utils.runningNumberGen)({
+            db: connection,
+            module_desc: ["PAT_REGS", "PAT_VISIT", "PAT_BILL", "RECEIPT"],
+            onFailure: function onFailure(error) {
+              reject(error);
+            },
+            onSuccess: function onSuccess(result) {
+              resolve(result);
+            }
+          });
+        }).then(function (output) {
+          //Calling Patient Registration function
+          var patients = new _nodeLinq.LINQ(output).Where(function (w) {
+            return w.module_desc == "PAT_REGS";
+          }).FirstOrDefault();
+
+          req.query.patient_code = patients.completeNumber;
+          req.body.patient_code = patients.completeNumber;
+          return new _bluebird2.default(function (resolve, reject) {
+            req.options = {
+              db: connection,
+              onFailure: function onFailure(error) {
+                reject(error);
+              },
+              onSuccess: function onSuccess(result) {
+                resolve(result);
+              }
+            };
+            (0, _patientRegistration.insertPatientData)(req, res, next);
+          }).then(function (patientInsertedRecord) {
+            //Get  new visit running number.
+            var visit = new _nodeLinq.LINQ(output).Where(function (w) {
+              return w.module_desc == "PAT_VISIT";
+            }).FirstOrDefault();
+            (0, _logging.debugLog)("patientInsertedRecord ", patientInsertedRecord);
+
+            req.query.visit_code = visit.completeNumber;
+            req.body.visit_code = visit.completeNumber;
+            delete req["options"]["onFailure"];
+            delete req["options"]["onSuccess"];
+            //Visit Promise
+            return new _bluebird2.default(function (resolve, reject) {
+              (0, _logging.debugLog)("Inside Visit");
+              req.options.onFailure = function (error) {
+                reject(error);
+              };
+              req.options.onSuccess = function (result) {
+                resolve(result);
+              };
+              // Calling Visit
+              (0, _visit.insertPatientVisitData)(req, res, next);
+            }).then(function (visitData) {
+              req.query.visit_id = visitData["insertId"];
+              req.visit_id = visitData["insertId"];
+              req.body.visit_id = visitData["insertId"];
+              req.body.patient_visit_id = visitData["insertId"];
+              (0, _logging.debugLog)("Gen Visit ", visitData);
+              //Insurance Promise
+              return new _bluebird2.default(function (resolve, reject) {
+                (0, _logging.debugLog)("Inside Insurance");
+                if (req.body.insured == "Y") {
+                  delete req["options"]["onFailure"];
+                  delete req["options"]["onSuccess"];
+                  req.options.onFailure = function (error) {
+                    reject(error);
+                  };
+                  req.options.onSuccess = function (data) {
+                    resolve(data);
+                  };
+                  //Check for insurace
+                  (0, _insurance.addPatientInsuranceData)(req, res, next);
+                } else {
+                  resolve({});
+                }
+              }).then(function (insuredRecords) {
+                (0, _logging.debugLog)("Orver all records number gen", output);
+                var bill = new _nodeLinq.LINQ(output).Where(function (w) {
+                  return w.module_desc == "PAT_BILL";
+                }).FirstOrDefault();
+                req.bill_number = bill.completeNumber;
+                req.body.bill_number = bill.completeNumber;
+                //Bill generation
+                return new _bluebird2.default(function (resolve, reject) {
+                  (0, _logging.debugLog)("Inside Billing");
+                  delete req["options"]["onFailure"];
+                  delete req["options"]["onSuccess"];
+                  req.options.onFailure = function (error) {
+                    reject(error);
+                  };
+                  req.options.onSuccess = function (data) {
+                    resolve(data);
+                  };
+
+                  (0, _billing.addBillData)(req, res, next);
+                }).then(function (billOutput) {
+                  req.query.billing_header_id = billOutput.insertId;
+                  req.body.billing_header_id = billOutput.insertId;
+
+                  var receipt = new _nodeLinq.LINQ(output).Where(function (w) {
+                    return w.module_desc == "RECEIPT";
+                  }).FirstOrDefault();
+                  req.body.receipt_number = receipt.completeNumber;
+                  return new _bluebird2.default(function (resolve, reject) {
+                    (0, _logging.debugLog)("Inside Receipts");
+                    delete req["options"]["onFailure"];
+                    delete req["options"]["onSuccess"];
+                    req.options.onFailure = function (error) {
+                      reject(error);
+                    };
+                    req.options.onSuccess = function (records) {
+                      resolve(records);
+                    };
+                    (0, _billing.newReceiptData)(req, res, next);
+                  }).then(function (records) {
+                    return new _bluebird2.default(function (resolve, reject) {
+                      (0, _logging.debugLog)("Inside Episode");
+                      delete req["options"]["onFailure"];
+                      delete req["options"]["onSuccess"];
+                      req.options.onFailure = function (error) {
+                        reject(error);
+                      };
+                      req.options.onSuccess = function (records) {
+                        resolve(records);
+                      };
+                      (0, _billing.addEpisodeEncounterData)(req, res, next);
+                    }).then(function (encounterResult) {
+                      connection.commit(function (error) {
+                        if (error) {
+                          (0, _utils.releaseDBConnection)(db, connection);
+                          next(error);
+                        }
+                        req.records = encounterResult;
+                        next();
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          }).catch(function (error) {
             connection.rollback(function () {
               (0, _utils.releaseDBConnection)(db, connection);
               next(error);
             });
-          }
-          if (records.length != 0) {
-            req.query.patient_code = newNumber;
-            req.body.patient_code = newNumber;
-
-            //call
-            (0, _patientRegistration.insertData)(connection, req, res, function (error, result) {
-              if (error) {
-                connection.rollback(function () {
-                  (0, _utils.releaseDBConnection)(db, connection);
-                  next(error);
-                });
-              }
-
-              if (result != null && result.length != 0) {
-                req.query.patient_id = result[0][0]["hims_d_patient_id"];
-                req.body.patient_id = result[0][0]["hims_d_patient_id"];
-                (0, _logging.debugLog)("req.body.patient_id:" + result[0][0]["hims_d_patient_id"]);
-                (0, _logging.debugLog)(" succes result of first query", result);
-
-                //Visit Insertion
-                //query 2
-                (0, _utils.runningNumber)(req.db, 2, "VISIT_NUMGEN", function (error, patResults, completeNum) {
-                  if (error) {
-                    connection.rollback(function () {
-                      (0, _utils.releaseDBConnection)(db, connection);
-                      next(error);
-                    });
-                  }
-                  req.query.visit_code = completeNum;
-                  req.body.visit_code = completeNum;
-                  (0, _logging.debugLog)("req.body.visit_code : " + completeNum);
-
-                  //call
-                  (0, _visit.insertVisitData)(connection, req, res, function (error, resultdata) {
-                    if (error) {
-                      connection.rollback(function () {
-                        (0, _utils.releaseDBConnection)(db, connection);
-                        next(error);
-                      });
-                    }
-
-                    //Billing Insertion
-                    //Quwery:3
-                    if (resultdata != null && resultdata.length != 0) {
-                      req.query.visit_id = resultdata["insertId"];
-                      req.body.visit_id = resultdata["insertId"];
-                      req.body.patient_visit_id = resultdata["insertId"];
-                      (0, _logging.debugLog)("req.body.visit_id:" + resultdata["insertId"]);
-
-                      (0, _logging.debugLog)(" succes result of second query", resultdata);
-
-                      //add patient insurance
-
-                      if (req.body.insured == "Y") {
-                        (0, _insurance.addPatientInsurance)(connection, req, res, function (error, result) {
-                          if (error) {
-                            (0, _logging.debugLog)("error in adding insurence", error);
-                            connection.rollback(function () {
-                              (0, _utils.releaseDBConnection)(db, connection);
-                              next(error);
-                            });
-                          }
-
-                          (0, _logging.debugLog)("add insuence result:", result);
-                        });
-                      }
-
-                      //call
-                      (0, _billing.addBill)(connection, req, res, function (error, result) {
-                        if (error) {
-                          connection.rollback(function () {
-                            (0, _utils.releaseDBConnection)(db, connection);
-                            next(error);
-                          });
-                        }
-
-                        //Query :4
-                        //insert receipt
-
-                        if (result != null && result.length != 0) {
-                          req.query.billing_header_id = result.insertId;
-                          req.body.billing_header_id = result.insertId;
-
-                          (0, _logging.debugLog)("  req.body.billing_header_id:" + result["insertId"]);
-
-                          //call
-
-                          (0, _billing.newReceipt)(connection, req, res, function (error, resultdata) {
-                            if (error) {
-                              connection.rollback(function () {
-                                (0, _utils.releaseDBConnection)(db, connection);
-                                next(error);
-                              });
-                            }
-
-                            (0, _logging.debugLog)("succes result of query 4 : ", resultdata);
-
-                            //call to addEpisodeEncounter
-
-                            (0, _billing.addEpisodeEncounter)(connection, req, res, function (error, resultEp) {
-                              if (error) {
-                                connection.rollback(function () {
-                                  (0, _utils.releaseDBConnection)(db, connection);
-                                  next(error);
-                                });
-                              }
-                              connection.commit(function (error) {
-                                if (error) {
-                                  connection.rollback(function () {
-                                    (0, _utils.releaseDBConnection)(db, connection);
-                                    next(error);
-                                  });
-                                }
-                                req.records = resultEp;
-                                next();
-                              });
-
-                              (0, _logging.debugLog)("succes result of query 5 : ", resultEp);
-                            }, next);
-                            //end of episode
-                          }, next);
-                        }
-                      }, next);
-                    }
-                  });
-                });
-              }
-            }, true, next);
-          }
+          });
+        }).catch(function (error) {
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
         });
-        //ruunin
       });
       //bign tr
     });

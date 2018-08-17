@@ -198,11 +198,16 @@ let runningNumberGen = options => {
           let intermediate_series = item["intermediate_series"];
           let postfix = item["postfix"];
           let length = parseInt(item["length"]) - parseInt(prefix.length);
-          let increment_by = item["increment_by"];
+          let increment_by = parseInt(item["increment_by"]);
+          if (options.counter != null) {
+            increment_by = increment_by + parseInt(options.counter - 1);
+          }
+
           let numgen_seperator = item["numgen_seperator"];
-          let newNumber = parseInt(postfix) + parseInt(increment_by);
+          let newNumber = parseInt(postfix) + increment_by;
 
           let paddedNumber = padString(String(newNumber), length, "0");
+
           let queryAtt =
             "UPDATE `hims_f_app_numgen` \
     SET `current_num`=?, `pervious_num`=?,postfix=? \
@@ -212,14 +217,17 @@ let runningNumberGen = options => {
             [paddedNumber, postfix, paddedNumber, numgenId],
             (error, numUpdate) => {
               if (error) {
+                debugFunction("Error");
                 options.onFailure(error);
               }
+
               let completeNumber =
                 prefix +
                 numgen_seperator +
                 intermediate_series +
                 numgen_seperator +
                 paddedNumber;
+
               resultNumbers.push({
                 completeNumber: completeNumber,
                 module_desc: item["module_desc"]
@@ -227,6 +235,7 @@ let runningNumberGen = options => {
 
               if (index == result.length - 1) {
                 options.onSuccess(resultNumbers);
+                debugLog("Number:", resultNumbers);
               }
             }
           );

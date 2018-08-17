@@ -10,6 +10,8 @@ var _httpStatus = require("../utils/httpStatus");
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
+var _caching = require("../utils/caching");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var modelAppGen = {
@@ -122,6 +124,8 @@ var addVisa = function addVisa(req, res, next) {
         req.records = result;
         next();
       });
+
+      (0, _caching.deleteFromCache)("visa");
     });
   } catch (e) {
     next(e);
@@ -140,9 +144,9 @@ var updateVisa = function updateVisa(req, res, next) {
       }
       var inputParam = (0, _extend2.default)(visaType, req.body);
       connection.query("UPDATE `hims_d_visa_type` \
-        SET `visa_type`=?, `visa_desc`=?, `updated_by`=?, `updated_date`=? \
-        `visa_status` =? \
-        WHERE `record_status`='A' and `hims_d_visa_type_id`=?", [inputParam.visa_type, inputParam.visa_desc, inputParam.updated_by, new Date(), inputParam.visa_status, inputParam.hims_d_visa_type_id], function (error, result) {
+        SET `visa_type`=?, `arabic_visa_type` = ?, `updated_by`=?, `updated_date`=? \
+        ,`visa_status` =? \
+        WHERE `record_status`='A' and `hims_d_visa_type_id`=?", [inputParam.visa_type, inputParam.arabic_visa_type, inputParam.updated_by, new Date(), inputParam.visa_status, inputParam.hims_d_visa_type_id], function (error, result) {
         (0, _utils.releaseDBConnection)(db, connection);
         if (error) {
           next(error);
@@ -150,6 +154,7 @@ var updateVisa = function updateVisa(req, res, next) {
         req.records = result;
         next();
       });
+      (0, _caching.deleteFromCache)("visa");
     });
   } catch (e) {
     next(e);
@@ -174,6 +179,7 @@ var deleteVisa = function deleteVisa(req, res, next) {
     }, function (error) {
       next(error);
     });
+    (0, _caching.deleteFromCache)("visa");
   } catch (e) {
     next(e);
   }

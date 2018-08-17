@@ -8,6 +8,8 @@ import moment from "moment";
 let insertPatientVisitData = (req, res, next) => {
   try {
     debugFunction("insertPatientVisitData");
+    let header = req.headers["x-app-user-identity"];
+    header = JSON.parse(header);
     let inputParam = extend(
       {
         hims_f_patient_visit_id: null,
@@ -28,9 +30,9 @@ let insertPatientVisitData = (req, res, next) => {
         mlc_accident_reg_no: null,
         mlc_police_station: null,
         mlc_wound_certified_date: null,
-        created_by: null,
+        created_by: header.user_id,
         created_date: null,
-        updated_by: null,
+        updated_by: header.user_id,
         updated_date: null,
         record_status: null,
         patient_message: null,
@@ -44,9 +46,12 @@ let insertPatientVisitData = (req, res, next) => {
     );
 
     let db = req.options != null ? req.options.db : req.db;
+    let existingExparyDate = null;
+    let currentPatientEpisodeNo = null;
 
+    inputParam.patient_id = req.patient_id || req.body.patient_id;
+    debugLog("Body:", req.body);
     const internalInsertPatientVisitData = () => {
-      inputParam.patient_id = req.patient_id;
       if (inputParam.age_in_years == null) {
         let fromDate = moment(inputParam.date_of_birth);
         let toDate = new Date();
@@ -58,6 +63,10 @@ let insertPatientVisitData = (req, res, next) => {
         inputParam.age_in_years = years;
         inputParam.age_in_months = months;
         inputParam.age_in_days = days;
+      }
+      if (existingExparyDate == null || existingExparyDate == undefined) {
+        inputParam.visit_expiery_date = existingExparyDate;
+        inputParam.episode_id = currentPatientEpisodeNo;
       }
       debugLog("inside internalInsertPatientVisitData");
       db.query(
@@ -143,7 +152,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
          patient_id=? and doctor_id=? and record_status='A' group by patient_id, doctor_id;",
         [inputParam.patient_id, inputParam.doctor_id],
         (error, expResult) => {
-          debugLog("In consultation Query");
+          debugLog("In consultation Query", expResult);
           if (error) {
             if (req.options == null) {
               db.rollback(() => {
@@ -153,8 +162,6 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
               req.options.onFailure(error);
             }
           } else {
-            let existingExparyDate = null;
-            // let currentPatientEpisodeNo = null;
             //fetching expiry date and episode id for existing patient
             if (expResult[0] != null || expResult.length != 0) {
               existingExparyDate = moment(

@@ -14,6 +14,8 @@ import { inflate } from "zlib";
 
 let addBillData = (req, res, next) => {
   let db = req.options == null ? req.db : req.options.db;
+  let header = req.headers["x-app-user-identity"];
+  header = JSON.parse(header);
   try {
     let inputParam = extend(
       {
@@ -48,9 +50,9 @@ let addBillData = (req, res, next) => {
         net_tax: 0,
         credit_amount: 0,
         receiveable_amount: 0,
-        created_by: null,
+        created_by: header.user_id,
         created_date: null,
-        updated_by: null,
+        updated_by: header.user_id,
         updated_date: null,
         record_status: null,
         cancel_remarks: null,
@@ -1316,15 +1318,17 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
 //created by:irfan, Patient-receipt if advance or  Refund to patient
 let patientAdvanceRefund = (req, res, next) => {
+  let header = req.headers["x-app-user-identity"];
+  header = JSON.parse(header);
   let P_receiptHeaderModel = {
     hims_f_receipt_header_id: null,
     receipt_number: null,
     receipt_date: null,
     billing_header_id: null,
     total_amount: null,
-    created_by: null,
+    created_by: header.user_id,
     created_date: null,
-    updated_by: null,
+    updated_by: header.user_id,
     updated_date: null,
     record_status: null,
     counter_id: null,
@@ -1337,9 +1341,9 @@ let patientAdvanceRefund = (req, res, next) => {
     hims_f_receipt_header_id: null,
     transaction_type: null,
     advance_amount: null,
-    created_by: null,
+    created_by: header.user_id,
     created_date: null,
-    updated_by: null,
+    updated_by: header.user_id,
     update_date: null,
     record_status: null
   };
@@ -2028,6 +2032,8 @@ let addEpisodeEncounterData = (req, res, next) => {
         }
       }
 
+      debugLog("Episode", input);
+
       currentEncounterNo = result[0].encounter_id;
       if (currentEncounterNo > 0) {
         let nextEncounterNo = currentEncounterNo + 1;
@@ -2125,7 +2131,8 @@ let newReceiptData = (req, res, next) => {
     debugFunction("newReceiptFUnc");
 
     let db = req.options == null ? req.db : req.options.db;
-
+    let header = req.headers["x-app-user-identity"];
+    header = JSON.parse(header);
     let inputParam = extend(
       {
         hims_f_receipt_header_id: null,
@@ -2133,9 +2140,9 @@ let newReceiptData = (req, res, next) => {
         receipt_date: null,
         billing_header_id: null,
         total_amount: null,
-        created_by: null,
+        created_by: header.user_id,
         created_date: null,
-        updated_by: null,
+        updated_by: header.user_id,
         updated_date: null,
         record_status: null,
         counter_id: null,
