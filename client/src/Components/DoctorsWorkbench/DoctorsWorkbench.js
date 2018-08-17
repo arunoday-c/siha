@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import "./doctor_workbench.css";
 import {
   AlgaehDataGrid,
@@ -21,23 +21,45 @@ import { getCookie } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 
-class DoctorsWorkbench extends Component {
+class DoctorsWorkbench extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
       my_daylist: [],
-      selectedLang: "en"
+      selectedLang: "en",
+      data: []
     };
+
+    this.moveToEncounterList = this.moveToEncounterList.bind(this);
+    this.loadListofData = this.loadListofData.bind(this);
   }
 
-  componentWillMount() {
-    let prevLang = getCookie("Language");
-    setGlobal({ selectedLang: prevLang });
-    this.setState({
-      selectedLang: prevLang
-    });
+  moveToEncounterList(e) {
+    let updated_by = getCookie("UserID");
+    const patient_encounter_id = e.currentTarget.getAttribute(
+      "data-encounterid"
+    );
 
+    console.log("Data to Update", updated_by + " ID" + patient_encounter_id);
+
+    algaehApiCall({
+      uri: "/doctorsWorkBench/updatdePatEncntrStatus",
+      data: {
+        patient_encounter_id: patient_encounter_id,
+        updated_by: updated_by
+      },
+      method: "PUT",
+      onSuccess: response => {
+        if (response.data.success) this.loadListofData();
+      },
+      onFailure: error => {
+        // this.setState({ open: false });
+      }
+    });
+  }
+
+  loadListofData() {
     this.props.getMyDay({
       uri: "/doctorsWorkBench/getMyDay",
       data: {
@@ -51,6 +73,10 @@ class DoctorsWorkbench extends Component {
         mappingName: "myday_list"
       },
       afterSuccess: data => {
+        this.setState({ data: data });
+
+        console.log("Data Array:", data);
+
         let listofvisit = Enumerable.from(data)
           .where(w => w.status === "V")
           .toArray();
@@ -59,6 +85,15 @@ class DoctorsWorkbench extends Component {
           .toArray();
       }
     });
+  }
+
+  componentWillMount() {
+    let prevLang = getCookie("Language");
+    setGlobal({ selectedLang: prevLang });
+    this.setState({
+      selectedLang: prevLang
+    });
+    this.loadListofData();
   }
 
   render() {
@@ -205,37 +240,37 @@ class DoctorsWorkbench extends Component {
             <AlgaehLabel label={{ fieldName: "patients_list" }} />
             <div className="opPatientList">
               <ul className="opList">
-                {this.props.myday_list !== undefined
-                  ? this.props.myday_list.map((data, index) => (
-                      <li
-                        key={index}
-                        onDoubleClick={() => {
-                          alert("Move the patient");
-                        }}
-                      >
-                        <span className="op-sec-1">
-                          <i className="appointment-icon" />
-                          {/* <i className="walking-icon" /> */}
-                          <span className="opTime">11:44:00</span>
+                {Enumerable.from(this.state.data)
+                  .where(w => w.status === "V")
+                  .toArray()
+                  .map((data, index) => (
+                    <li
+                      key={index}
+                      data-encounterid={String(
+                        data.hims_f_patient_encounter_id
+                      )}
+                      onClick={this.moveToEncounterList}
+                    >
+                      <span className="op-sec-1">
+                        <i className="appointment-icon" />
+                        {/* <i className="walking-icon" /> */}
+                        <span className="opTime">11:44:00</span>
+                      </span>
+                      <span className="op-sec-2">
+                        <span className="opPatientName">{data.full_name}</span>
+                        <span className="opStatus nursing">
+                          {data.nurse_examine === "Y"
+                            ? "Nursing Done"
+                            : "Nursing Pending"}
                         </span>
-                        <span className="op-sec-2">
-                          <span className="opPatientName">
-                            {data.full_name}
-                          </span>
-                          <span className="opStatus nursing">
-                            {data.nurse_examine === "Y"
-                              ? "Nursing Done"
-                              : "Nursing Pending"}
-                          </span>
+                      </span>
+                      <span className="op-sec-3">
+                        <span className="opPatientStatus newVisit">
+                          New Visit
                         </span>
-                        <span className="op-sec-3">
-                          <span className="opPatientStatus newVisit">
-                            New Visit
-                          </span>
-                        </span>
-                      </li>
-                    ))
-                  : null}
+                      </span>
+                    </li>
+                  ))}
               </ul>
             </div>
           </div>
@@ -255,7 +290,12 @@ class DoctorsWorkbench extends Component {
               </div>
               <div className="col-lg-5">
                 {" "}
-                <AlgaehLabel label={{ fieldName: "total_encounters" }} /> : 8
+                <AlgaehLabel label={{ fieldName: "total_encounters" }} /> :{" "}
+                {
+                  Enumerable.from(this.state.data)
+                    .where(w => w.status !== "V")
+                    .toArray().length
+                }
               </div>
             </div>
             <div className="divider" />
@@ -347,7 +387,7 @@ class DoctorsWorkbench extends Component {
               id="encounter_table"
               columns={[
                 {
-                  fieldName: "encounter_code",
+                  fieldName: "status",
                   label: <AlgaehLabel label={{ fieldName: "status" }} />,
                   disabled: true
                 },
@@ -356,7 +396,7 @@ class DoctorsWorkbench extends Component {
                   label: <AlgaehLabel label={{ fieldName: "patient_code" }} />
                 },
                 {
-                  fieldName: "patient_name",
+                  fieldName: "full_name",
                   label: <AlgaehLabel label={{ fieldName: "patient_name" }} />
                 },
                 {
@@ -388,13 +428,12 @@ class DoctorsWorkbench extends Component {
               ]}
               keyId="encounter_code"
               dataSource={{
-                data:
-                  this.props.encounterlist === undefined
-                    ? []
-                    : this.props.encounterlist
+                data: Enumerable.from(this.state.data)
+                  .where(w => w.status !== "V")
+                  .toArray()
               }}
               isEditable={false}
-              paging={{ page: 0, rowsPerPage: 10 }}
+              paging={{ page: 0, rowsPerPage: 5 }}
               events={{
                 onDelete: row => {},
                 onEdit: row => {},
