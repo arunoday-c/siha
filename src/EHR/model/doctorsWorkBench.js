@@ -884,10 +884,10 @@ let getMyDay = (req, res, next) => {
 
     let statusFlag = "";
     if (req.query.status == "A") {
-      statusFlag = " status <> 'V'";
+      statusFlag = " E.status <> 'V' AND";
       delete req.query.status;
-    } else {
-      statusFlag = " status='V'";
+    } else if (req.query.status == "V") {
+      statusFlag = " E.status='V' AND";
       delete req.query.status;
     }
 
@@ -904,7 +904,7 @@ let getMyDay = (req, res, next) => {
          E.patient_type,E.episode_id,E.encounter_id,E.`source`,E.created_date from hims_f_patient_encounter E\
          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id  where E.record_status='A' AND " +
           statusFlag +
-          "AND" +
+          "" +
           dateDiff +
           " AND " +
           where.condition,
@@ -925,6 +925,7 @@ let getMyDay = (req, res, next) => {
     next(e);
   }
 };
+
 //created by irfan: to update patient encounter status to WIP
 let updatdePatEncntrStatus = (req, res, next) => {
   try {

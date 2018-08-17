@@ -33,7 +33,7 @@ class PatientProfile extends Component {
       <div className="patientProfile">
         <div className="patientInfo-Top box-shadow-normal">
           <div className="backBtn">
-            <button type="button" class="btn btn-outline-secondary btn-sm">
+            <button type="button" className="btn btn-outline-secondary btn-sm">
               <i className="fas fa-angle-double-left fa-lg" />
               Back
             </button>
