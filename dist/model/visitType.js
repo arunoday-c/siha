@@ -29,7 +29,8 @@ var selectStatement = function selectStatement(req, res, next) {
       }
       var where = (0, _utils.whereCondition)((0, _extend2.default)(whereStatement, req.query));
       connection.query("SELECT `hims_d_visit_type_id`, `visit_type_code`, `visit_type_desc`,`visit_status`,`arabic_visit_type_desc`\
-       , `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_visit_type`  WHERE record_status='A' AND " + where.condition, where.values, function (error, result) {
+       , `consultation`, `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_visit_type`  \
+       WHERE record_status='A' AND " + where.condition, where.values, function (error, result) {
         (0, _utils.releaseDBConnection)(db, connection);
         if (error) {
           next(error);
@@ -48,7 +49,7 @@ var addVisit = function addVisit(req, res, next) {
     hims_d_visit_type_id: null,
     visit_type_code: null,
     visit_type_desc: null,
-    hims_d_visit_type: null,
+    consultation: null,
     created_by: null,
     created_date: null,
     updated_by: null,
@@ -66,9 +67,9 @@ var addVisit = function addVisit(req, res, next) {
       next(error);
     }
     var inputParam = (0, _extend2.default)(visitType, req.body);
-    connection.query("INSERT INTO `hims_d_visit_type` (`visit_type_code`, `visit_type_desc`, `hims_d_visit_type`, `created_by` \
-     , `created_date`,`visit_status`) \
-   VALUES ( ?, ?, ?, ?, ?,?)", [inputParam.visit_type_code, inputParam.visit_type_desc, inputParam.hims_d_visit_type, inputParam.created_by, new Date(), inputParam.visit_status], function (error, result) {
+    connection.query("INSERT INTO `hims_d_visit_type` (`visit_type_code`, `visit_type_desc`,`arabic_visit_type_desc`, `consultation` \
+      , `created_by` ,`created_date`,`visit_status`) \
+   VALUES ( ?, ?, ?, ?, ?,?)", [inputParam.visit_type_code, inputParam.visit_type_desc, inputParam.arabic_visit_type_desc, inputParam.consultation, inputParam.created_by, new Date(), inputParam.visit_status], function (error, result) {
       (0, _utils.releaseDBConnection)(db, connection);
       if (error) {
         next(error);
@@ -84,7 +85,7 @@ var updateVisit = function updateVisit(req, res, next) {
     hims_d_visit_type_id: null,
     visit_type_code: null,
     visit_type_desc: null,
-    hims_d_visit_type: null,
+    consultation: null,
     created_by: null,
     created_date: null,
     updated_by: null,
@@ -102,8 +103,8 @@ var updateVisit = function updateVisit(req, res, next) {
     }
     var inputParam = (0, _extend2.default)(visitType, req.body);
     connection.query("UPDATE `hims_d_visit_type` \
-     SET `visit_type_desc`=?, `hims_d_visit_type`=?,  `updated_by`=?, `updated_date`=?,visit_status=? \
-     WHERE `record_status`='A' and `hims_d_visit_type_id`=?", [inputParam.visit_type_desc, inputParam.hims_d_visit_type, inputParam.updated_by, new Date(), inputParam.visit_status, inputParam.hims_d_visit_type_id], function (error, result) {
+     SET `visit_type_desc`=?,  `arabic_visit_type_desc`=?,`consultation`=?, `updated_by`=?, `updated_date`=?,visit_status=? \
+     WHERE `record_status`='A' and `hims_d_visit_type_id`=?", [inputParam.visit_type_desc, inputParam.arabic_visit_type_desc, inputParam.consultation, inputParam.updated_by, new Date(), inputParam.visit_status, inputParam.hims_d_visit_type_id], function (error, result) {
       (0, _utils.releaseDBConnection)(db, connection);
       if (error) {
         next(error);

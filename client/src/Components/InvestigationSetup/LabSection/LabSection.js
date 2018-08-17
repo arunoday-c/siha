@@ -79,13 +79,13 @@ class LabSection extends Component {
                   variant="raised"
                   color="primary"
                 >
-                  {this.state.buttonText}
+                  <AlgaehLabel label={{ fieldName: "Addbutton" }} />
                 </Button>
               </div>
             </div>
           </form>
 
-          {/* <div className="row form-details">
+          <div className="row form-details">
             <div className="col">
               <AlgaehDataGrid
                 id="visa_grd"
@@ -126,8 +126,8 @@ class LabSection extends Component {
                     disabled: true
                   },
                   {
-                    fieldName: "visa_status",
-                    label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                    fieldName: "section_status",
+                    label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
                     displayTemplate: row => {
                       return row.visa_status === "A" ? "Active" : "Inactive";
                     },
@@ -136,9 +136,9 @@ class LabSection extends Component {
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "visa_status",
+                            name: "section_status",
                             className: "select-fld",
-                            value: row.visa_status,
+                            value: row.section_status,
                             dataSource: {
                               textField: "name",
                               valueField: "value",
@@ -161,16 +161,16 @@ class LabSection extends Component {
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{
-                  onDelete: this.deleteVisaType.bind(this),
-                  onEdit: row => {},
+                  // onDelete: this.deleteLabSection.bind(this),
+                  onEdit: row => {}
                   // onDone: row => {
                   //   alert(JSON.stringify(row));
                   // }
-                  onDone: this.updateVisaTypes.bind(this)
+                  // onDone: this.updateLabSection.bind(this)
                 }}
               />
             </div>
-          </div> */}
+          </div>
         </Paper>
       </div>
     );

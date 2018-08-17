@@ -10,10 +10,12 @@ import moment from "moment";
 import { debugLog, debugFunction } from "../utils/logging";
 
 import { LINQ } from "node-linq";
-import { inflate } from "zlib";
+//import { inflate } from "zlib";
 
 let addBillData = (req, res, next) => {
   let db = req.options == null ? req.db : req.options.db;
+  let header = req.headers["x-app-user-identity"];
+  header = JSON.parse(header);
   try {
     let inputParam = extend(
       {
@@ -48,9 +50,9 @@ let addBillData = (req, res, next) => {
         net_tax: 0,
         credit_amount: 0,
         receiveable_amount: 0,
-        created_by: null,
+        created_by: header.user_id,
         created_date: null,
-        updated_by: null,
+        updated_by: header.user_id,
         updated_date: null,
         record_status: null,
         cancel_remarks: null,
@@ -72,8 +74,10 @@ let addBillData = (req, res, next) => {
         req.options.onFailure(errorGen);
       }
     }
+
     inputParam.hims_f_patient_visit_id = req.body.patient_visit_id;
     inputParam.patient_id = req.body.patient_id;
+
     if (
       inputParam.sheet_discount_amount != 0 &&
       inputParam.bill_comments == ""
@@ -88,9 +92,11 @@ let addBillData = (req, res, next) => {
         req.options.onFailure(errorGene);
       }
     }
+
     inputParam.bill_number = req.bill_number;
-    inputParam.patient_id = req.patient_id;
+    inputParam.patient_id = req.patient_id || req.body.patient_id;
     inputParam.visit_id = req.body.visit_id;
+    debugLog("Bill After If:", inputParam.patient_id);
     db.query(
       "INSERT INTO hims_f_billing_header ( patient_id, visit_id, bill_number,\
             incharge_or_provider, bill_date, advance_amount,advance_adjust, discount_amount \
@@ -1316,15 +1322,17 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
 //created by:irfan, Patient-receipt if advance or  Refund to patient
 let patientAdvanceRefund = (req, res, next) => {
+  let header = req.headers["x-app-user-identity"];
+  header = JSON.parse(header);
   let P_receiptHeaderModel = {
     hims_f_receipt_header_id: null,
     receipt_number: null,
     receipt_date: null,
     billing_header_id: null,
     total_amount: null,
-    created_by: null,
+    created_by: header.user_id,
     created_date: null,
-    updated_by: null,
+    updated_by: header.user_id,
     updated_date: null,
     record_status: null,
     counter_id: null,
@@ -1337,9 +1345,9 @@ let patientAdvanceRefund = (req, res, next) => {
     hims_f_receipt_header_id: null,
     transaction_type: null,
     advance_amount: null,
-    created_by: null,
+    created_by: header.user_id,
     created_date: null,
-    updated_by: null,
+    updated_by: header.user_id,
     update_date: null,
     record_status: null
   };
@@ -2014,80 +2022,118 @@ let addEpisodeEncounterData = (req, res, next) => {
     req.body
   );
 
-  let currentEncounterNo = null;
+  debugLog("Input:", req.body);
 
   db.query(
-    "select encounter_id from hims_d_options where hims_d_options_id=1",
-    (error, result) => {
+    "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,\
+           episode_id,age,patient_type)values(\
+            ?,?,?,?,?,?,?)",
+    [
+      input.patient_id,
+      input.provider_id,
+      input.visit_id,
+      input.source,
+      input.episode_id,
+      input.age,
+      input.patient_type
+    ],
+    (error, results) => {
+      debugLog("result:");
       if (error) {
+        debugLog("error");
         if (req.options == null) {
-          releaseDBConnection(req.db, db);
-          next(error);
-        } else {
-          req.options.onFailure(error);
+          connection.rollback(() => {
+            releaseDBConnection(req.db, db);
+            next(error);
+          });
         }
       }
-
-      currentEncounterNo = result[0].encounter_id;
-      if (currentEncounterNo > 0) {
-        let nextEncounterNo = currentEncounterNo + 1;
-
-        db.query(
-          "update hims_d_options set encounter_id=? where hims_d_options_id=1",
-          [nextEncounterNo],
-          (error, updateResult) => {
-            if (error) {
-              if (req.options == null) {
-                db.rollback(() => {
-                  releaseDBConnection(req.db, db);
-                  next(error);
-                });
-              } else {
-                req.options.onFailure(error);
-              }
-            }
-
-            if (updateResult != null) {
-              db.query(
-                "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,status,\
-                       episode_id,encounter_id,checked_in,nurse_examine,age,patient_type,queue_no)values(\
-                        ?,?,?,?,?,?,?,?,?,?,?,?)",
-                [
-                  input.patient_id,
-                  input.provider_id,
-                  input.visit_id,
-                  input.source,
-                  input.status,
-                  input.episode_id,
-                  currentEncounterNo,
-                  input.checked_in,
-                  input.nurse_examine,
-                  input.age,
-                  input.patient_type,
-                  input.queue_no
-                ],
-                (error, results) => {
-                  if (error) {
-                    if (req.options == null) {
-                      connection.rollback(() => {
-                        releaseDBConnection(req.db, db);
-                        next(error);
-                      });
-                    }
-                  }
-                  if (req.options == null) {
-                    req.records = results;
-                  } else {
-                    req.options.onSuccess(results);
-                  }
-                }
-              );
-            }
-          }
-        );
+      if (req.options == null) {
+        debugLog("error");
+        req.records = results;
+      } else {
+        debugLog("Success");
+        req.options.onSuccess(results);
       }
     }
   );
+
+  // let currentEncounterNo = null;
+
+  // db.query(
+  //   "select encounter_id from hims_d_options where hims_d_options_id=1",
+  //   (error, result) => {
+  //     if (error) {
+  //       if (req.options == null) {
+  //         releaseDBConnection(req.db, db);
+  //         next(error);
+  //       } else {
+  //         req.options.onFailure(error);
+  //       }
+  //     }
+
+  //     debugLog("Episode", input);
+
+  //     currentEncounterNo = result[0].encounter_id;
+  //     if (currentEncounterNo > 0) {
+  //       let nextEncounterNo = currentEncounterNo + 1;
+
+  //       db.query(
+  //         "update hims_d_options set encounter_id=? where hims_d_options_id=1",
+  //         [nextEncounterNo],
+  //         (error, updateResult) => {
+  //           if (error) {
+  //             if (req.options == null) {
+  //               db.rollback(() => {
+  //                 releaseDBConnection(req.db, db);
+  //                 next(error);
+  //               });
+  //             } else {
+  //               req.options.onFailure(error);
+  //             }
+  //           }
+
+  //           if (updateResult != null) {
+  //             db.query(
+  //               "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,status,\
+  //                      episode_id,encounter_id,checked_in,nurse_examine,age,patient_type,queue_no)values(\
+  //                       ?,?,?,?,?,?,?,?,?,?,?,?)",
+  //               [
+  //                 input.patient_id,
+  //                 input.provider_id,
+  //                 input.visit_id,
+  //                 input.source,
+  //                 input.status,
+  //                 input.episode_id,
+  //                 currentEncounterNo,
+  //                 input.checked_in,
+  //                 input.nurse_examine,
+  //                 input.age,
+  //                 input.patient_type,
+  //                 input.queue_no
+  //               ],
+  //               (error, results) => {
+  //                 if (error) {
+  //                   if (req.options == null) {
+  //                     connection.rollback(() => {
+  //                       releaseDBConnection(req.db, db);
+  //                       next(error);
+  //                     });
+  //                   }
+  //                 }
+  //                 if (req.options == null) {
+  //                   req.records = results;
+  //                 } else {
+  //                   req.options.onSuccess(results);
+  //                 }
+  //               }
+  //             );
+  //           }
+  //         }
+  //       );
+  //     }
+  //   }
+  // );
 };
 
 //get bill details
@@ -2125,7 +2171,8 @@ let newReceiptData = (req, res, next) => {
     debugFunction("newReceiptFUnc");
 
     let db = req.options == null ? req.db : req.options.db;
-
+    let header = req.headers["x-app-user-identity"];
+    header = JSON.parse(header);
     let inputParam = extend(
       {
         hims_f_receipt_header_id: null,
@@ -2133,9 +2180,9 @@ let newReceiptData = (req, res, next) => {
         receipt_date: null,
         billing_header_id: null,
         total_amount: null,
-        created_by: null,
+        created_by: header.user_id,
         created_date: null,
-        updated_by: null,
+        updated_by: header.user_id,
         updated_date: null,
         record_status: null,
         counter_id: null,

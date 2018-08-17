@@ -175,5 +175,15 @@
     { "name": "Cancel", "value": "Ca" },
     { "name": "Reopen", "value": "RO" },
     { "name": "Req Reopen", "value": "RRO" }
+  ],
+  "FORMAT_STORAGE_TYPE": [
+    { "name": "Normal", "value": "N" },
+    { "name": "Frozen", "value": "F" },
+    { "name": "Refrigerate", "value": "R" }
+  ],
+  "FORMAT_ANALYTE_TYPE": [
+    { "name": "Quality", "value": "QU" },
+    { "name": "Quantity", "value": "QN" },
+    { "name": "Text", "value": "T" }
   ]
 }

@@ -30,6 +30,12 @@ var _fs = require("fs");
 
 var _fs2 = _interopRequireDefault(_fs);
 
+var _nodeLinq = require("node-linq");
+
+var _bluebird = require("bluebird");
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
+
 var _underscore = require("underscore");
 
 var _underscore2 = _interopRequireDefault(_underscore);
@@ -43,8 +49,6 @@ var paging = function paging(options) {
     pageSize: options.paging.pageSize
   };
 };
-//import { LINQ } from "node-linq";
-
 var whereCondition = function whereCondition(options) {
   var condition = "";
   var values = [];
@@ -172,6 +176,64 @@ var releaseConnection = function releaseConnection(req) {
 };
 var checkIsNull = function checkIsNull(input, defaultType) {
   return input == null || input == "" ? defaultType : input;
+};
+
+var runningNumberGen = function runningNumberGen(options) {
+  var db = options.db;
+
+  db.query("SELECT  `module_desc`,`hims_f_app_numgen_id`, `prefix`, `intermediate_series`, `postfix`\
+, `length`, `increment_by`, `numgen_seperator`, `postfix_start`\
+,`postfix_end`, `current_num`, `pervious_num` FROM `hims_f_app_numgen`\
+ WHERE record_status='A' AND `module_desc` in (?)AND  \
+ `postfix` >= `postfix_start` AND `postfix` <= `postfix_end`", [options.module_desc], function (error, result) {
+    if (error) {
+      options.onFailure(error);
+    }
+
+    if (result.length == 0) {
+      options.onFailure("Generation series for '" + options.module_desc + "' not exist please contact administrator.");
+    } else {
+      var resultNumbers = [];
+      result.map(function (item, index) {
+        var prefix = item["prefix"];
+        var numgenId = item["hims_f_app_numgen_id"];
+        var intermediate_series = item["intermediate_series"];
+        var postfix = item["postfix"];
+        var length = parseInt(item["length"]) - parseInt(prefix.length);
+        var increment_by = parseInt(item["increment_by"]);
+        if (options.counter != null) {
+          increment_by = increment_by + parseInt(options.counter - 1);
+        }
+
+        var numgen_seperator = item["numgen_seperator"];
+        var newNumber = parseInt(postfix) + increment_by;
+
+        var paddedNumber = padString(String(newNumber), length, "0");
+
+        var queryAtt = "UPDATE `hims_f_app_numgen` \
+    SET `current_num`=?, `pervious_num`=?,postfix=? \
+    WHERE  `record_status`='A' AND `hims_f_app_numgen_id`=?";
+        db.query(queryAtt, [paddedNumber, postfix, paddedNumber, numgenId], function (error, numUpdate) {
+          if (error) {
+            (0, _logging.debugFunction)("Error");
+            options.onFailure(error);
+          }
+
+          var completeNumber = prefix + numgen_seperator + intermediate_series + numgen_seperator + paddedNumber;
+
+          resultNumbers.push({
+            completeNumber: completeNumber,
+            module_desc: item["module_desc"]
+          });
+
+          if (index == result.length - 1) {
+            options.onSuccess(resultNumbers);
+            (0, _logging.debugLog)("Number:", resultNumbers);
+          }
+        });
+      });
+    }
+  });
 };
 
 var runningNumber = function runningNumber(db, numgenId, paramName, callBack, isreleaseConnection) {
@@ -306,11 +368,47 @@ var downloadFile = function downloadFile(req, res, callBack) {
     callBack(error, req);
   });
 };
+/*
+   input as array of obejct and converting to single araay object
+*/
+var jsonArrayToObject = function jsonArrayToObject(options) {
+  var outputObject = [];
+
+  var _loop = function _loop(i) {
+    var item = options.arrayObj[i];
+
+    outputObject.push(options.sampleInputObject.map(function (key) {
+      if (key == "created_by" || key == "updated_by") {
+        if (options.userId != null) {
+          return options.userId;
+        }
+      }
+      if (options.replaceObject != null && options.replaceObject.length != 0) {
+        var replacer = new _nodeLinq.LINQ(options.replaceObject).Where(function (w) {
+          return w.originalKey == key;
+        }).FirstOrDefault();
+
+        if (replacer != null) {
+          if (replacer.NewKey != null) {
+            key = replacer.NewKey;
+          }
+        }
+      }
+
+      return item[key];
+    }));
+  };
+
+  for (var i = 0; i < options.arrayObj.length; i++) {
+    _loop(i);
+  }
+  return outputObject;
+};
 
 var bulkInputArrayObject = function bulkInputArrayObject(arrayObj, outArray, objectToChang) {
   objectToChang = objectToChang || {};
   _underscore2.default.each(arrayObj, function (item, index) {
-    outArray.push(Object.keys(item).map(function (key) {
+    outArray.push(Object.keys(item).map(function (key, keyIndex) {
       if (objectToChang[key] != null) {
         return objectToChang[key];
       }
@@ -349,6 +447,8 @@ module.exports = {
   uploadFile: uploadFile,
   downloadFile: downloadFile,
   bulkInputArrayObject: bulkInputArrayObject,
-  bulkMasters: bulkMasters
+  bulkMasters: bulkMasters,
+  jsonArrayToObject: jsonArrayToObject,
+  runningNumberGen: runningNumberGen
 };
 //# sourceMappingURL=index.js.map

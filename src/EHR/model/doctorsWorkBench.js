@@ -11,6 +11,7 @@ import httpStatus from "../../utils/httpStatus";
 //import { LINQ } from "node-linq";
 
 import { logger, debugFunction, debugLog } from "../../utils/logging";
+import { SSL_OP_NETSCAPE_CA_DN_BUG } from "constants";
 
 //created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
@@ -854,7 +855,7 @@ let getEncounterReview = (req, res, next) => {
   }
 };
 
-//created by irfan: get MYDAY in doctors work bench , to show list todays patients
+//created by irfan: get MYDAY in doctors work bench , to show list of todays patients
 let getMyDay = (req, res, next) => {
   let getMydayWhere = {
     provider_id: "ALL"
@@ -883,10 +884,10 @@ let getMyDay = (req, res, next) => {
 
     let statusFlag = "";
     if (req.query.status == "A") {
-      statusFlag = " status <> 'V'";
+      statusFlag = " E.status <> 'V' AND";
       delete req.query.status;
-    } else {
-      statusFlag = " status='V'";
+    } else if (req.query.status == "V") {
+      statusFlag = " E.status='V' AND";
       delete req.query.status;
     }
 
@@ -899,11 +900,11 @@ let getMyDay = (req, res, next) => {
         next(error);
       }
       db.query(
-        "select P.patient_code,P.full_name,E.patient_id ,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
+        "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
          E.patient_type,E.episode_id,E.encounter_id,E.`source`,E.created_date from hims_f_patient_encounter E\
          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id  where E.record_status='A' AND " +
           statusFlag +
-          "AND" +
+          "" +
           dateDiff +
           " AND " +
           where.condition,
@@ -915,6 +916,42 @@ let getMyDay = (req, res, next) => {
             next(error);
           }
 
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update patient encounter status to WIP
+let updatdePatEncntrStatus = (req, res, next) => {
+  try {
+    debugFunction("updatdePatEncntrStatus");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    debugLog("Input Data", req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE  hims_f_patient_encounter SET  `status`='W',updated_by=?,updated_date=now() WHERE\
+         hims_f_patient_encounter_id=? AND  record_status='A';",
+        [req.body.updated_by, req.body.patient_encounter_id],
+        (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
           req.records = result;
           next();
         }
@@ -942,5 +979,6 @@ module.exports = {
   getChronicalConditions,
   addEncounterReview,
   getEncounterReview,
-  getMyDay
+  getMyDay,
+  updatdePatEncntrStatus
 };

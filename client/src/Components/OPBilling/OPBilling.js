@@ -18,9 +18,9 @@ import PatRegIOputs from "../../Models/RegistrationPatient";
 import { getCookie } from "../../utils/algaehApiCall";
 
 import { AlgaehActions } from "../../actions/algaehActions";
-import { postBillDetsils } from "../../actions/RegistrationPatient/Billingactions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
+import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 var intervalId;
 
@@ -189,18 +189,44 @@ class PatientDisplayDetails extends Component {
   SaveBill(e) {
     this.GenerateReciept($this => {
       debugger;
-      $this.props.postBillDetsils($this.state, data => {
-        $this.setState({
-          bill_number: data.bill_number,
-          receipt_number: data.receipt_number,
-          saveEnable: true
-        });
-        successfulMessage({
-          message: "Done Successfully",
-          title: "Success",
-          icon: "success"
-        });
+      algaehApiCall({
+        uri: "/opBilling/addOpBIlling",
+        data: $this.state,
+        method: "POST",
+        onSuccess: response => {
+          if (response.data.success) {
+            $this.setState({
+              bill_number: response.data.records.bill_number,
+              receipt_number: response.data.records.receipt_number,
+              saveEnable: true
+            });
+            successfulMessage({
+              message: "Done Successfully",
+              title: "Success",
+              icon: "success"
+            });
+          }
+        },
+        onFailure: error => {
+          successfulMessage({
+            message: error.message,
+            title: "Error",
+            icon: "error"
+          });
+        }
       });
+      // $this.props.postBillDetsils($this.state, data => {
+      //   $this.setState({
+      //     bill_number: data.bill_number,
+      //     receipt_number: data.receipt_number,
+      //     saveEnable: true
+      //   });
+      //   successfulMessage({
+      //     message: "Done Successfully",
+      //     title: "Success",
+      //     icon: "success"
+      //   });
+      // });
     });
   }
 
@@ -341,7 +367,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientDetails: AlgaehActions,
-      postBillDetsils: postBillDetsils,
       initialbillingCalculations: AlgaehActions
     },
     dispatch

@@ -8,6 +8,8 @@ import moment from "moment";
 let insertPatientVisitData = (req, res, next) => {
   try {
     debugFunction("insertPatientVisitData");
+    let header = req.headers["x-app-user-identity"];
+    header = JSON.parse(header);
     let inputParam = extend(
       {
         hims_f_patient_visit_id: null,
@@ -28,9 +30,9 @@ let insertPatientVisitData = (req, res, next) => {
         mlc_accident_reg_no: null,
         mlc_police_station: null,
         mlc_wound_certified_date: null,
-        created_by: null,
+        created_by: header.user_id,
         created_date: null,
-        updated_by: null,
+        updated_by: header.user_id,
         updated_date: null,
         record_status: null,
         patient_message: null,
@@ -38,15 +40,20 @@ let insertPatientVisitData = (req, res, next) => {
         message_active_till: null,
         visit_expiery_date: null,
         episode_id: null,
-        consultation: null
+        consultation: null,
+        appointment_id: null
       },
       req.query["data"] == null ? req.body : req.query
     );
 
     let db = req.options != null ? req.options.db : req.db;
+    let existingExparyDate = null;
+    let currentPatientEpisodeNo = null;
+    let today = moment().format("YYYY-MM-DD");
 
+    inputParam.patient_id = req.patient_id || req.body.patient_id;
+    debugLog("Body:", req.body);
     const internalInsertPatientVisitData = () => {
-      inputParam.patient_id = req.patient_id;
       if (inputParam.age_in_years == null) {
         let fromDate = moment(inputParam.date_of_birth);
         let toDate = new Date();
@@ -59,14 +66,18 @@ let insertPatientVisitData = (req, res, next) => {
         inputParam.age_in_months = months;
         inputParam.age_in_days = days;
       }
+      if (existingExparyDate != null || existingExparyDate != undefined) {
+        inputParam.visit_expiery_date = existingExparyDate;
+        inputParam.episode_id = currentPatientEpisodeNo;
+      }
       debugLog("inside internalInsertPatientVisitData");
       db.query(
         "INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
 `age_in_years`, `age_in_months`, `age_in_days`, `insured`,`sec_insured`,\
 `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
 `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
-`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`)\
-VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
+`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`,`appointment_id`)\
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
         [
           inputParam.patient_id,
           inputParam.visit_type,
@@ -88,7 +99,8 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
           new Date(),
           inputParam.visit_code,
           inputParam.visit_expiery_date,
-          inputParam.episode_id
+          inputParam.episode_id,
+          inputParam.appointment_id
         ],
         (error, visitresult) => {
           if (error) {
@@ -143,7 +155,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
          patient_id=? and doctor_id=? and record_status='A' group by patient_id, doctor_id;",
         [inputParam.patient_id, inputParam.doctor_id],
         (error, expResult) => {
-          debugLog("In consultation Query");
+          debugLog("In consultation Query", expResult);
           if (error) {
             if (req.options == null) {
               db.rollback(() => {
@@ -153,8 +165,6 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
               req.options.onFailure(error);
             }
           } else {
-            let existingExparyDate = null;
-            // let currentPatientEpisodeNo = null;
             //fetching expiry date and episode id for existing patient
             if (expResult[0] != null || expResult.length != 0) {
               existingExparyDate = moment(
@@ -162,6 +172,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
               ).format("YYYY-MM-DD");
               currentPatientEpisodeNo = expResult[0]["episode_id"];
             }
+            // req.body.episode_id = expResult[0]["episode_id"];
             let currentEpisodeNo = null;
             //checking expiry if expired or not_there create new expiry date
             if (
@@ -172,7 +183,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
               //create new expiry date
               db.query(
                 "SELECT param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
-    and record_status='A'",
+                and record_status='A'",
                 (error, record) => {
                   debugLog("In Expiry date records ", record);
                   if (error) {
@@ -213,6 +224,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
                     if (currentEpisodeNo > 0) {
                       let nextEpisodeNo = currentEpisodeNo + 1;
                       inputParam.episode_id = currentEpisodeNo;
+                      req.body.episode_id = inputParam.episode_id;
                       db.query(
                         "update algaeh_d_app_config set episode_id=? where algaeh_d_app_config_id=11 and record_status='A' ",
                         [nextEpisodeNo],
@@ -235,6 +247,10 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
                   }
                 }
               );
+            } else {
+              inputParam.episode_id = expResult[0]["episode_id"];
+              req.body.episode_id = inputParam.episode_id;
+              internalInsertPatientVisitData();
             }
           }
         }

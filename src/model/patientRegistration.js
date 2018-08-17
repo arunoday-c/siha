@@ -54,6 +54,8 @@ let updatePatientRegistrstion = (req, res, next) => {
 let insertPatientData = (req, res, next) => {
   try {
     debugFunction("Insert Patient Registration");
+    let header = req.headers["x-app-user-identity"];
+    header = JSON.parse(header);
     let inputparam = extend(
       {
         hims_d_patient_id: null,
@@ -86,9 +88,9 @@ let insertPatientData = (req, res, next) => {
         photo_file: "",
         primary_id_file: "",
         secondary_id_file: "",
-        created_by: null,
+        created_by: header.user_id,
         created_date: null,
-        updated_by: null,
+        updated_by: header.user_id,
         updated_date: null,
         city_id: null,
         state_id: null,
@@ -163,6 +165,7 @@ let insertPatientData = (req, res, next) => {
         } else {
           inputparam.patient_id = result.insertId;
           req.patient_id = result.insertId;
+          req.body.patient_id = req.patient_id;
           if (options != null) options.onSuccess(result);
           else {
             req.records = result;

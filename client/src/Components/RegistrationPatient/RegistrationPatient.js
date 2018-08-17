@@ -22,6 +22,7 @@ import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import { getCookie } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import AddAdvanceModal from "../Advance/AdvanceModal";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
@@ -159,31 +160,59 @@ class RegistrationPatient extends Component {
     if (!err) {
       this.GenerateReciept($this => {
         if ($this.state.hims_d_patient_id === null) {
-          $this.props.postPatientDetails($this.state, data => {
-            $this.setState({
-              patient_code: data.patient_code,
-              bill_number: data.bill_number,
-              receipt_number: data.receipt_number,
-              saveEnable: true
-            });
-            successfulMessage({
-              message: "Done Successfully",
-              title: "Success",
-              icon: "success"
-            });
+          algaehApiCall({
+            uri: "/frontDesk/add",
+            data: $this.state,
+            method: "POST",
+            onSuccess: response => {
+              if (response.data.success) {
+                $this.setState({
+                  patient_code: response.data.records.patient_code,
+                  bill_number: response.data.records.bill_number,
+                  receipt_number: response.data.records.receipt_number,
+                  saveEnable: true
+                });
+                successfulMessage({
+                  message: "Done Successfully",
+                  title: "Success",
+                  icon: "success"
+                });
+              }
+            },
+            onFailure: error => {
+              successfulMessage({
+                message: error.message,
+                title: "Error",
+                icon: "error"
+              });
+            }
           });
         } else {
-          $this.props.postVisitDetails($this.state, data => {
-            $this.setState({
-              bill_number: data.bill_number,
-              receipt_number: data.receipt_number,
-              saveEnable: true
-            });
-            successfulMessage({
-              message: "Done Successfully",
-              title: "Success",
-              icon: "success"
-            });
+          algaehApiCall({
+            uri: "/frontDesk/update",
+            data: $this.state,
+            method: "POST",
+            onSuccess: response => {
+              if (response.data.success) {
+                $this.setState({
+                  bill_number: response.data.records.bill_number,
+                  receipt_number: response.data.records.receipt_number,
+                  saveEnable: true
+                });
+                successfulMessage({
+                  message: "Done Successfully",
+                  title: "Success",
+                  icon: "success"
+                });
+              }
+            },
+            onFailure: error => {
+              successfulMessage({
+                message: error.message,
+                title: "Error",
+                icon: "error"
+              });
+            }
           });
         }
       });
