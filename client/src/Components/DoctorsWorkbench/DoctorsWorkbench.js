@@ -12,8 +12,55 @@ import IconButton from "@material-ui/core/IconButton";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import Search from "@material-ui/icons/Search";
 import GlobalVariables from "../../utils/GlobalVariables.json";
+import { algaehApiCall } from "../../utils/algaehApiCall";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../actions/algaehActions";
+import { getCookie } from "../../utils/algaehApiCall";
+import { setGlobal } from "../../utils/GlobalFunctions";
+import Enumerable from "linq";
 
 class DoctorsWorkbench extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      my_daylist: [],
+      selectedLang: "en"
+    };
+  }
+
+  componentWillMount() {
+    let prevLang = getCookie("Language");
+    setGlobal({ selectedLang: prevLang });
+    this.setState({
+      selectedLang: prevLang
+    });
+
+    this.props.getMyDay({
+      uri: "/doctorsWorkBench/getMyDay",
+      data: {
+        provider_id: 2,
+        fromDate: "2018-08-10",
+        toDate: "2018-08-16"
+      },
+      method: "GET",
+      redux: {
+        type: "MYDAY_LIST_GET_DATA",
+        mappingName: "myday_list"
+      },
+      afterSuccess: data => {
+        let listofvisit = Enumerable.from(data)
+          .where(w => w.status === "V")
+          .toArray();
+        let listofattanedvisit = Enumerable.from(data)
+          .where(w => w.status === "W")
+          .toArray();
+      }
+    });
+  }
+
   render() {
     return (
       <div className="doctor_workbench">
@@ -21,16 +68,16 @@ class DoctorsWorkbench extends Component {
           <div className="my-calendar col-lg-12">
             <div style={{ width: "calc(100% - 185px)", height: "34px" }}>
               <div className="arrow-box arrow-box-left">
-                <i class="fas fa-angle-left fa-2x" />
+                <i className="fas fa-angle-left fa-2x" />
               </div>
               <div className="arrow-box arrow-box-right">
-                <i class="fas fa-angle-right fa-2x" />
+                <i className="fas fa-angle-right fa-2x" />
               </div>
               <div className="myDay_date">
                 <input type="month" />
               </div>
             </div>
-            <div class="calendar">
+            <div className="calendar">
               <ol>
                 <li>
                   1<span>Wed</span>
@@ -158,71 +205,37 @@ class DoctorsWorkbench extends Component {
             <AlgaehLabel label={{ fieldName: "patients_list" }} />
             <div className="opPatientList">
               <ul className="opList">
-                <li>
-                  <span className="op-sec-1">
-                    <i className="walking-icon" />
-                    <span className="opTime">11:44:00</span>
-                  </span>
-                  <span className="op-sec-2">
-                    <span className="opPatientName">Laura Zahra Bayokhi</span>
-                    <span className="opStatus nursing">Nursing Done</span>
-                  </span>
-                  <span className="op-sec-3">
-                    <span className="opPatientStatus newVisit">New Visit</span>
-                  </span>
-                </li>
-                <li>
-                  <span className="op-sec-1">
-                    <i className="walking-icon" />
-                    <span className="opTime">11:44:00</span>
-                  </span>
-                  <span className="op-sec-2">
-                    <span className="opPatientName">Laura Zahra Bayokhi</span>
-                    <span className="opStatus nursing">Nursing Done</span>
-                  </span>
-                  <span className="op-sec-3">
-                    <span className="opPatientStatus newVisit">New Visit</span>
-                  </span>
-                </li>
-                <li>
-                  <span className="op-sec-1">
-                    <i className="appointment-icon" />
-                    <span className="opTime">11:44:00</span>
-                  </span>
-                  <span className="op-sec-2">
-                    <span className="opPatientName">Laura Zahra Bayokhi</span>
-                    <span className="opStatus nursing">Nursing Done</span>
-                  </span>
-                  <span className="op-sec-3">
-                    <span className="opPatientStatus followUp">Follow Up</span>
-                  </span>
-                </li>
-                <li>
-                  <span className="op-sec-1">
-                    <i className="walking-icon" />
-                    <span className="opTime">11:44:00</span>
-                  </span>
-                  <span className="op-sec-2">
-                    <span className="opPatientName">Laura Zahra Bayokhi</span>
-                    <span className="opStatus checkedIn">Checked In</span>
-                  </span>
-                  <span className="op-sec-3">
-                    <span className="opPatientStatus followUp">Follow Up</span>
-                  </span>
-                </li>
-                <li>
-                  <span className="op-sec-1">
-                    <i className="walking-icon" />
-                    <span className="opTime">11:44:00</span>
-                  </span>
-                  <span className="op-sec-2">
-                    <span className="opPatientName">Laura Zahra Bayokhi</span>
-                    <span className="opStatus checkedIn">Checked In</span>
-                  </span>
-                  <span className="op-sec-3">
-                    <span className="opPatientStatus newVisit">New Visit</span>
-                  </span>
-                </li>
+                {this.props.myday_list !== undefined
+                  ? this.props.myday_list.map((data, index) => (
+                      <li
+                        key={index}
+                        onDoubleClick={() => {
+                          alert("Move the patient");
+                        }}
+                      >
+                        <span className="op-sec-1">
+                          <i className="appointment-icon" />
+                          {/* <i className="walking-icon" /> */}
+                          <span className="opTime">11:44:00</span>
+                        </span>
+                        <span className="op-sec-2">
+                          <span className="opPatientName">
+                            {data.full_name}
+                          </span>
+                          <span className="opStatus nursing">
+                            {data.nurse_examine === "Y"
+                              ? "Nursing Done"
+                              : "Nursing Pending"}
+                          </span>
+                        </span>
+                        <span className="op-sec-3">
+                          <span className="opPatientStatus newVisit">
+                            New Visit
+                          </span>
+                        </span>
+                      </li>
+                    ))
+                  : null}
               </ul>
             </div>
           </div>
@@ -315,7 +328,7 @@ class DoctorsWorkbench extends Component {
               />
               <div className="col-lg-1">
                 <Tooltip id="tooltip-icon" title="Search">
-                  <IconButton className="go-button" color="#000">
+                  <IconButton className="go-button">
                     <Search onClick={() => {}} />
                   </IconButton>
                 </Tooltip>
@@ -396,4 +409,24 @@ class DoctorsWorkbench extends Component {
   }
 }
 
-export default DoctorsWorkbench;
+function mapStateToProps(state) {
+  return {
+    myday_list: state.myday_list
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getMyDay: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(DoctorsWorkbench)
+);

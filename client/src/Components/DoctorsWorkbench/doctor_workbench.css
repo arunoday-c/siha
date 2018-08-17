@@ -62,7 +62,9 @@
 .doctor_workbench .opPatientList .opList {
   margin: 0;
   padding: 0;
-  list-style: none; }
+  list-style: none;
+  height: 65vh;
+  overflow: auto; }
   .doctor_workbench .opPatientList .opList li {
     margin: 4px 0;
     padding: 3px 0;
