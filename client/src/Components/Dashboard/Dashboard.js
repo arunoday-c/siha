@@ -89,64 +89,62 @@ class Dashboard extends Component {
     let margin = this.state.sidBarOpen ? "" : "";
     return (
       <div className="dashboard ">
-        <div style={{ marginLeft: margin }}>
-          <div className="row card-deck" style={{ margin: 40 }}>
-            {/* Bar Graph Start */}
+        <div className="row card-deck">
+          {/* Bar Graph Start */}
 
-            <div className="col-lg-4 card">
-              <Bar
-                width={100}
-                height={70}
-                data={BarData}
-                options={{
-                  maintainAspectRatio: true
-                }}
-              />
-            </div>
-
-            {/* Bar Graph End */}
-
-            {/* Pie Chart Start */}
-            <div className="col-lg-4 card">
-              <Doughnut
-                data={PieData}
-                width={100}
-                height={50}
-                options={{
-                  maintainAspectRatio: true
-                }}
-              />
-            </div>
-
-            {/* Pie Chart End */}
-
-            {/* Score Card Start */}
-            <div className="col-lg-4 card">
-              <label> TOTAL PATIENTS REGISTERED TODAY</label>
-              <h5> 72 </h5>
-              <hr />
-              <label> CASH PATIENTS TODAY</label>
-              <h5> 38 </h5>
-              <hr />
-              <label> INSURANCE REGISTERED TODAY</label>
-              <h5> 34 </h5>
-            </div>
-
-            {/* Score Card End */}
+          <div className="card">
+            <Bar
+              width={100}
+              height={70}
+              data={BarData}
+              options={{
+                maintainAspectRatio: true
+              }}
+            />
           </div>
-          <div className="row" style={{ margin: 40 }}>
-            <div className="col card" style={{ margin: "auto" }}>
-              <label> Month Wise Patient Visits</label>
-              <br />
-              <Line
-                height={60}
-                options={{
-                  maintainAspectRatio: true,
-                  legend: false
-                }}
-                data={LineData}
-              />
-            </div>
+
+          {/* Bar Graph End */}
+
+          {/* Pie Chart Start */}
+          <div className="card">
+            <Doughnut
+              data={PieData}
+              width={100}
+              height={50}
+              options={{
+                maintainAspectRatio: true
+              }}
+            />
+          </div>
+
+          {/* Pie Chart End */}
+
+          {/* Score Card Start */}
+          <div className="card">
+            <label> TOTAL PATIENTS REGISTERED TODAY</label>
+            <h5> 72 </h5>
+            <hr />
+            <label> CASH PATIENTS TODAY</label>
+            <h5> 38 </h5>
+            <hr />
+            <label> INSURANCE REGISTERED TODAY</label>
+            <h5> 34 </h5>
+          </div>
+
+          {/* Score Card End */}
+        </div>
+        <div className="row card-deck" style={{ marginTop: "15px" }}>
+          <div className="col card">
+            <label> Month Wise Patient Visits</label>
+            <br />
+            <Line
+              height={60}
+              options={{
+                maintainAspectRatio: true,
+                legend: false
+              }}
+              data={LineData}
+            />
           </div>
         </div>
       </div>

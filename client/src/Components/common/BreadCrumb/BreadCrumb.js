@@ -130,37 +130,31 @@ class BreadCrumb extends PureComponent {
           className="fixed-top breadcrumb-fixed "
           style={{ ...this.props.breadStyle }}
         >
-          <div className="breadCrumb-Data">
-            <div className="row">
-              <div className="col-lg-3 text hdg_bredcrump">
-                <div className="row">
-                  <h5 className="header">{this.props.title}</h5>
-                </div>
-                <ul>
-                  {this.props.pageNavPath !== undefined
-                    ? this.props.pageNavPath.map((row, index) => {
-                        return (
-                          <React.Fragment key={index}>
-                            <li key={index}>
-                              <a>{row.pageName}</a>
-                            </li>
-                            {this.props.pageNavPath.length - 1 ===
-                            index ? null : (
-                              <li>&nbsp;/&nbsp; </li>
-                            )}
-                          </React.Fragment>
-                        );
-                      })
-                    : null}
-                </ul>
-              </div>
-
-              {this.showSpotlightSearch()}
-              <div className="col-lg-2 third-position">
-                {this.showUserArea()}
-              </div>
-              {this.showPrintArea()}
+          <div className="breadCrumb-Data row">
+            <div className="col-lg-3 text hdg_bredcrump">
+              <h5 className="header">{this.props.title}</h5>
+              <ul>
+                {this.props.pageNavPath !== undefined
+                  ? this.props.pageNavPath.map((row, index) => {
+                      return (
+                        <React.Fragment key={index}>
+                          <li key={index}>
+                            <a>{row.pageName}</a>
+                          </li>
+                          {this.props.pageNavPath.length - 1 ===
+                          index ? null : (
+                            <li>&nbsp;/&nbsp; </li>
+                          )}
+                        </React.Fragment>
+                      );
+                    })
+                  : null}
+              </ul>
             </div>
+
+            {this.showSpotlightSearch()}
+            <div className="col-lg-2 third-position">{this.showUserArea()}</div>
+            {this.showPrintArea()}
           </div>
         </div>
       </React.Fragment>
