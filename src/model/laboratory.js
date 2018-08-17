@@ -1,6 +1,10 @@
 "use strict";
 import extend from "extend";
-import { whereCondition, releaseDBConnection } from "../utils";
+import {
+  whereCondition,
+  releaseDBConnection,
+  jsonArrayToObject
+} from "../utils";
 
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
@@ -61,7 +65,7 @@ let insertLadOrderedServices = (req, res, next) => {
     "patient_id",
     "visit_id",
     "provider_id",
-    "services_id",
+    "service_id",
     "billed",
     "ordered_date",
     "created_by"
@@ -78,9 +82,9 @@ let insertLadOrderedServices = (req, res, next) => {
     .Select(s => {
       return {
         patient_id: req.body.patient_id,
-        doctor_id: req.body.incharge_or_provider,
+        provider_id: req.body.incharge_or_provider,
         visit_id: req.body.visit_id,
-        services_id: s.services_id,
+        service_id: s.services_id,
         billed: "Y",
         ordered_date: new Date(),
         created_by: header.user_id

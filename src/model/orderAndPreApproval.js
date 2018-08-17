@@ -418,7 +418,7 @@ let selectOrderServices = (req, res, next) => {
       let where = whereCondition(extend(selectWhere, req.query));
       connection.query(
         "SELECT  * FROM `hims_f_ordered_services` \
-       WHERE `record_status`='A' AND " +
+       WHERE `record_status`='A' AND `billed`='N' AND " +
           where.condition,
         where.values,
         (error, result) => {
@@ -464,7 +464,7 @@ let updateOrderedServices = (req, res, next) => {
 
         connection.query(
           "UPDATE hims_f_ordered_services SET service_type_id=?,services_id=?,insurance_yesno=?,\
-          pre_approval=?,apprv_status=?,billed=?,quantity=?,unit_cost=?,gross_amount=?,discount_amout=?,discount_percentage=?,net_amout=?,\
+          pre_approval=?,apprv_status=?,quantity=?,unit_cost=?,gross_amount=?,discount_amout=?,discount_percentage=?,net_amout=?,\
           copay_percentage=?,copay_amount=?,deductable_amount=?,deductable_percentage=?,tax_inclusive=?,patient_tax=?,company_tax=?,total_tax=?,patient_resp=?,patient_payable=?,\
           comapany_resp=?,company_payble=?,sec_company=?,sec_deductable_percentage=?,sec_deductable_amount=?,sec_company_res=?,sec_company_tax=?,sec_company_paybale=?,\
           sec_copay_percntage=?,sec_copay_amount=?,updated_date=?, updated_by=? WHERE `record_status`='A' AND `hims_f_ordered_services_id`=? ",
@@ -474,7 +474,6 @@ let updateOrderedServices = (req, res, next) => {
             inputParam.insurance_yesno,
             inputParam.pre_approval,
             input.apprv_status,
-            inputParam.billed,
             inputParam.quantity,
             inputParam.unit_cost,
             inputParam.gross_amount,
@@ -521,10 +520,89 @@ let updateOrderedServices = (req, res, next) => {
   }
 };
 
+//ordered services update as billed
+let updateOrderedServicesBilled = (req, res, next) => {
+  debugFunction("updateOrderedServicesBilled");
+  // let Orders = {
+  //   hims_f_ordered_services_id: null,
+  //   billed: null,
+  //   updated_by: null
+  // };
+  // if (req.db == null) {
+  //   next(httpStatus.dataBaseNotInitilizedError());
+  // }
+  // let db = req.db;
+  // db.getConnection((error, connection) => {
+  //   if (error) {
+  //     next(error);
+  //   }
+  //   let inputParam = extend({}, req.body);
+  //   connection.query(
+  //     "UPDATE `hims_f_ordered_services` \
+  //    SET `billed`=?, `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `hims_f_ordered_services_id`=?",
+  //     [
+  //       inputParam.billed,
+  //       inputParam.updated_by,
+  //       new Date(),
+  //       inputParam.hims_f_ordered_services_id
+  //     ],
+  //     (error, result) => {
+  //       releaseDBConnection(db, connection);
+  //       if (error) {
+  //         next(error);
+  //       }
+  //       req.records = result;
+  //       next();
+  //     }
+  //   );
+  // });
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      let inputParam = extend({}, req.body);
+
+      let qry = "";
+
+      for (let i = 0; i < req.body.length; i++) {
+        qry +=
+          " UPDATE `hims_f_ordered_services` SET billed='" +
+          inputParam[i].billed +
+          "',updated_date='" +
+          new Date() +
+          "',updated_by='" +
+          inputParam[i].updated_by +
+          "' WHERE hims_f_ordered_services_id='" +
+          inputParam[i].hims_f_ordered_services_id +
+          "';";
+      }
+      debugLog("Query", qry);
+      connection.query(qry, (error, result) => {
+        if (error) {
+          releaseDBConnection(db, connection);
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   insertOrderedServices,
   getPreAprovalList,
   updatePreApproval,
   selectOrderServices,
-  updateOrderedServices
+  updateOrderedServices,
+  updateOrderedServicesBilled
 };

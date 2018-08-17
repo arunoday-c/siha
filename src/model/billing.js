@@ -2190,6 +2190,7 @@ let newReceiptData = (req, res, next) => {
       },
       req.body
     );
+
     if (
       inputParam.receiptdetails == null ||
       inputParam.receiptdetails.length == 0
@@ -2232,6 +2233,7 @@ let newReceiptData = (req, res, next) => {
             req.options.onSuccess(headerRcptResult);
           }
         }
+
         if (
           headerRcptResult.insertId != null &&
           headerRcptResult.insertId != ""
@@ -2241,7 +2243,7 @@ let newReceiptData = (req, res, next) => {
           bulkInputArrayObject(inputParam.receiptdetails, detailsInsert, {
             hims_f_receipt_header_id: headerRcptResult.insertId
           });
-
+          debugLog("Detail Body: ", detailsInsert);
           db.query(
             "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
             created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
@@ -2257,10 +2259,12 @@ let newReceiptData = (req, res, next) => {
                   req.options.onFailure(error);
                 }
               }
+              debugLog("Final", req.options);
               if (req.options == null) {
                 req.records = headerRcptResult;
               } else {
                 req.options.onSuccess(headerRcptResult);
+                debugLog("Final", headerRcptResult);
               }
             }
           );
