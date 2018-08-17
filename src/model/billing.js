@@ -10,7 +10,7 @@ import moment from "moment";
 import { debugLog, debugFunction } from "../utils/logging";
 
 import { LINQ } from "node-linq";
-import { inflate } from "zlib";
+//import { inflate } from "zlib";
 
 let addBillData = (req, res, next) => {
   let db = req.options == null ? req.db : req.options.db;
@@ -2018,82 +2018,117 @@ let addEpisodeEncounterData = (req, res, next) => {
     req.body
   );
 
-  let currentEncounterNo = null;
-
   db.query(
-    "select encounter_id from hims_d_options where hims_d_options_id=1",
-    (error, result) => {
+    "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,status,\
+           episode_id,encounter_id,checked_in,nurse_examine,age,patient_type,queue_no)values(\
+            ?,?,?,?,?,?,?,?,?,?,?,?)",
+    [
+      input.patient_id,
+      input.provider_id,
+      input.visit_id,
+      input.source,
+      input.status,
+      input.episode_id,
+      inputparam.encounter_id,
+      input.checked_in,
+      input.nurse_examine,
+      input.age,
+      input.patient_type,
+      input.queue_no
+    ],
+    (error, results) => {
       if (error) {
         if (req.options == null) {
-          releaseDBConnection(req.db, db);
-          next(error);
-        } else {
-          req.options.onFailure(error);
+          connection.rollback(() => {
+            releaseDBConnection(req.db, db);
+            next(error);
+          });
         }
       }
-
-      debugLog("Episode", input);
-
-      currentEncounterNo = result[0].encounter_id;
-      if (currentEncounterNo > 0) {
-        let nextEncounterNo = currentEncounterNo + 1;
-
-        db.query(
-          "update hims_d_options set encounter_id=? where hims_d_options_id=1",
-          [nextEncounterNo],
-          (error, updateResult) => {
-            if (error) {
-              if (req.options == null) {
-                db.rollback(() => {
-                  releaseDBConnection(req.db, db);
-                  next(error);
-                });
-              } else {
-                req.options.onFailure(error);
-              }
-            }
-
-            if (updateResult != null) {
-              db.query(
-                "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,status,\
-                       episode_id,encounter_id,checked_in,nurse_examine,age,patient_type,queue_no)values(\
-                        ?,?,?,?,?,?,?,?,?,?,?,?)",
-                [
-                  input.patient_id,
-                  input.provider_id,
-                  input.visit_id,
-                  input.source,
-                  input.status,
-                  input.episode_id,
-                  currentEncounterNo,
-                  input.checked_in,
-                  input.nurse_examine,
-                  input.age,
-                  input.patient_type,
-                  input.queue_no
-                ],
-                (error, results) => {
-                  if (error) {
-                    if (req.options == null) {
-                      connection.rollback(() => {
-                        releaseDBConnection(req.db, db);
-                        next(error);
-                      });
-                    }
-                  }
-                  if (req.options == null) {
-                    req.records = results;
-                  } else {
-                    req.options.onSuccess(results);
-                  }
-                }
-              );
-            }
-          }
-        );
+      if (req.options == null) {
+        req.records = results;
+      } else {
+        req.options.onSuccess(results);
       }
     }
   );
+
+  // let currentEncounterNo = null;
+
+  // db.query(
+  //   "select encounter_id from hims_d_options where hims_d_options_id=1",
+  //   (error, result) => {
+  //     if (error) {
+  //       if (req.options == null) {
+  //         releaseDBConnection(req.db, db);
+  //         next(error);
+  //       } else {
+  //         req.options.onFailure(error);
+  //       }
+  //     }
+
+  //     debugLog("Episode", input);
+
+  //     currentEncounterNo = result[0].encounter_id;
+  //     if (currentEncounterNo > 0) {
+  //       let nextEncounterNo = currentEncounterNo + 1;
+
+  //       db.query(
+  //         "update hims_d_options set encounter_id=? where hims_d_options_id=1",
+  //         [nextEncounterNo],
+  //         (error, updateResult) => {
+  //           if (error) {
+  //             if (req.options == null) {
+  //               db.rollback(() => {
+  //                 releaseDBConnection(req.db, db);
+  //                 next(error);
+  //               });
+  //             } else {
+  //               req.options.onFailure(error);
+  //             }
+  //           }
+
+  //           if (updateResult != null) {
+  //             db.query(
+  //               "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,status,\
+  //                      episode_id,encounter_id,checked_in,nurse_examine,age,patient_type,queue_no)values(\
+  //                       ?,?,?,?,?,?,?,?,?,?,?,?)",
+  //               [
+  //                 input.patient_id,
+  //                 input.provider_id,
+  //                 input.visit_id,
+  //                 input.source,
+  //                 input.status,
+  //                 input.episode_id,
+  //                 currentEncounterNo,
+  //                 input.checked_in,
+  //                 input.nurse_examine,
+  //                 input.age,
+  //                 input.patient_type,
+  //                 input.queue_no
+  //               ],
+  //               (error, results) => {
+  //                 if (error) {
+  //                   if (req.options == null) {
+  //                     connection.rollback(() => {
+  //                       releaseDBConnection(req.db, db);
+  //                       next(error);
+  //                     });
+  //                   }
+  //                 }
+  //                 if (req.options == null) {
+  //                   req.records = results;
+  //                 } else {
+  //                   req.options.onSuccess(results);
+  //                 }
+  //               }
+  //             );
+  //           }
+  //         }
+  //       );
+  //     }
+  //   }
+  // );
 };
 
 //get bill details

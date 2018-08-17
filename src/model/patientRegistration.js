@@ -165,6 +165,7 @@ let insertPatientData = (req, res, next) => {
         } else {
           inputparam.patient_id = result.insertId;
           req.patient_id = result.insertId;
+          req.body.patient_id = req.patient_id;
           if (options != null) options.onSuccess(result);
           else {
             req.records = result;

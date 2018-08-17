@@ -18,7 +18,8 @@ import {
   getChronicalConditions,
   addEncounterReview,
   getEncounterReview,
-  getMyDay
+  getMyDay,
+  updatdePatEncntrStatus
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -276,5 +277,24 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.put(
+    "/updatdePatEncntrStatus",
+    updatdePatEncntrStatus,
+    (req, res, next) => {
+      let resultSelect = req.records;
+      if (resultSelect.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: resultSelect
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
+    },
+    releaseConnection
+  );
+
   return api;
 };
