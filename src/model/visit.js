@@ -40,7 +40,8 @@ let insertPatientVisitData = (req, res, next) => {
         message_active_till: null,
         visit_expiery_date: null,
         episode_id: null,
-        consultation: null
+        consultation: null,
+        appointment_id: null
       },
       req.query["data"] == null ? req.body : req.query
     );
@@ -74,8 +75,8 @@ let insertPatientVisitData = (req, res, next) => {
 `age_in_years`, `age_in_months`, `age_in_days`, `insured`,`sec_insured`,\
 `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
 `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
-`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`)\
-VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
+`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`,`appointment_id`)\
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
         [
           inputParam.patient_id,
           inputParam.visit_type,
@@ -97,7 +98,8 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
           new Date(),
           inputParam.visit_code,
           inputParam.visit_expiery_date,
-          inputParam.episode_id
+          inputParam.episode_id,
+          inputParam.appointment_id
         ],
         (error, visitresult) => {
           if (error) {
@@ -169,6 +171,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
               ).format("YYYY-MM-DD");
               currentPatientEpisodeNo = expResult[0]["episode_id"];
             }
+            req.body.episode_id = expResult[0]["episode_id"];
             let currentEpisodeNo = null;
             //checking expiry if expired or not_there create new expiry date
             if (
@@ -220,6 +223,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
                     if (currentEpisodeNo > 0) {
                       let nextEpisodeNo = currentEpisodeNo + 1;
                       inputParam.episode_id = currentEpisodeNo;
+                      req.body.episode_id = inputParam.episode_id;
                       db.query(
                         "update algaeh_d_app_config set episode_id=? where algaeh_d_app_config_id=11 and record_status='A' ",
                         [nextEpisodeNo],
