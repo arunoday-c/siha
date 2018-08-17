@@ -200,19 +200,27 @@ var runningNumberGen = function runningNumberGen(options) {
         var intermediate_series = item["intermediate_series"];
         var postfix = item["postfix"];
         var length = parseInt(item["length"]) - parseInt(prefix.length);
-        var increment_by = item["increment_by"];
+        var increment_by = parseInt(item["increment_by"]);
+        if (options.counter != null) {
+          increment_by = increment_by + parseInt(options.counter - 1);
+        }
+
         var numgen_seperator = item["numgen_seperator"];
-        var newNumber = parseInt(postfix) + parseInt(increment_by);
+        var newNumber = parseInt(postfix) + increment_by;
 
         var paddedNumber = padString(String(newNumber), length, "0");
+
         var queryAtt = "UPDATE `hims_f_app_numgen` \
     SET `current_num`=?, `pervious_num`=?,postfix=? \
     WHERE  `record_status`='A' AND `hims_f_app_numgen_id`=?";
         db.query(queryAtt, [paddedNumber, postfix, paddedNumber, numgenId], function (error, numUpdate) {
           if (error) {
+            (0, _logging.debugFunction)("Error");
             options.onFailure(error);
           }
+
           var completeNumber = prefix + numgen_seperator + intermediate_series + numgen_seperator + paddedNumber;
+
           resultNumbers.push({
             completeNumber: completeNumber,
             module_desc: item["module_desc"]
@@ -220,6 +228,7 @@ var runningNumberGen = function runningNumberGen(options) {
 
           if (index == result.length - 1) {
             options.onSuccess(resultNumbers);
+            (0, _logging.debugLog)("Number:", resultNumbers);
           }
         });
       });

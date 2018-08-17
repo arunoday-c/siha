@@ -113,20 +113,6 @@ class CommonSetup extends Component {
               }
             </li>
             <li
-              algaehtabs={"Equipment"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "lab_equipment"
-                  }}
-                />
-              }
-            </li>
-            <li
               style={{ marginRight: 2 }}
               className={"nav-item tab-button "}
               algaehtabs={"Analyte"}
@@ -136,6 +122,20 @@ class CommonSetup extends Component {
                 <AlgaehLabel
                   label={{
                     fieldName: "lab_analyte"
+                  }}
+                />
+              }
+            </li>
+            <li
+              algaehtabs={"Equipment"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "lab_equipment"
                   }}
                 />
               }
@@ -152,10 +152,10 @@ class CommonSetup extends Component {
             <LabContainer />
           ) : this.state.pageDisplay === "LabSpecimen" ? (
             <LabSpecimen />
-          ) : this.state.pageDisplay === "Equipment" ? (
-            <Equipment />
           ) : this.state.pageDisplay === "Analyte" ? (
             <Analyte />
+          ) : this.state.pageDisplay === "Equipment" ? (
+            <Equipment />
           ) : null}
         </div>
       </div>

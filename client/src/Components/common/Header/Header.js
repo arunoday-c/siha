@@ -108,12 +108,14 @@ class Header extends PureComponent {
                 <MenuItem onClick={this.handleClose.bind(this, "en")}>
                   {this.state.languageName == "English"
                     ? this.renderCheck()
-                    : null}&nbsp; English
+                    : null}
+                  &nbsp; English
                 </MenuItem>
                 <MenuItem onClick={this.handleClose.bind(this, "ar")}>
                   {this.state.languageName == "عربي"
                     ? this.renderCheck()
-                    : null}&nbsp; عربي
+                    : null}
+                  &nbsp; عربي
                 </MenuItem>
               </Menu>
             </div>

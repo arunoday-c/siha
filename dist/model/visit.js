@@ -22,6 +22,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var insertPatientVisitData = function insertPatientVisitData(req, res, next) {
   try {
     (0, _logging.debugFunction)("insertPatientVisitData");
+    var header = req.headers["x-app-user-identity"];
+    header = JSON.parse(header);
     var inputParam = (0, _extend2.default)({
       hims_f_patient_visit_id: null,
       patient_id: null,
@@ -41,9 +43,9 @@ var insertPatientVisitData = function insertPatientVisitData(req, res, next) {
       mlc_accident_reg_no: null,
       mlc_police_station: null,
       mlc_wound_certified_date: null,
-      created_by: null,
+      created_by: header.user_id,
       created_date: null,
-      updated_by: null,
+      updated_by: header.user_id,
       updated_date: null,
       record_status: null,
       patient_message: null,
@@ -55,9 +57,12 @@ var insertPatientVisitData = function insertPatientVisitData(req, res, next) {
     }, req.query["data"] == null ? req.body : req.query);
 
     var db = req.options != null ? req.options.db : req.db;
+    var existingExparyDate = null;
+    var currentPatientEpisodeNo = null;
 
+    inputParam.patient_id = req.patient_id || req.body.patient_id;
+    (0, _logging.debugLog)("Body:", req.body);
     var internalInsertPatientVisitData = function internalInsertPatientVisitData() {
-      inputParam.patient_id = req.patient_id;
       if (inputParam.age_in_years == null) {
         var fromDate = (0, _moment2.default)(inputParam.date_of_birth);
         var toDate = new Date();
@@ -69,6 +74,10 @@ var insertPatientVisitData = function insertPatientVisitData(req, res, next) {
         inputParam.age_in_years = years;
         inputParam.age_in_months = months;
         inputParam.age_in_days = days;
+      }
+      if (existingExparyDate == null || existingExparyDate == undefined) {
+        inputParam.visit_expiery_date = existingExparyDate;
+        inputParam.episode_id = currentPatientEpisodeNo;
       }
       (0, _logging.debugLog)("inside internalInsertPatientVisitData");
       db.query("INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
@@ -114,7 +123,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);", [inputP
       (0, _logging.debugLog)("In consultation == Y ");
       db.query(" select max(visit_expiery_date) as visit_expiery_date,episode_id from hims_f_patient_visit where\
          patient_id=? and doctor_id=? and record_status='A' group by patient_id, doctor_id;", [inputParam.patient_id, inputParam.doctor_id], function (error, expResult) {
-        (0, _logging.debugLog)("In consultation Query");
+        (0, _logging.debugLog)("In consultation Query", expResult);
         if (error) {
           if (req.options == null) {
             db.rollback(function () {
@@ -124,8 +133,6 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);", [inputP
             req.options.onFailure(error);
           }
         } else {
-          var existingExparyDate = null;
-          // let currentPatientEpisodeNo = null;
           //fetching expiry date and episode id for existing patient
           if (expResult[0] != null || expResult.length != 0) {
             existingExparyDate = (0, _moment2.default)(expResult[0]["visit_expiery_date"]).format("YYYY-MM-DD");

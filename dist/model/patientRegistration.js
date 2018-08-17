@@ -65,6 +65,8 @@ var updatePatientRegistrstion = function updatePatientRegistrstion(req, res, nex
 var insertPatientData = function insertPatientData(req, res, next) {
   try {
     (0, _logging.debugFunction)("Insert Patient Registration");
+    var header = req.headers["x-app-user-identity"];
+    header = JSON.parse(header);
     var inputparam = (0, _extend2.default)({
       hims_d_patient_id: null,
       patient_code: null,
@@ -96,9 +98,9 @@ var insertPatientData = function insertPatientData(req, res, next) {
       photo_file: "",
       primary_id_file: "",
       secondary_id_file: "",
-      created_by: null,
+      created_by: header.user_id,
       created_date: null,
-      updated_by: null,
+      updated_by: header.user_id,
       updated_date: null,
       city_id: null,
       state_id: null,

@@ -8,11 +8,16 @@
   "lab_analyte": "Analyte",
 
   "Addbutton": "Add to list",
-  "Updatebutton": "Update",
 
   "type_code": "Code",
-  "type_desc": "Name",
+  "type_desc": "Description",
+  "inv_status": "Status",
   "arabic_type_desc": "Arabic Name",
   "created_by": "Created By",
-  "created_date": "Created Date"
+  "created_date": "Created Date",
+
+  "storage_type": "Storage Type",
+  "machine_analyte_code": "Machine Analyte Code",
+  "analyte_type": "Analyte Type",
+  "result_unit": "Result Unit"
 }
