@@ -49,6 +49,7 @@ let insertPatientVisitData = (req, res, next) => {
     let db = req.options != null ? req.options.db : req.db;
     let existingExparyDate = null;
     let currentPatientEpisodeNo = null;
+    let today = moment().format("YYYY-MM-DD");
 
     inputParam.patient_id = req.patient_id || req.body.patient_id;
     debugLog("Body:", req.body);
@@ -171,7 +172,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
               ).format("YYYY-MM-DD");
               currentPatientEpisodeNo = expResult[0]["episode_id"];
             }
-            req.body.episode_id = expResult[0]["episode_id"];
+            // req.body.episode_id = expResult[0]["episode_id"];
             let currentEpisodeNo = null;
             //checking expiry if expired or not_there create new expiry date
             if (
@@ -182,7 +183,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
               //create new expiry date
               db.query(
                 "SELECT param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
-    and record_status='A'",
+                and record_status='A'",
                 (error, record) => {
                   debugLog("In Expiry date records ", record);
                   if (error) {
@@ -246,6 +247,10 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
                   }
                 }
               );
+            } else {
+              inputParam.episode_id = expResult[0]["episode_id"];
+              req.body.episode_id = inputParam.episode_id;
+              internalInsertPatientVisitData();
             }
           }
         }

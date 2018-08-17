@@ -74,8 +74,10 @@ let addBillData = (req, res, next) => {
         req.options.onFailure(errorGen);
       }
     }
+
     inputParam.hims_f_patient_visit_id = req.body.patient_visit_id;
     inputParam.patient_id = req.body.patient_id;
+
     if (
       inputParam.sheet_discount_amount != 0 &&
       inputParam.bill_comments == ""
@@ -90,9 +92,11 @@ let addBillData = (req, res, next) => {
         req.options.onFailure(errorGene);
       }
     }
+
     inputParam.bill_number = req.bill_number;
-    inputParam.patient_id = req.patient_id;
+    inputParam.patient_id = req.patient_id || req.body.patient_id;
     inputParam.visit_id = req.body.visit_id;
+    debugLog("Bill After If:", inputParam.patient_id);
     db.query(
       "INSERT INTO hims_f_billing_header ( patient_id, visit_id, bill_number,\
             incharge_or_provider, bill_date, advance_amount,advance_adjust, discount_amount \
@@ -2018,26 +2022,25 @@ let addEpisodeEncounterData = (req, res, next) => {
     req.body
   );
 
+  debugLog("Input:", req.body);
+
   db.query(
-    "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,status,\
-           episode_id,encounter_id,checked_in,nurse_examine,age,patient_type,queue_no)values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?)",
+    "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,\
+           episode_id,age,patient_type)values(\
+            ?,?,?,?,?,?,?)",
     [
       input.patient_id,
       input.provider_id,
       input.visit_id,
       input.source,
-      input.status,
       input.episode_id,
-      inputparam.encounter_id,
-      input.checked_in,
-      input.nurse_examine,
       input.age,
-      input.patient_type,
-      input.queue_no
+      input.patient_type
     ],
     (error, results) => {
+      debugLog("result:");
       if (error) {
+        debugLog("error");
         if (req.options == null) {
           connection.rollback(() => {
             releaseDBConnection(req.db, db);
@@ -2046,8 +2049,10 @@ let addEpisodeEncounterData = (req, res, next) => {
         }
       }
       if (req.options == null) {
+        debugLog("error");
         req.records = results;
       } else {
+        debugLog("Success");
         req.options.onSuccess(results);
       }
     }
