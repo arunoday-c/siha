@@ -22,7 +22,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import Menu from "@material-ui/core/Menu";
 
-const drawerWidth = 240;
+const drawerWidth = 230;
 
 const paper_style = {
   height: "100%",
@@ -38,7 +38,7 @@ const titleStyles = {
     padding: "5px"
   },
   organisation: {
-    color: "#4CAF50",
+    color: "#00BCB0",
     padding: "5px"
   }
 };
@@ -98,12 +98,12 @@ const styles = theme => ({
       duration: theme.transitions.duration.leavingScreen
     })
   },
-  "content-left": {
-    marginLeft: -drawerWidth
-  },
-  "content-right": {
-    marginRight: -drawerWidth
-  },
+  // "content-left": {
+  //   marginRight: -drawerWidth
+  // },
+  // "content-right": {
+  //   marginLeft: -drawerWidth
+  // },
   contentShift: {
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
@@ -135,7 +135,7 @@ class PersistentDrawer extends React.Component {
       arlabl: "",
       enlabl: "",
       breadStyle: {
-        marginLeft: "250px"
+        marginLeft: "230px"
       }
     };
   }
@@ -203,7 +203,7 @@ class PersistentDrawer extends React.Component {
     this.setState({
       open: true,
       breadStyle: {
-        marginLeft: "250px"
+        marginLeft: "230px"
       }
     });
   };
@@ -346,31 +346,17 @@ class PersistentDrawer extends React.Component {
       );
     });
     const drawer = (
-      <Drawer
-        variant="persistent"
-        anchor={anchor}
-        open={open}
-        classes={{
-          paper: classes.drawerPaper
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <div className="hptl-phase1-sideMenuBar">
-            <div className="menuBar-title">
-              <span style={titleStyles.title}>ALGAEH</span>
-              <span style={titleStyles.organisation}>ERP</span>
-              <IconButton
-                onClick={this.handleDrawerClose}
-                style={{ color: "#fff" }}
-              >
-                <CancelIcon />
-              </IconButton>
-            </div>
-
-            <Paper style={paper_style} className="paper" elevation={4}>
-              <div className="sideMenu-header">{MenuListItems}</div>
-            </Paper>
+      <Drawer variant="persistent" anchor={anchor} open={open}>
+        <div className="hptl-phase1-sideMenuBar">
+          <div className="menuBar-title">
+            <span style={titleStyles.title}>ALGAEH</span>
+            <span style={titleStyles.organisation}>ERP</span>
+            <i onClick={this.handleDrawerClose} className="sideBarClose">
+              <CancelIcon />
+            </i>
           </div>
+
+          <div className="sideMenu-header">{MenuListItems}</div>
         </div>
       </Drawer>
     );
@@ -385,30 +371,34 @@ class PersistentDrawer extends React.Component {
                 [classes[`appBarShift-${anchor}`]]: open
               })}
             >
-              <Toolbar disableGutters={!open}>
+              <Toolbar
+                disableGutters={!open}
+                style={{ minHeight: "50px", padding: "0px" }}
+              >
                 <div className="screenDisplay">
-                  {this.state.open === false ? (
-                    <span>
-                      <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={this.handleDrawerOpen}
-                        className={classNames(
-                          classes.menuButton,
-                          open && classes.hide + "float - left"
-                        )}
-                      >
-                        <MenuIcon />
-                      </IconButton>
-                    </span>
+                  {/* {this.state.open === false ? (
+                    <IconButton
+                      color="inherit"
+                      aria-label="open drawer"
+                      onClick={this.handleDrawerOpen}
+                      className={classNames(
+                        classes.menuButton,
+                        open && classes.hide + "float - left"
+                      )}
+                    >
+                      <MenuIcon />
+                    </IconButton>
                   ) : (
                     <div> </div>
-                  )}
-                  <span>
-                    <Typography variant="title" color="inherit" noWrap>
-                      {this.state.title}
-                    </Typography>
-                  </span>
+                  )} */}
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    onClick={this.handleDrawerOpen}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <h5>{this.state.title}</h5>
                   <span>
                     <Button
                       style={{ color: "#fff" }}
@@ -445,40 +435,6 @@ class PersistentDrawer extends React.Component {
                     </Menu>
                   </span>
                 </div>
-
-                {/* <div className="col-lg-5">
-                  <Button
-                    style={{ color: "#fff" }}
-                    aria-haspopup="true"
-                    className="float-right"
-                    onClick={this.handleOpenClick}
-                  >
-                    {this.state.languageName}
-                    &nbsp;&nbsp;{" "}
-                    <i
-                      className="fa fa-language"
-                      aria-hidden="true"
-                      style={{ fontSize: 18 }}
-                    />
-                  </Button>
-                  <Menu
-                    id="simple-menu"
-                    anchorEl={this.state.anchorEl}
-                    open={Boolean(this.state.anchorEl)}
-                    onClose={this.handleClose}
-                  >
-                    <MenuItem onClick={this.handleClose.bind(this, "en")}>
-                      {this.state.languageName == "English"
-                        ? this.renderCheck()
-                        : null}&nbsp; English
-                    </MenuItem>
-                    <MenuItem onClick={this.handleClose.bind(this, "ar")}>
-                      {this.state.languageName == "عربي"
-                        ? this.renderCheck()
-                        : null}&nbsp; عربي
-                    </MenuItem>
-                  </Menu>
-                </div> */}
               </Toolbar>
             </AppBar>
             {drawer}
@@ -492,7 +448,10 @@ class PersistentDrawer extends React.Component {
                 }
               )}
             >
-              <div className={classes.drawerHeader} />
+              <div
+                className={classes.drawerHeader}
+                style={{ minHeight: "50px" }}
+              />
               <div style={{ minWidth: "100%" }}>
                 <div className="container-fluid" id="hisapp">
                   {directRoutes(
