@@ -8,7 +8,8 @@ import {
   getPreAprovalList,
   updatePreApproval,
   selectOrderServices,
-  updateOrderedServices
+  updateOrderedServices,
+  updateOrderedServicesBilled
 } from "../model/orderAndPreApproval";
 
 export default ({ config, db }) => {
@@ -58,6 +59,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  //created by Nowshad :to get Ordered Services which to bill
   api.get(
     "/selectOrderServices",
     selectOrderServices,
@@ -76,6 +78,21 @@ export default ({ config, db }) => {
   api.put(
     "/updateOrderedServices",
     updateOrderedServices,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by Nowshad :to update OrderedServices as billed
+  api.put(
+    "/updateOrderedServicesBilled",
+    updateOrderedServicesBilled,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
