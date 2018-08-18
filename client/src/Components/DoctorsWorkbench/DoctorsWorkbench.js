@@ -39,6 +39,18 @@ class DoctorsWorkbench extends Component {
     this.loadListofData = this.loadListofData.bind(this);
   }
 
+  dropDownHandle(value) {
+    this.setState({ [value.name]: value.value });
+  }
+
+  dateHandle(value) {
+    let dob = moment(value)._d;
+    this.setState({ date_of_birth: value, client_date: dob });
+
+    let age = moment().diff(dob, "years");
+    this.setState({ age: age });
+  }
+
   moveToEncounterList(e) {
     let updated_by = getCookie("UserID");
     const patient_encounter_id = e.currentTarget.getAttribute(
@@ -263,7 +275,7 @@ class DoctorsWorkbench extends Component {
                   //onChange: datehandle.bind(this, this)
                   onChange: () => {}
                 }}
-                // value={this.state.receipt_date}
+                value={new Date()}
               />
 
               <AlgaehDateHandler
@@ -278,7 +290,7 @@ class DoctorsWorkbench extends Component {
                   //onChange: datehandle.bind(this, this)
                   onChange: () => {}
                 }}
-                // value={this.state.receipt_date}
+                value={new Date()}
               />
 
               <AlagehFormGroup
