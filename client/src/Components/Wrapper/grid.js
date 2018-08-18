@@ -287,7 +287,14 @@ class DataGrid extends PureComponent {
       let colSpan =
         this.props.columns.length + 1 + (this.state.isEditable ? 1 : 0);
       return (
-        <tr key={rowid + "_Expand"}>
+        <tr
+          key={rowid + "_Expand"}
+          className={
+            this.props.rowClassName !== undefined
+              ? this.props.rowClassName(row)
+              : ""
+          }
+        >
           <td colSpan={colSpan}>{this.props.expanded.detailTemplate(row)}</td>
         </tr>
       );
@@ -414,7 +421,10 @@ class DataGrid extends PureComponent {
     };
     return this.props.columns.map((col, ind) => {
       return (
-        <td key={ind}>
+        <td
+          key={ind}
+          className={col.className === undefined ? "" : col.className(row)}
+        >
           {col.editorTemplate != null ? (
             col.editorTemplate(row)
           ) : (
@@ -437,7 +447,14 @@ class DataGrid extends PureComponent {
   returnEditableStateRow = (row, index) => {
     return (
       <React.Fragment>
-        <tr key={index.toString()}>
+        <tr
+          key={index.toString()}
+          className={
+            this.props.rowClassName !== undefined
+              ? this.props.rowClassName(row)
+              : ""
+          }
+        >
           {this.returnEditableButtons(row, row[this.state.keyField])}
           {this.returnTableRowWithColumns(row, index)}
         </tr>
@@ -478,7 +495,10 @@ class DataGrid extends PureComponent {
   returnTableRoNonEditWithColumns = (row, index) => {
     return this.props.columns.map((col, i) => {
       return (
-        <td key={i}>
+        <td
+          key={i}
+          className={col.className === undefined ? "" : col.className(row)}
+        >
           {col.displayTemplate != null
             ? col.displayTemplate(row)
             : row[col.fieldName]}
@@ -496,7 +516,14 @@ class DataGrid extends PureComponent {
     if (this.props.algaehSearch === undefined) {
       return (
         <React.Fragment>
-          <tr key={index.toString()}>
+          <tr
+            key={index.toString()}
+            className={
+              this.props.rowClassName !== undefined
+                ? this.props.rowClassName(row)
+                : ""
+            }
+          >
             {this.returnEditDeleteButtons(row)}
             {this.returnTableRoNonEditWithColumns(row, index)}
           </tr>
@@ -508,6 +535,11 @@ class DataGrid extends PureComponent {
           <tr
             key={index.toString()}
             onClick={this.getRowDetailsOnClick.bind(this)}
+            className={
+              this.props.rowClassName !== undefined
+                ? this.props.rowClassName(row)
+                : ""
+            }
           >
             {this.returnEditDeleteButtons(row)}
             {this.returnTableRoNonEditWithColumns(row, index)}

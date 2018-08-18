@@ -16,6 +16,10 @@ export default {
     multipleStatements: true,
     acquireTimeout: 20000
   },
+  //Db Date format
+  dbFormat: {
+    date: "YYYY-MM-DD"
+  },
 
   logpath: "/logs", //log folder path
   logFileSize: "20m", //maximum size of log file.

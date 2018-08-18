@@ -21,19 +21,35 @@ import { getCookie } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
+
 class DoctorsWorkbench extends Component {
   constructor(props) {
     super(props);
-
+    let dateToday = moment().format("YYYY") + moment().format("MM") + "01";
     this.state = {
       my_daylist: [],
       selectedLang: "en",
       data: [],
-      selectedHDate: new Date()
+      selectedHDate: moment(dateToday, "YYYYMMDD")._d,
+      fromDate: new Date(),
+      toDate: new Date(),
+      activeDateHeader: new Date()
     };
 
     this.moveToEncounterList = this.moveToEncounterList.bind(this);
     this.loadListofData = this.loadListofData.bind(this);
+  }
+
+  dropDownHandle(value) {
+    this.setState({ [value.name]: value.value });
+  }
+
+  dateHandle(value) {
+    let dob = moment(value)._d;
+    this.setState({ date_of_birth: value, client_date: dob });
+
+    let age = moment().diff(dob, "years");
+    this.setState({ age: age });
   }
 
   moveToEncounterList(e) {
@@ -41,8 +57,6 @@ class DoctorsWorkbench extends Component {
     const patient_encounter_id = e.currentTarget.getAttribute(
       "data-encounterid"
     );
-
-    console.log("Data to Update", updated_by + " ID" + patient_encounter_id);
 
     algaehApiCall({
       uri: "/doctorsWorkBench/updatdePatEncntrStatus",
@@ -54,19 +68,18 @@ class DoctorsWorkbench extends Component {
       onSuccess: response => {
         if (response.data.success) this.loadListofData();
       },
-      onFailure: error => {
-        // this.setState({ open: false });
-      }
+      onFailure: error => {}
     });
   }
 
   loadListofData() {
+    console.log("from date", this.state.fromDate);
     this.props.getMyDay({
       uri: "/doctorsWorkBench/getMyDay",
       data: {
         provider_id: 2,
-        fromDate: "2018-08-10",
-        toDate: "2018-08-16"
+        fromDate: this.state.fromDate,
+        toDate: this.state.toDate
       },
       method: "GET",
       redux: {
@@ -75,8 +88,6 @@ class DoctorsWorkbench extends Component {
       },
       afterSuccess: data => {
         this.setState({ data: data });
-
-        console.log("Data Array:", data);
 
         let listofvisit = Enumerable.from(data)
           .where(w => w.status === "V")
@@ -96,9 +107,15 @@ class DoctorsWorkbench extends Component {
     });
     this.loadListofData();
   }
+
   liGenerate() {
-    let initialDate = moment(this.state.selectedHDate)._d;
-    let endDate = moment(this.state.selectedHDate).add(30, "days")._d;
+    let momDate = moment(this.state.selectedHDate);
+    let initialDate = momDate._d;
+    var date = initialDate,
+      y = date.getFullYear(),
+      m = date.getMonth();
+    var lastDay = new Date(y, m + 1, 0);
+    let endDate = moment(lastDay)._d;
 
     let generatedLi = new Array();
 
@@ -113,13 +130,34 @@ class DoctorsWorkbench extends Component {
     }
     return generatedLi;
   }
+  onSelectedDateHandler(e) {
+    this.setState(
+      {
+        activeDateHeader: e.target.getAttribute("currentdate"),
+        fromDate: e.target.getAttribute("currentdate")
+      },
+      () => {
+        this.loadListofData();
+      }
+    );
+  }
   generateHorizontalDateBlocks() {
     return (
       <div className="calendar">
         <ol>
           {this.liGenerate().map((row, index) => {
             return (
-              <li key={index} currentdate={row.currentdate}>
+              <li
+                key={index}
+                currentdate={row.currentdate}
+                className={
+                  moment(row.currentdate).format("YYYYMMDD") ===
+                  moment(this.state.activeDateHeader).format("YYYYMMDD")
+                    ? "activeDate"
+                    : ""
+                }
+                onClick={this.onSelectedDateHandler.bind(this)}
+              >
                 {row.day}
                 <span>{row.dayName}</span>
               </li>
@@ -131,8 +169,8 @@ class DoctorsWorkbench extends Component {
   }
 
   monthChangeHandler(e) {
-    let dt = e.target.value + "-01";
-    this.setState({ selectedHDate: moment(dt, "YYYY-MM-DD")._d });
+    let dt = moment(e.target.value + "-01", "YYYY-MM-DD")._d;
+    this.setState({ selectedHDate: dt, activeDateHeader: dt });
   }
 
   render() {
@@ -168,35 +206,43 @@ class DoctorsWorkbench extends Component {
               <ul className="opList">
                 {Enumerable.from(this.state.data)
                   .where(w => w.status === "V")
-                  .toArray()
-                  .map((data, index) => (
-                    <li
-                      key={index}
-                      data-encounterid={String(
-                        data.hims_f_patient_encounter_id
-                      )}
-                      onClick={this.moveToEncounterList}
-                    >
-                      <span className="op-sec-1">
-                        <i className="appointment-icon" />
-                        {/* <i className="walking-icon" /> */}
-                        <span className="opTime">11:44:00</span>
-                      </span>
-                      <span className="op-sec-2">
-                        <span className="opPatientName">{data.full_name}</span>
-                        <span className="opStatus nursing">
-                          {data.nurse_examine === "Y"
-                            ? "Nursing Done"
-                            : "Nursing Pending"}
+                  .toArray().length !== 0 ? (
+                  Enumerable.from(this.state.data)
+                    .where(w => w.status === "V")
+                    .toArray()
+                    .map((data, index) => (
+                      <li
+                        key={index}
+                        data-encounterid={String(
+                          data.hims_f_patient_encounter_id
+                        )}
+                        onClick={this.moveToEncounterList}
+                      >
+                        <span className="op-sec-1">
+                          <i className="appointment-icon" />
+                          {/* <i className="walking-icon" /> */}
+                          <span className="opTime">11:44:00</span>
                         </span>
-                      </span>
-                      <span className="op-sec-3">
-                        <span className="opPatientStatus newVisit">
-                          New Visit
+                        <span className="op-sec-2">
+                          <span className="opPatientName">
+                            {data.full_name}
+                          </span>
+                          <span className="opStatus nursing">
+                            {data.nurse_examine === "Y"
+                              ? "Nursing Done"
+                              : "Nursing Pending"}
+                          </span>
                         </span>
-                      </span>
-                    </li>
-                  ))}
+                        <span className="op-sec-3">
+                          <span className="opPatientStatus newVisit">
+                            New Visit
+                          </span>
+                        </span>
+                      </li>
+                    ))
+                ) : (
+                  <span className="mx-auto">No Patients</span>
+                )}
               </ul>
             </div>
           </div>
@@ -256,7 +302,7 @@ class DoctorsWorkbench extends Component {
                   //onChange: datehandle.bind(this, this)
                   onChange: () => {}
                 }}
-                // value={this.state.receipt_date}
+                value={new Date()}
               />
 
               <AlgaehDateHandler
@@ -271,7 +317,7 @@ class DoctorsWorkbench extends Component {
                   //onChange: datehandle.bind(this, this)
                   onChange: () => {}
                 }}
-                // value={this.state.receipt_date}
+                value={new Date()}
               />
 
               <AlagehFormGroup
@@ -315,7 +361,17 @@ class DoctorsWorkbench extends Component {
                 {
                   fieldName: "status",
                   label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                  disabled: true
+                  disabled: true,
+                  displayTemplate: data => {
+                    return (
+                      <span>
+                        {data.status === "W" ? <span>WIP </span> : ""}
+                      </span>
+                    );
+                  },
+                  className: drow => {
+                    if (drow.checked_in === "N") return "testColor";
+                  }
                 },
                 {
                   fieldName: "patient_code",
@@ -334,24 +390,31 @@ class DoctorsWorkbench extends Component {
                   label: <AlgaehLabel label={{ fieldName: "time" }} />
                 },
                 {
-                  fieldName: "case_type",
-                  label: <AlgaehLabel label={{ fieldName: "case_type" }} />
+                  fieldName: "patient_type",
+                  label: (
+                    <AlgaehLabel
+                      label={{ fieldName: "policy_group_description" }}
+                    />
+                  ),
+                  displayTemplate: data => {
+                    return (
+                      <span>
+                        {data.patient_type === "S" ? "Self" : "Insurance"}
+                      </span>
+                    );
+                  }
                 },
                 {
                   fieldName: "transfer_status",
                   label: (
                     <AlgaehLabel label={{ fieldName: "transfer_status" }} />
                   )
-                },
-                {
-                  fieldName: "policy_group_description",
-                  label: (
-                    <AlgaehLabel
-                      label={{ fieldName: "policy_group_description" }}
-                    />
-                  )
                 }
               ]}
+              rowClassName={row => {
+                debugger;
+                return "testColor";
+              }}
               keyId="encounter_code"
               dataSource={{
                 data: Enumerable.from(this.state.data)
@@ -359,7 +422,7 @@ class DoctorsWorkbench extends Component {
                   .toArray()
               }}
               isEditable={false}
-              paging={{ page: 0, rowsPerPage: 5 }}
+              paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onDelete: row => {},
                 onEdit: row => {},
