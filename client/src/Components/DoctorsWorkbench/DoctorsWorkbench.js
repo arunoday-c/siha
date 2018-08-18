@@ -131,7 +131,15 @@ class DoctorsWorkbench extends Component {
     return generatedLi;
   }
   onSelectedDateHandler(e) {
-    this.setState({ activeDateHeader: e.target.getAttribute("currentdate") });
+    this.setState(
+      {
+        activeDateHeader: e.target.getAttribute("currentdate"),
+        fromDate: e.target.getAttribute("currentdate")
+      },
+      () => {
+        this.loadListofData();
+      }
+    );
   }
   generateHorizontalDateBlocks() {
     return (
@@ -356,7 +364,7 @@ class DoctorsWorkbench extends Component {
                   disabled: true,
                   displayTemplate: data => {
                     return (
-                      <span style={{ backgroundColor: "green" }}>
+                      <span>
                         {data.status === "W" ? <span>WIP </span> : ""}
                       </span>
                     );
@@ -380,21 +388,24 @@ class DoctorsWorkbench extends Component {
                   label: <AlgaehLabel label={{ fieldName: "time" }} />
                 },
                 {
-                  fieldName: "case_type",
-                  label: <AlgaehLabel label={{ fieldName: "case_type" }} />
+                  fieldName: "patient_type",
+                  label: (
+                    <AlgaehLabel
+                      label={{ fieldName: "policy_group_description" }}
+                    />
+                  ),
+                  displayTemplate: data => {
+                    return (
+                      <span>
+                        {data.patient_type === "S" ? "Self" : "Insurance"}
+                      </span>
+                    );
+                  }
                 },
                 {
                   fieldName: "transfer_status",
                   label: (
                     <AlgaehLabel label={{ fieldName: "transfer_status" }} />
-                  )
-                },
-                {
-                  fieldName: "policy_group_description",
-                  label: (
-                    <AlgaehLabel
-                      label={{ fieldName: "policy_group_description" }}
-                    />
                   )
                 }
               ]}
