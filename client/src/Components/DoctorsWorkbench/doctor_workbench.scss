@@ -78,6 +78,9 @@
       font-size: 0.6rem;
       text-transform: uppercase;
     }
+    .activeDate {
+      border-bottom: 4px solid yellow !important;
+    }
   }
 
   .opPatientList {
@@ -314,4 +317,7 @@
       font-style: bolder;
     }
   }
+}
+.testColor {
+  background-color: #00bb4b !important;
 }

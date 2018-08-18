@@ -25,14 +25,15 @@ import moment from "moment";
 class DoctorsWorkbench extends Component {
   constructor(props) {
     super(props);
-
+    let dateToday = moment().format("YYYY") + moment().format("MM") + "01";
     this.state = {
       my_daylist: [],
       selectedLang: "en",
       data: [],
-      selectedHDate: new Date(),
-      fromDate: moment(new Date()).format("YYYY-MM-DD"),
-      toDate: moment(new Date()).format("YYYY-MM-DD")
+      selectedHDate: moment(dateToday, "YYYYMMDD")._d,
+      fromDate: new Date(),
+      toDate: new Date(),
+      activeDateHeader: new Date()
     };
 
     this.moveToEncounterList = this.moveToEncounterList.bind(this);
@@ -60,6 +61,7 @@ class DoctorsWorkbench extends Component {
   }
 
   loadListofData() {
+    console.log("from date", this.state.fromDate);
     this.props.getMyDay({
       uri: "/doctorsWorkBench/getMyDay",
       data: {
@@ -95,8 +97,13 @@ class DoctorsWorkbench extends Component {
   }
 
   liGenerate() {
-    let initialDate = moment(this.state.selectedHDate)._d;
-    let endDate = moment(this.state.selectedHDate).add(30, "days")._d;
+    let momDate = moment(this.state.selectedHDate);
+    let initialDate = momDate._d;
+    var date = initialDate,
+      y = date.getFullYear(),
+      m = date.getMonth();
+    var lastDay = new Date(y, m + 1, 0);
+    let endDate = moment(lastDay)._d;
 
     let generatedLi = new Array();
 
@@ -111,14 +118,26 @@ class DoctorsWorkbench extends Component {
     }
     return generatedLi;
   }
-
+  onSelectedDateHandler(e) {
+    this.setState({ activeDateHeader: e.target.getAttribute("currentdate") });
+  }
   generateHorizontalDateBlocks() {
     return (
       <div className="calendar">
         <ol>
           {this.liGenerate().map((row, index) => {
             return (
-              <li key={index} currentdate={row.currentdate}>
+              <li
+                key={index}
+                currentdate={row.currentdate}
+                className={
+                  moment(row.currentdate).format("YYYYMMDD") ===
+                  moment(this.state.activeDateHeader).format("YYYYMMDD")
+                    ? "activeDate"
+                    : ""
+                }
+                onClick={this.onSelectedDateHandler.bind(this)}
+              >
                 {row.day}
                 <span>{row.dayName}</span>
               </li>
@@ -130,8 +149,8 @@ class DoctorsWorkbench extends Component {
   }
 
   monthChangeHandler(e) {
-    let dt = e.target.value + "-01";
-    this.setState({ selectedHDate: moment(dt, "YYYY-MM-DD")._d });
+    let dt = moment(e.target.value + "-01", "YYYY-MM-DD")._d;
+    this.setState({ selectedHDate: dt, activeDateHeader: dt });
   }
 
   render() {
@@ -329,7 +348,8 @@ class DoctorsWorkbench extends Component {
                         {data.status === "W" ? <span>WIP </span> : ""}
                       </span>
                     );
-                  }
+                  },
+                  className: "testColor"
                 },
                 {
                   fieldName: "patient_code",

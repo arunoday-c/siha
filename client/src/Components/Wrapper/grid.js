@@ -414,7 +414,10 @@ class DataGrid extends PureComponent {
     };
     return this.props.columns.map((col, ind) => {
       return (
-        <td key={ind}>
+        <td
+          key={ind}
+          className={col.className === undefined ? "" : col.className}
+        >
           {col.editorTemplate != null ? (
             col.editorTemplate(row)
           ) : (
@@ -478,7 +481,10 @@ class DataGrid extends PureComponent {
   returnTableRoNonEditWithColumns = (row, index) => {
     return this.props.columns.map((col, i) => {
       return (
-        <td key={i}>
+        <td
+          key={i}
+          className={col.className === undefined ? "" : col.className}
+        >
           {col.displayTemplate != null
             ? col.displayTemplate(row)
             : row[col.fieldName]}

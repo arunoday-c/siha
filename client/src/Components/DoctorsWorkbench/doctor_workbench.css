@@ -58,6 +58,8 @@
     display: block;
     font-size: 0.6rem;
     text-transform: uppercase; }
+  .doctor_workbench .my-calendar .activeDate {
+    border-bottom: 4px solid yellow !important; }
 
 .doctor_workbench .opPatientList .opList {
   margin: 0;
@@ -236,3 +238,6 @@
     padding-right: 10px;
     padding-top: 5px;
     font-style: bolder; }
+
+.testColor {
+  background-color: #00bb4b !important; }
