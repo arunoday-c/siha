@@ -9,9 +9,9 @@ import {
 } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 //import { LINQ } from "node-linq";
-
+import moment from "moment";
 import { logger, debugFunction, debugLog } from "../../utils/logging";
-import { SSL_OP_NETSCAPE_CA_DN_BUG } from "constants";
+import formater from "../../keys/keys";
 
 //created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
@@ -870,9 +870,9 @@ let getMyDay = (req, res, next) => {
     if (req.query.fromDate != null && req.query.toDate != null) {
       dateDiff +=
         " date(E.created_date) BETWEEN date('" +
-        req.query.fromDate +
+        moment(req.query.fromDate).format(formater.dbFormat.date) +
         "') AND date('" +
-        req.query.toDate +
+        moment(req.query.toDate).format(formater.dbFormat.date) +
         "')";
       delete req.query.fromDate;
       delete req.query.toDate;

@@ -15,7 +15,10 @@ export default {
     database: "algaeh_hims_db",
     multipleStatements: true
   },
-
+  //Db Date format
+  dbFormat: {
+    date: "YYYY-MM-DD"
+  },
   logpath: "/logs", //log folder path
   logFileSize: "20m", //maximum size of log file.
   logFileDatePatter: "YYYYMMDD",
