@@ -369,7 +369,9 @@ class DoctorsWorkbench extends Component {
                       </span>
                     );
                   },
-                  className: "testColor"
+                  className: drow => {
+                    if (drow.checked_in === "N") return "testColor";
+                  }
                 },
                 {
                   fieldName: "patient_code",
@@ -409,6 +411,10 @@ class DoctorsWorkbench extends Component {
                   )
                 }
               ]}
+              rowClassName={row => {
+                debugger;
+                return "testColor";
+              }}
               keyId="encounter_code"
               dataSource={{
                 data: Enumerable.from(this.state.data)
