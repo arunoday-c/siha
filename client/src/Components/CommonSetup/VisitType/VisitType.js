@@ -8,10 +8,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   AlagehFormGroup,
-  AlgaehOptions,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehDateHandler,
   AlgaehLabel,
   Button
 } from "../../Wrapper/algaehWrapper";

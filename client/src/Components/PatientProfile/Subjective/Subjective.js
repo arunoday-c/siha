@@ -43,7 +43,6 @@ class Subjective extends Component {
             margin: "auto"
           }}
           open={this.state.openComplain}
-          // onClose={this.handleClose.bind(this)}
         >
           <div className="algaeh-modal">
             <div className="row popupHeader">
@@ -116,60 +115,119 @@ class Subjective extends Component {
           />
         </div>
 
-        <div className="card box-shadow-normal col-lg-4 right-pane">
-          <div className="row">
-            <div className="col-lg-11">Allergies</div>
+        <div className="col-lg-4 right-pane">
+          <div className="card box-shadow-normal">
+            <div className="row">
+              <div className="col-lg-11">Allergies</div>
 
-            <div className="col-lg-1 float-right">
-              <Button
-                mini
-                variant="fab"
-                color="primary"
-                onClick={this.addAllergies}
-              >
-                <i className="fas fa-plus" />
-              </Button>
+              <div className="col-lg-1 float-right">
+                <Button
+                  mini
+                  variant="fab"
+                  color="primary"
+                  onClick={this.addAllergies}
+                >
+                  <i className="fas fa-plus" />
+                </Button>
+              </div>
             </div>
-          </div>
 
-          <AlgaehDataGrid
-            id="patient_chart_grd"
-            columns={[
-              {
-                fieldName: "food",
-                label: "Food",
-                disabled: true
-              },
-              {
-                fieldName: "date",
-                label: "On Set Date"
-              },
-              {
-                fieldName: "first_name",
-                label: "Comment"
-              },
-              {
-                fieldName: "active",
-                label: "Active"
+            <AlgaehDataGrid
+              id="patient_chart_grd"
+              columns={[
+                {
+                  fieldName: "food",
+                  label: "Food",
+                  disabled: true
+                },
+                {
+                  fieldName: "date",
+                  label: "On Set Date"
+                },
+                {
+                  fieldName: "first_name",
+                  label: "Comment"
+                },
+                {
+                  fieldName: "active",
+                  label: "Active"
+                }
+              ]}
+              keyId="code"
+              dataSource={{
+                data: AllergyData
+              }}
+              isEditable={false}
+              paging={{ page: 0, rowsPerPage: 3 }}
+              events={
+                {
+                  // onDelete: this.deleteVisaType.bind(this),
+                  // onEdit: row => {},
+                  // onDone: row => {
+                  //   alert(JSON.stringify(row));
+                  // }
+                  // onDone: this.updateVisaTypes.bind(this)
+                }
               }
-            ]}
-            keyId="code"
-            dataSource={{
-              data: AllergyData
-            }}
-            isEditable={false}
-            paging={{ page: 0, rowsPerPage: 3 }}
-            events={
-              {
-                // onDelete: this.deleteVisaType.bind(this),
-                // onEdit: row => {},
-                // onDone: row => {
-                //   alert(JSON.stringify(row));
-                // }
-                // onDone: this.updateVisaTypes.bind(this)
+            />
+          </div>
+          {/* Review of System's Grid Start */}
+          <div className="card box-shadow-normal">
+            <div className="row">
+              <div className="col-lg-11">Review of Systems</div>
+
+              <div className="col-lg-1 float-right">
+                <Button
+                  mini
+                  variant="fab"
+                  color="primary"
+                  onClick={this.addAllergies}
+                >
+                  <i className="fas fa-plus" />
+                </Button>
+              </div>
+            </div>
+
+            <AlgaehDataGrid
+              id="patient_chart_grd"
+              columns={[
+                {
+                  fieldName: "food",
+                  label: "Food",
+                  disabled: true
+                },
+                {
+                  fieldName: "date",
+                  label: "On Set Date"
+                },
+                {
+                  fieldName: "first_name",
+                  label: "Comment"
+                },
+                {
+                  fieldName: "active",
+                  label: "Active"
+                }
+              ]}
+              keyId="code"
+              dataSource={{
+                data: AllergyData
+              }}
+              isEditable={false}
+              paging={{ page: 0, rowsPerPage: 3 }}
+              events={
+                {
+                  // onDelete: this.deleteVisaType.bind(this),
+                  // onEdit: row => {},
+                  // onDone: row => {
+                  //   alert(JSON.stringify(row));
+                  // }
+                  // onDone: this.updateVisaTypes.bind(this)
+                }
               }
-            }
-          />
+            />
+          </div>
+          {/* Review of System's layout End */}
         </div>
       </div>
     );
