@@ -15,19 +15,29 @@ import {
   AlagehAutoComplete,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
+import {
+  changeTexts,
+  onchangegridcol,
+  insertLabSpecimen,
+  updateLabSpecimen,
+  deleteLabSpecimen
+} from "./LabSpecimenEvents";
+
 import GlobalVariables from "../../../utils/GlobalVariables";
 // import swal from "sweetalert";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall.js";
+import Options from "../../../Options.json";
+import moment from "moment";
 
 class LabSpecimen extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      hims_d_lab_section_id: "",
+      hims_d_lab_specimen_id: "",
       description: "",
-      created_date: "A",
+      storage_type: null,
       created_by: getCookie("UserID"),
 
       description_error: false,
@@ -36,8 +46,26 @@ class LabSpecimen extends Component {
     this.baseState = this.state;
   }
 
-  changeTexts(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  componentDidMount() {
+    let prevLang = getCookie("Language");
+
+    this.setState({
+      selectedLang: prevLang
+    });
+    this.props.getLabSpecimen({
+      uri: "/labmasters/selectSpecimen",
+      method: "GET",
+      redux: {
+        type: "SPECIMEN_GET_DATA",
+        mappingName: "labspecimen"
+      }
+    });
+  }
+
+  dateFormater({ date }) {
+    if (date !== null) {
+      return moment(date).format(Options.dateFormat);
+    }
   }
 
   render() {
@@ -65,7 +93,7 @@ class LabSpecimen extends Component {
                   name: "description",
                   value: this.state.description,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: changeTexts.bind(this, this)
                   }
                 }}
               />
@@ -85,14 +113,14 @@ class LabSpecimen extends Component {
                     valueField: "value",
                     data: GlobalVariables.FORMAT_STORAGE_TYPE
                   },
-                  onChange: this.changeTexts.bind(this)
+                  onChange: changeTexts.bind(this, this)
                 }}
               />
 
               <div className="col-lg-3 align-middle">
                 <br />
                 <Button
-                  //   onClick={this.addVisaType.bind(this)}
+                  onClick={insertLabSpecimen.bind(this, this)}
                   variant="raised"
                   color="primary"
                 >
@@ -119,14 +147,44 @@ class LabSpecimen extends Component {
                             className: "txt-fld",
                             name: "description",
                             events: {
-                              onChange: this.onchangegridcol.bind(this, row)
+                              onChange: onchangegridcol.bind(this, this, row)
                             }
                           }}
                         />
                       );
                     }
                   },
-
+                  {
+                    fieldName: "storage_type",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "storage_type" }} />
+                    ),
+                    displayTemplate: row => {
+                      return row.storage_type === "N"
+                        ? "Normal"
+                        : row.storage_type === "F"
+                          ? "Frozen"
+                          : "Refrigerate";
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "storage_type",
+                            className: "select-fld",
+                            value: row.storage_type,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_STORAGE_TYPE
+                            },
+                            onChange: onchangegridcol.bind(this, this, row)
+                          }}
+                        />
+                      );
+                    }
+                  },
                   {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
@@ -161,7 +219,7 @@ class LabSpecimen extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: this.onchangegridcol.bind(this, row)
+                            onChange: onchangegridcol.bind(this, this, row)
                           }}
                         />
                       );
@@ -171,19 +229,19 @@ class LabSpecimen extends Component {
                 keyId="hims_d_lab_section_id"
                 dataSource={{
                   data:
-                    this.props.visatypes === undefined
+                    this.props.labspecimen === undefined
                       ? []
-                      : this.props.visatypes
+                      : this.props.labspecimen
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{
-                  // onDelete: this.deleteLabSection.bind(this),
-                  onEdit: row => {}
+                  onDelete: deleteLabSpecimen.bind(this, this),
+                  onEdit: row => {},
                   // onDone: row => {
                   //   alert(JSON.stringify(row));
                   // }
-                  // onDone: this.updateLabSection.bind(this)
+                  onDone: updateLabSpecimen.bind(this, this)
                 }}
               />
             </div>
@@ -196,14 +254,14 @@ class LabSpecimen extends Component {
 
 function mapStateToProps(state) {
   return {
-    visatypes: state.visatypes
+    labspecimen: state.labspecimen
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisatypes: AlgaehActions
+      getLabSpecimen: AlgaehActions
     },
     dispatch
   );

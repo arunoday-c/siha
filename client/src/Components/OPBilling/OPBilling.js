@@ -215,18 +215,6 @@ class PatientDisplayDetails extends Component {
           });
         }
       });
-      // $this.props.postBillDetsils($this.state, data => {
-      //   $this.setState({
-      //     bill_number: data.bill_number,
-      //     receipt_number: data.receipt_number,
-      //     saveEnable: true
-      //   });
-      //   successfulMessage({
-      //     message: "Done Successfully",
-      //     title: "Success",
-      //     icon: "success"
-      //   });
-      // });
     });
   }
 

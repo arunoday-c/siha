@@ -4,6 +4,7 @@ import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import { addOpBIlling, selectBill } from "../model/opBilling";
 import { insertLadOrderedServices } from "../model/laboratory";
+import { updateOrderedServicesBilled } from "../model/orderAndPreApproval";
 import { debugFunction, debugLog } from "../utils/logging";
 import extend from "extend";
 export default ({ config, db }) => {
@@ -14,6 +15,7 @@ export default ({ config, db }) => {
     "/addOpBIlling",
     addOpBIlling,
     insertLadOrderedServices,
+    updateOrderedServicesBilled,
     (req, res, next) => {
       res.status(httpStatus.ok).json({
         success: true,

@@ -523,39 +523,22 @@ let updateOrderedServices = (req, res, next) => {
 //ordered services update as billed
 let updateOrderedServicesBilled = (req, res, next) => {
   debugFunction("updateOrderedServicesBilled");
-  // let Orders = {
-  //   hims_f_ordered_services_id: null,
-  //   billed: null,
-  //   updated_by: null
-  // };
-  // if (req.db == null) {
-  //   next(httpStatus.dataBaseNotInitilizedError());
-  // }
-  // let db = req.db;
-  // db.getConnection((error, connection) => {
-  //   if (error) {
-  //     next(error);
-  //   }
-  //   let inputParam = extend({}, req.body);
-  //   connection.query(
-  //     "UPDATE `hims_f_ordered_services` \
-  //    SET `billed`=?, `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `hims_f_ordered_services_id`=?",
-  //     [
-  //       inputParam.billed,
-  //       inputParam.updated_by,
-  //       new Date(),
-  //       inputParam.hims_f_ordered_services_id
-  //     ],
-  //     (error, result) => {
-  //       releaseDBConnection(db, connection);
-  //       if (error) {
-  //         next(error);
-  //       }
-  //       req.records = result;
-  //       next();
-  //     }
-  //   );
-  // });
+
+  let header = req.headers["x-app-user-identity"];
+  header = JSON.parse(header);
+
+  debugLog("Bill Data: ", req.body.billdetails);
+  let OrderServices = new LINQ(req.body.billdetails)
+    .Where(w => w.hims_f_ordered_services_id != null)
+    .Select(s => {
+      return {
+        hims_f_ordered_services_id: s.hims_f_ordered_services_id,
+        billed: "Y",
+        updated_date: new Date(),
+        updated_by: header.user_id
+      };
+    })
+    .ToArray();
 
   try {
     if (req.db == null) {
@@ -567,23 +550,25 @@ let updateOrderedServicesBilled = (req, res, next) => {
         next(error);
       }
 
-      let inputParam = extend({}, req.body);
+      debugLog("data:", OrderServices);
 
       let qry = "";
 
-      for (let i = 0; i < req.body.length; i++) {
+      for (let i = 0; i < OrderServices.length; i++) {
         qry +=
           " UPDATE `hims_f_ordered_services` SET billed='" +
-          inputParam[i].billed +
+          OrderServices[i].billed +
           "',updated_date='" +
           new Date() +
           "',updated_by='" +
-          inputParam[i].updated_by +
+          OrderServices[i].updated_by +
           "' WHERE hims_f_ordered_services_id='" +
-          inputParam[i].hims_f_ordered_services_id +
+          OrderServices[i].hims_f_ordered_services_id +
           "';";
       }
+
       debugLog("Query", qry);
+
       connection.query(qry, (error, result) => {
         if (error) {
           releaseDBConnection(db, connection);

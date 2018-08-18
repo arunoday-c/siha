@@ -19,6 +19,15 @@ import GlobalVariables from "../../../utils/GlobalVariables";
 // import swal from "sweetalert";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall.js";
+import {
+  changeTexts,
+  onchangegridcol,
+  insertLabAnalytes,
+  updateLabAnalytes,
+  deleteLabAnalytes
+} from "./LabSpecimenEvents";
+import Options from "../../../Options.json";
+import moment from "moment";
 
 class LabSpecimen extends Component {
   constructor(props) {
@@ -36,8 +45,26 @@ class LabSpecimen extends Component {
     this.baseState = this.state;
   }
 
-  changeTexts(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  componentDidMount() {
+    let prevLang = getCookie("Language");
+
+    this.setState({
+      selectedLang: prevLang
+    });
+    this.props.getLabAnalytes({
+      uri: "/labmasters/selectAnalytes",
+      method: "GET",
+      redux: {
+        type: "ANALYTES_GET_DATA",
+        mappingName: "labanalytes"
+      }
+    });
+  }
+
+  dateFormater({ date }) {
+    if (date !== null) {
+      return moment(date).format(Options.dateFormat);
+    }
   }
 
   render() {
@@ -65,7 +92,7 @@ class LabSpecimen extends Component {
                   name: "description",
                   value: this.state.description,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: changeTexts.bind(this, this)
                   }
                 }}
               />
@@ -85,14 +112,14 @@ class LabSpecimen extends Component {
                     valueField: "value",
                     data: GlobalVariables.FORMAT_ANALYTE_TYPE
                   },
-                  onChange: this.changeTexts.bind(this)
+                  onChange: changeTexts.bind(this, this)
                 }}
               />
 
               <div className="col-lg-3 align-middle">
                 <br />
                 <Button
-                  //   onClick={this.addVisaType.bind(this)}
+                  onClick={insertLabAnalytes.bind(this, this)}
                   variant="raised"
                   color="primary"
                 >
@@ -119,8 +146,39 @@ class LabSpecimen extends Component {
                             className: "txt-fld",
                             name: "description",
                             events: {
-                              onChange: this.onchangegridcol.bind(this, row)
+                              onChange: onchangegridcol.bind(this, this, row)
                             }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "analyte_type",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "analyte_type" }} />
+                    ),
+                    displayTemplate: row => {
+                      return row.analyte_type === "QU"
+                        ? "Quality"
+                        : row.analyte_type === "QN"
+                          ? "Quantity"
+                          : "Text";
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "analyte_type",
+                            className: "select-fld",
+                            value: row.analyte_type,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_ANALYTE_TYPE
+                            },
+                            onChange: onchangegridcol.bind(this, this, row)
                           }}
                         />
                       );
@@ -161,7 +219,7 @@ class LabSpecimen extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: this.onchangegridcol.bind(this, row)
+                            onChange: onchangegridcol.bind(this, this, row)
                           }}
                         />
                       );
@@ -171,19 +229,17 @@ class LabSpecimen extends Component {
                 keyId="hims_d_lab_section_id"
                 dataSource={{
                   data:
-                    this.props.visatypes === undefined
+                    this.props.labanalytes === undefined
                       ? []
-                      : this.props.visatypes
+                      : this.props.labanalytes
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{
-                  // onDelete: this.deleteLabSection.bind(this),
-                  onEdit: row => {}
-                  // onDone: row => {
-                  //   alert(JSON.stringify(row));
-                  // }
-                  // onDone: this.updateLabSection.bind(this)
+                  onDelete: deleteLabAnalytes.bind(this, this),
+                  onEdit: row => {},
+
+                  onDone: updateLabAnalytes.bind(this, this)
                 }}
               />
             </div>
@@ -196,14 +252,14 @@ class LabSpecimen extends Component {
 
 function mapStateToProps(state) {
   return {
-    visatypes: state.visatypes
+    labanalytes: state.labanalytes
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisatypes: AlgaehActions
+      getLabAnalytes: AlgaehActions
     },
     dispatch
   );

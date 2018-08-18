@@ -77,7 +77,8 @@ let deleteRecord = (
       "select distinct table_name,column_name from information_schema.KEY_COLUMN_USAGE \
       where constraint_schema=? \
       and REFERENCED_TABLE_NAME=?";
-    debugLog("Sql Query : " + sqlQuery);
+    debugLog("Options", options);
+    debugLog("Sql Query : " + sqlQuery, options.tableName);
     connection.query(
       sqlQuery,
       [config.mysqlDb.database, options.tableName],
@@ -92,67 +93,94 @@ let deleteRecord = (
         let records = "";
         let values = [];
         debugLog("Existing table length : " + tables.length);
-        for (var i = 0; i < tables.length; i++) {
-          records +=
-            "SELECT COUNT(*) CNT FROM " +
-            tables[i]["table_name"] +
-            " WHERE \
-           " +
-            tables[i]["column_name"] +
-            "=?;";
-          values.push(options.id);
-        }
-        debugLog("rexords Query : " + records);
-        connection.query(records, values, (error, result) => {
-          if (error) {
-            if (isreleaseConnection) connection.release();
-            if (typeof errorCallback == "function") {
-              errorCallback(error);
-              return;
-            }
-          } else {
-            var hasRecords = false;
-            for (var c = 0; c < result.length; c++) {
-              if (result[c][0] != null && result[c][0]["CNT"] == 1) {
-                hasRecords = true;
-                break;
+
+        if (tables.length == 0) {
+          connection.query(
+            options.query,
+            options.values,
+            (error, deleteRecord) => {
+              if (error) {
+                if (isreleaseConnection) connection.release();
+                if (typeof errorCallback == "function") {
+                  errorCallback(error);
+                  return;
+                }
               }
-            }
-            if (hasRecords == true) {
-              result = {
-                success: false,
-                message: "Record already exists.."
+
+              let result = {
+                success: true,
+                records: deleteRecord
               };
               if (isreleaseConnection) connection.release();
               if (typeof successCallback == "function") {
                 successCallback(result);
               }
+            }
+          );
+        } else {
+          for (var i = 0; i < tables.length; i++) {
+            records +=
+              "SELECT COUNT(*) CNT FROM " +
+              tables[i]["table_name"] +
+              " WHERE \
+             " +
+              tables[i]["column_name"] +
+              "=?;";
+            values.push(options.id);
+          }
+
+          debugLog("rexords Query : " + records);
+          connection.query(records, values, (error, result) => {
+            if (error) {
+              if (isreleaseConnection) connection.release();
+              if (typeof errorCallback == "function") {
+                errorCallback(error);
+                return;
+              }
             } else {
-              connection.query(
-                options.query,
-                options.values,
-                (error, deleteRecord) => {
-                  if (error) {
+              var hasRecords = false;
+              for (var c = 0; c < result.length; c++) {
+                if (result[c][0] != null && result[c][0]["CNT"] == 1) {
+                  hasRecords = true;
+                  break;
+                }
+              }
+              if (hasRecords == true) {
+                result = {
+                  success: false,
+                  message: "Record already exists.."
+                };
+                if (isreleaseConnection) connection.release();
+                if (typeof successCallback == "function") {
+                  successCallback(result);
+                }
+              } else {
+                connection.query(
+                  options.query,
+                  options.values,
+                  (error, deleteRecord) => {
+                    if (error) {
+                      if (isreleaseConnection) connection.release();
+                      if (typeof errorCallback == "function") {
+                        errorCallback(error);
+                        return;
+                      }
+                    }
+
+                    result = {
+                      success: true,
+                      records: deleteRecord
+                    };
                     if (isreleaseConnection) connection.release();
-                    if (typeof errorCallback == "function") {
-                      errorCallback(error);
-                      return;
+                    if (typeof successCallback == "function") {
+                      successCallback(result);
                     }
                   }
-
-                  result = {
-                    success: true,
-                    records: deleteRecord
-                  };
-                  if (isreleaseConnection) connection.release();
-                  if (typeof successCallback == "function") {
-                    successCallback(result);
-                  }
-                }
-              );
+                );
+              }
             }
-          }
-        });
+          });
+        }
       }
     );
   });

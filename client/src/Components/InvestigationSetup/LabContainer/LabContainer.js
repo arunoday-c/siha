@@ -19,25 +19,51 @@ import GlobalVariables from "../../../utils/GlobalVariables";
 // import swal from "sweetalert";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall.js";
+import {
+  changeTexts,
+  onchangegridcol,
+  insertLabContainer,
+  deleteLabContainer,
+  updateLabContainer
+} from "./LabContainerEvents";
+import Options from "../../../Options.json";
+import moment from "moment";
 
 class LabContainer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      hims_d_lab_section_id: "",
+      hims_d_lab_container_id: "",
       description: "",
-      created_date: "A",
       created_by: getCookie("UserID"),
 
       description_error: false,
-      description_error_txt: ""
+      description_error_txt: "",
+      baseState: false
     };
-    this.baseState = this.state;
   }
 
-  changeTexts(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  componentDidMount() {
+    let prevLang = getCookie("Language");
+
+    this.setState({
+      selectedLang: prevLang
+    });
+    this.props.getLabContainer({
+      uri: "/labmasters/selectContainer",
+      method: "GET",
+      redux: {
+        type: "CONTAINER_GET_DATA",
+        mappingName: "labcontainer"
+      }
+    });
+  }
+
+  dateFormater({ date }) {
+    if (date !== null) {
+      return moment(date).format(Options.dateFormat);
+    }
   }
 
   render() {
@@ -65,7 +91,7 @@ class LabContainer extends Component {
                   name: "description",
                   value: this.state.description,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: changeTexts.bind(this, this)
                   }
                 }}
               />
@@ -73,7 +99,7 @@ class LabContainer extends Component {
               <div className="col-lg-3 align-middle">
                 <br />
                 <Button
-                  //   onClick={this.addVisaType.bind(this)}
+                  onClick={insertLabContainer.bind(this, this)}
                   variant="raised"
                   color="primary"
                 >
@@ -100,7 +126,7 @@ class LabContainer extends Component {
                             className: "txt-fld",
                             name: "description",
                             events: {
-                              onChange: this.onchangegridcol.bind(this, row)
+                              onChange: onchangegridcol.bind(this, this, row)
                             }
                           }}
                         />
@@ -124,47 +150,46 @@ class LabContainer extends Component {
                     disabled: true
                   },
                   {
-                    fieldName: "section_status",
+                    fieldName: "container_status",
                     label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
                     displayTemplate: row => {
-                      return row.visa_status === "A" ? "Active" : "Inactive";
+                      return row.container_status === "A"
+                        ? "Active"
+                        : "Inactive";
                     },
                     editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "section_status",
+                            name: "container_status",
                             className: "select-fld",
-                            value: row.section_status,
+                            value: row.container_status,
                             dataSource: {
                               textField: "name",
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: this.onchangegridcol.bind(this, row)
+                            onChange: onchangegridcol.bind(this, this, row)
                           }}
                         />
                       );
                     }
                   }
                 ]}
-                keyId="hims_d_lab_section_id"
+                keyId="hims_d_lab_container_id"
                 dataSource={{
                   data:
-                    this.props.visatypes === undefined
+                    this.props.labcontainer === undefined
                       ? []
-                      : this.props.visatypes
+                      : this.props.labcontainer
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{
-                  // onDelete: this.deleteLabSection.bind(this),
-                  onEdit: row => {}
-                  // onDone: row => {
-                  //   alert(JSON.stringify(row));
-                  // }
-                  // onDone: this.updateLabSection.bind(this)
+                  onDelete: deleteLabContainer.bind(this, this),
+                  onEdit: row => {},
+                  onDone: updateLabContainer.bind(this, this)
                 }}
               />
             </div>
@@ -177,14 +202,14 @@ class LabContainer extends Component {
 
 function mapStateToProps(state) {
   return {
-    visatypes: state.visatypes
+    labcontainer: state.labcontainer
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisatypes: AlgaehActions
+      getLabContainer: AlgaehActions
     },
     dispatch
   );

@@ -17,8 +17,17 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 // import swal from "sweetalert";
+import {
+  changeTexts,
+  onchangegridcol,
+  insertLabSection,
+  deleteLabSection,
+  updateLabSection
+} from "./LabSectionEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall.js";
+import Options from "../../../Options.json";
+import moment from "moment";
 
 class LabSection extends Component {
   constructor(props) {
@@ -31,13 +40,33 @@ class LabSection extends Component {
       created_by: getCookie("UserID"),
 
       description_error: false,
-      description_error_txt: ""
+      description_error_txt: "",
+      selectedLang: "en"
+      // baseState: false
     };
     this.baseState = this.state;
   }
 
-  changeTexts(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  componentDidMount() {
+    let prevLang = getCookie("Language");
+
+    this.setState({
+      selectedLang: prevLang
+    });
+    this.props.getLabsection({
+      uri: "/labmasters/selectSection",
+      method: "GET",
+      redux: {
+        type: "SECTION_GET_DATA",
+        mappingName: "labsection"
+      }
+    });
+  }
+
+  dateFormater({ date }) {
+    if (date !== null) {
+      return moment(date).format(Options.dateFormat);
+    }
   }
 
   render() {
@@ -65,7 +94,7 @@ class LabSection extends Component {
                   name: "description",
                   value: this.state.description,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: changeTexts.bind(this, this)
                   },
                   error: this.state.visa_type_error,
                   helperText: this.state.visa_type_error_txt
@@ -75,7 +104,7 @@ class LabSection extends Component {
               <div className="col-lg-3 align-middle">
                 <br />
                 <Button
-                  //   onClick={this.addVisaType.bind(this)}
+                  onClick={insertLabSection.bind(this, this)}
                   variant="raised"
                   color="primary"
                 >
@@ -102,7 +131,7 @@ class LabSection extends Component {
                             className: "txt-fld",
                             name: "description",
                             events: {
-                              onChange: this.onchangegridcol.bind(this, row)
+                              onChange: onchangegridcol.bind(this, this, row)
                             }
                           }}
                         />
@@ -129,7 +158,7 @@ class LabSection extends Component {
                     fieldName: "section_status",
                     label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
                     displayTemplate: row => {
-                      return row.visa_status === "A" ? "Active" : "Inactive";
+                      return row.section_status === "A" ? "Active" : "Inactive";
                     },
                     editorTemplate: row => {
                       return (
@@ -144,7 +173,9 @@ class LabSection extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: this.onchangegridcol.bind(this, row)
+                            onChange: onchangegridcol
+                              .bind(this, this, row)
+                              .bind(this, row)
                           }}
                         />
                       );
@@ -154,19 +185,16 @@ class LabSection extends Component {
                 keyId="hims_d_lab_section_id"
                 dataSource={{
                   data:
-                    this.props.visatypes === undefined
+                    this.props.labsection === undefined
                       ? []
-                      : this.props.visatypes
+                      : this.props.labsection
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{
-                  // onDelete: this.deleteLabSection.bind(this),
-                  onEdit: row => {}
-                  // onDone: row => {
-                  //   alert(JSON.stringify(row));
-                  // }
-                  // onDone: this.updateLabSection.bind(this)
+                  onDelete: deleteLabSection.bind(this, this),
+                  onEdit: row => {},
+                  onDone: updateLabSection.bind(this, this)
                 }}
               />
             </div>
@@ -179,14 +207,14 @@ class LabSection extends Component {
 
 function mapStateToProps(state) {
   return {
-    visatypes: state.visatypes
+    labsection: state.labsection
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisatypes: AlgaehActions
+      getLabsection: AlgaehActions
     },
     dispatch
   );

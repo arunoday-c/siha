@@ -138,7 +138,14 @@ let getPatientInsurance = (req, res, next) => {
 //Addded by noor code modification
 let addPatientInsuranceData = (req, res, next) => {
   try {
-    let db = req.options == null ? req.db : req.options;
+    let db = req.options == null ? req.db : req.options.db;
+    debugLog("Body: ", req.body);
+
+    // let x = req.db;
+    // let y = req.options;
+    // debugLog("reg DB", x);
+    // debugLog("reg Options", y);
+    // debugLog("DB", JSON.stringify(db));
     let input = extend(
       {
         hims_f_patient_insurance_mapping_id: null,
@@ -168,6 +175,8 @@ let addPatientInsuranceData = (req, res, next) => {
       },
       req.body
     );
+
+    debugLog("Input: ", input);
 
     db.query(
       "INSERT INTO hims_m_patient_insurance_mapping(`patient_id`,`patient_visit_id`,\
@@ -202,6 +211,7 @@ let addPatientInsuranceData = (req, res, next) => {
         new Date()
       ],
       (error, resdata) => {
+        debugLog("Result: ", resdata);
         if (error) {
           if (req.options == null) {
             db.rollback(() => {
