@@ -21,6 +21,7 @@ import { getCookie } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
+
 class DoctorsWorkbench extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +30,9 @@ class DoctorsWorkbench extends Component {
       my_daylist: [],
       selectedLang: "en",
       data: [],
-      selectedHDate: new Date()
+      selectedHDate: new Date(),
+      fromDate: moment(new Date()).format("YYYY-MM-DD"),
+      toDate: moment(new Date()).format("YYYY-MM-DD")
     };
 
     this.moveToEncounterList = this.moveToEncounterList.bind(this);
@@ -42,8 +45,6 @@ class DoctorsWorkbench extends Component {
       "data-encounterid"
     );
 
-    console.log("Data to Update", updated_by + " ID" + patient_encounter_id);
-
     algaehApiCall({
       uri: "/doctorsWorkBench/updatdePatEncntrStatus",
       data: {
@@ -54,9 +55,7 @@ class DoctorsWorkbench extends Component {
       onSuccess: response => {
         if (response.data.success) this.loadListofData();
       },
-      onFailure: error => {
-        // this.setState({ open: false });
-      }
+      onFailure: error => {}
     });
   }
 
@@ -65,8 +64,8 @@ class DoctorsWorkbench extends Component {
       uri: "/doctorsWorkBench/getMyDay",
       data: {
         provider_id: 2,
-        fromDate: "2018-08-10",
-        toDate: "2018-08-16"
+        fromDate: this.state.fromDate,
+        toDate: this.state.toDate
       },
       method: "GET",
       redux: {
@@ -75,8 +74,6 @@ class DoctorsWorkbench extends Component {
       },
       afterSuccess: data => {
         this.setState({ data: data });
-
-        console.log("Data Array:", data);
 
         let listofvisit = Enumerable.from(data)
           .where(w => w.status === "V")
@@ -96,6 +93,7 @@ class DoctorsWorkbench extends Component {
     });
     this.loadListofData();
   }
+
   liGenerate() {
     let initialDate = moment(this.state.selectedHDate)._d;
     let endDate = moment(this.state.selectedHDate).add(30, "days")._d;
@@ -113,6 +111,7 @@ class DoctorsWorkbench extends Component {
     }
     return generatedLi;
   }
+
   generateHorizontalDateBlocks() {
     return (
       <div className="calendar">
@@ -168,35 +167,43 @@ class DoctorsWorkbench extends Component {
               <ul className="opList">
                 {Enumerable.from(this.state.data)
                   .where(w => w.status === "V")
-                  .toArray()
-                  .map((data, index) => (
-                    <li
-                      key={index}
-                      data-encounterid={String(
-                        data.hims_f_patient_encounter_id
-                      )}
-                      onClick={this.moveToEncounterList}
-                    >
-                      <span className="op-sec-1">
-                        <i className="appointment-icon" />
-                        {/* <i className="walking-icon" /> */}
-                        <span className="opTime">11:44:00</span>
-                      </span>
-                      <span className="op-sec-2">
-                        <span className="opPatientName">{data.full_name}</span>
-                        <span className="opStatus nursing">
-                          {data.nurse_examine === "Y"
-                            ? "Nursing Done"
-                            : "Nursing Pending"}
+                  .toArray().length !== 0 ? (
+                  Enumerable.from(this.state.data)
+                    .where(w => w.status === "V")
+                    .toArray()
+                    .map((data, index) => (
+                      <li
+                        key={index}
+                        data-encounterid={String(
+                          data.hims_f_patient_encounter_id
+                        )}
+                        onClick={this.moveToEncounterList}
+                      >
+                        <span className="op-sec-1">
+                          <i className="appointment-icon" />
+                          {/* <i className="walking-icon" /> */}
+                          <span className="opTime">11:44:00</span>
                         </span>
-                      </span>
-                      <span className="op-sec-3">
-                        <span className="opPatientStatus newVisit">
-                          New Visit
+                        <span className="op-sec-2">
+                          <span className="opPatientName">
+                            {data.full_name}
+                          </span>
+                          <span className="opStatus nursing">
+                            {data.nurse_examine === "Y"
+                              ? "Nursing Done"
+                              : "Nursing Pending"}
+                          </span>
                         </span>
-                      </span>
-                    </li>
-                  ))}
+                        <span className="op-sec-3">
+                          <span className="opPatientStatus newVisit">
+                            New Visit
+                          </span>
+                        </span>
+                      </li>
+                    ))
+                ) : (
+                  <span className="mx-auto">No Patients</span>
+                )}
               </ul>
             </div>
           </div>
@@ -315,7 +322,14 @@ class DoctorsWorkbench extends Component {
                 {
                   fieldName: "status",
                   label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                  disabled: true
+                  disabled: true,
+                  displayTemplate: data => {
+                    return (
+                      <span style={{ backgroundColor: "green" }}>
+                        {data.status === "W" ? <span>WIP </span> : ""}
+                      </span>
+                    );
+                  }
                 },
                 {
                   fieldName: "patient_code",
@@ -359,7 +373,7 @@ class DoctorsWorkbench extends Component {
                   .toArray()
               }}
               isEditable={false}
-              paging={{ page: 0, rowsPerPage: 5 }}
+              paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onDelete: row => {},
                 onEdit: row => {},
