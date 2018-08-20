@@ -58,6 +58,7 @@ export function algaehApiCall(options) {
     options
   );
   let queryParametres = "";
+  debugger;
   if (String(settings.method).toUpperCase() === "GET") {
     let str = [];
     for (let p in settings.data) {
@@ -84,8 +85,9 @@ export function algaehApiCall(options) {
   let x_app_user_identity = JSON.stringify({
     user_id: userDtl !== undefined ? userDtl : ""
   });
-
+  debugger;
   if (settings.uri != null || settings.uri != "") {
+    debugger;
     if (settings.isfetch) {
       return fetch(settings.baseUrl + settings.uri + queryParametres, {
         method: settings.method,
@@ -108,6 +110,7 @@ export function algaehApiCall(options) {
           }
         })
         .catch(error => {
+          debugger;
           console.error("request failed", error);
         });
     }
@@ -123,6 +126,7 @@ export function algaehApiCall(options) {
       timeout: settings.timeout
     })
       .then(response => {
+        debugger;
         if (typeof settings.onSuccess == "function")
           settings.onSuccess(response);
       })

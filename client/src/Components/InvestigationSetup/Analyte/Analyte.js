@@ -28,6 +28,7 @@ import {
 } from "./LabSpecimenEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
+import { successfulMessage } from "../../../utils/GlobalFunctions";
 
 class LabSpecimen extends Component {
   constructor(props) {
@@ -57,6 +58,15 @@ class LabSpecimen extends Component {
       redux: {
         type: "ANALYTES_GET_DATA",
         mappingName: "labanalytes"
+      },
+      afterSuccess: data => {
+        if (data.response.data.success === false) {
+          successfulMessage({
+            message: data.response.data.message,
+            title: "Warning",
+            icon: "warning"
+          });
+        }
       }
     });
   }
@@ -66,6 +76,16 @@ class LabSpecimen extends Component {
       return moment(date).format(Options.dateFormat);
     }
   }
+
+  // componentDidCatch(error, info) {
+  //   debugger;
+  //   swal({
+  //     title: error.message,
+  //     icon: "warning",
+  //     buttons: true,
+  //     dangerMode: true
+  //   });
+  // }
 
   render() {
     return (

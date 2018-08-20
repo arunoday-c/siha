@@ -36,6 +36,10 @@ export const AlgaehActions = options => dispatch => {
         );
       }
     };
+    settings.onFailure = error => {
+      if (typeof settings.afterSuccess === "function")
+        settings.afterSuccess(error);
+    };
     algaehApiCall(settings);
   } else {
     dispatch({
