@@ -32,6 +32,11 @@
         "path": "/InsuranceSetup"
       },
       {
+        "name": "Lab Setup",
+        "label": "إعداد مختبر",
+        "path": "/LabSetup"
+      },
+      {
         "name": "Investigation Setup",
         "label": "إعداد التحقيق",
         "path": "/InvestigationSetup"

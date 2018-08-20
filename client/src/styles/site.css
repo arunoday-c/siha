@@ -2,6 +2,9 @@ body {
   line-height: 1.45;
   font-family: "Open Sans", sans-serif; }
 
+:global .header {
+  max-height: 50px; }
+
 :global .tab-container .tab-button {
   font-weight: normal;
   border-radius: 0px;

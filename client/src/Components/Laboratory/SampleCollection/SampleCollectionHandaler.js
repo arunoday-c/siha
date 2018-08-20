@@ -2,6 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
+import Enumerable from "linq";
 
 const texthandle = ($this, e) => {
   let name;
@@ -55,7 +56,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const getSampleCollectionDetails = $this => {
-  debugger;
   let inputobj = {};
 
   if ($this.state.from_date !== null) {
@@ -72,7 +72,7 @@ const getSampleCollectionDetails = $this => {
   if ($this.state.patient_id !== null) {
     inputobj.patient_id = $this.state.patient_id;
   }
-
+  debugger;
   $this.props.getSampleCollection({
     uri: "/laboratory/getLabOrderedServices",
     method: "GET",
@@ -80,6 +80,24 @@ const getSampleCollectionDetails = $this => {
     redux: {
       type: "SAMPLE_COLLECT_GET_DATA",
       mappingName: "samplecollection"
+    },
+    afterSuccess: data => {
+      debugger;
+      let sample_collection = Enumerable.from(data)
+        .groupBy("$.patient_id", null, (k, g) => {
+          let firstRecordSet = Enumerable.from(g).firstOrDefault();
+          return {
+            patient_code: firstRecordSet.patient_code,
+            full_name: firstRecordSet.full_name,
+            ordered_date: firstRecordSet.ordered_date,
+            number_of_tests: g.getSource().length,
+            test_details: g.getSource(),
+            provider_id: firstRecordSet.provider_id
+          };
+        })
+        .toArray();
+
+      $this.setState({ sample_collection: sample_collection });
     }
   });
 };

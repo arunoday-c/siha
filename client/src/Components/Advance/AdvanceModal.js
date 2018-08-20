@@ -143,7 +143,7 @@ class AddAdvanceModal extends PureComponent {
             open={this.props.show}
           >
             <div className="hptl-phase1-add-advance-form">
-              <div className="colorPrimary">
+              <div className="colorPrimary header">
                 <Typography variant="title">
                   {this.props.HeaderCaption}
                 </Typography>

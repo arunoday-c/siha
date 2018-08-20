@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./InvestigationSetup.css";
+import "./LabSetup.css";
 import "../../index.css";
 import LabSection from "./LabSection/LabSection";
 import LabContainer from "./LabContainer/LabContainer";
@@ -10,7 +10,7 @@ import Analyte from "./Analyte/Analyte";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
-class CommonSetup extends Component {
+class LabSetup extends Component {
   constructor(props) {
     super(props);
 
@@ -163,4 +163,4 @@ class CommonSetup extends Component {
   }
 }
 
-export default CommonSetup;
+export default LabSetup;

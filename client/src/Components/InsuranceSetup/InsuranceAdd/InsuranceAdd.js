@@ -214,14 +214,14 @@ class InsuranceAdd extends PureComponent {
                             disabled={activeStep === 0}
                             onClick={handleBack.bind(this, this)}
                             className={
-                              classes.backButton + " htpl1-phase1-btn-others"
+                              classes.backButton + " htpl1-phase1-btn-secondary"
                             }
                           >
                             Previous
                           </button>
 
                           <button
-                            className="htpl1-phase1-btn-others"
+                            className="htpl1-phase1-btn-secondary"
                             color="primary"
                             onClick={handleNext.bind(this, this)}
                           >
@@ -231,7 +231,7 @@ class InsuranceAdd extends PureComponent {
 
                         <span className="float-right">
                           <button
-                            className="htpl1-phase1-btn-others"
+                            className="htpl1-phase1-btn-secondary"
                             onClick={e => {
                               this.onClose(e);
                             }}
@@ -287,28 +287,30 @@ class InsuranceAdd extends PureComponent {
                   <br />
 
                   <div className="row" position="fixed">
-                    <div className="col-lg-12">
-                      <span className="float-left">
-                        <button
-                          className="htpl1-phase1-btn-others"
-                          onClick={e => {
-                            this.onClose(e);
-                          }}
-                        >
-                          Close
-                        </button>
-                      </span>
-                      {this.props.opencomponent === "1" ? (
-                        <span className="float-right">
+                    <div className="container-fluid">
+                      <div className="col-lg-12">
+                        <span className="float-left">
                           <button
-                            style={{ marginRight: "15px" }}
-                            className="htpl1-phase1-btn-primary"
-                            onClick={updatedata.bind(this, this)}
+                            className="htpl1-phase1-btn-secondary"
+                            onClick={e => {
+                              this.onClose(e);
+                            }}
                           >
-                            Update
+                            Close
                           </button>
                         </span>
-                      ) : null}
+                        {this.props.opencomponent === "1" ? (
+                          <span className="float-right">
+                            <button
+                              style={{ marginRight: "15px" }}
+                              className="htpl1-phase1-btn-primary"
+                              onClick={updatedata.bind(this, this)}
+                            >
+                              Update
+                            </button>
+                          </span>
+                        ) : null}
+                      </div>
                     </div>
                   </div>
                 </MyContext.Provider>
