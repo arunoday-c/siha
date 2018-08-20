@@ -8,9 +8,18 @@
 
   "investigation_code": "Investigation Code",
   "investigation_name": "Investigation Name",
+  "specimen_name": "Specimen",
+  "ordered_by": "Ordered By",
   "ordered_date": "Ordered Date",
   "ordered_time": "Ordered Time",
   "test_status": "Test Status",
   "case_type": "Case Type",
-  "action": "Actions"
+  "action": "Actions",
+  "number_of_tests": "Number of Tests",
+  "sample_collection": "Sample Collection",
+  "collected_by": "Collected By",
+  "collected_date": "Collected Date",
+  "collected": "Collect",
+
+  "btnclose": "Close"
 }

@@ -58,6 +58,7 @@ export function algaehApiCall(options) {
     options
   );
   let queryParametres = "";
+
   if (String(settings.method).toUpperCase() === "GET") {
     let str = [];
     for (let p in settings.data) {

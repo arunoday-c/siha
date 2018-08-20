@@ -32,6 +32,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
+// import SampleCollectionModal from "../SampleCollections/SampleCollectionModal";
+import SampleCollectionModal from "../SampleCollections/SampleCollections";
 
 class SampleCollection extends Component {
   constructor(props) {
@@ -43,7 +45,10 @@ class SampleCollection extends Component {
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
       patient_code: null,
       patient_name: null,
-      patient_id: null
+      patient_id: null,
+      sample_collection: [],
+      selected_patient: null,
+      isOpen: false
     };
   }
 
@@ -58,6 +63,18 @@ class SampleCollection extends Component {
       return moment(date).format(Options.timeFormat);
     }
   };
+
+  ShowCollectionModel(row, e) {
+    this.setState({
+      isOpen: !this.state.isOpen,
+      selected_patient: row
+    });
+  }
+  CloseCollectionModel(e) {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
 
   render() {
     // let sampleCollection =
@@ -179,24 +196,24 @@ class SampleCollection extends Component {
                       ),
                       disabled: true
                     },
-                    {
-                      fieldName: "service_code",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "investigation_code" }}
-                        />
-                      ),
-                      disabled: true
-                    },
-                    {
-                      fieldName: "service_name",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "investigation_name" }}
-                        />
-                      ),
-                      disabled: true
-                    },
+                    // {
+                    //   fieldName: "service_code",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ fieldName: "investigation_code" }}
+                    //     />
+                    //   ),
+                    //   disabled: true
+                    // },
+                    // {
+                    //   fieldName: "service_name",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ fieldName: "investigation_name" }}
+                    //     />
+                    //   ),
+                    //   disabled: true
+                    // },
                     {
                       fieldName: "ordered_date",
                       label: (
@@ -209,35 +226,41 @@ class SampleCollection extends Component {
                       },
                       disabled: true
                     },
+                    // {
+                    //   fieldName: "ordered_date",
+                    //   label: (
+                    //     <AlgaehLabel label={{ fieldName: "ordered_time" }} />
+                    //   ),
+                    //   displayTemplate: row => {
+                    //     return (
+                    //       <span>{this.changeTimeFormat(row.ordered_date)}</span>
+                    //     );
+                    //   },
+                    //   disabled: true
+                    // },
+                    // {
+                    //   fieldName: "status",
+                    //   label: (
+                    //     <AlgaehLabel label={{ fieldName: "test_status" }} />
+                    //   ),
+                    //   displayTemplate: row => {
+                    //     return row.status === "O"
+                    //       ? "Ordered"
+                    //       : row.status === "CL"
+                    //         ? "Collected"
+                    //         : row.status === "CN"
+                    //           ? "Cancelled"
+                    //           : row.status === "CF"
+                    //             ? "Confirmed"
+                    //             : "Validated";
+                    //   },
+                    //   disabled: true
+                    // },
                     {
-                      fieldName: "ordered_date",
+                      fieldName: "number_of_tests",
                       label: (
-                        <AlgaehLabel label={{ fieldName: "ordered_time" }} />
-                      ),
-                      displayTemplate: row => {
-                        return (
-                          <span>{this.changeTimeFormat(row.ordered_date)}</span>
-                        );
-                      },
-                      disabled: true
-                    },
-                    {
-                      fieldName: "status",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "test_status" }} />
-                      ),
-                      displayTemplate: row => {
-                        return row.status === "O"
-                          ? "Ordered"
-                          : row.status === "CL"
-                            ? "Collected"
-                            : row.status === "CN"
-                              ? "Cancelled"
-                              : row.status === "CF"
-                                ? "Confirmed"
-                                : "Validated";
-                      },
-                      disabled: true
+                        <AlgaehLabel label={{ fieldName: "number_of_tests" }} />
+                      )
                     },
                     {
                       fieldName: "action",
@@ -247,7 +270,10 @@ class SampleCollection extends Component {
                           <span>
                             <IconButton color="primary" title="Collection">
                               <Collections
-                              // onClick={this.ShowEditModel.bind(this, row)}
+                                onClick={this.ShowCollectionModel.bind(
+                                  this,
+                                  row
+                                )}
                               />
                             </IconButton>
                           </span>
@@ -257,16 +283,26 @@ class SampleCollection extends Component {
                   ]}
                   keyId="patient_code"
                   dataSource={{
-                    data:
-                      this.props.samplecollection === undefined
-                        ? []
-                        : this.props.samplecollection
+                    data: this.state.sample_collection
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
             </div>
           </div>
+          <SampleCollectionModal
+            HeaderCaption={
+              <AlgaehLabel
+                label={{
+                  fieldName: "sample_collection",
+                  align: "ltr"
+                }}
+              />
+            }
+            open={this.state.isOpen}
+            onClose={this.CloseCollectionModel.bind(this)}
+            selected_patient={this.state.selected_patient}
+          />
         </div>
       </React.Fragment>
     );

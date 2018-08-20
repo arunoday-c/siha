@@ -24,14 +24,6 @@ import Menu from "@material-ui/core/Menu";
 
 const drawerWidth = 230;
 
-const paper_style = {
-  height: "100%",
-  position: "fixed",
-  display: "inline-block",
-  zIndex: 10000,
-  background: "#292929"
-};
-
 const titleStyles = {
   title: {
     color: "#fff",
@@ -89,21 +81,19 @@ const styles = theme => ({
     background: "#292929",
     ...theme.mixins.toolbar
   },
+  backgroundflex: {
+    background: "#292929"
+  },
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    // padding: theme.spacing.unit * 3,
+
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     })
   },
-  // "content-left": {
-  //   marginRight: -drawerWidth
-  // },
-  // "content-right": {
-  //   marginLeft: -drawerWidth
-  // },
+
   contentShift: {
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
@@ -241,13 +231,8 @@ class PersistentDrawer extends React.Component {
   TriggerPath(e) {
     const path = e.currentTarget.getAttribute("path");
     const name = e.currentTarget.getAttribute("name");
-    // const name = e.currentTarget.getAttribute("name");
     let screenName = name.replace(/\s/g, "");
     setCookie("ScreenName", path, 30);
-    // let titlectrl = this.title;
-    // titlectrl.setAttribute("data-algeahtitle", e.currentTarget.innerText);
-
-    // titlectrl.innerText = e.currentTarget.innerText;
 
     this.setState({
       toggleSubMenu: true,
@@ -346,7 +331,12 @@ class PersistentDrawer extends React.Component {
       );
     });
     const drawer = (
-      <Drawer variant="persistent" anchor={anchor} open={open}>
+      <Drawer
+        variant="persistent"
+        anchor={anchor}
+        open={open}
+        classes={{ paper: classes.backgroundflex }}
+      >
         <div className="hptl-phase1-sideMenuBar">
           <div className="menuBar-title">
             <span style={titleStyles.title}>ALGAEH</span>
@@ -362,9 +352,9 @@ class PersistentDrawer extends React.Component {
     );
 
     return (
-      <div className="sticky-top">
+      <div className="">
         <div className={classes.root}>
-          <div className={classes.appFrame}>
+          <div className={classNames(classes.appFrame, "sticky-top")}>
             <AppBar
               className={classNames(classes.appBar, {
                 [classes.appBarShift]: open,
@@ -376,7 +366,7 @@ class PersistentDrawer extends React.Component {
                 style={{ minHeight: "50px", padding: "0px" }}
               >
                 <div className="screenDisplay">
-                  {/* {this.state.open === false ? (
+                  {this.state.open === false ? (
                     <IconButton
                       color="inherit"
                       aria-label="open drawer"
@@ -388,16 +378,15 @@ class PersistentDrawer extends React.Component {
                     >
                       <MenuIcon />
                     </IconButton>
-                  ) : (
-                    <div> </div>
-                  )} */}
-                  <IconButton
+                  ) : null}
+                  {/* <IconButton
                     color="inherit"
                     aria-label="open drawer"
                     onClick={this.handleDrawerOpen}
                   >
                     <MenuIcon />
-                  </IconButton>
+                  </IconButton> */}
+
                   <h5>{this.state.title}</h5>
                   <span>
                     <Button

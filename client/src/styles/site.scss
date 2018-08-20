@@ -4,6 +4,9 @@ body {
   font-family: $fontFamily;
 }
 :global {
+  .header {
+    max-height: 50px;
+  }
   .tab-container {
     .tab-button {
       // font-size: 12px;

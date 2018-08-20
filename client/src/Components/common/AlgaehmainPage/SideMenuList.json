@@ -36,6 +36,12 @@
         "path": "/InsuranceSetup"
       },
       {
+        "name": "Lab Setup",
+        "label": "Lab Setup",
+        "arlabel": "إعداد مختبر",
+        "path": "/LabSetup"
+      },
+      {
         "name": "Investigation Setup",
         "label": "Investigation Setup",
         "arlabel": "إعداد التحقيق",
