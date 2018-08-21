@@ -973,7 +973,7 @@ let getPatientProfile = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT P.full_name,P.patient_code,P.gender,P.date_of_birth,P.contact_number,N.nationality,\
+        "SELECT P.hims_d_patient_id,P.full_name,P.patient_code,P.gender,P.date_of_birth,P.contact_number,N.nationality,\
         PV.age_in_years,PV.age_in_months,PV.age_in_days,PE.payment_type,PE.created_date as Encounter_Date \
 from ( (hims_f_patient P inner join hims_f_patient_encounter PE  on P.hims_d_patient_id=PE.patient_id)\
 inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
@@ -993,6 +993,63 @@ PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episod
     next(e);
   }
 };
+
+//created by irfan: to get chief complaints(HPI) against sub-department
+let getChiefComplaints = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_hpi_header_id,hpi_description from hims_d_hpi_header where sub_department_id=? and record_status='A';",
+        [inputData.sub_department_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let getChiefComplaintsElements = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_hpi_details_id,hpi_header_id,element_description,element_type \
+        from hims_d_hpi_details  where hpi_header_id=? and record_status='A';",
+        [inputData.hpi_header_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -1012,5 +1069,7 @@ module.exports = {
   getEncounterReview,
   getMyDay,
   updatdePatEncntrStatus,
-  getPatientProfile
+  getPatientProfile,
+  getChiefComplaints,
+  getChiefComplaintsElements
 };

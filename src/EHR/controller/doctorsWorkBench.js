@@ -20,7 +20,9 @@ import {
   getEncounterReview,
   getMyDay,
   updatdePatEncntrStatus,
-  getPatientProfile
+  getPatientProfile,
+  getChiefComplaints,
+  getChiefComplaintsElements
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -297,7 +299,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan : getPatientProfile
+  // created by irfan : to  getPatientProfile
   api.get(
     "/getPatientProfile",
     getPatientProfile,
@@ -311,6 +313,36 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+  getChiefComplaints;
 
+  // created by irfan : to  getChiefComplaints
+  api.get(
+    "/getChiefComplaints",
+    getChiefComplaints,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to  getChiefComplaintsElements
+  api.get(
+    "/getChiefComplaintsElements",
+    getChiefComplaintsElements,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };
