@@ -22,7 +22,9 @@ import {
   updatdePatEncntrStatus,
   getPatientProfile,
   getChiefComplaints,
-  getChiefComplaintsElements
+  getChiefComplaintsElements,
+  addChiefComplaintsElement,
+  addPatientChiefComplaints
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -334,6 +336,36 @@ export default ({ config, db }) => {
   api.get(
     "/getChiefComplaintsElements",
     getChiefComplaintsElements,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to add addChiefComplaintsElement
+  api.post(
+    "/addChiefComplaintsElement",
+    addChiefComplaintsElement,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to add addPatientChiefComplaints
+  api.post(
+    "/addPatientChiefComplaints",
+    addPatientChiefComplaints,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

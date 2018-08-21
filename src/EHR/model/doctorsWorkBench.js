@@ -1021,7 +1021,7 @@ let getChiefComplaints = (req, res, next) => {
     next(e);
   }
 };
-
+// created by : irfan to get chief complaint elements
 let getChiefComplaintsElements = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -1041,6 +1041,104 @@ let getChiefComplaintsElements = (req, res, next) => {
             next(error);
           }
           req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+// created by : irfan to ADD chief complaint elements
+let addChiefComplaintsElement = (req, res, next) => {
+  debugFunction("addChiefComplaintsElement");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_hpi_details(hpi_header_id,element_description,element_type,created_by,updated_by) \
+        values(?,?,?,?,?)",
+        [
+          input.hpi_header_id,
+          input.element_description,
+          input.element_type,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+// created by : irfan to ADD  patient-chief complaint
+let addPatientChiefComplaints = (req, res, next) => {
+  debugFunction("addPatientChiefComplaints");
+  let chiefComplaintModel = {
+    episode: null,
+    chief_complaint_id: null,
+    onset_date: null,
+    severity: null,
+    score: null,
+    pain: null,
+    comment: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(chiefComplaintModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_f_episode_cheif_complaint (episode,chief_complaint_id,onset_date,severity,score,pain,comment,created_by,updated_by) \
+        values(?,?,?,?,?,?,?,?,?)",
+        [
+          input.episode,
+          input.chief_complaint_id,
+          input.onset_date,
+          input.severity,
+          input.score,
+          input.pain,
+          input.comment,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
           next();
         }
       );
@@ -1071,5 +1169,7 @@ module.exports = {
   updatdePatEncntrStatus,
   getPatientProfile,
   getChiefComplaints,
-  getChiefComplaintsElements
+  getChiefComplaintsElements,
+  addChiefComplaintsElement,
+  addPatientChiefComplaints
 };
