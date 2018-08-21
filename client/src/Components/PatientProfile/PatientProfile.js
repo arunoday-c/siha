@@ -5,13 +5,15 @@ import Subjective from "./Subjective/Subjective";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import Assesment from "./Assessment/Assessment";
 import Plan from "./Plan/Plan";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 
 class PatientProfile extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      pageDisplay: "overview"
+      pageDisplay: "overview",
+      patientData: {}
     };
     this.changeTabs = this.changeTabs.bind(this);
   }
@@ -25,6 +27,24 @@ class PatientProfile extends Component {
     var page = e.currentTarget.getAttribute("algaehsoap");
     this.setState({
       pageDisplay: page
+    });
+  }
+
+  componentDidMount() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientProfile",
+      data: {
+        patient_id: 483,
+        episode_id: 45
+      },
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          console.log("Patient data:", response.data.records);
+          this.setState({ patientData: response.data.records[0] });
+        }
+      },
+      onFailure: error => {}
     });
   }
 
@@ -42,7 +62,13 @@ class PatientProfile extends Component {
             <img src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" />
           </div>
           <div className="patientName">
-            <h6>SEBASTIAN TASSART</h6>
+            <h6>
+              {
+                this.state.patientData.full_name
+                //? this.state.patientData.full_name
+                //: ""
+              }
+            </h6>
             <p>Male, 43Y 7M 10D</p>
           </div>
           <div className="patientDemographic">
@@ -88,7 +114,7 @@ class PatientProfile extends Component {
             </span>
           </div>
           <div className="moreAction">
-            <button type="button" class="btn btn-outline-secondary btn-sm">
+            <button type="button" className="btn btn-outline-secondary btn-sm">
               <i className="fas fa-caret-square-down fa-lg" />
               More
             </button>

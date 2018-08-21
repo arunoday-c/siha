@@ -183,5 +183,17 @@
     { "name": "Quality", "value": "QU" },
     { "name": "Quantity", "value": "QN" },
     { "name": "Text", "value": "T" }
+  ],
+  "PAIN_DURATION": [
+    { "name": "Hours", "value": "H" },
+    { "name": "Days", "value": "D" },
+    { "name": "Weeks", "value": "W" },
+    { "name": "Months", "value": "M" },
+    { "name": "Years", "value": "Y" }
+  ],
+  "PAIN_SEVERITY": [
+    { "name": "Mild", "value": "M" },
+    { "name": "Moderate", "value": "Mo" },
+    { "name": "Severe", "value": "S" }
   ]
 }

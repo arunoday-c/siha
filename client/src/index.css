@@ -1,3 +1,41 @@
+:global .card {
+  margin-bottom: 15px; }
+
+:global .mrgn-tp-auto {
+  margin-top: auto; }
+
+:global .pain-scale-ul {
+  margin: auto;
+  padding: auto;
+  list-style: none; }
+  :global .pain-scale-ul li {
+    background: url("./assets/images/pain_scale.png") no-repeat center transparent;
+    width: 31px;
+    height: 31px;
+    display: inline-block;
+    cursor: pointer;
+    margin-right: 10px; }
+  :global .pain-scale-ul .pain-1 {
+    background-position: 0px 0px; }
+  :global .pain-scale-ul .pain-2 {
+    background-position: 0px -32px; }
+  :global .pain-scale-ul .pain-3 {
+    background-position: 0px -65px; }
+  :global .pain-scale-ul .pain-4 {
+    background-position: 0px -98px; }
+  :global .pain-scale-ul .pain-5 {
+    background-position: 0px -130px; }
+  :global .pain-scale-ul .pain-6 {
+    background-position: 0px -163px; }
+  :global .pain-scale-ul .active {
+    border-radius: 100%;
+    box-shadow: 0 3px 8px #00000063; }
+
+:global .pain_slider {
+  max-width: 350px;
+  margin: 20px;
+  padding: auto; }
+
 :global .algaeh-modal {
   margin: 3% auto 0;
   background-color: #fff;
@@ -18,7 +56,8 @@
       margin: 0; }
   :global .algaeh-modal .popupInner {
     height: 70vh;
-    overflow: auto; }
+    overflow-y: auto;
+    overflow-x: hidden; }
   :global .algaeh-modal .popupFooter {
     background: #f7f7f7;
     border-top: 1px solid #e0e0e0;

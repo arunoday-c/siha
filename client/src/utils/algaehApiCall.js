@@ -81,14 +81,19 @@ export function algaehApiCall(options) {
   if (settings.printInput) {
     console.log("Input data :", settings.data);
   }
-  let userDtl = JSON.parse(getCookie("userDetails"));
+  const cookUser = getCookie("userDetails");
+  console.log("Cookkkiieiiei:", cookUser);
   let x_app_user_identity = "";
-  if (userDtl !== undefined) {
-    x_app_user_identity = JSON.stringify({
-      user_id: userDtl.algaeh_d_app_user_id,
-      employee_id: userDtl.employee_id,
-      sub_department_id: userDtl.sub_department_id
-    });
+  let userDtl = JSON.parse(cookUser);
+
+  if (userDtl !== "") {
+    if (userDtl !== undefined) {
+      x_app_user_identity = JSON.stringify({
+        user_id: userDtl.algaeh_d_app_user_id,
+        employee_id: userDtl.employee_id,
+        sub_department_id: userDtl.sub_department_id
+      });
+    }
   }
 
   if (settings.uri != null || settings.uri != "") {
