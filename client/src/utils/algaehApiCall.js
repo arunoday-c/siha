@@ -81,10 +81,15 @@ export function algaehApiCall(options) {
   if (settings.printInput) {
     console.log("Input data :", settings.data);
   }
-  let userDtl = getCookie("UserID");
-  let x_app_user_identity = JSON.stringify({
-    user_id: userDtl !== undefined ? userDtl : ""
-  });
+  let userDtl = JSON.parse(getCookie("userDetails"));
+  let x_app_user_identity = "";
+  if (userDtl !== undefined) {
+    x_app_user_identity = JSON.stringify({
+      user_id: userDtl.algaeh_d_app_user_id,
+      employee_id: userDtl.employee_id,
+      sub_department_id: userDtl.sub_department_id
+    });
+  }
 
   if (settings.uri != null || settings.uri != "") {
     if (settings.isfetch) {
