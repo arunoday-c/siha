@@ -4,7 +4,7 @@ import { debugLog, debugFunction, logger } from "../utils/logging";
 import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 import moment from "moment";
 
-//Added by noor for code optimization
+//Added by noor for code optimization aug-20-1018
 let insertPatientVisitData = (req, res, next) => {
   try {
     debugFunction("insertPatientVisitData");
@@ -378,6 +378,7 @@ let addVisit = (req, res, next) => {
   }
 };
 
+//old method to be deleted
 let insertVisitData = (dataBase, req, res, callBack) => {
   let visitDetails = {
     hims_f_patient_visit_id: null,

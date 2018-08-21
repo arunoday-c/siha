@@ -19,7 +19,8 @@ import {
   addEncounterReview,
   getEncounterReview,
   getMyDay,
-  updatdePatEncntrStatus
+  updatdePatEncntrStatus,
+  getPatientProfile
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -292,6 +293,21 @@ export default ({ config, db }) => {
       } else {
         next(httpStatus.generateError(httpStatus.notFound, "No records found"));
       }
+    },
+    releaseConnection
+  );
+
+  // created by irfan : getPatientProfile
+  api.get(
+    "/getPatientProfile",
+    getPatientProfile,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
     },
     releaseConnection
   );
