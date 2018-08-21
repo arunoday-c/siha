@@ -109,10 +109,12 @@ let authUser = (req, res, next) => {
       connection.query(
         "select algaeh_d_app_user.algaeh_d_app_user_id,algaeh_d_app_user.username, \
               user_displayname,user_type,locked,login_attempts,password_expiry_rule, \
-              change_password,password_expiry_date \
-              from algaeh_d_app_user,algaeh_d_app_password \
+              change_password,password_expiry_date,hims_m_employee_department_mappings.employee_id,\
+              hims_m_employee_department_mappings.sub_department_id \
+              from algaeh_d_app_user,algaeh_d_app_password,hims_m_employee_department_mappings \
               WHERE algaeh_d_app_user.record_status='A' AND algaeh_d_app_password.record_status='A' \
-              AND algaeh_d_app_password.password=md5(?) AND algaeh_d_app_user.username=?",
+              AND algaeh_d_app_password.password=md5(?) AND algaeh_d_app_user.username=? \
+              AND hims_m_employee_department_mappings.user_id=algaeh_d_app_user.algaeh_d_app_user_id",
         [inputData.password, inputData.username],
         (error, result) => {
           connection.release();

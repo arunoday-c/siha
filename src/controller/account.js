@@ -41,7 +41,9 @@ export default ({ config, db }) => {
             records: {
               algaeh_d_app_user_id: rowDetails["algaeh_d_app_user_id"],
               username: rowDetails["username"],
-              user_displayname: rowDetails["user_displayname"]
+              user_displayname: rowDetails["user_displayname"],
+              employee_id: rowDetails["employee_id"],
+              sub_department_id: rowDetails["sub_department_id"]
             }
           });
           next();

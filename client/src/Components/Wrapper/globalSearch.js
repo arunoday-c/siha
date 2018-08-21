@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import SearchModule from "./searchModule";
-
+const searchWindowS = document.getElementById("searchWindow");
 let searchWindow = props => {
   return (
     <SearchModule
@@ -19,6 +19,7 @@ let searchWindow = props => {
 };
 let AlgaehSearch = props => {
   let modelData = searchWindow(props);
-  ReactDOM.render(modelData, document.getElementById("searchWindow"));
+  //  ReactDOM.render(modelData, document.getElementById("searchWindow"));
+  return ReactDOM.createPortal(modelData, searchWindowS);
 };
 export default AlgaehSearch;
