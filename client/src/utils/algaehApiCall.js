@@ -81,9 +81,9 @@ export function algaehApiCall(options) {
   if (settings.printInput) {
     console.log("Input data :", settings.data);
   }
-  debugger;
+
   const cookUser = getCookie("userDetails");
-  console.log("Cookkkiieiiei:", cookUser);
+
   let x_app_user_identity = null;
 
   if (cookUser !== "") {
