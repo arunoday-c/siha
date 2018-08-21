@@ -1,5 +1,6 @@
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
+import { debugLog } from "../utils/logging";
 
 let getUserNamePassWord = base64String => {
   try {
@@ -106,15 +107,18 @@ let authUser = (req, res, next) => {
     let inputData = extend(authModel, req.body);
 
     db.getConnection((error, connection) => {
-      connection.query(
+      let query =
         "select algaeh_d_app_user.algaeh_d_app_user_id,algaeh_d_app_user.username, \
-              user_displayname,user_type,locked,login_attempts,password_expiry_rule, \
-              change_password,password_expiry_date,hims_m_employee_department_mappings.employee_id,\
-              hims_m_employee_department_mappings.sub_department_id \
-              from algaeh_d_app_user,algaeh_d_app_password,hims_m_employee_department_mappings \
-              WHERE algaeh_d_app_user.record_status='A' AND algaeh_d_app_password.record_status='A' \
-              AND algaeh_d_app_password.password=md5(?) AND algaeh_d_app_user.username=? \
-              AND hims_m_employee_department_mappings.user_id=algaeh_d_app_user.algaeh_d_app_user_id",
+      user_displayname,user_type,locked,login_attempts,password_expiry_rule, \
+      change_password,password_expiry_date,hims_m_employee_department_mappings.employee_id,\
+      hims_m_employee_department_mappings.sub_department_id \
+      from algaeh_d_app_user,algaeh_d_app_password,hims_m_employee_department_mappings \
+      WHERE algaeh_d_app_user.record_status='A' AND algaeh_d_app_password.record_status='A' \
+      AND algaeh_d_app_password.password=md5(?) AND algaeh_d_app_user.username=? \
+      AND hims_m_employee_department_mappings.user_id=algaeh_d_app_user.algaeh_d_app_user_id";
+
+      connection.query(
+        query,
         [inputData.password, inputData.username],
         (error, result) => {
           connection.release();

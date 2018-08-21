@@ -81,12 +81,13 @@ export function algaehApiCall(options) {
   if (settings.printInput) {
     console.log("Input data :", settings.data);
   }
+  debugger;
   const cookUser = getCookie("userDetails");
   console.log("Cookkkiieiiei:", cookUser);
-  let x_app_user_identity = "";
-  let userDtl = JSON.parse(cookUser);
+  let x_app_user_identity = null;
 
-  if (userDtl !== "") {
+  if (cookUser !== "") {
+    let userDtl = JSON.parse(cookUser);
     if (userDtl !== undefined) {
       x_app_user_identity = JSON.stringify({
         user_id: userDtl.algaeh_d_app_user_id,

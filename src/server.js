@@ -64,7 +64,8 @@ app.use((req, res, next) => {
   // }
 
   let header = req.headers["x-app-user-identity"];
-  if (header != null) {
+
+  if (header != null && header != "" && header != "null") {
     header = JSON.parse(header);
     req.body.created_by = header.user_id;
     req.body.updated_by = header.user_id;
