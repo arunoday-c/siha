@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./Login.css";
 import { Button } from "../Wrapper/algaehWrapper";
 import LinearProgress from "@material-ui/core/LinearProgress";
-
+import { setGlobal } from "../../utils/GlobalFunctions";
 import { algaehApiCall, setCookie } from "../../utils/algaehApiCall.js";
 import swal from "sweetalert";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
@@ -93,7 +93,7 @@ export default class Login extends Component {
         onSuccess: response => {
           if (response.data.success === true) {
             setCookie("UserID", response.data.records.algaeh_d_app_user_id, 30);
-            setCookie("userDetails", JSON.stringify(response.data.records), 30);
+            setCookie("keyResources", response.data.records.keyResources, 30);
             window.location.hash = "/Home";
             window.history.pushState(null, null, window.location.href);
             window.onpopstate = function(event) {

@@ -524,9 +524,6 @@ let updateOrderedServices = (req, res, next) => {
 let updateOrderedServicesBilled = (req, res, next) => {
   debugFunction("updateOrderedServicesBilled");
 
-  let header = req.headers["x-app-user-identity"];
-  header = JSON.parse(header);
-
   debugLog("Bill Data: ", req.body.billdetails);
   let OrderServices = new LINQ(req.body.billdetails)
     .Where(w => w.hims_f_ordered_services_id != null)
@@ -535,7 +532,7 @@ let updateOrderedServicesBilled = (req, res, next) => {
         hims_f_ordered_services_id: s.hims_f_ordered_services_id,
         billed: "Y",
         updated_date: new Date(),
-        updated_by: header.user_id
+        updated_by: req.userIdentity.algaeh_d_app_user_id
       };
     })
     .ToArray();

@@ -14,7 +14,8 @@ import rfs from "rotating-file-stream";
 import httpStatus from "./utils/httpStatus";
 import { logger, debugLog, debugFunction } from "./utils/logging";
 import jwtDecode from "jwt-decode";
-
+import { decryption } from "./utils/cryptography";
+import { debuglog } from "util";
 let app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -55,25 +56,25 @@ passport.deserializeUser((id, done) => {
 });
 
 app.use((req, res, next) => {
-  // let reBody = req.body;
-  // if (reBody != null && reBody["password"] != null) {
-  //   reBody["password"] = String(reBody["password"]).replace(
-  //     reBody["password"],
-  //     "*******"
-  //   );
-  // }
-
-  let header = req.headers["x-app-user-identity"];
-
-  if (header != null && header != "" && header != "null") {
-    header = JSON.parse(header);
-    req.body.created_by = header.user_id;
-    req.body.updated_by = header.user_id;
-  }
-
   let reqH = req.headers;
+  debugLog("URL ", req.url);
   let reqUser = "";
-  if (req.url != "/api/v1/apiAuth") reqUser = jwtDecode(reqH["x-api-key"]).id;
+  if (req.url != "/api/v1/apiAuth") {
+    reqUser = jwtDecode(reqH["x-api-key"]).id;
+    if (req.url != "/api/v1/apiAuth/authUser") {
+      let header = req.headers["x-app-user-identity"];
+      if (header != null && header != "" && header != "null") {
+        header = decryption(header);
+
+        req.userIdentity = header;
+      } else {
+        res.status(httpStatus.unAuthorized).json({
+          success: false,
+          message: "unauthorized credentials your account details"
+        });
+      }
+    }
+  }
 
   logger.log("info", "%j", {
     requestClient: req.ip,
