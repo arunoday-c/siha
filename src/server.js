@@ -57,7 +57,7 @@ passport.deserializeUser((id, done) => {
 
 app.use((req, res, next) => {
   let reqH = req.headers;
-  debugLog("URL ", req.url);
+
   let reqUser = "";
   if (req.url != "/api/v1/apiAuth") {
     reqUser = jwtDecode(reqH["x-api-key"]).id;
@@ -65,12 +65,13 @@ app.use((req, res, next) => {
       let header = req.headers["x-app-user-identity"];
       if (header != null && header != "" && header != "null") {
         header = decryption(header);
-
+        req.body.created_by = header.algaeh_d_app_user_id;
+        req.body.updated_by = header.algaeh_d_app_user_id;
         req.userIdentity = header;
       } else {
         res.status(httpStatus.unAuthorized).json({
           success: false,
-          message: "unauthorized credentials your account details"
+          message: "unauthorized credentials can not procees.."
         });
       }
     }
