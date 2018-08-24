@@ -17,6 +17,7 @@ import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
+import AppBar from "@material-ui/core/AppBar";
 
 class InsuranceSetup extends Component {
   constructor(props) {
@@ -286,12 +287,16 @@ class InsuranceSetup extends Component {
                       : this.props.insProviders
                 }}
                 // isEditable={true}
-                paging={{ page: 0, rowsPerPage: 6 }}
+                paging={{ page: 0, rowsPerPage: 10 }}
               />
             </div>
           </div>
         </div>
         {/* Footer Start */}
+
+        {/* <div className="hptl-phase1-footer">
+          <AppBar position="static" className="main" />
+        </div> */}
         <div className="fixed-bottom insurance-footer">
           <div className="float-right">
             <button

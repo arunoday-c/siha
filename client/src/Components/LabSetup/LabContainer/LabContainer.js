@@ -90,6 +90,8 @@ class LabContainer extends Component {
                   className: "txt-fld",
                   name: "description",
                   value: this.state.description,
+                  error: this.state.description_error,
+                  helperText: this.state.description_error_txt,
                   events: {
                     onChange: changeTexts.bind(this, this)
                   }

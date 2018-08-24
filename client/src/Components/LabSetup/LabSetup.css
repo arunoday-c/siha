@@ -1,4 +1,4 @@
-.investigation_setup .common-section {
+.hims_lab_setup .common-section {
   border: 1px solid #d3d3d3;
   margin: 10px;
   margin-top: 0px;
@@ -6,6 +6,6 @@
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px; }
 
-.investigation_setup .toggle-section {
+.hims_lab_setup .toggle-section {
   margin: 10px;
   margin-bottom: 0px; }

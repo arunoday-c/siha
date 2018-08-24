@@ -6,8 +6,9 @@
     margin: 10px;
     margin-bottom: 0px; }
   .insurancesetup .insurance-footer {
-    height: "60px";
     background-color: #000; }
+  .insurancesetup .fixed-bottom {
+    min-height: "8vh"; }
   .insurancesetup .insurance-section {
     border: 1px solid #d3d3d3;
     margin: 10px;

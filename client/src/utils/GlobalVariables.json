@@ -183,5 +183,17 @@
     { "name": "Quality", "value": "QU" },
     { "name": "Quantity", "value": "QN" },
     { "name": "Text", "value": "T" }
+  ],
+  "FORMAT_LAB_RAD": [
+    { "name": "Lab", "value": "L" },
+    { "name": "Radiology", "value": "R" }
+  ],
+  "FORMAT_INVPRIORITY": [
+    { "name": "Stat", "value": "S" },
+    { "name": "Routine", "value": "R" }
+  ],
+  "FORMAT_RESTRICTBY": [
+    { "name": "user_id", "value": "0" },
+    { "name": "department_id", "value": "1" }
   ]
 }
