@@ -70,8 +70,6 @@ let insertLadOrderedServices = (req, res, next) => {
     "ordered_date",
     "created_by"
   ];
-  let header = req.headers["x-app-user-identity"];
-  header = JSON.parse(header);
 
   debugLog("Requested Data:", req.body);
   let labServices = new LINQ(req.body.billdetails)
@@ -87,7 +85,7 @@ let insertLadOrderedServices = (req, res, next) => {
         service_id: s.services_id,
         billed: "Y",
         ordered_date: new Date(),
-        created_by: header.user_id
+        created_by: req.userIdentity.algaeh_d_app_user_id
       };
     })
     .ToArray();

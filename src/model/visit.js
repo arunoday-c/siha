@@ -4,12 +4,11 @@ import { debugLog, debugFunction, logger } from "../utils/logging";
 import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
 import moment from "moment";
 
-//Added by noor for code optimization
+//Added by noor for code optimization aug-20-1018
 let insertPatientVisitData = (req, res, next) => {
   try {
     debugFunction("insertPatientVisitData");
-    let header = req.headers["x-app-user-identity"];
-    header = JSON.parse(header);
+
     let inputParam = extend(
       {
         hims_f_patient_visit_id: null,
@@ -30,9 +29,9 @@ let insertPatientVisitData = (req, res, next) => {
         mlc_accident_reg_no: null,
         mlc_police_station: null,
         mlc_wound_certified_date: null,
-        created_by: header.user_id,
+        created_by: req.userIdentity.algaeh_d_app_user_id,
         created_date: null,
-        updated_by: header.user_id,
+        updated_by: req.userIdentity.algaeh_d_app_user_id,
         updated_date: null,
         record_status: null,
         patient_message: null,
@@ -378,6 +377,7 @@ let addVisit = (req, res, next) => {
   }
 };
 
+//old method to be deleted
 let insertVisitData = (dataBase, req, res, callBack) => {
   let visitDetails = {
     hims_f_patient_visit_id: null,

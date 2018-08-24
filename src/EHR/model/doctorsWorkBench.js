@@ -10,7 +10,7 @@ import {
 import httpStatus from "../../utils/httpStatus";
 //import { LINQ } from "node-linq";
 import moment from "moment";
-import { logger, debugFunction, debugLog } from "../../utils/logging";
+import { debugFunction, debugLog } from "../../utils/logging";
 import formater from "../../keys/keys";
 
 //created by irfan: to add  physical_examination_header
@@ -901,7 +901,7 @@ let getMyDay = (req, res, next) => {
       }
       db.query(
         "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
-         E.patient_type,E.episode_id,E.encounter_id,E.`source`,E.created_date from hims_f_patient_encounter E\
+         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.created_date from hims_f_patient_encounter E\
          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id  where E.record_status='A' AND " +
           statusFlag +
           "" +
@@ -962,6 +962,192 @@ let updatdePatEncntrStatus = (req, res, next) => {
   }
 };
 
+//created by irfan: to get patient profile
+let getPatientProfile = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT P.hims_d_patient_id,P.full_name,P.patient_code,P.gender,P.date_of_birth,P.contact_number,N.nationality,\
+        PV.age_in_years,PV.age_in_months,PV.age_in_days,PE.payment_type,PE.created_date as Encounter_Date \
+from ( (hims_f_patient P inner join hims_f_patient_encounter PE  on P.hims_d_patient_id=PE.patient_id)\
+inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
+PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episode_id=?",
+        [inputData.patient_id, inputData.episode_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get chief complaints(HPI) against sub-department
+let getChiefComplaints = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_hpi_header_id,hpi_description from hims_d_hpi_header where sub_department_id=? and record_status='A';",
+        [inputData.sub_department_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+// created by : irfan to get chief complaint elements
+let getChiefComplaintsElements = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_hpi_details_id,hpi_header_id,element_description,element_type \
+        from hims_d_hpi_details  where hpi_header_id=? and record_status='A';",
+        [inputData.hpi_header_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+// created by : irfan to ADD chief complaint elements
+let addChiefComplaintsElement = (req, res, next) => {
+  debugFunction("addChiefComplaintsElement");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_hpi_details(hpi_header_id,element_description,element_type,created_by,updated_by) \
+        values(?,?,?,?,?)",
+        [
+          input.hpi_header_id,
+          input.element_description,
+          input.element_type,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+// created by : irfan to ADD  patient-chief complaint
+let addPatientChiefComplaints = (req, res, next) => {
+  debugFunction("addPatientChiefComplaints");
+  let chiefComplaintModel = {
+    episode: null,
+    chief_complaint_id: null,
+    onset_date: null,
+    severity: null,
+    score: null,
+    pain: null,
+    comment: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(chiefComplaintModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_f_episode_cheif_complaint (episode,chief_complaint_id,onset_date,severity,score,pain,comment,created_by,updated_by) \
+        values(?,?,?,?,?,?,?,?,?)",
+        [
+          input.episode,
+          input.chief_complaint_id,
+          input.onset_date,
+          input.severity,
+          input.score,
+          input.pain,
+          input.comment,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -980,5 +1166,10 @@ module.exports = {
   addEncounterReview,
   getEncounterReview,
   getMyDay,
-  updatdePatEncntrStatus
+  updatdePatEncntrStatus,
+  getPatientProfile,
+  getChiefComplaints,
+  getChiefComplaintsElements,
+  addChiefComplaintsElement,
+  addPatientChiefComplaints
 };

@@ -195,5 +195,17 @@
   "FORMAT_RESTRICTBY": [
     { "name": "user_id", "value": "0" },
     { "name": "department_id", "value": "1" }
+  ],
+  "PAIN_DURATION": [
+    { "name": "Hours", "value": "H" },
+    { "name": "Days", "value": "D" },
+    { "name": "Weeks", "value": "W" },
+    { "name": "Months", "value": "M" },
+    { "name": "Years", "value": "Y" }
+  ],
+  "PAIN_SEVERITY": [
+    { "name": "Mild", "value": "M" },
+    { "name": "Moderate", "value": "Mo" },
+    { "name": "Severe", "value": "S" }
   ]
 }

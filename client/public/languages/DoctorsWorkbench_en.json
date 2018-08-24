@@ -15,5 +15,8 @@
   "policy_group_description": "Policy Group Description",
   "total_encounters": "Total Number of Encounters",
   "from_date": "From Date",
-  "to_date": "To Date"
+  "to_date": "To Date",
+  "onset_date": "On Set Date",
+  "duration": "Duration",
+  "pain_severity": "Pain Severity"
 }
