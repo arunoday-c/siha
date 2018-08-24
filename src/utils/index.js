@@ -452,13 +452,10 @@ let jsonArrayToObject = options => {
   let outputObject = [];
   for (let i = 0; i < options.arrayObj.length; i++) {
     const item = options.arrayObj[i];
-
     outputObject.push(
       options.sampleInputObject.map(key => {
         if (key == "created_by" || key == "updated_by") {
-          if (options.userId != null) {
-            return options.userId;
-          }
+          return req.body.created_by;
         }
         if (
           options.replaceObject != null &&
@@ -478,6 +475,9 @@ let jsonArrayToObject = options => {
         return item[key];
       })
     );
+    if (options.add_request_by == true) {
+      outputObject.push(req.body.created_by);
+    }
   }
   return outputObject;
 };
