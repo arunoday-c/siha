@@ -24,7 +24,8 @@ import {
   getChiefComplaints,
   getChiefComplaintsElements,
   addChiefComplaintsElement,
-  addPatientChiefComplaints
+  addPatientChiefComplaints,
+  addNewChiefComplaint
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -366,6 +367,21 @@ export default ({ config, db }) => {
   api.post(
     "/addPatientChiefComplaints",
     addPatientChiefComplaints,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to add addNewChiefComplaint
+  api.post(
+    "/addNewChiefComplaint",
+    addNewChiefComplaint,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

@@ -12,6 +12,7 @@ import httpStatus from "../../utils/httpStatus";
 import moment from "moment";
 import { debugFunction, debugLog } from "../../utils/logging";
 import formater from "../../keys/keys";
+import { decryption } from "../../utils/cryptography";
 
 //created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
@@ -994,7 +995,7 @@ PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episod
   }
 };
 
-//created by irfan: to get chief complaints(HPI) against sub-department
+//created by irfan: to get chief complaints(HPI header) against sub-department
 let getChiefComplaints = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -1021,7 +1022,62 @@ let getChiefComplaints = (req, res, next) => {
     next(e);
   }
 };
-// created by : irfan to get chief complaint elements
+
+//created by irfan:  to add new chief complaints (hpi header)
+let addNewChiefComplaint = (req, res, next) => {
+  let chiefComplaintModel = {
+    hpi_description: null,
+    sub_department_id: null,
+    created_by: null,
+    updated_by: null
+  };
+
+  debugFunction("addNewChiefComplaint");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(chiefComplaintModel, req.body);
+
+    let header = req.headers["x-app-user-identity"];
+    header = decryption(header);
+    input.sub_department_id = header.sub_department_id;
+    debugLog("sub_department_id:", header.sub_department_id);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_hpi_header( hpi_description,\
+           sub_department_id,created_by,  updated_by)values(\
+              ?,?,?,?)",
+        [
+          input.hpi_description,
+          input.sub_department_id,
+          input.created_by,
+          input.updated_by
+        ],
+        (error, results) => {
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+// created by : irfan to get chief complaint elements (hpi details)
 let getChiefComplaintsElements = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -1050,7 +1106,7 @@ let getChiefComplaintsElements = (req, res, next) => {
   }
 };
 
-// created by : irfan to ADD chief complaint elements
+// created by : irfan to ADD chief complaint elements(hpi details)
 let addChiefComplaintsElement = (req, res, next) => {
   debugFunction("addChiefComplaintsElement");
   try {
@@ -1171,5 +1227,6 @@ module.exports = {
   getChiefComplaints,
   getChiefComplaintsElements,
   addChiefComplaintsElement,
-  addPatientChiefComplaints
+  addPatientChiefComplaints,
+  addNewChiefComplaint
 };

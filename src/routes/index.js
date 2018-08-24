@@ -25,6 +25,8 @@ import hpi from "../EHR/controller/hpi";
 import orderAndPreApproval from "../controller/orderAndPreApproval";
 import laboratory from "../controller/laboratory";
 import labmasters from "../controller/labmasters";
+import investigation from "../controller/investigation";
+
 let router = express();
 
 //connect to DB
@@ -56,6 +58,7 @@ initializedDb(db => {
   router.use("/orderAndPreApproval", orderAndPreApproval({ config, db }));
   router.use("/laboratory", laboratory({ config, db }));
   router.use("/labmasters", labmasters({ config, db }));
+  router.use("/investigation", investigation({ config, db }));
 });
 
 export default router;
