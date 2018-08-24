@@ -1,7 +1,10 @@
-.insurancesetup {
-  padding-top: 3%;
+.hims_investigationsetup {
+  background: #fff;
+  border-radius: 5px;
+  padding-top: 2%;
   padding-right: 3px;
   padding-left: 3px;
+  padding-bottom: 1%;
 
   .toggle-section {
     margin: 10px;
@@ -9,18 +12,20 @@
     // background-color: #f2f2f2;
   }
 
-  .insurance-footer {
+  .investigation-footer {
+    height: "60px";
     background-color: #000;
   }
-  .fixed-bottom {
-    min-height: "8vh";
-  }
-  .insurance-section {
+  .investigation-section {
     border: 1px solid #d3d3d3;
-    margin: 10px;
-    margin-top: 0px;
+
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;
+  }
+
+  th,
+  td {
+    border-right: 1px solid #e6e6e6;
   }
 }

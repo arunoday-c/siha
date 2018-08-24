@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import Collections from "@material-ui/icons/Collections";
+import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
 import "./SampleCollection.css";
 import "./../../../styles/site.css";
@@ -82,7 +83,32 @@ class SampleCollection extends Component {
     return (
       <React.Fragment>
         <div className="hptl-phase1-speciman-collection-form">
-          <div className="container-fluid">
+          <BreadCrumb
+            title={
+              <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+            }
+            breadStyle={this.props.breadStyle}
+            pageNavPath={[
+              {
+                pageName: (
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "form_home",
+                      align: "ltr"
+                    }}
+                  />
+                )
+              },
+              {
+                pageName: (
+                  <AlgaehLabel
+                    label={{ fieldName: "form_name", align: "ltr" }}
+                  />
+                )
+              }
+            ]}
+          />
+          <div className="container-fluid" style={{ marginTop: "85px" }}>
             <div className="row">
               <AlgaehDateHandler
                 div={{ className: "col-lg-2" }}

@@ -645,6 +645,166 @@ let deleteAnalytes = (req, res, next) => {
   }
 };
 
+//TestCategory
+let selectTestCategory = (req, res, next) => {
+  let labTestCategory = {
+    hims_d_test_category_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let pagePaging = "";
+    if (req.paging != null) {
+      let Page = paging(req.paging);
+      pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
+    }
+
+    let condition = whereCondition(extend(labTestCategory, req.query));
+    selectStatement(
+      {
+        db: req.db,
+        query:
+          "SELECT * FROM `hims_d_test_category` WHERE `record_status`='A' AND " +
+          condition.condition +
+          " " +
+          pagePaging,
+        values: condition.values
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+let insertTestCategory = (req, res, next) => {
+  let labTestCategory = {
+    hims_d_test_category_id: null,
+    category_name: null,
+    category_status: "A",
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null
+  };
+  debugLog("Catey: ");
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+    debugLog("Body: ", req.body);
+    let inputParam = extend(labTestCategory, req.body);
+    debugLog("Input: ", inputParam);
+    connection.query(
+      "INSERT INTO `hims_d_test_category` (`category_name`,\
+            `created_by` ,`created_date`,`category_status`) \
+         VALUES ( ?, ?, ?, ?)",
+      [
+        inputParam.category_name,
+        inputParam.created_by,
+        new Date(),
+        inputParam.category_status
+      ],
+      (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      }
+    );
+  });
+};
+
+let updateTestCategory = (req, res, next) => {
+  let labTestCategory = {
+    hims_d_test_category_id: null,
+    category_name: null,
+    category_status: "A",
+    created_by: null,
+    created_date: null,
+    updated_by: null,
+    updated_date: null,
+    record_status: null
+  };
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+    let inputParam = extend(labTestCategory, req.body);
+    connection.query(
+      "UPDATE `hims_d_test_category` \
+           SET `category_name`=?, `updated_by`=?, `updated_date`=?,`category_status`=? \
+           WHERE `record_status`='A' and `hims_d_test_category_id`=?",
+      [
+        inputParam.category_name,
+        inputParam.updated_by,
+        new Date(),
+        inputParam.category_status,
+        inputParam.hims_d_test_category_id
+      ],
+      (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      }
+    );
+  });
+};
+let deleteTestCategory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_d_test_category",
+        id: req.body.hims_d_test_category_id,
+        query:
+          "UPDATE hims_d_test_category SET  record_status='I', \
+               updated_by=?,updated_date=? WHERE hims_d_test_category_id=?",
+        values: [
+          req.body.updated_by,
+          new Date(),
+          req.body.hims_d_test_category_id
+        ]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      }
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   selectSection,
   insertSection,
@@ -661,5 +821,9 @@ module.exports = {
   selectAnalytes,
   insertAnalytes,
   updateAnalytes,
-  deleteAnalytes
+  deleteAnalytes,
+  selectTestCategory,
+  insertTestCategory,
+  updateTestCategory,
+  deleteTestCategory
 };

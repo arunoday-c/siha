@@ -60,12 +60,15 @@ class LabSpecimen extends Component {
         mappingName: "labanalytes"
       },
       afterSuccess: data => {
-        if (data.response.data.success === false) {
-          successfulMessage({
-            message: data.response.data.message,
-            title: "Warning",
-            icon: "warning"
-          });
+        debugger;
+        if (data.length === 0 || data.length === undefined) {
+          if (data.response.data.success === false) {
+            successfulMessage({
+              message: data.response.data.message,
+              title: "Warning",
+              icon: "warning"
+            });
+          }
         }
       }
     });
@@ -111,6 +114,8 @@ class LabSpecimen extends Component {
                   className: "txt-fld",
                   name: "description",
                   value: this.state.description,
+                  error: this.state.description_error,
+                  helperText: this.state.description_error_txt,
                   events: {
                     onChange: changeTexts.bind(this, this)
                   }
@@ -224,7 +229,7 @@ class LabSpecimen extends Component {
                     fieldName: "section_status",
                     label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
                     displayTemplate: row => {
-                      return row.visa_status === "A" ? "Active" : "Inactive";
+                      return row.analyte_status === "A" ? "Active" : "Inactive";
                     },
                     editorTemplate: row => {
                       return (

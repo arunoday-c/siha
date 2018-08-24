@@ -19,7 +19,7 @@ let searchWindow = props => {
 };
 let AlgaehSearch = props => {
   let modelData = searchWindow(props);
-  //  ReactDOM.render(modelData, document.getElementById("searchWindow"));
-  return ReactDOM.createPortal(modelData, searchWindowS);
+  ReactDOM.render(modelData, document.getElementById("searchWindow"));
+  //return ReactDOM.createPortal(modelData, searchWindowS);
 };
 export default AlgaehSearch;

@@ -6,6 +6,7 @@ import LabContainer from "./LabContainer/LabContainer";
 import LabSpecimen from "./LabSpecimen/LabSpecimen";
 import Equipment from "./Equipment/Equipment";
 import Analyte from "./Analyte/Analyte";
+import TestCategory from "./TestCategory/TestCategory";
 
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -37,12 +38,10 @@ class LabSetup extends Component {
 
   render() {
     return (
-      <div className="investigation_setup">
+      <div className="hims_lab_setup">
         <BreadCrumb
           title={
-            <AlgaehLabel
-              label={{ fieldName: "investigation_setup", align: "ltr" }}
-            />
+            <AlgaehLabel label={{ fieldName: "Lab_setup", align: "ltr" }} />
           }
           breadStyle={this.props.breadStyle}
           pageNavPath={[
@@ -58,9 +57,7 @@ class LabSetup extends Component {
             },
             {
               pageName: (
-                <AlgaehLabel
-                  label={{ fieldName: "investigation_setup", align: "ltr" }}
-                />
+                <AlgaehLabel label={{ fieldName: "Lab_setup", align: "ltr" }} />
               )
             }
           ]}
@@ -140,6 +137,21 @@ class LabSetup extends Component {
                 />
               }
             </li>
+
+            <li
+              algaehtabs={"TestCategory"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "test_category"
+                  }}
+                />
+              }
+            </li>
           </ul>
         </div>
 
@@ -156,6 +168,8 @@ class LabSetup extends Component {
             <Analyte />
           ) : this.state.pageDisplay === "Equipment" ? (
             <Equipment />
+          ) : this.state.pageDisplay === "TestCategory" ? (
+            <TestCategory />
           ) : null}
         </div>
       </div>

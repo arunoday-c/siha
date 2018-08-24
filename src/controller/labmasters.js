@@ -14,7 +14,11 @@ import {
   selectAnalytes,
   insertAnalytes,
   updateAnalytes,
-  deleteAnalytes
+  deleteAnalytes,
+  selectTestCategory,
+  insertTestCategory,
+  updateTestCategory,
+  deleteTestCategory
 } from "../model/labmasters";
 import { Router } from "express";
 import { releaseConnection, bulkMasters } from "../utils";
@@ -232,8 +236,8 @@ export default () => {
   );
 
   api.get(
-    "/selectAnalytes",
-    selectAnalytes,
+    "/selectTestCategory",
+    selectTestCategory,
     (req, res, next) => {
       let result = req.records;
       if (result.length == 0) {
@@ -283,5 +287,71 @@ export default () => {
     },
     releaseConnection
   );
+
+  //TestCategory
+  api.delete(
+    "/deleteTestCategory",
+    deleteTestCategory,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json(result);
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/selectAnalytes",
+    selectAnalytes,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.length == 0) {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+
+  api.post(
+    "/insertTestCategory",
+    insertTestCategory,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
+    },
+    releaseConnection
+  );
+  api.put(
+    "/updateTestCategory",
+    updateTestCategory,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
+    },
+    releaseConnection
+  );
+
   return api;
 };

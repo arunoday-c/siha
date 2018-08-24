@@ -6,12 +6,6 @@ import httpStatus from "../utils/httpStatus";
 import { debugLog } from "../utils/logging";
 let db = new loki("algaeh_users.json", { autoload: true });
 let saveUserPreferences = (req, res, next) => {
-  let header = req.headers["x-app-user-identity"];
-
-  if (header == null) {
-    next(httpStatus.generateError(httpStatus.badRequest, "unknown user.."));
-  }
-  header = JSON.parse(header);
   let settings = extend(
     {
       dbName: "algaeh_users"
@@ -19,7 +13,7 @@ let saveUserPreferences = (req, res, next) => {
     req.body
   );
 
-  settings.userId = header.user_id;
+  settings.userId = req.userIdentity.algaeh_d_app_user_id;
   //let db = new loki("algaeh_users.json", { autoload: true });
 
   let collection = db.getCollection("User_" + settings.userId);
@@ -48,13 +42,6 @@ let saveUserPreferences = (req, res, next) => {
   });
 };
 let getUserPreferences = (req, res, next) => {
-  let header = req.headers["x-app-user-identity"];
-
-  if (header == null) {
-    next(httpStatus.generateError(httpStatus.badRequest, "unknown user.."));
-  }
-  header = JSON.parse(header);
-
   let settings = extend(
     {
       dbName: "algaeh_users"
@@ -62,7 +49,7 @@ let getUserPreferences = (req, res, next) => {
     req.query
   );
 
-  settings.userId = header.user_id;
+  settings.userId = req.userIdentity.algaeh_d_app_user_id;
 
   let filePath = path.join(__dirname, "../../algaeh_users.json");
 

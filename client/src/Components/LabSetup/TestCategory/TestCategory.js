@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import "./LabSection.css";
+import "./TestCategory.css";
 import Button from "@material-ui/core/Button";
 // import moment from "moment";
 // import { algaehApiCall } from "../../../utils/algaehApiCall";
@@ -17,34 +17,31 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 // import swal from "sweetalert";
+import { AlgaehActions } from "../../../actions/algaehActions";
+import { getCookie } from "../../../utils/algaehApiCall";
 import {
   changeTexts,
   onchangegridcol,
-  insertLabSection,
-  deleteLabSection,
-  updateLabSection
-} from "./LabSectionEvents";
-import { AlgaehActions } from "../../../actions/algaehActions";
-import { getCookie } from "../../../utils/algaehApiCall.js";
+  insertTestCategory,
+  deleteTestCategory,
+  updateTestCategory
+} from "./TestCategoryEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
 
-class LabSection extends Component {
+class TestCategory extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      hims_d_lab_section_id: "",
-      description: "",
-      created_date: "A",
+      hims_d_test_category_id: "",
+      category_name: "",
       created_by: getCookie("UserID"),
 
       description_error: false,
       description_error_txt: "",
-      selectedLang: "en"
-      // baseState: false
+      baseState: false
     };
-    this.baseState = this.state;
   }
 
   componentDidMount() {
@@ -53,12 +50,12 @@ class LabSection extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    this.props.getLabsection({
-      uri: "/labmasters/selectSection",
+    this.props.getTestCategory({
+      uri: "/labmasters/selectTestCategory",
       method: "GET",
       redux: {
-        type: "SECTION_GET_DATA",
-        mappingName: "labsection"
+        type: "TESTCATEGORY_GET_DATA",
+        mappingName: "testcategory"
       }
     });
   }
@@ -86,25 +83,25 @@ class LabSection extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  fieldName: "type_desc",
+                  fieldName: "category_name",
                   isImp: true
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "description",
-                  value: this.state.description,
+                  name: "category_name",
+                  value: this.state.category_name,
+                  error: this.state.description_error,
+                  helperText: this.state.description_error_txt,
                   events: {
                     onChange: changeTexts.bind(this, this)
-                  },
-                  error: this.state.description_error,
-                  helperText: this.state.description_error_txt
+                  }
                 }}
               />
 
               <div className="col-lg-3 align-middle">
                 <br />
                 <Button
-                  onClick={insertLabSection.bind(this, this)}
+                  onClick={insertTestCategory.bind(this, this)}
                   variant="raised"
                   color="primary"
                 >
@@ -120,16 +117,18 @@ class LabSection extends Component {
                 id="visa_grd"
                 columns={[
                   {
-                    fieldName: "description",
-                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
+                    fieldName: "category_name",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "category_name" }} />
+                    ),
                     editorTemplate: row => {
                       return (
                         <AlagehFormGroup
                           div={{}}
                           textBox={{
-                            value: row.description,
+                            value: row.category_name,
                             className: "txt-fld",
-                            name: "description",
+                            name: "category_name",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
                             }
@@ -155,46 +154,46 @@ class LabSection extends Component {
                     disabled: true
                   },
                   {
-                    fieldName: "section_status",
+                    fieldName: "category_status",
                     label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
                     displayTemplate: row => {
-                      return row.section_status === "A" ? "Active" : "Inactive";
+                      return row.category_status === "A"
+                        ? "Active"
+                        : "Inactive";
                     },
                     editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "section_status",
+                            name: "category_status",
                             className: "select-fld",
-                            value: row.section_status,
+                            value: row.category_status,
                             dataSource: {
                               textField: "name",
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: onchangegridcol
-                              .bind(this, this, row)
-                              .bind(this, row)
+                            onChange: onchangegridcol.bind(this, this, row)
                           }}
                         />
                       );
                     }
                   }
                 ]}
-                keyId="hims_d_lab_section_id"
+                keyId="hims_d_lab_container_id"
                 dataSource={{
                   data:
-                    this.props.labsection === undefined
+                    this.props.testcategory === undefined
                       ? []
-                      : this.props.labsection
+                      : this.props.testcategory
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{
-                  onDelete: deleteLabSection.bind(this, this),
+                  onDelete: deleteTestCategory.bind(this, this),
                   onEdit: row => {},
-                  onDone: updateLabSection.bind(this, this)
+                  onDone: updateTestCategory.bind(this, this)
                 }}
               />
             </div>
@@ -207,14 +206,14 @@ class LabSection extends Component {
 
 function mapStateToProps(state) {
   return {
-    labsection: state.labsection
+    testcategory: state.testcategory
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getLabsection: AlgaehActions
+      getTestCategory: AlgaehActions
     },
     dispatch
   );
@@ -224,5 +223,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(LabSection)
+  )(TestCategory)
 );
