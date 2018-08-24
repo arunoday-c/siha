@@ -160,7 +160,7 @@
         "name": "Nurse Workbench",
         "label": "Nurse Workbench",
         "arlabel": "ممرضة طاولة العمل",
-        "path": "/InitialStock"
+        "path": "/NurseWorkbench"
       },
       {
         "name": "DoctorsWorkbench",

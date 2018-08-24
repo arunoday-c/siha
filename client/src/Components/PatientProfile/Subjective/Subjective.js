@@ -258,6 +258,25 @@ class Subjective extends Component {
                       </div>
                     </div>
                   </div>
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-6" }}
+                      label={{
+                        fieldName: "comments",
+                        isImp: false
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "comments",
+                        others: {
+                          multiline: true,
+                          rows: "4"
+                        },
+                        //value: this.state.pain,
+                        events: {}
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

@@ -6,6 +6,7 @@ import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import Assesment from "./Assessment/Assessment";
 import Plan from "./Plan/Plan";
 import { algaehApiCall } from "../../utils/algaehApiCall";
+import moment from "moment";
 
 class PatientProfile extends Component {
   constructor(props) {
@@ -69,28 +70,46 @@ class PatientProfile extends Component {
                 //: ""
               }
             </h6>
-            <p>Male, 43Y 7M 10D</p>
+            <p>
+              {this.state.patientData.gender},{" "}
+              {this.state.patientData.age_in_years}Y{" "}
+              {this.state.patientData.age_in_months}M{" "}
+              {this.state.patientData.age_in_days}D
+            </p>
           </div>
           <div className="patientDemographic">
             <span>
-              DOB: <b>31/12/1947</b>
+              DOB:
+              <b>
+                {moment(this.state.patientData.date_of_birth).format(
+                  "DD-MM-YYYY"
+                )}
+              </b>
             </span>
             <span>
-              Mobile: <b>6756754544</b>
+              Mobile: <b>{this.state.patientData.contact_number}</b>
             </span>
             <span>
-              Nationality: <b>Australian</b>
+              Nationality: <b>{this.state.patientData.nationality}</b>
             </span>
           </div>
           <div className="patientHospitalDetail">
             <span>
-              MRN: <b>0001195682</b>
+              MRN: <b>{this.state.patientData.patient_code}</b>
             </span>
             <span>
-              Encounter: <b>25/07/2018 11:27:38 PM</b>
+              Encounter:{" "}
+              <b>
+                {moment(this.state.patientData.Encounter_Date).format(
+                  "DD-MM-YYYY HH:MM:SS A"
+                )}
+              </b>
             </span>
             <span>
-              Payment: <b>Self Paying</b>
+              Payment:{" "}
+              <b>
+                {this.state.patientData === "S" ? "Self Paying" : "Insurance"}
+              </b>
             </span>
           </div>
           <div className="patientVital">

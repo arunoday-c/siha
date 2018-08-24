@@ -375,7 +375,19 @@ class DoctorsWorkbench extends Component {
                 },
                 {
                   fieldName: "patient_code",
-                  label: <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                  label: <AlgaehLabel label={{ fieldName: "patient_code" }} />,
+                  displayTemplate: data => {
+                    return (
+                      <span
+                        onClick={() => {
+                          debugger;
+                          alert("PC Clicked");
+                        }}
+                      >
+                        {data.patient_code}
+                      </span>
+                    );
+                  }
                 },
                 {
                   fieldName: "full_name",
@@ -399,7 +411,7 @@ class DoctorsWorkbench extends Component {
                   displayTemplate: data => {
                     return (
                       <span>
-                        {data.patient_type === "S" ? "Self" : "Insurance"}
+                        {data.payment_type === "S" ? "Self" : "Insurance"}
                       </span>
                     );
                   }
@@ -413,7 +425,7 @@ class DoctorsWorkbench extends Component {
               ]}
               rowClassName={row => {
                 debugger;
-                return "testColor";
+                //return "testColor";
               }}
               keyId="encounter_code"
               dataSource={{

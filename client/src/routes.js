@@ -18,6 +18,7 @@ import Experiment from "./Components/Experiment";
 import AlgaehMainpg from "./Components/common/AlgaehmainPage/AlgaehmainPage";
 import DoctorsWorkbench from "./Components/DoctorsWorkbench/DoctorsWorkbench";
 import PatientProfile from "./Components/PatientProfile/PatientProfile";
+import Workbench from "./Components/Workbench/Workbench";
 
 function height() {
   let height =

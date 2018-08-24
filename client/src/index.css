@@ -33,8 +33,7 @@
 
 :global .pain_slider {
   max-width: 350px;
-  margin: 20px;
-  padding: auto; }
+  margin: 10px; }
 
 :global .algaeh-modal {
   margin: 3% auto 0;
