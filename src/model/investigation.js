@@ -168,4 +168,52 @@ let addInvestigationTest = (req, res, next) => {
   }
 };
 
-module.exports = { addInvestigationTest };
+//created by:irfan,to get list of all investigation tests
+let getInvestigTestList = (req, res, next) => {
+  let selectWhere = {
+    hims_d_investigation_test_id: "ALL",
+    lab_section_id: "ALL",
+    category_id: "ALL",
+    investigation_type: "ALL"
+  };
+
+  debugFunction("getListOfInsurenceProvider");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      // extend(insuranceWhereCondition, req.query);
+      let where = whereCondition(extend(selectWhere, req.query));
+
+      connection.query(
+        "SELECT hims_d_investigation_test_id, S.specimen_id, A.analyte_id,short_description, description, investigation_type, \
+        lab_section_id, send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required,\
+         facility_description, priority, cpt_id, category_id, film_category, screening_test, \
+        film_used FROM hims_d_investigation_test T,hims_m_lab_specimen S,hims_m_lab_analyte A where  T.record_status='A' and \
+        T.hims_d_investigation_test_id=S.test_id AND S.test_id=A.test_id AND" +
+          where.condition,
+        where.values,
+
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { addInvestigationTest, getInvestigTestList };
