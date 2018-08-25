@@ -57,15 +57,12 @@ let addInvestigationTest = (req, res, next) => {
             next(error);
           });
         }
-        //hims_d_investigation_test_id, short_description, description, investigation_type, lab_section_id,
-        // send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required,
-        // facility_description, priority, cpt_id, category_id,
-        //film_category, screening_test, film_used, created_date, created_by, updated_date, updated_by, record_status
+
         connection.query(
           "insert into hims_d_investigation_test(short_description,description,investigation_type,lab_section_id,\
           send_out_test,available_in_house,restrict_order,restrict_by,\
           external_facility_required,facility_description,priority,cpt_id,category_id,film_category, screening_test, film_used,created_by,updated_by)values(\
-          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.short_description,
             input.description,
