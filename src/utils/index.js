@@ -451,32 +451,58 @@ let downloadFile = (req, res, callBack) => {
 let jsonArrayToObject = options => {
   let outputObject = [];
   for (let i = 0; i < options.arrayObj.length; i++) {
+    let internalarray = [];
     const item = options.arrayObj[i];
-    outputObject.push(
-      options.sampleInputObject.map(key => {
-        if (key == "created_by" || key == "updated_by") {
-          return req.body.created_by;
-        }
-        if (
-          options.replaceObject != null &&
-          options.replaceObject.length != 0
-        ) {
-          let replacer = new LINQ(options.replaceObject)
-            .Where(w => w.originalKey == key)
-            .FirstOrDefault();
+    for (let j = 0; j < options.sampleInputObject.length; j++) {
+      let key = options.sampleInputObject[j];
+      let inideCreate = false;
+      if (key == "created_by" || key == "updated_by") {
+        internalarray.push(options.req.body.created_by);
+        inideCreate = true;
+      }
+      if (options.replaceObject != null && options.replaceObject.length != 0) {
+        let replacer = new LINQ(options.replaceObject)
+          .Where(w => w.originalKey == key)
+          .FirstOrDefault();
 
-          if (replacer != null) {
-            if (replacer.NewKey != null) {
-              key = replacer.NewKey;
-            }
+        if (replacer != null) {
+          if (replacer.NewKey != null) {
+            key = replacer.NewKey;
           }
         }
+      }
+      if (!inideCreate) internalarray.push(item[key]);
+    }
 
-        return item[key];
-      })
-    );
-    if (options.add_request_by == true) {
-      outputObject.push(req.body.created_by);
+    // outputObject.push(
+
+    //   options.sampleInputObject.map(key => {
+    //     if (key == "created_by" || key == "updated_by") {
+    //       return options.req.body.created_by;
+    //     }
+    //     if (
+    //       options.replaceObject != null &&
+    //       options.replaceObject.length != 0
+    //     ) {
+    //       let replacer = new LINQ(options.replaceObject)
+    //         .Where(w => w.originalKey == key)
+    //         .FirstOrDefault();
+
+    //       if (replacer != null) {
+    //         if (replacer.NewKey != null) {
+    //           key = replacer.NewKey;
+    //         }
+    //       }
+    //     }
+
+    //     return item[key];
+    //   })
+    // );
+    if (options.newFieldToInsert != null) {
+      options.newFieldToInsert.map(row => {
+        internalarray.push(row);
+      });
+      outputObject.push(internalarray);
     }
   }
   return outputObject;

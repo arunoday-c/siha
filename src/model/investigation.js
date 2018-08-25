@@ -82,12 +82,14 @@ let addInvestigationTest = (req, res, next) => {
           ],
           (error, results) => {
             if (error) {
-              releaseDBConnection(db, connection);
-              next(error);
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
             }
             // debugLog("Results are recorded...");
 
-            if (results != null) {
+            if (results.insertId != null) {
               req.body.test_id = results.insertId;
               debugLog(" test inserted id ", results.insertId);
               debugLog(" body ", req.body);
@@ -103,21 +105,56 @@ let addInvestigationTest = (req, res, next) => {
                 ],
                 (error, spResult) => {
                   if (error) {
-                    releaseDBConnection(db, connection);
-                    next(error);
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
                   }
                   debugLog(" specimen id :", spResult.insertId);
+                  // req.records = spResult;
+                  // next();
+
+                  if (spResult.insertId != null) {
+                    const insurtColumns = [
+                      "analyte_id",
+                      "created_by",
+                      "updated_by"
+                    ];
+
+                    connection.query(
+                      "INSERT INTO hims_m_lab_analyte(" +
+                        insurtColumns.join(",") +
+                        ",`test_id`) VALUES ?",
+                      [
+                        jsonArrayToObject({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: req.body.analytes,
+                          newFieldToInsert: [req.body.test_id],
+
+                          req: req
+                        })
+                      ],
+                      (error, analyteResult) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+
+                        connection.commit(error => {
+                          if (error) {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          }
+                          req.records = analyteResult;
+                          next();
+                        });
+                      }
+                    );
+                  }
                 }
               );
-
-              // connection.commit(error => {
-              //   if (error) {
-              //     releaseDBConnection(db, connection);
-              //     next(error);
-              //   }
-              //   req.records = results;
-              //   next();
-              // });
             }
           }
         );
