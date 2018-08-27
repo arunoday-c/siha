@@ -310,3 +310,12 @@
   height: 1px;
   background-color: #485a63;
   margin: 1px; }
+
+:global .portletHeader {
+  border-bottom: 1px solid #e2e2e2;
+  padding-top: 10px;
+  padding-bottom: 4px;
+  width: 100%; }
+  :global .portletHeader label {
+    font-weight: 500;
+    font-size: 0.9rem; }

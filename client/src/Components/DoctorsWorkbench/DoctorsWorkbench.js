@@ -141,29 +141,33 @@ class DoctorsWorkbench extends Component {
       }
     );
   }
+
   generateHorizontalDateBlocks() {
     return (
       <div className="calendar">
-        <ol>
-          {this.liGenerate().map((row, index) => {
-            return (
-              <li
-                key={index}
-                currentdate={row.currentdate}
-                className={
-                  moment(row.currentdate).format("YYYYMMDD") ===
-                  moment(this.state.activeDateHeader).format("YYYYMMDD")
-                    ? "activeDate"
-                    : ""
-                }
-                onClick={this.onSelectedDateHandler.bind(this)}
-              >
-                {row.day}
-                <span>{row.dayName}</span>
-              </li>
-            );
-          })}
-        </ol>
+        <div className="col-12">
+          <div className="row">
+            {this.liGenerate().map((row, index) => {
+              return (
+                <div
+                  // className="col"
+                  key={index}
+                  currentdate={row.currentdate}
+                  className={
+                    moment(row.currentdate).format("YYYYMMDD") ===
+                    moment(this.state.activeDateHeader).format("YYYYMMDD")
+                      ? "col activeDate"
+                      : "col"
+                  }
+                  onClick={this.onSelectedDateHandler.bind(this)}
+                >
+                  {row.day}
+                  <span>{row.dayName}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     );
   }
@@ -201,7 +205,9 @@ class DoctorsWorkbench extends Component {
         <div className="row card-deck panel-layout">
           {/* Left Pane Start */}
           <div className="col-lg-4 card box-shadow-normal">
-            <AlgaehLabel label={{ fieldName: "patients_list" }} />
+            <div className="portletHeader">
+              <AlgaehLabel label={{ fieldName: "patients_list" }} />
+            </div>
             <div className="opPatientList">
               <ul className="opList">
                 {Enumerable.from(this.state.data)
@@ -368,9 +374,6 @@ class DoctorsWorkbench extends Component {
                         {data.status === "W" ? <span>WIP </span> : ""}
                       </span>
                     );
-                  },
-                  className: drow => {
-                    if (drow.checked_in === "N") return "testColor";
                   }
                 },
                 {
@@ -379,14 +382,22 @@ class DoctorsWorkbench extends Component {
                   displayTemplate: data => {
                     return (
                       <span
+                        className="pat-code"
                         onClick={() => {
-                          debugger;
-                          alert("PC Clicked");
+                          setGlobal({
+                            "EHR-STD": "PatientProfile",
+                            current_patient: data.patient_id,
+                            episode_id: data.episode_id
+                          });
+                          document.getElementById("ehr-router").click();
                         }}
                       >
                         {data.patient_code}
                       </span>
                     );
+                  },
+                  className: drow => {
+                    if (drow.checked_in === "N") return "testColor";
                   }
                 },
                 {
