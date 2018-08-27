@@ -36,13 +36,10 @@ class LabSection extends Component {
     this.state = {
       hims_d_lab_section_id: "",
       description: "",
-      created_date: "A",
-      created_by: getCookie("UserID"),
 
       description_error: false,
       description_error_txt: "",
       selectedLang: "en"
-      // baseState: false
     };
     this.baseState = this.state;
   }

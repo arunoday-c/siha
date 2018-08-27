@@ -222,24 +222,6 @@ class SampleCollection extends Component {
                       ),
                       disabled: true
                     },
-                    // {
-                    //   fieldName: "service_code",
-                    //   label: (
-                    //     <AlgaehLabel
-                    //       label={{ fieldName: "investigation_code" }}
-                    //     />
-                    //   ),
-                    //   disabled: true
-                    // },
-                    // {
-                    //   fieldName: "service_name",
-                    //   label: (
-                    //     <AlgaehLabel
-                    //       label={{ fieldName: "investigation_name" }}
-                    //     />
-                    //   ),
-                    //   disabled: true
-                    // },
                     {
                       fieldName: "ordered_date",
                       label: (
@@ -252,36 +234,6 @@ class SampleCollection extends Component {
                       },
                       disabled: true
                     },
-                    // {
-                    //   fieldName: "ordered_date",
-                    //   label: (
-                    //     <AlgaehLabel label={{ fieldName: "ordered_time" }} />
-                    //   ),
-                    //   displayTemplate: row => {
-                    //     return (
-                    //       <span>{this.changeTimeFormat(row.ordered_date)}</span>
-                    //     );
-                    //   },
-                    //   disabled: true
-                    // },
-                    // {
-                    //   fieldName: "status",
-                    //   label: (
-                    //     <AlgaehLabel label={{ fieldName: "test_status" }} />
-                    //   ),
-                    //   displayTemplate: row => {
-                    //     return row.status === "O"
-                    //       ? "Ordered"
-                    //       : row.status === "CL"
-                    //         ? "Collected"
-                    //         : row.status === "CN"
-                    //           ? "Cancelled"
-                    //           : row.status === "CF"
-                    //             ? "Confirmed"
-                    //             : "Validated";
-                    //   },
-                    //   disabled: true
-                    // },
                     {
                       fieldName: "number_of_tests",
                       label: (

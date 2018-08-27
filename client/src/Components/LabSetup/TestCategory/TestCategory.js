@@ -36,12 +36,12 @@ class TestCategory extends Component {
     this.state = {
       hims_d_test_category_id: "",
       category_name: "",
-      created_by: getCookie("UserID"),
+      // created_by: getCookie("UserID"),
 
       description_error: false,
-      description_error_txt: "",
-      baseState: false
+      description_error_txt: ""
     };
+    this.baseState = this.state;
   }
 
   componentDidMount() {

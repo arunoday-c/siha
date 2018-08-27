@@ -207,5 +207,11 @@
     { "name": "Mild", "value": "M" },
     { "name": "Moderate", "value": "Mo" },
     { "name": "Severe", "value": "S" }
+  ],
+  "FORMAT_FILMCATEGORY": [
+    { "name": "Not Applicable", "value": "NA" },
+    { "name": "Film", "value": "FM" },
+    { "name": "Laser Film", "value": "LF" },
+    { "name": "Packs", "value": "PS" }
   ]
 }

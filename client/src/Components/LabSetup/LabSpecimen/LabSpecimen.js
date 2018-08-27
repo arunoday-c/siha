@@ -38,7 +38,7 @@ class LabSpecimen extends Component {
       hims_d_lab_specimen_id: "",
       description: "",
       storage_type: null,
-      created_by: getCookie("UserID"),
+      // created_by: getCookie("UserID"),
 
       description_error: false,
       description_error_txt: ""
@@ -203,19 +203,21 @@ class LabSpecimen extends Component {
                     disabled: true
                   },
                   {
-                    fieldName: "section_status",
+                    fieldName: "specimen_status",
                     label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
                     displayTemplate: row => {
-                      return row.visa_status === "A" ? "Active" : "Inactive";
+                      return row.specimen_status === "A"
+                        ? "Active"
+                        : "Inactive";
                     },
                     editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "section_status",
+                            name: "specimen_status",
                             className: "select-fld",
-                            value: row.section_status,
+                            value: row.specimen_status,
                             dataSource: {
                               textField: "name",
                               valueField: "value",

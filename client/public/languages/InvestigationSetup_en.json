@@ -21,5 +21,16 @@
   "priority": "Priority",
   "facility_description": "Facility Description",
   "from_investigation": "Investigation",
-  "cpt_id": "CPT"
+  "cpt_id": "CPT",
+  "specimen_id": "Specimen",
+  "analyte_id": "Select Analyte",
+  "analytes_id": "Analytes",
+  "film_category": "Film Category",
+  "screening_test": "Screening Test",
+  "film_used": "Film Used",
+  "template_name": "Template Name",
+  "services_id": "Service",
+  "btnSave": "Save",
+  "btnUpdate": "Update",
+  "btnCancel": "Cancel"
 }

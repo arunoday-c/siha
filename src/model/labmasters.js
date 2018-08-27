@@ -53,7 +53,7 @@ let insertSection = (req, res, next) => {
     hims_d_lab_section_id: null,
     description: null,
     section_status: "A",
-    created_by: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     created_date: null,
     updated_by: null,
     updated_date: null,
@@ -95,7 +95,7 @@ let updateSection = (req, res, next) => {
     hims_d_lab_section_id: null,
     description: null,
     section_status: "A",
-    created_by: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     created_date: null,
     updated_by: null,
     updated_date: null,
@@ -210,7 +210,7 @@ let insertContainer = (req, res, next) => {
     hims_d_lab_container_id: null,
     description: null,
     container_status: "A",
-    created_by: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     created_date: null,
     updated_by: null,
     updated_date: null,
@@ -252,7 +252,7 @@ let updateContainer = (req, res, next) => {
     hims_d_lab_container_id: null,
     description: null,
     container_status: "A",
-    created_by: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     created_date: null,
     updated_by: null,
     updated_date: null,
@@ -367,9 +367,9 @@ let insertSpecimen = (req, res, next) => {
     description: null,
     storage_type: null,
     specimen_status: "A",
-    created_by: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     created_date: null,
-    updated_by: null,
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
     updated_date: null,
     record_status: null
   };
@@ -412,7 +412,7 @@ let updateSpecimen = (req, res, next) => {
     hims_d_lab_specimen_id: null,
     description: null,
     specimen_status: "A",
-    created_by: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     created_date: null,
     updated_by: null,
     updated_date: null,
@@ -527,9 +527,10 @@ let insertAnalytes = (req, res, next) => {
   let labAnalytes = {
     hims_d_lab_analytes_id: null,
     description: null,
-    storage_type: null,
+    analyte_type: null,
     analyte_status: "A",
-    created_by: null,
+    result_unit: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     created_date: null,
     updated_by: null,
     updated_date: null,
@@ -547,12 +548,13 @@ let insertAnalytes = (req, res, next) => {
     let inputParam = extend(labAnalytes, req.body);
     debugLog("Input: ", inputParam);
     connection.query(
-      "INSERT INTO `hims_d_lab_analytes` (`description`, `analyte_type`,\
+      "INSERT INTO `hims_d_lab_analytes` (`description`, `analyte_type`,`result_unit`,\
             `created_by` ,`created_date`,`analyte_status`) \
-         VALUES ( ?, ?, ?, ?, ?)",
+         VALUES ( ?, ?, ?, ?, ?, ?)",
       [
         inputParam.description,
         inputParam.analyte_type,
+        inputParam.result_unit,
         inputParam.created_by,
         new Date(),
         inputParam.analyte_status
@@ -574,7 +576,9 @@ let updateAnalytes = (req, res, next) => {
     hims_d_lab_analytes_id: null,
     description: null,
     analyte_status: "A",
-    created_by: null,
+    analyte_type: null,
+    result_unit: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     created_date: null,
     updated_by: null,
     updated_date: null,
@@ -591,11 +595,12 @@ let updateAnalytes = (req, res, next) => {
     let inputParam = extend(labAnalytes, req.body);
     connection.query(
       "UPDATE `hims_d_lab_analytes` \
-           SET `description`=?, `analyte_type` = ?,`updated_by`=?, `updated_date`=?,`analyte_status`=? \
+           SET `description`=?, `analyte_type` = ?, `result_unit` = ?,`updated_by`=?, `updated_date`=?,`analyte_status`=? \
            WHERE `record_status`='A' and `hims_d_lab_analytes_id`=?",
       [
         inputParam.description,
         inputParam.analyte_type,
+        inputParam.result_unit,
         inputParam.updated_by,
         new Date(),
         inputParam.analyte_status,
@@ -690,7 +695,7 @@ let insertTestCategory = (req, res, next) => {
     hims_d_test_category_id: null,
     category_name: null,
     category_status: "A",
-    created_by: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     created_date: null,
     updated_by: null,
     updated_date: null,
@@ -735,7 +740,7 @@ let updateTestCategory = (req, res, next) => {
     hims_d_test_category_id: null,
     category_name: null,
     category_status: "A",
-    created_by: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     created_date: null,
     updated_by: null,
     updated_date: null,

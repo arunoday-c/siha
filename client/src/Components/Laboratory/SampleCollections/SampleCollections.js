@@ -26,7 +26,7 @@ class SampleCollectionPatient extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      collected: null
+      collected: "N"
     };
   }
   componentDidMount() {
@@ -43,6 +43,15 @@ class SampleCollectionPatient extends PureComponent {
         }
       });
     }
+
+    this.props.getLabSpecimen({
+      uri: "/labmasters/selectSpecimen",
+      method: "GET",
+      redux: {
+        type: "SPECIMEN_GET_DATA",
+        mappingName: "labspecimen"
+      }
+    });
   }
   componentWillReceiveProps(nextProps) {
     debugger;
@@ -168,8 +177,7 @@ class SampleCollectionPatient extends PureComponent {
                             displayTemplate: row => {
                               return (
                                 <span>
-                                  {this.state.collected === "N" ||
-                                  this.state.collected === null ? (
+                                  {row.collected === "N" ? (
                                     <IconButton color="primary" title="Collect">
                                       <Update
                                       //   onClick={CollectSample.bind(this, this, row)}
@@ -208,31 +216,33 @@ class SampleCollectionPatient extends PureComponent {
                               <AlgaehLabel
                                 label={{ fieldName: "specimen_name" }}
                               />
-                            )
+                            ),
+                            displayTemplate: row => {
+                              let display =
+                                this.props.labspecimen === undefined
+                                  ? []
+                                  : this.props.labspecimen.filter(
+                                      f =>
+                                        f.hims_d_lab_specimen_id ===
+                                        row.visit_type
+                                    );
+
+                              return (
+                                <span>
+                                  {display !== null && display.length !== 0
+                                    ? display[0].description
+                                    : ""}
+                                </span>
+                              );
+                            }
                           },
                           {
                             fieldName: "collected",
                             label: (
                               <AlgaehLabel label={{ fieldName: "collected" }} />
                             ),
-                            disabled: false,
                             displayTemplate: row => {
-                              return (
-                                <AlagehAutoComplete
-                                  div={{}}
-                                  selector={{
-                                    name: "collected",
-                                    className: "select-fld",
-                                    value: row.collected,
-                                    dataSource: {
-                                      textField: "name",
-                                      valueField: "value",
-                                      data: FORMAT_YESNO
-                                    },
-                                    onChange: null
-                                  }}
-                                />
-                              );
+                              return row.collected === "N" ? "No" : "Yes";
                             }
                           },
                           {
@@ -286,14 +296,16 @@ class SampleCollectionPatient extends PureComponent {
 }
 function mapStateToProps(state) {
   return {
-    deptanddoctors: state.deptanddoctors
+    deptanddoctors: state.deptanddoctors,
+    labspecimen: state.labspecimen
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getDepartmentsandDoctors: AlgaehActions
+      getDepartmentsandDoctors: AlgaehActions,
+      getLabSpecimen: AlgaehActions
     },
     dispatch
   );

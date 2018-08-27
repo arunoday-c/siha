@@ -31,7 +31,7 @@ class Equipment extends Component {
       hims_d_lab_section_id: "",
       description: "",
       created_date: "",
-      created_by: getCookie("UserID"),
+      // created_by: getCookie("UserID"),
 
       description_error: false,
       description_error_txt: ""

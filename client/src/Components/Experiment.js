@@ -1,124 +1,61 @@
-import React, { Component } from "react";
-import "./experiment.css";
-import Slider from "react-rangeslider";
-import "react-rangeslider/lib/index.css";
-import { AlagehAutoComplete } from "./Wrapper/algaehWrapper";
-import GlobalVariables from "../utils/GlobalVariables.json";
+import React, { PureComponent, PropTypes } from "react";
 
-class DeptMaster extends Component {
+import RichTextEditor from "react-quill";
+import "react-quill/dist/quill.snow.css";
+
+export default class RadTemplate extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pain: 0
+      value: ""
     };
   }
 
-  handleChangeStart = () => {
-    console.log("Change event started");
-  };
+  onChange = value => {
+    debugger;
 
-  handleChange = pain => {
-    this.setState({
-      pain: pain
+    this.setState({ value: value }, () => {
+      debugger;
     });
   };
 
-  handleChangeComplete = () => {
-    console.log("Change event completed");
-  };
-
-  setPainScale(pain_number, e) {
-    var element = document.querySelectorAll("[painTab]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
-    }
-    e.currentTarget.classList.add("active");
-    this.setState({ pain: pain_number });
-  }
-
   render() {
     return (
-      <div className="experiment">
-        <div>PAIN SCALE {" " + this.state.pain} </div>
-        <br />
-        <div className="row">
-          <div className="pain_slider col-lg-3">
-            <Slider
-              step={2}
-              min={0}
-              max={10}
-              value={this.state.pain}
-              onChangeStart={this.handleChangeStart}
-              onChange={this.handleChange}
-              onChangeComplete={this.handleChangeComplete}
-            />
-
-            <div>
-              <ul className="pain-scale-ul">
-                <li
-                  className="pain-1"
-                  painTab="1"
-                  onClick={this.setPainScale.bind(this, 0)}
+      <React.Fragment>
+        <div className="hptl-phase1-add-rad-tamplate-form">
+          {/* <div className="hptl-phase1-add-advance-form"> */}
+          <div className="container-fluid">
+            <div className="row form-details">
+              <div className="col-lg-12 editor">
+                <RichTextEditor
+                  value={this.state.value}
+                  onChange={this.onChange.bind(this)}
+                  modules={{
+                    toolbar: [
+                      [{ header: [1, 2, false] }],
+                      [
+                        "bold",
+                        "italic",
+                        "underline",
+                        "strike",
+                        "blockquote",
+                        { list: "ordered" },
+                        { list: "bullet" },
+                        { indent: "-1" },
+                        { indent: "+1" },
+                        "image",
+                        { color: [] },
+                        { background: [] }
+                      ]
+                    ]
+                  }}
+                  style={{ minHeight: "40vh" }}
                 />
-                <li
-                  className="pain-2"
-                  painTab="2"
-                  onClick={this.setPainScale.bind(this, 2)}
-                />
-                <li
-                  className="pain-3"
-                  painTab="3"
-                  onClick={this.setPainScale.bind(this, 4)}
-                />
-                <li
-                  className="pain-4"
-                  painTab="4"
-                  onClick={this.setPainScale.bind(this, 6)}
-                />
-                <li
-                  className="pain-5"
-                  painTab="5"
-                  onClick={this.setPainScale.bind(this, 8)}
-                />
-                <li
-                  className="pain-6"
-                  painTab="6"
-                  onClick={this.setPainScale.bind(this, 10)}
-                />
-              </ul>
+              </div>
             </div>
           </div>
-          <div className="col-lg-1">
-            <span
-              className="txt-fld"
-              style={{ padding: "10px", margin: "auto" }}
-            >
-              0
-            </span>
-          </div>
-
-          <AlagehAutoComplete
-            div={{ className: "col-lg-3" }}
-            label={{
-              fieldName: "pain",
-              isImp: true
-            }}
-            selector={{
-              name: "pain",
-              className: "select-fld",
-              value: this.state.pain,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.PAIN_SCALE
-              }
-              // onChange: texthandle.bind(this, this)
-            }}
-          />
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }
-
-export default DeptMaster;

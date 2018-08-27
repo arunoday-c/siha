@@ -54,15 +54,6 @@ class VisitType extends Component {
     this.baseState = this.state;
   }
 
-  onCommitChanges({ added, changed, deleted }) {
-    if (added) {
-    }
-    if (changed) {
-    }
-    if (deleted) {
-    }
-  }
-
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this Visit Type?",
@@ -197,8 +188,8 @@ class VisitType extends Component {
         uri: "/visitType/add",
         data: this.state,
         onSuccess: response => {
-          window.location.reload();
           if (response.data.success == true) {
+            this.resetState();
             //Handle Successful Add here
             this.props.getVisittypes({
               uri: "/visitType/get",
@@ -208,7 +199,6 @@ class VisitType extends Component {
                 mappingName: "visittypes"
               }
             });
-            this.resetState();
 
             swal({
               title: "Success",

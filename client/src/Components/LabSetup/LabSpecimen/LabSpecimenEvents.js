@@ -9,7 +9,7 @@ const changeTexts = ($this, e) => {
 };
 
 const resetState = $this => {
-  $this.setState({ baseState: !$this.state.baseState });
+  $this.setState($this.baseState);
 };
 
 const onchangegridcol = ($this, row, e) => {
@@ -109,6 +109,7 @@ const insertLabSpecimen = ($this, e) => {
       uri: "/labmasters/insertSpecimen",
       data: $this.state,
       onSuccess: response => {
+        resetState($this);
         if (response.data.success == true) {
           //Handle Successful Add here
           $this.props.getLabSpecimen({

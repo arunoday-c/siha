@@ -1,4 +1,5 @@
-import moment from "moment";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -10,4 +11,53 @@ const texthandle = ($this, ctrl, e) => {
   });
 };
 
-export { texthandle };
+const Validations = $this => {
+  debugger;
+  let isError = false;
+
+  if ($this.state.description === null) {
+    isError = true;
+    $this.setState({
+      open: true,
+      MandatoryMsg: "Invalid Input. Test Name Cannot be blank."
+    });
+    document.querySelector("[name='description']").focus();
+    return isError;
+  }
+
+  if ($this.state.services_id === null) {
+    isError = true;
+    $this.setState({
+      open: true,
+      MandatoryMsg: "Invalid Input. Service Cannot be blank."
+    });
+    return isError;
+  }
+};
+const InsertLabTest = $this => {
+  debugger;
+
+  const err = Validations($this);
+
+  if (!err) {
+    if ($this.state.hims_d_investigation_test_id !== null) {
+      algaehApiCall({
+        uri: "/investigation/addInvestigationTest",
+        data: $this.state,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Saved successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
+    }
+  }
+};
+export { texthandle, InsertLabTest };

@@ -61,8 +61,8 @@ let addInvestigationTest = (req, res, next) => {
         connection.query(
           "insert into hims_d_investigation_test(short_description,description,investigation_type,lab_section_id,\
           send_out_test,available_in_house,restrict_order,restrict_by,\
-          external_facility_required,facility_description,priority,cpt_id,category_id,film_category, screening_test, film_used,created_by,updated_by)values(\
-          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          external_facility_required,facility_description,services_id,priority,cpt_id,category_id,film_category, screening_test, film_used,created_by,updated_by)values(\
+          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.short_description,
             input.description,
@@ -74,6 +74,7 @@ let addInvestigationTest = (req, res, next) => {
             input.restrict_by,
             input.external_facility_required,
             input.facility_description,
+            input.services_id,
             input.priority,
             input.cpt_id,
             input.category_id,
@@ -192,7 +193,7 @@ let getInvestigTestList = (req, res, next) => {
       let where = whereCondition(extend(selectWhere, req.query));
 
       connection.query(
-        "SELECT hims_d_investigation_test_id, S.specimen_id, A.analyte_id,short_description, description, investigation_type, \
+        "SELECT hims_d_investigation_test_id, S.specimen_id, A.analyte_id,short_description, description, services_id,investigation_type, \
         lab_section_id, send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required,\
          facility_description, priority, cpt_id, category_id, film_category, screening_test, \
         film_used FROM hims_d_investigation_test T,hims_m_lab_specimen S,hims_m_lab_analyte A where  T.record_status='A' and \

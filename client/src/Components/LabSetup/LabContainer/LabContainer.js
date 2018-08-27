@@ -36,12 +36,11 @@ class LabContainer extends Component {
     this.state = {
       hims_d_lab_container_id: "",
       description: "",
-      created_by: getCookie("UserID"),
 
       description_error: false,
-      description_error_txt: "",
-      baseState: false
+      description_error_txt: ""
     };
+    this.baseState = this.state;
   }
 
   componentDidMount() {

@@ -1,0 +1,27 @@
+.hptl-phase1-add-lab-investigation-form {
+  background: #fff;
+  padding: 0px; }
+  .hptl-phase1-add-lab-investigation-form mark {
+    background: none;
+    color: red; }
+  .hptl-phase1-add-lab-investigation-form .form-details {
+    padding-bottom: 0px; }
+  .hptl-phase1-add-lab-investigation-form .button {
+    padding: 10px; }
+  .hptl-phase1-add-lab-investigation-form .analyte-section {
+    border: 1px solid #d3d3d3;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px; }
+  .hptl-phase1-add-lab-investigation-form .Paper {
+    padding: 10px;
+    border: 1px solid #5f5f5f;
+    margin-top: 10px; }
+  .hptl-phase1-add-lab-investigation-form .main_div {
+    height: 85vh;
+    overflow: auto;
+    padding-bottom: 0px; }
+  .hptl-phase1-add-lab-investigation-form .go-button {
+    cursor: pointer;
+    margin-bottom: -60px;
+    margin-top: -30px; }

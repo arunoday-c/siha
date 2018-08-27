@@ -25,7 +25,7 @@ import {
   insertLabAnalytes,
   updateLabAnalytes,
   deleteLabAnalytes
-} from "./LabSpecimenEvents";
+} from "./AnalyteEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
@@ -37,8 +37,8 @@ class LabSpecimen extends Component {
     this.state = {
       hims_d_lab_section_id: "",
       description: "",
-      created_date: "A",
-      created_by: getCookie("UserID"),
+      analyte_type: null,
+      result_unit: null,
 
       description_error: false,
       description_error_txt: ""
@@ -79,16 +79,6 @@ class LabSpecimen extends Component {
       return moment(date).format(Options.dateFormat);
     }
   }
-
-  // componentDidCatch(error, info) {
-  //   debugger;
-  //   swal({
-  //     title: error.message,
-  //     icon: "warning",
-  //     buttons: true,
-  //     dangerMode: true
-  //   });
-  // }
 
   render() {
     return (
@@ -138,6 +128,21 @@ class LabSpecimen extends Component {
                     data: GlobalVariables.FORMAT_ANALYTE_TYPE
                   },
                   onChange: changeTexts.bind(this, this)
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "result_unit",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "result_unit",
+                  value: this.state.result_unit,
+                  events: {
+                    onChange: changeTexts.bind(this, this)
+                  }
                 }}
               />
 
@@ -209,7 +214,25 @@ class LabSpecimen extends Component {
                       );
                     }
                   },
-
+                  {
+                    fieldName: "result_unit",
+                    label: <AlgaehLabel label={{ fieldName: "result_unit" }} />,
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            value: row.result_unit,
+                            className: "txt-fld",
+                            name: "result_unit",
+                            events: {
+                              onChange: onchangegridcol.bind(this, this, row)
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
                   {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
