@@ -1,6 +1,3 @@
-.doctor_workbench .encounters-panel {
-  padding: 10px; }
-
 .doctor_workbench .panel-layout {
   margin-top: 10px; }
 
@@ -10,14 +7,14 @@
 
 .doctor_workbench .my-calendar {
   text-align: center;
-  background: #3bb3b7;
+  background: #00afa4;
   color: #fff; }
   .doctor_workbench .my-calendar .myDay_date {
     float: none;
     margin: 4px auto 2px; }
   .doctor_workbench .my-calendar .myDay_date input {
     border: 1px solid #2a9a9e;
-    background: #3bb3b7;
+    background: #00afa4;
     border-radius: 5px;
     color: #fff;
     font-size: 13px;
@@ -33,26 +30,17 @@
     float: left; }
   .doctor_workbench .my-calendar .arrow-box-right {
     float: right; }
-  .doctor_workbench .my-calendar .calendar {
-    width: 100%;
-    overflow: hidden;
-    float: left; }
-  .doctor_workbench .my-calendar .calendar > ol {
-    margin: 0;
-    padding: 0;
-    width: 1559px; }
-  .doctor_workbench .my-calendar .calendar > ol > li {
-    display: inline-block;
-    border: 1px solid #35a3a7;
-    padding: 2px 3px;
-    width: 50px;
-    font-size: 1.3rem; }
-  .doctor_workbench .my-calendar .calendar > ol > li.selectedDate {
-    background: #2a9a9e; }
-  .doctor_workbench .my-calendar .calendar > ol > li:hover {
-    background: #2a9a9e;
+  .doctor_workbench .my-calendar .calendar .col {
+    border: 1px solid #009e94;
+    font-size: 1.3rem;
+    padding-right: 3px;
+    padding-left: 3px; }
+  .doctor_workbench .my-calendar .calendar .col .selectedDate {
+    background: #009e94; }
+  .doctor_workbench .my-calendar .calendar .col:hover {
+    background: #009e94;
     cursor: pointer; }
-  .doctor_workbench .my-calendar .calendar > ol > li > span {
+  .doctor_workbench .my-calendar .calendar .col span {
     padding: 0;
     margin: 0;
     display: block;
