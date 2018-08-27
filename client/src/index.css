@@ -379,7 +379,7 @@
 
 :global .portletHeader {
   border-bottom: 1px solid #e2e2e2;
-  padding-top: 4px;
+  padding-top: 10px;
   padding-bottom: 4px;
   width: 100%;
 }
