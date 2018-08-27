@@ -18,7 +18,6 @@ let getUserNamePassWord = base64String => {
 
 //api authentication
 let apiAuth = (req, res, next) => {
-  let c;
   let authModel = {
     username: "",
     password: ""
@@ -122,12 +121,31 @@ let authUser = (req, res, next) => {
         query,
         [inputData.password, inputData.username],
         (error, result) => {
-          connection.release();
           if (error) {
+            connection.release();
             next(error);
           }
-          req.records = result;
-          next();
+          if (result != null && result.length != 0) {
+            connection.query(
+              "select module_name,module_desc from algaeh_d_app_privilege,algaeh_d_app_screens where role_id =? and  \
+            algaeh_d_app_privilege.screen_id = algaeh_d_app_screens.algaeh_app_screens_id",
+              [result[0].role_id],
+              (error, rec) => {
+                connection.release();
+                if (error) {
+                  connection.release();
+                  next(error);
+                }
+                req.records = result;
+                req.secureModels = rec;
+                next();
+              }
+            );
+          } else {
+            req.records = result;
+            req.activeModels = [];
+            next();
+          }
         }
       );
     });

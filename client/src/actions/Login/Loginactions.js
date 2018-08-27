@@ -5,20 +5,19 @@ import axios from "axios";
 import { setToken, setCookie } from "../../utils/algaehApiCall";
 import config from "../../utils/config.json";
 import { successfulMessage } from "../../utils/GlobalFunctions";
-
 export function getTokenDetals() {
   var auth_url = "/api/v1/apiAuth";
   var username = config.apiAuth.user;
   var password = config.apiAuth.password;
   var basicAuth = "Basic " + btoa(username + ":" + password);
+
   axios({
     method: "GET",
     url: auth_url,
     headers: { Authorization: basicAuth }
   })
     .then(response => {
-      setToken(response.data.token);
-      setCookie("Language", "en", 30);
+      setToken(response.data.token, response.data.days);
     })
     .catch(err => {
       console.error("Error : ", err.message);

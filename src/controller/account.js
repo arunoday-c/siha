@@ -9,6 +9,7 @@ import {
 } from "../middleware/authmiddleware";
 import { apiAuth, authUser } from "../model/account";
 import { encryption } from "../utils/cryptography";
+
 export default ({ config, db }) => {
   let api = Router();
   // '/v1/apiAuth'
@@ -37,16 +38,13 @@ export default ({ config, db }) => {
           let rowDetails = result[0];
 
           let keyData = encryption(rowDetails);
-
           res.status(httpStatus.ok).json({
             success: true,
             records: {
-              // algaeh_d_app_user_id: rowDetails["algaeh_d_app_user_id"],
               username: rowDetails["username"],
               user_displayname: rowDetails["user_displayname"],
-              // employee_id: rowDetails["employee_id"],
-              // sub_department_id: rowDetails["sub_department_id"],
-              keyResources: keyData
+              keyResources: keyData,
+              secureModels: req.secureModels
             }
           });
           next();
