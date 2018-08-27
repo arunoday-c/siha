@@ -1,9 +1,10 @@
 .doctor_workbench {
-  .encounters-panel {
-    padding: 10px;
-  }
   .panel-layout {
     margin-top: 10px;
+  }
+
+  .pat-code:hover {
+    text-decoration: underline;
   }
   .go-button {
     cursor: pointer;
@@ -12,7 +13,7 @@
 
   .my-calendar {
     text-align: center;
-    background: #3bb3b7;
+    background: #00afa4;
     color: #fff;
 
     .myDay_date {
@@ -22,7 +23,7 @@
 
     .myDay_date input {
       border: 1px solid #2a9a9e;
-      background: #3bb3b7;
+      background: #00afa4;
       border-radius: 5px;
       color: #fff;
       font-size: 13px;
@@ -44,34 +45,33 @@
     .arrow-box-right {
       float: right;
     }
-    .calendar {
-      width: 100%;
-      overflow: hidden;
-      float: left;
-    }
-    .calendar > ol {
-      margin: 0;
-      padding: 0;
-      width: 1559px;
-    }
+    // .calendar {
+    //   width: 100%;
+    //   overflow: hidden;
+    //   float: left;
+    // }
+    // .calendar > ol {
+    //   margin: 0;
+    //   padding: 0;
+    //   //width: 1559px;
+    // }
 
-    .calendar > ol > li {
-      display: inline-block;
-      border: 1px solid #35a3a7;
-      padding: 2px 3px;
-      width: 50px;
+    .calendar .col {
+      border: 1px solid #009e94;
       font-size: 1.3rem;
+      padding-right: 3px;
+      padding-left: 3px;
     }
-    .calendar > ol > li.selectedDate {
-      background: #2a9a9e;
+    .calendar .col .selectedDate {
+      background: #009e94;
     }
 
-    .calendar > ol > li:hover {
-      background: #2a9a9e;
+    .calendar .col:hover {
+      background: #009e94;
       cursor: pointer;
     }
 
-    .calendar > ol > li > span {
+    .calendar .col span {
       padding: 0;
       margin: 0;
       display: block;

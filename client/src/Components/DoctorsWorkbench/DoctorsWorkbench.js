@@ -141,29 +141,33 @@ class DoctorsWorkbench extends Component {
       }
     );
   }
+
   generateHorizontalDateBlocks() {
     return (
       <div className="calendar">
-        <ol>
-          {this.liGenerate().map((row, index) => {
-            return (
-              <li
-                key={index}
-                currentdate={row.currentdate}
-                className={
-                  moment(row.currentdate).format("YYYYMMDD") ===
-                  moment(this.state.activeDateHeader).format("YYYYMMDD")
-                    ? "activeDate"
-                    : ""
-                }
-                onClick={this.onSelectedDateHandler.bind(this)}
-              >
-                {row.day}
-                <span>{row.dayName}</span>
-              </li>
-            );
-          })}
-        </ol>
+        <div className="col-12">
+          <div className="row">
+            {this.liGenerate().map((row, index) => {
+              return (
+                <div
+                  // className="col"
+                  key={index}
+                  currentdate={row.currentdate}
+                  className={
+                    moment(row.currentdate).format("YYYYMMDD") ===
+                    moment(this.state.activeDateHeader).format("YYYYMMDD")
+                      ? "col activeDate"
+                      : "col"
+                  }
+                  onClick={this.onSelectedDateHandler.bind(this)}
+                >
+                  {row.day}
+                  <span>{row.dayName}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     );
   }
@@ -178,13 +182,14 @@ class DoctorsWorkbench extends Component {
       <div className="doctor_workbench">
         <div className="row">
           <div className="my-calendar col-lg-12">
-            <div style={{ width: "calc(100% - 185px)", height: "34px" }}>
+            <div style={{ height: "34px" }}>
+              {/* width: "calc(100% - 185px)",
               <div className="arrow-box arrow-box-left">
                 <i className="fas fa-angle-left fa-2x" />
               </div>
               <div className="arrow-box arrow-box-right">
                 <i className="fas fa-angle-right fa-2x" />
-              </div>
+              </div> */}
               <div className="myDay_date">
                 <input
                   className="calender-date"
@@ -201,7 +206,9 @@ class DoctorsWorkbench extends Component {
         <div className="row card-deck panel-layout">
           {/* Left Pane Start */}
           <div className="col-lg-4 card box-shadow-normal">
-            <AlgaehLabel label={{ fieldName: "patients_list" }} />
+            <div className="portletHeader">
+              <AlgaehLabel label={{ fieldName: "patients_list" }} />
+            </div>
             <div className="opPatientList">
               <ul className="opList">
                 {Enumerable.from(this.state.data)
@@ -255,13 +262,9 @@ class DoctorsWorkbench extends Component {
               <h6 className="card-subtitle mb-2 text-muted">All Patients</h6> */}
 
           <div className="col-lg-8 card box-shadow-normal encounters-panel">
-            <div className="row">
-              <div className="col-lg-3">
-                {" "}
-                <AlgaehLabel label={{ fieldName: "encounter_list" }} />
-              </div>
-              <div className="col-lg-5">
-                {" "}
+            <div className="portletHeader">
+              <AlgaehLabel label={{ fieldName: "encounter_list" }} />
+              <div style={{ float: "right", width: "auto" }}>
                 <AlgaehLabel label={{ fieldName: "total_encounters" }} /> :{" "}
                 {
                   Enumerable.from(this.state.data)
@@ -270,88 +273,184 @@ class DoctorsWorkbench extends Component {
                 }
               </div>
             </div>
-            <div className="divider" />
-            <div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "status"
-                }}
-                selector={{
-                  name: "status",
-                  className: "select-fld",
-                  //value: this.state.consultation,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.DOC_WRK_BNCH_FILTER_CONDITIONS
-                  },
-                  //onChange: this.changeTexts.bind(this)
-                  onChange: () => {}
-                }}
-              />
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{ fieldName: "from_date", isImp: true }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "from_date"
-                }}
-                maxDate={new Date()}
-                events={{
-                  //onChange: datehandle.bind(this, this)
-                  onChange: () => {}
-                }}
-                value={new Date()}
-              />
-
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{ fieldName: "to_date", isImp: true }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "to_date"
-                }}
-                maxDate={new Date()}
-                events={{
-                  //onChange: datehandle.bind(this, this)
-                  onChange: () => {}
-                }}
-                value={new Date()}
-              />
-
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "patient_code",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "patient_code",
-                  // value: this.state.visit_type_code,
-                  //error: this.state.visit_type_code_error,
-                  //helperText: this.state.visit_type_code_error_txt,
-                  events: {
+            <div className="col-12">
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "status"
+                  }}
+                  selector={{
+                    name: "status",
+                    className: "select-fld",
+                    //value: this.state.consultation,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.DOC_WRK_BNCH_FILTER_CONDITIONS
+                    },
                     //onChange: this.changeTexts.bind(this)
                     onChange: () => {}
-                  }
-                }}
-              />
-              <div className="col-lg-1">
-                <Tooltip id="tooltip-icon" title="Search">
-                  <IconButton className="go-button">
-                    <Search onClick={() => {}} />
-                  </IconButton>
-                </Tooltip>
-              </div>
+                  }}
+                />
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{ fieldName: "from_date", isImp: true }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "from_date"
+                  }}
+                  maxDate={new Date()}
+                  events={{
+                    //onChange: datehandle.bind(this, this)
+                    onChange: () => {}
+                  }}
+                  value={new Date()}
+                />
 
-              <div className="col-lg-1">
-                <Tooltip id="tooltip-icon" title="Go">
-                  <IconButton className="go-button" color="primary">
-                    <PlayCircleFilled onClick={() => {}} />
-                  </IconButton>
-                </Tooltip>
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{ fieldName: "to_date", isImp: true }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "to_date"
+                  }}
+                  maxDate={new Date()}
+                  events={{
+                    //onChange: datehandle.bind(this, this)
+                    onChange: () => {}
+                  }}
+                  value={new Date()}
+                />
+
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "patient_code",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "patient_code",
+                    // value: this.state.visit_type_code,
+                    //error: this.state.visit_type_code_error,
+                    //helperText: this.state.visit_type_code_error_txt,
+                    events: {
+                      //onChange: this.changeTexts.bind(this)
+                      onChange: () => {}
+                    }
+                  }}
+                />
+                <div className="col-lg-1">
+                  <Tooltip id="tooltip-icon" title="Search">
+                    <IconButton className="go-button">
+                      <Search onClick={() => {}} />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+
+                <div className="col-lg-1">
+                  <Tooltip id="tooltip-icon" title="Go">
+                    <IconButton className="go-button" color="primary">
+                      <PlayCircleFilled onClick={() => {}} />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+                <AlgaehDataGrid
+                  id="encounter_table"
+                  columns={[
+                    {
+                      fieldName: "status",
+                      label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                      disabled: true,
+                      displayTemplate: data => {
+                        return (
+                          <span>
+                            {data.status === "W" ? <span>WIP </span> : ""}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "patient_code",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      ),
+                      displayTemplate: data => {
+                        return (
+                          <span
+                            className="pat-code"
+                            onClick={() => {
+                              setGlobal({
+                                "EHR-STD": "PatientProfile",
+                                current_patient: data.patient_id,
+                                episode_id: data.episode_id
+                              });
+                              document.getElementById("ehr-router").click();
+                            }}
+                          >
+                            {data.patient_code}
+                          </span>
+                        );
+                      },
+                      className: drow => {
+                        if (drow.checked_in === "N") return "testColor";
+                      }
+                    },
+                    {
+                      fieldName: "full_name",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                      )
+                    },
+                    {
+                      fieldName: "date",
+                      label: <AlgaehLabel label={{ fieldName: "date" }} />
+                    },
+                    {
+                      fieldName: "time",
+                      label: <AlgaehLabel label={{ fieldName: "time" }} />
+                    },
+                    {
+                      fieldName: "patient_type",
+                      label: (
+                        <AlgaehLabel
+                          label={{ fieldName: "policy_group_description" }}
+                        />
+                      ),
+                      displayTemplate: data => {
+                        return (
+                          <span>
+                            {data.payment_type === "S" ? "Self" : "Insurance"}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "transfer_status",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "transfer_status" }} />
+                      )
+                    }
+                  ]}
+                  rowClassName={row => {
+                    debugger;
+                    //return "testColor";
+                  }}
+                  keyId="encounter_code"
+                  dataSource={{
+                    data: Enumerable.from(this.state.data)
+                      .where(w => w.status !== "V")
+                      .toArray()
+                  }}
+                  isEditable={false}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{
+                    onDelete: row => {},
+                    onEdit: row => {},
+                    onDone: row => {}
+                  }}
+                />
               </div>
             </div>
 
@@ -368,9 +467,6 @@ class DoctorsWorkbench extends Component {
                         {data.status === "W" ? <span>WIP </span> : ""}
                       </span>
                     );
-                  },
-                  className: drow => {
-                    if (drow.checked_in === "N") return "testColor";
                   }
                 },
                 {
@@ -379,14 +475,22 @@ class DoctorsWorkbench extends Component {
                   displayTemplate: data => {
                     return (
                       <span
+                        className="pat-code"
                         onClick={() => {
-                          debugger;
-                          alert("PC Clicked");
+                          setGlobal({
+                            "EHR-STD": "PatientProfile",
+                            current_patient: data.patient_id,
+                            episode_id: data.episode_id
+                          });
+                          document.getElementById("ehr-router").click();
                         }}
                       >
                         {data.patient_code}
                       </span>
                     );
+                  },
+                  className: drow => {
+                    if (drow.checked_in === "N") return "testColor";
                   }
                 },
                 {

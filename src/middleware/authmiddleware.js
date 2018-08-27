@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import expressjwt from "express-jwt";
 import config from "../keys/keys";
+import moment from "moment";
 const TOKENTIME = config.TOKENTIME;
 const SECRET = config.SECRETKey;
 
@@ -22,11 +23,12 @@ let generateAccessToken = (req, res, next) => {
     next();
   }
 };
-
+const days = moment.duration(TOKENTIME, "seconds").asDays();
 let respond = (req, res) => {
   res.status(200).json({
     user: req.user,
-    token: req.token
+    token: req.token,
+    days: days
   });
 };
 

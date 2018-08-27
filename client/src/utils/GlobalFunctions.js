@@ -21,3 +21,7 @@ export function setGlobal(obj) {
   extend(windglob, obj);
   Window.global = windglob;
 }
+
+export function removeGlobal(name) {
+  if (name !== undefined) delete Window.global[name];
+}

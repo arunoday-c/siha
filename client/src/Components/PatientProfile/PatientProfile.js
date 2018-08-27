@@ -7,6 +7,7 @@ import Assesment from "./Assessment/Assessment";
 import Plan from "./Plan/Plan";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import moment from "moment";
+import { setGlobal, removeGlobal } from "../../utils/GlobalFunctions";
 
 class PatientProfile extends Component {
   constructor(props) {
@@ -31,12 +32,18 @@ class PatientProfile extends Component {
     });
   }
 
+  componentWillUnmount() {
+    removeGlobal("current_patient");
+    removeGlobal("episode_id");
+  }
+
   componentDidMount() {
+    debugger;
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientProfile",
       data: {
-        patient_id: 483,
-        episode_id: 45
+        patient_id: Window.global["current_patient"],
+        episode_id: Window.global["episode_id"]
       },
       method: "GET",
       onSuccess: response => {
@@ -54,7 +61,14 @@ class PatientProfile extends Component {
       <div className="patientProfile">
         <div className="patientInfo-Top box-shadow-normal">
           <div className="backBtn">
-            <button type="button" className="btn btn-outline-secondary btn-sm">
+            <button
+              onClick={() => {
+                setGlobal({ "EHR-STD": "DoctorsWorkbench" });
+                document.getElementById("ehr-router").click();
+              }}
+              type="button"
+              className="btn btn-outline-secondary btn-sm"
+            >
               <i className="fas fa-angle-double-left fa-lg" />
               Back
             </button>
@@ -64,15 +78,15 @@ class PatientProfile extends Component {
           </div>
           <div className="patientName">
             <h6>
-              {
-                this.state.patientData.full_name
-                //? this.state.patientData.full_name
-                //: ""
-              }
+              {this.state.patientData.full_name
+                ? this.state.patientData.full_name
+                : ""}
             </h6>
             <p>
-              {this.state.patientData.gender},{" "}
-              {this.state.patientData.age_in_years}Y{" "}
+              {this.state.patientData.gender
+                ? this.state.patientData.gender
+                : ""}
+              , {this.state.patientData.age_in_years}Y{" "}
               {this.state.patientData.age_in_months}M{" "}
               {this.state.patientData.age_in_days}D
             </p>

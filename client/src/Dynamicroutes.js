@@ -20,7 +20,7 @@ import SampleCollection from "./Components/Laboratory/SampleCollection/SampleCol
 import MedicalWorkbenchSetup from "./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup";
 import Workbench from "./Components/Workbench/Workbench";
 import AccessionAcknowledgement from "./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement";
-import OrderingServices from "./Components/DoctorsWorkbench/OrderingServices/OrderingServices";
+
 import PreApproval from "./Components/PreApproval/PreApproval";
 import LabSetup from "./Components/LabSetup/LabSetup";
 import InvestigationSetup from "./Components/InvestigationSetup/InvestigationSetup";
@@ -73,9 +73,6 @@ const componts = (selectedLang, breadStyle) => {
       />
     ),
 
-    OrderingServices: (
-      <OrderingServices SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
     PreApproval: (
       <PreApproval SelectLanguage={selectedLang} breadStyle={breadStyle} />
     ),

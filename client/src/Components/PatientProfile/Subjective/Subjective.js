@@ -2,20 +2,37 @@ import React, { Component } from "react";
 import "./subjective.css";
 import "react-rangeslider/lib/index.css";
 import Button from "@material-ui/core/Button";
-import { AlgaehDataGrid, AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import Slider from "react-rangeslider";
 import Modal from "@material-ui/core/Modal";
 import {
+  AlgaehDataGrid,
   AlgaehDateHandler,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import Checkbox from "@material-ui/core/Checkbox";
+import IconButton from "@material-ui/core/IconButton";
+import Delete from "@material-ui/icons/Delete";
+import Edit from "@material-ui/icons/Edit";
+import HPI from "@material-ui/icons/AssignmentInd";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
   { food: "Pollen", active: "Yes" },
   { food: "Iodine", active: "Yes" }
+];
+
+const complain_data = [
+  {
+    complaint_name: "Abdominal Pain",
+    pain: "Hurts More",
+    severity: "Moderate"
+  },
+  { complaint_name: "Abdominal Pain", pain: "No Hurt", severity: "None" },
+  { complaint_name: "Head Pain", pain: "Hurts Less", severity: "Mild" },
+  { complaint_name: "Abdominal Pain", pain: "Hurts Worst", severity: "Severe" }
 ];
 
 class Subjective extends Component {
@@ -89,6 +106,15 @@ class Subjective extends Component {
                         Doctor Chief Complaints
                       </h6>
                     </div>
+
+                    <div
+                      className="card-body box-shadow-normal"
+                      style={{ marginTop: "10px" }}
+                    >
+                      <h6 className="card-subtitle mb-2 text-muted">
+                        Nurse Chief Complaints
+                      </h6>
+                    </div>
                   </div>
                 </div>
 
@@ -133,7 +159,7 @@ class Subjective extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-3 mrgn-tp-auto" }}
                       label={{
-                        fieldName: ""
+                        fieldName: "food"
                       }}
                       selector={{
                         name: "duration_time",
@@ -260,7 +286,7 @@ class Subjective extends Component {
                   </div>
                   <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-lg-6" }}
+                      div={{ className: "col-lg-5" }}
                       label={{
                         fieldName: "comments",
                         isImp: false
@@ -272,6 +298,51 @@ class Subjective extends Component {
                           multiline: true,
                           rows: "4"
                         },
+                        //value: this.state.pain,
+                        events: {}
+                      }}
+                    />
+                    <div className="col-lg-2">
+                      <Checkbox color="primary" onChange={() => {}} />
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Inactive"
+                        }}
+                      />
+                    </div>
+
+                    <AlgaehDateHandler
+                      div={{ className: "col-lg-5" }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: ""
+                      }}
+                      maxDate={new Date()}
+                      events={{
+                        onChange: () => {}
+                      }}
+                      // value={this.state.card_date}
+                    />
+                  </div>
+                  <div className="row" style={{ marginTop: "10px" }}>
+                    <div className="col-lg-2">
+                      <Checkbox color="primary" onChange={() => {}} />
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Chronic"
+                        }}
+                      />
+                    </div>
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-4" }}
+                      label={{
+                        forceLabel: "Tooth from",
+                        isImp: false
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "tooth_from",
+
                         //value: this.state.pain,
                         events: {}
                       }}
@@ -330,18 +401,60 @@ class Subjective extends Component {
                   id="complaint-grid"
                   columns={[
                     {
-                      fieldName: "status",
-                      label: <AlgaehLabel label={{ fieldName: "status" }} />
+                      fieldName: "complaint_name",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "complaint_name" }} />
+                      )
+                    },
+                    {
+                      fieldName: "pain",
+                      label: <AlgaehLabel label={{ fieldName: "pain" }} />
+                    },
+                    {
+                      fieldName: "severity",
+                      label: <AlgaehLabel label={{ fieldName: "severity" }} />
+                    },
+                    {
+                      fieldName: "interval",
+                      label: <AlgaehLabel label={{ fieldName: "interval" }} />
+                    },
+                    {
+                      fieldName: "onset_date",
+                      label: <AlgaehLabel label={{ fieldName: "onset_date" }} />
+                    },
+                    {
+                      fieldName: "actions",
+                      label: <AlgaehLabel label={{ fieldName: "actions" }} />,
+                      displayTemplate: data => {
+                        return (
+                          <span>
+                            <IconButton color="primary" title="Edit">
+                              <Edit
+                              // onClick={this.ShowEditModel.bind(this, row)}
+                              />
+                            </IconButton>
+
+                            <IconButton color="primary" title="Process To Bill">
+                              <HPI
+                              //onClick={VerifyOrderModel.bind(this, this, row)}
+                              />
+                            </IconButton>
+
+                            <IconButton color="primary" title="Submit">
+                              <Delete
+                              // onClick={this.ShowSubmitModel.bind(this, row)}
+                              />
+                            </IconButton>
+                          </span>
+                        );
+                      }
                     }
                   ]}
                   keyId="patient_id"
                   dataSource={{
-                    data:
-                      this.props.mydaylist === undefined
-                        ? []
-                        : this.props.mydaylist
+                    data: complain_data
                   }}
-                  isEditable={true}
+                  isEditable={false}
                   paging={{ page: 0, rowsPerPage: 5 }}
                   events={{
                     onDelete: row => {},
