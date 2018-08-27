@@ -104,6 +104,7 @@ class DeptMaster extends Component {
               isImp: true
             }}
             selector={{
+              multi: true,
               name: "pain",
               className: "select-fld",
               value: this.state.pain,
@@ -111,7 +112,8 @@ class DeptMaster extends Component {
                 textField: "name",
                 valueField: "value",
                 data: GlobalVariables.PAIN_SCALE
-              }
+              },
+              onChange: () => {}
               // onChange: texthandle.bind(this, this)
             }}
           />

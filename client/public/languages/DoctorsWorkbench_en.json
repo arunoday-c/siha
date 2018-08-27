@@ -18,5 +18,11 @@
   "to_date": "To Date",
   "onset_date": "On Set Date",
   "duration": "Duration",
-  "pain_severity": "Pain Severity"
+  "pain_severity": "Pain Severity",
+  "actions": "Actions",
+  "comments": "Comments",
+  "complaint_name": "Complaint Name",
+  "pain": "Pain",
+  "severity": "Severity",
+  "interval": "Interval"
 }

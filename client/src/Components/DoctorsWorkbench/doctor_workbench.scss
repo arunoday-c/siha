@@ -1,5 +1,8 @@
 .doctor_workbench {
   .encounters-panel {
+    .pat-code:hover {
+      text-decoration: underline;
+    }
     padding: 10px;
   }
   .panel-layout {

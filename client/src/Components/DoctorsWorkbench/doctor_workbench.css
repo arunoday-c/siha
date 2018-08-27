@@ -1,5 +1,7 @@
 .doctor_workbench .encounters-panel {
   padding: 10px; }
+  .doctor_workbench .encounters-panel .pat-code:hover {
+    text-decoration: underline; }
 
 .doctor_workbench .panel-layout {
   margin-top: 10px; }
