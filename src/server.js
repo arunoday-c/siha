@@ -63,8 +63,10 @@ app.use((req, res, next) => {
     reqUser = jwtDecode(reqH["x-api-key"]).id;
     if (req.url != "/api/v1/apiAuth/authUser") {
       let header = req.headers["x-app-user-identity"];
+
       if (header != null && header != "" && header != "null") {
         header = decryption(header);
+
         req.body.created_by = header.algaeh_d_app_user_id;
         req.body.updated_by = header.algaeh_d_app_user_id;
         req.userIdentity = header;

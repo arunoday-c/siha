@@ -255,10 +255,7 @@ export default () => {
   api.get(
     "/nationality",
     (req, res, next) => {
-      debugLog("Inside nationality ");
       getCacheData({ key: "nationality" }, result => {
-        debugLog("Get nationality ", result);
-
         if (result != null) {
           res.status(httpStatus.ok).json({
             success: true,
@@ -272,7 +269,6 @@ export default () => {
     nationalityMaster,
     (req, res, next) => {
       let result = req.records;
-      debugLog("nationality ", result);
       setCacheData(
         {
           key: "nationality",

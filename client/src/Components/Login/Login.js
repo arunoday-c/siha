@@ -2,11 +2,10 @@ import React, { Component } from "react";
 import "./Login.css";
 import { Button } from "../Wrapper/algaehWrapper";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { setGlobal } from "../../utils/GlobalFunctions";
+import { setSecure } from "../../utils/indexer";
 import { algaehApiCall, setCookie } from "../../utils/algaehApiCall.js";
 import swal from "sweetalert";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
-
 const styles = {
   root: {
     height: "100%"
@@ -38,7 +37,23 @@ export default class Login extends Component {
   }
 
   componentWillMount() {
+    this.deleteAllPreviousCookies();
+    this.deleteAllPreviousLocalStorage();
     setCookie("ScreenName", "Login", 30);
+    setCookie("Language", "en", 30);
+  }
+  deleteAllPreviousLocalStorage() {
+    window.localStorage.clear();
+  }
+  deleteAllPreviousCookies() {
+    let cookies = document.cookie.split(";");
+
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i];
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
   }
 
   handleLogin(e) {
@@ -92,8 +107,9 @@ export default class Login extends Component {
         timeout: 10000,
         onSuccess: response => {
           if (response.data.success === true) {
-            setCookie("UserID", response.data.records.algaeh_d_app_user_id, 30);
             setCookie("keyResources", response.data.records.keyResources, 30);
+            setSecure(response.data.records.secureModels);
+
             window.location.hash = "/Home";
             window.history.pushState(null, null, window.location.href);
             window.onpopstate = function(event) {

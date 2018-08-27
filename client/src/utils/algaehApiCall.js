@@ -6,11 +6,6 @@ import swal from "sweetalert";
 import Slide from "@material-ui/core/Slide";
 import config from "../utils/config.json";
 export function algaehApiCall(options) {
-  let headerToken = getToken();
-  if (headerToken === undefined) {
-    window.location.href = window.location.origin;
-    return;
-  }
   if (!window.navigator.onLine) {
     swal({
       title: "Connection Error",
@@ -22,11 +17,6 @@ export function algaehApiCall(options) {
     });
     return false;
   } else {
-    if (headerToken === undefined) {
-      window.location.href = window.location.origin;
-      return;
-    }
-
     if (
       window.navigator.connection !== undefined &&
       window.navigator.connection.effectiveType === "2g"
@@ -40,8 +30,6 @@ export function algaehApiCall(options) {
       />;
     }
   }
-  // "baseUrl": "/api/v1",
-  //"baseUrl": "http://192.168.0.149:3000/api/v1",
 
   var settings = extend(
     {
@@ -82,7 +70,9 @@ export function algaehApiCall(options) {
     console.log("Input data :", settings.data);
   }
 
-  let x_app_user_identity = getCookie("keyResources");
+  const headerToken = getToken();
+  const x_app_user_identity = getCookie("keyResources");
+  console.log("identity", x_app_user_identity);
   if (settings.uri != null || settings.uri != "") {
     if (settings.isfetch) {
       return fetch(settings.baseUrl + settings.uri + queryParametres, {
@@ -202,8 +192,9 @@ export function defaultOptions() {
 export function getToken() {
   return getCookie("authToken");
 }
-export function setToken(token) {
-  setCookie("authToken", token, 30);
+export function setToken(token, days) {
+  days = days || 30;
+  setCookie("authToken", token, days);
 }
 
 export function setCookie(cname, cvalue, exdays) {
