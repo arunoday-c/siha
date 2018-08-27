@@ -369,9 +369,6 @@ class DoctorsWorkbench extends Component {
                             {data.status === "W" ? <span>WIP </span> : ""}
                           </span>
                         );
-                      },
-                      className: drow => {
-                        if (drow.checked_in === "N") return "testColor";
                       }
                     },
                     {
@@ -382,14 +379,22 @@ class DoctorsWorkbench extends Component {
                       displayTemplate: data => {
                         return (
                           <span
+                            className="pat-code"
                             onClick={() => {
-                              debugger;
-                              alert("PC Clicked");
+                              setGlobal({
+                                "EHR-STD": "PatientProfile",
+                                current_patient: data.patient_id,
+                                episode_id: data.episode_id
+                              });
+                              document.getElementById("ehr-router").click();
                             }}
                           >
                             {data.patient_code}
                           </span>
                         );
+                      },
+                      className: drow => {
+                        if (drow.checked_in === "N") return "testColor";
                       }
                     },
                     {
