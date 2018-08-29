@@ -1,4 +1,6 @@
 import React, { PureComponent, PropTypes } from "react";
+import { AlagehAutoComplete } from "./Wrapper/algaehWrapper";
+import { GlobalVariables } from "../utils/GlobalVariables.json";
 
 import RichTextEditor from "react-quill";
 import "react-quill/dist/quill.snow.css";

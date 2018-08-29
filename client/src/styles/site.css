@@ -1,6 +1,7 @@
 body {
   line-height: 1.45;
-  font-family: "Open Sans", sans-serif; }
+  font-family: "Open Sans", sans-serif;
+  background-color: #fafafa; }
 
 :global .header {
   max-height: 50px; }
@@ -425,9 +426,6 @@ body {
 
 :global .hptl-phase1-master-footer .app_bar {
   background: #000000; }
-
-body {
-  background-color: #f2f2f2; }
 
 .tab-container nav li label {
   padding-top: "2px"; }
