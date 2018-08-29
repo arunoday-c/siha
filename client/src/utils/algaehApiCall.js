@@ -72,7 +72,7 @@ export function algaehApiCall(options) {
 
   const headerToken = getToken();
   const x_app_user_identity = getCookie("keyResources");
-  console.log("identity", x_app_user_identity);
+  //console.log("identity", x_app_user_identity);
   if (settings.uri != null || settings.uri != "") {
     if (settings.isfetch) {
       return fetch(settings.baseUrl + settings.uri + queryParametres, {

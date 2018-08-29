@@ -10,7 +10,8 @@
   border-style: solid;
   border-color: gray;
   height: 200px;
-  overflow: auto; }
+  overflow: auto;
+  border-radius: 10px; }
   .complain-box .bordered-layout ul {
     margin: 0px;
     padding: 0px; }
