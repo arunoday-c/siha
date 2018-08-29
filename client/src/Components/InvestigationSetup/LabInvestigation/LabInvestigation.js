@@ -17,6 +17,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import {
   texthandle,
+  analyteidhandle,
   AddAnalytes,
   updateLabInvestigation,
   deleteLabInvestigation
@@ -227,7 +228,7 @@ class LabInvestigation extends Component {
                           valueField: "hims_d_lab_analytes_id",
                           data: this.props.labanalytes
                         },
-                        onChange: texthandle.bind(this, this, context)
+                        onChange: analyteidhandle.bind(this, this, context)
                       }}
                     />
 

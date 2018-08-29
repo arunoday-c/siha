@@ -164,7 +164,6 @@ let addInvestigationTest = (req, res, next) => {
               input.investigation_type == "R"
             ) {
               const insurtColumns = [
-                "test_id",
                 "template_name",
                 "template_html",
                 "template_status",
@@ -175,7 +174,7 @@ let addInvestigationTest = (req, res, next) => {
               connection.query(
                 "INSERT INTO hims_d_rad_template_detail(" +
                   insurtColumns.join(",") +
-                  ") VALUES ?",
+                  ",`test_id`) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,

@@ -1,7 +1,6 @@
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -17,12 +16,37 @@ const texthandle = ($this, context, ctrl, e) => {
   }
 };
 
+const analyteidhandle = ($this, context, ctrl, e) => {
+  debugger;
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value,
+    analyte_type: e.selected.analyte_type,
+    result_unit: e.selected.result_unit
+  });
+
+  if (context !== undefined) {
+    context.updateState({
+      [name]: value,
+      analyte_type: e.selected.analyte_type,
+      result_unit: e.selected.result_unit
+    });
+  }
+};
+
 const AddAnalytes = ($this, context) => {
   debugger;
   if ($this.state.analyte_id !== null) {
     let insertanalytes = $this.state.insertanalytes;
     let analytes = $this.state.analytes;
-    let obj = { analyte_id: $this.state.analyte_id };
+    let obj = {
+      analyte_id: $this.state.analyte_id,
+      analyte_type: $this.state.analyte_type,
+      result_unit: $this.state.result_unit
+    };
 
     if ($this.state.hims_d_investigation_test_id !== null) {
       let Insertobj = {
@@ -90,6 +114,7 @@ const deleteLabInvestigation = ($this, context, row, rowId) => {
 };
 export {
   texthandle,
+  analyteidhandle,
   AddAnalytes,
   updateLabInvestigation,
   deleteLabInvestigation

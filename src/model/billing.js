@@ -9,7 +9,7 @@ import {
 
 import moment from "moment";
 import { debugLog, debugFunction } from "../utils/logging";
-
+import appsettings from "../utils/appsettings.json";
 import { LINQ } from "node-linq";
 //import { inflate } from "zlib";
 
@@ -1146,7 +1146,88 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     copay_amount = policydtls.copay_amt;
                     copay_percentage = (copay_amount / net_amout) * 100;
                   } else {
-                    copay_percentage = policydtls.copay_consultation;
+                    debugLog("Consutation", records.service_type_id);
+                    if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Consultation == records.service_type_id
+                    ) {
+                      debugLog("Consutation", policydtls.copay_consultation);
+                      copay_percentage = policydtls.copay_consultation;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Procedure == records.service_type_id
+                    ) {
+                      copay_percentage = policydtls.copay_percent_trt;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Provider == records.service_type_id
+                    ) {
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .InventoryItem == records.service_type_id
+                    ) {
+                      //Not there
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.Lab ==
+                      records.service_type_id
+                    ) {
+                      debugLog("Lab: ", policydtls.copay_percent);
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .NursingCare == records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Miscellaneous == records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Anesthesia == records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.Bed ==
+                      records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.OT ==
+                      records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Radiology == records.service_type_id
+                    ) {
+                      copay_percentage = policydtls.copay_percent_rad;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Pharmacy == records.service_type_id
+                    ) {
+                      copay_percentage = policydtls.copay_medicine;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .NonService == records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.Package ==
+                      records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    }
                     copay_amount = (net_amout * copay_percentage) / 100;
                     debugLog("Copay Amount:", copay_amount);
                   }

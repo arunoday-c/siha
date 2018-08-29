@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import Paper from "@material-ui/core/Paper";
 
 import IconButton from "@material-ui/core/IconButton";
-import AddCircle from "@material-ui/icons/AddCircle";
+import Edit from "@material-ui/icons/Edit";
 
 import RadTemplate from "../RadTemplate/RadTemplate";
 import "./RadInvestigation.css";
@@ -15,7 +15,12 @@ import {
   AlgaehLabel,
   AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
-import { texthandle, ShowTemplate } from "./RadInvestigationEvent";
+import {
+  texthandle,
+  ShowTemplate,
+  CloseTemplate,
+  ViewEditTemplate
+} from "./RadInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import MyContext from "../../../utils/MyContext.js";
@@ -26,7 +31,8 @@ class RadInvestigation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openTemplate: false
+      openTemplate: false,
+      radTempobj: null
     };
   }
 
@@ -35,30 +41,12 @@ class RadInvestigation extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
   componentDidMount() {
-    this.props.getLabsection({
-      uri: "/labmasters/selectSection",
+    this.props.getTestCategory({
+      uri: "/labmasters/selectTestCategory",
       method: "GET",
       redux: {
-        type: "SECTION_GET_DATA",
-        mappingName: "labsection"
-      }
-    });
-
-    this.props.getLabSpecimen({
-      uri: "/labmasters/selectSpecimen",
-      method: "GET",
-      redux: {
-        type: "SPECIMEN_GET_DATA",
-        mappingName: "labspecimen"
-      }
-    });
-
-    this.props.getLabAnalytes({
-      uri: "/labmasters/selectAnalytes",
-      method: "GET",
-      redux: {
-        type: "ANALYTES_GET_DATA",
-        mappingName: "labanalytes"
+        type: "TESTCATEGORY_GET_DATA",
+        mappingName: "testcategory"
       }
     });
   }
@@ -84,7 +72,7 @@ class RadInvestigation extends Component {
                       dataSource: {
                         textField: "category_name",
                         valueField: "hims_d_test_category_id",
-                        data: this.props.labsection
+                        data: this.props.testcategory
                       },
                       onChange: texthandle.bind(this, this, context)
                     }}
@@ -186,8 +174,16 @@ class RadInvestigation extends Component {
                             displayTemplate: row => {
                               return (
                                 <span>
-                                  <IconButton color="primary" title="View">
-                                    <AddCircle />
+                                  <IconButton
+                                    color="primary"
+                                    title="View & Edit"
+                                  >
+                                    <Edit
+                                      onClick={ViewEditTemplate.bind(
+                                        this,
+                                        this
+                                      )}
+                                    />
                                   </IconButton>
                                 </span>
                               );
@@ -196,17 +192,30 @@ class RadInvestigation extends Component {
                         ]}
                         keyId="analyte_id"
                         dataSource={{
-                          data: this.state.analytes
+                          data: this.state.RadTemplate
                         }}
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}
                       />
                     </div>
                   </div>
-                  <RadTemplate
-                    openTemplate={this.state.openTemplate}
-                    onClose={ShowTemplate.bind(this, this)}
-                  />
+                  <MyContext.Provider
+                    value={{
+                      state: this.state,
+                      updateState: obj => {
+                        debugger;
+                        this.setState({ ...obj }, () => {
+                          debugger;
+                        });
+                      }
+                    }}
+                  >
+                    <RadTemplate
+                      openTemplate={this.state.openTemplate}
+                      onClose={CloseTemplate.bind(this, this)}
+                      radTempobj={this.state.radTempobj}
+                    />
+                  </MyContext.Provider>
                 </Paper>
               </div>
             </div>
@@ -219,18 +228,14 @@ class RadInvestigation extends Component {
 
 function mapStateToProps(state) {
   return {
-    labspecimen: state.labspecimen,
-    labsection: state.labsection,
-    labanalytes: state.labanalytes
+    testcategory: state.testcategory
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getLabsection: AlgaehActions,
-      getLabSpecimen: AlgaehActions,
-      getLabAnalytes: AlgaehActions
+      getTestCategory: AlgaehActions
     },
     dispatch
   );

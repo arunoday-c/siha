@@ -19,11 +19,13 @@ import InsuranceSetup from "./Components/InsuranceSetup/InsuranceSetup";
 import SampleCollection from "./Components/Laboratory/SampleCollection/SampleCollection";
 import MedicalWorkbenchSetup from "./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup";
 import Workbench from "./Components/Workbench/Workbench";
+import OrderingServices from "./Components/DoctorsWorkbench/OrderingServices/OrderingServices";
 import AccessionAcknowledgement from "./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement";
 
 import PreApproval from "./Components/PreApproval/PreApproval";
 import LabSetup from "./Components/LabSetup/LabSetup";
 import InvestigationSetup from "./Components/InvestigationSetup/InvestigationSetup";
+import RadOrderedList from "./Components/Radiology/RadOrderedList/RadOrderedList";
 
 function height() {
   let height =
@@ -60,6 +62,10 @@ const componts = (selectedLang, breadStyle) => {
     NurseWorkbench: (
       <Workbench SelectLanguage={selectedLang} breadStyle={breadStyle} />
     ),
+    OrderingServices: (
+      <OrderingServices SelectLanguage={selectedLang} breadStyle={breadStyle} />
+    ),
+
     MedicalWorkbenchSetup: (
       <MedicalWorkbenchSetup
         SelectLanguage={selectedLang}
@@ -84,6 +90,9 @@ const componts = (selectedLang, breadStyle) => {
         SelectLanguage={selectedLang}
         breadStyle={breadStyle}
       />
+    ),
+    RadOrderedList: (
+      <RadOrderedList SelectLanguage={selectedLang} breadStyle={breadStyle} />
     )
   };
 };

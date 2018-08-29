@@ -18,15 +18,21 @@ export default {
       cpt_id: null,
       category_id: null,
       analyte_id: null,
+      analyte_type: null,
+      result_unit: null,
       selectedLang: "en",
       analytes: [],
       insertanalytes: [],
       updateanalytes: [],
       services_id: null,
+      RadTemplate: [],
+      template_name: null,
+      template_html: null,
 
       film_category: "NA",
       screening_test: "N",
-      film_used: "N"
+      film_used: "N",
+      clear: false
     };
     return output;
   }

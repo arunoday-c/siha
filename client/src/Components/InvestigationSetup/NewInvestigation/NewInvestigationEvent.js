@@ -40,7 +40,9 @@ const InsertLabTest = $this => {
   const err = Validations($this);
 
   if (!err) {
-    if ($this.state.hims_d_investigation_test_id !== null) {
+    debugger;
+    if ($this.state.hims_d_investigation_test_id === null) {
+      debugger;
       algaehApiCall({
         uri: "/investigation/addInvestigationTest",
         data: $this.state,

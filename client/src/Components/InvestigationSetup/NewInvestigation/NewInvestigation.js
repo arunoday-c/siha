@@ -38,27 +38,6 @@ class NewInvestigation extends PureComponent {
   }
 
   componentDidMount() {
-    let IOputs = InvestigationIOputs.inputParam();
-    this.setState({ ...this.state, ...IOputs });
-
-    this.props.getLabsection({
-      uri: "/labmasters/selectSection",
-      method: "GET",
-      redux: {
-        type: "SECTION_GET_DATA",
-        mappingName: "labsection"
-      }
-    });
-
-    this.props.getTestCategory({
-      uri: "/labmasters/selectTestCategory",
-      method: "GET",
-      redux: {
-        type: "TESTCATEGORY_GET_DATA",
-        mappingName: "testcategory"
-      }
-    });
-
     this.props.getServices({
       uri: "/serviceType/getService",
       method: "GET",
@@ -79,16 +58,17 @@ class NewInvestigation extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
-
     if (newProps.InvestigationPop.hims_d_investigation_test_id !== undefined) {
       let IOputs = newProps.InvestigationPop;
       IOputs.InvestigationtypeEnable = true;
       this.setState({ ...this.state, ...IOputs });
-    } else {
-      let IOputs = InvestigationIOputs.inputParam();
-      this.setState({ ...this.state, ...IOputs });
     }
+    // else {
+    //   debugger;
+
+    //   let IOputs = InvestigationIOputs.inputParam();
+    //   this.setState({ ...this.state, ...IOputs });
+    // }
   }
   onClose = e => {
     this.props.onClose && this.props.onClose(e);
@@ -303,8 +283,6 @@ class NewInvestigation extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    testcategory: state.testcategory,
-    labsection: state.labsection,
     services: state.services,
     cptcodes: state.cptcodes
   };
@@ -313,8 +291,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getTestCategory: AlgaehActions,
-      getLabsection: AlgaehActions,
       getServices: AlgaehActions,
       getCptcodes: AlgaehActions
     },
