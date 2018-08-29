@@ -1,0 +1,10 @@
+.plan .grid-section {
+  border: 1px solid #d3d3d3;
+  margin-top: 0px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px; }
+
+.plan .toggle-section {
+  margin-top: 10px;
+  margin-bottom: 0px; }

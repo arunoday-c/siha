@@ -17,6 +17,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
 import HPI from "@material-ui/icons/AssignmentInd";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
@@ -83,6 +84,29 @@ class Subjective extends Component {
     this.setState({ openComplain: false });
   }
 
+  getChiefComplains() {
+    //localhost:3000//api/v1/doctorsWorkBench/getPatientChiefComplaints?patient_id=483&episode_id=45
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientChiefComplaints",
+      data: {
+        patient_id: Window.global["current_patient"],
+        episode_id: Window.global["episode_id"]
+      },
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          console.log("Patient chief complains:", response.data.records);
+          this.setState({ patientChiefComplains: response.data.records });
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
+  componentDidMount() {
+    this.getChiefComplains();
+  }
+
   render() {
     return (
       <div className="subjective">
@@ -105,6 +129,33 @@ class Subjective extends Component {
                       <h6 className="card-subtitle mb-2 text-muted">
                         Doctor Chief Complaints
                       </h6>
+                      <div className="complain-box">
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "search"
+                          }}
+                          selector={{
+                            name: "search",
+                            className: "select-fld",
+                            // value: this.state.pay_cash,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.PAIN_DURATION
+                            }
+
+                            // onChange: texthandle.bind(this, this)
+                          }}
+                        />
+                        <div className="bordered-layout">
+                          <ul>
+                            <li>
+                              <span> Text </span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
 
                     <div

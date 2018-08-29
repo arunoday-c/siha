@@ -27,52 +27,54 @@
       border-radius: 4px;
       overflow: hidden; }
   .patientProfile .patientInfo-Top .patientName {
-    width: 260px;
+    max-width: 230px;
     margin-top: 2px;
     border-left: 1px solid #e1e1e1;
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
-    padding-right: 10px; }
+    padding-right: 10px;
+    min-height: 57px; }
     .patientProfile .patientInfo-Top .patientName h6 {
       font-size: 1rem;
       margin-bottom: 2px;
       color: #000;
-      line-height: 1.3rem; }
+      line-height: 1.2rem; }
     .patientProfile .patientInfo-Top .patientName p {
-      font-size: 0.8rem; }
+      font-size: 0.8rem;
+      margin: 0;
+      padding: 0; }
   .patientProfile .patientInfo-Top .patientDemographic {
     font-size: 0.8rem;
-    width: 160px;
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
-    padding-right: 10px; }
+    padding-right: 10px;
+    min-height: 57px; }
     .patientProfile .patientInfo-Top .patientDemographic span {
-      display: inline-block; }
+      display: block; }
       .patientProfile .patientInfo-Top .patientDemographic span b {
         color: #34b8bc; }
   .patientProfile .patientInfo-Top .patientHospitalDetail {
     font-size: 0.8rem;
-    width: 260px;
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
-    padding-right: 10px; }
+    padding-right: 10px;
+    min-height: 57px; }
     .patientProfile .patientInfo-Top .patientHospitalDetail span {
-      display: inline-block; }
+      display: block; }
       .patientProfile .patientInfo-Top .patientHospitalDetail span b {
         color: #34b8bc; }
   .patientProfile .patientInfo-Top .patientVital {
     font-size: 0.8rem;
-    width: 215px;
+    width: 210px;
     line-height: 1.3rem;
-    border-right: 1px solid #e1e1e1;
     padding-left: 10px;
-    padding-right: 10px; }
+    padding-right: 10px;
+    min-height: 57px; }
     .patientProfile .patientInfo-Top .patientVital span {
       display: inline-block;
-      margin-right: 5px;
-      padding-right: 5px; }
+      margin-right: 8px; }
       .patientProfile .patientInfo-Top .patientVital span b {
         color: #34b8bc; }
   .patientProfile .patientInfo-Top .moreAction {
@@ -82,9 +84,11 @@
     .patientProfile .patientInfo-Top .moreAction button {
       height: 60px;
       border: 1px solid #e1e1e1;
-      font-size: 0.7rem; }
+      font-size: 0.7rem;
+      margin-left: 0; }
     .patientProfile .patientInfo-Top .moreAction i {
-      display: block; }
+      display: block;
+      margin-bottom: 5px; }
 
 .patientProfile .patientTopNav {
   background: white;
