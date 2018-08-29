@@ -1,10 +1,292 @@
-.plan .grid-section {
-  border: 1px solid #d3d3d3;
-  margin-top: 0px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-right-radius: 5px; }
+.margin-top-15 {
+  margin-top: 15px; }
 
-.plan .toggle-section {
-  margin-top: 10px;
-  margin-bottom: 0px; }
+.margin-bottom-15 {
+  margin-bottom: 15px; }
+
+.plan {
+  /* Portlet */
+  /* Portlet Title */
+  /* Actions */
+  /* Pagination */
+  /* Inputs */
+  /* Tab */
+  /* Btn Circle */
+  /* Btn Grey Salsa */
+  /* Btn Red */
+  /* Btn Red */ }
+  .plan .grid-section {
+    border: 1px solid #d3d3d3;
+    margin-top: 0px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px; }
+  .plan .btn-primary:not(:disabled):not(.disabled).active,
+  .plan .btn-primary:not(:disabled):not(.disabled):active,
+  .plan .show > .btn-primary.dropdown-toggle {
+    background-color: #00bcb0;
+    border: #00bcb0; }
+  .plan .toggle-section {
+    margin-bottom: 0px; }
+  .plan .content {
+    padding: 30px;
+    background: #f1f3fa; }
+  .plan .portlet {
+    background: #fff;
+    padding: 8px;
+    border-radius: 5px; }
+  .plan .portlet.portlet-gray {
+    background: #f7f7f7; }
+  .plan .portlet.portlet-bordered {
+    border: 1px solid #eee; }
+  .plan .portlet-title {
+    padding: 0;
+    min-height: 35px;
+    border-bottom: 1px dashed #eee;
+    margin-bottom: 5px; }
+  .plan .caption {
+    float: left;
+    display: inline-block;
+    font-size: 18px;
+    line-height: 18px; }
+  .plan .caption.caption-green .caption-subject,
+  .plan .caption.caption-green i {
+    color: #4db3a2;
+    font-weight: 200; }
+  .plan .caption.caption-red .caption-subject,
+  .plan .caption.caption-red i {
+    color: #e26a6a;
+    font-weight: 200; }
+  .plan .caption.caption-purple .caption-subject,
+  .plan .caption.caption-purple i {
+    color: #8775a7;
+    font-weight: 400; }
+  .plan .caption i {
+    color: #777;
+    font-size: 15px;
+    font-weight: 300;
+    margin-top: 3px; }
+  .plan .caption-subject {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 26px;
+    margin-bottom: 0; }
+  .plan .caption-helper {
+    padding: 0;
+    margin: 0;
+    line-height: 13px;
+    color: #9eacb4;
+    font-size: 13px;
+    font-weight: 400; }
+  .plan .actions {
+    float: right;
+    display: inline-block; }
+  .plan .actions a {
+    margin-left: 3px; }
+  .plan .actions .btn {
+    color: #666;
+    padding: 3px 9px;
+    font-size: 13px;
+    line-height: 1.5;
+    background-color: #fff;
+    border-color: #ccc;
+    border-radius: 50px; }
+  .plan .actions .btn i {
+    font-size: 12px; }
+  .plan .actions .btn:hover {
+    background: #f2f2f2; }
+  .plan .pagination {
+    margin: -3px 0 0;
+    border-radius: 50px; }
+  .plan .pagination > li > a,
+  .plan .pagination > li > span {
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #8775a7;
+    background: #f7f7f7; }
+  .plan .pagination > li:hover > a,
+  .plan .pagination > li.active > a,
+  .plan .pagination > li.active:hover > a {
+    color: #fff;
+    background: #8775a7;
+    border-color: #8775a7; }
+  .plan .inputs {
+    float: right;
+    display: inline-block;
+    padding: 4px 0;
+    margin-top: -10px; }
+  .plan .input-inline {
+    width: 240px;
+    display: inline-block;
+    vertical-align: middle; }
+  .plan .portlet-title > .nav-tabs {
+    background: none;
+    margin: 0;
+    float: right;
+    display: inline-block;
+    border: 0; }
+  .plan .portlet-title > .nav-tabs > li {
+    background: none;
+    margin: 0;
+    border: 0; }
+  .plan .portlet-title > .nav-tabs > li > a {
+    background: none;
+    border: 0;
+    padding: 2px 10px 13px;
+    color: #444; }
+  .plan .portlet-title > .nav-tabs > li.active,
+  .plan .portlet-title > .nav-tabs > li.active:hover {
+    border-bottom: 4px solid #f3565d;
+    position: relative; }
+  .plan .portlet-title > .nav-tabs > li:hover {
+    border-bottom: 4px solid #f29b9f; }
+  .plan .portlet-title > .nav-tabs > li.active > a,
+  .plan .portlet-title > .nav-tabs > li:hover > a {
+    color: #333;
+    background: #fff;
+    border: 0; }
+  .plan .portlet-body {
+    min-height: 30vh; }
+  .plan .actions .btn.btn-circle {
+    width: 28px;
+    height: 28px;
+    padding: 3px 7px;
+    text-align: center; }
+  .plan .actions .btn.btn-circle i {
+    font-size: 12px;
+    line-height: 22px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); }
+  .plan .actions .btn.grey-salsa {
+    border: none;
+    margin-left: 3px;
+    box-shadow: none;
+    border-radius: 50px !important; }
+  .plan .actions .btn.grey-salsa.active {
+    color: #fafcfb;
+    background: #8e9bae; }
+  .plan .actions .grey-salsa.btn:hover,
+  .plan .actions .grey-salsa.btn:focus,
+  .plan .actions .grey-salsa.btn:active,
+  .plan .actions .grey-salsa.btn.active {
+    color: #fafcfb;
+    background: #97a3b4; }
+  .plan .actions .btn.btn-red.active,
+  .plan .actions .btn.btn-red:hover {
+    color: #fff;
+    box-shadow: none;
+    background: #e26a6a;
+    border-color: #e26a6a; }
+  .plan .actions .btn.btn-purple.active,
+  .plan .actions .btn.btn-purple:hover {
+    color: #fff;
+    box-shadow: none;
+    background: #8775a7;
+    border-color: #8775a7; }
+  .plan .customRadio {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px; }
+    .plan .customRadio .inline {
+      display: inline-block; }
+    .plan .customRadio .inline + .inline {
+      margin-left: 10px; }
+    .plan .customRadio .radio {
+      color: #999;
+      font-size: 15px;
+      position: relative; }
+    .plan .customRadio .radio span {
+      position: relative;
+      padding-left: 20px;
+      text-transform: capitalize;
+      font-size: 0.9rem; }
+    .plan .customRadio .radio span:after {
+      content: "";
+      width: 15px;
+      height: 15px;
+      border: 3px solid;
+      position: absolute;
+      left: 0;
+      top: 3px;
+      border-radius: 100%;
+      -ms-border-radius: 100%;
+      -moz-border-radius: 100%;
+      -webkit-border-radius: 100%;
+      box-sizing: border-box;
+      -ms-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box; }
+    .plan .customRadio .radio input[type="radio"] {
+      cursor: pointer;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0; }
+    .plan .customRadio .radio input[type="radio"]:checked + span {
+      color: #00bcb0; }
+    .plan .customRadio .radio input[type="radio"]:checked + span:before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      position: absolute;
+      background: #00bcb0;
+      left: 5px;
+      top: 8px;
+      border-radius: 100%;
+      -ms-border-radius: 100%;
+      -moz-border-radius: 100%;
+      -webkit-border-radius: 100%; }
+  .plan .customCheckbox {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px; }
+    .plan .customCheckbox .inline {
+      display: inline-block;
+      margin-right: 10px; }
+    .plan .customCheckbox .inline + .inline {
+      margin-left: 0; }
+    .plan .customCheckbox .checkbox {
+      color: #999;
+      font-size: 15px;
+      position: relative; }
+    .plan .customCheckbox .checkbox span {
+      position: relative;
+      padding-left: 20px;
+      text-transform: capitalize;
+      font-size: 0.9rem; }
+    .plan .customCheckbox .checkbox span:after {
+      content: "";
+      width: 15px;
+      height: 15px;
+      border: 3px solid;
+      position: absolute;
+      left: 0;
+      top: 3px;
+      border-radius: 15%;
+      -ms-border-radius: 15%;
+      -moz-border-radius: 15%;
+      -webkit-border-radius: 15%;
+      box-sizing: border-box;
+      -ms-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box; }
+    .plan .customCheckbox .checkbox input[type="checkbox"] {
+      cursor: pointer;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0; }
+    .plan .customCheckbox .checkbox input[type="checkbox"]:checked + span {
+      color: #00bcb0; }
+    .plan .customCheckbox .checkbox input[type="checkbox"]:checked + span:before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      position: absolute;
+      background: #00bcb0;
+      left: 5px;
+      top: 8px;
+      border-radius: 100%;
+      -ms-border-radius: 100%;
+      -moz-border-radius: 100%;
+      -webkit-border-radius: 100%; }

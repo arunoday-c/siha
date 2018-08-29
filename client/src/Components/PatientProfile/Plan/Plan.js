@@ -29,7 +29,7 @@ class Plan extends Component {
 
   render() {
     return (
-      <div className="plan">
+      <div className="plan margin-top-15">
         <div className="col-lg-12">
           <div className="row">
             <div className="col-lg-8">
@@ -181,13 +181,132 @@ class Plan extends Component {
                 ) : null}
               </div>
             </div>
-            <div className="col-lg-4">Follow Up</div>
+            <div className="col-lg-4">
+              {/* BEGIN Portlet PORTLET */}
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Follow Up</h3>
+                  </div>
+                  <div className="actions">
+                    <a
+                      href="javascript:;"
+                      className="btn btn-primary btn-circle active"
+                    >
+                      <i className="fas fa-plus" />
+                    </a>
+                  </div>
+                </div>
+                <div className="portlet-body">
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="patientType"
+                        value="OP Patient"
+                        checked
+                      />
+                      <span>OP Patient</span>
+                    </label>
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="patientType"
+                        value="IP Patient"
+                      />
+                      <span>IP Patient</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              {/* END Portlet PORTLET */}
+            </div>
           </div>
 
           <div className="row">
-            <div className="col-lg-4">Diet Advice</div>
-            <div className="col-lg-4"> Refer To</div>
-            <div className="col-lg-4">Patient Alert</div>
+            <div className="col-lg-4">
+              {/* BEGIN Portlet PORTLET */}
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Diet Advice</h3>
+                  </div>
+                  <div className="actions">
+                    <a
+                      href="javascript:;"
+                      className="btn btn-primary btn-circle active"
+                    >
+                      <i className="fas fa-plus" />
+                    </a>
+                  </div>
+                </div>
+                <div className="portlet-body">
+                  <h4>Portlet Content</h4>
+                </div>
+              </div>
+              {/* END Portlet PORTLET */}
+            </div>
+            <div className="col-lg-4">
+              {/* BEGIN Portlet PORTLET */}
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Referral</h3>
+                  </div>
+                  <div className="actions">
+                    <a
+                      href="javascript:;"
+                      className="btn btn-primary btn-circle active"
+                    >
+                      <i className="fas fa-plus" />
+                    </a>
+                  </div>
+                </div>
+                <div className="portlet-body">
+                  <h4>Portlet Content</h4>
+                </div>
+              </div>
+              {/* END Portlet PORTLET */}
+            </div>
+            <div className="col-lg-4">
+              {/* BEGIN Portlet PORTLET */}
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Patient Alert</h3>
+                  </div>
+                  <div className="actions">
+                    <a
+                      href="javascript:;"
+                      className="btn btn-primary btn-circle active"
+                    >
+                      <i className="fas fa-plus" />
+                    </a>
+                  </div>
+                </div>
+                <div className="portlet-body">
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input type="checkbox" value="Front Desk" />
+                      <span>Front Desk</span>
+                    </label>
+                    <label className="checkbox inline">
+                      <input type="checkbox" value="Doctor" />
+                      <span>Doctor</span>
+                    </label>
+                    <label className="checkbox inline">
+                      <input type="checkbox" value="Nurse" />
+                      <span>Nurse</span>
+                    </label>
+                    <label className="checkbox inline">
+                      <input type="checkbox" value="Physician" />
+                      <span>Physician</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              {/* END Portlet PORTLET */}
+            </div>
           </div>
         </div>
       </div>
