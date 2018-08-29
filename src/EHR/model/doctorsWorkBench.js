@@ -1238,6 +1238,34 @@ let getPatientChiefComplaints = (req, res, next) => {
   }
 };
 
+//created by irfan: to DELETE patient ChiefComplaints
+let deletePatientChiefComplaints = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    //let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "update hims_f_episode_chief_complaint set record_status='I' where hims_f_episode_chief_complaint_id=?",
+        [req.body.hims_f_episode_chief_complaint_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -1263,5 +1291,6 @@ module.exports = {
   addChiefComplaintsElement,
   addPatientChiefComplaints,
   addNewChiefComplaint,
-  getPatientChiefComplaints
+  getPatientChiefComplaints,
+  deletePatientChiefComplaints
 };
