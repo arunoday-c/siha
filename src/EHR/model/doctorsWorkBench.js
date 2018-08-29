@@ -1175,12 +1175,14 @@ let addPatientChiefComplaints = (req, res, next) => {
       }
 
       connection.query(
-        "insert into hims_f_episode_cheif_complaint (episode,chief_complaint_id,onset_date,severity,score,pain,comment,created_by,updated_by) \
-        values(?,?,?,?,?,?,?,?,?)",
+        "insert into hims_f_episode_cheif_complaint (episode_id,chief_complaint_id,onset_date,interval,duration,severity,score,pain,comment,created_by,updated_by) \
+        values(?,?,?,?,?,?,?,?,?,?,?)",
         [
-          input.episode,
+          input.episode_id,
           input.chief_complaint_id,
           input.onset_date,
+          input.interval,
+          input.duration,
           input.severity,
           input.score,
           input.pain,
@@ -1195,6 +1197,37 @@ let addPatientChiefComplaints = (req, res, next) => {
           }
           debugLog("Results are recorded...");
           req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get patient ChiefComplaints
+let getPatientChiefComplaints = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select PE.patient_id,PE.episode_id,ecc.episode_id,ecc.chief_complaint_id,\
+        HH.hpi_description as cheif_complaint_name,ecc.onset_date,ecc.interval,ecc.duration,ecc.severity,\
+        ecc.score,ecc.pain,ecc.comment from hims_f_episode_cheif_complaint ecc,hims_d_hpi_header HH,\
+        hims_f_patient_encounter PE where  ecc.chief_complaint_id=HH.hims_d_hpi_header_id and  PE.patient_id=? and ecc.episode_id=? ",
+        [inputData.patient_id, inputData.episode_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
           next();
         }
       );
@@ -1228,5 +1261,6 @@ module.exports = {
   getChiefComplaintsElements,
   addChiefComplaintsElement,
   addPatientChiefComplaints,
-  addNewChiefComplaint
+  addNewChiefComplaint,
+  getPatientChiefComplaints
 };
