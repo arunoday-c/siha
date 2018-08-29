@@ -58,7 +58,7 @@ class PatientProfile extends Component {
 
   render() {
     return (
-      <div className="patientProfile">
+      <div className="row patientProfile">
         <div className="patientInfo-Top box-shadow-normal">
           <div className="backBtn">
             <button
