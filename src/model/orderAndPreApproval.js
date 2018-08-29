@@ -547,8 +547,6 @@ let updateOrderedServicesBilled = (req, res, next) => {
         next(error);
       }
 
-      debugLog("data:", OrderServices);
-
       let qry = "";
 
       for (let i = 0; i < OrderServices.length; i++) {
@@ -564,16 +562,19 @@ let updateOrderedServicesBilled = (req, res, next) => {
           "';";
       }
 
-      debugLog("Query", qry);
-
-      connection.query(qry, (error, result) => {
-        if (error) {
-          releaseDBConnection(db, connection);
-          next(error);
-        }
+      if (qry != "") {
+        connection.query(qry, (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        });
+      } else {
         req.records = result;
         next();
-      });
+      }
     });
   } catch (e) {
     next(e);

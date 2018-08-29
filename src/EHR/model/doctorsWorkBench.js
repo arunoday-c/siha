@@ -1218,11 +1218,39 @@ let getPatientChiefComplaints = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select PE.patient_id,PE.episode_id,PE.created_date as Encounter_Date ,ecc.episode_id,ecc.chief_complaint_id,\
+        "select ecc.hims_f_episode_chief_complaint_id,PE.patient_id,PE.episode_id,PE.created_date as Encounter_Date ,ecc.episode_id,ecc.chief_complaint_id,\
         HH.hpi_description as cheif_complaint_name,ecc.onset_date,ecc.interval,ecc.duration,ecc.severity,\
         ecc.score,ecc.pain,ecc.comment from hims_f_episode_chief_complaint ecc,hims_d_hpi_header HH,\
         hims_f_patient_encounter PE where  ecc.chief_complaint_id=HH.hims_d_hpi_header_id and ecc.record_status='A' and PE.patient_id=? and ecc.episode_id=? ",
         [inputData.patient_id, inputData.episode_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to DELETE patient ChiefComplaints
+let deletePatientChiefComplaints = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    //let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "update hims_f_episode_chief_complaint set record_status='I' where hims_f_episode_chief_complaint_id=?",
+        [req.body.hims_f_episode_chief_complaint_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -1263,5 +1291,6 @@ module.exports = {
   addChiefComplaintsElement,
   addPatientChiefComplaints,
   addNewChiefComplaint,
-  getPatientChiefComplaints
+  getPatientChiefComplaints,
+  deletePatientChiefComplaints
 };

@@ -11,6 +11,7 @@ export default ({ config, db }) => {
   let api = Router();
 
   // created by irfan : to save opBilling
+  //TODO change middle ware to promisify function --added by noor
   api.post(
     "/addOpBIlling",
     addOpBIlling,

@@ -93,7 +93,7 @@ let addInvestigationTest = (req, res, next) => {
             }
             // debugLog("Results are recorded...");
 
-            if (results.insertId != null) {
+            if (results.insertId != null && input.investigation_type == "L") {
               req.body.test_id = results.insertId;
               debugLog(" test inserted id ", results.insertId);
               debugLog(" body ", req.body);
@@ -157,6 +157,49 @@ let addInvestigationTest = (req, res, next) => {
                       }
                     );
                   }
+                }
+              );
+            } else if (
+              results.insertId != null &&
+              input.investigation_type == "R"
+            ) {
+              const insurtColumns = [
+                "test_id",
+                "template_name",
+                "template_html",
+                "template_status",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_d_rad_template_detail(" +
+                  insurtColumns.join(",") +
+                  ") VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: req.body.RadTemplate,
+                    newFieldToInsert: [req.body.test_id],
+                    req: req
+                  })
+                ],
+                (error, radiolgyResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    }
+                    req.records = radiolgyResult;
+                    next();
+                  });
                 }
               );
             }
