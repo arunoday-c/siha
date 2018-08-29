@@ -7,3 +7,25 @@
     padding: 5px;
   }
 }
+
+.complain-box {
+  .bordered-layout {
+    margin-top: 5px;
+    border: 1px;
+    border-style: solid;
+    border-color: gray;
+    height: 200px;
+    overflow: auto;
+
+    ul {
+      margin: 0px;
+      padding: 0px;
+
+      li {
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+      }
+    }
+  }
+}

@@ -3,3 +3,18 @@
 
 .subjective .right-pane {
   padding: 5px; }
+
+.complain-box .bordered-layout {
+  margin-top: 5px;
+  border: 1px;
+  border-style: solid;
+  border-color: gray;
+  height: 200px;
+  overflow: auto; }
+  .complain-box .bordered-layout ul {
+    margin: 0px;
+    padding: 0px; }
+    .complain-box .bordered-layout ul li {
+      list-style: none;
+      margin: 0px;
+      padding: 0px; }

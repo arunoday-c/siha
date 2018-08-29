@@ -14,7 +14,7 @@ class PatientProfile extends Component {
     super(props);
 
     this.state = {
-      pageDisplay: "overview",
+      pageDisplay: "subjective",
       patientData: {}
     };
     this.changeTabs = this.changeTabs.bind(this);
@@ -155,7 +155,7 @@ class PatientProfile extends Component {
         </div>
         <div className="patientTopNav box-shadow-normal">
           <ul className="nav">
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <span
                 onClick={this.changeTabs}
                 algaehsoap="overview"
@@ -163,12 +163,12 @@ class PatientProfile extends Component {
               >
                 Overview
               </span>
-            </li>
+            </li> */}
             <li className="nav-item">
               <span
                 onClick={this.changeTabs}
                 algaehsoap="subjective"
-                className="nav-link"
+                className="nav-link active"
               >
                 Subjective
               </span>
