@@ -18,12 +18,18 @@ import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
 import HPI from "@material-ui/icons/AssignmentInd";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
   { food: "Pollen", active: "Yes" },
   { food: "Iodine", active: "Yes" }
 ];
+
+//TODO
+//1 Add Grid
+//2 Fix Design
+//3 MAke some other changes
 
 const complain_data = [
   {
@@ -42,12 +48,49 @@ class Subjective extends Component {
 
     this.state = {
       openComplain: false,
-      pain: 0
+      pain: 0,
+      patientChiefComplains: []
     };
 
     this.addChiefComplain = this.addChiefComplain.bind(this);
     this.addAllergies = this.addAllergies.bind(this);
     this.handleClose = this.handleClose.bind(this);
+  }
+
+  showconfirmDialog(id) {
+    swal({
+      title: "Are you sure you want to delete this Chief Complain?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        let data = { hims_f_episode_chief_complaint_id: id };
+        algaehApiCall({
+          uri: "/doctorsWorkBench/deletePatientChiefComplaints",
+          data: data,
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.success) {
+              this.getChiefComplains();
+              swal("Record deleted successfully . .", {
+                icon: "success",
+                buttons: false,
+                timer: 2000
+              });
+            }
+          },
+          onFailure: error => {}
+        });
+      } else {
+        swal("Delete request cancelled");
+      }
+    });
+  }
+
+  deleteChiefComplain(data, e) {
+    debugger;
+    this.showconfirmDialog(data.hims_f_episode_chief_complaint_id);
   }
 
   handleChangeStart = () => {
@@ -85,7 +128,6 @@ class Subjective extends Component {
   }
 
   getChiefComplains() {
-    //localhost:3000//api/v1/doctorsWorkBench/getPatientChiefComplaints?patient_id=483&episode_id=45
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientChiefComplaints",
       data: {
@@ -165,6 +207,10 @@ class Subjective extends Component {
                       <h6 className="card-subtitle mb-2 text-muted">
                         Nurse Chief Complaints
                       </h6>
+                      <div className="complain-box">
+                        {" "}
+                        <div className="bordered-layout">HEllo</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -452,26 +498,79 @@ class Subjective extends Component {
                   id="complaint-grid"
                   columns={[
                     {
-                      fieldName: "complaint_name",
+                      fieldName: "cheif_complaint_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "complaint_name" }} />
                       )
                     },
                     {
                       fieldName: "pain",
-                      label: <AlgaehLabel label={{ fieldName: "pain" }} />
+                      label: <AlgaehLabel label={{ fieldName: "pain" }} />,
+                      displayTemplate: data => {
+                        return (
+                          <span>
+                            {data.pain === "NH" ? (
+                              <span>No Hurt</span>
+                            ) : data.severity === "HLB" ? (
+                              <span>Hurts Little Bit</span>
+                            ) : data.severity === "HLM" ? (
+                              <span>Hurts Little More</span>
+                            ) : data.severity === "HEM" ? (
+                              <span>Hurts Even More</span>
+                            ) : data.severity === "HWL" ? (
+                              <span>Hurts Whole Lot</span>
+                            ) : (
+                              <span>Hurts Worst</span>
+                            )}
+                          </span>
+                        );
+                      }
                     },
                     {
                       fieldName: "severity",
-                      label: <AlgaehLabel label={{ fieldName: "severity" }} />
-                    },
-                    {
-                      fieldName: "interval",
-                      label: <AlgaehLabel label={{ fieldName: "interval" }} />
+                      label: <AlgaehLabel label={{ fieldName: "severity" }} />,
+                      displayTemplate: data => {
+                        return (
+                          <span>
+                            {data.severity === "MI" ? (
+                              <span> Mild</span>
+                            ) : data.severity === "MO" ? (
+                              <span> Moderate</span>
+                            ) : (
+                              <span> Severe</span>
+                            )}
+                          </span>
+                        );
+                      }
                     },
                     {
                       fieldName: "onset_date",
-                      label: <AlgaehLabel label={{ fieldName: "onset_date" }} />
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "onset_date" }} />
+                      ),
+                      displayTemplate: data => {
+                        return new Date(data.onset_date).toLocaleDateString();
+                      }
+                    },
+                    {
+                      fieldName: "duration",
+                      label: <AlgaehLabel label={{ fieldName: "duration" }} />
+                    },
+
+                    {
+                      fieldName: "interval",
+                      label: <AlgaehLabel label={{ fieldName: "interval" }} />,
+                      displayTemplate: data => {
+                        return data.interval === "H"
+                          ? "Hour(s)"
+                          : data.interval === "D"
+                            ? "Day(s)"
+                            : data.interval === "W"
+                              ? "Week(s)"
+                              : data.interval === "M"
+                                ? "Month(s)"
+                                : "Year(s)";
+                      }
                     },
                     {
                       fieldName: "actions",
@@ -493,7 +592,10 @@ class Subjective extends Component {
 
                             <IconButton color="primary" title="Submit">
                               <Delete
-                              // onClick={this.ShowSubmitModel.bind(this, row)}
+                                onClick={this.deleteChiefComplain.bind(
+                                  this,
+                                  data
+                                )}
                               />
                             </IconButton>
                           </span>
@@ -503,7 +605,10 @@ class Subjective extends Component {
                   ]}
                   keyId="patient_id"
                   dataSource={{
-                    data: complain_data
+                    data:
+                      this.state.patientChiefComplains.length !== 0
+                        ? this.state.patientChiefComplains
+                        : []
                   }}
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 5 }}

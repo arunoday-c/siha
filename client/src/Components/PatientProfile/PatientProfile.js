@@ -38,7 +38,9 @@ class PatientProfile extends Component {
   }
 
   componentDidMount() {
-    debugger;
+    //TODO
+    // Validations on API calls
+
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientProfile",
       data: {
