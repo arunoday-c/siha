@@ -3,7 +3,8 @@ import extend from "extend";
 import {
   bulkInputArrayObject,
   runningNumber,
-  releaseDBConnection
+  releaseDBConnection,
+  jsonArrayToObject
 } from "../utils";
 
 import moment from "moment";
@@ -630,16 +631,38 @@ let newReceipt = (dataBase, req, res, callBack, next) => {
             headerRcptResult.insertId != null &&
             headerRcptResult.insertId != ""
           ) {
-            let detailsInsert = [];
+            // let detailsInsert = [];
 
-            bulkInputArrayObject(inputParam.receiptdetails, detailsInsert, {
-              hims_f_receipt_header_id: headerRcptResult.insertId
-            });
+            // bulkInputArrayObject(
+            //   inputParam.receiptdetails,
+            //   detailsInsert,
+            //   {
+            //     hims_f_receipt_header_id: headerRcptResult.insertId
+            //   },
+            //   req
+            // );
+            const receptSample = [
+              "card_check_number",
+              "expiry_date",
+              "pay_type",
+              "amount",
+              "created_by",
+              "updated_by",
+              "card_type"
+            ];
 
             dataBase.query(
-              "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
-                  created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
-              [detailsInsert],
+              "INSERT  INTO hims_f_receipt_details ( " +
+                receptSample.join(",") +
+                ",hims_f_receipt_header_id) VALUES ? ",
+              [
+                jsonArrayToObject({
+                  sampleInputObject: receptSample,
+                  arrayObj: inputParam.receiptdetails,
+                  req: req,
+                  newFieldToInsert: [headerRcptResult.insertId]
+                })
+              ],
               (error, RcptDetailsRecords) => {
                 if (error) {
                   dataBase.rollback(() => {
@@ -1423,21 +1446,38 @@ let patientAdvanceRefund = (req, res, next) => {
                   headerRcptResult.insertId != null &&
                   headerRcptResult.insertId != ""
                 ) {
-                  let detailsInsert = [];
+                  //   let detailsInsert = [];
 
-                  bulkInputArrayObject(
-                    inputParam.receiptdetails,
-                    detailsInsert,
-                    {
-                      hims_f_receipt_header_id: headerRcptResult.insertId
-                    }
-                  );
+                  // bulkInputArrayObject(
+                  //   inputParam.receiptdetails,
+                  //   detailsInsert,
+                  //   {
+                  //     hims_f_receipt_header_id: headerRcptResult.insertId
+                  //   }
+                  // );
                   // receipt details table insert
+                  const receptSample = [
+                    "card_check_number",
+                    "expiry_date",
+                    "pay_type",
+                    "amount",
+                    "created_by",
+                    "updated_by",
+                    "card_type"
+                  ];
 
                   connection.query(
-                    "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
-              created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
-                    [detailsInsert],
+                    "INSERT  INTO hims_f_receipt_details ( " +
+                      receptSample.join(",") +
+                      ",hims_f_receipt_header_id) VALUES ? ",
+                    [
+                      jsonArrayToObject({
+                        sampleInputObject: receptSample,
+                        arrayObj: inputParam.receiptdetails,
+                        req: req,
+                        newFieldToInsert: [headerRcptResult.insertId]
+                      })
+                    ],
                     (error, RcptDetailsRecords) => {
                       if (error) {
                         connection.rollback(() => {
@@ -1632,21 +1672,37 @@ created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_t
                   headerRcptResult.insertId != null &&
                   headerRcptResult.insertId != ""
                 ) {
-                  let detailsInsert = [];
+                  // let detailsInsert = [];
 
-                  bulkInputArrayObject(
-                    inputParam.receiptdetails,
-                    detailsInsert,
-                    {
-                      hims_f_receipt_header_id: headerRcptResult.insertId
-                    }
-                  );
+                  // bulkInputArrayObject(
+                  //   inputParam.receiptdetails,
+                  //   detailsInsert,
+                  //   {
+                  //     hims_f_receipt_header_id: headerRcptResult.insertId
+                  //   }
+                  // );
                   // receipt details table insert
-
+                  const receptSample = [
+                    "card_check_number",
+                    "expiry_date",
+                    "pay_type",
+                    "amount",
+                    "created_by",
+                    "updated_by",
+                    "card_type"
+                  ];
                   connection.query(
-                    "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
-created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
-                    [detailsInsert],
+                    "INSERT  INTO hims_f_receipt_details ( " +
+                      receptSample.join(",") +
+                      ",hims_f_receipt_header_id) VALUES ? ",
+                    [
+                      jsonArrayToObject({
+                        sampleInputObject: receptSample,
+                        arrayObj: inputParam.receiptdetails,
+                        req: req,
+                        newFieldToInsert: [headerRcptResult.insertId]
+                      })
+                    ],
                     (error, RcptDetailsRecords) => {
                       if (error) {
                         connection.rollback(() => {
@@ -2231,16 +2287,34 @@ let newReceiptData = (req, res, next) => {
           headerRcptResult.insertId != null &&
           headerRcptResult.insertId != ""
         ) {
-          let detailsInsert = [];
+          //let detailsInsert = [];
 
-          bulkInputArrayObject(inputParam.receiptdetails, detailsInsert, {
-            hims_f_receipt_header_id: headerRcptResult.insertId
-          });
-          debugLog("Detail Body: ", detailsInsert);
+          // bulkInputArrayObject(inputParam.receiptdetails, detailsInsert, {
+          //   hims_f_receipt_header_id: headerRcptResult.insertId
+          // });
+          const receptSample = [
+            "card_check_number",
+            "expiry_date",
+            "pay_type",
+            "amount",
+            "created_by",
+            "updated_by",
+            "card_type"
+          ];
+          //   debugLog("Detail Body: ", detailsInsert);
+
           db.query(
-            "INSERT  INTO hims_f_receipt_details ( hims_f_receipt_header_id, card_check_number, expiry_date, pay_type, amount, \
-            created_by, created_date, updated_by, updated_date,  card_type) VALUES ? ",
-            [detailsInsert],
+            "INSERT  INTO hims_f_receipt_details ( " +
+              receptSample.join(",") +
+              ",hims_f_receipt_header_id) VALUES ? ",
+            [
+              jsonArrayToObject({
+                sampleInputObject: receptSample,
+                arrayObj: inputParam.receiptdetails,
+                req: req,
+                newFieldToInsert: [headerRcptResult.insertId]
+              })
+            ],
             (error, RcptDetailsRecords) => {
               if (error) {
                 if (req.options == null) {
