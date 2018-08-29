@@ -62,27 +62,6 @@ export default class RadTemplate extends PureComponent {
               0
             </span>
           </div>
-
-          <AlagehAutoComplete
-            div={{ className: "col-lg-3" }}
-            label={{
-              fieldName: "pain",
-              isImp: true
-            }}
-            selector={{
-              multi: true,
-              name: "pain",
-              className: "select-fld",
-              value: this.state.pain,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.PAIN_SCALE
-              },
-              onChange: () => {}
-              // onChange: texthandle.bind(this, this)
-            }}
-          />
         </div>
       </React.Fragment>
     );

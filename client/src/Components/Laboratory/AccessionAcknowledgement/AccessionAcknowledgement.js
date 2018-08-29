@@ -19,6 +19,8 @@ import {
 import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import variableJson from "../../../utils/GlobalVariables.json";
+import moment from "moment";
+import Options from "../../../Options.json";
 
 class AccessionAcknowledgement extends Component {
   constructor(props) {
@@ -30,10 +32,16 @@ class AccessionAcknowledgement extends Component {
       date_of_birth: 0,
       age: null,
       ordered_date: null,
-      ordered_by: null
+      ordered_by: null,
+      selectedLang: "en"
     };
   }
 
+  changeDateFormat = date => {
+    if (date != null) {
+      return moment(date).format(Options.dateFormat);
+    }
+  };
   render() {
     let sampleCollection =
       this.state.billdetails === null ? [{}] : this.state.billdetails;
@@ -66,7 +74,55 @@ class AccessionAcknowledgement extends Component {
                 />
               </div>
 
-              <AlagehFormGroup
+              <AlgaehDateHandler
+                div={{ className: "col-lg-2" }}
+                label={{ fieldName: "ordered_date" }}
+                textBox={{ className: "txt-fld" }}
+                events={{
+                  onChange: null
+                }}
+                value={this.state.ordered_date}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col-lg-2" }}
+                label={{
+                  fieldName: "ordered_by"
+                }}
+                selector={{
+                  name: "ordered_by",
+                  className: "select-fld",
+                  value: this.state.ordered_by,
+                  dataSource: {
+                    textField:
+                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                    valueField: "value",
+                    data: variableJson.FORMAT_GENDER
+                  },
+                  onChange: null
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col-lg-2" }}
+                label={{
+                  fieldName: "test_name"
+                }}
+                selector={{
+                  name: "test_name",
+                  className: "select-fld",
+                  value: this.state.test_name,
+                  dataSource: {
+                    textField:
+                      this.state.selectedLang == "en" ? "name" : "arabic_name",
+                    valueField: "value",
+                    data: variableJson.FORMAT_GENDER
+                  },
+                  onChange: null
+                }}
+              />
+
+              {/* <AlagehFormGroup
                 div={{ className: "col-lg-2" }}
                 label={{
                   fieldName: "patient_name"
@@ -135,9 +191,9 @@ class AccessionAcknowledgement extends Component {
                     disabled: true
                   }
                 }}
-              />
+              /> */}
             </div>
-            <div className="row">
+            {/* <div className="row">
               <AlgaehDateHandler
                 div={{ className: "col-lg-2" }}
                 label={{ fieldName: "ordered_date" }}
@@ -167,42 +223,50 @@ class AccessionAcknowledgement extends Component {
                   }
                 }}
               />
-            </div>
+            </div> */}
             <div className="row form-details">
               <div className="col-lg-12">
                 <AlgaehDataGrid
                   id="samplecollection_grid"
                   columns={[
                     {
-                      fieldName: "collect",
-                      label: <AlgaehLabel label={{ fieldName: "collect" }} />,
-                      disabled: false
-                    },
-                    {
-                      fieldName: "reject",
-                      label: <AlgaehLabel label={{ fieldName: "reject" }} />,
-                      disabled: true
-                    },
-                    {
-                      fieldName: "speciman_status",
+                      fieldName: "patient_code",
                       label: (
-                        <AlgaehLabel label={{ fieldName: "speciman_status" }} />
+                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      )
+                    },
+                    {
+                      fieldName: "full_name",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                      )
+                    },
+                    {
+                      fieldName: "ordered_date",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "ordered_date" }} />
                       ),
-                      disabled: true
+                      displayTemplate: row => {
+                        return (
+                          <span>{this.changeDateFormat(row.ordered_date)}</span>
+                        );
+                      }
                     },
                     {
-                      fieldName: "speciman",
-                      label: <AlgaehLabel label={{ fieldName: "speciman" }} />,
-                      disabled: true
-                    },
-                    {
-                      fieldName: "speciman_instruction",
+                      fieldName: "ordered_by",
                       label: (
                         <AlgaehLabel
-                          label={{ fieldName: "speciman_instruction" }}
+                          label={{ fieldName: "ordered_ordered_bydate" }}
                         />
-                      ),
-                      disabled: true
+                      )
+                    },
+                    {
+                      fieldName: "sample_id",
+                      label: <AlgaehLabel label={{ fieldName: "sample_id" }} />
+                    },
+                    {
+                      fieldName: "lab_id_no",
+                      label: <AlgaehLabel label={{ fieldName: "lab_id_no" }} />
                     }
                   ]}
                   keyId="patient_code"

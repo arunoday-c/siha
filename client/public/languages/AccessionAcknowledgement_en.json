@@ -20,11 +20,11 @@
   "required_volume": "Required Volume",
   "no_of_tubes": "No. Of Tubes",
 
-  "sidn": "SIDN",
-  "bc": "BC #",
-
   "rejected_by": "Rejected By",
   "rejected_date": "Rejected Date",
   "rejected_time": "Rejected Time",
-  "rejected_reason": "Rejected Reason"
+  "rejected_reason": "Rejected Reason",
+  "lab_id_no": "Lab ID Number",
+  "sample_id": "Sample",
+  "test_name": "Test Name"
 }
