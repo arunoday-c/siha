@@ -995,7 +995,7 @@ PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episod
   }
 };
 
-//created by irfan: to get chief complaints(HPI header) against sub-department
+//created by irfan: to get chief complaints(HPI header) against (doctors)sub-department_id
 let getChiefComplaints = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -1175,7 +1175,8 @@ let addPatientChiefComplaints = (req, res, next) => {
       }
 
       connection.query(
-        "insert into hims_f_episode_cheif_complaint (episode_id,chief_complaint_id,onset_date,interval,duration,severity,score,pain,comment,created_by,updated_by) \
+        "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,interval,duration,\
+          severity,score,pain,comment,created_by,updated_by) \
         values(?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.episode_id,
@@ -1217,10 +1218,10 @@ let getPatientChiefComplaints = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select PE.patient_id,PE.episode_id,ecc.episode_id,ecc.chief_complaint_id,\
+        "select PE.patient_id,PE.episode_id,PE.created_date as Encounter_Date ,ecc.episode_id,ecc.chief_complaint_id,\
         HH.hpi_description as cheif_complaint_name,ecc.onset_date,ecc.interval,ecc.duration,ecc.severity,\
-        ecc.score,ecc.pain,ecc.comment from hims_f_episode_cheif_complaint ecc,hims_d_hpi_header HH,\
-        hims_f_patient_encounter PE where  ecc.chief_complaint_id=HH.hims_d_hpi_header_id and  PE.patient_id=? and ecc.episode_id=? ",
+        ecc.score,ecc.pain,ecc.comment from hims_f_episode_chief_complaint ecc,hims_d_hpi_header HH,\
+        hims_f_patient_encounter PE where  ecc.chief_complaint_id=HH.hims_d_hpi_header_id and ecc.record_status='A' and PE.patient_id=? and ecc.episode_id=? ",
         [inputData.patient_id, inputData.episode_id],
         (error, result) => {
           if (error) {
