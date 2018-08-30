@@ -9,7 +9,7 @@ import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import appsettings from "../utils/appsettings.json";
 import { logger, debugFunction, debugLog } from "../utils/logging";
-
+import Promise from "bluebird";
 //created by nowshad: to get lad orders for sample collection
 let getLabOrderedServices = (req, res, next) => {
   try {
@@ -242,6 +242,59 @@ let insertLadOrderedServices = (req, res, next) => {
   } else {
     next();
   }
+};
+
+let updateLabOrderServices = (req, res, next) => {
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+    connection.beginTransaction(error => {
+      if (error) {
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
+      }
+
+      return new Promise((resolve, reject) => {
+        connection.query(
+          "UPDATE hims_f_lab_sample SET `collected`=?,`collected_by`=?,\
+`collected_date` =now() WHERE hims_d_lab_sample_id=?;\
+SELECT container_code FROM hims_m_lab_specimen where hims_m_lab_specimen_id=?;",
+          [
+            req.userIdentity.algaeh_d_app_user_id,
+            req.body.hims_d_lab_sample_id,
+            req.body.hims_m_lab_specimen_id
+          ],
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      })
+        .then(result => {
+          if (result != null) {
+            new Promise((resolve, reject) => {
+              connection.query("");
+            });
+          }
+        })
+        .catch(error => {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        });
+    });
+  });
 };
 
 module.exports = {

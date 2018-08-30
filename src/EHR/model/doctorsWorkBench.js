@@ -859,7 +859,7 @@ let getEncounterReview = (req, res, next) => {
 //created by irfan: get MYDAY in doctors work bench , to show list of todays patients
 let getMyDay = (req, res, next) => {
   let getMydayWhere = {
-    provider_id: req.userIdentity.algaeh_d_app_user_id
+    provider_id: req.userIdentity.employee_id
   };
 
   try {

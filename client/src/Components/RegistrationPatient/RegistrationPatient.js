@@ -372,7 +372,28 @@ class RegistrationPatient extends Component {
               value={this.state.registration_date}
             />
           }
-          printArea={true}
+          printArea={{
+            menuitems: [
+              {
+                label: "Print Bar Code",
+                events: {
+                  onClick: () => {
+                    debugger;
+                    console.log("Patient state", this.state);
+                  }
+                }
+              },
+              {
+                label: "Print Label",
+                events: {
+                  onClick: () => {
+                    debugger;
+                    console.log("Patient state", this.state);
+                  }
+                }
+              }
+            ]
+          }}
           selectedLang={this.state.selectedLang}
         />
         <div className="spacing-push">

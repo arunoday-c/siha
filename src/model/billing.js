@@ -2147,7 +2147,7 @@ let addEpisodeEncounterData = (req, res, next) => {
       checked_in: null,
       nurse_examine: null,
       age: null,
-      patient_type: null,
+      payment_type: null,
       queue_no: null
     },
     req.body
@@ -2157,7 +2157,7 @@ let addEpisodeEncounterData = (req, res, next) => {
 
   db.query(
     "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,\
-           episode_id,age,patient_type)values(\
+           episode_id,age,payment_type)values(\
             ?,?,?,?,?,?,?)",
     [
       input.patient_id,
@@ -2166,12 +2166,12 @@ let addEpisodeEncounterData = (req, res, next) => {
       input.source,
       input.episode_id,
       input.age,
-      input.patient_type
+      input.payment_type
     ],
     (error, results) => {
       debugLog("result:");
       if (error) {
-        debugLog("error");
+        debugLog("error", error);
         if (req.options == null) {
           connection.rollback(() => {
             releaseDBConnection(req.db, db);

@@ -3,13 +3,15 @@ import "./breadcrumb.css";
 import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import { SearchDetails } from "./BreadCurmbFunctionality";
 import Tooltip from "@material-ui/core/Tooltip";
-
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 class BreadCrumb extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       createNew: true,
-      value: ""
+      value: "",
+      printOpen: false
     };
   }
 
@@ -101,6 +103,10 @@ class BreadCrumb extends PureComponent {
       return this.props.userArea;
     }
   }
+  openPrintMenu(e) {
+    debugger;
+    this.setState({ printOpen: !this.state.printOpen });
+  }
   showPrintArea() {
     if (this.props.printArea !== undefined) {
       return (
@@ -112,9 +118,30 @@ class BreadCrumb extends PureComponent {
                   <img
                     className="printImg"
                     src={require("../BreadCrumb/images/print.png")}
+                    {...(this.props.printArea.menuitems !== undefined &&
+                    this.props.printArea.menuitems.length === 1
+                      ? this.props.printArea.menuitems[0].events
+                      : { onClick: this.openPrintMenu.bind(this) })}
                   />
-                  {/* <i className="fa fa-print fa-2x" /> */}
                 </Tooltip>
+
+                {this.props.printArea.menuitems !== undefined &&
+                this.props.printArea.menuitems.length > 1 ? (
+                  <Menu
+                    open={this.state.printOpen}
+                    onClose={this.openPrintMenu.bind(this)}
+                  >
+                    {this.props.printArea.menuitems.map((menu, index) => {
+                      return (
+                        <MenuItem key={index} {...menu.events}>
+                          {menu.label}
+                        </MenuItem>
+                      );
+                    })}
+                  </Menu>
+                ) : (
+                  <React.Fragment />
+                )}
               </li>
             </ul>
           </div>
