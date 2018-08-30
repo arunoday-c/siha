@@ -34,6 +34,8 @@ let addInvestigationTest = (req, res, next) => {
 
     category_id: null,
     specimen_id: null,
+    container_id: null,
+    container_code: null,
     created_by: null,
     updated_by: null
   };
@@ -99,11 +101,13 @@ let addInvestigationTest = (req, res, next) => {
               debugLog(" body ", req.body);
 
               connection.query(
-                "insert into hims_m_lab_specimen(test_id,specimen_id,created_by,updated_by)values(\
-                ?,?,?,?)",
+                "insert into hims_m_lab_specimen(test_id,specimen_id,container_id,container_code,created_by,updated_by)\
+                values(?,?,?,?,?,?)",
                 [
                   results.insertId,
                   input.specimen_id,
+                  input.container_id,
+                  input.container_code,
                   input.created_by,
                   input.updated_by
                 ],
@@ -121,6 +125,8 @@ let addInvestigationTest = (req, res, next) => {
                   if (spResult.insertId != null) {
                     const insurtColumns = [
                       "analyte_id",
+                      "analyte_type",
+                      "result_unit",
                       "created_by",
                       "updated_by"
                     ];

@@ -36,7 +36,9 @@ let getRadOrderedServices = (req, res, next) => {
       }
       db.query(
         "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
-        status, cancelled, ordered_date, test_type, PAT.patient_code,PAT.full_name\
+        status, cancelled, ordered_date, test_type, scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,\
+        validate_date_time,attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,\
+        PAT.patient_code,PAT.full_name\
         from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
         hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE SA.record_status='A' AND " +
           whereOrder +
@@ -66,13 +68,15 @@ let insertRadOrderedServices = (req, res, next) => {
     "provider_id",
     "service_id",
     "billed",
-    "ordered_date"
+    "ordered_date",
+    "ordered_by"
   ];
 
   const radServices = new LINQ(req.body.billdetails)
     .Where(
       w =>
-        w.service_type_id == appsettings.hims_d_service_type.service_type_id.Rad
+        w.service_type_id ==
+        appsettings.hims_d_service_type.service_type_id.Radiology
     )
     .Select(s => {
       return {
@@ -81,10 +85,13 @@ let insertRadOrderedServices = (req, res, next) => {
         visit_id: req.body.visit_id,
         service_id: s.services_id,
         billed: "Y",
-        ordered_date: new Date()
+        ordered_date: s.ordered_date,
+        ordered_by: req.body.incharge_or_provider
       };
     })
     .ToArray();
+  debugLog("radServices: ", radServices);
+
   if (radServices.length > 0) {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -126,7 +133,65 @@ let insertRadOrderedServices = (req, res, next) => {
   }
 };
 
+let updateRadOrderedServices = (req, res, next) => {
+  let visitType = {
+    hims_f_rad_order_id: null,
+    status: null,
+    cancelled: null,
+    scheduled_date_time: null,
+    scheduled_by: null,
+    arrived_date: null,
+    arrived: null,
+    validate_by: null,
+    validate_date_time: null,
+    attended_by: null,
+    attended_date_time: null,
+    exam_start_date_time: null,
+    exam_end_date_time: null
+  };
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+    let inputParam = extend(visitType, req.body);
+    connection.query(
+      "UPDATE `hims_d_visit_type` \
+     SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,`arrived`=?,validate_by`=?, \
+     `validate_date_time` = ?, `attended_by`=?,`attended_date_time`=?,`exam_start_date_time`=?, `exam_end_date_time`=?\
+     WHERE `record_status`='A' and `hims_f_rad_order_id`=?",
+      [
+        inputParam.status,
+        inputParam.cancelled,
+        inputParam.scheduled_date_time,
+        inputParam.scheduled_by,
+        inputParam.arrived,
+        inputParam.arrived_date,
+        inputParam.validate_by,
+        inputParam.validate_date_time,
+        inputParam.attended_by,
+        inputParam.attended_date_time,
+        inputParam.exam_start_date_time,
+        inputParam.exam_end_date_time,
+        inputParam.hims_f_rad_order_id
+      ],
+      (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      }
+    );
+  });
+};
+
 module.exports = {
   getRadOrderedServices,
-  insertRadOrderedServices
+  insertRadOrderedServices,
+  updateRadOrderedServices
 };

@@ -78,6 +78,8 @@ class PatientDisplayDetails extends Component {
       output = nextProps.existinsurance[0];
     }
     if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
+      debugger;
+      nextProps.genbill.patient_payable_h = nextProps.genbill.patient_payable;
       billOut = nextProps.genbill;
     }
 

@@ -78,7 +78,6 @@ class AddOPBillingForm extends Component {
   }
 
   ProcessToBill(context, e) {
-    
     let $this = this;
 
     let serviceInput = [
@@ -106,6 +105,7 @@ class AddOPBillingForm extends Component {
         mappingName: "xxx"
       },
       afterSuccess: data => {
+        debugger;
         if (data.billdetails[0].pre_approval === "Y") {
           successfulMessage({
             message:
@@ -115,7 +115,9 @@ class AddOPBillingForm extends Component {
           });
         } else {
           let existingservices = $this.state.billdetails;
+
           if (data.billdetails.length !== 0) {
+            data.billdetails[0].ordered_date = new Date();
             existingservices.splice(0, 0, data.billdetails[0]);
           }
 
@@ -735,7 +737,7 @@ class AddOPBillingForm extends Component {
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
-                            value: this.state.patient_payable,
+                            value: this.state.patient_payable_h,
                             className: "txt-fld",
                             name: "patient_payable",
 

@@ -36,9 +36,10 @@ let getLabOrderedServices = (req, res, next) => {
       }
       db.query(
         "SELECT hims_f_lab_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
-        status, cancelled, ordered_date, test_type, PAT.patient_code,PAT.full_name\
+        SA.status, cancelled, ordered_date, test_type, PAT.patient_code,PAT.full_name,SP.sample_id \
         from ((hims_f_lab_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
-        hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE SA.record_status='A' AND " +
+        hims_d_services SR on SR.hims_d_services_id=SA.service_id) left outer join hims_f_lab_sample SP on \
+        SA.hims_f_lab_order_id = SP.order_id WHERE SA.record_status='A' " +
           whereOrder +
           (where.condition == "" ? "" : " AND " + where.condition),
         where.values,
@@ -81,10 +82,12 @@ let insertLadOrderedServices = (req, res, next) => {
         visit_id: req.body.visit_id,
         service_id: s.services_id,
         billed: "Y",
-        ordered_date: new Date()
+        ordered_date: s.ordered_date
       };
     })
     .ToArray();
+
+  debugLog("labServices: ", labServices);
   if (labServices.length > 0) {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());

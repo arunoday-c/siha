@@ -16,6 +16,8 @@ export default {
       facility_description: null,
       priority: null,
       cpt_id: null,
+      container_id: null,
+      container_code: null,
       category_id: null,
       analyte_id: null,
       analyte_type: null,

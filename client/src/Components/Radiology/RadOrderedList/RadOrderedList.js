@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import Collections from "@material-ui/icons/Collections";
+import Accessible from "@material-ui/icons/Accessible";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
 import "./RadOrderedList.css";
@@ -13,7 +13,8 @@ import {
   texthandle,
   PatientSearch,
   datehandle,
-  getRadTestList
+  getRadTestList,
+  UpdateRadOrder
 } from "./RadOrderedListEvents";
 
 import {
@@ -33,6 +34,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
+import Tooltip from "@material-ui/core/Tooltip";
 // import SampleCollectionModal from "../SampleCollections/SampleCollectionModal";
 // import SampleCollectionModal from "../SampleCollections/SampleCollections";
 
@@ -48,6 +50,7 @@ class RadOrderedList extends Component {
       patient_name: null,
       patient_id: null,
       category_id: null,
+      test_status: null,
       rad_test_list: [],
       selected_patient: null,
       isOpen: false
@@ -241,10 +244,37 @@ class RadOrderedList extends Component {
                       disabled: true
                     },
                     {
-                      fieldName: "test_status",
+                      fieldName: "status",
                       label: (
                         <AlgaehLabel label={{ fieldName: "test_status" }} />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return row.status === "O"
+                          ? "Ordered"
+                          : row.status === "S"
+                            ? "Scheduled"
+                            : row.status === "CN"
+                              ? "Cancelled"
+                              : row.status === "CF"
+                                ? "Confirmed"
+                                : "Validated";
+                      }
+                    },
+                    {
+                      fieldName: "scheduled_date_time",
+                      label: (
+                        <AlgaehLabel
+                          label={{ fieldName: "scheduled_date_time" }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {this.changeDateFormat(row.scheduled_date_time)}
+                          </span>
+                        );
+                      },
+                      disabled: true
                     },
                     {
                       fieldName: "action",
@@ -252,14 +282,14 @@ class RadOrderedList extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            <IconButton color="primary" title="Collection">
-                              <Collections
-                                onClick={this.ShowCollectionModel.bind(
-                                  this,
-                                  row
-                                )}
+                            {/* <Tooltip title="Arrived"> */}
+                            <IconButton color="primary" title="Arrived">
+                              <i
+                                class="fas fa-walking"
+                                onClick={UpdateRadOrder.bind(this, this, row)}
                               />
                             </IconButton>
+                            {/* </Tooltip> */}
                           </span>
                         );
                       }
@@ -267,7 +297,7 @@ class RadOrderedList extends Component {
                   ]}
                   keyId="patient_code"
                   dataSource={{
-                    data: this.state.rad_test_list
+                    data: this.props.radtestlist
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
