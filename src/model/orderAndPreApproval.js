@@ -213,9 +213,7 @@ let insertOrderedServices = (req, res, next) => {
     "sec_company_tax",
     "sec_company_paybale",
     "sec_copay_percntage",
-    "sec_copay_amount",
-    "created_by",
-    "updated_by"
+    "sec_copay_amount"
   ];
 
   debugFunction("add order");
@@ -239,14 +237,20 @@ let insertOrderedServices = (req, res, next) => {
           });
         }
 
+        debugLog("bodyy:", req.body);
         connection.query(
           "INSERT INTO hims_f_ordered_services(" +
             insurtColumns.join(",") +
-            ") VALUES ?",
+            ",created_by,updated_by) VALUES ?",
           [
             jsonArrayToObject({
               sampleInputObject: insurtColumns,
-              arrayObj: req.body
+              arrayObj: req.body,
+              req: req,
+              newFieldToInsert: [
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.algaeh_d_app_user_id
+              ]
             })
           ],
           (error, resultOrder) => {
@@ -320,15 +324,13 @@ let insertOrderedServices = (req, res, next) => {
                     "doctor_id",
                     "patient_id",
                     "gross_amt",
-                    "net_amount",
-                    "created_by",
-                    "updated_by"
+                    "net_amount"
                   ];
 
                   connection.query(
                     "INSERT INTO hims_f_service_approval(" +
                       insurtCols.join(",") +
-                      ") VALUES ?",
+                      ",created_by,updated_by) VALUES ?",
                     [
                       jsonArrayToObject({
                         sampleInputObject: insurtCols,
@@ -350,6 +352,11 @@ let insertOrderedServices = (req, res, next) => {
                             originalKey: "ordered_services_id",
                             NewKey: "hims_f_ordered_services_id"
                           }
+                        ],
+                        req: req,
+                        newFieldToInsert: [
+                          req.userIdentity.algaeh_d_app_user_id,
+                          req.userIdentity.algaeh_d_app_user_id
                         ]
                       })
                     ],
