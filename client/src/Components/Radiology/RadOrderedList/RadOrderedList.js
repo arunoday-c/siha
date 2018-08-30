@@ -9,7 +9,12 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import "./RadOrderedList.css";
 import "./../../../styles/site.css";
 
-import { texthandle, PatientSearch, datehandle } from "./RadOrderedListEvents";
+import {
+  texthandle,
+  PatientSearch,
+  datehandle,
+  getRadTestList
+} from "./RadOrderedListEvents";
 
 import {
   AlgaehDataGrid,
@@ -43,7 +48,7 @@ class RadOrderedList extends Component {
       patient_name: null,
       patient_id: null,
       category_id: null,
-      sample_collection: [],
+      rad_test_list: [],
       selected_patient: null,
       isOpen: false
     };
@@ -58,6 +63,7 @@ class RadOrderedList extends Component {
         mappingName: "testcategory"
       }
     });
+    getRadTestList(this, this);
   }
   changeDateFormat = date => {
     if (date != null) {
@@ -198,9 +204,7 @@ class RadOrderedList extends Component {
 
               <div className="col-lg-1">
                 <IconButton className="go-button" color="primary">
-                  <PlayCircleFilled
-                  // onClick={getSampleCollectionDetails.bind(this, this)}
-                  />
+                  <PlayCircleFilled onClick={getRadTestList.bind(this, this)} />
                 </IconButton>
               </div>
             </div>
@@ -263,7 +267,7 @@ class RadOrderedList extends Component {
                   ]}
                   keyId="patient_code"
                   dataSource={{
-                    data: this.state.sample_collection
+                    data: this.state.rad_test_list
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
@@ -278,14 +282,16 @@ class RadOrderedList extends Component {
 
 function mapStateToProps(state) {
   return {
-    testcategory: state.testcategory
+    testcategory: state.testcategory,
+    radtestlist: state.radtestlist
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getTestCategory: AlgaehActions
+      getTestCategory: AlgaehActions,
+      getRadiologyTestList: AlgaehActions
     },
     dispatch
   );

@@ -93,6 +93,15 @@ class OrderingServices extends Component {
         }
       });
     }
+
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "serviceslist"
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -268,9 +277,9 @@ class OrderingServices extends Component {
                     label: <AlgaehLabel label={{ fieldName: "services_id" }} />,
                     displayTemplate: row => {
                       let display =
-                        this.props.services === undefined
+                        this.props.serviceslist === undefined
                           ? []
-                          : this.props.services.filter(
+                          : this.props.serviceslist.filter(
                               f => f.hims_d_services_id === row.services_id
                             );
 
@@ -458,7 +467,8 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     services: state.services,
     orderservices: state.orderservices,
-    existinginsurance: state.existinginsurance
+    existinginsurance: state.existinginsurance,
+    serviceslist: state.serviceslist
   };
 }
 

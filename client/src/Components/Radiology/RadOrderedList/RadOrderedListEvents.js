@@ -28,11 +28,10 @@ const PatientSearch = ($this, e) => {
         {
           patient_code: row.patient_code,
           patient_id: row.hims_d_patient_id
+        },
+        () => {
+          getRadTestList($this);
         }
-        // ,
-        // () => {
-        //   getSampleCollectionDetails($this);
-        // }
       );
     }
   });
@@ -42,59 +41,58 @@ const datehandle = ($this, ctrl, e) => {
   $this.setState(
     {
       [e]: moment(ctrl)._d
+    },
+    () => {
+      getRadTestList($this);
     }
-    // ,
-    // () => {
-    //   getSampleCollectionDetails($this);
-    // }
   );
 };
 
-// const getSampleCollectionDetails = $this => {
-//   let inputobj = {};
+const getRadTestList = $this => {
+  let inputobj = {};
 
-//   if ($this.state.from_date !== null) {
-//     inputobj.from_date = moment($this.state.from_date).format(
-//       Options.dateFormatYear
-//     );
-//   }
-//   if ($this.state.to_date !== null) {
-//     inputobj.to_date = moment($this.state.to_date).format(
-//       Options.dateFormatYear
-//     );
-//   }
+  if ($this.state.from_date !== null) {
+    inputobj.from_date = moment($this.state.from_date).format(
+      Options.dateFormatYear
+    );
+  }
+  if ($this.state.to_date !== null) {
+    inputobj.to_date = moment($this.state.to_date).format(
+      Options.dateFormatYear
+    );
+  }
 
-//   if ($this.state.patient_id !== null) {
-//     inputobj.patient_id = $this.state.patient_id;
-//   }
-//   debugger;
-//   $this.props.getSampleCollection({
-//     uri: "/laboratory/getLabOrderedServices",
-//     method: "GET",
-//     data: inputobj,
-//     redux: {
-//       type: "SAMPLE_COLLECT_GET_DATA",
-//       mappingName: "samplecollection"
-//     },
-//     afterSuccess: data => {
-//       debugger;
-//       let sample_collection = Enumerable.from(data)
-//         .groupBy("$.patient_id", null, (k, g) => {
-//           let firstRecordSet = Enumerable.from(g).firstOrDefault();
-//           return {
-//             patient_code: firstRecordSet.patient_code,
-//             full_name: firstRecordSet.full_name,
-//             ordered_date: firstRecordSet.ordered_date,
-//             number_of_tests: g.getSource().length,
-//             test_details: g.getSource(),
-//             provider_id: firstRecordSet.provider_id
-//           };
-//         })
-//         .toArray();
+  if ($this.state.patient_id !== null) {
+    inputobj.patient_id = $this.state.patient_id;
+  }
+  debugger;
+  $this.props.getRadiologyTestList({
+    uri: "/radiology/getRadOrderedServices",
+    method: "GET",
+    data: inputobj,
+    redux: {
+      type: "RAD_LIST_GET_DATA",
+      mappingName: "radtestlist"
+    },
+    afterSuccess: data => {
+      debugger;
+      let rad_test_list = Enumerable.from(data)
+        .groupBy("$.patient_id", null, (k, g) => {
+          let firstRecordSet = Enumerable.from(g).firstOrDefault();
+          return {
+            patient_code: firstRecordSet.patient_code,
+            full_name: firstRecordSet.full_name,
+            ordered_date: firstRecordSet.ordered_date,
+            number_of_tests: g.getSource().length,
+            test_details: g.getSource(),
+            provider_id: firstRecordSet.provider_id
+          };
+        })
+        .toArray();
 
-//       $this.setState({ sample_collection: sample_collection });
-//     }
-//   });
-// };
+      $this.setState({ rad_test_list: rad_test_list });
+    }
+  });
+};
 
-export { texthandle, PatientSearch, datehandle };
+export { texthandle, PatientSearch, datehandle, getRadTestList };
