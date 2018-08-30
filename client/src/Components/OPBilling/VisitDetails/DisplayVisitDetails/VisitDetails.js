@@ -109,9 +109,13 @@ class DisplayVisitDetails extends Component {
             mappingName: "existinsurance"
           },
           afterSuccess: data => {
+            debugger;
             let pre_approval_Required = Enumerable.from(data)
               .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
               .toArray();
+            for (let i = 0; i < data.length; i++) {
+              data[i].ordered_date = data[i].created_date;
+            }
 
             if (pre_approval_Required.length > 0) {
               successfulMessage({

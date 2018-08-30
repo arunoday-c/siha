@@ -67,6 +67,7 @@ const ProcessService = ($this, e) => {
       mappingName: "orderservices"
     },
     afterSuccess: data => {
+      debugger;
       //If Limit exceed then all the selected services convert to pre-approval
       if (
         data.billdetails[0].preapp_limit_exceed === "Y" &&
@@ -134,6 +135,7 @@ const ProcessService = ($this, e) => {
           }
         });
       } else {
+        debugger;
         let existingservices = $this.state.orderservicesdata;
 
         data.billdetails[0].visit_id = $this.state.visit_id;
@@ -146,7 +148,6 @@ const ProcessService = ($this, e) => {
           $this.state.sub_insurance_provider_id;
         data.billdetails[0].network_id = $this.state.network_id;
         data.billdetails[0].policy_number = $this.state.policy_number;
-        data.billdetails[0].created_by = getCookie("UserID");
         data.billdetails[0].insurance_service_name =
           $this.state.insurance_service_name;
         data.billdetails[0].icd_code = "1";
@@ -160,9 +161,6 @@ const ProcessService = ($this, e) => {
 
         data.billdetails[0].requested_quantity = data.billdetails[0].quantity;
         data.billdetails[0].doctor_id = "2";
-        if (data.billdetails.length !== 0) {
-          existingservices.splice(0, 0, data.billdetails[0]);
-        }
 
         //If pre-approval required for selected service
         if (
@@ -174,6 +172,11 @@ const ProcessService = ($this, e) => {
             title: "Warning",
             icon: "warning"
           });
+        } else {
+          data.billdetails[0].pre_approval = "N";
+        }
+        if (data.billdetails.length !== 0) {
+          existingservices.splice(0, 0, data.billdetails[0]);
         }
         let approval_amt = data.billdetails[0].approval_amt;
         let preapp_limit_amount = data.billdetails[0].preapp_limit_amount;
@@ -295,6 +298,7 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
+  debugger;
   algaehApiCall({
     uri: "/orderAndPreApproval/insertOrderedServices",
     data: $this.state.orderservicesdata,

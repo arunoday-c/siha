@@ -5,6 +5,7 @@ import { LINQ } from "node-linq";
 import { addOpBIlling, selectBill } from "../model/opBilling";
 import { insertLadOrderedServices } from "../model/laboratory";
 import { updateOrderedServicesBilled } from "../model/orderAndPreApproval";
+import { insertRadOrderedServices } from "../model/radiology";
 import { debugFunction, debugLog } from "../utils/logging";
 import extend from "extend";
 export default ({ config, db }) => {
@@ -16,6 +17,7 @@ export default ({ config, db }) => {
     "/addOpBIlling",
     addOpBIlling,
     insertLadOrderedServices,
+    insertRadOrderedServices,
     updateOrderedServicesBilled,
     (req, res, next) => {
       res.status(httpStatus.ok).json({

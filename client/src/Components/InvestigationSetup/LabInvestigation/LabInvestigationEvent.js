@@ -16,6 +16,25 @@ const texthandle = ($this, context, ctrl, e) => {
   }
 };
 
+const containeridhandle = ($this, context, ctrl, e) => {
+  debugger;
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value,
+    container_code: e.selected.container_id
+  });
+
+  if (context !== undefined) {
+    context.updateState({
+      [name]: value,
+      container_code: e.selected.container_id
+    });
+  }
+};
+
 const analyteidhandle = ($this, context, ctrl, e) => {
   debugger;
   e = e || ctrl;
@@ -115,6 +134,7 @@ const deleteLabInvestigation = ($this, context, row, rowId) => {
 export {
   texthandle,
   analyteidhandle,
+  containeridhandle,
   AddAnalytes,
   updateLabInvestigation,
   deleteLabInvestigation

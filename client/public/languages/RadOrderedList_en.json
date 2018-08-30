@@ -20,6 +20,7 @@
   "collected_by": "Collected By",
   "collected_date": "Collected Date",
   "collected": "Collect",
+  "scheduled_date_time": "Scheduled Date",
 
   "btnclose": "Close",
   "form_name": "Radiology Test List",

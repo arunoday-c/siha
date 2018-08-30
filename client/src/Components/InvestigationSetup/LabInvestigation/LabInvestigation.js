@@ -18,6 +18,7 @@ import {
 import {
   texthandle,
   analyteidhandle,
+  containeridhandle,
   AddAnalytes,
   updateLabInvestigation,
   deleteLabInvestigation
@@ -65,6 +66,15 @@ class LabInvestigation extends Component {
         mappingName: "labanalytes"
       }
     });
+
+    this.props.getLabContainer({
+      uri: "/labmasters/selectContainer",
+      method: "GET",
+      redux: {
+        type: "CONTAINER_GET_DATA",
+        mappingName: "labcontainer"
+      }
+    });
   }
 
   render() {
@@ -80,7 +90,6 @@ class LabInvestigation extends Component {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "lab_section_id",
-
                       isImp: true
                     }}
                     selector={{
@@ -116,6 +125,24 @@ class LabInvestigation extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
+                      fieldName: "container_id",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "container_id",
+                      className: "select-fld",
+                      value: this.state.container_id,
+                      dataSource: {
+                        textField: "description",
+                        valueField: "hims_d_lab_container_id",
+                        data: this.props.labcontainer
+                      },
+                      onChange: containeridhandle.bind(this, this, context)
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{
                       fieldName: "send_out_test"
                     }}
                     selector={{
@@ -133,6 +160,9 @@ class LabInvestigation extends Component {
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
+                </div>
+
+                <div className="row form-details">
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -154,9 +184,6 @@ class LabInvestigation extends Component {
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
-                </div>
-
-                <div className="row form-details">
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -198,7 +225,7 @@ class LabInvestigation extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-lg-6" }}
+                    div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "facility_description"
                     }}
@@ -309,7 +336,8 @@ function mapStateToProps(state) {
   return {
     labspecimen: state.labspecimen,
     labsection: state.labsection,
-    labanalytes: state.labanalytes
+    labanalytes: state.labanalytes,
+    labcontainer: state.labcontainer
   };
 }
 
@@ -318,7 +346,8 @@ function mapDispatchToProps(dispatch) {
     {
       getLabsection: AlgaehActions,
       getLabSpecimen: AlgaehActions,
-      getLabAnalytes: AlgaehActions
+      getLabAnalytes: AlgaehActions,
+      getLabContainer: AlgaehActions
     },
     dispatch
   );
