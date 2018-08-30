@@ -285,7 +285,7 @@ class RadOrderedList extends Component {
                             {/* <Tooltip title="Arrived"> */}
                             <IconButton color="primary" title="Arrived">
                               <i
-                                class="fas fa-walking"
+                                className="fas fa-walking"
                                 onClick={UpdateRadOrder.bind(this, this, row)}
                               />
                             </IconButton>

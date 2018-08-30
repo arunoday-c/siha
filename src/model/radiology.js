@@ -1,4 +1,5 @@
 "use strict";
+import extend from "extend";
 import {
   whereCondition,
   releaseDBConnection,
@@ -37,7 +38,7 @@ let getRadOrderedServices = (req, res, next) => {
       db.query(
         "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
         status, cancelled, ordered_date, test_type, scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,\
-        validate_date_time,attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,\
+        validate_date_time,attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,\
         PAT.patient_code,PAT.full_name\
         from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
         hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE SA.record_status='A' AND " +
@@ -134,7 +135,7 @@ let insertRadOrderedServices = (req, res, next) => {
 };
 
 let updateRadOrderedServices = (req, res, next) => {
-  let visitType = {
+  let RadList = {
     hims_f_rad_order_id: null,
     status: null,
     cancelled: null,
@@ -147,21 +148,41 @@ let updateRadOrderedServices = (req, res, next) => {
     attended_by: null,
     attended_date_time: null,
     exam_start_date_time: null,
-    exam_end_date_time: null
+    exam_end_date_time: null,
+    exam_status: null,
+    report_type: null
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
   }
+
+  //req.userIdentity.algaeh_d_app_user_id
   let db = req.db;
   db.getConnection((error, connection) => {
     if (error) {
       next(error);
     }
-    let inputParam = extend(visitType, req.body);
+    let inputParam = extend(RadList, req.body);
+
+    if (inputParam.scheduled_by == null && inputParam.status == "S") {
+      inputParam.scheduled_by = req.userIdentity.algaeh_d_app_user_id;
+    }
+    if (inputParam.validate_by == null && inputParam.status == "V") {
+      inputParam.validate_by = req.userIdentity.algaeh_d_app_user_id;
+    }
+    if (
+      inputParam.attended_by == null &&
+      inputParam.status == "V" &&
+      inputParam.report_type == "AD"
+    ) {
+      inputParam.attended_by = req.userIdentity.algaeh_d_app_user_id;
+    }
+
     connection.query(
-      "UPDATE `hims_d_visit_type` \
-     SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,`arrived`=?,validate_by`=?, \
-     `validate_date_time` = ?, `attended_by`=?,`attended_date_time`=?,`exam_start_date_time`=?, `exam_end_date_time`=?\
+      "UPDATE `hims_f_rad_order` \
+     SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,`arrived`=?,\
+     `validate_by`=?, `validate_date_time` = ?, `attended_by`=?,`attended_date_time`=?,`exam_start_date_time`=?, \
+     `exam_end_date_time`=?, `exam_status`=?, `report_type`=?\
      WHERE `record_status`='A' and `hims_f_rad_order_id`=?",
       [
         inputParam.status,
@@ -176,6 +197,8 @@ let updateRadOrderedServices = (req, res, next) => {
         inputParam.attended_date_time,
         inputParam.exam_start_date_time,
         inputParam.exam_end_date_time,
+        inputParam.exam_status,
+        inputParam.report_type,
         inputParam.hims_f_rad_order_id
       ],
       (error, result) => {

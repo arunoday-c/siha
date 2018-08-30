@@ -117,39 +117,54 @@ const UpdateRadOrder = ($this, row) => {
 
       attended_date_time: row.attended_date_time,
       exam_start_date_time: row.exam_start_date_time,
-      exam_end_date_time: row.exam_end_date_time
+      exam_end_date_time: row.exam_end_date_time,
+      exam_status: row.exam_status,
+      report_type: row.report_type
     };
 
-    // algaehApiCall({
-    //   uri: "/radiology/updateRadOrderedServices",
-    //   data: $this.state,
-    //   method: "PUT",
-    //   onSuccess: response => {
-    //     if (response.data.success === true) {
-    //       swal("Saved successfully . .", {
-    //         icon: "success",
-    //         buttons: false,
-    //         timer: 2000
-    //       });
-    //       $this.props.getRadiologyTestList({
-    //         uri: "/radiology/getRadOrderedServices",
-    //         method: "PUT",
-    //         data: inputobj,
-    //         redux: {
-    //           type: "RAD_LIST_GET_DATA",
-    //           mappingName: "radtestlist"
-    //         }
-    //       });
-    //     }
-    //   },
-    //   onFailure: error => {
-    //     swal(error, {
-    //       icon: "success",
-    //       buttons: false,
-    //       timer: 2000
-    //     });
-    //   }
-    // });
+    swal({
+      title:
+        "Are you sure the patient" +
+        row.full_name +
+        "for the procedure" +
+        row.service_name,
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willProceed => {
+      if (willProceed) {
+        algaehApiCall({
+          uri: "/radiology/updateRadOrderedServices",
+          data: inputobj,
+          method: "PUT",
+          onSuccess: response => {
+            if (response.data.success === true) {
+              swal("Done successfully . .", {
+                icon: "success",
+                buttons: false,
+                timer: 2000
+              });
+              $this.props.getRadiologyTestList({
+                uri: "/radiology/getRadOrderedServices",
+                method: "PUT",
+                data: inputobj,
+                redux: {
+                  type: "RAD_LIST_GET_DATA",
+                  mappingName: "radtestlist"
+                }
+              });
+            }
+          },
+          onFailure: error => {
+            swal(error, {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        });
+      }
+    });
   } else {
     swal("Invalid Input. Already Arrived. .", {
       icon: "warning",

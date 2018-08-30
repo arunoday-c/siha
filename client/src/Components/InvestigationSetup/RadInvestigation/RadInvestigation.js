@@ -181,7 +181,8 @@ class RadInvestigation extends Component {
                                     <Edit
                                       onClick={ViewEditTemplate.bind(
                                         this,
-                                        this
+                                        this,
+                                        row
                                       )}
                                     />
                                   </IconButton>
@@ -203,10 +204,7 @@ class RadInvestigation extends Component {
                     value={{
                       state: this.state,
                       updateState: obj => {
-                        debugger;
-                        this.setState({ ...obj }, () => {
-                          debugger;
-                        });
+                        this.setState({ ...obj });
                       }
                     }}
                   >

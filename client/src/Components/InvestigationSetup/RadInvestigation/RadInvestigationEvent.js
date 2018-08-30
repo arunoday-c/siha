@@ -17,10 +17,14 @@ const texthandle = ($this, context, ctrl, e) => {
 
 const ViewEditTemplate = ($this, row) => {
   debugger;
+  let template = {
+    template_html: row.template_html,
+    template_name: row.template_name
+  };
   $this.setState({
     ...$this.state,
     openTemplate: !$this.state.openTemplate,
-    radTempobj: row
+    radTempobj: template
   });
 };
 

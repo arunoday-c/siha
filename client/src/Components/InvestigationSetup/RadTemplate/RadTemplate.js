@@ -29,11 +29,12 @@ export default class RadTemplate extends PureComponent {
     debugger;
     if (newProps.radTempobj !== null) {
       let InputOutput = newProps.radTempobj;
-      this.setState(...this.state, ...InputOutput);
+      this.setState({ ...this.state, ...InputOutput });
     }
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         <Modal

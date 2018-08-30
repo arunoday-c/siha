@@ -73,7 +73,8 @@ const getInvestigations = $this => {
             specimen_id: firstRecordSet.specimen_id,
             services_id: firstRecordSet.services_id,
 
-            analytes: g.getSource()
+            analytes: g.getSource(),
+            RadTemplate: g.getSource()
           };
         })
         .toArray();
