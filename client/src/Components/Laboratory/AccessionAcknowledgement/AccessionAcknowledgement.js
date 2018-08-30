@@ -254,11 +254,7 @@ class AccessionAcknowledgement extends Component {
                     },
                     {
                       fieldName: "ordered_by",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "ordered_ordered_bydate" }}
-                        />
-                      )
+                      label: <AlgaehLabel label={{ fieldName: "ordered_by" }} />
                     },
                     {
                       fieldName: "sample_id",

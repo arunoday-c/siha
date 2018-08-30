@@ -6,15 +6,10 @@ import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import Collections from "@material-ui/icons/Collections";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
-import "./SampleCollection.css";
+import "./RadOrderedList.css";
 import "./../../../styles/site.css";
 
-import {
-  texthandle,
-  PatientSearch,
-  datehandle,
-  getSampleCollectionDetails
-} from "./SampleCollectionHandaler";
+import { texthandle, PatientSearch, datehandle } from "./RadOrderedListEvents";
 
 import {
   AlgaehDataGrid,
@@ -34,9 +29,9 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
 // import SampleCollectionModal from "../SampleCollections/SampleCollectionModal";
-import SampleCollectionModal from "../SampleCollections/SampleCollections";
+// import SampleCollectionModal from "../SampleCollections/SampleCollections";
 
-class SampleCollection extends Component {
+class RadOrderedList extends Component {
   constructor(props) {
     super(props);
     let month = moment().format("MM");
@@ -47,21 +42,26 @@ class SampleCollection extends Component {
       patient_code: null,
       patient_name: null,
       patient_id: null,
+      category_id: null,
       sample_collection: [],
       selected_patient: null,
       isOpen: false
     };
   }
 
+  componentDidMount() {
+    this.props.getTestCategory({
+      uri: "/labmasters/selectTestCategory",
+      method: "GET",
+      redux: {
+        type: "TESTCATEGORY_GET_DATA",
+        mappingName: "testcategory"
+      }
+    });
+  }
   changeDateFormat = date => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
-    }
-  };
-
-  changeTimeFormat = date => {
-    if (date != null) {
-      return moment(date).format(Options.timeFormat);
     }
   };
 
@@ -82,7 +82,7 @@ class SampleCollection extends Component {
     //   this.state.billdetails === null ? [{}] : this.state.billdetails;
     return (
       <React.Fragment>
-        <div className="hptl-phase1-speciman-collection-form">
+        <div className="hptl-phase1-rad-list-form">
           <BreadCrumb
             title={
               <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
@@ -181,17 +181,16 @@ class SampleCollection extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-lg-2" }}
                 label={{
-                  fieldName: "status",
-                  isImp: false
+                  fieldName: "category_id"
                 }}
                 selector={{
-                  name: "status",
+                  name: "category_id",
                   className: "select-fld",
-                  value: this.state.status,
+                  value: this.state.category_id,
                   dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_TEST_STATUS
+                    textField: "category_name",
+                    valueField: "hims_d_test_category_id",
+                    data: this.props.testcategory
                   },
                   onChange: texthandle.bind(this, this)
                 }}
@@ -200,7 +199,7 @@ class SampleCollection extends Component {
               <div className="col-lg-1">
                 <IconButton className="go-button" color="primary">
                   <PlayCircleFilled
-                    onClick={getSampleCollectionDetails.bind(this, this)}
+                  // onClick={getSampleCollectionDetails.bind(this, this)}
                   />
                 </IconButton>
               </div>
@@ -238,9 +237,9 @@ class SampleCollection extends Component {
                       disabled: true
                     },
                     {
-                      fieldName: "number_of_tests",
+                      fieldName: "test_status",
                       label: (
-                        <AlgaehLabel label={{ fieldName: "number_of_tests" }} />
+                        <AlgaehLabel label={{ fieldName: "test_status" }} />
                       )
                     },
                     {
@@ -271,19 +270,6 @@ class SampleCollection extends Component {
               </div>
             </div>
           </div>
-          <SampleCollectionModal
-            HeaderCaption={
-              <AlgaehLabel
-                label={{
-                  fieldName: "sample_collection",
-                  align: "ltr"
-                }}
-              />
-            }
-            open={this.state.isOpen}
-            onClose={this.CloseCollectionModel.bind(this)}
-            selected_patient={this.state.selected_patient}
-          />
         </div>
       </React.Fragment>
     );
@@ -292,14 +278,14 @@ class SampleCollection extends Component {
 
 function mapStateToProps(state) {
   return {
-    samplecollection: state.samplecollection
+    testcategory: state.testcategory
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getSampleCollection: AlgaehActions
+      getTestCategory: AlgaehActions
     },
     dispatch
   );
@@ -309,5 +295,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(SampleCollection)
+  )(RadOrderedList)
 );

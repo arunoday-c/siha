@@ -138,10 +138,10 @@
     "icon": "fas fa-x-ray",
     "subMenu": [
       {
-        "name": "List",
-        "label": "List",
-        "arlabel": "قائمة",
-        "path": "/List"
+        "name": "RadOrderedList",
+        "label": "Test List",
+        "arlabel": "قائمة الاختبار",
+        "path": "/RadOrderedList"
       },
       {
         "name": "Result Entry",

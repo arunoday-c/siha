@@ -5,15 +5,8 @@ import Options from "../../../Options.json";
 import Enumerable from "linq";
 
 const texthandle = ($this, e) => {
-  let name;
-  let value;
-  if (e.name != null) {
-    name = e.name;
-    value = e.value;
-  } else {
-    name = e.target.name;
-    value = e.target.value;
-  }
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
 
   $this.setState({
     [name]: value

@@ -180,82 +180,81 @@ export default class Login extends Component {
       <div className="login bg">
         <div className="container margintop15">
           <div className="row-eq-height">
-            <div
+            {/*<div
               id="emptyDiv"
               className="col-lg-5 offset-2"
               style={{ backgroundColor: "#007379CC" }}
             >
-              {/* Add Client's Logo and other details here */}
-            </div>
+               Add Client's Logo and other details here
+            </div> */}
 
-            <div
-              id="loginForm"
-              className="col-lg-4"
-              style={{
-                backgroundColor: "#EDEDED"
-              }}
-            >
+            <div id="loginForm" className="loginFormContainer">
               <LinearProgress id="myProg" style={{ display: "none" }} />
 
-              <h3 style={{ marginTop: 40, textAlign: "center" }}>
+              <h3
+                style={{ marginTop: 20, marginBottom: 20, textAlign: "center" }}
+              >
                 <span style={{ color: "#3A95AA" }}> ALGAEH</span> ERP
               </h3>
-
-              <form onSubmit={this.handleLogin.bind(this)}>
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "username",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "username",
-                    value: this.state.username,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    },
-                    error: this.state.userError,
-                    helperText: this.state.userErrorText
-                  }}
-                />
-
-                <br />
-
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "password",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "password",
-                    value: this.state.password,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    },
-                    others: {
-                      type: "password"
-                    },
-                    error: this.state.pwdError,
-                    helperText: this.state.pwdErrorText
-                  }}
-                />
-
-                <br />
-
-                <Button
-                  type="submit"
-                  style={styles.login_btn}
-                  variant="raised"
-                  color="primary"
-                >
-                  Log In
-                </Button>
-
-                <br />
-              </form>
+              <div className="row">
+                <form onSubmit={this.handleLogin.bind(this)}>
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "username",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "username",
+                      value: this.state.username,
+                      events: {
+                        onChange: this.texthandle.bind(this)
+                      },
+                      error: this.state.userError,
+                      helperText: this.state.userErrorText
+                    }}
+                  />
+                  <br />
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "password",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "password",
+                      value: this.state.password,
+                      events: {
+                        onChange: this.texthandle.bind(this)
+                      },
+                      others: {
+                        type: "password"
+                      },
+                      error: this.state.pwdError,
+                      helperText: this.state.pwdErrorText
+                    }}
+                  />
+                  <div className="col">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" value="remember-me" /> Remember
+                        me
+                      </label>
+                    </div>
+                    <Button
+                      className="btn btn-lg btn-primary btn-block sign-btn"
+                      type="submit"
+                    >
+                      Log In
+                    </Button>
+                    <p className="frgtPass">
+                      <a href="#">Forgot Password?</a>
+                    </p>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>

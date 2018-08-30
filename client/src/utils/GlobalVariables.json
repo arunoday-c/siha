@@ -204,9 +204,9 @@
     { "name": "Years", "value": "Y" }
   ],
   "PAIN_SEVERITY": [
-    { "name": "Mild", "value": "M" },
-    { "name": "Moderate", "value": "Mo" },
-    { "name": "Severe", "value": "S" }
+    { "name": "Mild", "value": "MI" },
+    { "name": "Moderate", "value": "MO" },
+    { "name": "Severe", "value": "SE" }
   ],
   "FORMAT_FILMCATEGORY": [
     { "name": "Not Applicable", "value": "NA" },

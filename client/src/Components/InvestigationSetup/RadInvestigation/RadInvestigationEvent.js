@@ -15,11 +15,42 @@ const texthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const ShowTemplate = $this => {
+const ViewEditTemplate = ($this, row) => {
+  debugger;
   $this.setState({
     ...$this.state,
-    openTemplate: !$this.state.openTemplate
+    openTemplate: !$this.state.openTemplate,
+    radTempobj: row
   });
 };
 
-export { texthandle, ShowTemplate };
+const ShowTemplate = $this => {
+  $this.setState({
+    ...$this.state,
+    openTemplate: !$this.state.openTemplate,
+    radTempobj: null
+  });
+};
+
+const CloseTemplate = ($this, value) => {
+  debugger;
+  if (value !== 0) {
+    let radObj = {
+      template_name: $this.state.template_name,
+      template_html: $this.state.template_html
+    };
+
+    let RadTemplate = $this.state.RadTemplate;
+    RadTemplate.push(radObj);
+    $this.setState({
+      openTemplate: !$this.state.openTemplate,
+      RadTemplate: RadTemplate
+    });
+  } else {
+    $this.setState({
+      openTemplate: !$this.state.openTemplate
+    });
+  }
+};
+
+export { texthandle, ShowTemplate, CloseTemplate, ViewEditTemplate };
