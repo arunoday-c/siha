@@ -28,6 +28,7 @@ import { successfulMessage } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
+import AlgaehReport from "../Wrapper/printReports";
 // function Transition(props) {
 //   return <Slide direction="up" {...props} />;
 // }
@@ -379,7 +380,8 @@ class RegistrationPatient extends Component {
                 events: {
                   onClick: () => {
                     debugger;
-                    console.log("Patient state", this.state);
+                    //  console.log("Patient state", this.state);
+                    AlgaehReport({ reportName: "patientRegistrationBarcode" });
                   }
                 }
               },

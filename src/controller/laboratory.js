@@ -4,7 +4,8 @@ import httpStatus from "../utils/httpStatus";
 
 import {
   getLabOrderedServices,
-  insertLadOrderedServices
+  insertLadOrderedServices,
+  updateLabOrderServices
 } from "../model/laboratory";
 
 export default ({ config, db }) => {
@@ -29,6 +30,20 @@ export default ({ config, db }) => {
   api.post(
     "/insertLadOrderedServices",
     insertLadOrderedServices,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.put(
+    "/updateLabOrderServices",
+    updateLabOrderServices,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
