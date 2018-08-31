@@ -109,8 +109,8 @@ class RegistrationPatient extends Component {
           expiry_date: null,
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
-         // created_by: getCookie("UserID"),
-         // created_date: new Date(),
+          // created_by: getCookie("UserID"),
+          // created_date: new Date(),
           //updated_by: null,
           updated_date: null,
           card_type: null
@@ -123,9 +123,9 @@ class RegistrationPatient extends Component {
           expiry_date: this.state.card_date,
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
-         // created_by: getCookie("UserID"),
-         // created_date: new Date(),
-         // updated_by: null,
+          // created_by: getCookie("UserID"),
+          // created_date: new Date(),
+          // updated_by: null,
           updated_date: null,
           card_type: null
         });
@@ -137,7 +137,7 @@ class RegistrationPatient extends Component {
           expiry_date: this.state.cheque_date,
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
-         // created_by: getCookie("UserID"),
+          // created_by: getCookie("UserID"),
           //created_date: new Date(),
           //updated_by: null,
           updated_date: null,
@@ -381,7 +381,10 @@ class RegistrationPatient extends Component {
                   onClick: () => {
                     debugger;
                     //  console.log("Patient state", this.state);
-                    AlgaehReport({ reportName: "patientRegistrationBarcode" });
+                    AlgaehReport({
+                      reportName: "patientRegistrationBarcode",
+                      data: { patient_code: this.state.patient_code }
+                    });
                   }
                 }
               },

@@ -4,9 +4,7 @@ import ReactDOM from "react-dom";
 const reportWindow = document.getElementById("reportWindow");
 
 let accessReport = options => {
-  debugger;
   const fileName = "./Reports/" + options.reportName + ".html";
-
   var xhr = new XMLHttpRequest();
   xhr.open("GET", fileName, true);
   xhr.onreadystatechange = function() {

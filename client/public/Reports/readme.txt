@@ -8,5 +8,5 @@ Tags:
 -------------End Tags-----------------
 BarCode :
 "algaeh-barcode" selector to assign barcode,
-"<canvas>"
+"<canvas algaeh-barcode ="">"
 -------------End BarCode-----------------
