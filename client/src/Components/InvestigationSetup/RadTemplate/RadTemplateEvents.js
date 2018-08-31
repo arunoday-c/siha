@@ -1,6 +1,6 @@
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  debugger;
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -17,8 +17,6 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const rtehandle = ($this, context, template_html) => {
-  debugger;
-
   $this.setState({ template_html });
 
   if (context !== undefined) {

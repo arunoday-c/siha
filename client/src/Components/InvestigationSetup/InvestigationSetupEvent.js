@@ -35,7 +35,7 @@ const getInvestigations = $this => {
     Obj = { hims_d_investigation_test_id: $this.state.test_id };
   }
   inputObj = Obj;
-  debugger;
+
   $this.props.getInvestigationDetails({
     uri: "/investigation/getInvestigTestList",
     method: "GET",
@@ -46,7 +46,6 @@ const getInvestigations = $this => {
     },
     afterSuccess: data => {
       debugger;
-
       let Investigations = Enumerable.from(data)
         .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();
@@ -72,6 +71,7 @@ const getInvestigations = $this => {
             short_description: firstRecordSet.short_description,
             specimen_id: firstRecordSet.specimen_id,
             services_id: firstRecordSet.services_id,
+            hims_m_lab_specimen_id: firstRecordSet.hims_m_lab_specimen_id,
 
             analytes: g.getSource(),
             RadTemplate: g.getSource()
@@ -85,7 +85,6 @@ const getInvestigations = $this => {
 };
 
 const EditInvestigationTest = ($this, row) => {
-  debugger;
   $this.setState({
     hims_d_investigation_test_id: row.hims_d_investigation_test_id,
     isOpen: !$this.state.isOpen,

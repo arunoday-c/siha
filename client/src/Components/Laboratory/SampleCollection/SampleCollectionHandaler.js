@@ -70,7 +70,7 @@ const getSampleCollectionDetails = $this => {
   if ($this.state.patient_id !== null) {
     inputobj.patient_id = $this.state.patient_id;
   }
-  debugger;
+
   $this.props.getSampleCollection({
     uri: "/laboratory/getLabOrderedServices",
     method: "GET",
@@ -80,7 +80,6 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
-      debugger;
       let sample_collection = Enumerable.from(data)
         .groupBy("$.patient_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();

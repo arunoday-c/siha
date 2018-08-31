@@ -20,8 +20,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updateLabAnalytes = ($this, data) => {
-  debugger;
- // data.updated_by = getCookie("UserID");
+  // data.updated_by = getCookie("UserID");
 
   algaehApiCall({
     uri: "/labmasters/updateAnalytes",
@@ -49,7 +48,6 @@ const updateLabAnalytes = ($this, data) => {
 };
 
 const showconfirmDialog = ($this, id) => {
-  debugger;
   swal({
     title: "Are you sure you want to delete this Analytes?",
     icon: "warning",
@@ -58,8 +56,8 @@ const showconfirmDialog = ($this, id) => {
   }).then(willDelete => {
     if (willDelete) {
       let data = {
-        hims_d_lab_analytes_id: id,
-       // updated_by: getCookie("UserID")
+        hims_d_lab_analytes_id: id
+        // updated_by: getCookie("UserID")
       };
       algaehApiCall({
         uri: "/labmasters/deleteAnalytes",
@@ -104,7 +102,7 @@ const insertLabAnalytes = ($this, e) => {
       description_error: false,
       description_error_txt: ""
     });
-    debugger;
+
     algaehApiCall({
       uri: "/labmasters/insertAnalytes",
       data: $this.state,

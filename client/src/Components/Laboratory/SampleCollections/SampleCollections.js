@@ -53,15 +53,9 @@ class SampleCollectionPatient extends PureComponent {
     });
   }
   componentWillReceiveProps(nextProps) {
-    debugger;
     if (nextProps.selected_patient !== null) {
       let InputOutput = nextProps.selected_patient;
-      //   for (let i = 0; i < InputOutput.services_details.length; i++) {
-      //     InputOutput.services_details[i].checkselect = 1;
-      //   }
-      this.setState({ ...this.state, ...InputOutput }, () => {
-        debugger;
-      });
+      this.setState({ ...this.state, ...InputOutput });
     }
   }
 

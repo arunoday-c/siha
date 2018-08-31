@@ -17,7 +17,6 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const containeridhandle = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -36,7 +35,6 @@ const containeridhandle = ($this, context, ctrl, e) => {
 };
 
 const analyteidhandle = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -57,7 +55,6 @@ const analyteidhandle = ($this, context, ctrl, e) => {
 };
 
 const AddAnalytes = ($this, context) => {
-  debugger;
   if ($this.state.analyte_id !== null) {
     let insert_analytes = $this.state.insert_analytes;
     let analytes = $this.state.analytes;
@@ -70,6 +67,8 @@ const AddAnalytes = ($this, context) => {
     if ($this.state.hims_d_investigation_test_id !== null) {
       let Insertobj = {
         analyte_id: $this.state.analyte_id,
+        analyte_type: $this.state.analyte_type,
+        result_unit: $this.state.result_unit,
         test_id: $this.state.hims_d_investigation_test_id
       };
       insert_analytes.push(Insertobj);
@@ -106,17 +105,24 @@ const updateLabInvestigation = $this => {
 };
 
 const deleteLabInvestigation = ($this, context, row, rowId) => {
-  debugger;
-
   let analytes = $this.state.analytes;
   let update_analytes = $this.state.update_analytes;
+  let insert_analytes = $this.state.insert_analytes;
   if ($this.state.hims_d_investigation_test_id !== null) {
-    let Updateobj = {
-      hims_m_lab_analyte_id: row.analyte_id,
-      test_id: $this.state.hims_d_investigation_test_id,
-      record_status: "I"
-    };
-    update_analytes.push(Updateobj);
+    if (row.hims_m_lab_analyte_id !== undefined) {
+      let Updateobj = {
+        hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
+        record_status: "I"
+      };
+      update_analytes.push(Updateobj);
+    } else {
+      for (let k = 0; k < insert_analytes.length; k++) {
+        if ((insert_analytes[k].analyte_id = row.analyte_id)) {
+          insert_analytes.splice(k, 1);
+        }
+      }
+      // insert_analytes
+    }
   }
   analytes.splice(rowId, 1);
   $this.setState({
