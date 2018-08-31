@@ -7,9 +7,9 @@ export default {
       hims_f_patient_id: null,
       transaction_type: null, //A, R
       advance_amount: 0,
-      created_by: null,
-      created_date: new Date(),
-      updated_by: null,
+      //created_by: null,
+      //created_date: new Date(),
+     // updated_by: null,
       update_date: 0,
 
       pay_cash: "CA",
@@ -34,9 +34,9 @@ export default {
       counter_id: null,
       shift_id: null,
       unbalanced_amount: 0,
-      created_by: null,
-      created_date: new Date(),
-      updated_by: null,
+     // created_by: null,
+     // created_date: new Date(),
+     // updated_by: null,
       updated_date: null,
       pay_type: "R",
       receiptdetails: []

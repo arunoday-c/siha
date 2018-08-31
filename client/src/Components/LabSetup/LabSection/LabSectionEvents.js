@@ -19,7 +19,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updateLabSection = ($this, data) => {
-  data.updated_by = getCookie("UserID");
+ // data.updated_by = getCookie("UserID");
 
   algaehApiCall({
     uri: "/labmasters/updateSection",
@@ -55,7 +55,7 @@ const showconfirmDialog = ($this, id) => {
     dangerMode: true
   }).then(willDelete => {
     if (willDelete) {
-      let data = { hims_d_lab_section_id: id, updated_by: getCookie("UserID") };
+      let data = { hims_d_lab_section_id: id };
       algaehApiCall({
         uri: "/labmasters/deleteSection",
         data: data,

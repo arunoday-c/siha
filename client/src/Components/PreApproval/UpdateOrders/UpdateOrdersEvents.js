@@ -23,7 +23,7 @@ const UpdateOrders = ($this, row) => {
         secondary_network_office_id: null,
         pre_approval: "Y",
         approved_amount: row.approved_amount,
-        updated_by: getCookie("UserID")
+       // updated_by: getCookie("UserID")
       }
     ];
 

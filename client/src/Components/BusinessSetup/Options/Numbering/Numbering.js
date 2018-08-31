@@ -29,8 +29,6 @@ class Numbering extends Component {
       postfix_start: "",
       postfix_end: "",
       current_num: "",
-      created_by: "1",
-      updated_by: "1",
       errorTxt: "",
       numgen_code_error: false,
       module_desc_error: false,
