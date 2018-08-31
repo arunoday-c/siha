@@ -180,6 +180,25 @@ class Subjective extends Component {
                 <div className="col-lg-4">
                   <div className="card">
                     <div className="card-body box-shadow-normal">
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Selected Chief Complaint"
+                        }}
+                        selector={{
+                          name: "chief_complains",
+                          className: "select-fld",
+                          // value: this.state.pay_cash,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.PAIN_DURATION
+                          }
+
+                          // onChange: texthandle.bind(this, this)
+                        }}
+                      />
+
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
