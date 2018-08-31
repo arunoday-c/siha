@@ -80,51 +80,84 @@ class PatientProfile extends Component {
           </div>
           <div className="patientName">
             <h6>
-              {this.state.patientData.full_name
+              {this.state.patientData !== undefined
                 ? this.state.patientData.full_name
                 : ""}
             </h6>
             <p>
-              {this.state.patientData.gender
+              {this.state.patientData !== undefined
                 ? this.state.patientData.gender
                 : ""}
-              , {this.state.patientData.age_in_years}Y{" "}
-              {this.state.patientData.age_in_months}M{" "}
-              {this.state.patientData.age_in_days}D
+              ,{" "}
+              {this.state.patientData !== undefined
+                ? this.state.patientData.age_in_years
+                : ""}
+              Y{" "}
+              {this.state.patientData !== undefined
+                ? this.state.patientData.age_in_months
+                : ""}
+              M{" "}
+              {this.state.patientData !== undefined
+                ? this.state.patientData.age_in_days
+                : ""}
+              D
             </p>
           </div>
           <div className="patientDemographic">
             <span>
               DOB:
               <b>
-                {moment(this.state.patientData.date_of_birth).format(
-                  "DD-MM-YYYY"
-                )}
+                {moment(
+                  this.state.patientData !== undefined
+                    ? this.state.patientData.date_of_birth
+                    : ""
+                ).format("DD-MM-YYYY")}
               </b>
             </span>
             <span>
-              Mobile: <b>{this.state.patientData.contact_number}</b>
+              Mobile:{" "}
+              <b>
+                {this.state.patientData !== undefined
+                  ? this.state.patientData.contact_number
+                  : ""}
+              </b>
             </span>
             <span>
-              Nationality: <b>{this.state.patientData.nationality}</b>
+              Nationality:{" "}
+              <b>
+                {this.state.patientData !== undefined
+                  ? this.state.patientData.nationality
+                  : ""}
+              </b>
             </span>
           </div>
           <div className="patientHospitalDetail">
             <span>
-              MRN: <b>{this.state.patientData.patient_code}</b>
+              MRN:{" "}
+              <b>
+                {this.state.patientData !== undefined
+                  ? this.state.patientData.patient_code
+                  : ""}
+              </b>
             </span>
             <span>
               Encounter:{" "}
               <b>
-                {moment(this.state.patientData.Encounter_Date).format(
-                  "DD-MM-YYYY HH:MM:SS A"
-                )}
+                {moment(
+                  this.state.patientData !== undefined
+                    ? this.state.patientData.Encounter_Date
+                    : ""
+                ).format("DD-MM-YYYY HH:MM:SS A")}
               </b>
             </span>
             <span>
               Payment:{" "}
               <b>
-                {this.state.patientData === "S" ? "Self Paying" : "Insurance"}
+                {this.state.patientData !== undefined
+                  ? this.state.patientData.payment_type === "S"
+                    ? "Self Paying"
+                    : "Insurance"
+                  : ""}
               </b>
             </span>
           </div>
@@ -202,6 +235,39 @@ class PatientProfile extends Component {
                 Plan
               </span>
             </li>
+            <ul className="float-right patient-quick-info">
+              <li>
+                <i class="fas fa-allergies" />
+                <span>
+                  <b> Allergies : </b>
+                  <p>
+                    {" "}
+                    Allergy 1; Allergy 2; Allergy 1; Allergy 2; Allergy 1;
+                    Allergy 2;
+                  </p>
+                </span>
+              </li>
+              <li>
+                <i class="fas fa-diagnoses" />
+
+                <span>
+                  <b> Diagnosis : </b>
+                  <p>
+                    {" "}
+                    Diagnosis 1; Diagnosis 2; Diagnosis 1; Diagnosis 2;
+                    Diagnosis 1; Diagnosis 2;
+                  </p>
+                </span>
+              </li>
+              <li>
+                <i class="fas fa-utensils" />
+
+                <span>
+                  <b> Diet : </b>
+                  <p> Diet 1; Diet 2; Diet 1; Diet 2; Diet 1; Diet 2;</p>
+                </span>
+              </li>
+            </ul>
           </ul>
         </div>
         <div className="container-fluid">

@@ -28,7 +28,7 @@ class IDType extends Component {
       identity_document_code: "",
       identity_document_name: "",
       arabic_identity_document_name: "",
-      created_by: "1",
+
       currentRowID: "",
       id_code_error: false,
       id_code_error_txt: "",

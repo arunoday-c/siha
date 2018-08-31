@@ -28,7 +28,6 @@ class PatientType extends Component {
       patient_type_code: "",
       patitent_type_desc: "",
       arabic_patitent_type_desc: "",
-      created_by: getCookie("UserID"),
       row: [],
 
       patient_type_code_error: false,

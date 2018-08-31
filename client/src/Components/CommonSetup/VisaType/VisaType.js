@@ -36,12 +36,10 @@ class VisaType extends Component {
       visa_desc: "",
       record_Status: "",
       arabic_visa_type: "",
-      created_by: getCookie("UserID"),
       row: [],
       id: "",
       openDialog: false,
       buttonText: "ADD TO LIST",
-
       visa_type_arabic_error: false,
       visa_type_arabic_error_txt: ""
     };

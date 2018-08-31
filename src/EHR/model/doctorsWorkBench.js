@@ -859,7 +859,7 @@ let getEncounterReview = (req, res, next) => {
 //created by irfan: get MYDAY in doctors work bench , to show list of todays patients
 let getMyDay = (req, res, next) => {
   let getMydayWhere = {
-    provider_id: req.userIdentity.algaeh_d_app_user_id
+    provider_id: req.userIdentity.employee_id
   };
 
   try {
@@ -1001,12 +1001,12 @@ let getChiefComplaints = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let inputData = extend({}, req.query);
-
+    let sub_department_id = req.userIdentity.sub_department_id;
+    debugLog("sub_dp_id", sub_department_id);
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_hpi_header_id,hpi_description from hims_d_hpi_header where sub_department_id=? and record_status='A';",
-        [inputData.sub_department_id],
+        [sub_department_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);

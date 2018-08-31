@@ -110,7 +110,7 @@ const ProcessService = ($this, e) => {
                     $this.state.sub_insurance_provider_id;
                   data.billdetails[i].network_id = $this.state.network_id;
                   data.billdetails[i].policy_number = $this.state.policy_number;
-                  data.billdetails[i].created_by = getCookie("UserID");
+                  // data.billdetails[i].created_by = getCookie("UserID");
                   data.billdetails[i].insurance_service_name =
                     $this.state.insurance_service_name;
 
