@@ -41,7 +41,7 @@ class SubInsurance extends PureComponent {
       card_format: null,
       effective_start_date: null,
       effective_end_date: null,
-      created_by: getCookie("UserID")
+     // created_by: getCookie("UserID")
     };
     this.baseState = this.state;
   }

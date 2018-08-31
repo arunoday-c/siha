@@ -44,7 +44,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updatePriceList = ($this, data) => {
-  data.updated_by = getCookie("UserID");
+  //data.updated_by = getCookie("UserID");
   algaehApiCall({
     uri: "/insurance/updatePriceList",
     data: data,
@@ -82,14 +82,14 @@ const bulkUpdate = ($this, data) => {
     updateobj = {
       update: data,
       pre_approval: $this.state.pre_approval,
-      updated_by: getCookie("UserID"),
+     // updated_by: getCookie("UserID"),
       insurance_id: $this.state.insurance_provider_id
     };
   } else if (data === "covered") {
     updateobj = {
       update: data,
       covered: $this.state.covered,
-      updated_by: getCookie("UserID"),
+     // updated_by: getCookie("UserID"),
       insurance_id: $this.state.insurance_provider_id
     };
   } else if (data === "corporate_discount") {
@@ -106,7 +106,7 @@ const bulkUpdate = ($this, data) => {
           discountType: $this.state.applicable,
           update: data,
           corporate_discount: $this.state.corporate_discount,
-          updated_by: getCookie("UserID"),
+         // updated_by: getCookie("UserID"),
           insurance_id: $this.state.insurance_provider_id
         };
       } else if ($this.state.applicable === "A") {
@@ -114,7 +114,7 @@ const bulkUpdate = ($this, data) => {
           discountType: $this.state.applicable,
           update: data,
           corporate_discount: $this.state.corporate_discount,
-          updated_by: getCookie("UserID"),
+         // updated_by: getCookie("UserID"),
           insurance_id: $this.state.insurance_provider_id
         };
       }

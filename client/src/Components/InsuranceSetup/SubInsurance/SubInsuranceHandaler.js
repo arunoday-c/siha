@@ -99,7 +99,7 @@ const showconfirmDialog = ($this, id) => {
     if (willDelete) {
       let data = {
         hims_d_insurance_sub_id: id,
-        updated_by: getCookie("UserID")
+        //updated_by: getCookie("UserID")
       };
       algaehApiCall({
         uri: "/insurance/deleteSubInsurance",

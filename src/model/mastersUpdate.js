@@ -3,27 +3,25 @@ import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { deleteFromCache } from "../utils/caching";
 
-let modelAppGen = {
-  hims_f_app_numgen_id: null,
-  numgen_code: null,
-  module_desc: null,
-  prefix: null,
-  intermediate_series: null,
-  postfix: null,
-  length: null,
-  increment_by: null,
-  numgen_seperator: null,
-  postfix_start: null,
-  postfix_end: null,
-  current_num: null,
-  pervious_num: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null
-};
 let insertToAppgen = (req, res, next) => {
+  let modelAppGen = {
+    hims_f_app_numgen_id: null,
+    numgen_code: null,
+    module_desc: null,
+    prefix: null,
+    intermediate_series: null,
+    postfix: null,
+    length: null,
+    increment_by: null,
+    numgen_seperator: null,
+    postfix_start: null,
+    postfix_end: null,
+    current_num: null,
+    pervious_num: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -71,6 +69,24 @@ let insertToAppgen = (req, res, next) => {
   }
 };
 let updateToAppgen = (req, res, next) => {
+  let modelAppGen = {
+    hims_f_app_numgen_id: null,
+    numgen_code: null,
+    module_desc: null,
+    prefix: null,
+    intermediate_series: null,
+    postfix: null,
+    length: null,
+    increment_by: null,
+    numgen_seperator: null,
+    postfix_start: null,
+    postfix_end: null,
+    current_num: null,
+    pervious_num: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -120,19 +136,18 @@ let updateToAppgen = (req, res, next) => {
   }
 };
 
-let visaType = {
-  hims_d_visa_type_id: null,
-  visa_type_code: null,
-  visa_type: null,
-  visa_desc: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
-  visa_status: "A"
-};
 let addVisa = (req, res, next) => {
+  let visaType = {
+    hims_d_visa_type_id: null,
+    visa_type_code: null,
+    visa_type: null,
+    visa_desc: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
+    visa_status: "A"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -172,6 +187,17 @@ let addVisa = (req, res, next) => {
 };
 
 let updateVisa = (req, res, next) => {
+  let visaType = {
+    hims_d_visa_type_id: null,
+    visa_type_code: null,
+    visa_type: null,
+    visa_desc: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
+    visa_status: "A"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());

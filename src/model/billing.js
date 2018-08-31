@@ -884,9 +884,9 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
     discount: null,
     effective_start_date: null,
     effectice_end_date: null,
-    created_by: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     created_date: null,
-    updated_by: null,
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
     updated_date: null,
     record_status: null
   };
@@ -1352,10 +1352,9 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     sec_company_paybale: 0,
                     sec_copay_percntage: 0,
                     sec_copay_amount: 0,
-                    created_by: null,
-                    created_date: null,
-                    updated_by: null,
-                    updated_date: null
+                    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+                    updated_by: req.userIdentity.algaeh_d_app_user_id
                   },
                   {
                     service_type_id: records.service_type_id,
@@ -1429,9 +1428,9 @@ let patientAdvanceRefund = (req, res, next) => {
     billing_header_id: null,
     total_amount: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
+
     updated_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_date: null,
+
     record_status: null,
     counter_id: null,
     shift_id: null,
@@ -1444,10 +1443,8 @@ let patientAdvanceRefund = (req, res, next) => {
     transaction_type: null,
     advance_amount: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
-    updated_by: req.userIdentity.algaeh_d_app_user_id,
-    update_date: null,
-    record_status: null
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   debugFunction("patientAdvanceRefund");
@@ -2311,10 +2308,9 @@ let newReceiptData = (req, res, next) => {
         billing_header_id: null,
         total_amount: null,
         created_by: req.userIdentity.algaeh_d_app_user_id,
-        created_date: null,
+
         updated_by: req.userIdentity.algaeh_d_app_user_id,
-        updated_date: null,
-        record_status: null,
+
         counter_id: null,
         shift_id: null
       },

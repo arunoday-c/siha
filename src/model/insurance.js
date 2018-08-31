@@ -167,11 +167,9 @@ let addPatientInsuranceData = (req, res, next) => {
         secondary_card_number: null,
         secondary_inc_card_path: null,
         secondary_policy_num: null,
-        created_by: null,
-        created_date: null,
-        updated_by: null,
-        updated_date: null,
-        record_status: null
+        created_by: req.userIdentity.algaeh_d_app_user_id,
+
+        updated_by: req.userIdentity.algaeh_d_app_user_id
       },
       req.body
     );
@@ -260,11 +258,9 @@ let addPatientInsurance = (connection, req, res, next) => {
     secondary_card_number: null,
     secondary_inc_card_path: null,
     secondary_policy_num: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   debugFunction("addPatientInsurence");
   try {
@@ -430,8 +426,8 @@ let addInsuranceProvider = (req, res, next) => {
     ins_rej_per: null,
     effective_start_date: null,
     effective_end_date: null,
-    created_by: null,
-    updated_by: null
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   try {
@@ -520,7 +516,7 @@ let updateInsuranceProvider = (req, res, next) => {
     ins_rej_per: null,
     effective_start_date: null,
     effective_end_date: null,
-    updated_by: null
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   try {
@@ -693,10 +689,10 @@ let addNetwork = (req, res, next) => {
     effective_start_date: null,
     effective_end_date: null,
     sub_insurance_status: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null
+
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   try {
@@ -804,10 +800,8 @@ let NetworkOfficeMaster = (req, res, next) => {
     copay_diagnostic: null,
     diagnostic_min: null,
     diagnostic_max: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   try {
@@ -944,9 +938,9 @@ let addPlanAndPolicy = (req, res, next) => {
               effective_end_date: null,
               sub_insurance_status: null,
               created_date: null,
-              created_by: null,
+              created_by: req.userIdentity.algaeh_d_app_user_id,
               updated_date: null,
-              updated_by: null,
+              updated_by: req.userIdentity.algaeh_d_app_user_id,
               hims_d_insurance_network_office_id: null,
               network_id: null,
               hospital_id: null,
@@ -1374,9 +1368,7 @@ let updatePriceList = (req, res, next) => {
     net_amount: null,
     pre_approval: null,
     covered: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   if (req.db == null) {
@@ -1428,10 +1420,10 @@ let updateNetworkAndNetworkOffice = (req, res, next) => {
     effective_start_date: null,
     effective_end_date: null,
     sub_insurance_status: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null,
+
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
     hims_d_insurance_network_office_id: null,
     network_id: null,
     hospital_id: null,
@@ -1645,8 +1637,7 @@ let updatePriceListBulk = (req, res, next) => {
     net_amount: null,
     pre_approval: null,
     covered: null,
-    updated_by: null,
-    updated_date: null,
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
     record_status: null
   };
 

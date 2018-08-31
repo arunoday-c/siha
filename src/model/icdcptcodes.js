@@ -46,11 +46,8 @@ let insertIcdcptCodes = (req, res, next) => {
     long_icd_description: null,
     icd_level: null,
     icd_type: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   if (req.db == null) {
@@ -95,11 +92,8 @@ let updateIcdcptCodes = (req, res, next) => {
     long_icd_description: null,
     icd_level: null,
     icd_type: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());

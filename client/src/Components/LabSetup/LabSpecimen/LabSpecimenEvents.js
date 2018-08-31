@@ -21,7 +21,7 @@ const onchangegridcol = ($this, row, e) => {
 
 const updateLabSpecimen = ($this, data) => {
   debugger;
-  data.updated_by = getCookie("UserID");
+  //data.updated_by = getCookie("UserID");
 
   algaehApiCall({
     uri: "/labmasters/updateSpecimen",
@@ -59,7 +59,7 @@ const showconfirmDialog = ($this, id) => {
     if (willDelete) {
       let data = {
         hims_d_lab_specimen_id: id,
-        updated_by: getCookie("UserID")
+        //updated_by: getCookie("UserID")
       };
       algaehApiCall({
         uri: "/labmasters/deleteSpecimen",

@@ -27,7 +27,6 @@ class DeptMaster extends Component {
       effective_start_date: null,
       effective_end_date: "9999-12-31",
       department_status: "",
-      created_by: "1",
       buttonText: "ADD TO LIST",
       checkedActive: false,
       checkedInactive: false,

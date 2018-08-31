@@ -31,13 +31,12 @@ let addInvestigationTest = (req, res, next) => {
     facility_description: null,
     priority: null,
     cpt_id: null,
-
     category_id: null,
     specimen_id: null,
     container_id: null,
     container_code: null,
-    created_by: null,
-    updated_by: null
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   debugFunction("addInvestigation");
@@ -140,7 +139,6 @@ let addInvestigationTest = (req, res, next) => {
                           sampleInputObject: insurtColumns,
                           arrayObj: req.body.analytes,
                           newFieldToInsert: [req.body.test_id],
-
                           req: req
                         })
                       ],

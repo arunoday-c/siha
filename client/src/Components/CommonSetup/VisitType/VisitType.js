@@ -36,7 +36,6 @@ class VisitType extends Component {
       visit_type_error_txt: "",
       hims_d_visit_type_error: false,
       hims_d_visit_type_error_txt: "",
-      created_by: getCookie("UserID"),
       arabic_visit_type_desc: "",
       buttonText: (
         <AlgaehLabel
@@ -242,7 +241,7 @@ class VisitType extends Component {
   }
 
   updateVisitType(data) {
-    data.updated_by = getCookie("UserID");
+   // data.updated_by = getCookie("UserID");
 
     algaehApiCall({
       uri: "/visitType/update",

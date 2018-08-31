@@ -26,22 +26,6 @@ const AllergyData = [
   { food: "Iodine", active: "Yes" }
 ];
 
-//TODO
-//1 Add Grid
-//2 Fix Design
-//3 MAke some other changes
-
-const complain_data = [
-  {
-    complaint_name: "Abdominal Pain",
-    pain: "Hurts More",
-    severity: "Moderate"
-  },
-  { complaint_name: "Abdominal Pain", pain: "No Hurt", severity: "None" },
-  { complaint_name: "Head Pain", pain: "Hurts Less", severity: "Mild" },
-  { complaint_name: "Abdominal Pain", pain: "Hurts Worst", severity: "Severe" }
-];
-
 class Subjective extends Component {
   constructor(props) {
     super(props);
@@ -49,12 +33,14 @@ class Subjective extends Component {
     this.state = {
       openComplain: false,
       pain: 0,
-      patientChiefComplains: []
+      patientChiefComplains: [],
+      openHpiModal: false
     };
 
     this.addChiefComplain = this.addChiefComplain.bind(this);
     this.addAllergies = this.addAllergies.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.openHPIAddModal = this.openHPIAddModal.bind(this);
   }
 
   showconfirmDialog(id) {
@@ -85,6 +71,16 @@ class Subjective extends Component {
       } else {
         swal("Delete request cancelled");
       }
+    });
+  }
+
+  dropDownHandle(value) {
+    this.setState({ [value.name]: value.value });
+  }
+
+  texthandle(e) {
+    this.setState({
+      [e.target.name]: e.target.value
     });
   }
 
@@ -124,10 +120,10 @@ class Subjective extends Component {
   }
 
   handleClose() {
-    this.setState({ openComplain: false });
+    this.setState({ openComplain: false, openHpiModal: false });
   }
 
-  getChiefComplains() {
+  getPatientChiefComplains() {
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientChiefComplaints",
       data: {
@@ -145,13 +141,331 @@ class Subjective extends Component {
     });
   }
 
+  getChiefComplainsList() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getChiefComplaints",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          console.log("Subdepartment chief complains:", response.data.records);
+          // this.setState({ patientChiefComplains: response.data.records });
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
   componentDidMount() {
-    this.getChiefComplains();
+    this.getPatientChiefComplains();
+    this.getChiefComplainsList();
+  }
+
+  openHPIAddModal() {
+    this.setState({
+      openHpiModal: true
+    });
   }
 
   render() {
     return (
       <div className="subjective">
+        {/* HPI Modal Start */}
+        <Modal open={this.state.openHpiModal}>
+          <div className="algaeh-modal">
+            <div className="row popupHeader">
+              <h4>Add / Edit History of Patient Illness</h4>
+            </div>
+            <div className="col-lg-12 popupInner">
+              <div className="row">
+                <div className="col-lg-4">
+                  <div className="card">
+                    <div className="card-body box-shadow-normal">
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Selected Chief Complaint"
+                        }}
+                        selector={{
+                          name: "chief_complains",
+                          className: "select-fld",
+                          // value: this.state.pay_cash,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.PAIN_DURATION
+                          }
+
+                          // onChange: texthandle.bind(this, this)
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Duration / Onset",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "onset_date",
+
+                          //value: this.state.pain,
+                          events: {}
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Timing",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "timing",
+
+                          //value: this.state.pain,
+                          events: {}
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Quality",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "quality",
+
+                          //value: this.state.pain,
+                          events: {}
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Associated Symptoms",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "associated_symptoms",
+
+                          //value: this.state.pain,
+                          events: {}
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Location",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "location",
+
+                          //value: this.state.pain,
+                          events: {}
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Modifying Factor",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "modifying_factor",
+
+                          //value: this.state.pain,
+                          events: {}
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Context",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "context",
+
+                          //value: this.state.pain,
+                          events: {}
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Remarks",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "remarks",
+                          others: {
+                            multiline: true,
+                            rows: "4"
+                          },
+                          //value: this.state.pain,
+                          events: {}
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-8">
+                  <div className="card">
+                    <div className="card-body box-shadow-normal">
+                      <AlgaehDataGrid
+                        id="hpi-grid"
+                        columns={[
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Complaint" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Duration / Onset" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Location" }} />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Quality" }} />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Context" }} />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Timing" }} />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Modifying Factor" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Associated Systems" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Remarks" }} />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Pain Scale" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Severity" }} />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Entered By" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "complaint",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Action" }} />
+                            )
+                          }
+                        ]}
+                        keyId="hpi"
+                        dataSource={{
+                          data: []
+                        }}
+                        isEditable={false}
+                        paging={{ page: 0, rowsPerPage: 5 }}
+                        events={{
+                          onDelete: row => {},
+                          onEdit: row => {},
+                          onDone: row => {}
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row popupFooter">
+              <div className="col-lg-4">
+                <Button
+                  variant="raised"
+                  color="secondary"
+                  style={{ backgroundColor: "#24B256" }}
+                  // onClick={        }
+                  size="small"
+                >
+                  Add
+                </Button>
+                <Button
+                  variant="raised"
+                  style={{ backgroundColor: "#D5D5D5" }}
+                  size="small"
+                >
+                  Clear
+                </Button>
+              </div>
+              <div className="col-lg-8">
+                <Button
+                  variant="raised"
+                  onClick={this.handleClose}
+                  style={{ backgroundColor: "#D5D5D5" }}
+                  // onClick={        }
+                  size="small"
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Modal>
+        {/* HPI MOdal End */}
+
         {/* Chief Complain Modal Start */}
         <Modal
           style={{
@@ -175,10 +489,10 @@ class Subjective extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col" }}
                           label={{
-                            fieldName: "search"
+                            forceLabel: "Select Chief Complains"
                           }}
                           selector={{
-                            name: "search",
+                            name: "chief_complains",
                             className: "select-fld",
                             // value: this.state.pay_cash,
                             dataSource: {
@@ -226,12 +540,12 @@ class Subjective extends Component {
                       }}
                       disabled={false}
                       maxDate={new Date()}
-                      events={
-                        {
-                          //  onChange: datehandle.bind(this, this)
+                      events={{
+                        onChange: selectedDate => {
+                          this.setState({ onset_date: selectedDate });
                         }
-                      }
-                      //value={this.state.receipt_date}
+                      }}
+                      value={this.state.onset_date}
                     />
 
                     <AlagehFormGroup
@@ -246,9 +560,9 @@ class Subjective extends Component {
                         others: {
                           type: "number"
                         },
-                        //value: this.state.department_name,
+                        value: this.state.duration,
                         events: {
-                          //  onChange: this.changeDeptName.bind(this)
+                          onChange: this.texthandle.bind(this)
                         }
                       }}
                     />
@@ -261,14 +575,13 @@ class Subjective extends Component {
                       selector={{
                         name: "duration_time",
                         className: "select-fld",
-                        // value: this.state.pay_cash,
+                        value: this.state.duration_time,
                         dataSource: {
                           textField: "name",
                           valueField: "value",
                           data: GlobalVariables.PAIN_DURATION
-                        }
-
-                        // onChange: texthandle.bind(this, this)
+                        },
+                        onChange: this.dropDownHandle.bind(this)
                       }}
                     />
 
@@ -278,7 +591,7 @@ class Subjective extends Component {
                         fieldName: "pain_severity"
                       }}
                       selector={{
-                        name: "pain_severity",
+                        name: "severity",
                         className: "select-fld",
                         // value: this.state.pay_cash,
                         dataSource: {
@@ -450,7 +763,7 @@ class Subjective extends Component {
             </div>
 
             <div className="row popupFooter">
-              <div className="col-lg-12">
+              <div className="col-lg-4">
                 <Button
                   variant="raised"
                   color="secondary"
@@ -458,15 +771,25 @@ class Subjective extends Component {
                   // onClick={        }
                   size="small"
                 >
-                  Save
+                  Add
                 </Button>
+                <Button
+                  variant="raised"
+                  style={{ backgroundColor: "#D5D5D5" }}
+                  size="small"
+                >
+                  Clear
+                </Button>
+              </div>
+              <div className="col-lg-8">
                 <Button
                   variant="raised"
                   onClick={this.handleClose}
                   style={{ backgroundColor: "#D5D5D5" }}
+                  // onClick={        }
                   size="small"
                 >
-                  Cancel
+                  Close
                 </Button>
               </div>
             </div>
@@ -578,25 +901,31 @@ class Subjective extends Component {
                       displayTemplate: data => {
                         return (
                           <span>
-                            <IconButton color="primary" title="Edit">
-                              <Edit
-                              // onClick={this.ShowEditModel.bind(this, row)}
-                              />
+                            <IconButton
+                              color="primary"
+                              title="Edit"
+                              onClick={this.addChiefComplain}
+                            >
+                              <Edit />
                             </IconButton>
 
-                            <IconButton color="primary" title="Process To Bill">
-                              <HPI
-                              //onClick={VerifyOrderModel.bind(this, this, row)}
-                              />
+                            <IconButton
+                              color="primary"
+                              title="HPI"
+                              onClick={this.openHPIAddModal}
+                            >
+                              <HPI />
                             </IconButton>
 
-                            <IconButton color="primary" title="Submit">
-                              <Delete
-                                onClick={this.deleteChiefComplain.bind(
-                                  this,
-                                  data
-                                )}
-                              />
+                            <IconButton
+                              color="primary"
+                              title="Delete"
+                              onClick={this.deleteChiefComplain.bind(
+                                this,
+                                data
+                              )}
+                            >
+                              <Delete />
                             </IconButton>
                           </span>
                         );

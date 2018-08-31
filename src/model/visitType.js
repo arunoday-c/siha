@@ -45,11 +45,10 @@ let addVisit = (req, res, next) => {
     visit_type_code: null,
     visit_type_desc: null,
     consultation: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     visit_status: "A"
   };
 
@@ -93,11 +92,10 @@ let updateVisit = (req, res, next) => {
     visit_type_code: null,
     visit_type_desc: null,
     consultation: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     visit_status: "A"
   };
   if (req.db == null) {

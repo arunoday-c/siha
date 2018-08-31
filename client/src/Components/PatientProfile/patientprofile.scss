@@ -125,6 +125,7 @@
     font-size: 1rem;
     text-transform: uppercase;
     ul {
+      position: relative;
       li {
         span {
           font-size: 0.8rem;
@@ -140,6 +141,49 @@
           border-bottom: 3px solid #34b8bc;
           color: #000;
           cursor: pointer;
+        }
+      }
+    }
+    .patient-quick-info {
+      color: #34b8bc;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      position: absolute;
+      right: 20px;
+      li {
+        background: #ffffff;
+        color: #53bcb1;
+        padding: 4px 10px 3px;
+        cursor: pointer;
+        margin: 0 10px;
+        list-style: none;
+        display: inline-block;
+        span {
+          width: 300px;
+          height: auto;
+          position: absolute;
+          right: 0;
+          top: 30px;
+          background: #53bdb1;
+          z-index: 9;
+          padding: 10px;
+          border-radius: 0 0 0 5px;
+          color: #fff;
+          display: none;
+        }
+      }
+      li:hover {
+        background: #53bcb1;
+        color: #fff;
+        padding: 4px 10px;
+
+        p {
+          color: #fff;
+        }
+        span {
+          color: #fff;
+          display: block;
         }
       }
     }
