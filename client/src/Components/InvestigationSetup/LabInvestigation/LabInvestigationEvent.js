@@ -59,7 +59,7 @@ const analyteidhandle = ($this, context, ctrl, e) => {
 const AddAnalytes = ($this, context) => {
   debugger;
   if ($this.state.analyte_id !== null) {
-    let insertanalytes = $this.state.insertanalytes;
+    let insert_analytes = $this.state.insert_analytes;
     let analytes = $this.state.analytes;
     let obj = {
       analyte_id: $this.state.analyte_id,
@@ -72,19 +72,19 @@ const AddAnalytes = ($this, context) => {
         analyte_id: $this.state.analyte_id,
         test_id: $this.state.hims_d_investigation_test_id
       };
-      insertanalytes.push(Insertobj);
+      insert_analytes.push(Insertobj);
     }
 
     analytes.push(obj);
     $this.setState({
       analytes: analytes,
-      insertanalytes: insertanalytes,
+      insert_analytes: insert_analytes,
       analyte_id: null
     });
     if (context !== undefined) {
       context.updateState({
         analytes: analytes,
-        insertanalytes: insertanalytes,
+        insert_analytes: insert_analytes,
         analyte_id: null
       });
     }
@@ -109,25 +109,25 @@ const deleteLabInvestigation = ($this, context, row, rowId) => {
   debugger;
 
   let analytes = $this.state.analytes;
-  let updateanalytes = $this.state.updateanalytes;
+  let update_analytes = $this.state.update_analytes;
   if ($this.state.hims_d_investigation_test_id !== null) {
     let Updateobj = {
-      analyte_id: $this.state.analyte_id,
+      hims_m_lab_analyte_id: row.analyte_id,
       test_id: $this.state.hims_d_investigation_test_id,
       record_status: "I"
     };
-    updateanalytes.push(Updateobj);
+    update_analytes.push(Updateobj);
   }
   analytes.splice(rowId, 1);
   $this.setState({
     analytes: analytes,
-    updateanalytes: updateanalytes
+    update_analytes: update_analytes
   });
 
   if (context !== undefined) {
     context.updateState({
       analytes: analytes,
-      updateanalytes: updateanalytes
+      update_analytes: update_analytes
     });
   }
 };

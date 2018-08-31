@@ -59,6 +59,25 @@ const InsertLabTest = $this => {
           console.log(error);
         }
       });
+    } else {
+      debugger;
+      algaehApiCall({
+        uri: "/investigation/updateInvestigationTest",
+        data: $this.state,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Updated successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
     }
   }
 };

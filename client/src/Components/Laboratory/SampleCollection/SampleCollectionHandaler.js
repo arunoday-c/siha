@@ -3,6 +3,7 @@ import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
 import Enumerable from "linq";
+import { setLocaion } from "../../../utils/indexer";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -11,6 +12,10 @@ const texthandle = ($this, e) => {
   $this.setState({
     [name]: value
   });
+  if ((name = "location_id")) {
+    //TODO chnge based on location --Added by nowshad
+    // setLocaion(value.LabLocation);
+  }
 };
 
 const PatientSearch = ($this, e) => {

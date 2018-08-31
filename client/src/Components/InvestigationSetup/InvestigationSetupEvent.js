@@ -78,11 +78,7 @@ const getInvestigations = $this => {
           };
         })
         .toArray();
-      // for (let i = 0; i < x.length; i++) {}
-      // let analytes = Enumerable.from(Investigations.analytes)
-      //   .groupBy("$.analyte_id", null, (k, g) => {})
-      //   .toArray();
-      // debugger;
+
       $this.setState({ Investigations: Investigations });
     }
   });

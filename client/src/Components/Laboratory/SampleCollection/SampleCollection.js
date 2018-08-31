@@ -122,7 +122,6 @@ class SampleCollection extends Component {
                 }}
                 value={this.state.from_date}
               />
-
               <AlgaehDateHandler
                 div={{ className: "col-lg-2" }}
                 label={{ fieldName: "to_date" }}
@@ -132,7 +131,6 @@ class SampleCollection extends Component {
                 }}
                 value={this.state.to_date}
               />
-
               <AlagehFormGroup
                 div={{ className: "col-lg-2" }}
                 label={{
@@ -151,14 +149,12 @@ class SampleCollection extends Component {
                   }
                 }}
               />
-
               <div className="col-lg-1 form-group">
                 <span
                   className="fas fa-search fa-2x"
                   onClick={PatientSearch.bind(this, this)}
                 />
               </div>
-
               <AlagehAutoComplete
                 div={{ className: "col-lg-2" }}
                 label={{
@@ -177,7 +173,6 @@ class SampleCollection extends Component {
                   onChange: texthandle.bind(this, this)
                 }}
               />
-
               <AlagehAutoComplete
                 div={{ className: "col-lg-2" }}
                 label={{
@@ -188,6 +183,24 @@ class SampleCollection extends Component {
                   name: "status",
                   className: "select-fld",
                   value: this.state.status,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: FORMAT_TEST_STATUS
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+              <AlagehAutoComplete
+                div={{ className: "col-lg-2" }}
+                label={{
+                  fieldName: "location_id",
+                  isImp: false
+                }}
+                selector={{
+                  name: "location_id",
+                  className: "select-fld",
+                  value: this.state.location_id,
                   dataSource: {
                     textField: "name",
                     valueField: "value",

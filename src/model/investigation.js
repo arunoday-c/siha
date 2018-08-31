@@ -243,11 +243,11 @@ let getInvestigTestList = (req, res, next) => {
       connection.query(
         "select hims_d_investigation_test_id, description, services_id,R.hims_d_rad_template_detail_id,R.template_name,R.template_html,\
         investigation_type,lab_section_id, send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required,\
-                 facility_description, priority, cpt_id, category_id, film_category, screening_test,film_used \
-                 from hims_d_investigation_test T left  join  hims_d_rad_template_detail R on\
-                 T.hims_d_investigation_test_id = R.test_id left join hims_m_lab_specimen S on \
-                 S.test_id = T.hims_d_investigation_test_id  left  join hims_m_lab_analyte A on \
-                 A.test_id=T.hims_d_investigation_test_id where" +
+        facility_description, priority, cpt_id, category_id, film_category, screening_test,film_used, A.analyte_id, A.hims_m_lab_analyte_id \
+        from hims_d_investigation_test T left  join  hims_d_rad_template_detail R on\
+        T.hims_d_investigation_test_id = R.test_id left join hims_m_lab_specimen S on \
+        S.test_id = T.hims_d_investigation_test_id  left join hims_m_lab_analyte A on \
+        A.test_id=T.hims_d_investigation_test_id where" +
           where.condition,
         where.values,
 
