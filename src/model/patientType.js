@@ -90,11 +90,10 @@ let addPatientType = (req, res, next) => {
     patient_type_code: null,
     patitent_type_desc: null,
     arabic_patitent_type_desc: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     visit_status: "A"
   };
 
@@ -136,11 +135,10 @@ let updatePatientType = (req, res, next) => {
     patient_type_code: null,
     patitent_type_desc: null,
     arabic_patitent_type_desc: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     visit_status: "A"
   };
 

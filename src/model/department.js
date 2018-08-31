@@ -22,11 +22,8 @@ let addDepartment = (req, res, next) => {
     effective_start_date: null,
     effective_end_date: null,
     sub_department_status: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null,
-    record_status: null
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   let department = {
@@ -39,11 +36,8 @@ let addDepartment = (req, res, next) => {
     effective_start_date: null,
     effective_end_date: null,
     department_status: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null,
-    record_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
     sub_department: [subDepartment]
   };
 
@@ -341,11 +335,10 @@ let addSubDepartment = (req, res, next) => {
     effective_start_date: null,
     effective_end_date: null,
     sub_department_status: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null,
-    record_status: null
+
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   try {
@@ -425,11 +418,10 @@ let updateSubDepartment = (req, res, next) => {
     effective_start_date: null,
     effective_end_date: null,
     sub_department_status: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null,
-    record_status: null
+
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   try {
     if (req.db == null) {

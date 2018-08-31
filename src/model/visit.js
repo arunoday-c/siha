@@ -30,9 +30,9 @@ let insertPatientVisitData = (req, res, next) => {
         mlc_police_station: null,
         mlc_wound_certified_date: null,
         created_by: req.userIdentity.algaeh_d_app_user_id,
-        created_date: null,
+
         updated_by: req.userIdentity.algaeh_d_app_user_id,
-        updated_date: null,
+
         record_status: null,
         patient_message: null,
         is_critical_message: null,
@@ -398,11 +398,10 @@ let insertVisitData = (dataBase, req, res, callBack) => {
     mlc_accident_reg_no: null,
     mlc_police_station: null,
     mlc_wound_certified_date: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     patient_message: null,
     is_critical_message: null,
     message_active_till: null,
@@ -771,11 +770,10 @@ let updateData = (dataBase, req, callBack) => {
     mlc_accident_reg_no: null,
     mlc_police_station: null,
     mlc_wound_certified_date: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     patient_message: null,
     is_critical_message: null,
     message_active_till: null,

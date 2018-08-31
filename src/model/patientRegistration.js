@@ -88,9 +88,9 @@ let insertPatientData = (req, res, next) => {
         primary_id_file: "",
         secondary_id_file: "",
         created_by: req.userIdentity.algaeh_d_app_user_id,
-        created_date: null,
+
         updated_by: req.userIdentity.algaeh_d_app_user_id,
-        updated_date: null,
+
         city_id: null,
         state_id: null,
         country_id: null,
@@ -249,10 +249,10 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
     photo_file: "",
     primary_id_file: "",
     secondary_id_file: "",
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     city_id: null,
     state_id: null,
     country_id: null,
@@ -408,10 +408,10 @@ let updateData = (dataBase, req, callBack) => {
     photo_file: "",
     primary_id_file: "",
     secondary_id_file: "",
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     city_id: null,
     state_id: null,
     country_id: null,

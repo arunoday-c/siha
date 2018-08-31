@@ -54,10 +54,8 @@ let insertSection = (req, res, next) => {
     description: null,
     section_status: "A",
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
@@ -96,10 +94,8 @@ let updateSection = (req, res, next) => {
     description: null,
     section_status: "A",
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
@@ -211,10 +207,8 @@ let insertContainer = (req, res, next) => {
     description: null,
     container_status: "A",
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
@@ -253,10 +247,8 @@ let updateContainer = (req, res, next) => {
     description: null,
     container_status: "A",
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
@@ -368,10 +360,8 @@ let insertSpecimen = (req, res, next) => {
     storage_type: null,
     specimen_status: "A",
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
-    updated_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_date: null,
-    record_status: null
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
@@ -413,10 +403,8 @@ let updateSpecimen = (req, res, next) => {
     description: null,
     specimen_status: "A",
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
@@ -531,10 +519,8 @@ let insertAnalytes = (req, res, next) => {
     analyte_status: "A",
     result_unit: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
@@ -579,10 +565,8 @@ let updateAnalytes = (req, res, next) => {
     analyte_type: null,
     result_unit: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
@@ -696,10 +680,8 @@ let insertTestCategory = (req, res, next) => {
     category_name: null,
     category_status: "A",
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   debugLog("Catey: ");
   if (req.db == null) {
@@ -741,10 +723,8 @@ let updateTestCategory = (req, res, next) => {
     category_name: null,
     category_status: "A",
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());

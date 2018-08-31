@@ -17,11 +17,9 @@ let modelAppGen = {
   postfix_end: null,
   current_num: null,
   pervious_num: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null
+  created_by: req.userIdentity.algaeh_d_app_user_id,
+
+  updated_by: req.userIdentity.algaeh_d_app_user_id
 };
 let insertToAppgen = (req, res, next) => {
   try {
@@ -125,11 +123,10 @@ let visaType = {
   visa_type_code: null,
   visa_type: null,
   visa_desc: null,
-  created_by: null,
-  created_date: null,
-  updated_by: null,
-  updated_date: null,
-  record_status: null,
+  created_by: req.userIdentity.algaeh_d_app_user_id,
+
+  updated_by: req.userIdentity.algaeh_d_app_user_id,
+
   visa_status: "A"
 };
 let addVisa = (req, res, next) => {
