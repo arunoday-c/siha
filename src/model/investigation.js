@@ -265,4 +265,216 @@ let getInvestigTestList = (req, res, next) => {
   }
 };
 
-module.exports = { addInvestigationTest, getInvestigTestList };
+let updateInvestigationTest = (req, res, next) => {
+  let investigationModel = {
+    short_description: null,
+    description: null,
+    investigation_type: null,
+    lab_section_id: null,
+    send_out_test: null,
+    available_in_house: null,
+    restrict_order: null,
+    restrict_by: null,
+    external_facility_required: null,
+    facility_description: null,
+    priority: null,
+    cpt_id: null,
+    category_id: null,
+    specimen_id: null,
+    container_id: null,
+    container_code: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
+  };
+
+  try {
+    debugFunction("updateInvestigationTest ");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    debugLog("Input body", req.body);
+    let investigationDetails = extend(investigationModel, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        let queryBuilder =
+          "UPDATE `hims_d_investigation_test`\
+        SET   short_description=?,description=?,investigation_type=?,lab_section_id=?,send_out_test=?,available_in_house=?,\
+        restrict_order=?,restrict_by=?,external_facility_required=?,facility_description=?,\
+        services_id=?,priority=?,cpt_id=?,category_id=?,film_category=?,screening_test=?,film_used=?,updated_date=?,updated_by=?\
+        WHERE record_status='A' AND `hims_d_investigation_test_id`=?;";
+        let inputs = [
+          investigationDetails.short_description,
+          investigationDetails.description,
+          investigationDetails.investigation_type,
+          investigationDetails.lab_section_id,
+          investigationDetails.send_out_test,
+          investigationDetails.available_in_house,
+          investigationDetails.restrict_order,
+          investigationDetails.restrict_by,
+          investigationDetails.external_facility_required,
+          investigationDetails.facility_description,
+          investigationDetails.services_id,
+          investigationDetails.priority,
+          investigationDetails.cpt_id,
+          investigationDetails.category_id,
+          investigationDetails.film_category,
+          investigationDetails.screening_test,
+          investigationDetails.film_used,
+          new Date(),
+          investigationDetails.updated_by,
+          investigationDetails.hims_d_investigation_test_id
+        ];
+
+        connection.query(queryBuilder, inputs, (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          if (
+            result != null &&
+            investigationDetails.investigation_type == "L"
+          ) {
+            //m_lab_specimen update
+            connection.query(
+              "UPDATE `hims_m_lab_specimen`\
+              SET  specimen_id=?,container_id=?,container_code=?,updated_date=?,updated_by=?\
+              WHERE record_status='A' AND `hims_m_lab_specimen_id`=?;",
+              [
+                investigationDetails.specimen_id,
+                investigationDetails.container_id,
+                investigationDetails.container_code,
+                new Date(),
+                investigationDetails.updated_by,
+                investigationDetails.hims_m_lab_specimen_id
+              ],
+              (error, resultSpc) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                //bulk analytes update
+                if (resultSpc != null) {
+                  let inputParam = extend({}, req.body.update_analytes);
+                  debugLog("input analayte", inputParam);
+
+                  let qry = "";
+
+                  for (let i = 0; i < req.body.update_analytes.length; i++) {
+                    qry +=
+                      " UPDATE `hims_m_lab_analyte` SET analyte_id='" +
+                      inputParam[i].analyte_id +
+                      "',analyte_type='" +
+                      inputParam[i].analyte_type +
+                      "',result_unit=\
+          '" +
+                      inputParam[i].result_unit +
+                      "', updated_date='" +
+                      new Date() +
+                      "',updated_by=\
+          '" +
+                      inputParam[i].updated_by +
+                      "' WHERE hims_m_lab_analyte_id='" +
+                      inputParam[i].hims_m_lab_analyte_id +
+                      "' AND record_status='A' ;";
+                  }
+
+                  connection.query(qry, (error, result_anlyt) => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      req.records = result_anlyt;
+                      next();
+                    });
+                  });
+                }
+              }
+            );
+          } //bulk update rad_template
+          else if (
+            result != null &&
+            investigationDetails.investigation_type == "R"
+          ) {
+            let inputParam = extend({}, req.body.update_rad_template);
+            debugLog("input rad template", inputParam);
+
+            let qry = "";
+
+            for (let i = 0; i < req.body.update_rad_template.length; i++) {
+              qry +=
+                " UPDATE `hims_d_rad_template_detail` SET test_id='" +
+                inputParam[i].test_id +
+                "',template_name='" +
+                inputParam[i].template_name +
+                "',template_html=\
+    '" +
+                inputParam[i].template_html +
+                "',template_status='" +
+                inputParam[i].template_status +
+                "', updated_date='" +
+                new Date() +
+                "',updated_by=\
+    '" +
+                inputParam[i].updated_by +
+                "' WHERE hims_d_rad_template_detail_id='" +
+                inputParam[i].hims_d_rad_template_detail_id +
+                "' AND record_status='A' ;";
+            }
+
+            connection.query(qry, (error, result_rad) => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+              connection.commit(error => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                req.records = result_rad;
+                next();
+              });
+            });
+          }
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+module.exports = {
+  addInvestigationTest,
+  getInvestigTestList,
+  updateInvestigationTest
+};

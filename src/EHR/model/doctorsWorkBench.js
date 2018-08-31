@@ -1002,7 +1002,7 @@ let getChiefComplaints = (req, res, next) => {
     }
     let db = req.db;
     let sub_department_id = req.userIdentity.sub_department_id;
-    debugLog("sub_dp_id", sub_department_id);
+    debugLog("sub_dp_id:", sub_department_id);
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_hpi_header_id,hpi_description from hims_d_hpi_header where sub_department_id=? and record_status='A';",
