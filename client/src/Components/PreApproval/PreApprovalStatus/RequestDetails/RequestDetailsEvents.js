@@ -17,7 +17,7 @@ const datehandle = ($this, row, ctrl, e) => {
 const updateServices = ($this, context, row) => {
   let service_array = [];
   row.requested_date = moment(new Date())._d;
-  row.updated_by = getCookie("UserID");
+ // row.updated_by = getCookie("UserID");
   row.requested_by = getCookie("UserID");
   service_array.push(row);
   if (context != null) {

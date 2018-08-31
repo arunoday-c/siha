@@ -144,10 +144,10 @@
         "path": "/RadOrderedList"
       },
       {
-        "name": "Result Entry",
-        "label": "Result Entry",
-        "arlabel": "نتيجة الدخول",
-        "path": "/ResultEntry"
+        "name": "WorkList",
+        "label": "Work List",
+        "arlabel": "قائمة العمل",
+        "path": "/WorkList"
       }
     ]
   },

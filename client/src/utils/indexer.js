@@ -87,3 +87,23 @@ export function setSecure(data) {
       }).complete;
   });
 }
+
+export function setLocaion(data) {
+  const dbPromise = idb.open("Hims", 1, upgradeDB => {
+    upgradeDB.createObjectStore("LabLocation", { keyPath: "id" });
+  });
+  dbPromise.then(db => {
+    db.transaction("LabLocation", "readwrite")
+      .objectStore("LabLocation")
+      .delete(1);
+  });
+  dbPromise.then(db => {
+    db
+      .transaction("LabLocation", "readwrite")
+      .objectStore("LabLocation")
+      .put({
+        id: 1,
+        secData: data
+      }).complete;
+  });
+}

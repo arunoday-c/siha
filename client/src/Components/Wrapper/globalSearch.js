@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import SearchModule from "./searchModule";
-const searchWindowS = document.getElementById("searchWindow");
+//const searchWindowS = document.getElementById("searchWindow");
 let searchWindow = props => {
   return (
     <SearchModule

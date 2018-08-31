@@ -21,7 +21,7 @@ const onchangegridcol = ($this, row, e) => {
 
 const updateLabContainer = ($this, data) => {
   debugger;
-  data.updated_by = getCookie("UserID");
+ // data.updated_by = getCookie("UserID");
 
   algaehApiCall({
     uri: "/labmasters/updateContainer",

@@ -125,9 +125,9 @@
         "path": "/RadOrderedList"
       },
       {
-        "name": "Result Entry",
-        "label": "نتيجة الدخول",
-        "path": "/ResultEntry"
+        "name": "WorkList",
+        "label": "قائمة العمل",
+        "path": "/WorkList"
       }
     ]
   },

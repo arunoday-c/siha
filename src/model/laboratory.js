@@ -4,7 +4,7 @@ import {
   releaseDBConnection,
   jsonArrayToObject
 } from "../utils";
-
+import pad from "node-string-pad";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import appsettings from "../utils/appsettings.json";
@@ -36,10 +36,10 @@ let getLabOrderedServices = (req, res, next) => {
       }
       db.query(
         "SELECT hims_f_lab_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
-        SA.status, cancelled, ordered_date, test_type, PAT.patient_code,PAT.full_name,SP.sample_id \
-        from ((hims_f_lab_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
-        hims_d_services SR on SR.hims_d_services_id=SA.service_id) left outer join hims_f_lab_sample SP on \
-        SA.hims_f_lab_order_id = SP.order_id WHERE SA.record_status='A' " +
+        SA.status, cancelled, ordered_date, test_type, PAT.patient_code,PAT.full_name,SP.sample_id,SP.collected,\
+        SP.collected_by, SP.collected_date,SP.hims_d_lab_sample_id from ((hims_f_lab_order SA inner join hims_f_patient PAT ON \
+        SA.patient_id=PAT.hims_d_patient_id) inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id) \
+        left outer join hims_f_lab_sample SP on SA.hims_f_lab_order_id = SP.order_id WHERE SA.record_status='A' AND " +
           whereOrder +
           (where.condition == "" ? "" : " AND " + where.condition),
         where.values,
@@ -265,11 +265,13 @@ let updateLabOrderServices = (req, res, next) => {
         connection.query(
           "UPDATE hims_f_lab_sample SET `collected`=?,`collected_by`=?,\
 `collected_date` =now() WHERE hims_d_lab_sample_id=?;\
-SELECT container_code FROM hims_m_lab_specimen where hims_m_lab_specimen_id=?;",
+SELECT container_code FROM hims_m_lab_specimen where hims_m_lab_specimen_id=?;\
+SELECT lab_location_code hims_d_hospital where hims_d_hospital_id=?",
           [
             req.userIdentity.algaeh_d_app_user_id,
             req.body.hims_d_lab_sample_id,
-            req.body.hims_m_lab_specimen_id
+            req.body.hims_m_lab_specimen_id,
+            req.body.hims_d_hospital_id
           ],
           (error, result) => {
             if (error) {
@@ -282,8 +284,66 @@ SELECT container_code FROM hims_m_lab_specimen where hims_m_lab_specimen_id=?;",
       })
         .then(result => {
           if (result != null) {
+            const _date = new Date();
             new Promise((resolve, reject) => {
-              connection.query("");
+              connection.query(
+                "select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
+               where hospital_id =? and container_id=? and date =?",
+                [req.body.hims_d_hospital_id, req.body.container_id, _date],
+                (error, records) => {
+                  if (error) {
+                    reject(error);
+                  } else {
+                    resolve(records);
+                  }
+                }
+              );
+            }).then(record => {
+              let query = "";
+              let condition = [];
+              let padNum = "";
+              if (record != null && record.length > 0) {
+                let  _newNumber = parseInt(record.number);
+                _newNumber = _newNumber + 1;
+                padNum = pad(String(_newNumber), 3, "LEFT", "0");
+                condition = [
+                  _newNumber,
+                  record.hims_m_hospital_container_mapping_id,
+                  req.userIdentity.algaeh_d_app_user_id
+                ];
+                query =
+                  "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() where hims_m_hospital_container_mapping_id =?";
+              } else {
+                condition = [
+                  req.body.hims_d_hospital_id,
+                  req.body.container_id,
+                  _date,
+                  1,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  req.userIdentity.algaeh_d_app_user_id
+                ];
+                query =
+                  "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,`number`,`created_by`,`updated_by`) value ?";
+              }
+              connection.query(query, condition, (error, returns) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                } else {
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    req.records = returns;
+                    next();
+                  });
+                }
+              });
             });
           }
         })
@@ -299,5 +359,6 @@ SELECT container_code FROM hims_m_lab_specimen where hims_m_lab_specimen_id=?;",
 
 module.exports = {
   getLabOrderedServices,
-  insertLadOrderedServices
+  insertLadOrderedServices,
+  updateLabOrderServices
 };

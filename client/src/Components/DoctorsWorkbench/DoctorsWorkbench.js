@@ -53,31 +53,40 @@ class DoctorsWorkbench extends Component {
   }
 
   moveToEncounterList(e) {
-    let updated_by = getCookie("UserID");
     const patient_encounter_id = e.currentTarget.getAttribute(
       "data-encounterid"
     );
+    const patient_id = e.currentTarget.getAttribute("data-patientid");
 
     algaehApiCall({
       uri: "/doctorsWorkBench/updatdePatEncntrStatus",
       data: {
-        patient_encounter_id: patient_encounter_id,
-        updated_by: updated_by
+        patient_encounter_id: patient_encounter_id
       },
       method: "PUT",
       onSuccess: response => {
-        if (response.data.success) this.loadListofData();
+        debugger;
+        if (response.data.success) {
+          this.loadListofData();
+          this.moveToPatientProfile(patient_encounter_id, patient_id);
+        }
       },
       onFailure: error => {}
     });
   }
+  moveToPatientProfile(ei, pi) {
+    setGlobal({
+      "EHR-STD": "PatientProfile",
+      current_patient: pi,
+      episode_id: ei
+    });
+    document.getElementById("ehr-router").click();
+  }
 
   loadListofData() {
-    console.log("from date", this.state.fromDate);
     this.props.getMyDay({
       uri: "/doctorsWorkBench/getMyDay",
       data: {
-        provider_id: 2,
         fromDate: this.state.fromDate,
         toDate: this.state.toDate
       },
@@ -223,6 +232,7 @@ class DoctorsWorkbench extends Component {
                         data-encounterid={String(
                           data.hims_f_patient_encounter_id
                         )}
+                        data-patientid={String(data.patient_id)}
                         onClick={this.moveToEncounterList}
                       >
                         <span className="op-sec-1">

@@ -68,7 +68,6 @@ class NetworkPlan extends PureComponent {
       employer: null,
       policy_number: null,
       preapp_limit: null,
-      created_by: getCookie("UserID"),
       hospital_id: null,
       preapp_limit_from: "GROSS",
 
