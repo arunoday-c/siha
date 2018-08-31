@@ -417,16 +417,14 @@ let updateInvestigationTest = (req, res, next) => {
             result != null &&
             investigationDetails.investigation_type == "R"
           ) {
-            let inputParam = extend({}, req.body.update_rad_template);
-            debugLog("input rad template", inputParam);
+            let inputParam = extend([], req.body.update_rad_temp);
+            debugLog("input rad template:", inputParam);
 
             let qry = "";
 
-            for (let i = 0; i < req.body.update_rad_template.length; i++) {
+            for (let i = 0; i < req.body.update_rad_temp.length; i++) {
               qry +=
-                " UPDATE `hims_d_rad_template_detail` SET test_id='" +
-                inputParam[i].test_id +
-                "',template_name='" +
+                " UPDATE `hims_d_rad_template_detail` SET template_name='" +
                 inputParam[i].template_name +
                 "',template_html=\
     '" +
@@ -437,7 +435,9 @@ let updateInvestigationTest = (req, res, next) => {
                 new Date() +
                 "',updated_by=\
     '" +
-                inputParam[i].updated_by +
+                investigationDetails.updated_by +
+                "',record_status='" +
+                inputParam[i].record_status +
                 "' WHERE hims_d_rad_template_detail_id='" +
                 inputParam[i].hims_d_rad_template_detail_id +
                 "' AND record_status='A' ;";
