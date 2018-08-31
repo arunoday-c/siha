@@ -10,10 +10,10 @@ let inputServiceType = {
   service_type_desc: null,
   arabic_service_type: null,
   effective_start_date: null,
-  effective_end_date: null,
-  created_by: req.userIdentity.algaeh_d_app_user_id,
+  effective_end_date: null
+  // created_by: req.userIdentity.algaeh_d_app_user_id,
 
-  updated_by: req.userIdentity.algaeh_d_app_user_id
+  // updated_by: req.userIdentity.algaeh_d_app_user_id
 };
 
 let serviceTypeWhere = {
