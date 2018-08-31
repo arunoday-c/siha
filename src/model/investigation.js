@@ -349,6 +349,7 @@ let updateInvestigationTest = (req, res, next) => {
             investigationDetails.investigation_type == "L"
           ) {
             //m_lab_specimen update
+            debugLog("inside L near specimen");
             connection.query(
               "UPDATE `hims_m_lab_specimen`\
               SET  specimen_id=?,container_id=?,container_code=?,updated_date=?,updated_by=?\
@@ -371,25 +372,19 @@ let updateInvestigationTest = (req, res, next) => {
 
                 //bulk analytes update
                 if (resultSpc != null) {
-                  let inputParam = extend({}, req.body.update_analytes);
+                  debugLog("inside L near analyte");
+                  let inputParam = extend([], req.body.update_analytes);
                   debugLog("input analayte", inputParam);
 
                   let qry = "";
 
                   for (let i = 0; i < req.body.update_analytes.length; i++) {
                     qry +=
-                      " UPDATE `hims_m_lab_analyte` SET analyte_id='" +
-                      inputParam[i].analyte_id +
-                      "',analyte_type='" +
-                      inputParam[i].analyte_type +
-                      "',result_unit=\
-          '" +
-                      inputParam[i].result_unit +
-                      "', updated_date='" +
+                      " UPDATE `hims_m_lab_analyte` SET record_status='I', updated_date='" +
                       new Date() +
                       "',updated_by=\
           '" +
-                      inputParam[i].updated_by +
+                      investigationDetails.updated_by +
                       "' WHERE hims_m_lab_analyte_id='" +
                       inputParam[i].hims_m_lab_analyte_id +
                       "' AND record_status='A' ;";
@@ -402,6 +397,7 @@ let updateInvestigationTest = (req, res, next) => {
                         next(error);
                       });
                     }
+                    debugLog("deleted analyte");
                     connection.commit(error => {
                       if (error) {
                         connection.rollback(() => {
