@@ -12,7 +12,6 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const Validations = $this => {
-  debugger;
   let isError = false;
 
   if ($this.state.description === null) {
@@ -35,14 +34,10 @@ const Validations = $this => {
   }
 };
 const InsertLabTest = $this => {
-  debugger;
-
   const err = Validations($this);
 
   if (!err) {
-    debugger;
     if ($this.state.hims_d_investigation_test_id === null) {
-      debugger;
       algaehApiCall({
         uri: "/investigation/addInvestigationTest",
         data: $this.state,
@@ -60,7 +55,6 @@ const InsertLabTest = $this => {
         }
       });
     } else {
-      debugger;
       algaehApiCall({
         uri: "/investigation/updateInvestigationTest",
         data: $this.state,

@@ -12,11 +12,9 @@ let accessReport = options => {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", fileName, true);
   xhr.onreadystatechange = function() {
-    debugger;
     if (this.response != "") {
       var parser = new DOMParser();
       let _html = parser.parseFromString(this.response, "text/xml");
-      debugger;
     }
   };
   xhr.send();

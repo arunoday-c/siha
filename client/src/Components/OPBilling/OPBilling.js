@@ -78,7 +78,6 @@ class PatientDisplayDetails extends Component {
       output = nextProps.existinsurance[0];
     }
     if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
-      debugger;
       nextProps.genbill.patient_payable_h = nextProps.genbill.patient_payable;
       billOut = nextProps.genbill;
     }
@@ -141,7 +140,7 @@ class PatientDisplayDetails extends Component {
           expiry_date: null,
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
-         // created_by: getCookie("UserID"),
+          // created_by: getCookie("UserID"),
           //created_date: new Date(),
           //updated_by: null,
           updated_date: null,
@@ -155,9 +154,9 @@ class PatientDisplayDetails extends Component {
           expiry_date: this.state.card_date,
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
-        //  created_by: getCookie("UserID"),
-         // created_date: new Date(),
-         // updated_by: null,
+          //  created_by: getCookie("UserID"),
+          // created_date: new Date(),
+          // updated_by: null,
           updated_date: null,
           card_type: null
         });
@@ -170,8 +169,8 @@ class PatientDisplayDetails extends Component {
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
           //created_by: getCookie("UserID"),
-         // created_date: new Date(),
-         // updated_by: null,
+          // created_date: new Date(),
+          // updated_by: null,
           updated_date: null,
           card_type: null
         });
@@ -190,7 +189,6 @@ class PatientDisplayDetails extends Component {
 
   SaveBill(e) {
     this.GenerateReciept($this => {
-      debugger;
       algaehApiCall({
         uri: "/opBilling/addOpBIlling",
         data: $this.state,

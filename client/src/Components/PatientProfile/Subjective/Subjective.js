@@ -88,7 +88,7 @@ class Subjective extends Component {
   }
 
   deleteChiefComplain(data, e) {
-    debugger;
+    
     this.showconfirmDialog(data.hims_f_episode_chief_complaint_id);
   }
 
