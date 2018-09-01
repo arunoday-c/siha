@@ -74,6 +74,7 @@ class DoctorsWorkbench extends Component {
       onFailure: error => {}
     });
   }
+
   moveToPatientProfile(ei, pi) {
     setGlobal({
       "EHR-STD": "PatientProfile",

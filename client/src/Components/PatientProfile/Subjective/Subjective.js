@@ -26,6 +26,8 @@ const AllergyData = [
   { food: "Iodine", active: "Yes" }
 ];
 
+let patChiefComplain = [];
+
 class Subjective extends Component {
   constructor(props) {
     super(props);
@@ -34,6 +36,7 @@ class Subjective extends Component {
       openComplain: false,
       pain: 0,
       patientChiefComplains: [],
+      chiefComplainList: [],
       openHpiModal: false
     };
 
@@ -148,7 +151,7 @@ class Subjective extends Component {
       onSuccess: response => {
         if (response.data.success) {
           console.log("Subdepartment chief complains:", response.data.records);
-          // this.setState({ patientChiefComplains: response.data.records });
+          this.setState({ chiefComplainList: response.data.records });
         }
       },
       onFailure: error => {}
@@ -167,6 +170,9 @@ class Subjective extends Component {
   }
 
   render() {
+    patChiefComplain = this.state.patientChiefComplains
+      ? this.state.patientChiefComplains
+      : [];
     return (
       <div className="subjective">
         {/* HPI Modal Start */}
@@ -192,7 +198,10 @@ class Subjective extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.PAIN_DURATION
+                            data:
+                              this.state.chiefComplainList !== undefined
+                                ? this.state.chiefComplainList
+                                : null
                           }
 
                           // onChange: texthandle.bind(this, this)
@@ -494,21 +503,28 @@ class Subjective extends Component {
                           selector={{
                             name: "chief_complains",
                             className: "select-fld",
-                            // value: this.state.pay_cash,
+                            value: this.state.chief_complains,
                             dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.PAIN_DURATION
-                            }
+                              textField: "hpi_description",
+                              valueField: "hims_d_hpi_header_id",
+                              data:
+                                this.state.chiefComplainList.length !== 0
+                                  ? this.state.chiefComplainList
+                                  : null
+                            },
 
-                            // onChange: texthandle.bind(this, this)
+                            onChange: this.dropDownHandle.bind(this)
                           }}
                         />
                         <div className="bordered-layout">
                           <ul>
-                            <li>
-                              <span> Text </span>
-                            </li>
+                            {/* patientChiefComplains */}
+
+                            {patChiefComplain.map((data, index) => (
+                              <li>
+                                <span> {data.cheif_complaint_name} </span>
+                              </li>
+                            ))}
                           </ul>
                         </div>
                       </div>
@@ -523,7 +539,7 @@ class Subjective extends Component {
                       </h6>
                       <div className="complain-box">
                         {" "}
-                        <div className="bordered-layout">HEllo</div>
+                        <div className="bordered-layout">Vomiting</div>
                       </div>
                     </div>
                   </div>

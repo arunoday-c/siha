@@ -40,7 +40,7 @@ class PatientProfile extends Component {
   componentDidMount() {
     //TODO
     // Validations on API calls
-
+    debugger;
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientProfile",
       data: {
@@ -237,7 +237,7 @@ class PatientProfile extends Component {
             </li>
             <ul className="float-right patient-quick-info">
               <li>
-                <i class="fas fa-allergies" />
+                <i className="fas fa-allergies" />
                 <span>
                   <b> Allergies : </b>
                   <p>
@@ -248,7 +248,7 @@ class PatientProfile extends Component {
                 </span>
               </li>
               <li>
-                <i class="fas fa-diagnoses" />
+                <i className="fas fa-diagnoses" />
 
                 <span>
                   <b> Diagnosis : </b>
@@ -260,7 +260,7 @@ class PatientProfile extends Component {
                 </span>
               </li>
               <li>
-                <i class="fas fa-utensils" />
+                <i className="fas fa-utensils" />
 
                 <span>
                   <b> Diet : </b>

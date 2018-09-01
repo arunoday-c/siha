@@ -15,6 +15,11 @@
     margin-bottom: 15px; }
   :global .float-right {
     float: right; }
+  :global .search_logo {
+    width: 50px;
+    height: 40px;
+    cursor: pointer;
+    margin-top: 10px; }
   :global .btn-primary:not(:disabled):not(.disabled).active,
   :global .btn-primary:not(:disabled):not(.disabled):active,
   :global .show > .btn-primary.dropdown-toggle {

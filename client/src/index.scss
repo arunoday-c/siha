@@ -11,6 +11,13 @@ $forntSize: 0.7rem;
     float: right;
   }
 
+  .search_logo {
+    width: 50px;
+    height: 40px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
   //Portlet Styles Start
 
   .btn-primary:not(:disabled):not(.disabled).active,
