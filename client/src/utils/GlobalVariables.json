@@ -213,5 +213,13 @@
     { "name": "Film", "value": "FM" },
     { "name": "Laser Film", "value": "LF" },
     { "name": "Packs", "value": "PS" }
+  ],
+  "FORMAT_RAD_STATUS": [
+    { "name": "Ordered", "value": "O" },
+    { "name": "Scheduled", "value": "S" },
+    { "name": "Under Process", "value": "UP" },
+    { "name": "Cancelled", "value": "CN" },
+    { "name": "Result  Confirmed ", "value": "RC" },
+    { "name": "Result Avaiable", "value": "RA" }
   ]
 }

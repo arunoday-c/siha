@@ -6,7 +6,7 @@ import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import Accessible from "@material-ui/icons/Accessible";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
-import "./RadOrderedList.css";
+import "./RadScheduledList.css";
 import "./../../../styles/site.css";
 
 import {
@@ -15,7 +15,7 @@ import {
   datehandle,
   getRadTestList,
   UpdateRadOrder
-} from "./RadOrderedListEvents";
+} from "./RadScheduledListEvents";
 
 import {
   AlgaehDataGrid,
@@ -27,7 +27,7 @@ import {
 
 import {
   FORMAT_PRIORITY,
-  FORMAT_TEST_STATUS
+  FORMAT_RAD_STATUS
 } from "../../../utils/GlobalVariables.json";
 
 import IconButton from "@material-ui/core/IconButton";
@@ -38,7 +38,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 // import SampleCollectionModal from "../SampleCollections/SampleCollectionModal";
 // import SampleCollectionModal from "../SampleCollections/SampleCollections";
 
-class RadOrderedList extends Component {
+class RadScheduledList extends Component {
   constructor(props) {
     super(props);
     let month = moment().format("MM");
@@ -58,14 +58,6 @@ class RadOrderedList extends Component {
   }
 
   componentDidMount() {
-    this.props.getTestCategory({
-      uri: "/labmasters/selectTestCategory",
-      method: "GET",
-      redux: {
-        type: "TESTCATEGORY_GET_DATA",
-        mappingName: "testcategory"
-      }
-    });
     getRadTestList(this, this);
   }
   changeDateFormat = date => {
@@ -91,7 +83,7 @@ class RadOrderedList extends Component {
     //   this.state.billdetails === null ? [{}] : this.state.billdetails;
     return (
       <React.Fragment>
-        <div className="hptl-phase1-rad-list-form">
+        <div className="hptl-phase1-rad-work-list-form">
           <BreadCrumb
             title={
               <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
@@ -142,6 +134,43 @@ class RadOrderedList extends Component {
                 value={this.state.to_date}
               />
 
+              <AlagehAutoComplete
+                div={{ className: "col-lg-2" }}
+                label={{
+                  fieldName: "proiorty",
+                  isImp: false
+                }}
+                selector={{
+                  name: "proiorty",
+                  className: "select-fld",
+                  value: this.state.proiorty,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: FORMAT_PRIORITY
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col-lg-2" }}
+                label={{
+                  fieldName: "status"
+                }}
+                selector={{
+                  name: "status",
+                  className: "select-fld",
+                  value: this.state.status,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: FORMAT_RAD_STATUS
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+
               <AlagehFormGroup
                 div={{ className: "col-lg-2" }}
                 label={{
@@ -168,43 +197,6 @@ class RadOrderedList extends Component {
                 />
               </div>
 
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "proiorty",
-                  isImp: false
-                }}
-                selector={{
-                  name: "proiorty",
-                  className: "select-fld",
-                  value: this.state.proiorty,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_PRIORITY
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "category_id"
-                }}
-                selector={{
-                  name: "category_id",
-                  className: "select-fld",
-                  value: this.state.category_id,
-                  dataSource: {
-                    textField: "category_name",
-                    valueField: "hims_d_test_category_id",
-                    data: this.props.testcategory
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
               <div className="col-lg-1">
                 <IconButton className="go-button" color="primary">
                   <PlayCircleFilled onClick={getRadTestList.bind(this, this)} />
@@ -215,7 +207,7 @@ class RadOrderedList extends Component {
             <div className="row form-details">
               <div className="col-lg-12">
                 <AlgaehDataGrid
-                  id="Oedered_list_grid"
+                  id="Scheduled_list_grid"
                   columns={[
                     {
                       fieldName: "patient_code",
@@ -256,8 +248,8 @@ class RadOrderedList extends Component {
                             : row.status === "CN"
                               ? "Cancelled"
                               : row.status === "CF"
-                                ? "Result Confirmed"
-                                : "Result Avaiable";
+                                ? "Confirmed"
+                                : "Validated";
                       }
                     },
                     {
@@ -275,28 +267,6 @@ class RadOrderedList extends Component {
                         );
                       },
                       disabled: true
-                    },
-                    {
-                      fieldName: "action",
-                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                            {/* <Tooltip title="Arrived"> */}
-                            <IconButton
-                              color="primary"
-                              title="Arrived"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <i
-                                className="fas fa-walking"
-                                onClick={UpdateRadOrder.bind(this, this, row)}
-                              />
-                            </IconButton>
-                            {/* </Tooltip> */}
-                          </span>
-                        );
-                      }
                     }
                   ]}
                   keyId="patient_code"
@@ -316,7 +286,6 @@ class RadOrderedList extends Component {
 
 function mapStateToProps(state) {
   return {
-    testcategory: state.testcategory,
     radtestlist: state.radtestlist
   };
 }
@@ -324,7 +293,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getTestCategory: AlgaehActions,
       getRadiologyTestList: AlgaehActions
     },
     dispatch
@@ -335,5 +303,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(RadOrderedList)
+  )(RadScheduledList)
 );

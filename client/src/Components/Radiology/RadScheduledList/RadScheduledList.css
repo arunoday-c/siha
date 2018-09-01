@@ -1,0 +1,15 @@
+.hptl-phase1-rad-work-list-form {
+  background: #fff;
+  border-radius: 5px; }
+  .hptl-phase1-rad-work-list-form .go-button {
+    cursor: pointer;
+    margin-bottom: -15px;
+    margin-top: 10px; }
+  .hptl-phase1-rad-work-list-form .form-group {
+    margin-bottom: 0;
+    padding: 0;
+    padding-top: 20px;
+    cursor: pointer; }
+  .hptl-phase1-rad-work-list-form th,
+  .hptl-phase1-rad-work-list-form td {
+    border-right: 1px solid #e6e6e6; }

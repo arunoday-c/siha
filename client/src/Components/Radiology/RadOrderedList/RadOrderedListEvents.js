@@ -68,6 +68,7 @@ const getRadTestList = $this => {
     inputobj.patient_id = $this.state.patient_id;
   }
 
+  debugger;
   $this.props.getRadiologyTestList({
     uri: "/radiology/getRadOrderedServices",
     method: "GET",
