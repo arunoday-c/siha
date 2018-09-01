@@ -196,7 +196,7 @@ export default class Login extends Component {
               >
                 <span style={{ color: "#3A95AA" }}> ALGAEH</span> ERP
               </h3>
-              <div className="row">
+              <div>
                 <form onSubmit={this.handleLogin.bind(this)}>
                   <AlagehFormGroup
                     div={{ className: "col" }}

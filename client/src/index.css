@@ -320,15 +320,14 @@
   :global .algaeh-modal {
     margin: 3% auto 0;
     background-color: #fff;
-    padding: 0 10px;
+    padding: 0;
     border-radius: 5px;
     overflow: hidden;
     width: 80%;
     box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.4); }
     :global .algaeh-modal .popupHeader {
       background: #dbad64;
-      padding: 5px 16px;
-      margin-bottom: 10px; }
+      padding: 5px 16px; }
       :global .algaeh-modal .popupHeader h4 {
         color: #fff;
         font-size: 1.2rem;
@@ -339,13 +338,35 @@
       height: 70vh;
       overflow-y: auto;
       overflow-x: hidden; }
+      :global .algaeh-modal .popupInner .popLeftDiv {
+        border-right: 1px dashed #e0e0e0;
+        height: 60vh;
+        overflow: auto;
+        padding: 15px; }
+      :global .algaeh-modal .popupInner .popRightDiv {
+        border-right: 1px dashed #e0e0e0;
+        height: 60vh;
+        overflow: auto;
+        padding: 15px; }
     :global .algaeh-modal .popupFooter {
-      background: #f7f7f7;
-      border-top: 1px solid #e0e0e0;
-      padding: 5px 0; }
+      border-top: 1px dashed #e0e0e0;
+      padding: 4px 10px;
+      height: 40px; }
       :global .algaeh-modal .popupFooter button {
         float: right;
-        margin-left: 10px; }
+        margin-left: 10px;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        min-width: 70px; }
+      :global .algaeh-modal .popupFooter .btn-primary {
+        background: #34B8BC;
+        color: #fff;
+        border: 1px solid #34B8BC; }
+      :global .algaeh-modal .popupFooter .btn-default {
+        background: #EFEFEF;
+        color: #797979;
+        border: 1px solid #EFEFEF; }
   :global .tab-container .tab-button {
     font-size: 0.7rem;
     font-weight: normal;

@@ -440,7 +440,7 @@ $forntSize: 0.7rem;
   .algaeh-modal {
     margin: 3% auto 0;
     background-color: #fff;
-    padding: 0 10px;
+    padding:0;
     border-radius: 5px;
     overflow: hidden;
     width: 80%;
@@ -449,7 +449,6 @@ $forntSize: 0.7rem;
     .popupHeader {
       background: #dbad64;
       padding: 5px 16px;
-      margin-bottom: 10px;
       h4 {
         color: #fff;
         font-size: 1.2rem;
@@ -462,15 +461,40 @@ $forntSize: 0.7rem;
       height: 70vh;
       overflow-y: auto;
       overflow-x: hidden;
+      .popLeftDiv{
+        border-right: 1px dashed #e0e0e0;
+        height: 60vh;
+        overflow: auto;
+        padding: 15px;
+      }.popRightDiv{
+        border-right: 1px dashed #e0e0e0;
+        height: 60vh;
+        overflow: auto;
+        padding: 15px;
+      }
     }
     .popupFooter {
-      background: #f7f7f7;
-      border-top: 1px solid #e0e0e0;
-      padding: 5px 0;
+      border-top: 1px dashed #e0e0e0;
+      padding: 4px 10px;
+      height: 40px;
 
       button {
-        float: right;
-        margin-left: 10px;
+      float: right;
+      margin-left: 10px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      min-width: 70px;
+      }
+      .btn-primary{
+        background: #34B8BC;
+        color: #fff;
+        border: 1px solid #34B8BC;
+      }
+      .btn-default{
+        background: #EFEFEF;
+        color: #797979;
+        border:1px solid #EFEFEF;
       }
     }
   }
