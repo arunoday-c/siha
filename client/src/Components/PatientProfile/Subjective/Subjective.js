@@ -19,6 +19,7 @@ import Edit from "@material-ui/icons/Edit";
 import HPI from "@material-ui/icons/AssignmentInd";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
+import moment from "moment";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
@@ -37,7 +38,8 @@ class Subjective extends Component {
       pain: 0,
       patientChiefComplains: [],
       chiefComplainList: [],
-      openHpiModal: false
+      openHpiModal: false,
+      openAllergyModal: false
     };
 
     this.addChiefComplain = this.addChiefComplain.bind(this);
@@ -78,7 +80,28 @@ class Subjective extends Component {
   }
 
   dropDownHandle(value) {
-    this.setState({ [value.name]: value.value });
+    this.setState({ [value.name]: value.value }, () => {
+      switch (value.value) {
+        case "NH":
+          this.setState({ score: 0 });
+          break;
+        case "HLB":
+          this.setState({ score: 2 });
+          break;
+        case "HLM":
+          this.setState({ score: 4 });
+          break;
+        case "HEM":
+          this.setState({ score: 6 });
+          break;
+        case "HWL":
+          this.setState({ score: 8 });
+          break;
+        case "HW":
+          this.setState({ score: 10 });
+          break;
+      }
+    });
   }
 
   texthandle(e) {
@@ -88,7 +111,6 @@ class Subjective extends Component {
   }
 
   deleteChiefComplain(data, e) {
-    
     this.showconfirmDialog(data.hims_f_episode_chief_complaint_id);
   }
 
@@ -119,11 +141,17 @@ class Subjective extends Component {
     this.setState({ openComplain: true });
   }
   addAllergies() {
-    alert("Add Allergies");
+    this.setState({
+      openAllergyModal: true
+    });
   }
 
   handleClose() {
-    this.setState({ openComplain: false, openHpiModal: false });
+    this.setState({
+      openComplain: false,
+      openHpiModal: false,
+      openAllergyModal: false
+    });
   }
 
   getPatientChiefComplains() {
@@ -169,12 +197,52 @@ class Subjective extends Component {
     });
   }
 
+  fillComplainDetails(e) {
+    const id = e.currentTarget.getAttribute("data-cpln-id");
+  }
+
   render() {
     patChiefComplain = this.state.patientChiefComplains
       ? this.state.patientChiefComplains
       : [];
     return (
       <div className="subjective">
+        {/* Allergy Modal Start*/}
+        <Modal open={this.state.openAllergyModal}>
+          <div className="algaeh-modal">
+            <div className="row popupHeader">
+              <h4>Add Allergy</h4>
+            </div>
+            <div className="col-lg-12 popupInner">Allergy Modal</div>
+            <div className="row popupFooter">
+              <div className="col-lg-4">
+                <Button variant="raised" color="primary" size="small">
+                  Add
+                </Button>
+                <Button
+                  variant="raised"
+                  style={{ backgroundColor: "#D5D5D5" }}
+                  size="small"
+                >
+                  Clear
+                </Button>
+              </div>
+              <div className="col-lg-8">
+                <Button
+                  variant="raised"
+                  onClick={this.handleClose}
+                  style={{ backgroundColor: "#D5D5D5" }}
+                  size="small"
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Modal>
+
+        {/* Allergy Modal End*/}
+
         {/* HPI Modal Start */}
         <Modal open={this.state.openHpiModal}>
           <div className="algaeh-modal">
@@ -192,19 +260,15 @@ class Subjective extends Component {
                           forceLabel: "Selected Chief Complaint"
                         }}
                         selector={{
-                          name: "chief_complains",
+                          name: "hpi_chief_complains",
                           className: "select-fld",
-                          // value: this.state.pay_cash,
+                          value: this.state.hpi_chief_complains,
                           dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data:
-                              this.state.chiefComplainList !== undefined
-                                ? this.state.chiefComplainList
-                                : null
-                          }
-
-                          // onChange: texthandle.bind(this, this)
+                            textField: "cheif_complaint_name",
+                            valueField: "hims_f_episode_chief_complaint_id",
+                            data: patChiefComplain
+                          },
+                          onChange: this.dropDownHandle.bind(this)
                         }}
                       />
 
@@ -498,12 +562,12 @@ class Subjective extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "Select Chief Complains"
+                            forceLabel: "Select Chief Complaint"
                           }}
                           selector={{
-                            name: "chief_complains",
+                            name: "hims_d_hpi_header_id",
                             className: "select-fld",
-                            value: this.state.chief_complains,
+                            value: this.state.hims_d_hpi_header_id,
                             dataSource: {
                               textField: "hpi_description",
                               valueField: "hims_d_hpi_header_id",
@@ -521,7 +585,13 @@ class Subjective extends Component {
                             {/* patientChiefComplains */}
 
                             {patChiefComplain.map((data, index) => (
-                              <li>
+                              <li
+                                key={index}
+                                data-cpln-id={
+                                  data.hims_f_episode_chief_complaint_id
+                                }
+                                onClick={this.fillComplainDetails}
+                              >
                                 <span> {data.cheif_complaint_name} </span>
                               </li>
                             ))}
@@ -546,6 +616,9 @@ class Subjective extends Component {
                 </div>
 
                 <div className="col-lg-8">
+                  <div>
+                    <span> Chief Complaint: Leg Pain</span>
+                  </div>
                   <div className="row">
                     <AlgaehDateHandler
                       div={{ className: "col-lg-3" }}
@@ -558,7 +631,15 @@ class Subjective extends Component {
                       maxDate={new Date()}
                       events={{
                         onChange: selectedDate => {
-                          this.setState({ onset_date: selectedDate });
+                          this.setState({
+                            onset_date: selectedDate,
+                            duration:
+                              moment().diff(selectedDate, "days") < 31
+                                ? moment().diff(selectedDate, "days")
+                                : moment().diff(selectedDate, "months") < 12
+                                  ? moment().diff(selectedDate, "months")
+                                  : moment().diff(selectedDate, "years")
+                          });
                         }
                       }}
                       value={this.state.onset_date}
@@ -589,9 +670,9 @@ class Subjective extends Component {
                         fieldName: "food"
                       }}
                       selector={{
-                        name: "duration_time",
+                        name: "interval",
                         className: "select-fld",
-                        value: this.state.duration_time,
+                        value: this.state.interval,
                         dataSource: {
                           textField: "name",
                           valueField: "value",
@@ -609,14 +690,14 @@ class Subjective extends Component {
                       selector={{
                         name: "severity",
                         className: "select-fld",
-                        // value: this.state.pay_cash,
+                        value: this.state.severity,
                         dataSource: {
                           textField: "name",
                           valueField: "value",
                           data: GlobalVariables.PAIN_SEVERITY
-                        }
+                        },
 
-                        // onChange: texthandle.bind(this, this)
+                        onChange: this.dropDownHandle.bind(this)
                       }}
                     />
                   </div>
@@ -632,16 +713,16 @@ class Subjective extends Component {
                         onChangeComplete={this.handleChangeComplete}
                       />
                     </div>
-                    <div className="col-lg-2" style={{ marginTop: "25px" }}>
+                    <div className="col-lg-2">
                       <AlagehFormGroup
                         div={{ className: "" }}
                         label={{
-                          fieldName: "fffffff",
+                          forceLabel: "Score",
                           isImp: false
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "duration",
+                          name: "score",
                           others: {
                             type: "number",
                             disabled: true
@@ -667,8 +748,7 @@ class Subjective extends Component {
                           valueField: "value",
                           data: GlobalVariables.PAIN_SCALE
                         },
-                        onChange: () => {}
-                        // onChange: texthandle.bind(this, this)
+                        onChange: this.dropDownHandle.bind(this)
                       }}
                     />
                   </div>
@@ -719,17 +799,24 @@ class Subjective extends Component {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        name: "comments",
+                        name: "comment",
                         others: {
                           multiline: true,
                           rows: "4"
                         },
-                        //value: this.state.pain,
-                        events: {}
+                        value: this.state.comment,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        }
                       }}
                     />
                     <div className="col-lg-2">
-                      <Checkbox color="primary" onChange={() => {}} />
+                      <Checkbox
+                        color="primary"
+                        onChange={() => {
+                          this.setState({ inactive_date: new Date() });
+                        }}
+                      />
                       <AlgaehLabel
                         label={{
                           forceLabel: "Inactive"
@@ -745,12 +832,13 @@ class Subjective extends Component {
                       }}
                       maxDate={new Date()}
                       events={{
-                        onChange: () => {}
+                        onChange: selectedDate => {
+                          this.setState({ inactive_date: selectedDate });
+                        }
                       }}
-                      // value={this.state.card_date}
+                      value={this.state.inactive_date}
                     />
-                  </div>
-                  <div className="row" style={{ marginTop: "10px" }}>
+
                     <div className="col-lg-2">
                       <Checkbox color="primary" onChange={() => {}} />
                       <AlgaehLabel
@@ -759,21 +847,18 @@ class Subjective extends Component {
                         }}
                       />
                     </div>
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-4" }}
-                      label={{
-                        forceLabel: "Tooth from",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "tooth_from",
-
-                        //value: this.state.pain,
-                        events: {}
-                      }}
-                    />
                   </div>
+                  {/* <div className="row" style={{ marginTop: "10px" }}>
+                    <div className="col-lg-2">
+                      <Checkbox color="primary" onChange={() => {}} />
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Chronic"
+                        }}
+                      />
+                    </div>
+                    
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -802,7 +887,6 @@ class Subjective extends Component {
                   variant="raised"
                   onClick={this.handleClose}
                   style={{ backgroundColor: "#D5D5D5" }}
-                  // onClick={        }
                   size="small"
                 >
                   Close
@@ -976,7 +1060,7 @@ class Subjective extends Component {
                         mini
                         variant="fab"
                         color="primary"
-                        onClick={this.addChiefComplain}
+                        onClick={this.addAllergies}
                       >
                         <i className="fas fa-plus" />
                       </Button>
