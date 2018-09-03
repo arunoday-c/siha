@@ -977,14 +977,16 @@ let getPatientProfile = (req, res, next) => {
         PV.age_in_years,PV.age_in_months,PV.age_in_days,PE.payment_type,PE.created_date as Encounter_Date \
 from ( (hims_f_patient P inner join hims_f_patient_encounter PE  on P.hims_d_patient_id=PE.patient_id)\
 inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
-PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episode_id=?",
-        [inputData.patient_id, inputData.episode_id],
+PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episode_id=?;SELECT * FROM hims_f_patient_vitals t,(\
+  SELECT max(visit_id) as last_visit,MAX(visittime) as last_visit_time ,date(MAX(visit_date)) as last_visit_date\
+  FROM hims_f_patient_vitals  where  patient_id=? ) last_entry    WHERE last_entry.last_visit= t.visit_id;",
+        [inputData.patient_id, inputData.episode_id, inputData.patient_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
           }
-          req.records = result;
+          req.records = { patient_profile: result[0], vitals: result[1] };
           next();
         }
       );
@@ -1157,8 +1159,7 @@ let addPatientChiefComplaints = (req, res, next) => {
     score: null,
     pain: null,
     comment: null,
-    created_by: null,
-    updated_by: null
+   
   };
 
   try {
@@ -1217,10 +1218,10 @@ let getPatientChiefComplaints = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select PE.hims_f_patient_encounter_id,PE.patient_id,PE.created_date as Encounter_Date , ecc.episode_id,ecc.hims_f_episode_chief_complaint_id,ecc.chief_complaint_id,hh.hpi_description as cheif_complaint_name,ecc.onset_date,ecc.interval,ecc.duration,ecc.severity,\
+        "select PE.hims_f_patient_encounter_id,PE.patient_id,PE.created_date as Encounter_Date , ecc.episode_id,ecc.hims_f_episode_chief_complaint_id,ecc.chief_complaint_id,hh.hpi_description as chief_complaint_name,ecc.onset_date,ecc.interval,ecc.duration,ecc.severity,\
         ecc.score,ecc.pain,ecc.comment from ( (hims_f_episode_chief_complaint ecc inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=ecc.chief_complaint_id )    inner join hims_f_patient_encounter PE on PE.episode_id=ecc.episode_id)\
         where ecc.record_status='A'and ecc.episode_id=? ",
-        [ inputData.episode_id],
+        [inputData.episode_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -1264,6 +1265,103 @@ let deletePatientChiefComplaints = (req, res, next) => {
   }
 };
 
+//created by irfan: to add new allergy for a patient
+let addNewAllergy = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, `created_by`,  `updated_by`)\
+        VALUE(?,?,?,?)",
+        [
+          inputparam.patient_id,
+          inputparam.allergy_id,
+          inputparam.created_by,
+          inputparam.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+//created by irfan: to get all allergies
+let getAllAllergies=(req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_allergiy_id,allergy_type,\
+        allergy_name from hims_d_allergy where record_status='A' and allergy_type=?; ",
+        [inputData.allergy_type],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+//created by irfan: to get all allergies
+let getPatientAllergy=(req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_allergy_id,patient_id,allergy_id,A.allergy_type,A.allergy_name from hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?  and PA.allergy_id=A.hims_d_allergiy_id order by hims_f_patient_allergy_id desc ; ",
+        [inputData.patient_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -1290,5 +1388,8 @@ module.exports = {
   addPatientChiefComplaints,
   addNewChiefComplaint,
   getPatientChiefComplaints,
-  deletePatientChiefComplaints
+  deletePatientChiefComplaints,
+  addNewAllergy,
+  getAllAllergies,
+  getPatientAllergy
 };
