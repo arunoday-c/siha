@@ -214,6 +214,24 @@ class RadScheduledList extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "patient_code" }} />
                       ),
+                      displayTemplate: data => {
+                        return (
+                          <span
+                            className="pat-code"
+                            onClick={() => {
+                              // setGlobal({
+                              //   "EHR-STD": "PatientProfile",
+                              //   current_patient: data.patient_id,
+                              //   episode_id: data.episode_id,
+                              //   visit_id: data.visit_id
+                              // });
+                              // document.getElementById("ehr-router").click();
+                            }}
+                          >
+                            {data.patient_code}
+                          </span>
+                        );
+                      },
                       disabled: false
                     },
                     {

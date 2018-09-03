@@ -247,5 +247,9 @@
       "name": "Drugs",
       "value": "D"
     }
+  ],
+  "FORMAT_DIG_TYPE": [
+    { "name": "Primary", "value": "P" },
+    { "name": "Secondary", "value": "S" }
   ]
 }
