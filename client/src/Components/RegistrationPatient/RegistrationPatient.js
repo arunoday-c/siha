@@ -379,10 +379,27 @@ class RegistrationPatient extends Component {
                 label: "Print Bar Code",
                 events: {
                   onClick: () => {
-                    //  console.log("Patient state", this.state);
                     AlgaehReport({
-                      reportName: "patientRegistrationBarcode",
-                      data: { patient_code: this.state.patient_code }
+                      report: {
+                        fileName: "patientRegistrationBarcode",
+                        barcode: {
+                          parameter: "patient_code",
+                          options: {
+                            format: "",
+                            lineColor: "#0aa",
+                            width: 4,
+                            height: 40
+                          }
+                        }
+                      },
+                      data: {
+                        patient_code: "PAT-A-0000001",
+                        full_name: "Richards",
+                        patient_details: [
+                          { patient_code: "PAT-A-0000002", full_name: "Kumar" },
+                          { patient_code: "PAT-A-0000003", full_name: "Ruchi" }
+                        ]
+                      }
                     });
                   }
                 }

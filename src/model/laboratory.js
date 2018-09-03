@@ -265,12 +265,16 @@ let updateLabOrderServices = (req, res, next) => {
         connection.query(
           "UPDATE hims_f_lab_sample SET `collected`=?,`collected_by`=?,\
 `collected_date` =now() WHERE hims_d_lab_sample_id=?;\
-SELECT container_code FROM hims_m_lab_specimen where hims_m_lab_specimen_id=?;\
+SELECT container_code FROM hims_m_lab_specimen,hims_d_investigation_test \
+where hims_d_investigation_test.hims_d_investigation_test_id =hims_m_lab_specimen.test_id \
+and hims_m_lab_specimen.specimen_id =? and hims_d_investigation_test.hims_d_investigation_test_id=?;\
 SELECT lab_location_code hims_d_hospital where hims_d_hospital_id=?",
           [
+            req.body.collected,
             req.userIdentity.algaeh_d_app_user_id,
             req.body.hims_d_lab_sample_id,
             req.body.hims_m_lab_specimen_id,
+            req.body.hims_d_investigation_test_id,
             req.body.hims_d_hospital_id
           ],
           (error, result) => {
@@ -303,7 +307,7 @@ SELECT lab_location_code hims_d_hospital where hims_d_hospital_id=?",
               let condition = [];
               let padNum = "";
               if (record != null && record.length > 0) {
-                let  _newNumber = parseInt(record.number);
+                let _newNumber = parseInt(record.number);
                 _newNumber = _newNumber + 1;
                 padNum = pad(String(_newNumber), 3, "LEFT", "0");
                 condition = [
