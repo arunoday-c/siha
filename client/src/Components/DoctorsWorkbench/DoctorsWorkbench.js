@@ -259,7 +259,10 @@ class DoctorsWorkbench extends Component {
                       </li>
                     ))
                 ) : (
-                  <span className="mx-auto">No Patients</span>
+                  <div className="col noPatientDiv">
+                    <h4>Relax</h4>
+                    <p>No Out Patient Available</p>
+                  </div>
                 )}
               </ul>
             </div>
@@ -275,13 +278,15 @@ class DoctorsWorkbench extends Component {
           <div className="col-lg-8 card box-shadow-normal encounters-panel">
             <div className="portletHeader">
               <AlgaehLabel label={{ fieldName: "encounter_list" }} />
-              <div style={{ float: "right", width: "auto" }}>
-                <AlgaehLabel label={{ fieldName: "total_encounters" }} /> :{" "}
-                {
-                  Enumerable.from(this.state.data)
-                    .where(w => w.status !== "V")
-                    .toArray().length
-                }
+              <div className="rightLabelCount">
+                <AlgaehLabel label={{ fieldName: "total_encounters" }} />
+                <span className="countNo">
+                  {
+                    Enumerable.from(this.state.data)
+                      .where(w => w.status !== "V")
+                      .toArray().length
+                  }
+                </span>
               </div>
             </div>
             <div className="col-12">
@@ -464,98 +469,6 @@ class DoctorsWorkbench extends Component {
                 />
               </div>
             </div>
-
-            <AlgaehDataGrid
-              id="encounter_table"
-              columns={[
-                {
-                  fieldName: "status",
-                  label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                  disabled: true,
-                  displayTemplate: data => {
-                    return (
-                      <span>
-                        {data.status === "W" ? <span>WIP </span> : ""}
-                      </span>
-                    );
-                  }
-                },
-                {
-                  fieldName: "patient_code",
-                  label: <AlgaehLabel label={{ fieldName: "patient_code" }} />,
-                  displayTemplate: data => {
-                    return (
-                      <span
-                        className="pat-code"
-                        onClick={() => {
-                          setGlobal({
-                            "EHR-STD": "PatientProfile",
-                            current_patient: data.patient_id,
-                            episode_id: data.episode_id
-                          });
-                          document.getElementById("ehr-router").click();
-                        }}
-                      >
-                        {data.patient_code}
-                      </span>
-                    );
-                  },
-                  className: drow => {
-                    if (drow.checked_in === "N") return "testColor";
-                  }
-                },
-                {
-                  fieldName: "full_name",
-                  label: <AlgaehLabel label={{ fieldName: "patient_name" }} />
-                },
-                {
-                  fieldName: "date",
-                  label: <AlgaehLabel label={{ fieldName: "date" }} />
-                },
-                {
-                  fieldName: "time",
-                  label: <AlgaehLabel label={{ fieldName: "time" }} />
-                },
-                {
-                  fieldName: "patient_type",
-                  label: (
-                    <AlgaehLabel
-                      label={{ fieldName: "policy_group_description" }}
-                    />
-                  ),
-                  displayTemplate: data => {
-                    return (
-                      <span>
-                        {data.payment_type === "S" ? "Self" : "Insurance"}
-                      </span>
-                    );
-                  }
-                },
-                {
-                  fieldName: "transfer_status",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "transfer_status" }} />
-                  )
-                }
-              ]}
-              rowClassName={row => {
-                debugger;
-                //return "testColor";
-              }}
-              keyId="encounter_code"
-              dataSource={{
-                data: Enumerable.from(this.state.data)
-                  .where(w => w.status !== "V")
-                  .toArray()
-              }}
-              isEditable={false}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onDelete: row => {},
-                onEdit: row => {},
-                onDone: row => {}
-              }}
-            />
           </div>
           {/* Right Pane End */}
         </div>

@@ -1,40 +1,50 @@
 .hptl-phase1-sideMenuBar .sideMenu-header {
-  color: white; }
+  color: white;
+}
 
 .hptl-phase1-sideMenuBar .side-menu-title {
   padding-top: 15px;
   padding-bottom: 8px;
   font-size: 14px;
-  cursor: pointer; }
-  .hptl-phase1-sideMenuBar .side-menu-title span {
-    font-size: 10px; }
+  cursor: pointer;
+}
+.hptl-phase1-sideMenuBar .side-menu-title span {
+  font-size: 10px;
+}
 
 .hptl-phase1-sideMenuBar .side-menu-arrow {
-  margin-top: 5px; }
+  margin-top: 5px;
+}
 
 .hptl-phase1-sideMenuBar .side-menu-downIcon {
   padding-top: 5px;
   padding-right: 5px;
-  cursor: pointer; }
+  cursor: pointer;
+}
 
 .hptl-phase1-sideMenuBar .tree-structure-menu {
-  padding-left: 30px; }
+  padding-left: 30px;
+}
 
 .hptl-phase1-sideMenuBar .sub-menu-option {
   padding-top: 10px;
-  background: #000000; }
+  background: #000000;
+}
 
 .hptl-phase1-sideMenuBar ul {
-  border-left: 1px solid #d3d3d3; }
+  border-left: 1px solid #d3d3d3;
+}
 
 .hptl-phase1-sideMenuBar ul ul {
-  margin-top: -1.25em; }
+  margin-top: -1.25em;
+}
 
 .hptl-phase1-sideMenuBar li {
   position: relative;
   color: white;
   list-style-type: none;
-  cursor: pointer; }
+  cursor: pointer;
+}
 
 .hptl-phase1-sideMenuBar li:before {
   content: "";
@@ -44,26 +54,28 @@
   position: absolute;
   top: 15px;
   left: -2.75em;
-  border-top: 1px solid #d3d3d3; }
+  border-top: 1px solid #d3d3d3;
+}
 
-.hptl-phase1-sideMenuBar ul ul:before, .hptl-phase1-sideMenuBar h3:before, .hptl-phase1-sideMenuBar li:after {
-  content: '';
+.hptl-phase1-sideMenuBar ul ul:before,
+.hptl-phase1-sideMenuBar h3:before,
+.hptl-phase1-sideMenuBar li:after {
+  content: "";
   display: block;
   width: 1em;
   height: 1em;
   top: 1em;
-  left: .4em; }
+  left: 0.4em;
+}
 
 .hptl-phase1-sideMenuBar .close-menu {
   padding-top: 5px;
   cursor: pointer;
-  color: #fff; }
+  color: #fff;
+}
 
 .hptl-phase1-sideMenuBar .paper {
   background-color: #292929 !important;
   left: 0px;
-  width: 250px; }
-
-.hptl-phase1-sideMenuBar .menuBar-title {
-  display: flex;
-  justify-content: center; }
+  width: 250px;
+}
