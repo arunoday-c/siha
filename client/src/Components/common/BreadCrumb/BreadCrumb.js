@@ -113,32 +113,28 @@ class BreadCrumb extends PureComponent {
         <div className="col print-area">
           <div>
             <ul>
-              <li>
-                <Tooltip title="Print">
-                  <img
-                    className="printImg"
-                    src={require("../BreadCrumb/images/print.png")}
-                    {...(this.props.printArea.menuitems !== undefined &&
-                    this.props.printArea.menuitems.length === 1
-                      ? this.props.printArea.menuitems[0].events
-                      : { onClick: this.openPrintMenu.bind(this) })}
-                  />
-                </Tooltip>
+              <li className="printMenuDisplay">
+                <img
+                  className="printImg"
+                  src={require("../BreadCrumb/images/print.png")}
+                  title="Print"
+                  // {...(this.props.printArea.menuitems !== undefined &&
+                  // this.props.printArea.menuitems.length === 1
+                  //   ? this.props.printArea.menuitems[0].events
+                  //   : { onClick: this.openPrintMenu.bind(this) })}
+                />
 
-                {this.props.printArea.menuitems !== undefined &&
-                this.props.printArea.menuitems.length > 1 ? (
-                  <Menu
-                    open={this.state.printOpen}
-                    onClose={this.openPrintMenu.bind(this)}
-                  >
+                {this.props.printArea.menuitems !== undefined ? (
+                  <ul className="printActionMenu">
                     {this.props.printArea.menuitems.map((menu, index) => {
+                      console.log("menu ", menu);
                       return (
-                        <MenuItem key={index} {...menu.events}>
-                          {menu.label}
-                        </MenuItem>
+                        <li key={index} {...menu.events}>
+                          <span>{menu.label}</span>
+                        </li>
                       );
                     })}
-                  </Menu>
+                  </ul>
                 ) : (
                   <React.Fragment />
                 )}
