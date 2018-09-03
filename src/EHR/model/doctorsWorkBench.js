@@ -1217,10 +1217,10 @@ let getPatientChiefComplaints = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select PE.hims_f_patient_encounter_id,PE.patient_id,PE.created_date as Encounter_Date , ecc.episode_id,ecc.hims_f_episode_chief_complaint_id,ecc.chief_complaint_id,hh.hpi_description as cheif_complaint_name,ecc.onset_date,ecc.interval,ecc.duration,ecc.severity,\
+        "select PE.hims_f_patient_encounter_id,PE.patient_id,PE.created_date as Encounter_Date , ecc.episode_id,ecc.hims_f_episode_chief_complaint_id,ecc.chief_complaint_id,hh.hpi_description as chief_complaint_name,ecc.onset_date,ecc.interval,ecc.duration,ecc.severity,\
         ecc.score,ecc.pain,ecc.comment from ( (hims_f_episode_chief_complaint ecc inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=ecc.chief_complaint_id )    inner join hims_f_patient_encounter PE on PE.episode_id=ecc.episode_id)\
         where ecc.record_status='A'and ecc.episode_id=? ",
-        [ inputData.episode_id],
+        [inputData.episode_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
