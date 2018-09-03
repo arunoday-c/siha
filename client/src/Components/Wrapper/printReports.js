@@ -53,7 +53,7 @@ let accessReport = options => {
       for (let l = 0; l < canvasList.length; l++) {
         let listCanvas = canvasList[l];
         let dataList = [];
-        eval("dataList=data." + listCanvas.getAttribute("data-list"));
+        eval("dataList=options.data." + listCanvas.getAttribute("data-list"));
         dataList.map(row => {
           let listDtl = listCanvas.querySelectorAll("data-list-parameter");
           for (let d = 0; d < listDtl.length; d++) {
