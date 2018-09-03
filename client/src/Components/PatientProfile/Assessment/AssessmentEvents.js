@@ -1,6 +1,15 @@
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 
+const assnotetexthandle = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
+  });
+};
+
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
@@ -126,6 +135,7 @@ const addFinalIcd = $this => {
 
 export {
   texthandle,
+  assnotetexthandle,
   insertInitialICDS,
   insertFinalICDS,
   selectdIcd,
