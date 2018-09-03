@@ -10,6 +10,7 @@ import { LINQ } from "node-linq";
 import appsettings from "../utils/appsettings.json";
 import { logger, debugFunction, debugLog } from "../utils/logging";
 import Promise from "bluebird";
+import moment from "moment";
 //created by nowshad: to get lad orders for sample collection
 let getLabOrderedServices = (req, res, next) => {
   try {
@@ -282,22 +283,25 @@ let updateLabOrderServices = (req, res, next) => {
         connection.query(
           "UPDATE hims_f_lab_sample SET `collected`=?,`collected_by`=?,\
 `collected_date` =now() WHERE hims_d_lab_sample_id=?;\
-SELECT container_code FROM hims_m_lab_specimen,hims_d_investigation_test \
+SELECT distinct container_id,container_code FROM hims_m_lab_specimen,hims_d_investigation_test \
 where hims_d_investigation_test.hims_d_investigation_test_id =hims_m_lab_specimen.test_id \
-and hims_m_lab_specimen.specimen_id =? and hims_d_investigation_test.hims_d_investigation_test_id=?;\
-SELECT lab_location_code hims_d_hospital where hims_d_hospital_id=?",
+and hims_d_investigation_test.services_id=?;\
+SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
           [
             req.body.collected,
             req.userIdentity.algaeh_d_app_user_id,
             req.body.hims_d_lab_sample_id,
-            req.body.hims_m_lab_specimen_id,
-            req.body.hims_d_investigation_test_id,
+            req.body.service_id,
             req.body.hims_d_hospital_id
           ],
           (error, result) => {
             if (error) {
               reject(error);
             } else {
+              // debugLog("Result: ", result);
+              req.body.container_id = result[1][0].container_id;
+              req.body.container_code = result[1][0].container_code;
+              req.body.lab_location_code = result[2][0].lab_location_code;
               resolve(result);
             }
           }
@@ -306,7 +310,7 @@ SELECT lab_location_code hims_d_hospital where hims_d_hospital_id=?",
         .then(result => {
           if (result != null) {
             const _date = new Date();
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
               connection.query(
                 "select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
                where hospital_id =? and container_id=? and date =?",
@@ -323,8 +327,9 @@ SELECT lab_location_code hims_d_hospital where hims_d_hospital_id=?",
               let query = "";
               let condition = [];
               let padNum = "";
+              let _newNumber = 1;
               if (record != null && record.length > 0) {
-                let _newNumber = parseInt(record.number);
+                _newNumber = parseInt(record[1][0].number);
                 _newNumber = _newNumber + 1;
                 padNum = pad(String(_newNumber), 3, "LEFT", "0");
                 condition = [
@@ -336,35 +341,63 @@ SELECT lab_location_code hims_d_hospital where hims_d_hospital_id=?",
                   "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() where hims_m_hospital_container_mapping_id =?";
               } else {
                 condition = [
-                  req.body.hims_d_hospital_id,
-                  req.body.container_id,
-                  _date,
-                  1,
-                  req.userIdentity.algaeh_d_app_user_id,
-                  req.userIdentity.algaeh_d_app_user_id
+                  [
+                    req.body.hims_d_hospital_id,
+                    req.body.container_id,
+                    _date,
+                    1,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    req.userIdentity.algaeh_d_app_user_id
+                  ]
                 ];
+
                 query =
-                  "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,`number`,`created_by`,`updated_by`) value ?";
+                  "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,`number`,`created_by`,`updated_by`) values (?)";
               }
-              connection.query(query, condition, (error, returns) => {
-                if (error) {
-                  connection.rollback(() => {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  });
-                } else {
-                  connection.commit(error => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
-                    }
-                    req.records = returns;
-                    next();
-                  });
+
+              padNum = pad(String(_newNumber), 3, "LEFT", "0");
+              debugLog("padNum: ", padNum);
+              const dayOfYear = moment().dayOfYear();
+              debugLog("dayOfYear: ", dayOfYear);
+              const labIdNumber =
+                req.body.lab_location_code +
+                moment().format("YY") +
+                dayOfYear +
+                req.body.container_code +
+                padNum;
+
+              debugLog("condition: ", condition);
+              connection.query(
+                query +
+                  ";update hims_f_lab_order set lab_id_number ='" +
+                  labIdNumber +
+                  "' where hims_f_lab_order_id=" +
+                  req.body.hims_f_lab_order_id,
+                condition,
+                (error, returns) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  } else {
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      req.records = {
+                        collected: req.body.collected,
+                        collected_by: req.userIdentity.algaeh_d_app_user_id,
+                        collected_date: new Date()
+                      };
+                      next();
+                    });
+                  }
                 }
-              });
+              );
             });
           }
         })

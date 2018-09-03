@@ -480,7 +480,6 @@ let updateInvestigationTest = (req, res, next) => {
                     "template_name",
                     "test_id",
                     "template_html",
-                    "template_status",
                     "created_by",
                     "updated_by"
                   ];
