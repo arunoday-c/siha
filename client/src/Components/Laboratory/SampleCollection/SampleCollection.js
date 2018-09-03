@@ -35,6 +35,7 @@ import moment from "moment";
 import Options from "../../../Options.json";
 // import SampleCollectionModal from "../SampleCollections/SampleCollectionModal";
 import SampleCollectionModal from "../SampleCollections/SampleCollections";
+import MyContext from "../../../utils/MyContext.js";
 
 class SampleCollection extends Component {
   constructor(props) {
@@ -288,19 +289,29 @@ class SampleCollection extends Component {
               </div>
             </div>
           </div>
-          <SampleCollectionModal
-            HeaderCaption={
-              <AlgaehLabel
-                label={{
-                  fieldName: "sample_collection",
-                  align: "ltr"
-                }}
-              />
-            }
-            open={this.state.isOpen}
-            onClose={this.CloseCollectionModel.bind(this)}
-            selected_patient={this.state.selected_patient}
-          />
+
+          <MyContext.Provider
+            value={{
+              state: this.state,
+              updateState: obj => {
+                this.setState({ ...obj });
+              }
+            }}
+          >
+            <SampleCollectionModal
+              HeaderCaption={
+                <AlgaehLabel
+                  label={{
+                    fieldName: "sample_collection",
+                    align: "ltr"
+                  }}
+                />
+              }
+              open={this.state.isOpen}
+              onClose={this.CloseCollectionModel.bind(this)}
+              selected_patient={this.state.selected_patient}
+            />
+          </MyContext.Provider>
         </div>
       </React.Fragment>
     );

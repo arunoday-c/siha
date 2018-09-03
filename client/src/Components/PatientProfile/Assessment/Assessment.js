@@ -436,7 +436,7 @@ class Assessment extends Component {
                       />
                     }
                   </li>
-                  <li
+                  {/* <li
                     style={{ marginRight: 2 }}
                     algaehtabs={"Packages"}
                     className={"nav-item tab-button"}
@@ -449,7 +449,7 @@ class Assessment extends Component {
                         }}
                       />
                     }
-                  </li>
+                  </li> */}
                   <li
                     style={{ marginRight: 2 }}
                     algaehtabs={"LabResults"}
@@ -494,11 +494,12 @@ class Assessment extends Component {
                   </li>
                 </ul>
               </div>
+              {/* : this.state.pageDisplay === "Packages" ? (
+                  "Packages"
+                ) */}
               <div className="grid-section">
                 {this.state.pageDisplay === "Orders" ? (
                   <OrderingServices />
-                ) : this.state.pageDisplay === "Packages" ? (
-                  "Packages"
                 ) : this.state.pageDisplay === "LabResults" ? (
                   <LabResults />
                 ) : this.state.pageDisplay === "RisResults" ? (
