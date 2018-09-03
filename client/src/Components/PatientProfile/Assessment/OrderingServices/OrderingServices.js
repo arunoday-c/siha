@@ -36,9 +36,12 @@ class OrderingServices extends Component {
       s_service: null,
       selectedLang: "en",
 
-      patient_id: null,
-      visit_id: null,
+      patient_id: Window.global["current_patient"],
+      visit_id: Window.global["visit_id"],
       doctor_id: null,
+
+      // patient_id: Window.global["current_patient"],
+      //   episode_id: Window.global["episode_id"]
 
       insured: null,
       insurance_provider_id: null,
