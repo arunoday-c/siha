@@ -27,7 +27,10 @@ import {
   addPatientChiefComplaints,
   getPatientChiefComplaints,
   addNewChiefComplaint,
-  deletePatientChiefComplaints
+  deletePatientChiefComplaints,
+  addNewAllergy,
+  getAllAllergies,
+  getPatientAllergy
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -414,6 +417,51 @@ export default ({ config, db }) => {
   api.delete(
     "/deletePatientChiefComplaints",
     deletePatientChiefComplaints,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to add new allergy for patient
+  api.post(
+    "/addNewAllergy",
+    addNewAllergy,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to  get all allergies
+  api.get(
+    "/getAllAllergies",
+    getAllAllergies,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to  get patient wise allergy
+  api.get(
+    "/ getPatientAllergy",
+    getPatientAllergy,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

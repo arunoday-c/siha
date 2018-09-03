@@ -270,7 +270,7 @@ class PatientProfile extends Component {
             </ul>
           </ul>
         </div>
-        <div className="container-fluid">
+        <div className="patientContentArea">
           {this.state.pageDisplay === "overview" ? (
             <Overview />
           ) : this.state.pageDisplay === "subjective" ? (

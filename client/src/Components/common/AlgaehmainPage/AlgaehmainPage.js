@@ -255,88 +255,54 @@ class PersistentDrawer extends React.Component {
       LangSideMenu = sideMenuAr;
     }
     var MenuListItems = LangSideMenu.map((data, idx) => {
-      let icon = data.icon + " side-menu-title";
+      let icon = data.icon;
       return (
-        <div key={"side_menu_index" + idx}>
-          <div className="container-fluid">
-            <div className="row clearfix">
-              <div
-                className="col-xs-2 col-sm-2 col-md-2"
-                style={{ marginTop: "2px" }}
-              >
-                <span className={icon} />
-              </div>
-              <div
-                className="col-xs-5 col-sm-5 col-md-5 side-menu-title"
-                onClick={this.openSubMenuSelection.bind(this, data)}
-              >
-                {data.label}
-              </div>
-
-              <div className="col-xs-5 col-sm-5 col-md-5 text-right">
-                {this.state.menuSelected === data.name &&
-                this.state.toggleSubMenu === false ? (
-                  <span
-                    className="side-menu-downIcon"
-                    onClick={this.openSubMenuSelection.bind(this, data)}
-                  >
-                    <IconButton
-                      onClick={this.openSubMenuSelection.bind(this, data)}
-                    >
-                      <div className="close-menu">
-                        <ExpandMore />
-                      </div>
-                    </IconButton>
-                  </span>
-                ) : (
-                  <IconButton
-                    onClick={this.openSubMenuSelection.bind(this, data)}
-                  >
-                    <div className="close-menu">
-                      <ChevronLeftIcon />
-                    </div>
-                  </IconButton>
-                )}
-              </div>
+        <div key={"side_menu_index" + idx} className="container-fluid">
+          <div
+            className="row clearfix side-menu-title"
+            onClick={this.openSubMenuSelection.bind(this, data)}
+          >
+            <div className="col-2" style={{ marginTop: "2px" }}>
+              <i className={icon} />
             </div>
-            {this.state.menuSelected === data.name &&
-            this.state.toggleSubMenu === false ? (
-              <div
-                className="row sub-menu-option"
-                style={{ paddingTop: "10px" }}
-              >
-                <div className="tree-structure-menu">
-                  {data.subMenu.map((title, idx) => {
-                    return (
-                      <div key={"sub_title" + idx}>
-                        <ul style={{ marginBottom: "0px" }}>
-                          <li
-                            onClick={this.TriggerPath.bind(this)}
-                            path={title.path}
-                            name={title.name}
-                            arlabel={title.arlabel}
-                            label={title.label}
-                          >
-                            {title.label}{" "}
-                          </li>
-                        </ul>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : null}
+            <div className="col-8 ">{data.label}</div>
+
+            <div className="col-2" style={{ marginTop: "2px" }}>
+              {this.state.menuSelected === data.name &&
+              this.state.toggleSubMenu === false ? (
+                <i className="fas fa-angle-up" />
+              ) : (
+                <i className="fas fa-angle-down" />
+              )}
+            </div>
           </div>
+          {this.state.menuSelected === data.name &&
+          this.state.toggleSubMenu === false ? (
+            <div className="row sub-menu-option">
+              <ul className="tree-structure-menu">
+                {data.subMenu.map((title, idx) => {
+                  return (
+                    // <ul key={"sub_title" + idx}>
+                    <li
+                      onClick={this.TriggerPath.bind(this)}
+                      path={title.path}
+                      name={title.name}
+                      arlabel={title.arlabel}
+                      label={title.label}
+                    >
+                      <i className="fas fa-check-circle fa-1x" />
+                      <span>{title.label}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ) : null}
         </div>
       );
     });
     const drawer = (
-      <Drawer
-        variant="persistent"
-        anchor={anchor}
-        open={open}
-        classes={{ paper: classes.backgroundflex }}
-      >
+      <div anchor={anchor} open={open} className="leftNavCntr">
         <div className="hptl-phase1-sideMenuBar">
           <div className="menuBar-title">
             <span style={titleStyles.title}>ALGAEH</span>
@@ -345,10 +311,9 @@ class PersistentDrawer extends React.Component {
               <CancelIcon />
             </i>
           </div>
-
           <div className="sideMenu-header">{MenuListItems}</div>
         </div>
-      </Drawer>
+      </div>
     );
 
     return (

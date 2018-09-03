@@ -483,16 +483,9 @@ let updateInvestigationTest = (req, res, next) => {
                     "created_by",
                     "updated_by"
                   ];
-                  debugLog("insert_rad_temp", req.body.insert_rad_temp);
+                 
 
-                  debugLog(
-                    "why",
-                    jsonArrayToObject({
-                      sampleInputObject: insurtColumns,
-                      arrayObj: req.body.insert_rad_temp,
-                      req: req
-                    })
-                  );
+                
 
                   connection.query(
                     "INSERT INTO hims_d_rad_template_detail(" +

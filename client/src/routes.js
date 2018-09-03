@@ -20,7 +20,6 @@ import DoctorsWorkbench from "./Components/DoctorsWorkbench/DoctorsWorkbench";
 import PatientProfile from "./Components/PatientProfile/PatientProfile";
 import Plan from "./Components/PatientProfile/Plan/Plan";
 import Workbench from "./Components/Workbench/Workbench";
-import RadioDay from "./Components/Radiology/RadResultEntry/RadResultEntry";
 
 function height() {
   let height =
@@ -83,11 +82,6 @@ const appRoutes = [
     path: "/plan",
     isExactPath: true,
     component: <Plan />
-  },
-  {
-    path: "/RD",
-    isExactPath: true,
-    component: <RadioDay />
   }
 ];
 

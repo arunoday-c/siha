@@ -191,7 +191,7 @@ class Plan extends Component {
             </div>
             <div className="col-lg-4">
               {/* BEGIN Portlet PORTLET */}
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">Follow Up</h3>
@@ -234,7 +234,7 @@ class Plan extends Component {
           <div className="row">
             <div className="col-lg-4">
               {/* BEGIN Portlet PORTLET */}
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">Diet Advice</h3>
@@ -256,7 +256,7 @@ class Plan extends Component {
             </div>
             <div className="col-lg-4">
               {/* BEGIN Portlet PORTLET */}
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">Refer To</h3>
@@ -296,7 +296,7 @@ class Plan extends Component {
             </div>
             <div className="col-lg-4">
               {/* BEGIN Portlet PORTLET */}
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">Patient Alert</h3>

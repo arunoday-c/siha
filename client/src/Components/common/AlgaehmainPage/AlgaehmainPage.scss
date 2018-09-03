@@ -1,21 +1,28 @@
 @import "../../../styles/algaehCssVariables.scss";
-
-.hptl-phase1-sideMenuBar {
+.leftNavCntr {
+  margin-top: 0;
+  z-index: 9999;
+  position: fixed;
+  background: #292929;
+  height: 100%;
   width: 215px;
-  // line-height: 1;
+  overflow: auto;
+}
+.hptl-phase1-sideMenuBar {
   .sideMenu-header {
     color: white;
     background: #292929;
+    padding-top: 50px;
   }
   .side-menu-title {
-    padding-top: 15px;
-    padding-bottom: 8px;
-    font-size: $mainMenu;
-    text-transform: uppercase;
-    span {
-      font-size: $mainMenu;
-    }
+    padding: 5px 0;
+    line-height: 35px;
+    border-bottom: 1px solid #000;
     cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .side-menu-title:hover {
+    background: rgb(0, 188, 176);
   }
   .side-menu-arrow {
     margin-top: 5px;
@@ -25,64 +32,36 @@
     padding-right: 5px;
     cursor: pointer;
   }
-  .tree-structure-menu {
-    padding-left: 30px;
-    //margin-bottom: 2px;
+  ul.tree-structure-menu {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    li {
+      padding: 6px 5px;
+      margin: 0;
+      font-size: 0.8rem;
+      border-bottom: 1px dotted #4e4e4e;
+      text-transform: uppercase;
+      cursor: pointer;
+      color: #dcac66;
+      i {
+        margin-right: 12px;
+        margin-left: 14px;
+      }
+    }
+    li:hover {
+      background: rgb(0, 188, 176);
+      color: #fff;
+    }
   }
   .sub-menu-option {
-    padding-top: 10px;
     background: #000000;
   }
 
-  ul {
-    border-left: 1px solid #d3d3d3;
-    margin-top: -9px;
-  }
-
-  ul ul {
-    margin-top: -1.25em;
-  }
-
-  li {
-    position: relative;
-    color: white;
-    list-style-type: none;
-    cursor: pointer;
-    padding-top: 8px;
-    font-size: $subMenu;
-  }
-
-  li:before {
-    content: "";
-    display: inline-block;
-    width: 8px;
-    height: 0;
-    position: absolute;
-    top: 15px;
-    left: -2.75em;
-    border-top: 1px solid #d3d3d3;
-  }
-
-  ul ul:before,
-  h3:before,
-  li:after {
-    content: "";
-    display: block;
-    width: 1em;
-    height: 1em;
-    top: 1em;
-    left: 0.4em;
-  }
   .close-menu {
     padding-top: 5px;
     cursor: pointer;
     color: #fff;
-  }
-
-  .paper {
-    background-color: #292929 !important;
-    left: 0px;
-    width: 250px;
   }
 
   .menuBar-title {
@@ -91,6 +70,10 @@
     font-size: 20px;
     height: 49px;
     background: #000;
+    position: fixed;
+    width: 215px;
+    z-index: 9;
+    border-bottom: 1px solid #3e3e3e;
   }
   .sideBarClose {
     width: 25px;

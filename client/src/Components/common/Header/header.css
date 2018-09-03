@@ -1,8 +1,5 @@
 .hptl-phase1-header {
   box-shadow: 0ch; }
-  .hptl-phase1-header .menuBar-title {
-    display: flex;
-    justify-content: center; }
   .hptl-phase1-header .drawer_color {
     background-color: #292929; }
   .hptl-phase1-header .close-menu {

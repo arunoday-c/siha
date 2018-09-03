@@ -143,8 +143,8 @@ class DoctorsWorkbench extends Component {
   onSelectedDateHandler(e) {
     this.setState(
       {
-        activeDateHeader: e.target.getAttribute("currentdate"),
-        fromDate: e.target.getAttribute("currentdate")
+        activeDateHeader: e.target.getAttribute("date"),
+        fromDate: e.target.getAttribute("date")
       },
       () => {
         this.loadListofData();
@@ -153,6 +153,8 @@ class DoctorsWorkbench extends Component {
   }
 
   generateHorizontalDateBlocks() {
+    let classesCurrentDate = moment().format("YYYYMMDD");
+
     return (
       <div className="calendar">
         <div className="col-12">
@@ -162,12 +164,18 @@ class DoctorsWorkbench extends Component {
                 <div
                   // className="col"
                   key={index}
-                  currentdate={row.currentdate}
+                  date={row.currentdate}
                   className={
                     moment(row.currentdate).format("YYYYMMDD") ===
                     moment(this.state.activeDateHeader).format("YYYYMMDD")
-                      ? "col activeDate"
-                      : "col"
+                      ? moment(row.currentdate).format("YYYYMMDD") ===
+                        moment().format("YYYYMMDD")
+                        ? "col activeDate CurrentDate"
+                        : "col activeDate"
+                      : moment(row.currentdate).format("YYYYMMDD") ===
+                        moment().format("YYYYMMDD")
+                        ? "col CurrentDate"
+                        : "col"
                   }
                   onClick={this.onSelectedDateHandler.bind(this)}
                 >
@@ -259,7 +267,10 @@ class DoctorsWorkbench extends Component {
                       </li>
                     ))
                 ) : (
-                  <span className="mx-auto">No Patients</span>
+                  <div className="col noPatientDiv">
+                    <h4>Relax</h4>
+                    <p>No Out Patient Available</p>
+                  </div>
                 )}
               </ul>
             </div>
@@ -275,13 +286,15 @@ class DoctorsWorkbench extends Component {
           <div className="col-lg-8 card box-shadow-normal encounters-panel">
             <div className="portletHeader">
               <AlgaehLabel label={{ fieldName: "encounter_list" }} />
-              <div style={{ float: "right", width: "auto" }}>
-                <AlgaehLabel label={{ fieldName: "total_encounters" }} /> :{" "}
-                {
-                  Enumerable.from(this.state.data)
-                    .where(w => w.status !== "V")
-                    .toArray().length
-                }
+              <div className="rightLabelCount">
+                <AlgaehLabel label={{ fieldName: "total_encounters" }} />
+                <span className="countNo">
+                  {
+                    Enumerable.from(this.state.data)
+                      .where(w => w.status !== "V")
+                      .toArray().length
+                  }
+                </span>
               </div>
             </div>
             <div className="col-12">
@@ -466,7 +479,7 @@ class DoctorsWorkbench extends Component {
               </div>
             </div>
 
-            <AlgaehDataGrid
+            {/* <AlgaehDataGrid
               id="encounter_table"
               columns={[
                 {
@@ -557,7 +570,7 @@ class DoctorsWorkbench extends Component {
                 onEdit: row => {},
                 onDone: row => {}
               }}
-            />
+            /> */}
           </div>
           {/* Right Pane End */}
         </div>
