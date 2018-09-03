@@ -91,6 +91,10 @@
     font-size: 20px;
     height: 49px;
     background: #000;
+    position: fixed;
+    width: 100%;
+    z-index: 9;
+    border-bottom: 1px solid #3e3e3e;
   }
   .sideBarClose {
     width: 25px;

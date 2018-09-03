@@ -4,8 +4,8 @@
     height: 70px;
     padding: 5px 0 0;
     width: 100%;
-    position: relative;
-    z-index: 1;
+    position: fixed;
+    z-index: 999;
 
     div {
       float: left;
@@ -124,6 +124,9 @@
     color: #797979;
     font-size: 1rem;
     text-transform: uppercase;
+    position: fixed;
+    top: 120px;
+    z-index: 99;
     ul {
       position: relative;
       li {
@@ -168,7 +171,7 @@
           background: #53bdb1;
           z-index: 9;
           padding: 10px;
-          border-radius: 0 0 0 5px;
+          border-radius: 5px;
           color: #fff;
           display: none;
         }
@@ -187,5 +190,10 @@
         }
       }
     }
+  }
+  .patientContentArea {
+    margin: 100px 10px 0;
+    z-index: 1;
+    width: 100%;
   }
 }

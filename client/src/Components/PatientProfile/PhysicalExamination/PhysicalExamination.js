@@ -32,7 +32,7 @@ class PhysicalExamination extends Component {
                 <div className="portlet-body">
                   <div className="col-lg-12">
                     <div className="row" style={{ marginBottom: "10px" }}>
-                      <AlagehFormGroup
+                      {/* <AlagehFormGroup
                         div={{ className: "col-lg-4" }}
                         label={{
                           forceLabel: "Search",
@@ -47,14 +47,19 @@ class PhysicalExamination extends Component {
                             //  onChange: this.changeDeptName.bind(this)
                           }
                         }}
-                      />
-
-                      <div className="col-lg-1">
-                        <img
-                          className="align-middle search_logo"
-                          src={search}
-                          //onClick={this.searchOnClick.bind(this)}
-                        />
+                      /> */}
+                      <div className="col-4">
+                        <div className="form-group">
+                          <label>Search</label>
+                          <div className="input-group">
+                            <input type="text" className="form-control" />
+                            <div className="input-group-append">
+                              <span className="input-group-text">
+                                <i className="fas fa-search" />
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -110,7 +115,7 @@ class PhysicalExamination extends Component {
               {/* Physical Examination Section End */}
 
               {/* Vitals Section Start */}
-              <div className="portlet portlet-bordered box-shadow-normal margin-top-15">
+              <div className="portlet portlet-bordered box-shadow-normal margin-top-15 margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">Vitals</h3>
@@ -128,9 +133,9 @@ class PhysicalExamination extends Component {
 
                 <div className="portlet-body">
                   <div className="col-lg-12">
-                    <div className="row">
+                    <div className="row margin-bottom-15">
                       <AlagehFormGroup
-                        div={{ className: "col-lg-2" }}
+                        div={{ className: "col vitalTopFld15" }}
                         label={{
                           forceLabel: "Weight(Kg)",
                           isImp: true
@@ -148,7 +153,7 @@ class PhysicalExamination extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-2" }}
+                        div={{ className: "col vitalTopFld15" }}
                         label={{
                           forceLabel: "Height(Cms)",
                           isImp: true
@@ -166,7 +171,7 @@ class PhysicalExamination extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-2" }}
+                        div={{ className: "col vitalTopFld20" }}
                         label={{
                           forceLabel: "O2 Respiration(%)",
                           isImp: true
@@ -184,7 +189,7 @@ class PhysicalExamination extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-2" }}
+                        div={{ className: "col vitalTopFld20" }}
                         label={{
                           forceLabel: "Heart Rate(bpm)",
                           isImp: true
@@ -202,7 +207,7 @@ class PhysicalExamination extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col vitalTopFld25" }}
                         label={{
                           forceLabel: "Respiratory Rate(min)",
                           isImp: true
@@ -240,10 +245,9 @@ class PhysicalExamination extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col" }}
                         label={{
-                          fieldName: "abcd_xyz",
-                          isImp: false
+                          forceLabel: "."
                         }}
                         textBox={{
                           className: "txt-fld",
@@ -276,10 +280,9 @@ class PhysicalExamination extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col" }}
                         label={{
-                          forceLabel: "     ",
-                          isImp: false
+                          forceLabel: "."
                         }}
                         textBox={{
                           className: "txt-fld",
