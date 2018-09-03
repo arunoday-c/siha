@@ -376,6 +376,7 @@ let updateInvestigationTest = (req, res, next) => {
                   try {
                     if (investigationDetails.insert_analytes.length != 0) {
                       const insurtColumns = [
+                        "test_id",
                         "analyte_id",
                         "analyte_type",
                         "result_unit",
@@ -460,7 +461,7 @@ let updateInvestigationTest = (req, res, next) => {
                           next(error);
                         });
                       }
-                      req.records = resultSpc;
+                      req.records = results;
                       next();
                     });
                   }
