@@ -1,7 +1,6 @@
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -18,7 +17,6 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const ViewEditTemplate = ($this, row) => {
-  debugger;
   let template = {
     template_html: row.template_html,
     template_name: row.template_name,
@@ -40,7 +38,6 @@ const ShowTemplate = $this => {
 };
 
 const CloseTemplate = ($this, hims_d_rad_template_detail_id) => {
-  debugger;
   let radObj = {
     template_name: $this.state.template_name,
     template_html: $this.state.template_html
@@ -68,13 +65,11 @@ const CloseTemplate = ($this, hims_d_rad_template_detail_id) => {
       let update_rad_temp = $this.state.update_rad_temp;
 
       for (let i = 0; i < RadTemplate.length; i++) {
-        debugger;
         if (
           (RadTemplate[
             i
           ].hims_d_rad_template_detail_id = hims_d_rad_template_detail_id)
         ) {
-          debugger;
           RadTemplate[i].template_name = $this.state.template_name;
           RadTemplate[i].template_html = $this.state.template_html;
         }
@@ -89,7 +84,8 @@ const CloseTemplate = ($this, hims_d_rad_template_detail_id) => {
       $this.setState({
         openTemplate: !$this.state.openTemplate,
         RadTemplate: RadTemplate,
-        update_rad_temp: update_rad_temp
+        update_rad_temp: update_rad_temp,
+        record_status: "A"
       });
     } else if (hims_d_rad_template_detail_id === null) {
     } else {
@@ -101,8 +97,6 @@ const CloseTemplate = ($this, hims_d_rad_template_detail_id) => {
 };
 
 const deleteRadInvestigation = ($this, context, row, rowId) => {
-  debugger;
-
   let RadTemplate = $this.state.RadTemplate;
   let update_rad_temp = $this.state.update_rad_temp;
   let insert_rad_temp = $this.state.insert_rad_temp;
@@ -112,6 +106,8 @@ const deleteRadInvestigation = ($this, context, row, rowId) => {
   ) {
     let Updateobj = {
       hims_d_rad_template_detail_id: row.hims_d_rad_template_detail_id,
+      template_name: row.template_name,
+      template_html: row.template_html,
       record_status: "I"
     };
     update_rad_temp.push(Updateobj);
@@ -119,7 +115,6 @@ const deleteRadInvestigation = ($this, context, row, rowId) => {
     if (insert_rad_temp.length > 0) {
       for (let k = 0; k < insert_rad_temp.length; k++) {
         if ((insert_rad_temp[k].template_name = row.template_name)) {
-          debugger;
           insert_rad_temp.splice(k, 1);
         }
       }

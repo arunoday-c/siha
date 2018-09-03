@@ -125,9 +125,9 @@
         "path": "/RadOrderedList"
       },
       {
-        "name": "WorkList",
+        "name": "RadScheduledList",
         "label": "قائمة العمل",
-        "path": "/WorkList"
+        "path": "/RadScheduledList"
       }
     ]
   },

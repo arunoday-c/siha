@@ -6,6 +6,7 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import search from "../../../assets/svg/search.svg";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
@@ -29,44 +30,62 @@ class PhysicalExamination extends Component {
                 </div>
 
                 <div className="portlet-body">
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      forceLabel: "Search"
-                    }}
-                    selector={{
-                      name: "search",
-                      className: "select-fld",
-                      // value: this.state.pay_cash,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.PAIN_DURATION
-                      }
+                  <div className="col-lg-12">
+                    <div className="row" style={{ marginBottom: "10px" }}>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4" }}
+                        label={{
+                          forceLabel: "Search",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "search",
 
-                      // onChange: texthandle.bind(this, this)
-                    }}
-                  />
+                          //value: this.state.department_name,
+                          events: {
+                            //  onChange: this.changeDeptName.bind(this)
+                          }
+                        }}
+                      />
+
+                      <div className="col-lg-1">
+                        <img
+                          className="align-middle search_logo"
+                          src={search}
+                          //onClick={this.searchOnClick.bind(this)}
+                        />
+                      </div>
+                    </div>
+                  </div>
 
                   <AlgaehDataGrid
                     id="patient_chart_grd"
                     columns={[
                       {
-                        fieldName: "food",
-                        label: "Food",
-                        disabled: true
-                      },
-                      {
                         fieldName: "date",
-                        label: "On Set Date"
+                        label: "Item Code"
                       },
                       {
                         fieldName: "first_name",
-                        label: "Comment"
+                        label: "Item Name"
+                      },
+                      {
+                        fieldName: "",
+                        label: "Frequency"
+                      },
+
+                      {
+                        fieldName: "active",
+                        label: "No. of Days"
                       },
                       {
                         fieldName: "active",
-                        label: "Active"
+                        label: "Dispense"
+                      },
+                      {
+                        fieldName: "active",
+                        label: "Start Date"
                       }
                     ]}
                     keyId="code"
@@ -259,7 +278,7 @@ class PhysicalExamination extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "abcd_xyz",
+                          forceLabel: "     ",
                           isImp: false
                         }}
                         textBox={{

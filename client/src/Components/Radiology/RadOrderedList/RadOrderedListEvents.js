@@ -67,6 +67,7 @@ const getRadTestList = $this => {
   if ($this.state.patient_id !== null) {
     inputobj.patient_id = $this.state.patient_id;
   }
+
   debugger;
   $this.props.getRadiologyTestList({
     uri: "/radiology/getRadOrderedServices",
@@ -77,7 +78,7 @@ const getRadTestList = $this => {
       mappingName: "radtestlist"
     }
     // afterSuccess: data => {
-    //   debugger;
+    //
     //   let rad_test_list = Enumerable.from(data)
     //     .groupBy("$.patient_id", null, (k, g) => {
     //       let firstRecordSet = Enumerable.from(g).firstOrDefault();
@@ -101,7 +102,6 @@ const getRadTestList = $this => {
 const UpdateRadOrder = ($this, row) => {
   let inputobj = row;
 
-  debugger;
   if (inputobj.arrived === "N") {
     inputobj = {
       hims_f_rad_order_id: row.hims_f_rad_order_id,

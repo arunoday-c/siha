@@ -215,7 +215,7 @@ class RadOrderedList extends Component {
             <div className="row form-details">
               <div className="col-lg-12">
                 <AlgaehDataGrid
-                  id="samplecollection_grid"
+                  id="Oedered_list_grid"
                   columns={[
                     {
                       fieldName: "patient_code",
@@ -256,8 +256,8 @@ class RadOrderedList extends Component {
                             : row.status === "CN"
                               ? "Cancelled"
                               : row.status === "CF"
-                                ? "Confirmed"
-                                : "Validated";
+                                ? "Result Confirmed"
+                                : "Result Avaiable";
                       }
                     },
                     {
@@ -283,7 +283,11 @@ class RadOrderedList extends Component {
                         return (
                           <span>
                             {/* <Tooltip title="Arrived"> */}
-                            <IconButton color="primary" title="Arrived">
+                            <IconButton
+                              color="primary"
+                              title="Arrived"
+                              style={{ maxHeight: "4vh" }}
+                            >
                               <i
                                 className="fas fa-walking"
                                 onClick={UpdateRadOrder.bind(this, this, row)}

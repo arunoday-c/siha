@@ -67,7 +67,6 @@ const ProcessService = ($this, e) => {
       mappingName: "orderservices"
     },
     afterSuccess: data => {
-      debugger;
       //If Limit exceed then all the selected services convert to pre-approval
       if (
         data.billdetails[0].preapp_limit_exceed === "Y" &&
@@ -135,7 +134,6 @@ const ProcessService = ($this, e) => {
           }
         });
       } else {
-        debugger;
         let existingservices = $this.state.orderservicesdata;
 
         data.billdetails[0].visit_id = $this.state.visit_id;
@@ -298,7 +296,6 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
-  debugger;
   algaehApiCall({
     uri: "/orderAndPreApproval/insertOrderedServices",
     data: $this.state.orderservicesdata,

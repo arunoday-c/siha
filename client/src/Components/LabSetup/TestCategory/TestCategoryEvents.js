@@ -20,7 +20,6 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updateTestCategory = ($this, data) => {
-  debugger;
   //data.updated_by = getCookie("UserID");
 
   algaehApiCall({
@@ -49,7 +48,6 @@ const updateTestCategory = ($this, data) => {
 };
 
 const showconfirmDialog = ($this, id) => {
-  debugger;
   swal({
     title: "Are you sure you want to delete this Test Category?",
     icon: "warning",
@@ -58,8 +56,8 @@ const showconfirmDialog = ($this, id) => {
   }).then(willDelete => {
     if (willDelete) {
       let data = {
-        hims_d_test_category_id: id,
-       // updated_by: getCookie("UserID")
+        hims_d_test_category_id: id
+        // updated_by: getCookie("UserID")
       };
       algaehApiCall({
         uri: "/labmasters/deleteTestCategory",

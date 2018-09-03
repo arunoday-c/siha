@@ -901,7 +901,7 @@ let getMyDay = (req, res, next) => {
       }
       db.query(
         "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
-         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.created_date from hims_f_patient_encounter E\
+         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.created_date,E.visit_id from hims_f_patient_encounter E\
          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id  where E.record_status='A' AND " +
           statusFlag +
           "" +

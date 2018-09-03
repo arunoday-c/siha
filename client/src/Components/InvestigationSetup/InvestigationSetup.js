@@ -364,25 +364,29 @@ class InvestigationSetup extends Component {
                         );
                       }
                     },
-                    {
-                      fieldName: "created_date",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "created_date" }} />
-                      ),
-                      displayTemplate: row => {
-                        return (
-                          <span>{this.changeDateFormat(row.created_date)}</span>
-                        );
-                      },
-                      disabled: true
-                    },
+                    // {
+                    //   fieldName: "created_date",
+                    //   label: (
+                    //     <AlgaehLabel label={{ fieldName: "created_date" }} />
+                    //   ),
+                    //   displayTemplate: row => {
+                    //     return (
+                    //       <span>{this.changeDateFormat(row.created_date)}</span>
+                    //     );
+                    //   },
+                    //   disabled: true
+                    // },
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
                       displayTemplate: row => {
                         return (
                           <span>
-                            <IconButton color="primary" title="Add Template">
+                            <IconButton
+                              color="primary"
+                              title="Add Template"
+                              style={{ maxHeight: "4vh" }}
+                            >
                               <Edit
                                 onClick={EditInvestigationTest.bind(
                                   this,

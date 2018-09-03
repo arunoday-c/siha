@@ -29,6 +29,7 @@
 
 .hptl-phase1-op-add-billing-form .Paper {
   padding: 10px;
+  min-height: 35vh;
   border: 1px solid #5f5f5f; }
 
 .hptl-phase1-op-add-billing-form th,

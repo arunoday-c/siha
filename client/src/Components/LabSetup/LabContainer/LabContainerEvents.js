@@ -20,8 +20,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updateLabContainer = ($this, data) => {
-  debugger;
- // data.updated_by = getCookie("UserID");
+  // data.updated_by = getCookie("UserID");
 
   algaehApiCall({
     uri: "/labmasters/updateContainer",
@@ -49,7 +48,6 @@ const updateLabContainer = ($this, data) => {
 };
 
 const showconfirmDialog = ($this, id) => {
-  debugger;
   swal({
     title: "Are you sure you want to delete this Coutainer?",
     icon: "warning",

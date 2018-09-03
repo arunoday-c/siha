@@ -1,5 +1,4 @@
 const CollectSample = ($this, row) => {
-  debugger;
   let inputobj = {
     hims_d_lab_sample_id: row.hims_d_lab_sample_id,
     order_id: row.hims_f_lab_order_id,
