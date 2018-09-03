@@ -221,5 +221,9 @@
     { "name": "Cancelled", "value": "CN" },
     { "name": "Result  Confirmed ", "value": "RC" },
     { "name": "Result Avaiable", "value": "RA" }
+  ],
+  "FORMAT_DIG_TYPE": [
+    { "name": "Primary", "value": "P" },
+    { "name": "Secondary", "value": "S" }
   ]
 }

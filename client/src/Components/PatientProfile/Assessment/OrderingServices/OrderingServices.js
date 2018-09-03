@@ -11,7 +11,7 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
   Tooltip
-} from "../../Wrapper/algaehWrapper";
+} from "../../../Wrapper/algaehWrapper";
 
 import {
   serviceTypeHandeler,
@@ -23,9 +23,9 @@ import {
   SaveOrdersServices
 } from "./OrderingServicesHandaler";
 import "./OrderingServices.css";
-import "../../../styles/site.css";
-import { AlgaehActions } from "../../../actions/algaehActions";
-import { getCookie } from "../../../utils/algaehApiCall";
+import "../../../../styles/site.css";
+import { AlgaehActions } from "../../../../actions/algaehActions";
+import { getCookie } from "../../../../utils/algaehApiCall";
 
 class OrderingServices extends Component {
   constructor(props) {
@@ -126,66 +126,7 @@ class OrderingServices extends Component {
     return (
       <div className="hptl-phase1-ordering-services-form">
         {/* <div className="main-details" /> */}
-        <div className="container-fluid">
-          {/* <div className="row form-details">
-            <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "visit_code"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "visit_code",
-                value: this.state.visit_code,
-                events: {
-                  onChange: texthandle.bind(this, this)
-                },
-                error: this.state.open,
-                helperText: this.state.userErrorText
-              }}
-            />
-
-            <div className="col-lg-1 form-group print_actions">
-              <span
-                className="fas fa-search fa-2x"
-                onClick={VisitSearch.bind(this, this)}
-              />
-            </div>
-
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "patient_code"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "patient_code",
-                value: this.state.patient_code,
-                events: {
-                  onChange: texthandle.bind(this, this)
-                },
-                disabled: true,
-                error: this.state.open,
-                helperText: this.state.userErrorText
-              }}
-            />
-
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "full_name"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "full_name",
-                value: this.state.full_name,
-                events: {
-                  onChange: null
-                },
-                disabled: true
-              }}
-            />
-          </div> */}
+        <div className="container-fluid" style={{ minHeight: "30vh" }}>
           <div className="row form-details">
             <div className="col-lg-1">
               <AlgaehLabel
