@@ -350,6 +350,7 @@ let updateInvestigationTest = (req, res, next) => {
           ) {
             //m_lab_specimen update
             debugLog("inside L near specimen");
+
             connection.query(
               "UPDATE `hims_m_lab_specimen`\
               SET  specimen_id=?,container_id=?,container_code=?,updated_date=?,updated_by=?\
@@ -412,6 +413,47 @@ let updateInvestigationTest = (req, res, next) => {
                 }
               }
             );
+
+            if (investigationDetails.insert_analytes.length != 0) {
+              const insurtColumns = [
+                "analyte_id",
+                "analyte_type",
+                "result_unit",
+                "created_by",
+                "updated_by",
+                "test_id"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_m_lab_analyte(" +
+                  insurtColumns.join(",") +
+                  ") VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: investigationDetails.insert_analytes,
+                    req: req
+                  })
+                ],
+                (error, analyteResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    }
+                    req.records = analyteResult;
+                    next();
+                  });
+                }
+              );
+            }
           } //bulk update rad_template
           else if (
             result != null &&
