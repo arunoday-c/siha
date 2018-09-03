@@ -372,34 +372,88 @@ let updateInvestigationTest = (req, res, next) => {
                   });
                 }
 
-                //bulk analytes update
-                if (resultSpc != null) {
-                  debugLog("inside L near analyte");
-                  let inputParam = extend([], req.body.update_analytes);
-                  debugLog("input analayte", inputParam);
+                new Promise((resolve, reject) => {
+                  try {
+                    if (investigationDetails.insert_analytes.length != 0) {
+                      const insurtColumns = [
+                        "analyte_id",
+                        "analyte_type",
+                        "result_unit",
+                        "created_by",
+                        "updated_by",
+                        "test_id"
+                      ];
 
-                  let qry = "";
-
-                  for (let i = 0; i < req.body.update_analytes.length; i++) {
-                    qry +=
-                      " UPDATE `hims_m_lab_analyte` SET record_status='I', updated_date='" +
-                      new Date() +
-                      "',updated_by=\
-          '" +
-                      investigationDetails.updated_by +
-                      "' WHERE hims_m_lab_analyte_id='" +
-                      inputParam[i].hims_m_lab_analyte_id +
-                      "' AND record_status='A' ;";
-                  }
-
-                  connection.query(qry, (error, result_anlyt) => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
+                      connection.query(
+                        "INSERT INTO hims_m_lab_analyte(" +
+                          insurtColumns.join(",") +
+                          ") VALUES ?",
+                        [
+                          jsonArrayToObject({
+                            sampleInputObject: insurtColumns,
+                            arrayObj: investigationDetails.insert_analytes,
+                            req: req
+                          })
+                        ],
+                        (error, InsAnalyteResult) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          return resolve(InsAnalyteResult);
+                        }
+                      );
+                    } else {
+                      return resolve();
                     }
-                    debugLog("deleted analyte");
+                  } catch (e) {
+                    reject(e);
+                  }
+                }).then(results => {
+                  debugLog("inside LAB then");
+
+                  //bulk analytes update
+                  if (investigationDetails.update_analytes.length != 0) {
+                    debugLog("inside L near analyte  bulk update analyte");
+                    let inputParam = extend([], req.body.update_analytes);
+                    debugLog("input analayte", inputParam);
+
+                    let qry = "";
+
+                    for (let i = 0; i < req.body.update_analytes.length; i++) {
+                      qry +=
+                        " UPDATE `hims_m_lab_analyte` SET record_status='I', updated_date='" +
+                        new Date() +
+                        "',updated_by=\
+'" +
+                        investigationDetails.updated_by +
+                        "' WHERE hims_m_lab_analyte_id='" +
+                        inputParam[i].hims_m_lab_analyte_id +
+                        "' AND record_status='A' ;";
+                    }
+
+                    connection.query(qry, (error, result_anlyt) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      debugLog("analyte,deleted or update as Inactive ");
+                      connection.commit(error => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        req.records = result_anlyt;
+                        next();
+                      });
+                    });
+                  } else {
                     connection.commit(error => {
                       if (error) {
                         connection.rollback(() => {
@@ -407,102 +461,117 @@ let updateInvestigationTest = (req, res, next) => {
                           next(error);
                         });
                       }
-                      req.records = result_anlyt;
+                      req.records = resultSpc;
                       next();
                     });
-                  });
-                }
+                  }
+                });
               }
             );
+          } //bulk update rad_template
+          else if (
+            result != null &&
+            investigationDetails.investigation_type == "R"
+          ) {
+            new Promise((resolve, reject) => {
+              try {
+                if (investigationDetails.insert_rad_temp.length != 0) {
+                  const insurtColumns = [
+                    "template_name",
+                    "template_html",
+                    "template_status",
+                    "created_by",
+                    "updated_by"
+                  ];
 
-            if (investigationDetails.insert_analytes.length != 0) {
-              const insurtColumns = [
-                "analyte_id",
-                "analyte_type",
-                "result_unit",
-                "created_by",
-                "updated_by",
-                "test_id"
-              ];
+                  connection.query(
+                    "INSERT INTO hims_d_rad_template_detail(" +
+                      insurtColumns.join(",") +
+                      ",`test_id`) VALUES ?",
+                    [
+                      jsonArrayToObject({
+                        sampleInputObject: insurtColumns,
+                        arrayObj: req.body.RadTemplate,
+                        newFieldToInsert: [req.body.test_id],
+                        req: req
+                      })
+                    ],
+                    (error, radiolgyResult) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
 
-              connection.query(
-                "INSERT INTO hims_m_lab_analyte(" +
-                  insurtColumns.join(",") +
-                  ") VALUES ?",
-                [
-                  jsonArrayToObject({
-                    sampleInputObject: insurtColumns,
-                    arrayObj: investigationDetails.insert_analytes,
-                    req: req
-                  })
-                ],
-                (error, analyteResult) => {
+                      return resolve(radiolgyResult);
+                    }
+                  );
+                } else {
+                  return resolve();
+                }
+              } catch (e) {
+                reject(e);
+              }
+            }).then(result => {
+              debugLog("inside RAD then");
+              if (investigationDetails.update_rad_temp.length != 0) {
+                let inputParam = extend([], req.body.update_rad_temp);
+                debugLog("input rad template:", inputParam);
+
+                let qry = "";
+
+                for (let i = 0; i < req.body.update_rad_temp.length; i++) {
+                  qry +=
+                    " UPDATE `hims_d_rad_template_detail` SET template_name='" +
+                    inputParam[i].template_name +
+                    "',template_html=\
+    '" +
+                    inputParam[i].template_html +
+                    "',template_status='" +
+                    inputParam[i].template_status +
+                    "', updated_date='" +
+                    new Date() +
+                    "',updated_by=\
+    '" +
+                    investigationDetails.updated_by +
+                    "',record_status='" +
+                    inputParam[i].record_status +
+                    "' WHERE hims_d_rad_template_detail_id='" +
+                    inputParam[i].hims_d_rad_template_detail_id +
+                    "' AND record_status='A' ;";
+                }
+
+                connection.query(qry, (error, result_rad_update) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
                       next(error);
                     });
                   }
-
                   connection.commit(error => {
                     if (error) {
-                      releaseDBConnection(db, connection);
-                      next(error);
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
                     }
-                    req.records = analyteResult;
+                    req.records = result_rad_update;
                     next();
                   });
-                }
-              );
-            }
-          } //bulk update rad_template
-          else if (
-            result != null &&
-            investigationDetails.investigation_type == "R"
-          ) {
-            let inputParam = extend([], req.body.update_rad_temp);
-            debugLog("input rad template:", inputParam);
-
-            let qry = "";
-
-            for (let i = 0; i < req.body.update_rad_temp.length; i++) {
-              qry +=
-                " UPDATE `hims_d_rad_template_detail` SET template_name='" +
-                inputParam[i].template_name +
-                "',template_html=\
-    '" +
-                inputParam[i].template_html +
-                "',template_status='" +
-                inputParam[i].template_status +
-                "', updated_date='" +
-                new Date() +
-                "',updated_by=\
-    '" +
-                investigationDetails.updated_by +
-                "',record_status='" +
-                inputParam[i].record_status +
-                "' WHERE hims_d_rad_template_detail_id='" +
-                inputParam[i].hims_d_rad_template_detail_id +
-                "' AND record_status='A' ;";
-            }
-
-            connection.query(qry, (error, result_rad) => {
-              if (error) {
-                connection.rollback(() => {
-                  releaseDBConnection(db, connection);
-                  next(error);
+                });
+              } else {
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  req.records = result;
+                  next();
                 });
               }
-              connection.commit(error => {
-                if (error) {
-                  connection.rollback(() => {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  });
-                }
-                req.records = result_rad;
-                next();
-              });
             });
           }
         });
