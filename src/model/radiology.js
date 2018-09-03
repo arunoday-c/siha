@@ -18,13 +18,17 @@ let getRadOrderedServices = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-
-    let whereOrder =
-      "date(ordered_date) between date('" +
-      req.query.from_date +
-      "') AND date('" +
-      req.query.to_date +
-      "')";
+    let whereOrder = "";
+    if (req.query.from_date != undefined) {
+      whereOrder =
+        "date(ordered_date) between date('" +
+        req.query.from_date +
+        "') AND date('" +
+        req.query.to_date +
+        "')";
+    } else {
+      whereOrder = "date(ordered_date) <= date(now())";
+    }
 
     delete req.query.from_date;
     delete req.query.to_date;

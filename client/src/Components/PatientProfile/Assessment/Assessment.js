@@ -8,18 +8,22 @@ import "./Assessment.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
 import Radio from "@material-ui/core/Radio";
 import Button from "@material-ui/core/Button";
 import {
   texthandle,
+  assnotetexthandle,
   insertInitialICDS,
   insertFinalICDS,
   selectdIcd,
   addFinalIcd
 } from "./AssessmentEvents";
 import OrderingServices from "./OrderingServices/OrderingServices";
+import LabResults from "./LabResult/LabResult";
+import RadResults from "./RadResult/RadResult";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 class Assessment extends Component {
@@ -496,11 +500,29 @@ class Assessment extends Component {
                 ) : this.state.pageDisplay === "Packages" ? (
                   "Packages"
                 ) : this.state.pageDisplay === "LabResults" ? (
-                  "Lab Results"
+                  <LabResults />
                 ) : this.state.pageDisplay === "RisResults" ? (
-                  "Ris Results"
+                  <RadResults />
                 ) : this.state.pageDisplay === "AssesmentsNotes" ? (
-                  "Assesments Notes"
+                  <div className="row" style={{ paddingBottom: "20px" }}>
+                    <div className="container-fluid">
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12" }}
+                        label={{
+                          forceLabel: "Assesments Notes",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "assesments_notes",
+                          value: this.state.assesments_notes,
+                          events: {
+                            onChange: assnotetexthandle.bind(this, this)
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
                 ) : null}
               </div>
             </div>

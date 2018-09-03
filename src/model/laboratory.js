@@ -17,19 +17,36 @@ let getLabOrderedServices = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+    debugLog("Date: ", req.query.from_date);
+    let whereOrder = "";
+    if (req.query.from_date != undefined) {
+      whereOrder =
+        "date(ordered_date) between date('" +
+        req.query.from_date +
+        "') AND date('" +
+        req.query.to_date +
+        "')";
 
-    let whereOrder =
-      "date(ordered_date) between date('" +
-      req.query.from_date +
-      "') AND date('" +
-      req.query.to_date +
-      "')";
+      debugLog("Date If: ", req.query.from_date);
+    } else {
+      whereOrder = "date(ordered_date) <= date(now())";
+    }
 
+    debugLog("where Order:", whereOrder);
     delete req.query.from_date;
     delete req.query.to_date;
     let where = whereCondition(req.query);
 
     debugLog("where conditn:", where);
+    // let strQuery =
+    //   "SELECT hims_f_lab_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
+    // SA.status, cancelled, ordered_date, test_type, PAT.patient_code,PAT.full_name,SP.sample_id,SP.collected,\
+    // SP.collected_by, SP.collected_date,SP.hims_d_lab_sample_id from ((hims_f_lab_order SA inner join hims_f_patient PAT ON \
+    // SA.patient_id=PAT.hims_d_patient_id) inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id) \
+    // left outer join hims_f_lab_sample SP on SA.hims_f_lab_order_id = SP.order_id WHERE SA.record_status='A' AND " +
+    //   whereOrder;
+
+    // debugLog("strQuery: ", strQuery);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -361,8 +378,47 @@ SELECT lab_location_code hims_d_hospital where hims_d_hospital_id=?",
   });
 };
 
+//created by nowshad: to get selected test analytes
+let getTestAnalytes = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(req.query);
+
+    debugLog("where conditn:", where);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      db.query(
+        "SELECT analyte_id,analyte_type,result_unit, result from hims_f_ord_analytes \
+         where record_status='A' AND" +
+          where.condition,
+        where.values,
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getLabOrderedServices,
+  getTestAnalytes,
   insertLadOrderedServices,
   updateLabOrderServices
 };
