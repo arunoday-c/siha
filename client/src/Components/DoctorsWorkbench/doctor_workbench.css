@@ -38,8 +38,6 @@
     font-size: 1.3rem;
     padding-right: 3px;
     padding-left: 3px; }
-  .doctor_workbench .my-calendar .calendar .col .selectedDate {
-    background: #009e94; }
   .doctor_workbench .my-calendar .calendar .col:hover {
     background: #009e94;
     cursor: pointer; }
@@ -50,7 +48,10 @@
     font-size: 0.6rem;
     text-transform: uppercase; }
   .doctor_workbench .my-calendar .activeDate {
-    border-bottom: 4px solid yellow !important; }
+    border-bottom: 4px solid yellow !important;
+    background: #009e94; }
+  .doctor_workbench .my-calendar .CurrentDate {
+    border-top: 2px solid yellow !important; }
 
 .doctor_workbench .opPatientList .opList {
   margin: 0;

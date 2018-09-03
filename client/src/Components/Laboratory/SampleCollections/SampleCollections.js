@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Update from "@material-ui/icons/Update";
 import Print from "@material-ui/icons/Print";
-
+import MyContext from "../../../utils/MyContext.js";
 import "./SampleCollections.css";
 import "../../../styles/site.css";
 import { CollectSample } from "./SampleCollectionEvent";
@@ -25,7 +25,7 @@ class SampleCollectionPatient extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      collected: "N"
+      collected: true
     };
   }
   componentDidMount() {
@@ -54,6 +54,7 @@ class SampleCollectionPatient extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
+      debugger;
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });
     }
@@ -64,6 +65,7 @@ class SampleCollectionPatient extends PureComponent {
   };
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         <div>
@@ -74,217 +76,232 @@ class SampleCollectionPatient extends PureComponent {
             }}
             open={this.props.open}
           >
-            <div className="hptl-sample-coll-details ">
-              <div className="colorPrimary header">
-                {/* <Typography variant="title">{this.props.HeaderCaption}</Typography> */}
-                <Typography variant="title">Sample Collection</Typography>
-              </div>
+            <MyContext.Consumer>
+              {context => (
+                <div className="hptl-sample-coll-details ">
+                  <div className="colorPrimary header">
+                    {/* <Typography variant="title">{this.props.HeaderCaption}</Typography> */}
+                    <Typography variant="title">Sample Collection</Typography>
+                  </div>
 
-              <div className="container-fluid">
-                <div className="row form-details">
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "patient_code"
-                    }}
-                    textBox={{
-                      value: this.state.patient_code,
-                      className: "txt-fld",
-                      name: "patient_code",
-
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "patient_name"
-                    }}
-                    textBox={{
-                      value: this.state.full_name,
-                      className: "txt-fld",
-                      name: "full_name",
-
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "ordered_by"
-                    }}
-                    selector={{
-                      name: "provider_id",
-                      className: "select-fld",
-                      value: this.state.provider_id,
-                      dataSource: {
-                        textField: "full_name",
-                        valueField: "employee_id",
-                        data:
-                          this.props.deptanddoctors === undefined
-                            ? []
-                            : this.props.deptanddoctors.doctors
-                      },
-                      others: {
-                        disabled: true
-                      },
-                      onChange: null
-                    }}
-                  />
-
-                  <AlgaehDateHandler
-                    div={{ className: "col-lg-3" }}
-                    label={{ fieldName: "ordered_date" }}
-                    textBox={{ className: "txt-fld", name: "ordered_date" }}
-                    events={{
-                      onChange: null
-                    }}
-                    disabled={true}
-                    value={this.state.ordered_date}
-                  />
-                </div>
-
-                <div className="row grid-details">
-                  <div className="col-lg-12">
-                    <div className="">
-                      <AlgaehDataGrid
-                        id="update_order_grid"
-                        columns={[
-                          {
-                            fieldName: "action",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "action" }} />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  {row.collected === "N" ? (
-                                    <IconButton color="primary" title="Collect">
-                                      <Update
-                                        onClick={CollectSample.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )}
-                                      />
-                                    </IconButton>
-                                  ) : (
-                                    <IconButton color="primary" title="Barcode">
-                                      <Print
-                                      //   onClick={PringBarcode.bind(this, this, row)}
-                                      />
-                                    </IconButton>
-                                  )}
-                                </span>
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "service_code",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "investigation_code" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "service_name",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "investigation_name" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "sample_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "specimen_name" }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.labspecimen === undefined
-                                  ? []
-                                  : this.props.labspecimen.filter(
-                                      f =>
-                                        f.hims_d_lab_specimen_id ===
-                                        row.sample_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? display[0].description
-                                    : ""}
-                                </span>
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "collected",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "collected" }} />
-                            ),
-                            displayTemplate: row => {
-                              return row.collected === "N" ? "No" : "Yes";
-                            }
-                          },
-                          {
-                            fieldName: "collected_by",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "collected_by" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "collected_date",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "collected_date" }}
-                              />
-                            )
-                          }
-                        ]}
-                        keyId="service_code"
-                        dataSource={{
-                          data: this.state.test_details
+                  <div className="container-fluid">
+                    <div className="row form-details">
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "patient_code"
                         }}
-                        // isEditable={true}
-                        paging={{ page: 0, rowsPerPage: 5 }}
+                        textBox={{
+                          value: this.state.patient_code,
+                          className: "txt-fld",
+                          name: "patient_code",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
                       />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "patient_name"
+                        }}
+                        textBox={{
+                          value: this.state.full_name,
+                          className: "txt-fld",
+                          name: "full_name",
+
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "ordered_by"
+                        }}
+                        selector={{
+                          name: "provider_id",
+                          className: "select-fld",
+                          value: this.state.provider_id,
+                          dataSource: {
+                            textField: "full_name",
+                            valueField: "employee_id",
+                            data:
+                              this.props.deptanddoctors === undefined
+                                ? []
+                                : this.props.deptanddoctors.doctors
+                          },
+                          others: {
+                            disabled: true
+                          },
+                          onChange: null
+                        }}
+                      />
+
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-3" }}
+                        label={{ fieldName: "ordered_date" }}
+                        textBox={{ className: "txt-fld", name: "ordered_date" }}
+                        events={{
+                          onChange: null
+                        }}
+                        disabled={true}
+                        value={this.state.ordered_date}
+                      />
+                    </div>
+
+                    <div className="row grid-details">
+                      <div className="col-lg-12">
+                        <div className="">
+                          <AlgaehDataGrid
+                            id="update_order_grid"
+                            columns={[
+                              {
+                                fieldName: "action",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "action" }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {row.collected === "N" ? (
+                                        <IconButton
+                                          color="primary"
+                                          title="Collect"
+                                        >
+                                          <Update
+                                            onClick={CollectSample.bind(
+                                              this,
+                                              this,
+                                              context,
+                                              row
+                                            )}
+                                          />
+                                        </IconButton>
+                                      ) : (
+                                        <IconButton
+                                          color="primary"
+                                          title="Barcode"
+                                        >
+                                          <Print
+                                          //   onClick={PringBarcode.bind(this, this, row)}
+                                          />
+                                        </IconButton>
+                                      )}
+                                    </span>
+                                  );
+                                }
+                              },
+                              {
+                                fieldName: "service_code",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "investigation_code" }}
+                                  />
+                                )
+                              },
+                              {
+                                fieldName: "service_name",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "investigation_name" }}
+                                  />
+                                )
+                              },
+                              {
+                                fieldName: "sample_id",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "specimen_name" }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  let display =
+                                    this.props.labspecimen === undefined
+                                      ? []
+                                      : this.props.labspecimen.filter(
+                                          f =>
+                                            f.hims_d_lab_specimen_id ===
+                                            row.sample_id
+                                        );
+
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].description
+                                        : ""}
+                                    </span>
+                                  );
+                                }
+                              },
+                              {
+                                fieldName: "collected",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "collected" }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return row.collected === "N" ? "No" : "Yes";
+                                }
+                              },
+                              {
+                                fieldName: "collected_by",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "collected_by" }}
+                                  />
+                                )
+                              },
+                              {
+                                fieldName: "collected_date",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "collected_date" }}
+                                  />
+                                )
+                              }
+                            ]}
+                            keyId="service_code"
+                            dataSource={{
+                              data: this.state.test_details
+                            }}
+                            // isEditable={true}
+                            paging={{ page: 0, rowsPerPage: 5 }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row" position="fixed">
+                      <div className="col-lg-12">
+                        <span className="float-left">
+                          <button
+                            className="htpl1-phase1-btn-secondary"
+                            onClick={e => {
+                              this.onClose(e);
+                            }}
+                          >
+                            <AlgaehLabel label={{ fieldName: "btnclose" }} />
+                          </button>
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="row" position="fixed">
-                  <div className="col-lg-12">
-                    <span className="float-left">
-                      <button
-                        className="htpl1-phase1-btn-secondary"
-                        onClick={e => {
-                          this.onClose(e);
-                        }}
-                      >
-                        <AlgaehLabel label={{ fieldName: "btnclose" }} />
-                      </button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+              )}
+            </MyContext.Consumer>
           </Modal>
         </div>
       </React.Fragment>

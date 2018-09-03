@@ -143,8 +143,8 @@ class DoctorsWorkbench extends Component {
   onSelectedDateHandler(e) {
     this.setState(
       {
-        activeDateHeader: e.target.getAttribute("currentdate"),
-        fromDate: e.target.getAttribute("currentdate")
+        activeDateHeader: e.target.getAttribute("date"),
+        fromDate: e.target.getAttribute("date")
       },
       () => {
         this.loadListofData();
@@ -153,6 +153,8 @@ class DoctorsWorkbench extends Component {
   }
 
   generateHorizontalDateBlocks() {
+    let classesCurrentDate = moment().format("YYYYMMDD");
+
     return (
       <div className="calendar">
         <div className="col-12">
@@ -162,12 +164,18 @@ class DoctorsWorkbench extends Component {
                 <div
                   // className="col"
                   key={index}
-                  currentdate={row.currentdate}
+                  date={row.currentdate}
                   className={
                     moment(row.currentdate).format("YYYYMMDD") ===
                     moment(this.state.activeDateHeader).format("YYYYMMDD")
-                      ? "col activeDate"
-                      : "col"
+                      ? moment(row.currentdate).format("YYYYMMDD") ===
+                        moment().format("YYYYMMDD")
+                        ? "col activeDate CurrentDate"
+                        : "col activeDate"
+                      : moment(row.currentdate).format("YYYYMMDD") ===
+                        moment().format("YYYYMMDD")
+                        ? "col CurrentDate"
+                        : "col"
                   }
                   onClick={this.onSelectedDateHandler.bind(this)}
                 >

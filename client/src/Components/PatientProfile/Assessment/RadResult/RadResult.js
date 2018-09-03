@@ -154,11 +154,19 @@ class LabResult extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            <IconButton color="primary" title="View Report">
+                            <IconButton
+                              color="primary"
+                              title="View Report"
+                              style={{ maxHeight: "4vh" }}
+                            >
                               <i class="fas fa-file-alt" />
                             </IconButton>
 
-                            <IconButton color="primary" title="View PACS">
+                            <IconButton
+                              color="primary"
+                              title="View PACS"
+                              style={{ maxHeight: "4vh" }}
+                            >
                               <i class="fas fa-file-image" />
                             </IconButton>
                           </span>
