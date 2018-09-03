@@ -502,8 +502,8 @@ let jsonArrayToObject = options => {
       options.newFieldToInsert.map(row => {
         internalarray.push(row);
       });
-      outputObject.push(internalarray);
     }
+    outputObject.push(internalarray);
   }
   return outputObject;
 };

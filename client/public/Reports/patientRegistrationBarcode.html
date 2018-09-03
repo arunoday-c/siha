@@ -1,4 +1,17 @@
 <div>
-    <canvas algaeh-barcode="patient_code"></canvas>
-
+    <img data-barcode-parameter="patient_code" />
+    <p>Pateint Name</p>
+    <p data-parameter="full_name"></p>
+    <table>
+        <tr>
+            <th>Patient Code</th>
+            <th>Patient Name</th>
+        </tr>
+        <tbody data-list="patient_details">
+            <tr>
+                <td data-list-parameter="patient_code"> </td>
+                <td data-list-parameter="full_name"> </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
