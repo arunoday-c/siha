@@ -380,8 +380,7 @@ let updateInvestigationTest = (req, res, next) => {
                         "analyte_type",
                         "result_unit",
                         "created_by",
-                        "updated_by",
-                        "test_id"
+                        "updated_by"
                       ];
 
                       connection.query(
@@ -478,21 +477,31 @@ let updateInvestigationTest = (req, res, next) => {
                 if (investigationDetails.insert_rad_temp.length != 0) {
                   const insurtColumns = [
                     "template_name",
+                    "test_id",
                     "template_html",
                     "template_status",
                     "created_by",
                     "updated_by"
                   ];
+                  debugLog("insert_rad_temp", req.body.insert_rad_temp);
+
+                  debugLog(
+                    "why",
+                    jsonArrayToObject({
+                      sampleInputObject: insurtColumns,
+                      arrayObj: req.body.insert_rad_temp,
+                      req: req
+                    })
+                  );
 
                   connection.query(
                     "INSERT INTO hims_d_rad_template_detail(" +
                       insurtColumns.join(",") +
-                      ",`test_id`) VALUES ?",
+                      ") VALUES ?",
                     [
                       jsonArrayToObject({
                         sampleInputObject: insurtColumns,
-                        arrayObj: req.body.RadTemplate,
-                        newFieldToInsert: [req.body.test_id],
+                        arrayObj: investigationDetails.insert_rad_temp,
                         req: req
                       })
                     ],
@@ -517,7 +526,7 @@ let updateInvestigationTest = (req, res, next) => {
               debugLog("inside RAD then");
               if (investigationDetails.update_rad_temp.length != 0) {
                 let inputParam = extend([], req.body.update_rad_temp);
-                debugLog("input rad template:", inputParam);
+                debugLog("input rad_update:", inputParam);
 
                 let qry = "";
 
