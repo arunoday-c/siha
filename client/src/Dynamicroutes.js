@@ -27,6 +27,8 @@ import LabSetup from "./Components/LabSetup/LabSetup";
 import InvestigationSetup from "./Components/InvestigationSetup/InvestigationSetup";
 import RadOrderedList from "./Components/Radiology/RadOrderedList/RadOrderedList";
 
+import RadScheduledList from "./Components/Radiology/RadScheduledList/RadScheduledList";
+
 function height() {
   let height =
     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -93,6 +95,9 @@ const componts = (selectedLang, breadStyle) => {
     ),
     RadOrderedList: (
       <RadOrderedList SelectLanguage={selectedLang} breadStyle={breadStyle} />
+    ),
+    RadScheduledList: (
+      <RadScheduledList SelectLanguage={selectedLang} breadStyle={breadStyle} />
     )
   };
 };

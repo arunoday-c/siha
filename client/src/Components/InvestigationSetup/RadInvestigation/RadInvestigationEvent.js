@@ -1,5 +1,6 @@
+import { successfulMessage } from "../../../utils/GlobalFunctions";
+
 const texthandle = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -16,10 +17,10 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const ViewEditTemplate = ($this, row) => {
-  debugger;
   let template = {
     template_html: row.template_html,
-    template_name: row.template_name
+    template_name: row.template_name,
+    hims_d_rad_template_detail_id: row.hims_d_rad_template_detail_id
   };
   $this.setState({
     ...$this.state,
@@ -36,25 +37,118 @@ const ShowTemplate = $this => {
   });
 };
 
-const CloseTemplate = ($this, value) => {
-  debugger;
-  if (value !== 0) {
-    let radObj = {
-      template_name: $this.state.template_name,
-      template_html: $this.state.template_html
-    };
-
-    let RadTemplate = $this.state.RadTemplate;
+const CloseTemplate = ($this, hims_d_rad_template_detail_id) => {
+  let radObj = {
+    template_name: $this.state.template_name,
+    template_html: $this.state.template_html
+  };
+  let insert_rad_temp = $this.state.insert_rad_temp;
+  let RadTemplate = $this.state.RadTemplate;
+  let Updateobj = {};
+  if (
+    hims_d_rad_template_detail_id !== 0 &&
+    hims_d_rad_template_detail_id === null
+  ) {
     RadTemplate.push(radObj);
+
+    radObj.test_id = $this.state.hims_d_investigation_test_id;
+    radObj.hims_d_rad_template_detail_id = null;
+    insert_rad_temp.push(radObj);
+
     $this.setState({
       openTemplate: !$this.state.openTemplate,
-      RadTemplate: RadTemplate
+      RadTemplate: RadTemplate,
+      insert_rad_temp: insert_rad_temp
     });
   } else {
-    $this.setState({
-      openTemplate: !$this.state.openTemplate
+    if (hims_d_rad_template_detail_id !== 0) {
+      let update_rad_temp = $this.state.update_rad_temp;
+
+      for (let i = 0; i < RadTemplate.length; i++) {
+        if (
+          (RadTemplate[
+            i
+          ].hims_d_rad_template_detail_id = hims_d_rad_template_detail_id)
+        ) {
+          RadTemplate[i].template_name = $this.state.template_name;
+          RadTemplate[i].template_html = $this.state.template_html;
+        }
+      }
+
+      Updateobj = {
+        template_name: $this.state.template_name,
+        template_html: $this.state.template_html,
+        hims_d_rad_template_detail_id: hims_d_rad_template_detail_id
+      };
+      update_rad_temp.push(Updateobj);
+      $this.setState({
+        openTemplate: !$this.state.openTemplate,
+        RadTemplate: RadTemplate,
+        update_rad_temp: update_rad_temp,
+        record_status: "A"
+      });
+    } else if (hims_d_rad_template_detail_id === null) {
+    } else {
+      $this.setState({
+        openTemplate: !$this.state.openTemplate
+      });
+    }
+  }
+};
+
+const deleteRadInvestigation = ($this, context, row, rowId) => {
+  let RadTemplate = $this.state.RadTemplate;
+  let update_rad_temp = $this.state.update_rad_temp;
+  let insert_rad_temp = $this.state.insert_rad_temp;
+  if (
+    $this.state.hims_d_investigation_test_id !== null &&
+    row.hims_d_rad_template_detail_id !== null
+  ) {
+    let Updateobj = {
+      hims_d_rad_template_detail_id: row.hims_d_rad_template_detail_id,
+      template_name: row.template_name,
+      template_html: row.template_html,
+      record_status: "I"
+    };
+    update_rad_temp.push(Updateobj);
+  } else {
+    if (insert_rad_temp.length > 0) {
+      for (let k = 0; k < insert_rad_temp.length; k++) {
+        if ((insert_rad_temp[k].template_name = row.template_name)) {
+          insert_rad_temp.splice(k, 1);
+        }
+      }
+    }
+  }
+  RadTemplate.splice(rowId, 1);
+  $this.setState({
+    RadTemplate: RadTemplate,
+    insert_rad_temp: insert_rad_temp,
+    update_rad_temp: update_rad_temp
+  });
+
+  if (context !== undefined) {
+    context.updateState({
+      RadTemplate: RadTemplate,
+      insert_rad_temp: insert_rad_temp,
+      update_rad_temp: update_rad_temp
     });
   }
 };
 
-export { texthandle, ShowTemplate, CloseTemplate, ViewEditTemplate };
+const updateRadInvestigation = $this => {
+  successfulMessage({
+    message: "Invalid Input. No Option to edit.",
+    title: "Warning",
+    icon: "warning"
+  });
+};
+
+export {
+  texthandle,
+  ShowTemplate,
+  CloseTemplate,
+  ViewEditTemplate,
+  deleteRadInvestigation,
+  updateRadInvestigation
+};

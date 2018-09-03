@@ -74,6 +74,7 @@ class DoctorsWorkbench extends Component {
       onFailure: error => {}
     });
   }
+
   moveToPatientProfile(ei, pi) {
     setGlobal({
       "EHR-STD": "PatientProfile",
@@ -394,7 +395,8 @@ class DoctorsWorkbench extends Component {
                               setGlobal({
                                 "EHR-STD": "PatientProfile",
                                 current_patient: data.patient_id,
-                                episode_id: data.episode_id
+                                episode_id: data.episode_id,
+                                visit_id: data.visit_id
                               });
                               document.getElementById("ehr-router").click();
                             }}
@@ -490,7 +492,8 @@ class DoctorsWorkbench extends Component {
                           setGlobal({
                             "EHR-STD": "PatientProfile",
                             current_patient: data.patient_id,
-                            episode_id: data.episode_id
+                            episode_id: data.episode_id,
+                            visit_id: data.visit_id
                           });
                           document.getElementById("ehr-router").click();
                         }}

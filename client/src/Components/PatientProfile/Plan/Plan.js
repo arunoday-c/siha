@@ -101,28 +101,36 @@ class Plan extends Component {
                     id="patient_chart_grd"
                     columns={[
                       {
-                        fieldName: "food",
-                        label: "Food",
-                        disabled: true
-                      },
-                      {
                         fieldName: "date",
-                        label: "On Set Date"
+                        label: "Item Code"
                       },
                       {
                         fieldName: "first_name",
-                        label: "Comment"
+                        label: "Item Name"
+                      },
+                      {
+                        fieldName: "",
+                        label: "Frequency"
+                      },
+
+                      {
+                        fieldName: "active",
+                        label: "No. of Days"
                       },
                       {
                         fieldName: "active",
-                        label: "Active"
+                        label: "Dispense"
+                      },
+                      {
+                        fieldName: "active",
+                        label: "Start Date"
                       }
                     ]}
                     keyId="code"
                     dataSource={{
                       data: AllergyData
                     }}
-                    isEditable={false}
+                    isEditable={true}
                     paging={{ page: 0, rowsPerPage: 3 }}
                     events={
                       {
@@ -251,7 +259,7 @@ class Plan extends Component {
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
                 <div className="portlet-title">
                   <div className="caption">
-                    <h3 className="caption-subject">Referral</h3>
+                    <h3 className="caption-subject">Refer To</h3>
                   </div>
                   <div className="actions">
                     <a
@@ -263,7 +271,25 @@ class Plan extends Component {
                   </div>
                 </div>
                 <div className="portlet-body">
-                  <h4>Portlet Content</h4>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="patientType"
+                        value="OP Patient"
+                        checked
+                      />
+                      <span>Internal</span>
+                    </label>
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="patientType"
+                        value="IP Patient"
+                      />
+                      <span>External</span>
+                    </label>
+                  </div>
                 </div>
               </div>
               {/* END Portlet PORTLET */}

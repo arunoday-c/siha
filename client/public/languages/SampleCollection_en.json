@@ -23,5 +23,6 @@
 
   "btnclose": "Close",
   "form_name": "Sample Collection",
-  "form_home": "Home"
+  "form_home": "Home",
+  "location_id": "Lab Location"
 }

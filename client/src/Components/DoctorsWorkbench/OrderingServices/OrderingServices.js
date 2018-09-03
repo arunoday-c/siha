@@ -127,7 +127,7 @@ class OrderingServices extends Component {
       <div className="hptl-phase1-ordering-services-form">
         {/* <div className="main-details" /> */}
         <div className="container-fluid">
-          <div className="row form-details">
+          {/* <div className="row form-details">
             <AlagehFormGroup
               div={{ className: "col-lg-2" }}
               label={{
@@ -169,7 +169,7 @@ class OrderingServices extends Component {
                 helperText: this.state.userErrorText
               }}
             />
-            {/* Patient name */}
+
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
@@ -185,7 +185,7 @@ class OrderingServices extends Component {
                 disabled: true
               }}
             />
-          </div>
+          </div> */}
           <div className="row form-details">
             <div className="col-lg-1">
               <AlgaehLabel

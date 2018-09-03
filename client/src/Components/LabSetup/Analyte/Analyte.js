@@ -60,7 +60,6 @@ class LabSpecimen extends Component {
         mappingName: "labanalytes"
       },
       afterSuccess: data => {
-        debugger;
         if (data.length === 0 || data.length === undefined) {
           if (data.response.data.success === false) {
             successfulMessage({

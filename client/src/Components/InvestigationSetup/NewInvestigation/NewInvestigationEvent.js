@@ -12,7 +12,6 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const Validations = $this => {
-  debugger;
   let isError = false;
 
   if ($this.state.description === null) {
@@ -35,20 +34,34 @@ const Validations = $this => {
   }
 };
 const InsertLabTest = $this => {
-  debugger;
-
   const err = Validations($this);
 
   if (!err) {
-    debugger;
     if ($this.state.hims_d_investigation_test_id === null) {
-      debugger;
       algaehApiCall({
         uri: "/investigation/addInvestigationTest",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
             swal("Saved successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
+    } else {
+      algaehApiCall({
+        uri: "/investigation/updateInvestigationTest",
+        data: $this.state,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Updated successfully . .", {
               icon: "success",
               buttons: false,
               timer: 2000

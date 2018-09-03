@@ -30,6 +30,7 @@ let getRadOrderedServices = (req, res, next) => {
     delete req.query.to_date;
     let where = whereCondition(req.query);
 
+    debugLog("where Dates:", whereOrder);
     debugLog("where conditn:", where);
     db.getConnection((error, connection) => {
       if (error) {

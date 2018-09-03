@@ -104,7 +104,6 @@ class BreadCrumb extends PureComponent {
     }
   }
   openPrintMenu(e) {
-    debugger;
     this.setState({ printOpen: !this.state.printOpen });
   }
   showPrintArea() {

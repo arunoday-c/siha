@@ -7,7 +7,6 @@ import { removeGlobal } from "../../utils/GlobalFunctions";
 
 class Workbench extends Component {
   constructor(props) {
-    debugger;
     super(props);
     this.state = {
       EHR_Screen: getCookie("ScreenName").replace("/", "")
@@ -16,7 +15,6 @@ class Workbench extends Component {
   }
 
   routeComponents() {
-    debugger;
     this.setState(
       {
         EHR_Screen: Window.global["EHR-STD"]

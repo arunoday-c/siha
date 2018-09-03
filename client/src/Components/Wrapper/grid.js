@@ -626,7 +626,7 @@ class DataGrid extends PureComponent {
       <Paper
         style={{ width: this.state.width != null ? this.state.width : "100%" }}
       >
-        <div className="table-responsive">
+        <div className="table-responsive table-sm">
           <table
             id={this.props.id}
             className="table table-hover table-fixed"

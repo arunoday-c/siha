@@ -408,7 +408,6 @@ class RegistrationPatient extends Component {
                 label: "Print Label",
                 events: {
                   onClick: () => {
-                    debugger;
                     console.log("Patient state", this.state);
                   }
                 }

@@ -3,7 +3,8 @@ import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import {
   addInvestigationTest,
-  getInvestigTestList
+  getInvestigTestList,
+  updateInvestigationTest
 } from "../model/investigation";
 export default ({ config, db }) => {
   let api = Router();
@@ -30,6 +31,20 @@ export default ({ config, db }) => {
   api.get(
     "/getInvestigTestList",
     getInvestigTestList,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.put(
+    "/updateInvestigationTest",
+    updateInvestigationTest,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

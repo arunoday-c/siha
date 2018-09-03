@@ -19,7 +19,9 @@ import {
   texthandle,
   ShowTemplate,
   CloseTemplate,
-  ViewEditTemplate
+  ViewEditTemplate,
+  deleteRadInvestigation,
+  updateRadInvestigation
 } from "./RadInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -197,6 +199,16 @@ class RadInvestigation extends Component {
                         }}
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onDelete: deleteRadInvestigation.bind(
+                            this,
+                            this,
+                            context
+                          ),
+                          onEdit: row => {},
+
+                          onDone: updateRadInvestigation.bind(this, this)
+                        }}
                       />
                     </div>
                   </div>

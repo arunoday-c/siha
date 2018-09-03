@@ -10,6 +10,7 @@ import Print from "@material-ui/icons/Print";
 
 import "./SampleCollections.css";
 import "../../../styles/site.css";
+import { CollectSample } from "./SampleCollectionEvent";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
@@ -19,8 +20,6 @@ import {
   Modal
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
-// import { UpdateOrders } from "./UpdateOrdersEvents";
-import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 
 class SampleCollectionPatient extends PureComponent {
   constructor(props) {
@@ -54,15 +53,9 @@ class SampleCollectionPatient extends PureComponent {
     });
   }
   componentWillReceiveProps(nextProps) {
-    debugger;
     if (nextProps.selected_patient !== null) {
       let InputOutput = nextProps.selected_patient;
-      //   for (let i = 0; i < InputOutput.services_details.length; i++) {
-      //     InputOutput.services_details[i].checkselect = 1;
-      //   }
-      this.setState({ ...this.state, ...InputOutput }, () => {
-        debugger;
-      });
+      this.setState({ ...this.state, ...InputOutput });
     }
   }
 
@@ -180,7 +173,11 @@ class SampleCollectionPatient extends PureComponent {
                                   {row.collected === "N" ? (
                                     <IconButton color="primary" title="Collect">
                                       <Update
-                                      //   onClick={CollectSample.bind(this, this, row)}
+                                        onClick={CollectSample.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
                                       />
                                     </IconButton>
                                   ) : (
@@ -211,7 +208,7 @@ class SampleCollectionPatient extends PureComponent {
                             )
                           },
                           {
-                            fieldName: "specimen_name",
+                            fieldName: "sample_id",
                             label: (
                               <AlgaehLabel
                                 label={{ fieldName: "specimen_name" }}
@@ -224,7 +221,7 @@ class SampleCollectionPatient extends PureComponent {
                                   : this.props.labspecimen.filter(
                                       f =>
                                         f.hims_d_lab_specimen_id ===
-                                        row.visit_type
+                                        row.sample_id
                                     );
 
                               return (

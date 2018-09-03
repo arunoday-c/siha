@@ -6,6 +6,7 @@ import swal from "sweetalert";
 import Slide from "@material-ui/core/Slide";
 import config from "../utils/config.json";
 export function algaehApiCall(options) {
+  // "baseUrl": "http://192.168.0.149:3000/api/v1",
   if (!window.navigator.onLine) {
     swal({
       title: "Connection Error",

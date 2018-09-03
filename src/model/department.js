@@ -131,6 +131,21 @@ let addDepartment = (req, res, next) => {
   }
 };
 let updateDepartment = (req, res, next) => {
+  let department = {
+    hims_d_department_id: null,
+    department_code: null,
+    department_name: null,
+    department_desc: null,
+    department_type: null,
+    hospital_id: null,
+    effective_start_date: null,
+    effective_end_date: null,
+    department_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+    sub_department: [subDepartment]
+  };
+
   try {
     debugFunction("updateDepartment");
     if (req.db == null) {
@@ -139,6 +154,7 @@ let updateDepartment = (req, res, next) => {
     let db = req.db;
 
     debugLog("Input Data", req.body);
+    let departmentDetails = extend(department, req.body);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);

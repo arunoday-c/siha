@@ -3,6 +3,7 @@ import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
 import Enumerable from "linq";
+import { setLocaion } from "../../../utils/indexer";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -11,6 +12,10 @@ const texthandle = ($this, e) => {
   $this.setState({
     [name]: value
   });
+  if ((name = "location_id")) {
+    //TODO chnge based on location --Added by nowshad
+    // setLocaion(value.LabLocation);
+  }
 };
 
 const PatientSearch = ($this, e) => {
@@ -65,7 +70,7 @@ const getSampleCollectionDetails = $this => {
   if ($this.state.patient_id !== null) {
     inputobj.patient_id = $this.state.patient_id;
   }
-  debugger;
+
   $this.props.getSampleCollection({
     uri: "/laboratory/getLabOrderedServices",
     method: "GET",
@@ -75,7 +80,6 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
-      debugger;
       let sample_collection = Enumerable.from(data)
         .groupBy("$.patient_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();

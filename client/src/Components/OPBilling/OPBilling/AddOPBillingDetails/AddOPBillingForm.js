@@ -105,7 +105,6 @@ class AddOPBillingForm extends Component {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        debugger;
         if (data.billdetails[0].pre_approval === "Y") {
           successfulMessage({
             message:
