@@ -221,5 +221,35 @@
     { "name": "Cancelled", "value": "CN" },
     { "name": "Result  Confirmed ", "value": "RC" },
     { "name": "Result Avaiable", "value": "RA" }
+  ],
+  "ALLERGY_TYPES": [
+    {
+      "name": "Food",
+      "value": "F"
+    },
+    {
+      "name": "Airborne",
+      "value": "A"
+    },
+    {
+      "name": "Animal & Insects",
+      "value": "AI"
+    },
+    {
+      "name": "Chemical and Others",
+      "value": "CO"
+    },
+    {
+      "name": "NKA",
+      "value": "NKA"
+    },
+    {
+      "name": "Drugs",
+      "value": "D"
+    }
+  ],
+  "FORMAT_DIG_TYPE": [
+    { "name": "Primary", "value": "P" },
+    { "name": "Secondary", "value": "S" }
   ]
 }

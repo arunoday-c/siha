@@ -213,8 +213,43 @@ class Subjective extends Component {
             <div className="popupHeader">
               <h4>Add Allergy</h4>
             </div>
-            <div className="col-lg-12 popupInner">Allergy Modal</div>
-            <div className="popupFooter">
+            <div className="col-lg-12 popupInner">
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    forceLabel: "Allergy Type"
+                  }}
+                  selector={{
+                    name: "allergy_type",
+                    className: "select-fld",
+                    value: this.state.allergy_type,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.ALLERGY_TYPES
+                    },
+                    onChange: this.dropDownHandle.bind(this)
+                  }}
+                />
+
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    forceLabel: "Search",
+                    isImp: false
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "search",
+
+                    //value: this.state.pain,
+                    events: {}
+                  }}
+                />
+              </div>
+            </div>
+            <div className="row popupFooter">
               <div className="col-lg-4">
                 <Button variant="raised" color="primary" size="small">
                   Add

@@ -901,7 +901,7 @@ let getMyDay = (req, res, next) => {
       }
       db.query(
         "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
-         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.created_date from hims_f_patient_encounter E\
+         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.created_date,E.visit_id from hims_f_patient_encounter E\
          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id  where E.record_status='A' AND " +
           statusFlag +
           "" +
@@ -1217,11 +1217,10 @@ let getPatientChiefComplaints = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select ecc.hims_f_episode_chief_complaint_id,PE.patient_id,PE.episode_id,PE.created_date as Encounter_Date ,ecc.episode_id,ecc.chief_complaint_id,\
-        HH.hpi_description as cheif_complaint_name,ecc.onset_date,ecc.interval,ecc.duration,ecc.severity,\
-        ecc.score,ecc.pain,ecc.comment from hims_f_episode_chief_complaint ecc,hims_d_hpi_header HH,\
-        hims_f_patient_encounter PE where  ecc.chief_complaint_id=HH.hims_d_hpi_header_id and ecc.record_status='A' and PE.patient_id=? and ecc.episode_id=? ",
-        [inputData.patient_id, inputData.episode_id],
+        "select PE.hims_f_patient_encounter_id,PE.patient_id,PE.created_date as Encounter_Date , ecc.episode_id,ecc.hims_f_episode_chief_complaint_id,ecc.chief_complaint_id,hh.hpi_description as cheif_complaint_name,ecc.onset_date,ecc.interval,ecc.duration,ecc.severity,\
+        ecc.score,ecc.pain,ecc.comment from ( (hims_f_episode_chief_complaint ecc inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=ecc.chief_complaint_id )    inner join hims_f_patient_encounter PE on PE.episode_id=ecc.episode_id)\
+        where ecc.record_status='A'and ecc.episode_id=? ",
+        [ inputData.episode_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
