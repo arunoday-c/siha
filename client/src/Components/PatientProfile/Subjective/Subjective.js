@@ -20,6 +20,7 @@ import HPI from "@material-ui/icons/AssignmentInd";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 import moment from "moment";
+import Enumerable from "linq";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
@@ -39,13 +40,27 @@ class Subjective extends Component {
       patientChiefComplains: [],
       chiefComplainList: [],
       openHpiModal: false,
-      openAllergyModal: false
+      openAllergyModal: false,
+      currentComplaintElements: {
+        current_cheif_complaint_name: "Dizziness",
+        current_chief_complaint_id: 5,
+        current_comment: "mnbgfredfghui",
+        current_duration: 10,
+        current_hims_f_episode_chief_complaint_id: 4,
+        current_hims_f_patient_encounter_id: 82,
+        current_interval: "Y",
+        current_onset_date: "2018-08-20T07:08:09.000Z",
+        current_pain: "NH",
+        current_score: 10,
+        current_severity: "MI"
+      }
     };
 
     this.addChiefComplain = this.addChiefComplain.bind(this);
     this.addAllergies = this.addAllergies.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.openHPIAddModal = this.openHPIAddModal.bind(this);
+    this.fillComplainDetails = this.fillComplainDetails.bind(this);
   }
 
   showconfirmDialog(id) {
@@ -63,12 +78,12 @@ class Subjective extends Component {
           method: "DELETE",
           onSuccess: response => {
             if (response.data.success) {
-              this.getChiefComplains();
               swal("Record deleted successfully . .", {
                 icon: "success",
                 buttons: false,
                 timer: 2000
               });
+              this.getPatientChiefComplains();
             }
           },
           onFailure: error => {}
@@ -158,13 +173,13 @@ class Subjective extends Component {
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientChiefComplaints",
       data: {
-        patient_id: Window.global["current_patient"],
+        // patient_id: Window.global["current_patient"],
         episode_id: Window.global["episode_id"]
       },
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          console.log("Patient chief complains:", response.data.records);
+          //console.log("Patient chief complains:", response.data.records);
           this.setState({ patientChiefComplains: response.data.records });
         }
       },
@@ -198,7 +213,25 @@ class Subjective extends Component {
   }
 
   fillComplainDetails(e) {
-    const id = e.currentTarget.getAttribute("data-cpln-id");
+    const id = parseInt(e.currentTarget.getAttribute("data-cpln-id"));
+    this.getPatientChiefComplains();
+    console.log(
+      "Patient Chief Complaints:" +
+        JSON.stringify(this.state.patientChiefComplains)
+    );
+    let cce = Enumerable.from(this.state.patientChiefComplains)
+      .where(w => w.hims_f_episode_chief_complaint_id === id)
+      .firstOrDefault();
+
+    this.setState(
+      {
+        currentComplaintElements: cce
+      },
+      console.log(
+        "Complaint Data of Individual:",
+        this.state.currentComplaintElements
+      )
+    );
   }
 
   render() {
