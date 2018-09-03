@@ -977,14 +977,16 @@ let getPatientProfile = (req, res, next) => {
         PV.age_in_years,PV.age_in_months,PV.age_in_days,PE.payment_type,PE.created_date as Encounter_Date \
 from ( (hims_f_patient P inner join hims_f_patient_encounter PE  on P.hims_d_patient_id=PE.patient_id)\
 inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
-PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episode_id=?",
-        [inputData.patient_id, inputData.episode_id],
+PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episode_id=?;SELECT * FROM hims_f_patient_vitals t,(\
+  SELECT max(visit_id) as last_visit,MAX(visittime) as last_visit_time ,date(MAX(visit_date)) as last_visit_date\
+  FROM hims_f_patient_vitals  where  patient_id=? ) last_entry    WHERE last_entry.last_visit= t.visit_id;",
+        [inputData.patient_id, inputData.episode_id, inputData.patient_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
           }
-          req.records = result;
+          req.records = { patient_profile: result[0], vitals: result[1] };
           next();
         }
       );
