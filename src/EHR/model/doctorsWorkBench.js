@@ -1159,8 +1159,7 @@ let addPatientChiefComplaints = (req, res, next) => {
     severity: null,
     score: null,
     pain: null,
-    comment: null,
-   
+    comment: null
   };
 
   try {
@@ -1229,7 +1228,7 @@ let getPatientChiefComplaints = (req, res, next) => {
             next(error);
           }
           req.records = result;
-          debugLog("result",result);
+          debugLog("result", result);
           next();
         }
       );
@@ -1305,9 +1304,8 @@ let addNewAllergy = (req, res, next) => {
   }
 };
 
-
 //created by irfan: to get all allergies
-let getAllAllergies=(req, res, next) => {
+let getAllAllergies = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -1335,9 +1333,8 @@ let getAllAllergies=(req, res, next) => {
   }
 };
 
-
 //created by irfan: to get all allergies
-let getPatientAllergy=(req, res, next) => {
+let getPatientAllergy = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -1358,6 +1355,74 @@ let getPatientAllergy=(req, res, next) => {
           next();
         }
       );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let updatePatientChiefComplaints = (req, res, next) => {
+  try {
+    debugFunction("updatePatientChiefComplaints");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    debugLog("Input Data", req.body);
+    let input = extend(department, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        let queryBuilder =
+          "UPDATE `hims_f_episode_chief_complaint`\
+        SET   episode_id=?,chief_complaint_id=?,onset_date=?,`interval`=?,duration=?,severity=?,score=?,pain=?,chronic=?,\
+        complaint_inactive=?,complaint_inactive_date=?,comment=?,updated_date=?,updated_by=?,\
+        WHERE record_status='A' AND `hims_f_episode_chief_complaint_id`=?;";
+        let inputs = [
+          input.episode_id,
+          input.chief_complaint_id,
+          input.onset_date,
+          input.interval,
+          input.duration,
+          input.severity,
+          input.score,
+          input.pain,
+          input.chronic,
+          input.complaint_inactive,
+          input.complaint_inactive_date,
+          input.comment,
+          new Date(),
+          input.updated_by
+        ];
+
+        connection.query(queryBuilder, inputs, (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+          connection.commit(error => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.records = result;
+            next();
+          });
+        });
+      });
     });
   } catch (e) {
     next(e);
@@ -1393,5 +1458,6 @@ module.exports = {
   deletePatientChiefComplaints,
   addNewAllergy,
   getAllAllergies,
-  getPatientAllergy
+  getPatientAllergy,
+  updatePatientChiefComplaints
 };
