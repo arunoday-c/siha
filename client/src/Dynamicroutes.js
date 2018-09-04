@@ -38,67 +38,30 @@ function height() {
 const componts = (selectedLang, breadStyle) => {
   return {
     Dashboard: <Dashboard SelectLanguage={selectedLang} />,
-    FrontDesk: (
-      <FrontDesk SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
-    BusinessSetup: (
-      <BusinessSetup SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
-    CommonSetup: (
-      <CommonSetup SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
+    FrontDesk: <FrontDesk SelectLanguage={selectedLang} />,
+    BusinessSetup: <BusinessSetup SelectLanguage={selectedLang} />,
+    CommonSetup: <CommonSetup SelectLanguage={selectedLang} />,
     Experiment: <Experiment SelectLanguage={selectedLang} />,
-    OPBilling: (
-      <OPBilling SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
+    OPBilling: <OPBilling SelectLanguage={selectedLang} />,
     BillDetails: <BillDetails SelectLanguage={selectedLang} />,
-    InsuranceSetup: (
-      <InsuranceSetup SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
-    SampleCollection: (
-      <SampleCollection SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
-    DoctorsWorkbench: (
-      <Workbench SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
-    NurseWorkbench: (
-      <Workbench SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
-    OrderingServices: (
-      <OrderingServices SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
+    InsuranceSetup: <InsuranceSetup SelectLanguage={selectedLang} />,
+    SampleCollection: <SampleCollection SelectLanguage={selectedLang} />,
+    DoctorsWorkbench: <Workbench SelectLanguage={selectedLang} />,
+    NurseWorkbench: <Workbench SelectLanguage={selectedLang} />,
+    OrderingServices: <OrderingServices SelectLanguage={selectedLang} />,
 
     MedicalWorkbenchSetup: (
-      <MedicalWorkbenchSetup
-        SelectLanguage={selectedLang}
-        breadStyle={breadStyle}
-      />
+      <MedicalWorkbenchSetup SelectLanguage={selectedLang} />
     ),
     AccessionAcknowledgement: (
-      <AccessionAcknowledgement
-        SelectLanguage={selectedLang}
-        breadStyle={breadStyle}
-      />
+      <AccessionAcknowledgement SelectLanguage={selectedLang} />
     ),
 
-    PreApproval: (
-      <PreApproval SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
-    LabSetup: (
-      <LabSetup SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
-    InvestigationSetup: (
-      <InvestigationSetup
-        SelectLanguage={selectedLang}
-        breadStyle={breadStyle}
-      />
-    ),
-    RadOrderedList: (
-      <RadOrderedList SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    ),
-    RadScheduledList: (
-      <RadScheduledList SelectLanguage={selectedLang} breadStyle={breadStyle} />
-    )
+    PreApproval: <PreApproval SelectLanguage={selectedLang} />,
+    LabSetup: <LabSetup SelectLanguage={selectedLang} />,
+    InvestigationSetup: <InvestigationSetup SelectLanguage={selectedLang} />,
+    RadOrderedList: <RadOrderedList SelectLanguage={selectedLang} />,
+    RadScheduledList: <RadScheduledList SelectLanguage={selectedLang} />
   };
 };
 

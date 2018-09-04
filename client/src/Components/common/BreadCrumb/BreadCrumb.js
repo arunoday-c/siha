@@ -150,7 +150,7 @@ class BreadCrumb extends PureComponent {
       <React.Fragment>
         <div
           className="fixed-top breadcrumb-fixed "
-          style={{ ...this.props.breadStyle }}
+          // style={{ ...this.props.breadStyle }}
         >
           <div className="breadCrumb-Data row">
             <div className="col-lg-3 text hdg_bredcrump">
