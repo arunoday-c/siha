@@ -32,7 +32,8 @@ import {
   getAllAllergies,
   getPatientAllergy,
   updatePatientChiefComplaints,
-  addPatientDiagnosis
+  addPatientDiagnosis,
+  getPatientDiagnosis
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -507,5 +508,20 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+  // created by irfan : to  getPatientDiagnosis
+  api.get(
+    "/getPatientDiagnosis",
+    getPatientDiagnosis,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };
