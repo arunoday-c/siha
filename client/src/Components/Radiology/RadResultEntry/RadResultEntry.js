@@ -3,29 +3,43 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Modal from "@material-ui/core/Modal";
+import RichTextEditor from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 import "./RadResultEntry.css";
 import "./../../../styles/site.css";
 import {
-  AlgaehDataGrid,
-  AlgaehLabel,
-  AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
+import {
+  RAD_EXAM_STATUS,
+  FORMAT_RAD_STATUS,
+  RAD_REPORT_TYPE
+} from "../../../utils/GlobalVariables.json";
+import {
+  texthandle,
+  examhandle,
+  templatehandle,
+  rtehandle
+} from "./RadResultEntryEvents";
 
 class RadResultEntry extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      template_name: null,
+      template_html: null
+    };
   }
 
+  componentDidMount() {}
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.selectedPatient !== undefined) {
       this.setState({ ...this.state, ...newProps.selectedPatient });
     }
@@ -40,8 +54,6 @@ class RadResultEntry extends Component {
     }
   }
   render() {
-    // let sampleCollection =
-    //   this.state.billdetails === null ? [{}] : this.state.billdetails;
     return (
       <div>
         <Modal open={this.props.open}>
@@ -85,42 +97,232 @@ class RadResultEntry extends Component {
               <div className="col-12">
                 <div className="row">
                   <div className="col-3 popLeftDiv">
-                    <p>
-                      jfhkjdfhgkdhfgkdhfgkdfg jfhkjdfhgkdhfgkdhfgkdfg
-                      jfhkjdfhgkdhfgkdhfgkdfg jfhkjdfhgkdhfgkdhfgkdfg
-                      jfhkjdfhgkdhfgkdhfgkdfg jfhkjdfhgkdhfgkdhfgkdfg
-                      jfhkjdfhgkdhfgkdhfgkdfg jfhkjdfhgkdhfgkdhfgkdfg
-                      jfhkjdfhgkdhfgkdhfgkdfg jfhkjdfhgkdhfgkdhfgkdfg
-                      jfhkjdfhgkdhfgkdhfgkdfg jfhkjdfhgkdhfgkdhfgkdfg
-                      jfhkjdfhgkdhfgkdhfgkdfg jfhkjdfhgkdhfgkdhfgkdfg
-                      jfhkjdfhgkdhfgkdhfgkdfg jfhkjdfhgkdhfgkdhfgkdfg
-                      jfhkjdfhgkdhfgkdhfgkdfg jfhkjdfhgkdhfgkdhfgkdfg{" "}
-                    </p>
+                    <div className="row form-group">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12" }}
+                        label={{
+                          forceLabel: "Examination Status"
+                        }}
+                        selector={{
+                          name: "exam_status",
+                          className: "select-fld",
+                          value: this.state.exam_status,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: RAD_EXAM_STATUS
+                          },
+                          onChange: examhandle.bind(this, this)
+                          // others: {
+                          //   disabled: this.state.existingPatient
+                          // }
+                        }}
+                      />
+                    </div>
+                    <div className="row form-group">
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-6" }}
+                        label={{ forceLabel: "Start Date" }}
+                        textBox={{ className: "txt-fld" }}
+                        events={{
+                          onChange: null
+                        }}
+                        disabled={true}
+                        value={this.state.exam_start_date_time}
+                      />
+
+                      <div className="col-lg-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Start Time",
+                            align: ""
+                          }}
+                        />
+                        <time>
+                          {this.state.exam_start_date_time !== null
+                            ? moment(this.state.exam_start_date_time).format(
+                                Options.timeFormat
+                              )
+                            : "00:00:00"}
+                        </time>
+                      </div>
+                    </div>
+                    <div className="row form-group">
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-6" }}
+                        label={{ forceLabel: "End Date" }}
+                        textBox={{ className: "txt-fld" }}
+                        events={{
+                          onChange: null
+                        }}
+                        disabled={true}
+                        value={this.state.exam_end_date_time}
+                      />
+
+                      <div className="col-lg-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "End Time    ",
+                            align: ""
+                          }}
+                        />
+                        <time>
+                          {this.state.exam_end_date_time !== null
+                            ? moment(this.state.exam_end_date_time).format(
+                                Options.timeFormat
+                              )
+                            : "00:00:00"}
+                        </time>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12" }}
+                        label={{
+                          forceLabel: "Test Status"
+                        }}
+                        selector={{
+                          name: "status",
+                          className: "select-fld",
+                          value: this.state.status,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: FORMAT_RAD_STATUS
+                          },
+                          onChange: texthandle.bind(this, this),
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                    </div>
+
+                    <div className="row form-group">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          forceLabel: "Attended By"
+                        }}
+                        selector={{
+                          name: "attended_by",
+                          className: "select-fld",
+                          value: this.state.attended_by,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: FORMAT_RAD_STATUS
+                          },
+                          onChange: texthandle.bind(this, this),
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          forceLabel: "Validate By"
+                        }}
+                        selector={{
+                          name: "validate_by",
+                          className: "select-fld",
+                          value: this.state.validate_by,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: FORMAT_RAD_STATUS
+                          },
+                          onChange: texthandle.bind(this, this),
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                    </div>
+
+                    <div className="row form-group">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12" }}
+                        label={{
+                          forceLabel: "Report Type"
+                        }}
+                        selector={{
+                          name: "report_type",
+                          className: "select-fld",
+                          value: this.state.report_type,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: RAD_REPORT_TYPE
+                          },
+                          onChange: texthandle.bind(this, this)
+                        }}
+                      />
+                    </div>
                   </div>
                   <div className="col-9 popRightDiv">
-                    <h5>shfgdjhfgjdfgjgkj jkg</h5>
+                    <h5 style={{ color: "gray" }}>
+                      {this.state.service_code} - {this.state.service_name}
+                    </h5>
                     <hr />
-                    <h5>shfgdjhfgjdfgjgkj jkg</h5>
-                    <hr />
-                    <h5>shfgdjhfgjdfgjgkj jkg</h5>
-                    <hr />
-                    <h5>shfgdjhfgjdfgjgkj jkg</h5>
-                    <hr />
-                    <h5>shfgdjhfgjdfgjgkj jkg</h5>
-                    <hr />
-                    <h5>shfgdjhfgjdfgjgkj jkg</h5>
-                    <hr />
-                    <h5>shfgdjhfgjdfgjgkj jkg</h5>
-                    <hr />
-                    <h5>shfgdjhfgjdfgjgkj jkg</h5>
-                    <hr />
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-4" }}
+                        label={{
+                          forceLabel: "Select Template"
+                        }}
+                        selector={{
+                          name: "template_name",
+                          className: "select-fld",
+                          value: this.state.template_name,
+                          dataSource: {
+                            textField: "template_name",
+                            valueField: "hims_d_rad_template_detail_id",
+                            data: this.state.Templatelist
+                          },
+                          onChange: templatehandle.bind(this, this)
+                        }}
+                      />
+                    </div>
+
+                    <div className="row form-group">
+                      <div className="form-group">
+                        <div className="col-lg-12 editor">
+                          <RichTextEditor
+                            value={this.state.template_html}
+                            onChange={rtehandle.bind(this, this)}
+                            modules={{
+                              toolbar: [
+                                [{ header: [1, 2, false] }],
+                                [
+                                  "bold",
+                                  "italic",
+                                  "underline",
+                                  "strike",
+                                  "blockquote",
+                                  { list: "ordered" },
+                                  { list: "bullet" },
+                                  { indent: "-1" },
+                                  { indent: "+1" },
+                                  "image",
+                                  { color: [] },
+                                  { background: [] }
+                                ]
+                              ]
+                            }}
+                            style={{ minHeight: "90vh" }}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <div className="popupFooter">
               <button type="button" className="btn btn-primary">
-                Save
+                Validate
               </button>
               <button
                 type="button"

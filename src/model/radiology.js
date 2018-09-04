@@ -218,8 +218,47 @@ let updateRadOrderedServices = (req, res, next) => {
   });
 };
 
+let getRadTemplateList = (req, res, next) => {
+  let whereStatement = {
+    services_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let where = whereCondition(extend(whereStatement, req.query));
+
+      debugLog("inputparam: ", where);
+      connection.query(
+        "SELECT distinct TD.template_name, TD.template_html, IT.hims_d_investigation_test_id,TD.hims_d_rad_template_detail_id \
+         FROM hims_d_investigation_test IT, \
+        hims_d_rad_template_detail TD  WHERE IT.hims_d_investigation_test_id = TD.test_id AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          debugLog("result: ", result);
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getRadOrderedServices,
+  getRadTemplateList,
   insertRadOrderedServices,
   updateRadOrderedServices
 };

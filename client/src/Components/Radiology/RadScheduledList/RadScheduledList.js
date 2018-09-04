@@ -313,14 +313,16 @@ class RadScheduledList extends Component {
 
 function mapStateToProps(state) {
   return {
-    radtestlist: state.radtestlist
+    radtestlist: state.radtestlist,
+    templatelist: state.templatelist
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getRadiologyTestList: AlgaehActions
+      getRadiologyTestList: AlgaehActions,
+      getTemplateList: AlgaehActions
     },
     dispatch
   );
