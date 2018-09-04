@@ -1167,7 +1167,7 @@ let addPatientChiefComplaints = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let input = extend(chiefComplaintModel, req.body);
+    let input = extend({}, req.body);
     db.getConnection((error, connection) => {
       if (error) {
         releaseDBConnection(db, connection);
@@ -1175,7 +1175,7 @@ let addPatientChiefComplaints = (req, res, next) => {
       }
 
       connection.query(
-        "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,interval,duration,\
+        "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
           severity,score,pain,comment,created_by,updated_by) \
         values(?,?,?,?,?,?,?,?,?,?,?)",
         [
