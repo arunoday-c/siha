@@ -1,5 +1,23 @@
 $forntSize: 0.7rem;
 :global {
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #929292;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #00bcb0;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #dcac66;
+  }
   .margin-top-15 {
     margin-top: 15px;
   }
@@ -432,11 +450,10 @@ $forntSize: 0.7rem;
     }
   }
 
-
   .algaeh-modal {
     margin: 3% auto 0;
     background-color: #fff;
-    padding:0;
+    padding: 0;
     border-radius: 5px;
     overflow: hidden;
     width: 80%;
@@ -446,24 +463,25 @@ $forntSize: 0.7rem;
       background: #dbad64;
       padding: 5px 16px;
       h4 {
-     color: #fff;
-     font-size: 1.1rem;
-     padding: 0 0 3px;
-     line-height: 30px;
-     margin: 0;
-     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        color: #fff;
+        font-size: 1.1rem;
+        padding: 0 0 3px;
+        line-height: 30px;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
     }
     .popupInner {
       height: 70vh;
       overflow-y: auto;
       overflow-x: hidden;
-      .popLeftDiv{
+      .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
         height: 70vh;
         overflow: auto;
         padding: 15px;
-      }.popRightDiv{
+      }
+      .popRightDiv {
         border-right: 1px dashed #e0e0e0;
         height: 70vh;
         overflow: auto;
@@ -476,22 +494,22 @@ $forntSize: 0.7rem;
       height: 40px;
 
       button {
-      float: right;
-      margin-left: 10px;
-      padding: 5px 10px;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      min-width: 70px;
+        float: right;
+        margin-left: 10px;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        min-width: 70px;
       }
-      .btn-primary{
-        background: #34B8BC;
+      .btn-primary {
+        background: #34b8bc;
         color: #fff;
-        border: 1px solid #34B8BC;
+        border: 1px solid #34b8bc;
       }
-      .btn-default{
-        background: #EFEFEF;
+      .btn-default {
+        background: #efefef;
         color: #797979;
-        border:1px solid #EFEFEF;
+        border: 1px solid #efefef;
       }
     }
   }
