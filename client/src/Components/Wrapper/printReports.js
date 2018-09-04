@@ -6,12 +6,13 @@ import renderHTML from "react-render-html";
 const reportWindow = document.getElementById("reportWindow");
 let accessReport = options => {
   let getReport = options.report;
-
+  let const_count = 0;
   let fileName = "./Reports/" + getReport.fileName + ".html";
   let xhr = new XMLHttpRequest();
   xhr.open("GET", fileName, true);
   xhr.onreadystatechange = function() {
-    if (this.response !== "") {
+    if (this.response !== "" && const_count === 0) {
+      console.log("custom dom", this.response);
       let parser = new DOMParser();
       let _html = parser.parseFromString(this.response, "text/xml");
 
@@ -48,26 +49,45 @@ let accessReport = options => {
         canvasElements[e].innerHTML =
           options.data[canvasElements[e].getAttribute("data-parameter")];
       }
+
       let canvasList = _html.querySelectorAll("[data-list]");
-      debugger;
+
       for (let l = 0; l < canvasList.length; l++) {
         let listCanvas = canvasList[l];
         let dataList = [];
         eval("dataList=options.data." + listCanvas.getAttribute("data-list"));
-        dataList.map(row => {
-          let listDtl = listCanvas.querySelectorAll("data-list-parameter");
-          for (let d = 0; d < listDtl.length; d++) {
-            let items = listDtl[d];
-            items.getAttribute("data-list-parameter");
+        let templateId = listCanvas.getAttribute("list-template");
+        let _templateParent = _html.getElementById(templateId);
+        const script_temp = _templateParent.cloneNode(true);
+        for (let r = 0; r < dataList.length; r++) {
+          let row = dataList[r];
+          let _templateView = script_temp.cloneNode(true).children;
+          for (let c = 0; c < _templateView.length; c++) {
+            let parentTemp = _templateView[c];
+            parentTemp.cloneNode(true);
+            let Tempchildrens = parentTemp.children;
+            if (Tempchildrens !== undefined && Tempchildrens.length > 0) {
+              for (let ic = 0; ic < Tempchildrens.length; ic++) {
+                let innerTemp = Tempchildrens[ic];
+                let parName = innerTemp.getAttribute("data-list-parameter");
+                innerTemp.innerHTML = row[parName];
+              }
+            } else {
+              let paramName = parentTemp.getAttribute("data-list-parameter");
+              parentTemp.innerHTML = row[paramName];
+            }
+            parentTemp.setAttribute("key", r);
+            listCanvas.appendChild(parentTemp);
           }
-        });
+        }
       }
+      debugger;
+      // new XMLSerializer().serializeToString(_html.firstElementChild)
       ReactDOM.render(
-        <ReportUI>
-          {renderHTML(new XMLSerializer().serializeToString(_html))}
-        </ReportUI>,
+        <ReportUI>{renderHTML(_html.firstElementChild.innerHTML)}</ReportUI>,
         reportWindow
       );
+      const_count = 1;
     }
   };
   xhr.send();
