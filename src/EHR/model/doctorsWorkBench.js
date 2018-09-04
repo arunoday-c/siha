@@ -5,7 +5,8 @@ import {
   paging,
   whereCondition,
   deleteRecord,
-  releaseDBConnection
+  releaseDBConnection,
+  jsonArrayToObject
 } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 //import { LINQ } from "node-linq";
@@ -1401,7 +1402,8 @@ let updatePatientChiefComplaints = (req, res, next) => {
           input.complaint_inactive_date,
           input.comment,
           new Date(),
-          input.updated_by
+          input.updated_by,
+          input.hims_f_episode_chief_complaint_id
         ];
 
         connection.query(queryBuilder, inputs, (error, result) => {
@@ -1431,6 +1433,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
 
 //created by irfan: to add patient_diagnosis
 let addPatientDiagnosis = (req, res, next) => {
+  debugLog("addPatientDiagnosis");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -1444,12 +1447,12 @@ let addPatientDiagnosis = (req, res, next) => {
 
       const insurtColumns = [
         "patient_id",
-        " episode_id",
-        " daignosis_id",
-        " diagnosis_type",
-        " final_daignosis",
-        " created_by",
-        " updated_by"
+        "episode_id",
+        "daignosis_id",
+        "diagnosis_type",
+        "final_daignosis",
+        "created_by",
+        "updated_by"
       ];
 
       connection.query(
@@ -1478,8 +1481,6 @@ let addPatientDiagnosis = (req, res, next) => {
   }
 };
 
-
-
 //created by irfan: to get patient diagnosis
 let getPatientDiagnosis = (req, res, next) => {
   try {
@@ -1491,8 +1492,8 @@ let getPatientDiagnosis = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select patient_id, episode_id, daignosis_id, diagnosis_type, final_daignosis from hims_f_patient_diagnosis where record_status='A' and patient_id=? and episode_id=?; ",
-        [inputData.patient_id,inputData.episode_id],
+        "select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id, diagnosis_type, final_daignosis from hims_f_patient_diagnosis where record_status='A' and patient_id=? and episode_id=?; ",
+        [inputData.patient_id, inputData.episode_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -1507,7 +1508,6 @@ let getPatientDiagnosis = (req, res, next) => {
     next(e);
   }
 };
-
 
 module.exports = {
   physicalExaminationHeader,
@@ -1541,5 +1541,5 @@ module.exports = {
   getPatientAllergy,
   updatePatientChiefComplaints,
   addPatientDiagnosis,
-
+  getPatientDiagnosis
 };
