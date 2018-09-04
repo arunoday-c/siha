@@ -1,4 +1,7 @@
 :global {
+  /* Track */
+  /* Handle */
+  /* Handle on hover */
   /* Portlet */
   /* Portlet Title */
   /* Actions */
@@ -9,6 +12,14 @@
   /* Btn Grey Salsa */
   /* Btn Red */
   /* Btn Red */ }
+  :global ::-webkit-scrollbar {
+    width: 3px; }
+  :global ::-webkit-scrollbar-track {
+    background: #929292; }
+  :global ::-webkit-scrollbar-thumb {
+    background: #00bcb0; }
+  :global ::-webkit-scrollbar-thumb:hover {
+    background: #dcac66; }
   :global .margin-top-15 {
     margin-top: 15px; }
   :global .margin-bottom-15 {
@@ -358,13 +369,13 @@
         text-transform: uppercase;
         min-width: 70px; }
       :global .algaeh-modal .popupFooter .btn-primary {
-        background: #34B8BC;
+        background: #34b8bc;
         color: #fff;
-        border: 1px solid #34B8BC; }
+        border: 1px solid #34b8bc; }
       :global .algaeh-modal .popupFooter .btn-default {
-        background: #EFEFEF;
+        background: #efefef;
         color: #797979;
-        border: 1px solid #EFEFEF; }
+        border: 1px solid #efefef; }
   :global .tab-container .tab-button {
     font-size: 0.7rem;
     font-weight: normal;

@@ -25,7 +25,8 @@ export default {
     password: "medteam2013",
     database: "algaeh_hims_db",
     multipleStatements: true,
-    acquireTimeout: 20000
+    acquireTimeout: 20000,
+    dateStrings: true
   },
   //Db Date format
   dbFormat: {

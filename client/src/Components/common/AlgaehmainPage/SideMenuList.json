@@ -120,8 +120,8 @@
       },
       {
         "name": "AccessionAcknowledgement",
-        "label": "Accession/Acknowledgement",
-        "arlabel": "لانضمام/إعتراف",
+        "label": "Accession/ Acknowledgement",
+        "arlabel": "لانضمام /إعتراف",
         "path": "/AccessionAcknowledgement"
       },
       {
