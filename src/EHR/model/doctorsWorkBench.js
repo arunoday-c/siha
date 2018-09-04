@@ -13,6 +13,7 @@ import moment from "moment";
 import { debugFunction, debugLog } from "../../utils/logging";
 import formater from "../../keys/keys";
 import { decryption } from "../../utils/cryptography";
+import { debuglog } from "util";
 
 //created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
@@ -1228,6 +1229,7 @@ let getPatientChiefComplaints = (req, res, next) => {
             next(error);
           }
           req.records = result;
+          debugLog("result",result);
           next();
         }
       );
