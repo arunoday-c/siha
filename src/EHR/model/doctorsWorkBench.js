@@ -1329,18 +1329,23 @@ let addNewAllergy = (req, res, next) => {
 
 //created by irfan: to get all allergies
 let getAllAllergies = (req, res, next) => {
+  let selectWhere = {
+    allergy_type: "ALL"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
     let inputData = extend({}, req.query);
+    let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_allergiy_id,allergy_type,\
-        allergy_name from hims_d_allergy where record_status='A' and allergy_type=?; ",
-        [inputData.allergy_type],
+        allergy_name from hims_d_allergy where record_status='A' AND" +
+          where.condition,
+        where.values,
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
