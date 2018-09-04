@@ -89,3 +89,9 @@
     .patientInfo-Top .moreAction i {
       display: block;
       margin-bottom: 5px; }
+
+.form-group {
+  padding-top: 5px; }
+
+.editor .quill .ql-container {
+  min-height: 60vh; }
