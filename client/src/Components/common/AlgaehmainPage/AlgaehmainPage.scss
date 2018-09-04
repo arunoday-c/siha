@@ -1,12 +1,13 @@
-@import "../../../styles/algaehCssVariables.scss";
+@import "../../../styles/algaehCssVariables.scss"; /* width */
 .leftNavCntr {
   margin-top: 0;
   z-index: 9999;
   position: fixed;
   background: #292929;
   height: 100%;
-  width: 215px;
+  width: 250px;
   overflow: auto;
+  box-shadow: 0 0 300px rgba(0, 0, 0, 0.5);
 }
 .hptl-phase1-sideMenuBar {
   .sideMenu-header {
@@ -37,16 +38,23 @@
     padding: 0;
     width: 100%;
     li {
-      padding: 6px 5px;
+      padding: 8px 5px;
       margin: 0;
       font-size: 0.8rem;
       border-bottom: 1px dotted #4e4e4e;
       text-transform: uppercase;
       cursor: pointer;
       color: #dcac66;
+      line-height: 20px;
       i {
         margin-right: 12px;
         margin-left: 14px;
+        display: inline-block;
+        vertical-align: initial;
+      }
+      span {
+        display: inline-block;
+        width: 80%;
       }
     }
     li:hover {
@@ -71,28 +79,19 @@
     height: 49px;
     background: #000;
     position: fixed;
-    width: 215px;
+    width: 250px;
     z-index: 9;
     border-bottom: 1px solid #3e3e3e;
   }
   .sideBarClose {
-    width: 25px;
-    height: 25px;
-    padding: 0px;
-    margin: 0;
     position: absolute;
-    display: block;
-    right: 13px;
-    top: 13px;
+    right: 19px;
+    top: 14px;
     color: #fff;
-    border: 1px solid #fff;
-    text-align: center;
-    border-radius: 6px;
+    font-size: 1.3rem;
   }
   .sideBarClose:hover {
     color: #00bcb0;
-    border-radius: 6px;
-    border: 1px solid #00bcb0;
     cursor: pointer;
   }
   svg {
