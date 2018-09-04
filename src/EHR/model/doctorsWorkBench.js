@@ -1337,7 +1337,7 @@ let getAllAllergies = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let inputData = extend({}, req.query);
+   
     let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
