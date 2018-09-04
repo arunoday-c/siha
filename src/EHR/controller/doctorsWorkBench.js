@@ -30,7 +30,10 @@ import {
   deletePatientChiefComplaints,
   addNewAllergy,
   getAllAllergies,
-  getPatientAllergy
+  getPatientAllergy,
+  updatePatientChiefComplaints,
+  addPatientDiagnosis,
+  getPatientDiagnosis
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -462,6 +465,53 @@ export default ({ config, db }) => {
   api.get(
     "/ getPatientAllergy",
     getPatientAllergy,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan : to update patient chief complaints
+  api.put(
+    "/updatePatientChiefComplaints",
+    updatePatientChiefComplaints,
+    (req, res, next) => {
+      let resultSelect = req.records;
+      if (resultSelect.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: resultSelect
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to add patient Diagnosis
+  api.post(
+    "/addPatientDiagnosis",
+    addPatientDiagnosis,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan : to  getPatientDiagnosis
+  api.get(
+    "/getPatientDiagnosis",
+    getPatientDiagnosis,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

@@ -81,77 +81,6 @@ class InsuranceSetup extends Component {
   render() {
     return (
       <div className="insurancesetup">
-        {/* <BreadCrumb
-          //  width={this.state.breadCrumbWidth}
-          title={
-            <AlgaehLabel
-              label={{
-                fieldName: "form_name",
-                align: "ltr"
-              }}
-            />
-          }
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "form_home",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-              )
-            }
-          ]}
-          soptlightSearch={{
-            label: (
-              <AlgaehLabel
-                label={{
-                  fieldName: "insurance_provider_code",
-                  returnText: true
-                }}
-              />
-            ),
-            value: this.state.insurance_provider_code,
-            selectValue: "insurance_provider_code",
-            events: {
-              onChange: this.getCtrlCode.bind(this, this)
-            },
-            jsonFile: {
-              fileName: "spotlightSearch",
-              fieldName: "frontDesk.patients"
-            },
-            searchName: "patients"
-          }}
-          userArea={
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{
-                forceLabel: (
-                  <AlgaehLabel label={{ fieldName: "registration_date" }} />
-                ),
-                className: "internal-label"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "bread_registration_date"
-              }}
-              disabled={true}
-              events={{
-                onChange: null
-              }}
-              value={this.state.registration_date}
-            />
-          }
-          printArea={true}
-          selectedLang={this.state.selectedLang}
-        /> */}
         <BreadCrumb
           title={
             <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
@@ -174,8 +103,6 @@ class InsuranceSetup extends Component {
               )
             }
           ]}
-          //screenName="Master Setup"
-          //   HideHalfbread={false}
         />
         <div className="row insurancesetup">
           <div className="col-lg-12">

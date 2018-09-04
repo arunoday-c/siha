@@ -5,7 +5,8 @@ import {
   paging,
   whereCondition,
   deleteRecord,
-  releaseDBConnection
+  releaseDBConnection,
+  jsonArrayToObject
 } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 //import { LINQ } from "node-linq";
@@ -1159,8 +1160,7 @@ let addPatientChiefComplaints = (req, res, next) => {
     severity: null,
     score: null,
     pain: null,
-    comment: null,
-   
+    comment: null
   };
 
   try {
@@ -1176,30 +1176,52 @@ let addPatientChiefComplaints = (req, res, next) => {
       }
 
       connection.query(
-        "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
-          severity,score,pain,comment,created_by,updated_by) \
-        values(?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          input.episode_id,
-          input.chief_complaint_id,
-          input.onset_date,
-          input.interval,
-          input.duration,
-          input.severity,
-          input.score,
-          input.pain,
-          input.comment,
-          input.created_by,
-          input.updated_by
-        ],
-        (error, results) => {
+        "SELECT hims_f_episode_chief_complaint_id, chief_complaint_id FROM hims_f_episode_chief_complaint \
+        where " +
+          input.chief_complaint_id +
+          " in (SELECT chief_complaint_id FROM hims_f_episode_chief_complaint\
+        WHERE episode_id =?)  and episode_id=? and record_status='A' ;",
+        [input.episode_id, input.episode_id],
+        (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
           }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
+
+          debugLog("my_result", result);
+
+          if (result[0] == null) {
+            connection.query(
+              "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
+    severity,score,pain,comment,created_by,updated_by) \
+  values(?,?,?,?,?,?,?,?,?,?,?)",
+              [
+                input.episode_id,
+                input.chief_complaint_id,
+                input.onset_date,
+                input.interval,
+                input.duration,
+                input.severity,
+                input.score,
+                input.pain,
+                input.comment,
+                input.created_by,
+                input.updated_by
+              ],
+              (error, results) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+                debugLog("Results are recorded...");
+                req.records = results;
+                next();
+              }
+            );
+          } else {
+            req.records = { chief_complaint_id_exist: true };
+            next();
+          }
         }
       );
     });
@@ -1229,7 +1251,7 @@ let getPatientChiefComplaints = (req, res, next) => {
             next(error);
           }
           req.records = result;
-          debugLog("result",result);
+          debugLog("result", result);
           next();
         }
       );
@@ -1305,21 +1327,25 @@ let addNewAllergy = (req, res, next) => {
   }
 };
 
-
 //created by irfan: to get all allergies
-let getAllAllergies=(req, res, next) => {
+let getAllAllergies = (req, res, next) => {
+  let selectWhere = {
+    allergy_type: "ALL"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let inputData = extend({}, req.query);
+   
+    let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_allergiy_id,allergy_type,\
-        allergy_name from hims_d_allergy where record_status='A' and allergy_type=?; ",
-        [inputData.allergy_type],
+        allergy_name from hims_d_allergy where record_status='A' AND" +
+          where.condition,
+        where.values,
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -1335,9 +1361,8 @@ let getAllAllergies=(req, res, next) => {
   }
 };
 
-
 //created by irfan: to get all allergies
-let getPatientAllergy=(req, res, next) => {
+let getPatientAllergy = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -1349,6 +1374,153 @@ let getPatientAllergy=(req, res, next) => {
       connection.query(
         "select hims_f_patient_allergy_id,patient_id,allergy_id,A.allergy_type,A.allergy_name from hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?  and PA.allergy_id=A.hims_d_allergiy_id order by hims_f_patient_allergy_id desc ; ",
         [inputData.patient_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let updatePatientChiefComplaints = (req, res, next) => {
+  try {
+    debugFunction("updatePatientChiefComplaints");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    debugLog("Input Data", req.body);
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        let queryBuilder =
+          "UPDATE `hims_f_episode_chief_complaint`\
+        SET   episode_id=?,chief_complaint_id=?,onset_date=?,`interval`=?,duration=?,severity=?,score=?,pain=?,chronic=?,\
+        complaint_inactive=?,complaint_inactive_date=?,comment=?,updated_date=?,updated_by=?\
+        WHERE record_status='A' AND `hims_f_episode_chief_complaint_id`=?;";
+        let inputs = [
+          input.episode_id,
+          input.chief_complaint_id,
+          input.onset_date,
+          input.interval,
+          input.duration,
+          input.severity,
+          input.score,
+          input.pain,
+          input.chronic,
+          input.complaint_inactive,
+          input.complaint_inactive_date,
+          input.comment,
+          new Date(),
+          input.updated_by,
+          input.hims_f_episode_chief_complaint_id
+        ];
+
+        connection.query(queryBuilder, inputs, (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+          connection.commit(error => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.records = result;
+            next();
+          });
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add patient_diagnosis
+let addPatientDiagnosis = (req, res, next) => {
+  debugLog("addPatientDiagnosis");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      const insurtColumns = [
+        "patient_id",
+        "episode_id",
+        "daignosis_id",
+        "diagnosis_type",
+        "final_daignosis",
+        "created_by",
+        "updated_by"
+      ];
+
+      connection.query(
+        "INSERT INTO hims_f_patient_diagnosis(" +
+          insurtColumns.join(",") +
+          ") VALUES ?",
+        [
+          jsonArrayToObject({
+            sampleInputObject: insurtColumns,
+            arrayObj: req.body,
+            req: req
+          })
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get patient diagnosis
+let getPatientDiagnosis = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id, diagnosis_type, final_daignosis from hims_f_patient_diagnosis where record_status='A' and patient_id=? and episode_id=?; ",
+        [inputData.patient_id, inputData.episode_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -1393,5 +1565,8 @@ module.exports = {
   deletePatientChiefComplaints,
   addNewAllergy,
   getAllAllergies,
-  getPatientAllergy
+  getPatientAllergy,
+  updatePatientChiefComplaints,
+  addPatientDiagnosis,
+  getPatientDiagnosis
 };

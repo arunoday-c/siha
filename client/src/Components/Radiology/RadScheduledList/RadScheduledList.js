@@ -3,8 +3,9 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import Accessible from "@material-ui/icons/Accessible";
+
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
+import RadResultEntry from "../RadResultEntry/RadResultEntry";
 
 import "./RadScheduledList.css";
 import "./../../../styles/site.css";
@@ -14,7 +15,8 @@ import {
   PatientSearch,
   datehandle,
   getRadTestList,
-  UpdateRadOrder
+  openResultEntry,
+  closeResultEntry
 } from "./RadScheduledListEvents";
 
 import {
@@ -34,7 +36,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
-import Tooltip from "@material-ui/core/Tooltip";
+import directRoutes from "../../../Dynamicroutes";
+
 // import SampleCollectionModal from "../SampleCollections/SampleCollectionModal";
 // import SampleCollectionModal from "../SampleCollections/SampleCollections";
 
@@ -53,7 +56,9 @@ class RadScheduledList extends Component {
       test_status: null,
       rad_test_list: [],
       selected_patient: null,
-      isOpen: false
+      isOpen: false,
+      resultEntry: false,
+      selectedPatient: {}
     };
   }
 
@@ -65,6 +70,13 @@ class RadScheduledList extends Component {
       return moment(date).format(Options.dateFormat);
     }
   };
+
+  // openResultEntry(e) {
+  //   this.setState({
+  //     ...this.state,
+  //     resultEntry: !this.state.resultEntry
+  //   });
+  // }
 
   ShowCollectionModel(row, e) {
     this.setState({
@@ -214,21 +226,13 @@ class RadScheduledList extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "patient_code" }} />
                       ),
-                      displayTemplate: data => {
+                      displayTemplate: row => {
                         return (
                           <span
                             className="pat-code"
-                            onClick={() => {
-                              // setGlobal({
-                              //   "EHR-STD": "PatientProfile",
-                              //   current_patient: data.patient_id,
-                              //   episode_id: data.episode_id,
-                              //   visit_id: data.visit_id
-                              // });
-                              // document.getElementById("ehr-router").click();
-                            }}
+                            onClick={openResultEntry.bind(this, this, row)}
                           >
-                            {data.patient_code}
+                            {row.patient_code}
                           </span>
                         );
                       },
@@ -296,6 +300,11 @@ class RadScheduledList extends Component {
               </div>
             </div>
           </div>
+          <RadResultEntry
+            open={this.state.resultEntry}
+            onClose={closeResultEntry.bind(this, this)}
+            selectedPatient={this.state.selectedPatient}
+          />
         </div>
       </React.Fragment>
     );
