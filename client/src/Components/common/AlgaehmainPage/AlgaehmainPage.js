@@ -255,13 +255,13 @@ class PersistentDrawer extends React.Component {
               <ul className="tree-structure-menu">
                 {data.subMenu.map((title, idx) => {
                   return (
-                    // <ul key={"sub_title" + idx}>
                     <li
                       onClick={this.TriggerPath.bind(this)}
                       path={title.path}
                       name={title.name}
                       arlabel={title.arlabel}
                       label={title.label}
+                      key={idx}
                     >
                       <i className="fas fa-check-circle fa-1x" />
                       <span>{title.label}</span>
@@ -317,7 +317,7 @@ class PersistentDrawer extends React.Component {
                   <Menu
                     id="simple-menu"
                     anchorEl={this.state.anchorEl}
-                    sideopen={Boolean(this.state.anchorEl)}
+                    open={Boolean(this.state.anchorEl)}
                     onClose={this.handleClose}
                   >
                     <MenuItem onClick={this.handleClose.bind(this, "en")}>

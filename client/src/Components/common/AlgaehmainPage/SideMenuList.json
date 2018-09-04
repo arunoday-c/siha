@@ -92,7 +92,8 @@
       {
         "name": "OP Billing",
         "label": "OP Billing",
-        "path": "/OPBilling"
+        "path": "/OPBilling",
+        "language": "True"
       },
       {
         "name": "Advance List",
@@ -116,7 +117,8 @@
         "name": "SampleCollection",
         "label": "Sample Collection",
         "arlabel": "جمع العينات",
-        "path": "/SampleCollection"
+        "path": "/SampleCollection",
+        "language": "False"
       },
       {
         "name": "AccessionAcknowledgement",
@@ -163,7 +165,7 @@
         "path": "/NurseWorkbench"
       },
       {
-        "name": "DoctorsWorkbench",
+        "name": "Doctors Workbench",
         "label": "Doctor Workbench",
         "arlabel": "طبيب طاولة العمل",
         "path": "/DoctorsWorkbench"
