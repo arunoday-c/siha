@@ -1176,30 +1176,52 @@ let addPatientChiefComplaints = (req, res, next) => {
       }
 
       connection.query(
-        "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
-          severity,score,pain,comment,created_by,updated_by) \
-        values(?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          input.episode_id,
-          input.chief_complaint_id,
-          input.onset_date,
-          input.interval,
-          input.duration,
-          input.severity,
-          input.score,
-          input.pain,
-          input.comment,
-          input.created_by,
-          input.updated_by
-        ],
-        (error, results) => {
+        "SELECT hims_f_episode_chief_complaint_id, chief_complaint_id FROM hims_f_episode_chief_complaint \
+        where " +
+          input.chief_complaint_id +
+          " in (SELECT chief_complaint_id FROM hims_f_episode_chief_complaint\
+        WHERE episode_id =?)  and episode_id=? and record_status='A' ;",
+        [input.episode_id, input.episode_id],
+        (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
           }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
+
+          debugLog("my_result", result);
+
+          if (result[0] == null) {
+            connection.query(
+              "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
+    severity,score,pain,comment,created_by,updated_by) \
+  values(?,?,?,?,?,?,?,?,?,?,?)",
+              [
+                input.episode_id,
+                input.chief_complaint_id,
+                input.onset_date,
+                input.interval,
+                input.duration,
+                input.severity,
+                input.score,
+                input.pain,
+                input.comment,
+                input.created_by,
+                input.updated_by
+              ],
+              (error, results) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+                debugLog("Results are recorded...");
+                req.records = results;
+                next();
+              }
+            );
+          } else {
+            req.records = { chief_complaint_id_exist: true };
+            next();
+          }
         }
       );
     });
