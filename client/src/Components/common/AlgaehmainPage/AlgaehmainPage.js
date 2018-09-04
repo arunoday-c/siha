@@ -92,19 +92,6 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     })
-  },
-
-  contentShift: {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  "contentShift-left": {
-    marginLeft: 0
-  },
-  "contentShift-right": {
-    marginRight: 0
   }
 });
 
@@ -112,7 +99,7 @@ class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
+      sideopen: false,
       anchor: "left",
       toggleSubMenu: false,
       menuSelected: "",
@@ -123,10 +110,7 @@ class PersistentDrawer extends React.Component {
       languageName: "English",
       Language: "en",
       arlabl: "",
-      enlabl: "",
-      breadStyle: {
-        marginLeft: "230px"
-      }
+      enlabl: ""
     };
   }
 
@@ -191,19 +175,13 @@ class PersistentDrawer extends React.Component {
 
   handleDrawerOpen = () => {
     this.setState({
-      open: true,
-      breadStyle: {
-        marginLeft: "230px"
-      }
+      sideopen: true
     });
   };
 
   handleDrawerClose = () => {
     this.setState({
-      open: false,
-      breadStyle: {
-        marginLeft: "0px"
-      }
+      sideopen: false
     });
   };
 
@@ -235,6 +213,7 @@ class PersistentDrawer extends React.Component {
     setCookie("ScreenName", path, 30);
 
     this.setState({
+      sideopen: false,
       toggleSubMenu: true,
       title: e.currentTarget.innerText,
       renderComponent: screenName,
@@ -245,7 +224,7 @@ class PersistentDrawer extends React.Component {
   }
   render() {
     const { classes } = this.props;
-    const { anchor, open } = this.state;
+    const { anchor, sideopen } = this.state;
 
     let LangSideMenu = [];
 
@@ -301,56 +280,28 @@ class PersistentDrawer extends React.Component {
         </div>
       );
     });
-    const drawer = (
-      <div anchor={anchor} open={open} className="leftNavCntr">
-        <div className="hptl-phase1-sideMenuBar">
-          <div className="menuBar-title">
-            <span style={titleStyles.title}>ALGAEH</span>
-            <span style={titleStyles.organisation}>ERP</span>
-            <i onClick={this.handleDrawerClose} className="sideBarClose">
-              <CancelIcon />
-            </i>
-          </div>
-          <div className="sideMenu-header">{MenuListItems}</div>
-        </div>
-      </div>
-    );
 
     return (
       <div className="">
         <div className={classes.root}>
           <div className={classNames(classes.appFrame, "sticky-top")}>
-            <AppBar
-              className={classNames(classes.appBar, {
-                [classes.appBarShift]: open,
-                [classes[`appBarShift-${anchor}`]]: open
-              })}
-            >
+            <AppBar>
               <Toolbar
-                disableGutters={!open}
+                disableGutters={!sideopen}
                 style={{ minHeight: "50px", padding: "0px" }}
               >
                 <div className="screenDisplay">
-                  {this.state.open === false ? (
-                    <IconButton
-                      color="inherit"
-                      aria-label="open drawer"
-                      onClick={this.handleDrawerOpen}
-                      className={classNames(
-                        classes.menuButton,
-                        open && classes.hide + "float - left"
-                      )}
-                    >
-                      <MenuIcon />
-                    </IconButton>
-                  ) : null}
-                  {/* <IconButton
+                  <IconButton
                     color="inherit"
                     aria-label="open drawer"
                     onClick={this.handleDrawerOpen}
+                    className={classNames(
+                      classes.menuButton,
+                      sideopen && classes.hide + "float - left"
+                    )}
                   >
                     <MenuIcon />
-                  </IconButton> */}
+                  </IconButton>
 
                   <h5>{this.state.title}</h5>
                   <span>
@@ -371,7 +322,7 @@ class PersistentDrawer extends React.Component {
                     <Menu
                       id="simple-menu"
                       anchorEl={this.state.anchorEl}
-                      open={Boolean(this.state.anchorEl)}
+                      sideopen={Boolean(this.state.anchorEl)}
                       onClose={this.handleClose}
                     >
                       <MenuItem onClick={this.handleClose.bind(this, "en")}>
@@ -391,17 +342,25 @@ class PersistentDrawer extends React.Component {
                 </div>
               </Toolbar>
             </AppBar>
-            {drawer}
-            <main
-              className={classNames(
-                classes.content,
-                classes[`content-${anchor}`],
-                {
-                  [classes.contentShift]: open,
-                  [classes[`contentShift-${anchor}`]]: open
-                }
-              )}
-            >
+            {/* Side Bar Functionality */}
+            {this.state.sideopen === true ? (
+              <div anchor={anchor} className="leftNavCntr">
+                <div className="hptl-phase1-sideMenuBar">
+                  <div className="menuBar-title">
+                    <span style={titleStyles.title}>ALGAEH</span>
+                    <span style={titleStyles.organisation}>ERP</span>
+                    <i
+                      onClick={this.handleDrawerClose}
+                      className="sideBarClose"
+                    >
+                      <CancelIcon />
+                    </i>
+                  </div>
+                  <div className="sideMenu-header">{MenuListItems}</div>
+                </div>
+              </div>
+            ) : null}
+            <main className={classNames(classes.content)}>
               <div
                 className={classes.drawerHeader}
                 style={{ minHeight: "50px" }}
@@ -410,8 +369,7 @@ class PersistentDrawer extends React.Component {
                 <div className="container-fluid" id="hisapp">
                   {directRoutes(
                     this.state.renderComponent,
-                    this.state.selectedLang,
-                    this.state.breadStyle
+                    this.state.selectedLang
                   )}
                 </div>
               </div>
