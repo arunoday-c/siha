@@ -12,7 +12,6 @@ let accessReport = options => {
   xhr.open("GET", fileName, true);
   xhr.onreadystatechange = function() {
     if (this.response !== "" && const_count === 0) {
-      console.log("custom dom", this.response);
       let parser = new DOMParser();
       let _html = parser.parseFromString(this.response, "text/xml");
 
@@ -81,7 +80,7 @@ let accessReport = options => {
           }
         }
       }
-      debugger;
+
       // new XMLSerializer().serializeToString(_html.firstElementChild)
       ReactDOM.render(
         <ReportUI>{renderHTML(_html.firstElementChild.innerHTML)}</ReportUI>,
