@@ -61,11 +61,6 @@ const styles = theme => ({
       duration: theme.transitions.duration.enteringScreen
     })
   },
-
-  menuButton: {
-    marginLeft: 12,
-    marginRight: 20
-  },
   hide: {
     display: "none"
   },
@@ -78,8 +73,7 @@ const styles = theme => ({
     justifyContent: "flex-end",
     padding: "0 7px",
     minHeight: "20px",
-    background: "#292929",
-    ...theme.mixins.toolbar
+    background: "#292929"
   },
   backgroundflex: {
     background: "#292929"
@@ -304,42 +298,42 @@ class PersistentDrawer extends React.Component {
                   </IconButton>
 
                   <h5>{this.state.title}</h5>
-                  <span>
-                    <Button
-                      style={{ color: "#fff" }}
-                      aria-haspopup="true"
-                      className="float-right"
-                      onClick={this.handleOpenClick}
-                    >
-                      {this.state.languageName}
-                      &nbsp;&nbsp;{" "}
-                      <i
-                        className="fa fa-language"
-                        aria-hidden="true"
-                        style={{ fontSize: 18 }}
-                      />
-                    </Button>
-                    <Menu
-                      id="simple-menu"
-                      anchorEl={this.state.anchorEl}
-                      sideopen={Boolean(this.state.anchorEl)}
-                      onClose={this.handleClose}
-                    >
-                      <MenuItem onClick={this.handleClose.bind(this, "en")}>
-                        {this.state.languageName === "English"
-                          ? this.renderCheck()
-                          : null}
-                        &nbsp; English
-                      </MenuItem>
-                      <MenuItem onClick={this.handleClose.bind(this, "ar")}>
-                        {this.state.languageName === "عربي"
-                          ? this.renderCheck()
-                          : null}
-                        &nbsp; عربي
-                      </MenuItem>
-                    </Menu>
-                  </span>
                 </div>
+                <span>
+                  <Button
+                    style={{ color: "#fff" }}
+                    aria-haspopup="true"
+                    className="float-right"
+                    onClick={this.handleOpenClick}
+                  >
+                    {this.state.languageName}
+                    &nbsp;&nbsp;{" "}
+                    <i
+                      className="fa fa-language"
+                      aria-hidden="true"
+                      style={{ fontSize: 18 }}
+                    />
+                  </Button>
+                  <Menu
+                    id="simple-menu"
+                    anchorEl={this.state.anchorEl}
+                    sideopen={Boolean(this.state.anchorEl)}
+                    onClose={this.handleClose}
+                  >
+                    <MenuItem onClick={this.handleClose.bind(this, "en")}>
+                      {this.state.languageName === "English"
+                        ? this.renderCheck()
+                        : null}
+                      &nbsp; English
+                    </MenuItem>
+                    <MenuItem onClick={this.handleClose.bind(this, "ar")}>
+                      {this.state.languageName === "عربي"
+                        ? this.renderCheck()
+                        : null}
+                      &nbsp; عربي
+                    </MenuItem>
+                  </Menu>
+                </span>
               </Toolbar>
             </AppBar>
             {/* Side Bar Functionality */}
@@ -351,10 +345,8 @@ class PersistentDrawer extends React.Component {
                     <span style={titleStyles.organisation}>ERP</span>
                     <i
                       onClick={this.handleDrawerClose}
-                      className="sideBarClose"
-                    >
-                      <CancelIcon />
-                    </i>
+                      className="fas fa-times-circle sideBarClose"
+                    />
                   </div>
                   <div className="sideMenu-header">{MenuListItems}</div>
                 </div>
