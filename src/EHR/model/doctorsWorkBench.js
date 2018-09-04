@@ -1385,7 +1385,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
         let queryBuilder =
           "UPDATE `hims_f_episode_chief_complaint`\
         SET   episode_id=?,chief_complaint_id=?,onset_date=?,`interval`=?,duration=?,severity=?,score=?,pain=?,chronic=?,\
-        complaint_inactive=?,complaint_inactive_date=?,comment=?,updated_date=?,updated_by=?,\
+        complaint_inactive=?,complaint_inactive_date=?,comment=?,updated_date=?,updated_by=?\
         WHERE record_status='A' AND `hims_f_episode_chief_complaint_id`=?;";
         let inputs = [
           input.episode_id,
