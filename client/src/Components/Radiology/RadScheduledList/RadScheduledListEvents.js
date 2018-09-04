@@ -83,4 +83,24 @@ const getRadTestList = $this => {
   });
 };
 
-export { texthandle, PatientSearch, datehandle, getRadTestList };
+const openResultEntry = ($this, row) => {
+  $this.setState({
+    resultEntry: !$this.state.resultEntry,
+    selectedPatient: row
+  });
+};
+
+const closeResultEntry = $this => {
+  $this.setState({
+    resultEntry: !$this.state.resultEntry
+  });
+};
+
+export {
+  texthandle,
+  PatientSearch,
+  datehandle,
+  getRadTestList,
+  openResultEntry,
+  closeResultEntry
+};

@@ -42,9 +42,9 @@ let getRadOrderedServices = (req, res, next) => {
       }
       db.query(
         "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
-        status, cancelled, ordered_date, test_type, scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,\
+        status, cancelled, ordered_by, ordered_date, test_type, scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,\
         validate_date_time,attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,\
-        PAT.patient_code,PAT.full_name\
+        PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\
         from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
         hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE SA.record_status='A' AND " +
           whereOrder +

@@ -29,11 +29,11 @@ import RadOrderedList from "./Components/Radiology/RadOrderedList/RadOrderedList
 
 import RadScheduledList from "./Components/Radiology/RadScheduledList/RadScheduledList";
 
-function height() {
-  let height =
-    window.innerHeight * (window.innerHeight / document.body.offsetHeight);
-  return height;
-}
+// function height() {
+//   let height =
+//     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
+//   return height;
+// }
 
 const componts = (selectedLang, breadStyle) => {
   return {

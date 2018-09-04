@@ -1370,7 +1370,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
     let db = req.db;
 
     debugLog("Input Data", req.body);
-    let input = extend(department, req.body);
+    let input = extend({}, req.body);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -1429,6 +1429,86 @@ let updatePatientChiefComplaints = (req, res, next) => {
   }
 };
 
+//created by irfan: to add patient_diagnosis
+let addPatientDiagnosis = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      const insurtColumns = [
+        "patient_id",
+        " episode_id",
+        " daignosis_id",
+        " diagnosis_type",
+        " final_daignosis",
+        " created_by",
+        " updated_by"
+      ];
+
+      connection.query(
+        "INSERT INTO hims_f_patient_diagnosis(" +
+          insurtColumns.join(",") +
+          ") VALUES ?",
+        [
+          jsonArrayToObject({
+            sampleInputObject: insurtColumns,
+            arrayObj: req.body,
+            req: req
+          })
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+
+//created by irfan: to get patient diagnosis
+let getPatientDiagnosis = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select patient_id, episode_id, daignosis_id, diagnosis_type, final_daignosis from hims_f_patient_diagnosis where record_status='A' and patient_id=? and episode_id=?; ",
+        [inputData.patient_id,inputData.episode_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -1459,5 +1539,7 @@ module.exports = {
   addNewAllergy,
   getAllAllergies,
   getPatientAllergy,
-  updatePatientChiefComplaints
+  updatePatientChiefComplaints,
+  addPatientDiagnosis,
+
 };

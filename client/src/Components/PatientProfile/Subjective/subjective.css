@@ -30,7 +30,7 @@
     margin: 0px;
     padding: 0px; }
     .complain-box .bordered-layout ul li {
-      cursor: progress;
+      cursor: pointer;
       list-style: none;
       margin: 0px;
       padding: 5px;
