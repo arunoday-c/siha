@@ -251,5 +251,17 @@
   "FORMAT_DIG_TYPE": [
     { "name": "Primary", "value": "P" },
     { "name": "Secondary", "value": "S" }
+  ],
+  "RAD_EXAM_STATUS": [
+    { "name": "Awaiting To Start", "value": "AW" },
+    { "name": "Start", "value": "ST" },
+    { "name": "Canceled", "value": "CN" },
+    { "name": "Completed", "value": "CO" }
+  ],
+  "RAD_REPORT_TYPE": [
+    { "name": "Not Selected", "value": "NS" },
+    { "name": "Preliminary", "value": "PR" },
+    { "name": "Final", "value": "FL" },
+    { "name": "Addended", "value": "AD" }
   ]
 }

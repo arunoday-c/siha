@@ -74,11 +74,12 @@ const insertInitialICDS = $this => {
       episode_id: Window.global["episode_id"],
       visit_id: Window.global["visit_id"],
       daignosis_id: $this.state.daignosis_id,
-      diagnosis_type: diagnosis_type
+      diagnosis_type: diagnosis_type,
+      final_daignosis: "N"
     };
 
     InitialICDS.push(InitialICDSobj);
-
+    debugger;
     $this.setState({
       InitialICDS: InitialICDS
     });
@@ -121,6 +122,7 @@ const addFinalIcd = $this => {
     } else {
       selecteddata[0].diagnosis_type = "P";
     }
+    selecteddata[0].final_daignosis = "Y";
     $this.setState({
       finalICDS: selecteddata
     });
