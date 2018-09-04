@@ -31,7 +31,8 @@ import {
   addNewAllergy,
   getAllAllergies,
   getPatientAllergy,
-  updatePatientChiefComplaints
+  updatePatientChiefComplaints,
+  addPatientDiagnosis
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -473,7 +474,7 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
-
+  // created by irfan : to update patient chief complaints
   api.put(
     "/updatePatientChiefComplaints",
     updatePatientChiefComplaints,
@@ -492,5 +493,19 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan : to add patient Diagnosis
+  api.post(
+    "/addPatientDiagnosis",
+    addPatientDiagnosis,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };
