@@ -307,7 +307,7 @@ class PersistentDrawer extends React.Component {
                   className="btn btn-userProfile"
                   onClick={this.handleOpenClick}
                 >
-                  <span>Administrator </span>
+                  <span>{getCookie("userName")} </span>
                   <i className="fas fa-user-circle" />
                   <i className="fas fa-angle-down" />
                 </button>
