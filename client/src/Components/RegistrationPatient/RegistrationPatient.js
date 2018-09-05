@@ -51,6 +51,7 @@ class RegistrationPatient extends Component {
     setGlobal({ selectedLang: "en" });
   }
   componentDidMount() {
+    // AlgaehLoader({ show: true });
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
     this.setState({
@@ -427,7 +428,7 @@ class RegistrationPatient extends Component {
             />
             <ConsultationDetails PatRegIOputs={this.state} />
             <InsuranceDetails PatRegIOputs={this.state} />
-            <Billing PatRegIOputs={this.state} />
+            <Billing PatRegIOputs={this.state} loader={true} />
             <div className="hptl-phase1-footer">
               <AppBar position="static" className="main">
                 <div className="row">
