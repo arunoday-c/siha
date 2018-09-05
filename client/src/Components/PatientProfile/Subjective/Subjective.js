@@ -44,6 +44,7 @@ class Subjective extends Component {
       patientChiefComplains: [],
       chiefComplainList: [],
       patientAllergies: [],
+      patientROS: [],
       chief_complaint_name: null,
       chief_complaint_id: null,
       comment: "",
@@ -307,8 +308,8 @@ class Subjective extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          console.log("ROS Patient's:", response.data.records);
-          //this.setState({ chiefComplainList: response.data.records });
+          // console.log("ROS Patient's:", response.data.records);
+          this.setState({ patientROS: response.data.records });
         }
       },
       onFailure: error => {}
@@ -1397,44 +1398,24 @@ class Subjective extends Component {
                   </div>
                 </div>
                 <div className="portlet-body">
-                  <AlgaehDataGrid
-                    id="patient_chart_grd"
-                    columns={[
-                      {
-                        fieldName: "food",
-                        label: "Food",
-                        disabled: true
-                      },
-                      {
-                        fieldName: "date",
-                        label: "On Set Date"
-                      },
-                      {
-                        fieldName: "first_name",
-                        label: "Comment"
-                      },
-                      {
-                        fieldName: "active",
-                        label: "Active"
-                      }
-                    ]}
-                    keyId="code"
-                    dataSource={{
-                      data: AllergyData
-                    }}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 3 }}
-                    events={
-                      {
-                        // onDelete: this.deleteVisaType.bind(this),
-                        // onEdit: row => {},
-                        // onDone: row => {
-                        //   alert(JSON.stringify(row));
-                        // }
-                        // onDone: this.updateVisaTypes.bind(this)
-                      }
-                    }
-                  />
+                  <table className="table table-sm table-bordered">
+                    <thead className="table-primary">
+                      <tr>
+                        <th>System</th>
+                        <th>Symptoms</th>
+                        <th>Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.patientROS.map((data, index) => (
+                        <tr key={index}>
+                          <td>{data.header_description}</td>
+                          <td>{data.detail_description}</td>
+                          <td>{data.comment}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
               {/* END Portlet PORTLET */}
