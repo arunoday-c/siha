@@ -5,7 +5,8 @@ import httpStatus from "../utils/httpStatus";
 import {
   getRadOrderedServices,
   insertRadOrderedServices,
-  updateRadOrderedServices
+  updateRadOrderedServices,
+  getRadTemplateList
 } from "../model/radiology";
 
 export default ({ config, db }) => {
@@ -45,6 +46,21 @@ export default ({ config, db }) => {
   api.put(
     "/updateRadOrderedServices",
     updateRadOrderedServices,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by nowshad : to get Slected service templates
+  api.get(
+    "/getRadTemplateList",
+    getRadTemplateList,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

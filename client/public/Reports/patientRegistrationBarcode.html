@@ -5,18 +5,13 @@
     <table>
         <thead>
             <tr>
-                <th>Patient Code</th>
-                <th>Patient Name</th>
+                <th>PatientCode</th>
+                <th>PatientName</th>
             </tr>
         </thead>
-        <tbody data-list="patient_details" list-template="patientTable"></tbody>
-
+        <tbody data-list="patient_details" list-template="patientTable">""</tbody>
     </table>
     <script id="patientTable" type="text/x-algaeh-template">
-        <tr>
-            <td data-list-parameter="patient_code"></td>
-            <td data-list-parameter="full_name"></td>
-        </tr>
+       <tr><td data-list-parameter="patient_code"></td><td data-list-parameter="full_name"></td></tr>
     </script>
-
 </div>

@@ -129,16 +129,20 @@
     { "name": "Amount", "arabic_name": "مبلغ", "value": "A" }
   ],
   "PAIN_SCALE": [
-    { "name": "No Hurt", "arabic_name": "لا ألم", "value": "0" },
-    { "name": "Hurts Little Bit", "arabic_name": "يؤلم قليلا", "value": "2" },
-    { "name": "Hurts Little More", "arabic_name": "يؤلمني أكثر", "value": "4" },
-    { "name": "Hurts Even More", "arabic_name": "يضر أكثر", "value": "6" },
+    { "name": "No Hurt", "arabic_name": "لا ألم", "value": "NH" },
+    { "name": "Hurts Little Bit", "arabic_name": "يؤلم قليلا", "value": "HLB" },
+    {
+      "name": "Hurts Little More",
+      "arabic_name": "يؤلمني أكثر",
+      "value": "HLM"
+    },
+    { "name": "Hurts Even More", "arabic_name": "يضر أكثر", "value": "HEM" },
     {
       "name": "Hurts Whole Lot",
       "arabic_name": "يؤلم الجامع الكثير",
-      "value": "8"
+      "value": "HWL"
     },
-    { "name": "Hurts Worst", "arabic_name": "يسيء أسوأ", "value": "10" }
+    { "name": "Hurts Worst", "arabic_name": "يسيء أسوأ", "value": "HW" }
   ],
   "FORMAT_SUMISSION": [
     { "name": "Submit", "arabic_name": "ادة تقديم", "value": "S" },
@@ -251,5 +255,17 @@
   "FORMAT_DIG_TYPE": [
     { "name": "Primary", "value": "P" },
     { "name": "Secondary", "value": "S" }
+  ],
+  "RAD_EXAM_STATUS": [
+    { "name": "Awaiting To Start", "value": "AW" },
+    { "name": "Start", "value": "ST" },
+    { "name": "Canceled", "value": "CN" },
+    { "name": "Completed", "value": "CO" }
+  ],
+  "RAD_REPORT_TYPE": [
+    { "name": "Not Selected", "value": "NS" },
+    { "name": "Preliminary", "value": "PR" },
+    { "name": "Final", "value": "FL" },
+    { "name": "Addended", "value": "AD" }
   ]
 }

@@ -7,7 +7,7 @@ import {
   HashRouter,
   ReactRouter
 } from "react-router-dom";
-
+import AlgaehLoader from "./Components/Wrapper/fullPageLoader";
 import FrontDesk from "./Components/RegistrationPatient/RegistrationPatient";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import BusinessSetup from "./Components/BusinessSetup/BusinessSetup";
@@ -67,6 +67,7 @@ const componts = (selectedLang, breadStyle) => {
 
 const directRoutes = (componet, selectedLang, breadStyle) => {
   const MyComponet = componts(selectedLang, breadStyle)[componet];
+  AlgaehLoader({ show: false });
   return MyComponet;
 };
 

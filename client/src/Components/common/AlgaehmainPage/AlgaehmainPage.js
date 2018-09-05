@@ -21,7 +21,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import Menu from "@material-ui/core/Menu";
-
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 const drawerWidth = 230;
 
 const titleStyles = {
@@ -205,7 +205,7 @@ class PersistentDrawer extends React.Component {
     const name = e.currentTarget.getAttribute("name");
     let screenName = name.replace(/\s/g, "");
     setCookie("ScreenName", path, 30);
-
+    AlgaehLoader({ show: true });
     this.setState({
       sideopen: false,
       toggleSubMenu: true,

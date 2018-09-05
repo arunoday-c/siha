@@ -54,11 +54,13 @@ div[numberbox="true"] input[type="text"] {
   .table tbody td {
     vertical-align: middle;
     white-space: nowrap;
-    font-size: 0.75rem; }
+    font-size: 0.75rem;
+    text-align: center; }
   .table thead tr td {
     font-size: 0.75rem;
     font-weight: bold;
-    text-transform: uppercase; }
+    text-transform: uppercase;
+    text-align: center; }
 
 .scrolling table {
   table-layout: inherit;

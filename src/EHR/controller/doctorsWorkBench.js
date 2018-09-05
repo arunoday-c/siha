@@ -463,7 +463,7 @@ export default ({ config, db }) => {
 
   // created by irfan : to  get patient wise allergy
   api.get(
-    "/ getPatientAllergy",
+    "/getPatientAllergy",
     getPatientAllergy,
     (req, res, next) => {
       let result = req.records;
