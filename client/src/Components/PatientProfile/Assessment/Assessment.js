@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 
 import Enumerable from "linq";
 import IconButton from "@material-ui/core/IconButton";
-import "./assessment.css";
+import "./Assessment.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,

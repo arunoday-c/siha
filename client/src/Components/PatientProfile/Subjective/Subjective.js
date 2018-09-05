@@ -297,6 +297,24 @@ class Subjective extends Component {
     });
   }
 
+  getPatientROS() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientROS",
+      data: {
+        patient_id: Window.global["current_patient"],
+        episode_id: Window.global["episode_id"]
+      },
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          console.log("ROS Patient's:", response.data.records);
+          //this.setState({ chiefComplainList: response.data.records });
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
   getPatientAllergies() {
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientAllergy",
@@ -340,6 +358,7 @@ class Subjective extends Component {
     this.getPatientChiefComplains();
     this.getChiefComplainsList();
     this.getPatientAllergies();
+    this.getPatientROS();
   }
 
   openHPIAddModal(data) {

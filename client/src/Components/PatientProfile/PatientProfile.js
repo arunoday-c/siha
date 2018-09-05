@@ -53,7 +53,7 @@ class PatientProfile extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          console.log("Patient data:", response.data.records);
+          // console.log("Patient data:", response.data.records);
           this.setState({
             patientData: response.data.records.patient_profile[0],
             patientVitals: response.data.records.vitals[0],
