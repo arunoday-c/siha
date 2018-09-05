@@ -389,8 +389,8 @@ class RegistrationPatient extends Component {
                         }
                       },
                       data: {
-                        patient_code: "PAT-A-0000001",
-                        full_name: "Richards",
+                        patient_code: this.state.patient_code,
+                        full_name: this.state.full_name,
                         patient_details: [
                           { patient_code: "PAT-A-0000002", full_name: "Kumar" },
                           { patient_code: "PAT-A-0000003", full_name: "Ruchi" }
@@ -537,27 +537,6 @@ class RegistrationPatient extends Component {
             </div>
           </MyContext.Provider>
         </div>
-
-        {/* <div>
-          <Dialog
-            open={this.state.DialogOpen}
-            TransitionComponent={Transition}
-            keepMounted
-            onClose={this.handleClose}
-            aria-labelledby="alert-dialog-slide-title"
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogTitle id="alert-dialog-slide-title">
-              Succefully Done.
-            </DialogTitle>
-
-            <DialogActions>
-              <Button onClick={this.DialoghandleClose} color="primary">
-                OK
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div> */}
       </div>
     );
   }

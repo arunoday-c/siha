@@ -107,6 +107,7 @@ export default class Login extends Component {
         timeout: 10000,
         onSuccess: response => {
           if (response.data.success === true) {
+            setCookie("userName", response.data.records.user_displayname);
             setCookie("keyResources", response.data.records.keyResources, 30);
             setSecure(response.data.records.secureModels);
 
