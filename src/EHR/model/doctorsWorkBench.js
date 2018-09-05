@@ -545,79 +545,6 @@ let addReviewOfSysDetails = (req, res, next) => {
   }
 };
 
-//created by:irfan,to get review of system header& details
-let getReviewOfSystem = (req, res, next) => {
-  let reviewOfSysHeaderModel = {
-    headerId: null
-  };
-
-  debugFunction("getReviewOfSystem");
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-
-      //if headerId not received then send all headers
-      if (req.query.headerId == null || req.query.headerId == undefined) {
-        connection.query(
-          " SELECT * FROM hims_d_review_of_system_header where record_status='A'",
-          (error, result) => {
-            if (error) {
-              releaseDBConnection(db, connection);
-              next(error);
-            }
-            req.records = result;
-            next();
-          }
-        );
-      }
-      //if headerId  received then send specific details and sub details
-      else if (req.query.headerId != null) {
-        let headerInput = extend(reviewOfSysHeaderModel, req.query);
-
-        connection.query(
-          "SELECT * FROM hims_d_review_of_system_header \
-      where hims_d_review_of_system_header_id=? and record_status='A'",
-          [headerInput.headerId],
-          (error, headerResult) => {
-            if (error) {
-              releaseDBConnection(db, connection);
-              next(error);
-            }
-            // req.records = detailResult;
-
-            connection.query(
-              "SELECT * FROM hims_d_review_of_system_details where \
-              review_of_system_heder_id=? and record_status='A'",
-              [headerInput.headerId],
-              (error, detailResult) => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                }
-
-                req.records = {
-                  header: headerResult,
-                  detail: detailResult
-                };
-                next();
-              }
-            );
-          }
-        );
-      }
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
 //created by irfan:  to add allergic details
 let addAllergy = (req, res, next) => {
   let AllergyModel = {
@@ -1570,8 +1497,8 @@ let addPatientROS = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_encounter_review` (patient_id,episode_id,review_header_id,review_details_id,comment,created_by,updated_by)\
-        VALUE(?,?,?,?,?,?)",
+        "INSERT INTO `hims_f_encounter_review` (patient_id,episode_id,review_header_id,review_details_id,`comment`,created_by,updated_by)\
+        VALUE(?,?,?,?,?,?,?)",
         [
           inputparam.patient_id,
           inputparam.episode_id,
@@ -1655,6 +1582,149 @@ let updatePatientDiagnosis = (req, res, next) => {
   }
 };
 
+//created by:irfan,to get ROS header& details
+let getReviewOfSystem = (req, res, next) => {
+  let selectWhere = {
+    hims_d_review_of_system_header_id: "ALL"
+  };
+
+  debugFunction("getReviewOfSystem");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      let where = whereCondition(extend(selectWhere, req.query));
+
+      connection.query(
+        "select RH.hims_d_review_of_system_header_id,RH.description as header_description,RD.hims_d_review_of_system_details_id,RD.description as detail_description from\
+        hims_d_review_of_system_header RH,hims_d_review_of_system_details RD where\
+         RH.hims_d_review_of_system_header_id=RD.review_of_system_heder_id and RD.record_status='A' and RH.record_status='A' and" +
+          where.condition,
+        where.values,
+
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by:irfan,to get Patient ROS
+let getPatientROS = (req, res, next) => {
+  debugFunction("getPatientROS");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let input = extend({}, req.query);
+
+      connection.query(
+        "select hims_f_encounter_review_id, review_header_id,RH.description as  header_description,review_details_id ,\
+        RD.description as  detail_description,comment,ER.patient_id,ER.episode_id from ((hims_f_encounter_review ER \
+          inner join hims_d_review_of_system_details RD on ER.review_details_id=RD.hims_d_review_of_system_details_id)\
+         inner join hims_d_review_of_system_header RH on ER.review_header_id=RH.hims_d_review_of_system_header_id)\
+          where ER.record_status='A' and ER.patient_id=? and ER.episode_id=?",
+        [input.patient_id, input.episode_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update Patient ROS
+let updatePatientROS = (req, res, next) => {
+  try {
+    debugFunction("updatePatientROS");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    debugLog("Input Data", req.body);
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        let queryBuilder =
+          " update hims_f_encounter_review set patient_id=?, episode_id=?,review_header_id=?,review_details_id=?,`comment`=?,\
+          updated_date=?,updated_by=?, record_status=? where hims_f_encounter_review_id=?;";
+        let inputs = [
+          input.patient_id,
+          input.episode_id,
+          input.review_header_id,
+          input.review_details_id,
+          input.comment,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_f_encounter_review_id
+        ];
+
+        connection.query(queryBuilder, inputs, (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+          connection.commit(error => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.records = result;
+            next();
+          });
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -1663,9 +1733,6 @@ module.exports = {
   addOrder,
   addSample,
   addAnalytes,
-  addReviewOfSysHeader,
-  addReviewOfSysDetails,
-  getReviewOfSystem,
   addAllergy,
   getAllergyDetails,
   addChronicalConditions,
@@ -1689,5 +1756,10 @@ module.exports = {
   addPatientDiagnosis,
   getPatientDiagnosis,
   addPatientROS,
+  getPatientROS,
+  updatePatientROS,
+  addReviewOfSysHeader,
+  addReviewOfSysDetails,
+  getReviewOfSystem,
   updatePatientDiagnosis
 };

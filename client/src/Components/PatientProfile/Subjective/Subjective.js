@@ -21,10 +21,7 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 import moment from "moment";
 import Enumerable from "linq";
-import {
-  setPatientChiefComplaints,
-  getIndexedToken
-} from "../../../utils/indexer";
+import { setPatientChiefComplaints } from "../../../utils/indexer";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
@@ -335,11 +332,11 @@ class Subjective extends Component {
   }
 
   getToken(data) {
-    console.log("Indexed Data:", data);
+    console.dir("Indexed Data:", data);
   }
 
   componentDidMount() {
-    //  getIndexedToken(this.getToken);
+    // getPatientChiefComplaints(this.getToken);
     this.getPatientChiefComplains();
     this.getChiefComplainsList();
     this.getPatientAllergies();

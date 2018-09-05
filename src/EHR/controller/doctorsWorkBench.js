@@ -35,6 +35,8 @@ import {
   addPatientDiagnosis,
   getPatientDiagnosis,
   addPatientROS,
+  getPatientROS,
+  updatePatientROS,
   updatePatientDiagnosis
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
@@ -544,6 +546,40 @@ export default ({ config, db }) => {
   api.put(
     "/updatePatientDiagnosis",
     updatePatientDiagnosis,
+    (req, res, next) => {
+      let resultSelect = req.records;
+      if (resultSelect.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: resultSelect
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
+    },
+    releaseConnection
+  );
+
+  // created by irfan : to  getPatientROS
+  api.get(
+    "/getPatientROS",
+    getPatientROS,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by irfan: to update Patient ROS
+  api.put(
+    "/updatePatientROS",
+    updatePatientROS,
     (req, res, next) => {
       let resultSelect = req.records;
       if (resultSelect.length != 0) {

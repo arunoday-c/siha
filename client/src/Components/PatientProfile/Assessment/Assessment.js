@@ -3,8 +3,9 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
+import Enumerable from "linq";
 import IconButton from "@material-ui/core/IconButton";
-import "./Assessment.css";
+import "./assessment.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
@@ -19,12 +20,19 @@ import {
   insertInitialICDS,
   insertFinalICDS,
   selectdIcd,
-  addFinalIcd
+  addFinalIcd,
+  getPatientDiagnosis,
+  onchangegridcol,
+  deleteDiagnosis,
+  deleteFinalDiagnosis,
+  updateDiagnosis
 } from "./AssessmentEvents";
 import OrderingServices from "./OrderingServices/OrderingServices";
 import LabResults from "./LabResult/LabResult";
 import RadResults from "./RadResult/RadResult";
 import { AlgaehActions } from "../../../actions/algaehActions";
+
+import { DIAG_TYPE } from "../../../utils/GlobalVariables.json";
 
 class Assessment extends Component {
   constructor(props) {
@@ -39,7 +47,10 @@ class Assessment extends Component {
       icd_description: null,
       finalICDS: [],
       f_icd_id: null,
-      selectdIcd: []
+      selectdIcd: [],
+      insertInitialDiad: [],
+      patient_id: Window.global["current_patient"],
+      episode_id: Window.global["episode_id"]
     };
   }
 
@@ -52,6 +63,11 @@ class Assessment extends Component {
         mappingName: "icdcodes"
       }
     });
+    debugger;
+    getPatientDiagnosis(this);
+  }
+
+  componentWillUnmount() {
     debugger;
   }
 
@@ -128,11 +144,11 @@ class Assessment extends Component {
                       id="intial_icd"
                       columns={[
                         {
-                          fieldName: "Actions",
+                          fieldName: "Select",
                           label: (
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Actions"
+                                forceLabel: "Select"
                               }}
                             />
                           ),
@@ -146,13 +162,13 @@ class Assessment extends Component {
                                   onChange={selectdIcd.bind(this, this, row)}
                                   checked={row.radioselect == 1 ? true : false}
                                 />
-                                <IconButton
+                                {/* <IconButton
                                   color="primary"
                                   title="Delete"
                                   style={{ maxHeight: "4vh" }}
                                 >
                                   <i class="fa fa-trash" />
-                                </IconButton>
+                                </IconButton> */}
                               </span>
                             );
                           },
@@ -171,6 +187,29 @@ class Assessment extends Component {
                             return row.diagnosis_type === "P"
                               ? "Primary"
                               : "Secondary";
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "diagnosis_type",
+                                  className: "select-fld",
+                                  value: row.diagnosis_type,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: DIAG_TYPE
+                                  },
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    "Intial"
+                                  )
+                                }}
+                              />
+                            );
                           }
                         },
                         {
@@ -200,7 +239,8 @@ class Assessment extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
+                          disabled: true
                         },
                         {
                           fieldName: "icd_description",
@@ -229,25 +269,21 @@ class Assessment extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
+                          disabled: true
                         }
                       ]}
                       keyId="code"
                       dataSource={{
                         data: this.state.InitialICDS
                       }}
-                      isEditable={false}
+                      isEditable={true}
                       paging={{ page: 0, rowsPerPage: 3 }}
-                      events={
-                        {
-                          // onDelete: this.deleteVisaType.bind(this),
-                          // onEdit: row => {},
-                          // onDone: row => {
-                          //   alert(JSON.stringify(row));
-                          // }
-                          // onDone: this.updateVisaTypes.bind(this)
-                        }
-                      }
+                      events={{
+                        onDelete: deleteDiagnosis.bind(this, this),
+                        onEdit: row => {},
+                        onDone: updateDiagnosis.bind(this, this)
+                      }}
                     />
                   </h4>
                 </div>
@@ -296,31 +332,31 @@ class Assessment extends Component {
                     <AlgaehDataGrid
                       id="intial_icd"
                       columns={[
-                        {
-                          fieldName: "Actions",
-                          label: (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Actions"
-                              }}
-                            />
-                          ),
+                        // {
+                        //   fieldName: "Actions",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{
+                        //         forceLabel: "Actions"
+                        //       }}
+                        //     />
+                        //   ),
 
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                <IconButton
-                                  color="primary"
-                                  title="Delete"
-                                  style={{ maxHeight: "4vh" }}
-                                >
-                                  <i class="fa fa-trash" />
-                                </IconButton>
-                              </span>
-                            );
-                          },
-                          disabled: true
-                        },
+                        //   displayTemplate: row => {
+                        //     return (
+                        //       <span>
+                        //         <IconButton
+                        //           color="primary"
+                        //           title="Delete"
+                        //           style={{ maxHeight: "4vh" }}
+                        //         >
+                        //           <i class="fa fa-trash" />
+                        //         </IconButton>
+                        //       </span>
+                        //     );
+                        //   },
+                        //   disabled: true
+                        // },
                         {
                           fieldName: "diagnosis_type",
                           label: (
@@ -334,6 +370,29 @@ class Assessment extends Component {
                             return row.diagnosis_type === "P"
                               ? "Primary"
                               : "Secondary";
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "diagnosis_type",
+                                  className: "select-fld",
+                                  value: row.diagnosis_type,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: DIAG_TYPE
+                                  },
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    "Final"
+                                  )
+                                }}
+                              />
+                            );
                           }
                         },
                         {
@@ -363,7 +422,8 @@ class Assessment extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
+                          disabled: false
                         },
                         {
                           fieldName: "icd_description",
@@ -392,25 +452,22 @@ class Assessment extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
+                          disabled: false
                         }
                       ]}
                       keyId="code"
                       dataSource={{
                         data: this.state.finalICDS
                       }}
-                      isEditable={false}
+                      isEditable={true}
                       paging={{ page: 0, rowsPerPage: 3 }}
-                      events={
-                        {
-                          // onDelete: this.deleteVisaType.bind(this),
-                          // onEdit: row => {},
-                          // onDone: row => {
-                          //   alert(JSON.stringify(row));
-                          // }
-                          // onDone: this.updateVisaTypes.bind(this)
-                        }
-                      }
+                      events={{
+                        onDelete: deleteFinalDiagnosis.bind(this, this),
+                        onEdit: row => {},
+
+                        onDone: updateDiagnosis.bind(this, this)
+                      }}
                     />
                   </h4>
                 </div>
@@ -536,14 +593,16 @@ class Assessment extends Component {
 
 function mapStateToProps(state) {
   return {
-    icdcodes: state.icdcodes
+    icdcodes: state.icdcodes,
+    patientdiagnosis: state.patientdiagnosis
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getIcdCodes: AlgaehActions
+      getIcdCodes: AlgaehActions,
+      getPatientDiagnosis: AlgaehActions
     },
     dispatch
   );

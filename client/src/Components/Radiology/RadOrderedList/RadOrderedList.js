@@ -74,18 +74,6 @@ class RadOrderedList extends Component {
     }
   };
 
-  ShowCollectionModel(row, e) {
-    this.setState({
-      isOpen: !this.state.isOpen,
-      selected_patient: row
-    });
-  }
-  CloseCollectionModel(e) {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  }
-
   render() {
     // let sampleCollection =
     //   this.state.billdetails === null ? [{}] : this.state.billdetails;

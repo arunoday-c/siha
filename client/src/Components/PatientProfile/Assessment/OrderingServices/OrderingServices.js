@@ -174,7 +174,7 @@ class OrderingServices extends Component {
               }}
             />
 
-            <div className="col-lg-2">
+            <div className="col-lg-1">
               <Tooltip id="tooltip-icon" title="Process">
                 <IconButton className="go-button" color="primary">
                   <PlayCircleFilled onClick={ProcessService.bind(this, this)} />
@@ -385,20 +385,20 @@ class OrderingServices extends Component {
               />
             </div>
           </div>
-          <br />
         </div>
-
-        <div className="row" position="fixed">
-          <div className="col-lg-12">
-            <span className="float-right">
-              <button
-                style={{ marginRight: "15px" }}
-                className="htpl1-phase1-btn-primary"
-                onClick={SaveOrdersServices.bind(this, this)}
-              >
-                <AlgaehLabel label={{ fieldName: "btnsave" }} />
-              </button>
-            </span>
+        <div className="container-fluid" style={{ marginBottom: "1vh" }}>
+          <div className="row" position="fixed">
+            <div className="col-lg-12">
+              <span className="float-right">
+                <button
+                  style={{ marginRight: "15px" }}
+                  className="htpl1-phase1-btn-primary"
+                  onClick={SaveOrdersServices.bind(this, this)}
+                >
+                  <AlgaehLabel label={{ fieldName: "btnsave" }} />
+                </button>
+              </span>
+            </div>
           </div>
         </div>
       </div>
