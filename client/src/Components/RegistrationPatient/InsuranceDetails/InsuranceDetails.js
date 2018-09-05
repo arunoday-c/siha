@@ -35,7 +35,7 @@ export default class InsuranceDetails extends PureComponent {
     let primaryInsurance = this.state.actionPrimaryDesign ? "active" : "";
     let secondaryInsurance = this.state.actionSecondaryDesign ? "" : "active";
     return (
-      <div className="hptl-phase1-insurance-details">
+      <div className="hptl-phase1-insurance-details margin-top-15">
         <div className="tab-container toggle-section">
           <ul className="nav">
             <li

@@ -24,9 +24,10 @@ const styles = theme => ({
   // Also, we had to reset the default style injected by the library.
   "@global": {
     ".Select-control": {
+      borderRadius: "none",
       display: "flex",
       alignItems: "center",
-      border: 0,
+      border: "1px solid #d3d3d3",
       height: "auto",
       background: "transparent",
       "&:hover": {

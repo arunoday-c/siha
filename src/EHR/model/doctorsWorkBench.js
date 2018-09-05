@@ -1407,7 +1407,7 @@ let getPatientAllergy = (req, res, next) => {
     next(e);
   }
 };
-
+//created by irfan: to add updatePatientChiefComplaints
 let updatePatientChiefComplaints = (req, res, next) => {
   try {
     debugFunction("updatePatientChiefComplaints");
@@ -1555,6 +1555,106 @@ let getPatientDiagnosis = (req, res, next) => {
   }
 };
 
+//created by irfan: to add patient encounter review
+let addPatientROS = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_f_encounter_review` (patient_id,episode_id,review_header_id,review_details_id,comment,created_by,updated_by)\
+        VALUE(?,?,?,?,?,?)",
+        [
+          inputparam.patient_id,
+          inputparam.episode_id,
+          inputparam.review_header_id,
+          inputparam.review_details_id,
+          inputparam.comment,
+          inputparam.created_by,
+          inputparam.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update PatientDiagnosis
+let updatePatientDiagnosis = (req, res, next) => {
+  try {
+    debugFunction("updatePatientDiagnosis");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    debugLog("Input Data", req.body);
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        let queryBuilder =
+          "update hims_f_patient_diagnosis set diagnosis_type=?,\
+           final_daignosis=?,updated_date=?,updated_by=?, record_status=? where hims_f_patient_diagnosis_id=?;";
+        let inputs = [
+          input.diagnosis_type,
+          input.final_daignosis,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_f_patient_diagnosis_id
+        ];
+
+        connection.query(queryBuilder, inputs, (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+          connection.commit(error => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.records = result;
+            next();
+          });
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -1587,5 +1687,7 @@ module.exports = {
   getPatientAllergy,
   updatePatientChiefComplaints,
   addPatientDiagnosis,
-  getPatientDiagnosis
+  getPatientDiagnosis,
+  addPatientROS,
+  updatePatientDiagnosis
 };

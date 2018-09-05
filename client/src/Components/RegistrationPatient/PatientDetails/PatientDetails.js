@@ -53,7 +53,7 @@ export default class PatientDetails extends PureComponent {
     let patientSelect = this.state.actionPatientDesign ? "active" : "";
     let informationSelect = this.state.actionInformationDesign ? "" : "active";
     return (
-      <div className="hptl-phase1-patient-details">
+      <div className="hptl-phase1-patient-details margin-bottom-15">
         <div className="tab-container toggle-section">
           <ul className="nav">
             <li

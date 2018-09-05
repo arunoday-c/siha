@@ -37,8 +37,9 @@ div[numberbox="true"] {
    React date picker customizing style
 */
 .algaeh-datePicker {
-  border-bottom: 1px solid #000;
+  border: 1px solid #d3d3d3;
   max-width: 100%;
+  padding-left: 6px;
   .react-date-picker__button {
     border: none;
 
