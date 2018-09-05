@@ -21,7 +21,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import Menu from "@material-ui/core/Menu";
-
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 const drawerWidth = 230;
 
 const titleStyles = {
@@ -205,7 +205,7 @@ class PersistentDrawer extends React.Component {
     const name = e.currentTarget.getAttribute("name");
     let screenName = name.replace(/\s/g, "");
     setCookie("ScreenName", path, 30);
-
+    AlgaehLoader({ show: true });
     this.setState({
       sideopen: false,
       toggleSubMenu: true,
@@ -299,41 +299,52 @@ class PersistentDrawer extends React.Component {
 
                   <h5>{this.state.title}</h5>
                 </div>
-                <span>
-                  <Button
-                    style={{ color: "#fff" }}
-                    aria-haspopup="true"
-                    className="float-right"
-                    onClick={this.handleOpenClick}
-                  >
-                    {this.state.languageName}
-                    &nbsp;&nbsp;{" "}
-                    <i
-                      className="fa fa-language"
-                      aria-hidden="true"
-                      style={{ fontSize: 18 }}
-                    />
-                  </Button>
-                  <Menu
-                    id="simple-menu"
-                    anchorEl={this.state.anchorEl}
-                    open={Boolean(this.state.anchorEl)}
-                    onClose={this.handleClose}
-                  >
-                    <MenuItem onClick={this.handleClose.bind(this, "en")}>
-                      {this.state.languageName === "English"
-                        ? this.renderCheck()
-                        : null}
-                      &nbsp; English
-                    </MenuItem>
-                    <MenuItem onClick={this.handleClose.bind(this, "ar")}>
-                      {this.state.languageName === "عربي"
-                        ? this.renderCheck()
-                        : null}
-                      &nbsp; عربي
-                    </MenuItem>
-                  </Menu>
+                <span style={{ float: "right", fontSize: "0.9rem" }}>
+                  {" "}
+                  {this.state.languageName}
                 </span>
+                <button
+                  className="btn btn-userProfile"
+                  onClick={this.handleOpenClick}
+                >
+                  <span>Administrator </span>
+                  <i className="fas fa-user-circle" />
+                  <i className="fas fa-angle-down" />
+                </button>
+
+                <Menu
+                  id="simple-menu"
+                  anchorEl={this.state.anchorEl}
+                  open={Boolean(this.state.anchorEl)}
+                  onClose={this.handleClose}
+                >
+                  <MenuItem>
+                    <i className="fas fa-user" /> User Profile
+                  </MenuItem>
+                  <MenuItem>
+                    <i className="fas fa-cog" /> Preference
+                  </MenuItem>
+                  <hr />
+                  <MenuItem onClick={this.handleClose.bind(this, "en")}>
+                    <i className="fas fa-globe-asia" />
+                    {this.state.languageName === "English"
+                      ? this.renderCheck()
+                      : null}
+                    &nbsp; English
+                  </MenuItem>
+                  <MenuItem onClick={this.handleClose.bind(this, "ar")}>
+                    <i className="fas fa-globe-asia" />
+                    {this.state.languageName === "عربي"
+                      ? this.renderCheck()
+                      : null}
+                    &nbsp; عربي
+                  </MenuItem>
+                  <hr />
+
+                  <MenuItem>
+                    <i className="fas fa-sign-out-alt" /> Logout
+                  </MenuItem>
+                </Menu>
               </Toolbar>
             </AppBar>
             {/* Side Bar Functionality */}

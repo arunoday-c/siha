@@ -1,4 +1,33 @@
 /* width */
+.btn-userProfile {
+  background: none;
+  font-size: 1rem;
+  color: #fff;
+  border-left: 1px solid #009689; }
+  .btn-userProfile i {
+    margin: 3px; }
+  .btn-userProfile span {
+    display: inline-block;
+    margin: 0 10px;
+    font-size: 0.9rem; }
+
+#simple-menu {
+  top: 33px;
+  right: 20px;
+  color: #797979; }
+  #simple-menu ul li {
+    padding: 5px 35px 5px 15px;
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 0.9rem; }
+    #simple-menu ul li i {
+      margin-right: 15px;
+      color: #34b8bc;
+      font-size: 1rem; }
+  #simple-menu hr {
+    margin: 5px 0;
+    padding: 0; }
+
 .leftNavCntr {
   margin-top: 0;
   z-index: 9999;

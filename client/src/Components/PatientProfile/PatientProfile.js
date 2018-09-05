@@ -15,7 +15,8 @@ class PatientProfile extends Component {
 
     this.state = {
       pageDisplay: "subjective",
-      patientData: {}
+      patientData: {},
+      patientVitals: {}
     };
     this.changeTabs = this.changeTabs.bind(this);
   }
@@ -51,7 +52,10 @@ class PatientProfile extends Component {
       onSuccess: response => {
         if (response.data.success) {
           console.log("Patient data:", response.data.records);
-          this.setState({ patientData: response.data.records[0] });
+          this.setState({
+            patientData: response.data.records.patient_profile[0],
+            patientVitals: response.data.records.vitals[0]
+          });
         }
       },
       onFailure: error => {}
@@ -163,22 +167,62 @@ class PatientProfile extends Component {
           </div>
           <div className="patientVital">
             <span>
-              BP: <b>120/80</b>
+              BP:{" "}
+              <b>
+                {this.state.patientVitals !== undefined
+                  ? this.state.patientVitals.systolic
+                  : 0}
+                /
+                {this.state.patientVitals !== undefined
+                  ? this.state.patientVitals.diastolic
+                  : 0}
+              </b>
             </span>
             <span>
-              Oral Temp: <b>36.8C</b>
+              Temp(C):{" "}
+              <b>
+                {this.state.patientVitals !== undefined
+                  ? this.state.patientVitals.temperature_celsisus
+                  : 0}{" "}
+                (
+                {this.state.patientVitals !== undefined
+                  ? this.state.patientVitals.temperature_from
+                  : 0}
+                )
+              </b>
             </span>
             <span>
-              H: <b>175 CM</b>
+              H:{" "}
+              <b>
+                {this.state.patientVitals !== undefined
+                  ? this.state.patientVitals.height
+                  : 0}{" "}
+                CM
+              </b>
             </span>
             <span>
-              W: <b>95 KG</b>
+              W:{" "}
+              <b>
+                {this.state.patientVitals !== undefined
+                  ? this.state.patientVitals.weight
+                  : 0}{" "}
+                KG
+              </b>
             </span>
             <span>
               HR: <b>85</b>
             </span>
             <span>
               RR: <b>45</b>
+            </span>
+            <span>
+              BMI :{" "}
+              <b>
+                {" "}
+                {this.state.patientVitals !== undefined
+                  ? this.state.patientVitals.bmi
+                  : 0}{" "}
+              </b>
             </span>
           </div>
           <div className="moreAction">

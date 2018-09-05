@@ -29,6 +29,7 @@ import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import AlgaehReport from "../Wrapper/printReports";
+import AlgaehLoader from "../Wrapper/fullPageLoader";
 // function Transition(props) {
 //   return <Slide direction="up" {...props} />;
 // }
@@ -41,7 +42,6 @@ var intervalId;
 class RegistrationPatient extends Component {
   constructor(props) {
     super(props);
-
     this.state = { AdvanceOpen: false, RefundOpen: false };
   }
 
@@ -51,11 +51,7 @@ class RegistrationPatient extends Component {
     setGlobal({ selectedLang: "en" });
   }
   componentDidMount() {
-    // var width = document.getElementById("attach").offsetHeight;
-    // this.setState({
-    //   widthImg: width
-    // });
-
+    // AlgaehLoader({ show: true });
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
     this.setState({
@@ -409,6 +405,7 @@ class RegistrationPatient extends Component {
                 events: {
                   onClick: () => {
                     console.log("Patient state", this.state);
+                    AlgaehLoader({ show: true });
                   }
                 }
               }
@@ -431,7 +428,7 @@ class RegistrationPatient extends Component {
             />
             <ConsultationDetails PatRegIOputs={this.state} />
             <InsuranceDetails PatRegIOputs={this.state} />
-            <Billing PatRegIOputs={this.state} />
+            <Billing PatRegIOputs={this.state} loader={true} />
             <div className="hptl-phase1-footer">
               <AppBar position="static" className="main">
                 <div className="row">

@@ -14,7 +14,6 @@ let accessReport = options => {
     if (this.response !== "" && const_count === 0) {
       let parser = new DOMParser();
       let _html = parser.parseFromString(this.response, "text/xml");
-
       if (getReport.barcode !== undefined) {
         let canvasElements = _html.querySelectorAll("[data-barcode-parameter]");
         for (let e = 0; e < canvasElements.length; e++) {
@@ -27,12 +26,10 @@ let accessReport = options => {
               format: "CODE128",
               lineColor: "#000"
             };
-
             JsBarcode(canvas, options.data[getReport.barcode.parameter], {
               ...barCodeModel,
               ...getReport.options
             });
-
             canvasElements[e].onload = function() {
               canvas.getContext("2d").drawImage(canvasElements[e], 0, 0);
             };

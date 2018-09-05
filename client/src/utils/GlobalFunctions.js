@@ -1,6 +1,5 @@
 import extend from "extend";
 import swal from "sweetalert";
-
 export function successfulMessage(options) {
   options.timer = options.timer || 2500;
   options.icon = options.icon || "error";
