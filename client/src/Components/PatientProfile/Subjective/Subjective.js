@@ -21,6 +21,10 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 import moment from "moment";
 import Enumerable from "linq";
+import {
+  setPatientChiefComplaints,
+  getIndexedToken
+} from "../../../utils/indexer";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
@@ -38,6 +42,7 @@ class Subjective extends Component {
       openComplain: false,
       openHpiModal: false,
       openAllergyModal: false,
+      openROSModal: false,
       pain: 0,
       patientChiefComplains: [],
       chiefComplainList: [],
@@ -55,10 +60,8 @@ class Subjective extends Component {
       severity: "MI"
     };
 
-    //this.openChiefComplainModal = this.openChiefComplainModal.bind(this);
     this.addAllergies = this.addAllergies.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    // this.openHPIAddModal = this.openHPIAddModal.bind(this);
     this.fillComplainDetails = this.fillComplainDetails.bind(this);
     this.addChiefComplain = this.addChiefComplain.bind(this);
     this.setPainScale = this.setPainScale.bind(this);
@@ -67,6 +70,11 @@ class Subjective extends Component {
     );
   }
 
+  addROS() {
+    this.setState({
+      openROSModal: true
+    });
+  }
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this Chief Complain?",
@@ -184,8 +192,11 @@ class Subjective extends Component {
   }
 
   openChiefComplainModal(data) {
-    console.log("Chief Complain Data:", data);
-    this.setState({ openComplain: true });
+    // console.log("Chief Complain Data:", data);
+    this.setState({
+      openComplain: true,
+      hims_f_episode_chief_complaint_id: data.chief_complaint_id
+    });
   }
   addAllergies() {
     this.setState({
@@ -197,7 +208,8 @@ class Subjective extends Component {
     this.setState({
       openComplain: false,
       openHpiModal: false,
-      openAllergyModal: false
+      openAllergyModal: false,
+      openROSModal: false
     });
   }
 
@@ -264,7 +276,10 @@ class Subjective extends Component {
       onSuccess: response => {
         if (response.data.success) {
           //console.log("Patient chief complains:", response.data.records);
-          this.setState({ patientChiefComplains: response.data.records });
+          this.setState(
+            { patientChiefComplains: response.data.records },
+            setPatientChiefComplaints(response.data.records)
+          );
         }
       },
       onFailure: error => {}
@@ -319,7 +334,12 @@ class Subjective extends Component {
     });
   }
 
+  getToken(data) {
+    console.log("Indexed Data:", data);
+  }
+
   componentDidMount() {
+    getIndexedToken(this.getToken);
     this.getPatientChiefComplains();
     this.getChiefComplainsList();
     this.getPatientAllergies();
@@ -341,12 +361,14 @@ class Subjective extends Component {
       .where(w => w.hims_f_episode_chief_complaint_id === id)
       .firstOrDefault();
 
-    setTimeout(
-      this.setState({
-        ...cce
-      }),
-      2000
-    );
+    this.setState({ ...cce });
+
+    // setTimeout(
+    //   this.setState({
+    //     ...cce
+    //   }),
+    //   2000
+    // );
   }
 
   render() {
@@ -355,6 +377,41 @@ class Subjective extends Component {
       : [];
     return (
       <div className="subjective">
+        {/* ROS Modal Start */}
+        <Modal open={this.state.openROSModal}>
+          <div className="algaeh-modal">
+            <div className="popupHeader">
+              <h4>Add Rview of Systems</h4>
+            </div>
+            <div className="col-lg-12 popupInner">Review of Systems</div>
+            <div className="row popupFooter">
+              <div className="col-lg-4">
+                <Button variant="raised" color="primary" size="small">
+                  Add
+                </Button>
+                <Button
+                  variant="raised"
+                  style={{ backgroundColor: "#D5D5D5" }}
+                  size="small"
+                >
+                  Clear
+                </Button>
+              </div>
+              <div className="col-lg-8">
+                <Button
+                  variant="raised"
+                  onClick={this.handleClose}
+                  style={{ backgroundColor: "#D5D5D5" }}
+                  size="small"
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Modal>
+        {/* ROS Modal End */}
+
         {/* Allergy Modal Start*/}
         <Modal open={this.state.openAllergyModal}>
           <div className="algaeh-modal">
@@ -753,13 +810,13 @@ class Subjective extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-10 displayInlineBlock" }}
                         label={{
-                          forceLabel: "Chief Complain",
+                          forceLabel: "Chief Complaint",
                           fieldName: "sample"
                         }}
                         selector={{
-                          name: "chief_complaint_id",
+                          name: "hims_f_episode_chief_complaint_id",
                           className: "select-fld",
-                          value: this.state.chief_complaint_id,
+                          value: this.state.hims_f_episode_chief_complaint_id,
                           dataSource: {
                             textField: "hpi_description",
                             valueField: "hims_d_hpi_header_id",
@@ -1317,7 +1374,7 @@ class Subjective extends Component {
                     <a
                       href="javascript:;"
                       className="btn btn-primary btn-circle active"
-                      onClick={this.addAllergies}
+                      onClick={this.addROS.bind(this)}
                     >
                       <i className="fas fa-plus" />
                     </a>

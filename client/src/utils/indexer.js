@@ -88,6 +88,26 @@ export function setSecure(data) {
   });
 }
 
+export function setPatientChiefComplaints(data) {
+  const dbPromise = idb.open("Hims", 2, upgradeDB => {
+    upgradeDB.createObjectStore("patientComplaints", { keyPath: "id" });
+  });
+  dbPromise.then(db => {
+    db.transaction("patientComplaints", "readwrite")
+      .objectStore("patientComplaints")
+      .delete(1);
+  });
+  dbPromise.then(db => {
+    return db
+      .transaction("patientComplaints", "readwrite")
+      .objectStore("patientComplaints")
+      .put({
+        id: 1,
+        patientData: data
+      }).complete;
+  });
+}
+
 export function setLocaion(data) {
   const dbPromise = idb.open("Hims", 1, upgradeDB => {
     upgradeDB.createObjectStore("LabLocation", { keyPath: "id" });

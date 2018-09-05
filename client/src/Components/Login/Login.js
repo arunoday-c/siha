@@ -238,7 +238,7 @@ export default class Login extends Component {
                     }}
                   />
                   <div className="col">
-                    <div class="checkbox">
+                    <div className="checkbox">
                       <label>
                         <input type="checkbox" value="remember-me" /> Remember
                         me
