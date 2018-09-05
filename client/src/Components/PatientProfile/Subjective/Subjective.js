@@ -55,10 +55,10 @@ class Subjective extends Component {
       severity: "MI"
     };
 
-    this.openChiefComplainModal = this.openChiefComplainModal.bind(this);
+    //this.openChiefComplainModal = this.openChiefComplainModal.bind(this);
     this.addAllergies = this.addAllergies.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.openHPIAddModal = this.openHPIAddModal.bind(this);
+    // this.openHPIAddModal = this.openHPIAddModal.bind(this);
     this.fillComplainDetails = this.fillComplainDetails.bind(this);
     this.addChiefComplain = this.addChiefComplain.bind(this);
     this.setPainScale = this.setPainScale.bind(this);
@@ -183,7 +183,8 @@ class Subjective extends Component {
     );
   }
 
-  openChiefComplainModal() {
+  openChiefComplainModal(data) {
+    console.log("Chief Complain Data:", data);
     this.setState({ openComplain: true });
   }
   addAllergies() {
@@ -307,9 +308,11 @@ class Subjective extends Component {
     this.getPatientAllergies();
   }
 
-  openHPIAddModal() {
+  openHPIAddModal(data) {
+    console.log("Data:", data);
     this.setState({
-      openHpiModal: true
+      openHpiModal: true,
+      hims_f_episode_chief_complaint_id: data.hims_f_episode_chief_complaint_id
     });
   }
 
@@ -424,9 +427,9 @@ class Subjective extends Component {
                             forceLabel: "Selected Chief Complaint"
                           }}
                           selector={{
-                            name: "chief_complaint_name",
+                            name: "hims_f_episode_chief_complaint_id",
                             className: "select-fld",
-                            value: this.state.chief_complaint_name,
+                            value: this.state.hims_f_episode_chief_complaint_id,
                             dataSource: {
                               textField: "chief_complaint_name",
                               valueField: "hims_f_episode_chief_complaint_id",
@@ -733,7 +736,8 @@ class Subjective extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-10 displayInlineBlock" }}
                         label={{
-                          fieldName: "chief_complain"
+                          forceLabel: "Chief Complain",
+                          fieldName: "sample"
                         }}
                         selector={{
                           name: "chief_complaint_id",
@@ -1086,7 +1090,7 @@ class Subjective extends Component {
                     <a
                       href="javascript:;"
                       className="btn btn-primary btn-circle active"
-                      onClick={this.openChiefComplainModal}
+                      onClick={this.openChiefComplainModal.bind(this)}
                     >
                       <i className="fas fa-plus" />
                     </a>
@@ -1186,7 +1190,10 @@ class Subjective extends Component {
                               <IconButton
                                 color="primary"
                                 title="Edit"
-                                onClick={this.openChiefComplainModal}
+                                onClick={this.openChiefComplainModal.bind(
+                                  this,
+                                  data
+                                )}
                               >
                                 <Edit />
                               </IconButton>
@@ -1194,7 +1201,7 @@ class Subjective extends Component {
                               <IconButton
                                 color="primary"
                                 title="HPI"
-                                onClick={this.openHPIAddModal}
+                                onClick={this.openHPIAddModal.bind(this, data)}
                               >
                                 <HPI />
                               </IconButton>
