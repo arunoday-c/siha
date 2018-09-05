@@ -3,9 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Enumerable from "linq";
-import IconButton from "@material-ui/core/IconButton";
-import "./Assessment.css";
+import "./assessment.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
