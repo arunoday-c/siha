@@ -20,11 +20,12 @@ import HPI from "@material-ui/icons/AssignmentInd";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 import moment from "moment";
+import Enumerable from "linq";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
   { food: "Pollen", active: "Yes" },
-  { food: "Iodine", active: "Yes" }
+  { food: "Io dine", active: "Yes" }
 ];
 
 let patChiefComplain = [];
@@ -35,17 +36,35 @@ class Subjective extends Component {
 
     this.state = {
       openComplain: false,
+      openHpiModal: false,
+      openAllergyModal: false,
       pain: 0,
       patientChiefComplains: [],
       chiefComplainList: [],
-      openHpiModal: false,
-      openAllergyModal: false
+      patientAllergies: [],
+      chief_complaint_name: null,
+      chief_complaint_id: null,
+      comment: "",
+      duration: 0,
+      hims_f_episode_chief_complaint_id: null,
+      hims_f_patient_encounter_id: null,
+      interval: "D",
+      onset_date: new Date(),
+      pain: "NH",
+      score: 0,
+      severity: "MI"
     };
 
-    this.addChiefComplain = this.addChiefComplain.bind(this);
+    this.openChiefComplainModal = this.openChiefComplainModal.bind(this);
     this.addAllergies = this.addAllergies.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.openHPIAddModal = this.openHPIAddModal.bind(this);
+    this.fillComplainDetails = this.fillComplainDetails.bind(this);
+    this.addChiefComplain = this.addChiefComplain.bind(this);
+    this.setPainScale = this.setPainScale.bind(this);
+    this.updatePatientChiefComplaints = this.updatePatientChiefComplaints.bind(
+      this
+    );
   }
 
   showconfirmDialog(id) {
@@ -63,12 +82,12 @@ class Subjective extends Component {
           method: "DELETE",
           onSuccess: response => {
             if (response.data.success) {
-              this.getChiefComplains();
               swal("Record deleted successfully . .", {
                 icon: "success",
                 buttons: false,
                 timer: 2000
               });
+              this.getPatientChiefComplains();
             }
           },
           onFailure: error => {}
@@ -120,7 +139,7 @@ class Subjective extends Component {
 
   handleChange = pain => {
     this.setState({
-      pain: pain
+      score: pain
     });
   };
 
@@ -134,10 +153,37 @@ class Subjective extends Component {
       element[i].classList.remove("active");
     }
     e.currentTarget.classList.add("active");
-    this.setState({ pain: pain_number });
+
+    this.setState(
+      { score: pain_number },
+
+      () => {
+        debugger;
+        switch (pain_number) {
+          case 0:
+            this.setState({ pain: "NH" });
+            break;
+          case 2:
+            this.setState({ pain: "HLB" });
+            break;
+          case 4:
+            this.setState({ pain: "HLM" });
+            break;
+          case 6:
+            this.setState({ pain: "HEM" });
+            break;
+          case 8:
+            this.setState({ pain: "HWL" });
+            break;
+          case 10:
+            this.setState({ pain: "HW" });
+            break;
+        }
+      }
+    );
   }
 
-  addChiefComplain() {
+  openChiefComplainModal() {
     this.setState({ openComplain: true });
   }
   addAllergies() {
@@ -154,17 +200,69 @@ class Subjective extends Component {
     });
   }
 
+  addChiefComplain() {
+    const data = {
+      episode_id: Window.global["episode_id"],
+      chief_complaint_id: this.state.chief_complaint_id,
+      onset_date: this.state.onset_date,
+      severity: this.state.severity,
+      score: this.state.score,
+      pain: this.state.pain,
+      comment: this.state.comment
+    };
+    algaehApiCall({
+      uri: "/doctorsWorkBench/addPatientChiefComplaints",
+      data: data,
+      onSuccess: response => {
+        if (response.data.success) {
+          this.getPatientChiefComplains();
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
+  updatePatientChiefComplaints() {
+    // console.log("State:", this.state);
+    algaehApiCall({
+      uri: "/doctorsWorkBench/updatePatientChiefComplaints",
+      method: "PUT",
+      data: {
+        episode_id: this.state.episode_id,
+        chief_complaint_id: this.state.chief_complaint_id,
+        onset_date: this.state.onset_date,
+        interval: this.state.interval,
+        duration: this.state.duration,
+        severity: this.state.severity,
+        score: this.state.score,
+        pain: this.state.pain,
+        chronic: null,
+        complaint_inactive: null,
+        complaint_inactive_date: null,
+        comment: this.state.comment,
+        hims_f_episode_chief_complaint_id: this.state
+          .hims_f_episode_chief_complaint_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          //this.setState({ patientChiefComplains: response.data.records });
+          console.log("Update Result:", response.data.records);
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
   getPatientChiefComplains() {
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientChiefComplaints",
       data: {
-        patient_id: Window.global["current_patient"],
         episode_id: Window.global["episode_id"]
       },
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          console.log("Patient chief complains:", response.data.records);
+          //console.log("Patient chief complains:", response.data.records);
           this.setState({ patientChiefComplains: response.data.records });
         }
       },
@@ -186,9 +284,27 @@ class Subjective extends Component {
     });
   }
 
+  getPatientAllergies() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientAllergy",
+      method: "GET",
+      data: {
+        patient_id: Window.global["current_patient"]
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          console.log("Patient Allergies:", response.data.records);
+          this.setState({ patientAllergies: response.data.records });
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
   componentDidMount() {
     this.getPatientChiefComplains();
     this.getChiefComplainsList();
+    this.getPatientAllergies();
   }
 
   openHPIAddModal() {
@@ -198,7 +314,19 @@ class Subjective extends Component {
   }
 
   fillComplainDetails(e) {
-    const id = e.currentTarget.getAttribute("data-cpln-id");
+    this.updatePatientChiefComplaints();
+    const id = parseInt(e.currentTarget.getAttribute("data-cpln-id"));
+    this.getPatientChiefComplains();
+    let cce = Enumerable.from(this.state.patientChiefComplains)
+      .where(w => w.hims_f_episode_chief_complaint_id === id)
+      .firstOrDefault();
+
+    setTimeout(
+      this.setState({
+        ...cce
+      }),
+      2000
+    );
   }
 
   render() {
@@ -296,11 +424,11 @@ class Subjective extends Component {
                             forceLabel: "Selected Chief Complaint"
                           }}
                           selector={{
-                            name: "hpi_chief_complains",
+                            name: "chief_complaint_name",
                             className: "select-fld",
-                            value: this.state.hpi_chief_complains,
+                            value: this.state.chief_complaint_name,
                             dataSource: {
-                              textField: "cheif_complaint_name",
+                              textField: "chief_complaint_name",
                               valueField: "hims_f_episode_chief_complaint_id",
                               data: patChiefComplain
                             },
@@ -605,12 +733,12 @@ class Subjective extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-10 displayInlineBlock" }}
                         label={{
-                          forceLabel: ""
+                          fieldName: "chief_complain"
                         }}
                         selector={{
-                          name: "hims_d_hpi_header_id",
+                          name: "chief_complaint_id",
                           className: "select-fld",
-                          value: this.state.hims_d_hpi_header_id,
+                          value: this.state.chief_complaint_id,
                           dataSource: {
                             textField: "hpi_description",
                             valueField: "hims_d_hpi_header_id",
@@ -619,14 +747,14 @@ class Subjective extends Component {
                                 ? this.state.chiefComplainList
                                 : null
                           },
-
                           onChange: this.dropDownHandle.bind(this)
                         }}
                       />
                       <div className="col-lg-2 displayInlineBlock">
                         <i
-                          class="fas fa-plus fa-1x"
-                          style={{ color: "#00BCB0" }}
+                          className="fas fa-plus fa-1x"
+                          style={{ color: "#00BCB0", cursor: "pointer" }}
+                          onClick={this.addChiefComplain}
                         />
                       </div>
                       <div className="col-12">
@@ -642,7 +770,7 @@ class Subjective extends Component {
                                 }
                                 onClick={this.fillComplainDetails}
                               >
-                                <span> {data.cheif_complaint_name} </span>
+                                <span> {data.chief_complaint_name} </span>
                               </li>
                             ))}
                           </ul>
@@ -670,7 +798,7 @@ class Subjective extends Component {
                   </div>
 
                   <div className="col-lg-8 popRightDiv">
-                    <h6> Chief Complaint: Leg Pain</h6>
+                    <h6> Chief Complaint: {this.state.chief_complaint_name}</h6>
                     <hr />
                     <div className="row">
                       <AlgaehDateHandler
@@ -704,7 +832,7 @@ class Subjective extends Component {
                           style={{ width: "100%", marginBottom: "4px" }}
                         >
                           Duration
-                          <span class="imp">&nbsp;*</span>
+                          <span className="imp">&nbsp;*</span>
                         </label>
                         <AlagehFormGroup
                           div={{ className: "divDur" }}
@@ -769,7 +897,7 @@ class Subjective extends Component {
                           step={2}
                           min={0}
                           max={10}
-                          value={this.state.pain}
+                          value={this.state.score}
                           onChangeStart={this.handleChangeStart}
                           onChange={this.handleChange}
                           onChangeComplete={this.handleChangeComplete}
@@ -822,7 +950,7 @@ class Subjective extends Component {
                               type: "number",
                               disabled: true
                             },
-                            value: this.state.pain,
+                            value: this.state.score,
                             events: {}
                           }}
                         />
@@ -958,7 +1086,7 @@ class Subjective extends Component {
                     <a
                       href="javascript:;"
                       className="btn btn-primary btn-circle active"
-                      onClick={this.addChiefComplain}
+                      onClick={this.openChiefComplainModal}
                     >
                       <i className="fas fa-plus" />
                     </a>
@@ -969,7 +1097,7 @@ class Subjective extends Component {
                     id="complaint-grid"
                     columns={[
                       {
-                        fieldName: "cheif_complaint_name",
+                        fieldName: "chief_complaint_name",
                         label: (
                           <AlgaehLabel
                             label={{ fieldName: "complaint_name" }}
@@ -1058,7 +1186,7 @@ class Subjective extends Component {
                               <IconButton
                                 color="primary"
                                 title="Edit"
-                                onClick={this.addChiefComplain}
+                                onClick={this.openChiefComplainModal}
                               >
                                 <Edit />
                               </IconButton>
@@ -1107,7 +1235,6 @@ class Subjective extends Component {
             </div>
 
             <div className="col-lg-4">
-
               {/* BEGIN Portlet PORTLET */}
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                 <div className="portlet-title">
@@ -1118,7 +1245,6 @@ class Subjective extends Component {
                     <a
                       href="javascript:;"
                       className="btn btn-primary btn-circle active"
-                      
                       onClick={this.addAllergies}
                     >
                       <i className="fas fa-plus" />
@@ -1126,49 +1252,58 @@ class Subjective extends Component {
                   </div>
                 </div>
                 <div className="portlet-body">
+                  <table className="table table-sm table-bordered">
+                    <thead className="table-primary">
+                      <tr>
+                        <th>Food</th>
+                        <th>Onset Date</th>
+                        <th>Comment</th>
+                        <th>Active</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>grapes</td>
+                        <td>20-07-2018</td>
+                        <td>Face swells</td>
+                        <td>Yes</td>
+                      </tr>
+                      <tr>
+                        <td>grapes</td>
+                        <td>20-07-2018</td>
+                        <td>Face swells</td>
+                        <td>Yes</td>
+                      </tr>
+                    </tbody>
+                  </table>
 
-<AlgaehDataGrid
-  id="patient_chart_grd"
-  columns={[
-    {
-      fieldName: "food",
-      label: "Food",
-      disabled: true
-    },
-    {
-      fieldName: "date",
-      label: "On Set Date"
-    },
-    {
-      fieldName: "first_name",
-      label: "Comment"
-    },
-    {
-      fieldName: "active",
-      label: "Active"
-    }
-  ]}
-  keyId="code"
-  dataSource={{
-    data: AllergyData
-  }}
-  isEditable={false}
-  paging={{ page: 0, rowsPerPage: 3 }}
-  events={
-    {
-      // onDelete: this.deleteVisaType.bind(this),
-      // onEdit: row => {},
-      // onDone: row => {
-      //   alert(JSON.stringify(row));
-      // }
-      // onDone: this.updateVisaTypes.bind(this)
-    }
-  }
-/>
+                  <table className="table table-sm table-bordered">
+                    <thead className="table-primary">
+                      <tr>
+                        <th scope="col">Food</th>
+                        <th scope="col">Onset Date</th>
+                        <th scope="col">Comment</th>
+                        <th scope="col">Active</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>grapes</td>
+                        <td>20-07-2018</td>
+                        <td>Face swells</td>
+                        <td>Yes</td>
+                      </tr>
+                      <tr>
+                        <td>grapes</td>
+                        <td>20-07-2018</td>
+                        <td>Face swells</td>
+                        <td>Yes</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
               {/* END Portlet PORTLET */}
-
 
               {/* BEGIN Portlet PORTLET */}
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
@@ -1180,7 +1315,6 @@ class Subjective extends Component {
                     <a
                       href="javascript:;"
                       className="btn btn-primary btn-circle active"
-                      
                       onClick={this.addAllergies}
                     >
                       <i className="fas fa-plus" />
@@ -1188,44 +1322,44 @@ class Subjective extends Component {
                   </div>
                 </div>
                 <div className="portlet-body">
-                <AlgaehDataGrid
-                  id="patient_chart_grd"
-                  columns={[
-                    {
-                      fieldName: "food",
-                      label: "Food",
-                      disabled: true
-                    },
-                    {
-                      fieldName: "date",
-                      label: "On Set Date"
-                    },
-                    {
-                      fieldName: "first_name",
-                      label: "Comment"
-                    },
-                    {
-                      fieldName: "active",
-                      label: "Active"
+                  <AlgaehDataGrid
+                    id="patient_chart_grd"
+                    columns={[
+                      {
+                        fieldName: "food",
+                        label: "Food",
+                        disabled: true
+                      },
+                      {
+                        fieldName: "date",
+                        label: "On Set Date"
+                      },
+                      {
+                        fieldName: "first_name",
+                        label: "Comment"
+                      },
+                      {
+                        fieldName: "active",
+                        label: "Active"
+                      }
+                    ]}
+                    keyId="code"
+                    dataSource={{
+                      data: AllergyData
+                    }}
+                    isEditable={false}
+                    paging={{ page: 0, rowsPerPage: 3 }}
+                    events={
+                      {
+                        // onDelete: this.deleteVisaType.bind(this),
+                        // onEdit: row => {},
+                        // onDone: row => {
+                        //   alert(JSON.stringify(row));
+                        // }
+                        // onDone: this.updateVisaTypes.bind(this)
+                      }
                     }
-                  ]}
-                  keyId="code"
-                  dataSource={{
-                    data: AllergyData
-                  }}
-                  isEditable={false}
-                  paging={{ page: 0, rowsPerPage: 3 }}
-                  events={
-                    {
-                      // onDelete: this.deleteVisaType.bind(this),
-                      // onEdit: row => {},
-                      // onDone: row => {
-                      //   alert(JSON.stringify(row));
-                      // }
-                      // onDone: this.updateVisaTypes.bind(this)
-                    }
-                  }
-                />
+                  />
                 </div>
               </div>
               {/* END Portlet PORTLET */}
