@@ -444,6 +444,13 @@ input[type="text"] {
   padding: 7px 6px 6px;
   border: 1px solid #d3d3d3; }
 
+  textarea{
+    font-size: 0.85rem !important;
+    padding: 7px 6px 6px !important;
+    border: 1px solid #d3d3d3 !important;
+    margin: 0!important;
+    border-radius: 4px !important; }
+
 .DayPickerInput {
   border-bottom: 1px dashed #000; }
 

@@ -24,6 +24,7 @@ import {
   getPatientDiagnosis,
   onchangegridcol,
   deleteDiagnosis,
+  deleteFinalDiagnosis,
   updateDiagnosis
 } from "./AssessmentEvents";
 import OrderingServices from "./OrderingServices/OrderingServices";
@@ -51,7 +52,6 @@ class Assessment extends Component {
       patient_id: Window.global["current_patient"],
       episode_id: Window.global["episode_id"]
     };
-    this.baseState = this.state;
   }
 
   componentDidMount() {
@@ -204,7 +204,8 @@ class Assessment extends Component {
                                   onChange: onchangegridcol.bind(
                                     this,
                                     this,
-                                    row
+                                    row,
+                                    "Intial"
                                   )
                                 }}
                               />
@@ -386,7 +387,8 @@ class Assessment extends Component {
                                   onChange: onchangegridcol.bind(
                                     this,
                                     this,
-                                    row
+                                    row,
+                                    "Final"
                                   )
                                 }}
                               />
@@ -461,7 +463,7 @@ class Assessment extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 3 }}
                       events={{
-                        onDelete: deleteDiagnosis.bind(this, this),
+                        onDelete: deleteFinalDiagnosis.bind(this, this),
                         onEdit: row => {},
 
                         onDone: updateDiagnosis.bind(this, this)
