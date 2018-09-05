@@ -162,7 +162,7 @@
         margin: 0 10px;
         list-style: none;
         display: inline-block;
-        span {
+        p {
           width: 300px;
           height: auto;
           position: absolute;
@@ -174,18 +174,33 @@
           border-radius: 5px;
           color: #fff;
           display: none;
+          b {
+            display: block;
+            border-bottom: 1px solid #3f9c90;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            font-size: 0.8rem;
+          }
+          .listofA-D-D {
+            display: inline-block;
+            margin-right: 8px;
+            border: 1px solid #317970;
+            padding: 3px 10px;
+            margin: 0;
+            color: #fff;
+            margin-right: 5px;
+            margin-bottom: 3px;
+            border-radius: 20px;
+            background: #3f9c91;
+            font-size: 0.7rem;
+          }
         }
       }
       li:hover {
         background: #53bcb1;
         color: #fff;
         padding: 4px 10px;
-
         p {
-          color: #fff;
-        }
-        span {
-          color: #fff;
           display: block;
         }
       }

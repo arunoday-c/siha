@@ -286,29 +286,37 @@ class PatientProfile extends Component {
             <ul className="float-right patient-quick-info">
               <li>
                 <i className="fas fa-allergies" />
-                <span>
-                  <b> Allergies : </b>
+                <p>
+                  <b>Allergies:</b>
                   {this.state.patientAllergies.map((data, index) => (
-                    <p key={index}>{data.allergy_name};</p>
+                    <span key={index} className="listofA-D-D">
+                      {data.allergy_name}
+                    </span>
                   ))}
-                </span>
+                </p>
               </li>
               <li>
                 <i className="fas fa-diagnoses" />
-                <span>
-                  <b> Diagnosis : </b>
+                <p>
+                  <b>Diagnosis:</b>
                   {this.state.patientDiagnosis.map((data, index) => (
-                    <p key={index}>{data.diagnosis_name};</p>
+                    <span key={index} className="listofA-D-D">
+                      {data.diagnosis_name}
+                    </span>
                   ))}
-                </span>
+                </p>
               </li>
               <li>
                 <i className="fas fa-utensils" />
-
-                <span>
-                  <b> Diet : </b>
-                  <p> Diet 1; Diet 2; Diet 1; Diet 2; Diet 1; Diet 2;</p>
-                </span>
+                <p>
+                  <b>Diet:</b>
+                  <span className="listofA-D-D">Diet 1</span>
+                  <span className="listofA-D-D">Diet 2</span>
+                  <span className="listofA-D-D">Diet 3</span>
+                  <span className="listofA-D-D">Diet 4</span>
+                  <span className="listofA-D-D">Diet 5</span>
+                  <span className="listofA-D-D">Diet 6</span>
+                </p>
               </li>
             </ul>
           </ul>

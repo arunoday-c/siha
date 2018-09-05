@@ -130,7 +130,7 @@
       margin: 0 10px;
       list-style: none;
       display: inline-block; }
-      .patientProfile .patientTopNav .patient-quick-info li span {
+      .patientProfile .patientTopNav .patient-quick-info li p {
         width: 300px;
         height: auto;
         position: absolute;
@@ -142,14 +142,29 @@
         border-radius: 5px;
         color: #fff;
         display: none; }
+        .patientProfile .patientTopNav .patient-quick-info li p b {
+          display: block;
+          border-bottom: 1px solid #3f9c90;
+          margin-bottom: 10px;
+          padding-bottom: 5px;
+          font-size: 0.8rem; }
+        .patientProfile .patientTopNav .patient-quick-info li p .listofA-D-D {
+          display: inline-block;
+          margin-right: 8px;
+          border: 1px solid #317970;
+          padding: 3px 10px;
+          margin: 0;
+          color: #fff;
+          margin-right: 5px;
+          margin-bottom: 3px;
+          border-radius: 20px;
+          background: #3f9c91;
+          font-size: 0.7rem; }
     .patientProfile .patientTopNav .patient-quick-info li:hover {
       background: #53bcb1;
       color: #fff;
       padding: 4px 10px; }
       .patientProfile .patientTopNav .patient-quick-info li:hover p {
-        color: #fff; }
-      .patientProfile .patientTopNav .patient-quick-info li:hover span {
-        color: #fff;
         display: block; }
 
 .patientProfile .patientContentArea {
