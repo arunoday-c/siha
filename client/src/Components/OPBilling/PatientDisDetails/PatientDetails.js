@@ -33,7 +33,9 @@ export default class PatientDetails extends Component {
       <div className="hptl-phase1-Display-patient-details">
         <div className="tab-container toggle-section">
           <ul className="nav">
-            <li className={"nav-item tab-button active"}>Patient Details</li>
+            <li className={"nav-item tab-button active"}>
+              <label class="style_Label ">Patient Details</label>
+            </li>
           </ul>
         </div>
         <div className="patient-section">

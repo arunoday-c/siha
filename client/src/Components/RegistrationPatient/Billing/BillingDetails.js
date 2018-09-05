@@ -34,7 +34,7 @@ export default class BillingDetails extends PureComponent {
 
   render() {
     return (
-      <div className="hptl-phase1-billing-details">
+      <div className="hptl-phase1-billing-details margin-top-15">
         <div className="tab-container toggle-section">
           <ul className="nav">
             <li

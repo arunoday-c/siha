@@ -11,10 +11,12 @@ export default class DisVisitDetails extends Component {
 
   render() {
     return (
-      <div className="hptl-display-visit-details-frame">
+      <div className="hptl-display-visit-details-frame margin-top-15">
         <div className="tab-container toggle-section">
           <ul className="nav">
-            <li className={"nav-item tab-button active"}>Visit Details</li>
+            <li className={"nav-item tab-button active"}>
+              <label className="style_Label ">Visit Details</label>
+            </li>
           </ul>
         </div>
         <div className="visitdetails-section">

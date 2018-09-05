@@ -220,7 +220,7 @@ class PatientDisplayDetails extends Component {
 
   render() {
     return (
-      <div className="">
+      <div className="" style={{ marginBottom: "50px" }}>
         <BreadCrumb
           //   width={this.state.breadCrumbWidth}
           title={
@@ -310,30 +310,27 @@ class PatientDisplayDetails extends Component {
         </div>
 
         <div className="hptl-phase1-footer">
-          <br /> <br />
           <AppBar position="static" className="main">
-            <div className="container-fluid">
-              <div className="row">
-                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
-                  &nbsp;
-                </div>
-                <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-11">
-                  <button
-                    className="htpl1-phase1-btn-secondary"
-                    // onClick={this.ClearData.bind(this)}
-                  >
-                    Clear
-                  </button>
-                </div>
-                <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 order-12">
-                  <button
-                    className="htpl1-phase1-btn-primary"
-                    onClick={this.SaveBill.bind(this)}
-                    disabled={this.state.saveEnable}
-                  >
-                    Save
-                  </button>
-                </div>
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.SaveBill.bind(this)}
+                  disabled={this.state.saveEnable}
+                >
+                  {/* <AlgaehLabel
+                    label={{ fieldName: "btn_save", returnText: true }}
+                  /> */}
+                  Save
+                </button>
+
+                <button type="button" className="btn btn-default">
+                  {/* <AlgaehLabel
+                    label={{ fieldName: "btn_clear", returnText: true }}
+                  /> */}
+                  Clear
+                </button>
               </div>
             </div>
           </AppBar>

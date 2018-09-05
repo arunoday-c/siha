@@ -558,12 +558,12 @@ label {
 }
 
 input[type="text"] {
-  //padding-top: 3px;
-  padding-left: 4px;
   font-size: $textFontSize;
+  padding: 7px 6px 6px;
+  border: 1px solid #d3d3d3;
 }
 
-DayPickerInput {
+.DayPickerInput {
   border-bottom: 1px dashed #000;
 }
 .primary-box-container {
