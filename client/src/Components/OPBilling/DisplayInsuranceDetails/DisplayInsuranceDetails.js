@@ -31,7 +31,7 @@ export default class DisplayInsuranceDetails extends Component {
     let primaryInsurance = this.state.actionPrimaryDesign ? "active" : "";
     let secondaryInsurance = this.state.actionSecondaryDesign ? "" : "active";
     return (
-      <div className="hptl-phase1-insuranceDis-details">
+      <div className="hptl-phase1-insuranceDis-details margin-top-15">
         <div className="tab-container toggle-section">
           <ul className="nav">
             <li
@@ -39,14 +39,14 @@ export default class DisplayInsuranceDetails extends Component {
               id="PrimaryInsurance"
               onClick={this.openTab.bind(this, "primary-insurance")}
             >
-              Primary Insurance
+              <label className="style_Label ">Primary Insurance</label>
             </li>
             <li
               className={"nav-item tab-button " + secondaryInsurance}
               id="SecondaryInsurance"
               onClick={this.openTab.bind(this, "secondary-insurance")}
             >
-              Secondary Insurance
+              <label className="style_Label ">Secondary Insurance</label>
             </li>
           </ul>
         </div>

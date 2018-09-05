@@ -32,7 +32,7 @@ export default class OPBillingDetails extends Component {
     let ReciptDetails = this.state.actionReciptDetails ? "" : "active";
 
     return (
-      <div className="hptl-phase1-opbilling-details">
+      <div className="hptl-phase1-opbilling-details margin-top-15 margin-bottom-15 ">
         <div className="tab-container toggle-section">
           <ul className="nav">
             <li
@@ -40,14 +40,14 @@ export default class OPBillingDetails extends Component {
               id="PrimaryInsurance"
               onClick={this.openTab.bind(this, "Billing-details")}
             >
-              Billing Details
+              <label className="style_Label ">Billing Details</label>
             </li>
             <li
               className={"nav-item tab-button " + ReciptDetails}
               id="SecondaryInsurance"
               onClick={this.openTab.bind(this, "Recipts-details")}
             >
-              Recipt Details
+              <label className="style_Label ">Recipt Details</label>
             </li>
           </ul>
         </div>

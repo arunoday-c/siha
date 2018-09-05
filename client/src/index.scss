@@ -851,3 +851,56 @@ $forntSize: 0.7rem;
     }
   }
 }
+
+.tab-container {
+  .tab-button {
+    font-size: $forntSize;
+    font-weight: normal;
+    border-radius: 7px 7px 0 0;
+    background-color: #f3f3f3;
+    border: solid 1px #d0d8dc;
+    color: #7c909b;
+    padding: 6px 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #fff !important;
+      color: #68509f !important;
+      cursor: pointer;
+    }
+    &:focus {
+      outline: none;
+    }
+
+    &.active {
+      background-color: #dbad64;
+      color: #fff;
+      border: solid 1px #dbad64;
+      pointer-events: none;
+
+      &:hover {
+        background-color: #dbad64 !important;
+        color: #fff !important;
+      }
+    }
+  }
+
+  .tab {
+    margin-right: -30px;
+    &:last-child {
+      .tab-button {
+        //border-radius: 0px;
+        //border-top-right-radius: 4px;
+      }
+    }
+  }
+  .tab-content {
+    padding: 10px 20px;
+    background-color: #fcfcfc;
+    border: solid 1px #eceff1;
+
+    .tab-item {
+      position: relative;
+    }
+  }
+}
