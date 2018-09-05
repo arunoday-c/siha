@@ -4,6 +4,9 @@
 .subjective .right-pane {
   padding: 5px; }
 
+.subjective tr {
+  text-align: center; }
+
 .pain_slider {
   margin: 0;
   margin-top: 10px;

@@ -25,7 +25,7 @@ import Enumerable from "linq";
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
   { food: "Pollen", active: "Yes" },
-  { food: "Iodine", active: "Yes" }
+  { food: "Io dine", active: "Yes" }
 ];
 
 let patChiefComplain = [];
@@ -36,12 +36,12 @@ class Subjective extends Component {
 
     this.state = {
       openComplain: false,
+      openHpiModal: false,
+      openAllergyModal: false,
       pain: 0,
       patientChiefComplains: [],
       chiefComplainList: [],
-      openHpiModal: false,
-      openAllergyModal: false,
-
+      patientAllergies: [],
       chief_complaint_name: null,
       chief_complaint_id: null,
       comment: "",
@@ -223,7 +223,7 @@ class Subjective extends Component {
   }
 
   updatePatientChiefComplaints() {
-    console.log("State:", this.state);
+    // console.log("State:", this.state);
     algaehApiCall({
       uri: "/doctorsWorkBench/updatePatientChiefComplaints",
       method: "PUT",
@@ -236,14 +236,13 @@ class Subjective extends Component {
         severity: this.state.severity,
         score: this.state.score,
         pain: this.state.pain,
-        chronic: "N",
-        complaint_inactive: "N",
+        chronic: null,
+        complaint_inactive: null,
         complaint_inactive_date: null,
         comment: this.state.comment,
         hims_f_episode_chief_complaint_id: this.state
           .hims_f_episode_chief_complaint_id
       },
-      method: "PUT",
       onSuccess: response => {
         if (response.data.success) {
           //this.setState({ patientChiefComplains: response.data.records });
@@ -258,7 +257,6 @@ class Subjective extends Component {
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientChiefComplaints",
       data: {
-        // patient_id: Window.global["current_patient"],
         episode_id: Window.global["episode_id"]
       },
       method: "GET",
@@ -286,9 +284,27 @@ class Subjective extends Component {
     });
   }
 
+  getPatientAllergies() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientAllergy",
+      method: "GET",
+      data: {
+        patient_id: Window.global["current_patient"]
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          console.log("Patient Allergies:", response.data.records);
+          this.setState({ patientAllergies: response.data.records });
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
   componentDidMount() {
     this.getPatientChiefComplains();
     this.getChiefComplainsList();
+    this.getPatientAllergies();
   }
 
   openHPIAddModal() {
@@ -298,20 +314,19 @@ class Subjective extends Component {
   }
 
   fillComplainDetails(e) {
-    debugger;
     this.updatePatientChiefComplaints();
     const id = parseInt(e.currentTarget.getAttribute("data-cpln-id"));
-    //this.getPatientChiefComplains();
-
+    this.getPatientChiefComplains();
     let cce = Enumerable.from(this.state.patientChiefComplains)
       .where(w => w.hims_f_episode_chief_complaint_id === id)
       .firstOrDefault();
 
-    console.log("Current Complaint:", cce);
-
-    this.setState({
-      ...cce
-    });
+    setTimeout(
+      this.setState({
+        ...cce
+      }),
+      2000
+    );
   }
 
   render() {
@@ -1237,44 +1252,55 @@ class Subjective extends Component {
                   </div>
                 </div>
                 <div className="portlet-body">
-                  <AlgaehDataGrid
-                    id="patient_chart_grd"
-                    columns={[
-                      {
-                        fieldName: "food",
-                        label: "Food",
-                        disabled: true
-                      },
-                      {
-                        fieldName: "date",
-                        label: "On Set Date"
-                      },
-                      {
-                        fieldName: "first_name",
-                        label: "Comment"
-                      },
-                      {
-                        fieldName: "active",
-                        label: "Active"
-                      }
-                    ]}
-                    keyId="code"
-                    dataSource={{
-                      data: AllergyData
-                    }}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 3 }}
-                    events={
-                      {
-                        // onDelete: this.deleteVisaType.bind(this),
-                        // onEdit: row => {},
-                        // onDone: row => {
-                        //   alert(JSON.stringify(row));
-                        // }
-                        // onDone: this.updateVisaTypes.bind(this)
-                      }
-                    }
-                  />
+                  <table className="table table-sm table-bordered">
+                    <thead className="table-primary">
+                      <tr>
+                        <th>Food</th>
+                        <th>Onset Date</th>
+                        <th>Comment</th>
+                        <th>Active</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>grapes</td>
+                        <td>20-07-2018</td>
+                        <td>Face swells</td>
+                        <td>Yes</td>
+                      </tr>
+                      <tr>
+                        <td>grapes</td>
+                        <td>20-07-2018</td>
+                        <td>Face swells</td>
+                        <td>Yes</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <table className="table table-sm table-bordered">
+                    <thead className="table-primary">
+                      <tr>
+                        <th scope="col">Food</th>
+                        <th scope="col">Onset Date</th>
+                        <th scope="col">Comment</th>
+                        <th scope="col">Active</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>grapes</td>
+                        <td>20-07-2018</td>
+                        <td>Face swells</td>
+                        <td>Yes</td>
+                      </tr>
+                      <tr>
+                        <td>grapes</td>
+                        <td>20-07-2018</td>
+                        <td>Face swells</td>
+                        <td>Yes</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
               {/* END Portlet PORTLET */}
