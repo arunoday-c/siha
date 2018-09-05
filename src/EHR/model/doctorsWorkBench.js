@@ -982,7 +982,9 @@ inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) in
 PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episode_id=?;SELECT * FROM hims_f_patient_vitals t,(\
   SELECT max(visit_id) as last_visit,MAX(visittime) as last_visit_time ,date(MAX(visit_date)) as last_visit_date\
   FROM hims_f_patient_vitals  where  patient_id=? ) last_entry    WHERE last_entry.last_visit= t.visit_id;\
-  select hims_f_patient_allergy_id,patient_id,allergy_id,A.allergy_type,A.allergy_name from hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?  and PA.allergy_id=A.hims_d_allergiy_id order by hims_f_patient_allergy_id desc ;\
+  select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
+  hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
+  and PA.allergy_id=A.hims_d_allergiy_id order by hims_f_patient_allergy_id desc;\
   select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id,icd.icd_description as diagnosis_name ,diagnosis_type, final_daignosis from hims_f_patient_diagnosis pd,hims_d_icd icd where pd.record_status='A'\
   and patient_id=? and episode_id=? and pd.daignosis_id=icd.hims_d_icd_id;",
         [
@@ -1387,7 +1389,9 @@ let getPatientAllergy = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_patient_allergy_id,patient_id,allergy_id,A.allergy_type,A.allergy_name from hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?  and PA.allergy_id=A.hims_d_allergiy_id order by hims_f_patient_allergy_id desc ; ",
+        "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
+        hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
+        and PA.allergy_id=A.hims_d_allergiy_id order by hims_f_patient_allergy_id desc; ",
         [inputData.patient_id],
         (error, result) => {
           if (error) {
