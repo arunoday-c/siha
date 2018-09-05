@@ -1,5 +1,7 @@
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
+import swal from "sweetalert";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 const assnotetexthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -38,14 +40,20 @@ const insertFinalICDS = $this => {
       diagnosis_type: diagnosis_type,
       patient_id: Window.global["current_patient"],
       episode_id: Window.global["episode_id"],
-      visit_id: Window.global["visit_id"]
+      visit_id: Window.global["visit_id"],
+      final_daignosis: "Y"
     };
 
     finalICDS.push(FinalICDSobj);
 
-    $this.setState({
-      finalICDS: finalICDS
-    });
+    $this.setState(
+      {
+        finalICDS: finalICDS
+      },
+      () => {
+        saveDiagnosis($this, $this.state.finalICDS);
+      }
+    );
   } else {
     successfulMessage({
       message: "Invalid Input. Please select Diagnosis",
@@ -59,7 +67,7 @@ const insertInitialICDS = $this => {
   if ($this.state.icd_id !== null) {
     debugger;
     let InitialICDS = $this.state.InitialICDS;
-
+    let insertInitialDiad = $this.state.insertInitialDiad;
     let diagnosis_type = "";
 
     if (InitialICDS.length > 0) {
@@ -77,12 +85,18 @@ const insertInitialICDS = $this => {
       diagnosis_type: diagnosis_type,
       final_daignosis: "N"
     };
-
+    insertInitialDiad.push(InitialICDSobj);
     InitialICDS.push(InitialICDSobj);
     debugger;
-    $this.setState({
-      InitialICDS: InitialICDS
-    });
+    $this.setState(
+      {
+        InitialICDS: InitialICDS,
+        insertInitialDiad: insertInitialDiad
+      },
+      () => {
+        saveDiagnosis($this, $this.state.insertInitialDiad);
+      }
+    );
   } else {
     successfulMessage({
       message: "Invalid Input. Please select Diagnosis",
@@ -123,9 +137,15 @@ const addFinalIcd = $this => {
       selecteddata[0].diagnosis_type = "P";
     }
     selecteddata[0].final_daignosis = "Y";
-    $this.setState({
-      finalICDS: selecteddata
-    });
+    $this.setState(
+      {
+        finalICDS: selecteddata
+      },
+      () => {
+        selecteddata[0].record_status = "A";
+        updateDiagnosis($this, selecteddata[0]);
+      }
+    );
   } else {
     successfulMessage({
       message: "Invalid Input. Please select Diagnosis",
@@ -135,11 +155,143 @@ const addFinalIcd = $this => {
   }
 };
 
+const saveDiagnosis = ($this, data) => {
+  algaehApiCall({
+    uri: "/doctorsWorkBench/addPatientDiagnosis",
+    data: data,
+    method: "POST",
+    onSuccess: response => {
+      if (response.data.success === true) {
+        swal("Added . .", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
+      }
+    },
+    onFailure: error => {
+      swal(error, {
+        icon: "success",
+        buttons: false,
+        timer: 2000
+      });
+    }
+  });
+};
+
+const resetState = $this => {
+  $this.setState($this.baseState);
+};
+
+const onchangegridcol = ($this, row, e) => {
+  debugger;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  // resetState($this);
+};
+
+const showconfirmDialog = ($this, row) => {
+  swal({
+    title: "Are you sure you want to delete this Diagnosis?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true
+  }).then(willDelete => {
+    if (willDelete) {
+      debugger;
+      let data = {
+        hims_f_patient_diagnosis_id: row.hims_f_patient_diagnosis_id,
+        diagnosis_type: row.diagnosis_type,
+        final_daignosis: row.final_daignosis,
+        record_status: "I"
+      };
+      algaehApiCall({
+        uri: "/doctorsWorkBench/updatePatientDiagnosis",
+        data: data,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success) {
+            swal("Record deleted successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+            getPatientDiagnosis($this);
+          }
+        },
+        onFailure: error => {}
+      });
+    }
+  });
+};
+
+const getPatientDiagnosis = $this => {
+  $this.props.getPatientDiagnosis({
+    uri: "/doctorsWorkBench/getPatientDiagnosis",
+    data: {
+      patient_id: $this.state.patient_id,
+      episode_id: $this.state.episode_id
+    },
+    method: "GET",
+    redux: {
+      type: "PATIENT_DIAGNOSIS_DATA",
+      mappingName: "patientdiagnosis"
+    },
+    afterSuccess: data => {
+      let InitialICDS = Enumerable.from(data)
+        .where(w => w.final_daignosis === "N")
+        .toArray();
+      let finalICDS = Enumerable.from(data)
+        .where(w => w.final_daignosis === "Y")
+        .toArray();
+
+      $this.setState({ InitialICDS: data, finalICDS: finalICDS });
+    }
+  });
+};
+
+const deleteDiagnosis = ($this, row) => {
+  //console.log("Delete Row ID: ", row.hims_d_visit_type_id);
+  showconfirmDialog($this, row);
+};
+
+const updateDiagnosis = ($this, row) => {
+  // data.updated_by = getCookie("UserID");
+
+  let data = {
+    hims_f_patient_diagnosis_id: row.hims_f_patient_diagnosis_id,
+    diagnosis_type: row.diagnosis_type,
+    final_daignosis: row.final_daignosis,
+    record_status: "A"
+  };
+  algaehApiCall({
+    uri: "/doctorsWorkBench/updatePatientDiagnosis",
+    data: data,
+    method: "PUT",
+    onSuccess: response => {
+      if (response.data.success) {
+        swal("Record updated successfully . .", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
+        getPatientDiagnosis($this);
+      }
+    },
+    onFailure: error => {}
+  });
+};
+
 export {
   texthandle,
   assnotetexthandle,
   insertInitialICDS,
   insertFinalICDS,
   selectdIcd,
-  addFinalIcd
+  addFinalIcd,
+  getPatientDiagnosis,
+  onchangegridcol,
+  deleteDiagnosis,
+  updateDiagnosis
 };

@@ -42,7 +42,7 @@ let getRadOrderedServices = (req, res, next) => {
       }
       db.query(
         "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
-        status, cancelled, ordered_by, ordered_date, test_type, scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,\
+        status, cancelled, ordered_by, ordered_date, test_type, technician_id, scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,\
         validate_date_time,attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,\
         PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\
         from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
@@ -152,6 +152,7 @@ let updateRadOrderedServices = (req, res, next) => {
     validate_date_time: null,
     attended_by: null,
     attended_date_time: null,
+    technician_id: null,
     exam_start_date_time: null,
     exam_end_date_time: null,
     exam_status: null,
@@ -172,7 +173,7 @@ let updateRadOrderedServices = (req, res, next) => {
     if (inputParam.scheduled_by == null && inputParam.status == "S") {
       inputParam.scheduled_by = req.userIdentity.algaeh_d_app_user_id;
     }
-    if (inputParam.validate_by == null && inputParam.status == "V") {
+    if (inputParam.validate_by == null && inputParam.status == "RA") {
       inputParam.validate_by = req.userIdentity.algaeh_d_app_user_id;
     }
     if (
@@ -182,20 +183,24 @@ let updateRadOrderedServices = (req, res, next) => {
     ) {
       inputParam.attended_by = req.userIdentity.algaeh_d_app_user_id;
     }
+    if (inputParam.status == "UP") {
+      inputParam.technician_id = req.userIdentity.algaeh_d_app_user_id;
+    }
 
+    debugLog("inputParam: ", inputParam);
     connection.query(
       "UPDATE `hims_f_rad_order` \
      SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,`arrived`=?,\
      `validate_by`=?, `validate_date_time` = ?, `attended_by`=?,`attended_date_time`=?,`exam_start_date_time`=?, \
-     `exam_end_date_time`=?, `exam_status`=?, `report_type`=?\
+     `exam_end_date_time`=?, `exam_status`=?, `report_type`=?,`technician_id`=?\
      WHERE `record_status`='A' and `hims_f_rad_order_id`=?",
       [
         inputParam.status,
         inputParam.cancelled,
         inputParam.scheduled_date_time,
         inputParam.scheduled_by,
-        inputParam.arrived,
         inputParam.arrived_date,
+        inputParam.arrived,
         inputParam.validate_by,
         inputParam.validate_date_time,
         inputParam.attended_by,
@@ -204,6 +209,7 @@ let updateRadOrderedServices = (req, res, next) => {
         inputParam.exam_end_date_time,
         inputParam.exam_status,
         inputParam.report_type,
+        inputParam.technician_id,
         inputParam.hims_f_rad_order_id
       ],
       (error, result) => {
