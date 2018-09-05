@@ -294,8 +294,25 @@ class Subjective extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          console.log("Patient Allergies:", response.data.records);
-          this.setState({ patientAllergies: response.data.records });
+          let _allergies = Enumerable.from(response.data.records)
+            .groupBy("$.allergy_type", null, (k, g) => {
+              return {
+                allergy_type: k,
+                allergy_type_desc:
+                  k === "F"
+                    ? "Food"
+                    : k === "A"
+                      ? "Airborne"
+                      : k === "AI"
+                        ? "Animal  &  Insect"
+                        : k === "C"
+                          ? "Chemical & Others"
+                          : "",
+                allergyList: g.getSource()
+              };
+            })
+            .toArray();
+          this.setState({ patientAllergies: _allergies });
         }
       },
       onFailure: error => {}
@@ -1259,55 +1276,33 @@ class Subjective extends Component {
                   </div>
                 </div>
                 <div className="portlet-body">
-                  <table className="table table-sm table-bordered">
-                    <thead className="table-primary">
-                      <tr>
-                        <th>Food</th>
-                        <th>Onset Date</th>
-                        <th>Comment</th>
-                        <th>Active</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>grapes</td>
-                        <td>20-07-2018</td>
-                        <td>Face swells</td>
-                        <td>Yes</td>
-                      </tr>
-                      <tr>
-                        <td>grapes</td>
-                        <td>20-07-2018</td>
-                        <td>Face swells</td>
-                        <td>Yes</td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  <table className="table table-sm table-bordered">
-                    <thead className="table-primary">
-                      <tr>
-                        <th scope="col">Food</th>
-                        <th scope="col">Onset Date</th>
-                        <th scope="col">Comment</th>
-                        <th scope="col">Active</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>grapes</td>
-                        <td>20-07-2018</td>
-                        <td>Face swells</td>
-                        <td>Yes</td>
-                      </tr>
-                      <tr>
-                        <td>grapes</td>
-                        <td>20-07-2018</td>
-                        <td>Face swells</td>
-                        <td>Yes</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  {this.state.patientAllergies.map((tables, index) => (
+                    <table
+                      key={index}
+                      className="table table-sm table-bordered"
+                    >
+                      <thead className="table-primary">
+                        <tr>
+                          <th> {tables.allergy_type_desc} </th>
+                          <th>Onset Date</th>
+                          <th>Comment</th>
+                          <th>Active</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {tables.allergyList.map((rows, rIndex) => (
+                          <tr key={rIndex}>
+                            <td> {rows.allergy_name} </td>
+                            <td>{rows.onset_date}</td>
+                            <td>{rows.comment}</td>
+                            <td>
+                              {rows.allergy_inactive === "Y" ? "Yes" : "No"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ))}
                 </div>
               </div>
               {/* END Portlet PORTLET */}
