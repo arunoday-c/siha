@@ -339,7 +339,7 @@ class Subjective extends Component {
   }
 
   componentDidMount() {
-    getIndexedToken(this.getToken);
+    //  getIndexedToken(this.getToken);
     this.getPatientChiefComplains();
     this.getChiefComplainsList();
     this.getPatientAllergies();
@@ -381,35 +381,129 @@ class Subjective extends Component {
         <Modal open={this.state.openROSModal}>
           <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Add Rview of Systems</h4>
+              <h4>Add Review Systems</h4>
             </div>
-            <div className="col-lg-12 popupInner">Review of Systems</div>
+            <div className="popupInner">
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-4 popLeftDiv">
+                    <div className="complain-box">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12" }}
+                        label={{
+                          forceLabel: "Review Description",
+                          fieldName: "sample"
+                        }}
+                        selector={{
+                          name: "hims_f_episode_chief_complaint_id",
+                          className: "select-fld",
+                          value: this.state.hims_f_episode_chief_complaint_id,
+                          dataSource: {
+                            textField: "hpi_description",
+                            valueField: "hims_d_hpi_header_id",
+                            data:
+                              this.state.chiefComplainList.length !== 0
+                                ? this.state.chiefComplainList
+                                : null
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          forceLabel: "Review Systems",
+                          fieldName: "sample"
+                        }}
+                        selector={{
+                          name: "hims_f_episode_chief_complaint_id",
+                          className: "select-fld",
+                          value: this.state.hims_f_episode_chief_complaint_id,
+                          dataSource: {
+                            textField: "hpi_description",
+                            valueField: "hims_d_hpi_header_id",
+                            data:
+                              this.state.chiefComplainList.length !== 0
+                                ? this.state.chiefComplainList
+                                : null
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          fieldName: "Review comments",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "comment",
+                          others: {
+                            multiline: true,
+                            rows: "4"
+                          },
+                          value: this.state.comment,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-lg-8 popRightDiv">
+                    <h6> List of Review Systems</h6>
+                    <hr />
+                    <div> Grid comes Here </div>
+                    <div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          fieldName: "Overall comments",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "comment",
+                          others: {
+                            multiline: true,
+                            rows: "4"
+                          },
+                          value: this.state.comment,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="row popupFooter">
               <div className="col-lg-4">
-                <Button variant="raised" color="primary" size="small">
-                  Add
-                </Button>
-                <Button
-                  variant="raised"
-                  style={{ backgroundColor: "#D5D5D5" }}
-                  size="small"
-                >
+                <button type="button" className="btn btn-primary">
+                  Add to Review List
+                </button>
+                <button type="button" className="btn btn-other">
                   Clear
-                </Button>
+                </button>
               </div>
               <div className="col-lg-8">
-                <Button
-                  variant="raised"
+                <button
+                  type="button"
+                  className="btn btn-default"
                   onClick={this.handleClose}
-                  style={{ backgroundColor: "#D5D5D5" }}
-                  size="small"
                 >
                   Close
-                </Button>
+                </button>
               </div>
             </div>
           </div>
         </Modal>
+
         {/* ROS Modal End */}
 
         {/* Allergy Modal Start*/}
@@ -418,64 +512,123 @@ class Subjective extends Component {
             <div className="popupHeader">
               <h4>Add Allergy</h4>
             </div>
-            <div className="col-lg-12 popupInner">
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Allergy Type"
-                  }}
-                  selector={{
-                    name: "allergy_type",
-                    className: "select-fld",
-                    value: this.state.allergy_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.ALLERGY_TYPES
-                    },
-                    onChange: this.dropDownHandle.bind(this)
-                  }}
-                />
+            <div className="popupInner">
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-4 popLeftDiv">
+                    <div className="complain-box">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12" }}
+                        label={{
+                          forceLabel: "Alergy Type",
+                          fieldName: "sample"
+                        }}
+                        selector={{
+                          name: "hims_f_episode_chief_complaint_id",
+                          className: "select-fld",
+                          value: this.state.hims_f_episode_chief_complaint_id,
+                          dataSource: {
+                            textField: "hpi_description",
+                            valueField: "hims_d_hpi_header_id",
+                            data:
+                              this.state.chiefComplainList.length !== 0
+                                ? this.state.chiefComplainList
+                                : null
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
 
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Search",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "search",
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          forceLabel: "Select a Alergy",
+                          fieldName: "sample"
+                        }}
+                        selector={{
+                          name: "hims_f_episode_chief_complaint_id",
+                          className: "select-fld",
+                          value: this.state.hims_f_episode_chief_complaint_id,
+                          dataSource: {
+                            textField: "hpi_description",
+                            valueField: "hims_d_hpi_header_id",
+                            data:
+                              this.state.chiefComplainList.length !== 0
+                                ? this.state.chiefComplainList
+                                : null
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
 
-                    //value: this.state.pain,
-                    events: {}
-                  }}
-                />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          fieldName: "comments",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "comment",
+                          others: {
+                            multiline: true,
+                            rows: "4"
+                          },
+                          value: this.state.comment,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-lg-8 popRightDiv">
+                    <h6> List of Allergies</h6>
+                    <hr />
+                    <div> Grid comes Here </div>
+                    <div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          fieldName: "Overall comments",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "comment",
+                          others: {
+                            multiline: true,
+                            rows: "4"
+                          },
+                          value: this.state.comment,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="row popupFooter">
               <div className="col-lg-4">
-                <Button variant="raised" color="primary" size="small">
-                  Add
-                </Button>
-                <Button
-                  variant="raised"
-                  style={{ backgroundColor: "#D5D5D5" }}
-                  size="small"
-                >
+                <button type="button" className="btn btn-primary">
+                  Add to Alergy List
+                </button>
+                <button type="button" className="btn btn-other">
                   Clear
-                </Button>
+                </button>
               </div>
               <div className="col-lg-8">
-                <Button
-                  variant="raised"
+                <button
+                  type="button"
+                  className="btn btn-default"
                   onClick={this.handleClose}
-                  style={{ backgroundColor: "#D5D5D5" }}
-                  size="small"
                 >
                   Close
-                </Button>
+                </button>
               </div>
             </div>
           </div>
@@ -1170,7 +1323,7 @@ class Subjective extends Component {
                     </a>
                   </div>
                 </div>
-                <div className="portlet-body">
+                <div className="portlet-body" style={{maxHeight:"25vh"}}>
                   <AlgaehDataGrid
                     id="complaint-grid"
                     columns={[
@@ -1332,11 +1485,11 @@ class Subjective extends Component {
                     </a>
                   </div>
                 </div>
-                <div className="portlet-body">
+                <div className="portlet-body" style={{maxHeight:"25vh",overflow:"auto"}}>
                   {this.state.patientAllergies.map((tables, index) => (
                     <table
                       key={index}
-                      className="table table-sm table-bordered"
+                      className="table table-sm table-bordered customTable"
                     >
                       <thead className="table-primary">
                         <tr>
@@ -1380,7 +1533,7 @@ class Subjective extends Component {
                     </a>
                   </div>
                 </div>
-                <div className="portlet-body">
+                <div className="portlet-body" style={{maxHeight:"25vh",overflow:"auto"}}>
                   <AlgaehDataGrid
                     id="patient_chart_grd"
                     columns={[
