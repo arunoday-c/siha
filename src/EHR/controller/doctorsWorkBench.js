@@ -35,6 +35,7 @@ import {
   addPatientDiagnosis,
   getPatientDiagnosis,
   addPatientROS,
+  getPatientROS,
   updatePatientDiagnosis
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
@@ -558,5 +559,21 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by irfan : to  getPatientROS
+  api.get(
+    "/getPatientROS",
+    getPatientROS,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };
