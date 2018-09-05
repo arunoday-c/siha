@@ -109,7 +109,7 @@ const UpdateRadOrder = ($this, row) => {
       cancelled: row.cancelled,
       scheduled_date_time: moment(new Date())._d,
       scheduled_by: row.scheduled_by,
-      arrived: row.arrived,
+      arrived: "Y",
       arrived_date: moment(new Date())._d,
       validate_by: row.validate_by,
       validate_date_time: row.validate_date_time,
@@ -128,7 +128,7 @@ const UpdateRadOrder = ($this, row) => {
         row.full_name +
         "for the procedure" +
         row.service_name,
-      icon: "warning",
+      icon: "success",
       buttons: true,
       dangerMode: true
     }).then(willProceed => {
@@ -151,13 +151,18 @@ const UpdateRadOrder = ($this, row) => {
                 redux: {
                   type: "RAD_LIST_GET_DATA",
                   mappingName: "radtestlist"
+                },
+                afterSuccess: data => {
+                  $this.setState({
+                    isOpen: !$this.state.isOpen
+                  });
                 }
               });
             }
           },
           onFailure: error => {
             swal(error, {
-              icon: "success",
+              icon: "error",
               buttons: false,
               timer: 2000
             });

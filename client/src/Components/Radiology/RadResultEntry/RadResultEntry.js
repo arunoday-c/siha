@@ -26,7 +26,8 @@ import {
   texthandle,
   examhandle,
   templatehandle,
-  rtehandle
+  rtehandle,
+  onvalidate
 } from "./RadResultEntryEvents";
 
 class RadResultEntry extends Component {
@@ -34,14 +35,32 @@ class RadResultEntry extends Component {
     super(props);
     this.state = {
       template_name: null,
-      template_html: null
+      template_html: null,
+      pre_exam_status: null
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.props.getUserDetails({
+      uri: "/algaehappuser/selectAppUsers",
+      method: "GET",
+      redux: {
+        type: "RAD_EMP_GET_DATA",
+        mappingName: "radiologyusers"
+      }
+    });
+  }
   componentWillReceiveProps(newProps) {
-    if (newProps.selectedPatient !== undefined) {
+    debugger;
+    if (
+      newProps.selectedPatient !== undefined &&
+      (newProps.radschlist === undefined || newProps.radschlist.length === 0)
+    ) {
+      newProps.selectedPatient.pre_exam_status =
+        newProps.selectedPatient.exam_status;
       this.setState({ ...this.state, ...newProps.selectedPatient });
+    } else {
+      this.setState({ ...this.state, ...newProps.radschlist });
     }
   }
   onClose = e => {
@@ -97,7 +116,7 @@ class RadResultEntry extends Component {
               <div className="col-12">
                 <div className="row">
                   <div className="col-3 popLeftDiv">
-                    <div className="row form-group">
+                    <div className="row form-row-gap">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12" }}
                         label={{
@@ -119,7 +138,7 @@ class RadResultEntry extends Component {
                         }}
                       />
                     </div>
-                    <div className="row form-group">
+                    <div className="row form-row-gap">
                       <AlgaehDateHandler
                         div={{ className: "col-lg-6" }}
                         label={{ forceLabel: "Start Date" }}
@@ -147,7 +166,7 @@ class RadResultEntry extends Component {
                         </time>
                       </div>
                     </div>
-                    <div className="row form-group">
+                    <div className="row form-row-gap">
                       <AlgaehDateHandler
                         div={{ className: "col-lg-6" }}
                         label={{ forceLabel: "End Date" }}
@@ -175,6 +194,29 @@ class RadResultEntry extends Component {
                         </time>
                       </div>
                     </div>
+
+                    <div className="row form-row-gap">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12" }}
+                        label={{
+                          forceLabel: "Technician"
+                        }}
+                        selector={{
+                          name: "technician_id",
+                          className: "select-fld",
+                          value: this.state.technician_id,
+                          dataSource: {
+                            textField: "user_displayname",
+                            valueField: "algaeh_d_app_user_id",
+                            data: this.props.radiologyusers
+                          },
+                          onChange: examhandle.bind(this, this),
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                    </div>
                     <div className="row">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12" }}
@@ -198,7 +240,7 @@ class RadResultEntry extends Component {
                       />
                     </div>
 
-                    <div className="row form-group">
+                    <div className="row form-row-gap">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-6" }}
                         label={{
@@ -209,9 +251,9 @@ class RadResultEntry extends Component {
                           className: "select-fld",
                           value: this.state.attended_by,
                           dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: FORMAT_RAD_STATUS
+                            textField: "user_displayname",
+                            valueField: "algaeh_d_app_user_id",
+                            data: this.props.radiologyusers
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
@@ -229,9 +271,9 @@ class RadResultEntry extends Component {
                           className: "select-fld",
                           value: this.state.validate_by,
                           dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: FORMAT_RAD_STATUS
+                            textField: "user_displayname",
+                            valueField: "algaeh_d_app_user_id",
+                            data: this.props.radiologyusers
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
@@ -241,7 +283,7 @@ class RadResultEntry extends Component {
                       />
                     </div>
 
-                    <div className="row form-group">
+                    <div className="row form-row-gap">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12" }}
                         label={{
@@ -286,8 +328,8 @@ class RadResultEntry extends Component {
                       />
                     </div>
 
-                    <div className="row form-group">
-                      <div className="form-group">
+                    <div className="row form-row-gap">
+                      <div className="form-row-gap">
                         <div className="col-lg-12 editor">
                           <RichTextEditor
                             value={this.state.template_html}
@@ -321,7 +363,11 @@ class RadResultEntry extends Component {
               </div>
             </div>
             <div className="popupFooter">
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={onvalidate.bind(this, this)}
+              >
                 Validate
               </button>
               <button
@@ -343,14 +389,16 @@ class RadResultEntry extends Component {
 
 function mapStateToProps(state) {
   return {
-    radtestlist: state.radtestlist
+    radschlist: state.radschlist,
+    radiologyusers: state.radiologyusers
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getRadiologyTestList: AlgaehActions
+      getRadiologyTestList: AlgaehActions,
+      getUserDetails: AlgaehActions
     },
     dispatch
   );

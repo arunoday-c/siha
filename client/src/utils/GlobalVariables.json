@@ -267,5 +267,9 @@
     { "name": "Preliminary", "value": "PR" },
     { "name": "Final", "value": "FL" },
     { "name": "Addended", "value": "AD" }
+  ],
+  "DIAG_TYPE": [
+    { "name": "Primary", "value": "P" },
+    { "name": "Secondary", "value": "S" }
   ]
 }
