@@ -16,7 +16,9 @@ class PatientProfile extends Component {
     this.state = {
       pageDisplay: "subjective",
       patientData: {},
-      patientVitals: {}
+      patientVitals: {},
+      patientAllergies: [],
+      patientDiagnosis: []
     };
     this.changeTabs = this.changeTabs.bind(this);
   }
@@ -54,7 +56,9 @@ class PatientProfile extends Component {
           console.log("Patient data:", response.data.records);
           this.setState({
             patientData: response.data.records.patient_profile[0],
-            patientVitals: response.data.records.vitals[0]
+            patientVitals: response.data.records.vitals[0],
+            patientAllergies: response.data.records.patient_allergies,
+            patientDiagnosis: response.data.records.patientDiagnosis
           });
         }
       },
@@ -209,12 +213,12 @@ class PatientProfile extends Component {
                 KG
               </b>
             </span>
-            <span>
+            {/* <span>
               HR: <b>85</b>
             </span>
             <span>
               RR: <b>45</b>
-            </span>
+            </span> */}
             <span>
               BMI :{" "}
               <b>
@@ -284,23 +288,18 @@ class PatientProfile extends Component {
                 <i className="fas fa-allergies" />
                 <span>
                   <b> Allergies : </b>
-                  <p>
-                    {" "}
-                    Allergy 1; Allergy 2; Allergy 1; Allergy 2; Allergy 1;
-                    Allergy 2;
-                  </p>
+                  {this.state.patientAllergies.map((data, index) => (
+                    <p key={index}>{data.allergy_name};</p>
+                  ))}
                 </span>
               </li>
               <li>
                 <i className="fas fa-diagnoses" />
-
                 <span>
                   <b> Diagnosis : </b>
-                  <p>
-                    {" "}
-                    Diagnosis 1; Diagnosis 2; Diagnosis 1; Diagnosis 2;
-                    Diagnosis 1; Diagnosis 2;
-                  </p>
+                  {this.state.patientDiagnosis.map((data, index) => (
+                    <p key={index}>{data.diagnosis_name};</p>
+                  ))}
                 </span>
               </li>
               <li>
