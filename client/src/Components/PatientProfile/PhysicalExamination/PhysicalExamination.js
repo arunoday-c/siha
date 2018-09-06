@@ -6,6 +6,8 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import Modal from "@material-ui/core/Modal";
+import Button from "@material-ui/core/Button";
 import search from "../../../assets/svg/search.svg";
 
 const AllergyData = [
@@ -15,9 +17,45 @@ const AllergyData = [
 ];
 
 class PhysicalExamination extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openVitalModal: false
+    };
+    this.handleClose = this.handleClose.bind(this);
+  }
+
+  addVitals() {
+    this.setState({ openVitalModal: true });
+  }
+
+  handleClose() {
+    this.setState({ openVitalModal: false });
+  }
+
   render() {
     return (
       <div className="physical_examination">
+        <Modal open={this.state.openVitalModal}>
+          <div className="algaeh-modal">
+            <div className="popupHeader">
+              <h4>Patient Vitals</h4>
+            </div>
+            <div className="col-lg-12 popupInner" />
+            <div className="popupFooter">
+              <Button
+                variant="raised"
+                onClick={this.handleClose}
+                style={{ backgroundColor: "#D5D5D5" }}
+                // onClick={        }
+                size="small"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </Modal>
+
         <div className="col-lg-12">
           <div className="row">
             <div className="col-lg-8">
@@ -126,7 +164,10 @@ class PhysicalExamination extends Component {
                       href="javascript:;"
                       className="btn btn-primary btn-circle active"
                     >
-                      <i className="fas fa-history" />
+                      <i
+                        onClick={this.addVitals.bind(this)}
+                        className="fas fa-history"
+                      />
                     </a>
                   </div>
                 </div>
