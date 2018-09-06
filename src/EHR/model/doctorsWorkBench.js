@@ -548,7 +548,7 @@ let addReviewOfSysDetails = (req, res, next) => {
 //created by irfan:  to add allergic details
 let addAllergy = (req, res, next) => {
   let AllergyModel = {
-    hims_d_allergiy_id: null,
+    hims_d_allergy_id: null,
     allergy_type: null,
     allergy_name: null,
     created_by: null,
@@ -910,7 +910,7 @@ PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episod
 select * from hims_f_patient_vitals where patient_id=? and visit_id=? order by visit_date desc, visit_time desc;\
  select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
   hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
-  and PA.allergy_id=A.hims_d_allergiy_id order by hims_f_patient_allergy_id desc;\
+  and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc;\
   select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id,icd.icd_description as diagnosis_name ,diagnosis_type, final_daignosis from hims_f_patient_diagnosis pd,hims_d_icd icd where pd.record_status='A'\
   and patient_id=? and episode_id=? and pd.daignosis_id=icd.hims_d_icd_id;",
         [
@@ -1291,7 +1291,7 @@ let getAllAllergies = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_allergiy_id,allergy_type,\
+        "select hims_d_allergy_id,allergy_type,\
         allergy_name from hims_d_allergy where record_status='A' AND" +
           where.condition,
         where.values,
@@ -1323,7 +1323,7 @@ let getPatientAllergy = (req, res, next) => {
       connection.query(
         "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
         hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
-        and PA.allergy_id=A.hims_d_allergiy_id order by hims_f_patient_allergy_id desc; ",
+        and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc; ",
         [inputData.patient_id],
         (error, result) => {
           if (error) {
