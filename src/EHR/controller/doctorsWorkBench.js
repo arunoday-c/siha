@@ -37,7 +37,8 @@ import {
   addPatientROS,
   getPatientROS,
   updatePatientROS,
-  updatePatientDiagnosis
+  updatePatientDiagnosis,
+  updateLabSampleStatus
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -594,5 +595,25 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  //created by irfan: to update Lab Sample Status
+  api.put(
+    "/updateLabSampleStatus",
+    updateLabSampleStatus,
+    (req, res, next) => {
+      let resultSelect = req.records;
+      if (resultSelect.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: resultSelect
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
+    },
+    releaseConnection
+  );
+
   return api;
 };
