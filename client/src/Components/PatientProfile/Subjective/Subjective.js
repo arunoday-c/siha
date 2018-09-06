@@ -21,16 +21,7 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 import moment from "moment";
 import Enumerable from "linq";
-import {
-  setPatientChiefComplaints,
-  getIndexedToken
-} from "../../../utils/indexer";
-
-const AllergyData = [
-  { food: "grapes/citrus", active: "Yes" },
-  { food: "Pollen", active: "Yes" },
-  { food: "Io dine", active: "Yes" }
-];
+import { setPatientChiefComplaints } from "../../../utils/indexer";
 
 let patChiefComplain = [];
 
@@ -46,7 +37,9 @@ class Subjective extends Component {
       pain: 0,
       patientChiefComplains: [],
       chiefComplainList: [],
+      allAllergies: [],
       patientAllergies: [],
+      patientROS: [],
       chief_complaint_name: null,
       chief_complaint_id: null,
       comment: "",
@@ -300,6 +293,24 @@ class Subjective extends Component {
     });
   }
 
+  getPatientROS() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientROS",
+      data: {
+        patient_id: Window.global["current_patient"],
+        episode_id: Window.global["episode_id"]
+      },
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          // console.log("ROS Patient's:", response.data.records);
+          this.setState({ patientROS: response.data.records });
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
   getPatientAllergies() {
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientAllergy",
@@ -309,6 +320,8 @@ class Subjective extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
+          this.setState({ allAllergies: response.data.records });
+          console.log("Patient Allergies:", this.state.allAllergies);
           let _allergies = Enumerable.from(response.data.records)
             .groupBy("$.allergy_type", null, (k, g) => {
               return {
@@ -335,14 +348,15 @@ class Subjective extends Component {
   }
 
   getToken(data) {
-    console.log("Indexed Data:", data);
+    console.dir("Indexed Data:", data);
   }
 
   componentDidMount() {
-    getIndexedToken(this.getToken);
+    // getPatientChiefComplaints(this.getToken);
     this.getPatientChiefComplains();
     this.getChiefComplainsList();
     this.getPatientAllergies();
+    this.getPatientROS();
   }
 
   openHPIAddModal(data) {
@@ -381,35 +395,129 @@ class Subjective extends Component {
         <Modal open={this.state.openROSModal}>
           <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Add Rview of Systems</h4>
+              <h4>Add Review Systems</h4>
             </div>
-            <div className="col-lg-12 popupInner">Review of Systems</div>
+            <div className="popupInner">
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-4 popLeftDiv">
+                    <div className="complain-box">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12" }}
+                        label={{
+                          forceLabel: "Review Description",
+                          fieldName: "sample"
+                        }}
+                        selector={{
+                          name: "hims_f_episode_chief_complaint_id",
+                          className: "select-fld",
+                          value: this.state.hims_f_episode_chief_complaint_id,
+                          dataSource: {
+                            textField: "hpi_description",
+                            valueField: "hims_d_hpi_header_id",
+                            data:
+                              this.state.chiefComplainList.length !== 0
+                                ? this.state.chiefComplainList
+                                : null
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          forceLabel: "Review Systems",
+                          fieldName: "sample"
+                        }}
+                        selector={{
+                          name: "hims_f_episode_chief_complaint_id",
+                          className: "select-fld",
+                          value: this.state.hims_f_episode_chief_complaint_id,
+                          dataSource: {
+                            textField: "hpi_description",
+                            valueField: "hims_d_hpi_header_id",
+                            data:
+                              this.state.chiefComplainList.length !== 0
+                                ? this.state.chiefComplainList
+                                : null
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          fieldName: "Review comments",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "comment",
+                          others: {
+                            multiline: true,
+                            rows: "4"
+                          },
+                          value: this.state.comment,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-lg-8 popRightDiv">
+                    <h6> List of Review Systems</h6>
+                    <hr />
+                    <div> Grid comes Here </div>
+                    <div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          fieldName: "Overall comments",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "comment",
+                          others: {
+                            multiline: true,
+                            rows: "4"
+                          },
+                          value: this.state.comment,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="row popupFooter">
               <div className="col-lg-4">
-                <Button variant="raised" color="primary" size="small">
-                  Add
-                </Button>
-                <Button
-                  variant="raised"
-                  style={{ backgroundColor: "#D5D5D5" }}
-                  size="small"
-                >
+                <button type="button" className="btn btn-primary">
+                  Add to Review List
+                </button>
+                <button type="button" className="btn btn-other">
                   Clear
-                </Button>
+                </button>
               </div>
               <div className="col-lg-8">
-                <Button
-                  variant="raised"
+                <button
+                  type="button"
+                  className="btn btn-default"
                   onClick={this.handleClose}
-                  style={{ backgroundColor: "#D5D5D5" }}
-                  size="small"
                 >
                   Close
-                </Button>
+                </button>
               </div>
             </div>
           </div>
         </Modal>
+
         {/* ROS Modal End */}
 
         {/* Allergy Modal Start*/}
@@ -418,64 +526,123 @@ class Subjective extends Component {
             <div className="popupHeader">
               <h4>Add Allergy</h4>
             </div>
-            <div className="col-lg-12 popupInner">
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Allergy Type"
-                  }}
-                  selector={{
-                    name: "allergy_type",
-                    className: "select-fld",
-                    value: this.state.allergy_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.ALLERGY_TYPES
-                    },
-                    onChange: this.dropDownHandle.bind(this)
-                  }}
-                />
+            <div className="popupInner">
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-4 popLeftDiv">
+                    <div className="complain-box">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12" }}
+                        label={{
+                          forceLabel: "Alergy Type",
+                          fieldName: "sample"
+                        }}
+                        selector={{
+                          name: "hims_f_patient_allergy_id",
+                          className: "select-fld",
+                          value: this.state.hims_f_patient_allergy_id,
+                          dataSource: {
+                            textField: "allergy_name",
+                            valueField: "hims_f_patient_allergy_id",
+                            data:
+                              this.state.allAllergies.length !== 0
+                                ? this.state.allAllergies
+                                : null
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
 
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Search",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "search",
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          forceLabel: "Select a Alergy",
+                          fieldName: "sample"
+                        }}
+                        selector={{
+                          name: "hims_f_patient_allergy_id",
+                          className: "select-fld",
+                          value: this.state.hims_f_patient_allergy_id,
+                          dataSource: {
+                            textField: "allergy_name",
+                            valueField: "hims_f_patient_allergy_id",
+                            data:
+                              this.state.allAllergies.length !== 0
+                                ? this.state.allAllergies
+                                : null
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
 
-                    //value: this.state.pain,
-                    events: {}
-                  }}
-                />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          fieldName: "comments",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "comment",
+                          others: {
+                            multiline: true,
+                            rows: "4"
+                          },
+                          value: this.state.comment,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-lg-8 popRightDiv">
+                    <h6> List of Allergies</h6>
+                    <hr />
+                    <div> Grid comes Here </div>
+                    <div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          fieldName: "Overall comments",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "comment",
+                          others: {
+                            multiline: true,
+                            rows: "4"
+                          },
+                          value: this.state.comment,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="row popupFooter">
               <div className="col-lg-4">
-                <Button variant="raised" color="primary" size="small">
-                  Add
-                </Button>
-                <Button
-                  variant="raised"
-                  style={{ backgroundColor: "#D5D5D5" }}
-                  size="small"
-                >
+                <button type="button" className="btn btn-primary">
+                  Add to Alergy List
+                </button>
+                <button type="button" className="btn btn-other">
                   Clear
-                </Button>
+                </button>
               </div>
               <div className="col-lg-8">
-                <Button
-                  variant="raised"
+                <button
+                  type="button"
+                  className="btn btn-default"
                   onClick={this.handleClose}
-                  style={{ backgroundColor: "#D5D5D5" }}
-                  size="small"
                 >
                   Close
-                </Button>
+                </button>
               </div>
             </div>
           </div>
@@ -1148,7 +1315,6 @@ class Subjective extends Component {
             </div>
           </div>
         </Modal>
-
         {/* Chief Complain Modal End */}
 
         <div className="col-lg-12" style={{ marginTop: "15px" }}>
@@ -1332,11 +1498,14 @@ class Subjective extends Component {
                     </a>
                   </div>
                 </div>
-                <div className="portlet-body">
+                <div
+                  className="portlet-body"
+                  style={{ maxHeight: "25vh", overflow: "auto" }}
+                >
                   {this.state.patientAllergies.map((tables, index) => (
                     <table
                       key={index}
-                      className="table table-sm table-bordered"
+                      className="table table-sm table-bordered customTable"
                     >
                       <thead className="table-primary">
                         <tr>
@@ -1381,44 +1550,24 @@ class Subjective extends Component {
                   </div>
                 </div>
                 <div className="portlet-body">
-                  <AlgaehDataGrid
-                    id="patient_chart_grd"
-                    columns={[
-                      {
-                        fieldName: "food",
-                        label: "Food",
-                        disabled: true
-                      },
-                      {
-                        fieldName: "date",
-                        label: "On Set Date"
-                      },
-                      {
-                        fieldName: "first_name",
-                        label: "Comment"
-                      },
-                      {
-                        fieldName: "active",
-                        label: "Active"
-                      }
-                    ]}
-                    keyId="code"
-                    dataSource={{
-                      data: AllergyData
-                    }}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 3 }}
-                    events={
-                      {
-                        // onDelete: this.deleteVisaType.bind(this),
-                        // onEdit: row => {},
-                        // onDone: row => {
-                        //   alert(JSON.stringify(row));
-                        // }
-                        // onDone: this.updateVisaTypes.bind(this)
-                      }
-                    }
-                  />
+                  <table className="table table-sm table-bordered customTable">
+                    <thead className="table-primary">
+                      <tr>
+                        <th>System</th>
+                        <th>Symptoms</th>
+                        <th>Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.patientROS.map((data, index) => (
+                        <tr key={index}>
+                          <td>{data.header_description}</td>
+                          <td>{data.detail_description}</td>
+                          <td>{data.comment}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
               {/* END Portlet PORTLET */}

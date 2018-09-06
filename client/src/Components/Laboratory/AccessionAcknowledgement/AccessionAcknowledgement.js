@@ -5,18 +5,24 @@ import { bindActionCreators } from "redux";
 
 import "./AccessionAcknowledgement.css";
 import "./../../../styles/site.css";
-
-import { texthandle, PatientSearch } from "./AccessionAcknowledgementHandaler";
+import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
+import IconButton from "@material-ui/core/IconButton";
+import {
+  texthandle,
+  PatientSearch,
+  datehandle,
+  getSampleCollectionDetails
+} from "./AccessionAcknowledgementHandaler";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  Tooltip
 } from "../../Wrapper/algaehWrapper";
 
-import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import variableJson from "../../../utils/GlobalVariables.json";
 import moment from "moment";
@@ -48,7 +54,7 @@ class AccessionAcknowledgement extends Component {
     return (
       <React.Fragment>
         <div className="hptl-phase1-accession-acknowledgement-form">
-          <div className="container-fluid">
+          <div className="container-fluid" style={{ minHeight: "80vh" }}>
             <div className="row">
               <AlagehFormGroup
                 div={{ className: "col-lg-2" }}
@@ -72,14 +78,22 @@ class AccessionAcknowledgement extends Component {
                   onClick={PatientSearch.bind(this, this)}
                   // onClick={this.PatientSearch.bind(this)}
                 />
+
+                {/* <Tooltip title="Search">
+                  <img
+                    className="finderImg"
+                    src={require("../../common/BreadCrumb/images/search.png")}
+                    onClick={PatientSearch.bind(this, this)}
+                  />
+                </Tooltip> */}
               </div>
 
               <AlgaehDateHandler
                 div={{ className: "col-lg-2" }}
                 label={{ fieldName: "ordered_date" }}
-                textBox={{ className: "txt-fld" }}
+                textBox={{ className: "txt-fld", name: "ordered_date" }}
                 events={{
-                  onChange: null
+                  onChange: datehandle.bind(this, this)
                 }}
                 value={this.state.ordered_date}
               />
@@ -121,109 +135,15 @@ class AccessionAcknowledgement extends Component {
                   onChange: null
                 }}
               />
-
-              {/* <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "patient_name"
-                }}
-                textBox={{
-                  value: this.state.patient_name,
-                  className: "txt-fld",
-                  name: "patient_name",
-
-                  events: {
-                    onChange: null
-                  },
-                  others: {
-                    disabled: true
-                  }
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "gender",
-                  isImp: true
-                }}
-                selector={{
-                  name: "gender",
-                  className: "select-fld",
-                  value: this.state.gender,
-                  dataSource: {
-                    textField:
-                      this.state.selectedLang == "en" ? "name" : "arabic_name",
-                    valueField: "value",
-                    data: variableJson.FORMAT_GENDER
-                  },
-                  onChange: null,
-                  others: {
-                    disabled: true
-                  }
-                }}
-              />
-              <AlgaehDateHandler
-                div={{ className: "col-lg-s" }}
-                label={{ fieldName: "date_of_birth" }}
-                textBox={{ className: "txt-fld" }}
-                events={{
-                  onChange: null
-                }}
-                disabled={true}
-                value={this.state.date_of_birth}
-              />
-
-              <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "age"
-                }}
-                textBox={{
-                  value: this.state.age,
-                  className: "txt-fld",
-                  name: "age",
-
-                  events: {
-                    onChange: null
-                  },
-                  others: {
-                    disabled: true
-                  }
-                }}
-              /> */}
+              <div className="col-lg-1">
+                <IconButton className="go-button" color="primary">
+                  <PlayCircleFilled
+                    onClick={getSampleCollectionDetails.bind(this, this)}
+                  />
+                </IconButton>
+              </div>
             </div>
-            {/* <div className="row">
-              <AlgaehDateHandler
-                div={{ className: "col-lg-2" }}
-                label={{ fieldName: "ordered_date" }}
-                textBox={{ className: "txt-fld" }}
-                events={{
-                  onChange: null
-                }}
-                disabled={true}
-                value={this.state.ordered_date}
-              />
 
-              <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "ordered_by"
-                }}
-                textBox={{
-                  value: this.state.ordered_by,
-                  className: "txt-fld",
-                  name: "ordered_by",
-
-                  events: {
-                    onChange: texthandle.bind(this, this)
-                  },
-                  others: {
-                    disabled: true
-                  }
-                }}
-              />
-            </div> */}
             <div className="row form-details">
               <div className="col-lg-12">
                 <AlgaehDataGrid

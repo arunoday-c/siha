@@ -179,16 +179,47 @@ const saveDiagnosis = ($this, data) => {
   });
 };
 
-const resetState = $this => {
-  $this.setState($this.baseState);
-};
-
-const onchangegridcol = ($this, row, e) => {
+const onchangegridcol = ($this, row, from, e) => {
   debugger;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  row[name] = value;
-  // resetState($this);
+  if (from === "Intial" && row.final_daignosis === "Y") {
+    successfulMessage({
+      message:
+        "Invalid Input. Already selected as final diagnosis. If changes required change in final diagnosis",
+      title: "Error",
+      icon: "error"
+    });
+  } else {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    let intIcd = $this.state.InitialICDS;
+    let finIcd = $this.state.finalICDS;
+    if (from === "Intial") {
+      for (let i = 0; i < intIcd.length; i++) {
+        if (
+          (intIcd[i].hims_f_patient_diagnosis_id =
+            row.hims_f_patient_diagnosis_id)
+        ) {
+          intIcd[i] = row;
+          $this.setState({
+            InitialICDS: intIcd
+          });
+        }
+      }
+    } else if (from === "Final") {
+      for (let i = 0; i < finIcd.length; i++) {
+        if (
+          (finIcd[i].hims_f_patient_diagnosis_id =
+            row.hims_f_patient_diagnosis_id)
+        ) {
+          finIcd[i] = row;
+          $this.setState({
+            finalICDS: finIcd
+          });
+        }
+      }
+    }
+  }
 };
 
 const showconfirmDialog = ($this, row) => {
@@ -251,8 +282,24 @@ const getPatientDiagnosis = $this => {
   });
 };
 
-const deleteDiagnosis = ($this, row) => {
+const deleteDiagnosis = ($this, row, from) => {
   //console.log("Delete Row ID: ", row.hims_d_visit_type_id);
+  debugger;
+  if (row.final_daignosis === "Y") {
+    successfulMessage({
+      message:
+        "Invalid Input. Already selected as Final diagnosis. Cannot delete from Intial diagnosis",
+      title: "Error",
+      icon: "error"
+    });
+  } else {
+    showconfirmDialog($this, row);
+  }
+};
+
+const deleteFinalDiagnosis = ($this, row, from) => {
+  //console.log("Delete Row ID: ", row.hims_d_visit_type_id);
+
   showconfirmDialog($this, row);
 };
 
@@ -293,5 +340,6 @@ export {
   getPatientDiagnosis,
   onchangegridcol,
   deleteDiagnosis,
+  deleteFinalDiagnosis,
   updateDiagnosis
 };

@@ -10,6 +10,18 @@
   tr {
     text-align: center;
   }
+  .customTable {
+    th {
+      background: #ebfffd;
+      text-transform: uppercase;
+      font-size: 0.7rem !important;
+      min-width: auto !important;
+    }
+    td {
+      min-width: auto !important;
+      font-size: 0.8rem !important;
+    }
+  }
 }
 
 .pain_slider {

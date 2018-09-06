@@ -108,6 +108,26 @@ var _laboratory = require("../controller/laboratory");
 
 var _laboratory2 = _interopRequireDefault(_laboratory);
 
+var _labmasters = require("../controller/labmasters");
+
+var _labmasters2 = _interopRequireDefault(_labmasters);
+
+var _investigation = require("../controller/investigation");
+
+var _investigation2 = _interopRequireDefault(_investigation);
+
+var _icdcptcodes = require("../controller/icdcptcodes");
+
+var _icdcptcodes2 = _interopRequireDefault(_icdcptcodes);
+
+var _radiology = require("../controller/radiology");
+
+var _radiology2 = _interopRequireDefault(_radiology);
+
+var _algaehappuser = require("../controller/algaehappuser");
+
+var _algaehappuser2 = _interopRequireDefault(_algaehappuser);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = (0, _express2.default)();
@@ -140,6 +160,11 @@ var router = (0, _express2.default)();
   router.use("/hpi", (0, _hpi2.default)({ config: _keys2.default, db: db }));
   router.use("/orderAndPreApproval", (0, _orderAndPreApproval2.default)({ config: _keys2.default, db: db }));
   router.use("/laboratory", (0, _laboratory2.default)({ config: _keys2.default, db: db }));
+  router.use("/labmasters", (0, _labmasters2.default)({ config: _keys2.default, db: db }));
+  router.use("/investigation", (0, _investigation2.default)({ config: _keys2.default, db: db }));
+  router.use("/icdcptcodes", (0, _icdcptcodes2.default)({ config: _keys2.default, db: db }));
+  router.use("/radiology", (0, _radiology2.default)({ config: _keys2.default, db: db }));
+  router.use("/algaehappuser", (0, _algaehappuser2.default)({ config: _keys2.default, db: db }));
 });
 
 exports.default = router;
