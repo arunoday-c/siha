@@ -907,7 +907,7 @@ let getPatientProfile = (req, res, next) => {
 from ( (hims_f_patient P inner join hims_f_patient_encounter PE  on P.hims_d_patient_id=PE.patient_id)\
 inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
 PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episode_id=?;SELECT * FROM hims_f_patient_vitals t,(\
-  SELECT max(visit_id) as last_visit,MAX(visittime) as last_visit_time ,date(MAX(visit_date)) as last_visit_date\
+  SELECT max(visit_id) as last_visit,MAX(visit_time) as last_visit_time ,date(MAX(visit_date)) as last_visit_date\
   FROM hims_f_patient_vitals  where  patient_id=? ) last_entry    WHERE last_entry.last_visit= t.visit_id;\
   select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
   hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
@@ -1234,7 +1234,7 @@ let deletePatientChiefComplaints = (req, res, next) => {
 };
 
 //created by irfan: to add new allergy for a patient
-let addNewAllergy = (req, res, next) => {
+let addPatientNewAllergy = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -1754,7 +1754,7 @@ module.exports = {
   addNewChiefComplaint,
   getPatientChiefComplaints,
   deletePatientChiefComplaints,
-  addNewAllergy,
+  addPatientNewAllergy,
   getAllAllergies,
   getPatientAllergy,
   updatePatientChiefComplaints,

@@ -28,7 +28,7 @@ import {
   getPatientChiefComplaints,
   addNewChiefComplaint,
   deletePatientChiefComplaints,
-  addNewAllergy,
+  addPatientNewAllergy,
   getAllAllergies,
   getPatientAllergy,
   updatePatientChiefComplaints,
@@ -437,8 +437,8 @@ export default ({ config, db }) => {
 
   // created by irfan : to add new allergy for patient
   api.post(
-    "/addNewAllergy",
-    addNewAllergy,
+    "/addPatientNewAllergy",
+    addPatientNewAllergy,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
