@@ -11,6 +11,7 @@ import appsettings from "../utils/appsettings.json";
 import { logger, debugFunction, debugLog } from "../utils/logging";
 import Promise from "bluebird";
 import moment from "moment";
+import extend from "extend";
 //created by nowshad: to get lad orders for sample collection
 let getLabOrderedServices = (req, res, next) => {
   try {
@@ -449,9 +450,99 @@ let getTestAnalytes = (req, res, next) => {
   }
 };
 
+//created by irfan: to update Lab Sample Status updateLabSampleStatus
+let updateLabSampleStatus = (req, res, next) => {
+  try {
+    debugFunction("updateLabSampleStatus");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    debugLog("Input Data", req.body);
+    let input = extend({}, req.body);
+    let collected = "";
+    if (req.body.status == "R") {
+      collected = ", collected='N' ,";
+    }
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        let queryBuilder =
+          "update hims_f_lab_sample set `status`=?" +
+          collected +
+          "updated_date=?,updated_by=? where hims_d_lab_sample_id=?;";
+        let inputs = [
+          input.status,
+          new Date(),
+          input.updated_by,
+          input.hims_d_lab_sample_id
+        ];
+
+        connection.query(queryBuilder, inputs, (error, results) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          if (req.body.status == "R") {
+            connection.query(
+              "UPDATE `hims_f_lab_order` SET `status`='O',updated_date=?,updated_by=?  WHERE `hims_f_lab_order_id`=?;",
+              [new Date(), input.updated_by, input.order_id],
+              (error, result) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  req.records = result;
+                  next();
+                });
+              }
+            );
+          } else {
+            connection.commit(error => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+              req.records = results;
+              next();
+            });
+          }
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   getLabOrderedServices,
   getTestAnalytes,
   insertLadOrderedServices,
-  updateLabOrderServices
+  updateLabOrderServices,
+  updateLabSampleStatus
 };

@@ -23,12 +23,6 @@ import moment from "moment";
 import Enumerable from "linq";
 import { setPatientChiefComplaints } from "../../../utils/indexer";
 
-const AllergyData = [
-  { food: "grapes/citrus", active: "Yes" },
-  { food: "Pollen", active: "Yes" },
-  { food: "Io dine", active: "Yes" }
-];
-
 let patChiefComplain = [];
 
 class Subjective extends Component {
@@ -43,6 +37,7 @@ class Subjective extends Component {
       pain: 0,
       patientChiefComplains: [],
       chiefComplainList: [],
+      allAllergies: [],
       patientAllergies: [],
       patientROS: [],
       chief_complaint_name: null,
@@ -325,6 +320,8 @@ class Subjective extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
+          this.setState({ allAllergies: response.data.records });
+          console.log("Patient Allergies:", this.state.allAllergies);
           let _allergies = Enumerable.from(response.data.records)
             .groupBy("$.allergy_type", null, (k, g) => {
               return {
@@ -541,15 +538,15 @@ class Subjective extends Component {
                           fieldName: "sample"
                         }}
                         selector={{
-                          name: "hims_f_episode_chief_complaint_id",
+                          name: "hims_f_patient_allergy_id",
                           className: "select-fld",
-                          value: this.state.hims_f_episode_chief_complaint_id,
+                          value: this.state.hims_f_patient_allergy_id,
                           dataSource: {
-                            textField: "hpi_description",
-                            valueField: "hims_d_hpi_header_id",
+                            textField: "allergy_name",
+                            valueField: "hims_f_patient_allergy_id",
                             data:
-                              this.state.chiefComplainList.length !== 0
-                                ? this.state.chiefComplainList
+                              this.state.allAllergies.length !== 0
+                                ? this.state.allAllergies
                                 : null
                           },
                           onChange: this.dropDownHandle.bind(this)
@@ -563,15 +560,15 @@ class Subjective extends Component {
                           fieldName: "sample"
                         }}
                         selector={{
-                          name: "hims_f_episode_chief_complaint_id",
+                          name: "hims_f_patient_allergy_id",
                           className: "select-fld",
-                          value: this.state.hims_f_episode_chief_complaint_id,
+                          value: this.state.hims_f_patient_allergy_id,
                           dataSource: {
-                            textField: "hpi_description",
-                            valueField: "hims_d_hpi_header_id",
+                            textField: "allergy_name",
+                            valueField: "hims_f_patient_allergy_id",
                             data:
-                              this.state.chiefComplainList.length !== 0
-                                ? this.state.chiefComplainList
+                              this.state.allAllergies.length !== 0
+                                ? this.state.allAllergies
                                 : null
                           },
                           onChange: this.dropDownHandle.bind(this)
@@ -1318,7 +1315,6 @@ class Subjective extends Component {
             </div>
           </div>
         </Modal>
-
         {/* Chief Complain Modal End */}
 
         <div className="col-lg-12" style={{ marginTop: "15px" }}>
@@ -1340,7 +1336,7 @@ class Subjective extends Component {
                     </a>
                   </div>
                 </div>
-                <div className="portlet-body" style={{ maxHeight: "25vh" }}>
+                <div className="portlet-body">
                   <AlgaehDataGrid
                     id="complaint-grid"
                     columns={[
