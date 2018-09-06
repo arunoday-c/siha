@@ -55,8 +55,8 @@ let getLabOrderedServices = (req, res, next) => {
       }
       db.query(
         "SELECT hims_f_lab_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
-        SA.status, cancelled, ordered_date, test_type, PAT.patient_code,PAT.full_name,SP.sample_id,SP.collected,\
-        SP.collected_by, SP.collected_date,SP.hims_d_lab_sample_id from ((hims_f_lab_order SA inner join hims_f_patient PAT ON \
+        SA.status, cancelled, ordered_date, test_type, lab_id_number, PAT.patient_code,PAT.full_name,SP.sample_id,SP.collected,\
+        SP.collected_by, SP.collected_date,SP.hims_d_lab_sample_id,SP.status as sample_status from ((hims_f_lab_order SA inner join hims_f_patient PAT ON \
         SA.patient_id=PAT.hims_d_patient_id) inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id) \
         left outer join hims_f_lab_sample SP on SA.hims_f_lab_order_id = SP.order_id WHERE SA.record_status='A' AND " +
           whereOrder +

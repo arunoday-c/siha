@@ -3,10 +3,10 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import Collections from "@material-ui/icons/Collections";
+
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
-import "./AccessionAcknowledgement.css";
+import "./ResultEntryList.css";
 import "./../../../styles/site.css";
 
 import {
@@ -14,8 +14,8 @@ import {
   PatientSearch,
   datehandle,
   getSampleCollectionDetails,
-  AcceptandRejectSample
-} from "./AccessionAcknowledgementHandaler";
+  ResultEntry
+} from "./ResultEntryListHandaler";
 
 import {
   AlgaehDataGrid,
@@ -35,7 +35,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
 
-class AccessionAcknowledgement extends Component {
+class ResultEntryList extends Component {
   constructor(props) {
     super(props);
     let month = moment().format("MM");
@@ -81,7 +81,7 @@ class AccessionAcknowledgement extends Component {
     //   this.state.billdetails === null ? [{}] : this.state.billdetails;
     return (
       <React.Fragment>
-        <div className="hptl-phase1-accession-acknowledgement-form">
+        <div className="hptl-phase1-result-entry-form">
           <BreadCrumb
             title={
               <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
@@ -290,30 +290,9 @@ class AccessionAcknowledgement extends Component {
                               style={{ maxHeight: "4vh" }}
                             >
                               <i
-                                className="fa fa-check"
+                                className="fas fa-file-signature"
                                 aria-hidden="true"
-                                onClick={AcceptandRejectSample.bind(
-                                  this,
-                                  this,
-                                  row,
-                                  "A"
-                                )}
-                              />
-                            </IconButton>
-                            <IconButton
-                              color="primary"
-                              title="Reject"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <i
-                                className="fa fa-times"
-                                aria-hidden="true"
-                                onClick={AcceptandRejectSample.bind(
-                                  this,
-                                  this,
-                                  row,
-                                  "R"
-                                )}
+                                onClick={ResultEntry.bind(this, this, row, "A")}
                               />
                             </IconButton>
                           </span>
@@ -355,5 +334,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(AccessionAcknowledgement)
+  )(ResultEntryList)
 );

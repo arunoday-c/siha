@@ -4,7 +4,6 @@ import moment from "moment";
 import Options from "../../../Options.json";
 import Enumerable from "linq";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -96,8 +95,7 @@ const getSampleCollectionDetails = $this => {
   });
 };
 
-const AcceptandRejectSample = ($this, row, AccRej) => {
-  debugger;
+const ResultEntry = ($this, row, AccRej) => {
   if (row.status === "O") {
     successfulMessage({
       message: "Invalid Input. Please collect the sample.",
@@ -106,53 +104,12 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
     });
   } else {
     if (row.sample_status === "N") {
-      debugger;
-      let inputobj = {
-        hims_d_lab_sample_id: row.hims_d_lab_sample_id,
-        order_id: row.hims_f_lab_order_id,
-        status: AccRej
-      };
-      algaehApiCall({
-        uri: "/laboratory/updateLabSampleStatus",
-        data: inputobj,
-        method: "PUT",
-        onSuccess: response => {
-          debugger;
-          if (response.data.success === true) {
-            let sample_collection = $this.state.sample_collection;
-            for (let i = 0; i < sample_collection.length; i++) {
-              if (
-                sample_collection[i].hims_d_lab_sample_id ===
-                row.hims_d_lab_sample_id
-              ) {
-                sample_collection[i].collected =
-                  response.data.records.collected;
-                sample_collection[i].collected_by =
-                  response.data.records.collected_by;
-                sample_collection[i].collected_date =
-                  response.data.records.collected_date;
-              }
-            }
-            debugger;
-            $this.setState({ sample_collection: sample_collection }, () => {
-              successfulMessage({
-                message: "Collected Successfully",
-                title: "Success",
-                icon: "success"
-              });
-            });
-          }
-        },
-        onFailure: error => {
-          console.log(error);
-        }
-      });
-    } else {
       successfulMessage({
-        message: "Invalid Input. Already Accecpted/Rejected.",
+        message: "Invalid Input. Please accept the sample.",
         title: "Warning",
         icon: "warning"
       });
+    } else {
     }
   }
 };
@@ -162,5 +119,5 @@ export {
   PatientSearch,
   datehandle,
   getSampleCollectionDetails,
-  AcceptandRejectSample
+  ResultEntry
 };
