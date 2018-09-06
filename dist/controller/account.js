@@ -20,6 +20,8 @@ var _authmiddleware = require("../middleware/authmiddleware");
 
 var _account = require("../model/account");
 
+var _cryptography = require("../utils/cryptography");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function (_ref) {
@@ -42,12 +44,14 @@ exports.default = function (_ref) {
       if (result[0]["locked"] == "N") {
         var rowDetails = result[0];
 
+        var keyData = (0, _cryptography.encryption)(rowDetails);
         res.status(_httpStatus2.default.ok).json({
           success: true,
           records: {
-            algaeh_d_app_user_id: rowDetails["algaeh_d_app_user_id"],
             username: rowDetails["username"],
-            user_displayname: rowDetails["user_displayname"]
+            user_displayname: rowDetails["user_displayname"],
+            keyResources: keyData,
+            secureModels: req.secureModels
           }
         });
         next();

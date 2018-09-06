@@ -99,7 +99,8 @@ var deleteRecord = function deleteRecord(options, successCallback, errorCallback
     var sqlQuery = "select distinct table_name,column_name from information_schema.KEY_COLUMN_USAGE \
       where constraint_schema=? \
       and REFERENCED_TABLE_NAME=?";
-    (0, _logging.debugLog)("Sql Query : " + sqlQuery);
+    (0, _logging.debugLog)("Options", options);
+    (0, _logging.debugLog)("Sql Query : " + sqlQuery, options.tableName);
     connection.query(sqlQuery, [_keys2.default.mysqlDb.database, options.tableName], function (error, tables) {
       if (error) {
         if (isreleaseConnection) connection.release();
@@ -111,58 +112,81 @@ var deleteRecord = function deleteRecord(options, successCallback, errorCallback
       var records = "";
       var values = [];
       (0, _logging.debugLog)("Existing table length : " + tables.length);
-      for (var i = 0; i < tables.length; i++) {
-        records += "SELECT COUNT(*) CNT FROM " + tables[i]["table_name"] + " WHERE \
-           " + tables[i]["column_name"] + "=?;";
-        values.push(options.id);
-      }
-      (0, _logging.debugLog)("rexords Query : " + records);
-      connection.query(records, values, function (error, result) {
-        if (error) {
-          if (isreleaseConnection) connection.release();
-          if (typeof errorCallback == "function") {
-            errorCallback(error);
-            return;
-          }
-        } else {
-          var hasRecords = false;
-          for (var c = 0; c < result.length; c++) {
-            if (result[c][0] != null && result[c][0]["CNT"] == 1) {
-              hasRecords = true;
-              break;
+
+      if (tables.length == 0) {
+        connection.query(options.query, options.values, function (error, deleteRecord) {
+          if (error) {
+            if (isreleaseConnection) connection.release();
+            if (typeof errorCallback == "function") {
+              errorCallback(error);
+              return;
             }
           }
-          if (hasRecords == true) {
-            result = {
-              success: false,
-              message: "Record already exists.."
-            };
+
+          var result = {
+            success: true,
+            records: deleteRecord
+          };
+          if (isreleaseConnection) connection.release();
+          if (typeof successCallback == "function") {
+            successCallback(result);
+          }
+        });
+      } else {
+        for (var i = 0; i < tables.length; i++) {
+          records += "SELECT COUNT(*) CNT FROM " + tables[i]["table_name"] + " WHERE \
+             " + tables[i]["column_name"] + "=?;";
+          values.push(options.id);
+        }
+
+        (0, _logging.debugLog)("rexords Query : " + records);
+        connection.query(records, values, function (error, result) {
+          if (error) {
             if (isreleaseConnection) connection.release();
-            if (typeof successCallback == "function") {
-              successCallback(result);
+            if (typeof errorCallback == "function") {
+              errorCallback(error);
+              return;
             }
           } else {
-            connection.query(options.query, options.values, function (error, deleteRecord) {
-              if (error) {
-                if (isreleaseConnection) connection.release();
-                if (typeof errorCallback == "function") {
-                  errorCallback(error);
-                  return;
-                }
+            var hasRecords = false;
+            for (var c = 0; c < result.length; c++) {
+              if (result[c][0] != null && result[c][0]["CNT"] == 1) {
+                hasRecords = true;
+                break;
               }
-
+            }
+            if (hasRecords == true) {
               result = {
-                success: true,
-                records: deleteRecord
+                success: false,
+                message: "Record already exists.."
               };
               if (isreleaseConnection) connection.release();
               if (typeof successCallback == "function") {
                 successCallback(result);
               }
-            });
+            } else {
+              connection.query(options.query, options.values, function (error, deleteRecord) {
+                if (error) {
+                  if (isreleaseConnection) connection.release();
+                  if (typeof errorCallback == "function") {
+                    errorCallback(error);
+                    return;
+                  }
+                }
+
+                result = {
+                  success: true,
+                  records: deleteRecord
+                };
+                if (isreleaseConnection) connection.release();
+                if (typeof successCallback == "function") {
+                  successCallback(result);
+                }
+              });
+            }
           }
-        }
-      });
+        });
+      }
     });
   });
 };
@@ -375,13 +399,15 @@ var jsonArrayToObject = function jsonArrayToObject(options) {
   var outputObject = [];
 
   var _loop = function _loop(i) {
+    var internalarray = [];
     var item = options.arrayObj[i];
 
-    outputObject.push(options.sampleInputObject.map(function (key) {
+    var _loop2 = function _loop2(j) {
+      var key = options.sampleInputObject[j];
+      var inideCreate = false;
       if (key == "created_by" || key == "updated_by") {
-        if (options.userId != null) {
-          return options.userId;
-        }
+        internalarray.push(options.req.body.created_by);
+        inideCreate = true;
       }
       if (options.replaceObject != null && options.replaceObject.length != 0) {
         var replacer = new _nodeLinq.LINQ(options.replaceObject).Where(function (w) {
@@ -394,9 +420,43 @@ var jsonArrayToObject = function jsonArrayToObject(options) {
           }
         }
       }
+      if (!inideCreate) internalarray.push(item[key]);
+    };
 
-      return item[key];
-    }));
+    for (var j = 0; j < options.sampleInputObject.length; j++) {
+      _loop2(j);
+    }
+
+    // outputObject.push(
+
+    //   options.sampleInputObject.map(key => {
+    //     if (key == "created_by" || key == "updated_by") {
+    //       return options.req.body.created_by;
+    //     }
+    //     if (
+    //       options.replaceObject != null &&
+    //       options.replaceObject.length != 0
+    //     ) {
+    //       let replacer = new LINQ(options.replaceObject)
+    //         .Where(w => w.originalKey == key)
+    //         .FirstOrDefault();
+
+    //       if (replacer != null) {
+    //         if (replacer.NewKey != null) {
+    //           key = replacer.NewKey;
+    //         }
+    //       }
+    //     }
+
+    //     return item[key];
+    //   })
+    // );
+    if (options.newFieldToInsert != null) {
+      options.newFieldToInsert.map(function (row) {
+        internalarray.push(row);
+      });
+    }
+    outputObject.push(internalarray);
   };
 
   for (var i = 0; i < options.arrayObj.length; i++) {

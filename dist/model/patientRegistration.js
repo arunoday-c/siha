@@ -65,8 +65,7 @@ var updatePatientRegistrstion = function updatePatientRegistrstion(req, res, nex
 var insertPatientData = function insertPatientData(req, res, next) {
   try {
     (0, _logging.debugFunction)("Insert Patient Registration");
-    var header = req.headers["x-app-user-identity"];
-    header = JSON.parse(header);
+
     var inputparam = (0, _extend2.default)({
       hims_d_patient_id: null,
       patient_code: null,
@@ -98,10 +97,10 @@ var insertPatientData = function insertPatientData(req, res, next) {
       photo_file: "",
       primary_id_file: "",
       secondary_id_file: "",
-      created_by: header.user_id,
-      created_date: null,
-      updated_by: header.user_id,
-      updated_date: null,
+      created_by: req.userIdentity.algaeh_d_app_user_id,
+
+      updated_by: req.userIdentity.algaeh_d_app_user_id,
+
       city_id: null,
       state_id: null,
       country_id: null,
@@ -133,6 +132,7 @@ var insertPatientData = function insertPatientData(req, res, next) {
       } else {
         inputparam.patient_id = result.insertId;
         req.patient_id = result.insertId;
+        req.body.patient_id = req.patient_id;
         if (options != null) options.onSuccess(result);else {
           req.records = result;
           next();
@@ -215,10 +215,10 @@ var insertData = function insertData(dataBase, req, res, callBack, isCommited, n
     photo_file: "",
     primary_id_file: "",
     secondary_id_file: "",
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     city_id: null,
     state_id: null,
     country_id: null,
@@ -326,10 +326,10 @@ var updateData = function updateData(dataBase, req, callBack) {
     photo_file: "",
     primary_id_file: "",
     secondary_id_file: "",
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     city_id: null,
     state_id: null,
     country_id: null,

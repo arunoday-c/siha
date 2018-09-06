@@ -203,10 +203,7 @@ exports.default = function () {
   }, _utils.releaseConnection);
 
   api.get("/nationality", function (req, res, next) {
-    (0, _logging.debugLog)("Inside nationality ");
     (0, _caching.getCacheData)({ key: "nationality" }, function (result) {
-      (0, _logging.debugLog)("Get nationality ", result);
-
       if (result != null) {
         res.status(_httpStatus2.default.ok).json({
           success: true,
@@ -218,7 +215,6 @@ exports.default = function () {
     });
   }, _masters.nationalityMaster, function (req, res, next) {
     var result = req.records;
-    (0, _logging.debugLog)("nationality ", result);
     (0, _caching.setCacheData)({
       key: "nationality",
       value: result
