@@ -22,6 +22,11 @@ import swal from "sweetalert";
 import moment from "moment";
 import Enumerable from "linq";
 import { setPatientChiefComplaints } from "../../../utils/indexer";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../actions/algaehActions";
+import { getAllAllergies, getReviewOfSystems } from "./SubjectiveHandler";
 
 let patChiefComplain = [];
 
@@ -35,6 +40,7 @@ class Subjective extends Component {
       openAllergyModal: false,
       openROSModal: false,
       pain: 0,
+      allergy_value: "F",
       patientChiefComplains: [],
       chiefComplainList: [],
       allAllergies: [],
@@ -42,6 +48,7 @@ class Subjective extends Component {
       patientROS: [],
       chief_complaint_name: null,
       chief_complaint_id: null,
+      system: "",
       comment: "",
       duration: 0,
       hims_f_episode_chief_complaint_id: null,
@@ -68,6 +75,7 @@ class Subjective extends Component {
       openROSModal: true
     });
   }
+
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this Chief Complain?",
@@ -121,6 +129,12 @@ class Subjective extends Component {
           this.setState({ score: 10 });
           break;
       }
+    });
+  }
+
+  allergyDropdownHandler(value) {
+    this.setState({ [value.name]: value.value }, () => {
+      getAllAllergies(this, this.state.allergy_value);
     });
   }
 
@@ -347,12 +361,13 @@ class Subjective extends Component {
     });
   }
 
-  getToken(data) {
-    console.dir("Indexed Data:", data);
-  }
+  // getToken(data) {
+  //   console.dir("Indexed Data:", data);
+  // }
 
   componentDidMount() {
-    // getPatientChiefComplaints(this.getToken);
+    getAllAllergies(this, this.state.allergy_value);
+    getReviewOfSystems(this, this.state.system);
     this.getPatientChiefComplains();
     this.getChiefComplainsList();
     this.getPatientAllergies();
@@ -374,15 +389,7 @@ class Subjective extends Component {
     let cce = Enumerable.from(this.state.patientChiefComplains)
       .where(w => w.hims_f_episode_chief_complaint_id === id)
       .firstOrDefault();
-
     this.setState({ ...cce });
-
-    // setTimeout(
-    //   this.setState({
-    //     ...cce
-    //   }),
-    //   2000
-    // );
   }
 
   render() {
@@ -405,7 +412,7 @@ class Subjective extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12" }}
                         label={{
-                          forceLabel: "Review Description",
+                          forceLabel: "Review System",
                           fieldName: "sample"
                         }}
                         selector={{
@@ -427,7 +434,7 @@ class Subjective extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12 margin-top-15" }}
                         label={{
-                          forceLabel: "Review Systems",
+                          forceLabel: "Symptoms",
                           fieldName: "sample"
                         }}
                         selector={{
@@ -449,7 +456,7 @@ class Subjective extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-12 margin-top-15" }}
                         label={{
-                          fieldName: "Review comments",
+                          forceLabel: "Remarks",
                           isImp: false
                         }}
                         textBox={{
@@ -534,22 +541,19 @@ class Subjective extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12" }}
                         label={{
-                          forceLabel: "Alergy Type",
+                          forceLabel: "Allergy Type",
                           fieldName: "sample"
                         }}
                         selector={{
-                          name: "hims_f_patient_allergy_id",
+                          name: "allergy_value",
                           className: "select-fld",
-                          value: this.state.hims_f_patient_allergy_id,
+                          value: this.state.allergy_value,
                           dataSource: {
-                            textField: "allergy_name",
-                            valueField: "hims_f_patient_allergy_id",
-                            data:
-                              this.state.allAllergies.length !== 0
-                                ? this.state.allAllergies
-                                : null
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.ALLERGY_TYPES
                           },
-                          onChange: this.dropDownHandle.bind(this)
+                          onChange: this.allergyDropdownHandler.bind(this)
                         }}
                       />
 
@@ -560,16 +564,13 @@ class Subjective extends Component {
                           fieldName: "sample"
                         }}
                         selector={{
-                          name: "hims_f_patient_allergy_id",
+                          name: "hims_d_allergiy_id",
                           className: "select-fld",
-                          value: this.state.hims_f_patient_allergy_id,
+                          value: this.state.hims_d_allergiy_id,
                           dataSource: {
                             textField: "allergy_name",
-                            valueField: "hims_f_patient_allergy_id",
-                            data:
-                              this.state.allAllergies.length !== 0
-                                ? this.state.allAllergies
-                                : null
+                            valueField: "hims_d_allergiy_id",
+                            data: this.props.allallergies
                           },
                           onChange: this.dropDownHandle.bind(this)
                         }}
@@ -1579,4 +1580,26 @@ class Subjective extends Component {
   }
 }
 
-export default Subjective;
+function mapStateToProps(state) {
+  return {
+    allallergies: state.allallergies,
+    allros: state.allros
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getReviewOfSystems: AlgaehActions,
+      getAllAllergies: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Subjective)
+);
