@@ -127,10 +127,10 @@
         "path": "/AccessionAcknowledgement"
       },
       {
-        "name": "Result Entry",
+        "name": "Result Entry List",
         "label": "Result Entry",
         "arlabel": "نتيجة الدخول",
-        "path": "/ResultEntry"
+        "path": "/ResultEntryList"
       }
     ]
   },

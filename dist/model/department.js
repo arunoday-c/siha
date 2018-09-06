@@ -26,11 +26,8 @@ var addDepartment = function addDepartment(req, res, next) {
     effective_start_date: null,
     effective_end_date: null,
     sub_department_status: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null,
-    record_status: null
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   var department = {
@@ -43,11 +40,8 @@ var addDepartment = function addDepartment(req, res, next) {
     effective_start_date: null,
     effective_end_date: null,
     department_status: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null,
-    record_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
     sub_department: [subDepartment]
   };
 
@@ -56,7 +50,7 @@ var addDepartment = function addDepartment(req, res, next) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
     }
     var db = req.db;
-    var _departmentDetails = (0, _extend2.default)(department, req.body);
+    var departmentDetails = (0, _extend2.default)(department, req.body);
     db.getConnection(function (error, connection) {
       if (error) {
         next(error);
@@ -78,7 +72,7 @@ var addDepartment = function addDepartment(req, res, next) {
         ,department_status \
         ,created_date \
         ,created_by \
-        ) VALUE(?,?,?,?,?,?,?,?,?,?)", [_departmentDetails.department_code, _departmentDetails.department_name, _departmentDetails.department_desc, _departmentDetails.department_type, _departmentDetails.hospital_id, _departmentDetails.effective_start_date, _departmentDetails.effective_end_date, _departmentDetails.department_status, new Date(), _departmentDetails.created_by], function (error, result) {
+        ) VALUE(?,?,?,?,?,?,?,?,?,?)", [departmentDetails.department_code, departmentDetails.department_name, departmentDetails.department_desc, departmentDetails.department_type, departmentDetails.hospital_id, departmentDetails.effective_start_date, departmentDetails.effective_end_date, departmentDetails.department_status, new Date(), departmentDetails.created_by], function (error, result) {
           if (error) {
             connection.rollback(function () {
               (0, _utils.releaseDBConnection)(db, connection);
@@ -86,7 +80,7 @@ var addDepartment = function addDepartment(req, res, next) {
             });
           }
           if (result != null) {
-            _departmentDetails.hims_d_department_id = result.insertId;
+            departmentDetails.hims_d_department_id = result.insertId;
 
             connection.commit(function (error) {
               if (error) {
@@ -101,7 +95,7 @@ var addDepartment = function addDepartment(req, res, next) {
              FROM `hims_d_department` WHERE hims_d_department_id=?;\
              SELECT `hims_d_sub_department_id`, `sub_department_code`, `sub_department_name`,`arabic_sub_department_name`\
              ,`sub_department_desc`, `department_id`, `effective_start_date`\
-             , `effective_end_date`, `sub_department_status` FROM `hims_d_sub_department` WHERE department_id=?;", [_departmentDetails.hims_d_department_id, _departmentDetails.hims_d_department_id], function (error, resultTables) {
+             , `effective_end_date`, `sub_department_status` FROM `hims_d_sub_department` WHERE department_id=?;", [departmentDetails.hims_d_department_id, departmentDetails.hims_d_department_id], function (error, resultTables) {
                 (0, _utils.releaseDBConnection)(db, connection);
                 if (error) {
                   next(error);
@@ -121,6 +115,21 @@ var addDepartment = function addDepartment(req, res, next) {
 // import $ from "jquery";
 
 var updateDepartment = function updateDepartment(req, res, next) {
+  var department = {
+    hims_d_department_id: null,
+    department_code: null,
+    department_name: null,
+    department_desc: null,
+    department_type: null,
+    hospital_id: null,
+    effective_start_date: null,
+    effective_end_date: null,
+    department_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+    sub_department: [subDepartment]
+  };
+
   try {
     (0, _logging.debugFunction)("updateDepartment");
     if (req.db == null) {
@@ -129,6 +138,7 @@ var updateDepartment = function updateDepartment(req, res, next) {
     var db = req.db;
 
     (0, _logging.debugLog)("Input Data", req.body);
+    var departmentDetails = (0, _extend2.default)(department, req.body);
     db.getConnection(function (error, connection) {
       if (error) {
         next(error);
@@ -286,11 +296,10 @@ var addSubDepartment = function addSubDepartment(req, res, next) {
     effective_start_date: null,
     effective_end_date: null,
     sub_department_status: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null,
-    record_status: null
+
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   try {
@@ -347,11 +356,10 @@ var updateSubDepartment = function updateSubDepartment(req, res, next) {
     effective_start_date: null,
     effective_end_date: null,
     sub_department_status: null,
-    created_date: null,
-    created_by: null,
-    updated_date: null,
-    updated_by: null,
-    record_status: null
+
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
   try {
     if (req.db == null) {

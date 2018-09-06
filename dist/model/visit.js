@@ -18,12 +18,11 @@ var _moment2 = _interopRequireDefault(_moment);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//Added by noor for code optimization
+//Added by noor for code optimization aug-20-1018
 var insertPatientVisitData = function insertPatientVisitData(req, res, next) {
   try {
     (0, _logging.debugFunction)("insertPatientVisitData");
-    var header = req.headers["x-app-user-identity"];
-    header = JSON.parse(header);
+
     var inputParam = (0, _extend2.default)({
       hims_f_patient_visit_id: null,
       patient_id: null,
@@ -43,22 +42,24 @@ var insertPatientVisitData = function insertPatientVisitData(req, res, next) {
       mlc_accident_reg_no: null,
       mlc_police_station: null,
       mlc_wound_certified_date: null,
-      created_by: header.user_id,
-      created_date: null,
-      updated_by: header.user_id,
-      updated_date: null,
+      created_by: req.userIdentity.algaeh_d_app_user_id,
+
+      updated_by: req.userIdentity.algaeh_d_app_user_id,
+
       record_status: null,
       patient_message: null,
       is_critical_message: null,
       message_active_till: null,
       visit_expiery_date: null,
       episode_id: null,
-      consultation: null
+      consultation: null,
+      appointment_id: null
     }, req.query["data"] == null ? req.body : req.query);
 
     var db = req.options != null ? req.options.db : req.db;
     var existingExparyDate = null;
     var currentPatientEpisodeNo = null;
+    var today = (0, _moment2.default)().format("YYYY-MM-DD");
 
     inputParam.patient_id = req.patient_id || req.body.patient_id;
     (0, _logging.debugLog)("Body:", req.body);
@@ -75,7 +76,7 @@ var insertPatientVisitData = function insertPatientVisitData(req, res, next) {
         inputParam.age_in_months = months;
         inputParam.age_in_days = days;
       }
-      if (existingExparyDate == null || existingExparyDate == undefined) {
+      if (existingExparyDate != null || existingExparyDate != undefined) {
         inputParam.visit_expiery_date = existingExparyDate;
         inputParam.episode_id = currentPatientEpisodeNo;
       }
@@ -84,8 +85,8 @@ var insertPatientVisitData = function insertPatientVisitData(req, res, next) {
 `age_in_years`, `age_in_months`, `age_in_days`, `insured`,`sec_insured`,\
 `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
 `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
-`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`)\
-VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);", [inputParam.patient_id, inputParam.visit_type, inputParam.age_in_years, inputParam.age_in_months, inputParam.age_in_days, inputParam.insured, inputParam.sec_insured, inputParam.visit_date, inputParam.department_id, inputParam.sub_department_id, inputParam.doctor_id, inputParam.maternity_patient, inputParam.is_mlc, inputParam.mlc_accident_reg_no, inputParam.mlc_police_station, inputParam.mlc_wound_certified_date, inputParam.created_by, new Date(), inputParam.visit_code, inputParam.visit_expiery_date, inputParam.episode_id], function (error, visitresult) {
+`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`,`appointment_id`)\
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);", [inputParam.patient_id, inputParam.visit_type, inputParam.age_in_years, inputParam.age_in_months, inputParam.age_in_days, inputParam.insured, inputParam.sec_insured, inputParam.visit_date, inputParam.department_id, inputParam.sub_department_id, inputParam.doctor_id, inputParam.maternity_patient, inputParam.is_mlc, inputParam.mlc_accident_reg_no, inputParam.mlc_police_station, inputParam.mlc_wound_certified_date, inputParam.created_by, new Date(), inputParam.visit_code, inputParam.visit_expiery_date, inputParam.episode_id, inputParam.appointment_id], function (error, visitresult) {
         if (error) {
           if (req.options == null) {
             db.rollback(function () {
@@ -138,12 +139,13 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);", [inputP
             existingExparyDate = (0, _moment2.default)(expResult[0]["visit_expiery_date"]).format("YYYY-MM-DD");
             currentPatientEpisodeNo = expResult[0]["episode_id"];
           }
+          // req.body.episode_id = expResult[0]["episode_id"];
           var currentEpisodeNo = null;
           //checking expiry if expired or not_there create new expiry date
           if (existingExparyDate == null || existingExparyDate == undefined || existingExparyDate < today) {
             //create new expiry date
             db.query("SELECT param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
-    and record_status='A'", function (error, record) {
+                and record_status='A'", function (error, record) {
               (0, _logging.debugLog)("In Expiry date records ", record);
               if (error) {
                 if (req.options == null) {
@@ -171,6 +173,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);", [inputP
                 if (currentEpisodeNo > 0) {
                   var nextEpisodeNo = currentEpisodeNo + 1;
                   inputParam.episode_id = currentEpisodeNo;
+                  req.body.episode_id = inputParam.episode_id;
                   db.query("update algaeh_d_app_config set episode_id=? where algaeh_d_app_config_id=11 and record_status='A' ", [nextEpisodeNo], function (error, updateResult) {
                     if (error) {
                       if (req.options == null) {
@@ -188,6 +191,10 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);", [inputP
                 }
               }
             });
+          } else {
+            inputParam.episode_id = expResult[0]["episode_id"];
+            req.body.episode_id = inputParam.episode_id;
+            internalInsertPatientVisitData();
           }
         }
       });
@@ -291,6 +298,7 @@ var addVisit = function addVisit(req, res, next) {
   }
 };
 
+//old method to be deleted
 var insertVisitData = function insertVisitData(dataBase, req, res, callBack) {
   var visitDetails = {
     hims_f_patient_visit_id: null,
@@ -311,11 +319,10 @@ var insertVisitData = function insertVisitData(dataBase, req, res, callBack) {
     mlc_accident_reg_no: null,
     mlc_police_station: null,
     mlc_wound_certified_date: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     patient_message: null,
     is_critical_message: null,
     message_active_till: null,
@@ -327,7 +334,7 @@ var insertVisitData = function insertVisitData(dataBase, req, res, callBack) {
     (0, _logging.debugFunction)("insertVisitData");
     var inputParam = (0, _extend2.default)(visitDetails, req.query["data"] == null ? req.body : req.query);
 
-    var _today = (0, _moment2.default)().format("YYYY-MM-DD");
+    var today = (0, _moment2.default)().format("YYYY-MM-DD");
 
     //for consultaion
     if (inputParam.consultation == "Y") {
@@ -356,7 +363,7 @@ var insertVisitData = function insertVisitData(dataBase, req, res, callBack) {
         var currentEpisodeNo = null;
 
         //checking expiry if expired or not_there create new expiry date
-        if (existingExparyDate == null || existingExparyDate == undefined || existingExparyDate < _today) {
+        if (existingExparyDate == null || existingExparyDate == undefined || existingExparyDate < today) {
           //create new expiry date
           dataBase.query("SELECT param_value from algaeh_d_app_config WHERE param_name=?", ["VISITEXPERIDAY"], function (error, record) {
             if (error) {
@@ -425,7 +432,7 @@ var insertVisitData = function insertVisitData(dataBase, req, res, callBack) {
               }
             });
           });
-        } else if (existingExparyDate > _today) {
+        } else if (existingExparyDate > today) {
           inputParam.visit_expiery_date = existingExparyDate;
           inputParam.episode_id = currentPatientEpisodeNo;
 
@@ -467,7 +474,7 @@ var insertVisitData = function insertVisitData(dataBase, req, res, callBack) {
     `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
      `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
      `created_by`, `created_date`,`visit_code`,`visit_expiery_date`)\
-    VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);", [inputParam.patient_id, inputParam.visit_type, inputParam.age_in_years, inputParam.age_in_months, inputParam.age_in_days, inputParam.insured, inputParam.sec_insured, inputParam.visit_date, inputParam.department_id, inputParam.sub_department_id, inputParam.doctor_id, inputParam.maternity_patient, inputParam.is_mlc, inputParam.mlc_accident_reg_no, inputParam.mlc_police_station, inputParam.mlc_wound_certified_date, inputParam.created_by, new Date(), inputParam.visit_code, _today], function (error, result) {
+    VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);", [inputParam.patient_id, inputParam.visit_type, inputParam.age_in_years, inputParam.age_in_months, inputParam.age_in_days, inputParam.insured, inputParam.sec_insured, inputParam.visit_date, inputParam.department_id, inputParam.sub_department_id, inputParam.doctor_id, inputParam.maternity_patient, inputParam.is_mlc, inputParam.mlc_accident_reg_no, inputParam.mlc_police_station, inputParam.mlc_wound_certified_date, inputParam.created_by, new Date(), inputParam.visit_code, today], function (error, result) {
           if (error) {
             dataBase.rollback(function () {
               dataBase.release();
@@ -534,11 +541,10 @@ var updateData = function updateData(dataBase, req, callBack) {
     mlc_accident_reg_no: null,
     mlc_police_station: null,
     mlc_wound_certified_date: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    record_status: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
+
     patient_message: null,
     is_critical_message: null,
     message_active_till: null,

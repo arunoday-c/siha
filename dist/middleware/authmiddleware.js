@@ -12,6 +12,10 @@ var _keys = require("../keys/keys");
 
 var _keys2 = _interopRequireDefault(_keys);
 
+var _moment = require("moment");
+
+var _moment2 = _interopRequireDefault(_moment);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var TOKENTIME = _keys2.default.TOKENTIME;
@@ -31,11 +35,12 @@ var generateAccessToken = function generateAccessToken(req, res, next) {
     next();
   }
 };
-
+var days = _moment2.default.duration(TOKENTIME, "seconds").asDays();
 var respond = function respond(req, res) {
   res.status(200).json({
     user: req.user,
-    token: req.token
+    token: req.token,
+    days: days
   });
 };
 

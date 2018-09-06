@@ -110,7 +110,7 @@
       {
         "name": "Result Entry",
         "label": "نتيجة الدخول",
-        "path": "/ResultEntry"
+        "path": "/ResultEntryList"
       }
     ]
   },

@@ -36,9 +36,9 @@ var addEmployee = function addEmployee(req, res, next) {
     effective_start_date: null,
     effective_end_date: null,
     created_date: new Date(),
-    created_by: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     updated_date: new Date(),
-    updated_by: null
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   try {
@@ -161,9 +161,9 @@ var updateEmployee = function updateEmployee(req, res, next) {
     effective_start_date: null,
     effective_end_date: null,
     created_date: new Date(),
-    created_by: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
     updated_date: new Date(),
-    updated_by: null
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   try {

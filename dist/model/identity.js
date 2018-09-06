@@ -19,11 +19,9 @@ var addIdentity = function addIdentity(req, res, next) {
     hims_d_identity_document_id: null,
     identity_document_code: null,
     identity_document_name: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    identity_status: "A"
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   try {
@@ -84,11 +82,8 @@ var updateIdentity = function updateIdentity(req, res, next) {
     hims_d_identity_document_id: null,
     identity_document_code: null,
     identity_document_name: null,
-    created_by: null,
-    created_date: null,
-    updated_by: null,
-    updated_date: null,
-    identity_status: "A"
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
   try {

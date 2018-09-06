@@ -16,13 +16,12 @@
   "case_type": "Case Type",
   "action": "Actions",
   "number_of_tests": "Number of Tests",
-  "sample_collection": "Accession Acknowledgement",
+  "sample_collection": "Result Entry",
   "collected_by": "Collected By",
   "collected_date": "Collected Date",
   "collected": "Collect",
 
-  "btnclose": "Close",
-  "form_name": "Accession Acknowledgement",
-  "form_home": "Home",
-  "location_id": "Lab Location"
+  "btnprint": "Print",
+  "form_name": "Result Entry",
+  "form_home": "Home"
 }

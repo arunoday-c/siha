@@ -58,10 +58,13 @@ var _jwtDecode = require("jwt-decode");
 
 var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
+var _cryptography = require("./utils/cryptography");
+
+var _util = require("util");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var LocalStrategy = require("passport-local").Strategy;
-
 
 var app = (0, _express2.default)();
 
@@ -96,17 +99,28 @@ _passport2.default.deserializeUser(function (id, done) {
 });
 
 app.use(function (req, res, next) {
-  // let reBody = req.body;
-  // if (reBody != null && reBody["password"] != null) {
-  //   reBody["password"] = String(reBody["password"]).replace(
-  //     reBody["password"],
-  //     "*******"
-  //   );
-  // }
-
   var reqH = req.headers;
+
   var reqUser = "";
-  if (req.url != "/api/v1/apiAuth") reqUser = (0, _jwtDecode2.default)(reqH["x-api-key"]).id;
+  if (req.url != "/api/v1/apiAuth") {
+    reqUser = (0, _jwtDecode2.default)(reqH["x-api-key"]).id;
+    if (req.url != "/api/v1/apiAuth/authUser") {
+      var header = req.headers["x-app-user-identity"];
+
+      if (header != null && header != "" && header != "null") {
+        header = (0, _cryptography.decryption)(header);
+
+        req.body.created_by = header.algaeh_d_app_user_id;
+        req.body.updated_by = header.algaeh_d_app_user_id;
+        req.userIdentity = header;
+      } else {
+        res.status(_httpStatus2.default.unAuthorized).json({
+          success: false,
+          message: "unauthorized credentials can not procees.."
+        });
+      }
+    }
+  }
 
   _logging.logger.log("info", "%j", {
     requestClient: req.ip,
