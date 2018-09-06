@@ -41,17 +41,181 @@ class PhysicalExamination extends Component {
             <div className="popupHeader">
               <h4>Patient Vitals</h4>
             </div>
-            <div className="col-lg-12 popupInner" />
+            <div className="col-lg-12 popupInner">
+              <div className="row">
+                <div className="col-lg-2 popLeftDiv">
+                  <h5>Vital Timeline</h5>
+                  <hr />
+                  <div className="timeline">
+                    <div className="timelineContainer right">
+                      <div className="content">
+                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
+                        <div className="vitalsCntr">
+                          <ul className="vitals-box">
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="timelineContainer right">
+                      <div className="content">
+                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
+                        <div className="vitalsCntr">
+                          <ul className="vitals-box">
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="timelineContainer right">
+                      <div className="content">
+                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
+                        <div className="vitalsCntr">
+                          <ul className="vitals-box">
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="timelineContainer right">
+                      <div className="content">
+                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
+                        <div className="vitalsCntr">
+                          <ul className="vitals-box">
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-lg-10 popRightDiv">
+                  <h5>Vital Charts</h5>
+                  <hr />
+                </div>
+              </div>
+            </div>
             <div className="popupFooter">
-              <Button
-                variant="raised"
-                onClick={this.handleClose}
-                style={{ backgroundColor: "#D5D5D5" }}
-                // onClick={        }
-                size="small"
-              >
+              <button className="btn btn-default" onClick={this.handleClose}>
                 Close
-              </Button>
+              </button>
             </div>
           </div>
         </Modal>
