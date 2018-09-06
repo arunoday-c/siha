@@ -1248,11 +1248,16 @@ let addNewAllergy = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, `created_by`,  `updated_by`)\
+        "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, onset, onset_date, severity, `comment`, allergy_inactive, `created_by`,  `updated_by`)\
         VALUE(?,?,?,?)",
         [
           inputparam.patient_id,
           inputparam.allergy_id,
+          inputparam.onset,
+          inputparam.onset_date,
+          inputparam.severity,
+          inputparam.comment,
+          inputparam.allergy_inactive,
           inputparam.created_by,
           inputparam.updated_by
         ],
