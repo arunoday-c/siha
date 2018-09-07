@@ -40,7 +40,8 @@ import {
   updatePatientDiagnosis,
   getPatientVitals,
   addPatientVitals,
-  addPatientPhysicalExamination
+  addPatientPhysicalExamination,
+  updatePatientAllergy
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -642,6 +643,25 @@ export default ({ config, db }) => {
         records: result
       });
       next();
+    },
+    releaseConnection
+  );
+
+  //created by irfan: to update  PatientAllergy
+  api.put(
+    "/updatePatientAllergy",
+    updatePatientAllergy,
+    (req, res, next) => {
+      let resultSelect = req.records;
+      if (resultSelect.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: resultSelect
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
     },
     releaseConnection
   );

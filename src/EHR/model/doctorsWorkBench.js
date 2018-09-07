@@ -1863,6 +1863,69 @@ let addPatientPhysicalExamination = (req, res, next) => {
   }
 };
 
+//created by irfan: to updatePatientAllergy
+let updatePatientAllergy = (req, res, next) => {
+  try {
+    debugFunction("updatePatientAllergy");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    debugLog("Input Data", req.body);
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        let queryBuilder =
+          "update hims_f_patient_allergy set allergy_inactive=?,\
+          `comment`=?,onset=?,severity=?,onset_date=?, updated_date=?,updated_by=?, record_status=? where hims_f_patient_allergy_id=?;";
+        let inputs = [
+          input.allergy_inactive,
+          input.comment,
+          input.onset,
+          input.severity,
+          input.onset_date,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_f_patient_allergy_id
+        ];
+
+        connection.query(queryBuilder, inputs, (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          connection.commit(error => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.records = result;
+            next();
+          });
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -1902,5 +1965,6 @@ module.exports = {
   updatePatientDiagnosis,
   getPatientVitals,
   addPatientVitals,
-  addPatientPhysicalExamination
+  addPatientPhysicalExamination,
+  updatePatientAllergy
 };
