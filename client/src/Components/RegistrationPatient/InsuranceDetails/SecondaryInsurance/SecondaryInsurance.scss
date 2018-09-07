@@ -5,15 +5,8 @@
 }
 .htpl-phase1-seconary-insurance-form {
   .primary-details {
-    //padding: 5px;
-    padding-bottom: 15px;
-    border-right: 1px solid #000;
-    // @media only screen and (max-width: 904px) {
-    //   padding: 5px;
-    // }
-    .primary-box-container {
-      //  padding: 5px;
-    }
+    padding-top: 8px;
+    border-right: 1px dashed #d3d3d3;
   }
   // label {
   //   font-weight: 400;
@@ -47,8 +40,7 @@
     margin-top: 2%;
   }
   .secondary-details {
-    //padding: 5px;
-    padding-bottom: 15px;
+    padding-top: 8px;
     .secondary-box-container {
       // padding: 5px;
       .attach-design {

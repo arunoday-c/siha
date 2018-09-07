@@ -32,10 +32,10 @@ class OtherInfo extends Component {
         {context => (
           <div className="hptl-phase1-add-other-form">
             {/* <div className="main-details" /> */}
-            <div className="container-fluid">
-              <div className="row">
+            <div className="col-lg-12">
+              <div className="row" style={{ paddingBottom: "10px" }}>
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "secondary_contact_number"
                   }}
@@ -56,7 +56,7 @@ class OtherInfo extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "emergency_contact_number"
                   }}
@@ -77,7 +77,7 @@ class OtherInfo extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "emergency_contact_name"
                   }}
@@ -98,7 +98,7 @@ class OtherInfo extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "relationship_with_patient"
                   }}
@@ -117,10 +117,8 @@ class OtherInfo extends Component {
                     }
                   }}
                 />
-              </div>
-              <div className="row">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "email"
                   }}
@@ -140,7 +138,6 @@ class OtherInfo extends Component {
                   }}
                 />
               </div>
-              <br />
             </div>
           </div>
         )}
