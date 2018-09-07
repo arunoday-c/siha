@@ -1764,6 +1764,105 @@ let getPatientVitals = (req, res, next) => {
   }
 };
 
+//created by irfan: to add patient vitals
+let addPatientVitals = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_f_patient_vitals` (`patient_id`, `visit_id`, `visit_date`, `visit_time`,\
+         `case_type`, `height`, `weight`, `bmi`, `oxysat`, `temperature_from`, `temperature_farenhiet`, \
+         `temperature_celsisus`, `systolic`, `diastolic`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          inputparam.patient_id,
+          inputparam.visit_id,
+          inputparam.visit_date,
+          inputparam.visit_time,
+          inputparam.case_type,
+          inputparam.height,
+          inputparam.weight,
+          inputparam.bmi,
+          inputparam.oxysat,
+          inputparam.temperature_from,
+          inputparam.temperature_farenhiet,
+          inputparam.temperature_celsisus,
+          inputparam.systolic,
+          inputparam.diastolic,
+          new Date(),
+          inputparam.created_by,
+          new Date(),
+          inputparam.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add patient physical examination
+let addPatientPhysicalExamination = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO hims_f_episode_examination (`patient_id`, `episode_id`, `exam_header_id`, \
+        `exam_details_id`, `exam_subdetails_id`, `comments`, `created_date`, `created_by`, `updated_date`, `updated_by`) \
+        VALUE(?,?,?,?,?,?,?,?,?,?)",
+        [
+          inputparam.patient_id,
+          inputparam.episode_id,
+          inputparam.exam_header_id,
+          inputparam.exam_details_id,
+          inputparam.exam_subdetails_id,
+          inputparam.comments,
+          new Date(),
+          inputparam.created_by,
+          new Date(),
+          inputparam.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -1801,5 +1900,7 @@ module.exports = {
   addReviewOfSysDetails,
   getReviewOfSystem,
   updatePatientDiagnosis,
-  getPatientVitals
+  getPatientVitals,
+  addPatientVitals,
+  addPatientPhysicalExamination
 };
