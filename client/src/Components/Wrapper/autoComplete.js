@@ -63,8 +63,7 @@ const styles = theme => ({
       paddingLeft: "4px"
     },
     ".Select-placeholder": {
-      opacity: 0.42
-      // color: theme.palette.common.black
+      backgroundColor: "#fff"
     },
     ".Select-menu-outer": {
       backgroundColor: theme.palette.background.paper,
