@@ -9,3 +9,81 @@
     width: 25%;
   }
 }
+
+/* The actual timeline (the vertical ruler) */
+.timeline {
+  position: relative;
+  max-width: auto;
+  margin: 0 auto;
+
+  /* timelineContainer around content */
+  .timelineContainer {
+    padding: 5px 0 10px 5px;
+    position: relative;
+    width: 90%;
+  }
+
+  /* The circles on the timeline */
+  .timelineContainer::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #2ebcb0;
+    top: 15px;
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  /* Place the container to the right */
+  .right {
+    left: 10px;
+  }
+
+  .content {
+    position: relative;
+    padding: 4px 0 0 16px;
+
+    .dateStamp {
+      font-size: 0.8rem;
+    }
+    ul.vitals-box {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li.each-vitals-box {
+        margin: 5px 0 0;
+        padding: 5px 10px;
+        list-style: none;
+        border: 2px solid #cecece;
+        border-radius: 5px;
+        p {
+          font-size: 0.9rem;
+          margin: 0;
+          padding: 0;
+          margin-bottom: 10px;
+        }
+        span:first-child {
+          font-size: 1.5rem;
+        }
+        span:last-child {
+          text-align: right;
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+}
+
+/* The actual timeline (the vertical ruler) */
+.timeline::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  top: 0;
+  bottom: 0;
+  left: 22px;
+  margin-left: -3px;
+  background: #cecece;
+}

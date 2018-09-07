@@ -6,6 +6,8 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import Modal from "@material-ui/core/Modal";
+import Button from "@material-ui/core/Button";
 import search from "../../../assets/svg/search.svg";
 
 const AllergyData = [
@@ -15,9 +17,209 @@ const AllergyData = [
 ];
 
 class PhysicalExamination extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openVitalModal: false
+    };
+    this.handleClose = this.handleClose.bind(this);
+  }
+
+  addVitals() {
+    this.setState({ openVitalModal: true });
+  }
+
+  handleClose() {
+    this.setState({ openVitalModal: false });
+  }
+
   render() {
     return (
       <div className="physical_examination">
+        <Modal open={this.state.openVitalModal}>
+          <div className="algaeh-modal">
+            <div className="popupHeader">
+              <h4>Patient Vitals</h4>
+            </div>
+            <div className="col-lg-12 popupInner">
+              <div className="row">
+                <div className="col-lg-2 popLeftDiv">
+                  <h5>Vital Timeline</h5>
+                  <hr />
+                  <div className="timeline">
+                    <div className="timelineContainer right">
+                      <div className="content">
+                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
+                        <div className="vitalsCntr">
+                          <ul className="vitals-box">
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="timelineContainer right">
+                      <div className="content">
+                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
+                        <div className="vitalsCntr">
+                          <ul className="vitals-box">
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="timelineContainer right">
+                      <div className="content">
+                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
+                        <div className="vitalsCntr">
+                          <ul className="vitals-box">
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="timelineContainer right">
+                      <div className="content">
+                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
+                        <div className="vitalsCntr">
+                          <ul className="vitals-box">
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                            <li className="each-vitals-box">
+                              <p>Weight</p>
+                              <span>75.5</span>
+                              <span>Kg</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-lg-10 popRightDiv">
+                  <h5>Vital Charts</h5>
+                  <hr />
+                </div>
+              </div>
+            </div>
+            <div className="popupFooter">
+              <button className="btn btn-default" onClick={this.handleClose}>
+                Close
+              </button>
+            </div>
+          </div>
+        </Modal>
+
         <div className="col-lg-12">
           <div className="row">
             <div className="col-lg-8">
@@ -126,7 +328,10 @@ class PhysicalExamination extends Component {
                       href="javascript:;"
                       className="btn btn-primary btn-circle active"
                     >
-                      <i className="fas fa-history" />
+                      <i
+                        onClick={this.addVitals.bind(this)}
+                        className="fas fa-history"
+                      />
                     </a>
                   </div>
                 </div>
