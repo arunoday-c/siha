@@ -96,7 +96,7 @@ class AddInsuranceForm extends Component {
                             {INSURANCE_DECISION.map((data, idx) => {
                               return (
                                 <div
-                                  className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4"
+                                  className="col-lg-6"
                                   key={"index_value" + idx}
                                 >
                                   <input
