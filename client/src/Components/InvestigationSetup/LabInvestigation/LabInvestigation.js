@@ -429,7 +429,11 @@ class LabInvestigation extends Component {
                             ),
                             onEdit: row => {},
 
-                            onDone: updateLabInvestigation.bind(this, this)
+                            onDone: updateLabInvestigation.bind(
+                              this,
+                              this,
+                              context
+                            )
                           }}
                         />
                       </div>

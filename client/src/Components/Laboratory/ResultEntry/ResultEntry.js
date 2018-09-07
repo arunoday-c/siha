@@ -10,6 +10,7 @@ import "./ResultEntry.css";
 import "./../../../styles/site.css";
 import {
   AlagehAutoComplete,
+  AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
@@ -22,15 +23,13 @@ import {
   FORMAT_RAD_STATUS,
   RAD_REPORT_TYPE
 } from "../../../utils/GlobalVariables.json";
-import { getAnalytes, onvalidate } from "./ResultEntryEvents";
+import { onchangegridcol, getAnalytes, onvalidate } from "./ResultEntryEvents";
 
 class ResultEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      template_name: null,
-      template_html: null,
-      pre_exam_status: null
+      test_analytes: []
     };
   }
 
@@ -64,7 +63,11 @@ class ResultEntry extends Component {
   }
   componentWillReceiveProps(newProps) {
     debugger;
-    if (newProps.selectedPatient !== undefined && newProps.open === true) {
+    if (
+      newProps.selectedPatient !== undefined &&
+      newProps.selectedPatient.open === true
+    ) {
+      newProps.selectedPatient.open = false;
       this.setState({ ...this.state, ...newProps.selectedPatient }, () => {
         getAnalytes(this, this);
       });
@@ -302,7 +305,26 @@ class ResultEntry extends Component {
                                       forceLabel: "Result"
                                     }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        value: row.result,
+                                        className: "txt-fld",
+                                        name: "result",
+                                        events: {
+                                          onChange: onchangegridcol.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )
+                                        }
+                                      }}
+                                    />
+                                  );
+                                }
                               },
 
                               {
@@ -435,7 +457,7 @@ class ResultEntry extends Component {
                             ]}
                             keyId="patient_code"
                             dataSource={{
-                              data: this.props.testanalytes
+                              data: this.state.test_analytes
                             }}
                             paging={{ page: 0, rowsPerPage: 10 }}
                           />

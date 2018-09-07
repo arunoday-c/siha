@@ -110,6 +110,7 @@ const ResultEntryModel = ($this, row) => {
         icon: "warning"
       });
     } else {
+      row.open = true;
       $this.setState({
         isOpen: !$this.state.isOpen,
         selectedPatient: row

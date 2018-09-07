@@ -104,12 +104,57 @@ const AddAnalytes = ($this, context) => {
   }
 };
 
-const updateLabInvestigation = $this => {
-  successfulMessage({
-    message: "Invalid Input. No Option to edit.",
-    title: "Warning",
-    icon: "warning"
+const updateLabInvestigation = ($this, context, row) => {
+  let analytes = $this.state.analytes;
+  let update_analytes = $this.state.update_analytes;
+
+  if ($this.state.hims_d_investigation_test_id !== null) {
+    if (row.hims_m_lab_analyte_id !== undefined) {
+      let Updateobj = {
+        hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
+        critical_low: row.critical_low,
+        critical_high: row.critical_high,
+        normal_low: row.normal_low,
+        normal_high: row.normal_high,
+        record_status: "A"
+      };
+
+      for (let j = 0; j < update_analytes.length; j++) {
+        if ((update_analytes[j].analyte_id = row.analyte_id)) {
+          update_analytes.splice(j, 1);
+        }
+      }
+      update_analytes.push(Updateobj);
+    } else {
+      let Updateobj = {
+        hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
+        critical_low: row.critical_low,
+        critical_high: row.critical_high,
+        normal_low: row.normal_low,
+        normal_high: row.normal_high,
+        record_status: "A"
+      };
+      update_analytes.push(Updateobj);
+    }
+  }
+  debugger;
+  for (let l = 0; l < analytes.length; l++) {
+    if ((analytes[l].analyte_id = row.analyte_id)) {
+      analytes[l] = row;
+    }
+  }
+  // analytes.splice(rowId, 1);
+  $this.setState({
+    analytes: analytes,
+    update_analytes: update_analytes
   });
+
+  if (context !== undefined) {
+    context.updateState({
+      analytes: analytes,
+      update_analytes: update_analytes
+    });
+  }
 };
 
 const deleteLabInvestigation = ($this, context, row, rowId) => {
@@ -120,6 +165,10 @@ const deleteLabInvestigation = ($this, context, row, rowId) => {
     if (row.hims_m_lab_analyte_id !== undefined) {
       let Updateobj = {
         hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
+        critical_low: row.critical_low,
+        critical_high: row.critical_high,
+        normal_low: row.normal_low,
+        normal_high: row.normal_high,
         record_status: "I"
       };
       update_analytes.push(Updateobj);

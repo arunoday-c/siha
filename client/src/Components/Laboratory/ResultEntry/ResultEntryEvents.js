@@ -147,8 +147,7 @@ const onvalidate = $this => {
   UpdateRadOrder($this, "Validate");
 };
 
-const getAnalytes = ($this, row) => {
-  debugger;
+const getAnalytes = $this => {
   $this.props.getTestAnalytes({
     uri: "/laboratory/getTestAnalytes",
     method: "GET",
@@ -156,8 +155,28 @@ const getAnalytes = ($this, row) => {
     redux: {
       type: "TEST_ANALYTES_GET_DATA",
       mappingName: "testanalytes"
+    },
+    afterSuccess: data => {
+      debugger;
+      $this.setState({ test_analytes: data });
     }
   });
+};
+
+const onchangegridcol = ($this, row, e) => {
+  debugger;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let test_analytes = $this.state.test_analytes;
+  row[name] = value;
+  for (let l = 0; l < test_analytes.length; l++) {
+    if (
+      test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
+    ) {
+      test_analytes[l] = row;
+    }
+  }
+  $this.setState({ test_analytes: test_analytes });
 };
 
 export {
@@ -166,5 +185,6 @@ export {
   templatehandle,
   rtehandle,
   onvalidate,
-  getAnalytes
+  getAnalytes,
+  onchangegridcol
 };
