@@ -156,12 +156,14 @@ class RegistrationPatient extends Component {
 
     if (!err) {
       this.GenerateReciept($this => {
+        AlgaehLoader({ show: true });
         if ($this.state.hims_d_patient_id === null) {
           algaehApiCall({
             uri: "/frontDesk/add",
             data: $this.state,
             method: "POST",
             onSuccess: response => {
+              AlgaehLoader({ show: false });
               if (response.data.success) {
                 $this.setState({
                   patient_code: response.data.records.patient_code,
@@ -177,6 +179,7 @@ class RegistrationPatient extends Component {
               }
             },
             onFailure: error => {
+              AlgaehLoader({ show: false });
               successfulMessage({
                 message: error.message,
                 title: "Error",
@@ -190,6 +193,7 @@ class RegistrationPatient extends Component {
             data: $this.state,
             method: "POST",
             onSuccess: response => {
+              AlgaehLoader({ show: false });
               if (response.data.success) {
                 $this.setState({
                   bill_number: response.data.records.bill_number,
@@ -204,6 +208,7 @@ class RegistrationPatient extends Component {
               }
             },
             onFailure: error => {
+              AlgaehLoader({ show: false });
               successfulMessage({
                 message: error.message,
                 title: "Error",
