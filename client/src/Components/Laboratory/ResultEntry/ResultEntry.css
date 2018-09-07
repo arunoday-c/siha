@@ -1,0 +1,95 @@
+.patientInfo-lab-Top {
+  background: white;
+  height: 70px;
+  padding: 5px 0 0;
+  width: 100%;
+  position: relative;
+  z-index: 1; }
+  .patientInfo-lab-Top div {
+    float: left;
+    color: #858585; }
+  .patientInfo-lab-Top .backBtn {
+    border-right: 1px solid #e1e1e1;
+    padding-right: 10px; }
+    .patientInfo-lab-Top .backBtn button {
+      height: 60px;
+      border: 1px solid #e1e1e1;
+      font-size: 0.7rem; }
+    .patientInfo-lab-Top .backBtn i {
+      display: block;
+      margin-bottom: 5px; }
+  .patientInfo-lab-Top .patientImg {
+    margin: 1px 10px;
+    border-radius: 4px;
+    border: 1px solid #e1e1e1; }
+    .patientInfo-lab-Top .patientImg img {
+      height: 55px;
+      border-radius: 4px;
+      overflow: hidden; }
+  .patientInfo-lab-Top .patientName {
+    max-width: 230px;
+    margin-top: 2px;
+    border-left: 1px solid #e1e1e1;
+    border-right: 1px solid #e1e1e1;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 57px; }
+    .patientInfo-lab-Top .patientName h6 {
+      font-size: 1rem;
+      margin-bottom: 2px;
+      color: #000;
+      line-height: 1.2rem; }
+    .patientInfo-lab-Top .patientName p {
+      font-size: 0.8rem;
+      margin: 0;
+      padding: 0; }
+  .patientInfo-lab-Top .patientDemographic {
+    font-size: 0.8rem;
+    line-height: 1.3rem;
+    border-right: 1px solid #e1e1e1;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 57px; }
+    .patientInfo-lab-Top .patientDemographic span {
+      display: block; }
+      .patientInfo-lab-Top .patientDemographic span b {
+        color: #34b8bc; }
+  .patientInfo-lab-Top .patientHospitalDetail {
+    font-size: 0.8rem;
+    line-height: 1.3rem;
+    border-right: 1px solid #e1e1e1;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 57px; }
+    .patientInfo-lab-Top .patientHospitalDetail span {
+      display: block; }
+      .patientInfo-lab-Top .patientHospitalDetail span b {
+        color: #34b8bc; }
+  .patientInfo-lab-Top .patientVital {
+    font-size: 0.8rem;
+    width: 210px;
+    line-height: 1.3rem;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 57px; }
+    .patientInfo-lab-Top .patientVital span {
+      display: inline-block;
+      margin-right: 8px; }
+      .patientInfo-lab-Top .patientVital span b {
+        color: #34b8bc; }
+  .patientInfo-lab-Top .moreAction {
+    float: right;
+    border-right: 1px solid #e1e1e1;
+    padding-right: 10px; }
+    .patientInfo-lab-Top .moreAction button {
+      height: 60px;
+      border: 1px solid #e1e1e1;
+      font-size: 0.7rem;
+      margin-left: 0; }
+    .patientInfo-lab-Top .moreAction i {
+      display: block;
+      margin-bottom: 5px; }
+
+.next_plain th,
+.next_plain td {
+  border-right: 1px solid #e6e6e6; }

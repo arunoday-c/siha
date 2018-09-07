@@ -32,6 +32,10 @@ export default {
       RadTemplate: [],
       template_name: null,
       template_html: null,
+      normal_low: 0,
+      normal_high: 0,
+      critical_low: 0,
+      critical_high: 0,
 
       film_category: "NA",
       screening_test: "N",

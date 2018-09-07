@@ -258,8 +258,68 @@ class LabInvestigation extends Component {
                         onChange: analyteidhandle.bind(this, this, context)
                       }}
                     />
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-2" }}
+                      label={{
+                        fieldName: "normal_low"
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        className: "txt-fld",
+                        name: "normal_low",
+                        value: this.state.normal_low,
+                        events: {
+                          onChange: texthandle.bind(this, this, context)
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-2" }}
+                      label={{
+                        fieldName: "normal_high"
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        className: "txt-fld",
+                        name: "normal_high",
+                        value: this.state.normal_high,
+                        events: {
+                          onChange: texthandle.bind(this, this, context)
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-2" }}
+                      label={{
+                        fieldName: "critical_low"
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        className: "txt-fld",
+                        name: "critical_low",
+                        value: this.state.critical_low,
+                        events: {
+                          onChange: texthandle.bind(this, this, context)
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-2" }}
+                      label={{
+                        fieldName: "critical_high"
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        className: "txt-fld",
+                        name: "critical_high",
+                        value: this.state.critical_high,
+                        events: {
+                          onChange: texthandle.bind(this, this, context)
+                        }
+                      }}
+                    />
 
-                    <div className="col-lg-2">
+                    <div className="col-lg-1">
                       <IconButton className="go-button" color="primary">
                         <PlayCircleFilled
                           onClick={AddAnalytes.bind(this, this, context)}
@@ -293,13 +353,66 @@ class LabInvestigation extends Component {
                                 return (
                                   <span>
                                     {display !== null && display.length !== 0
-                                      ? this.state.selectedLang === "en"
-                                        ? display[0].description
-                                        : display[0].description
+                                      ? display[0].description
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehAutoComplete
+                                    div={{}}
+                                    selector={{
+                                      name: "visit_status",
+                                      className: "select-fld",
+                                      value: row.analyte_id,
+                                      dataSource: {
+                                        textField: "description",
+                                        valueField: "hims_d_lab_analytes_id",
+                                        data: this.props.labanalytes
+                                      },
+                                      others: {
+                                        disabled: true
+                                      },
+                                      onChange: null
+                                    }}
+                                  />
+                                );
+                              },
+                              disabled: true
+                            },
+                            {
+                              fieldName: "normal_low",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ fieldName: "normal_low" }}
+                                />
+                              )
+                            },
+                            ,
+                            {
+                              fieldName: "normal_high",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ fieldName: "normal_high" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "critical_low",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ fieldName: "critical_low" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "critical_high",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ fieldName: "critical_high" }}
+                                />
+                              )
                             }
                           ]}
                           keyId="analyte_id"

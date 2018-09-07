@@ -95,7 +95,7 @@ const getSampleCollectionDetails = $this => {
   });
 };
 
-const ResultEntry = ($this, row, AccRej) => {
+const ResultEntryModel = ($this, row) => {
   if (row.status === "O") {
     successfulMessage({
       message: "Invalid Input. Please collect the sample.",
@@ -110,8 +110,18 @@ const ResultEntry = ($this, row, AccRej) => {
         icon: "warning"
       });
     } else {
+      $this.setState({
+        isOpen: !$this.state.isOpen,
+        selectedPatient: row
+      });
     }
   }
+};
+
+const closeResultEntry = ($this, e) => {
+  $this.setState({
+    isOpen: !$this.state.isOpen
+  });
 };
 
 export {
@@ -119,5 +129,6 @@ export {
   PatientSearch,
   datehandle,
   getSampleCollectionDetails,
-  ResultEntry
+  ResultEntryModel,
+  closeResultEntry
 };

@@ -126,6 +126,10 @@ let addInvestigationTest = (req, res, next) => {
                       "analyte_id",
                       "analyte_type",
                       "result_unit",
+                      "critical_low",
+                      "critical_high",
+                      "normal_low",
+                      "normal_high",
                       "created_by",
                       "updated_by"
                     ];
@@ -380,6 +384,10 @@ let updateInvestigationTest = (req, res, next) => {
                         "analyte_id",
                         "analyte_type",
                         "result_unit",
+                        "critical_low",
+                        "critical_high",
+                        "normal_low",
+                        "normal_high",
                         "created_by",
                         "updated_by"
                       ];
@@ -483,9 +491,6 @@ let updateInvestigationTest = (req, res, next) => {
                     "created_by",
                     "updated_by"
                   ];
-                 
-
-                
 
                   connection.query(
                     "INSERT INTO hims_d_rad_template_detail(" +

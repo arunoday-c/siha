@@ -14,7 +14,8 @@ import {
   PatientSearch,
   datehandle,
   getSampleCollectionDetails,
-  ResultEntry
+  ResultEntryModel,
+  closeResultEntry
 } from "./ResultEntryListHandaler";
 
 import {
@@ -34,6 +35,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
+import ResultEntry from "../ResultEntry/ResultEntry";
 
 class ResultEntryList extends Component {
   constructor(props) {
@@ -68,11 +70,6 @@ class ResultEntryList extends Component {
     this.setState({
       isOpen: !this.state.isOpen,
       selected_patient: row
-    });
-  }
-  CloseCollectionModel(e) {
-    this.setState({
-      isOpen: !this.state.isOpen
     });
   }
 
@@ -292,7 +289,7 @@ class ResultEntryList extends Component {
                               <i
                                 className="fas fa-file-signature"
                                 aria-hidden="true"
-                                onClick={ResultEntry.bind(this, this, row, "A")}
+                                onClick={ResultEntryModel.bind(this, this, row)}
                               />
                             </IconButton>
                           </span>
@@ -309,6 +306,11 @@ class ResultEntryList extends Component {
               </div>
             </div>
           </div>
+          <ResultEntry
+            open={this.state.isOpen}
+            onClose={closeResultEntry.bind(this, this)}
+            selectedPatient={this.state.selectedPatient}
+          />
         </div>
       </React.Fragment>
     );

@@ -55,7 +55,8 @@ let getLabOrderedServices = (req, res, next) => {
       }
       db.query(
         "SELECT hims_f_lab_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
-        SA.status, cancelled, ordered_date, test_type, lab_id_number, PAT.patient_code,PAT.full_name,SP.sample_id,SP.collected,\
+        SA.status, cancelled, provider_id, ordered_date, test_type, lab_id_number, PAT.patient_code,PAT.full_name,\
+        PAT.date_of_birth, PAT.gender, SP.sample_id,SP.collected,\
         SP.collected_by, SP.collected_date,SP.hims_d_lab_sample_id,SP.status as sample_status from ((hims_f_lab_order SA inner join hims_f_patient PAT ON \
         SA.patient_id=PAT.hims_d_patient_id) inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id) \
         left outer join hims_f_lab_sample SP on SA.hims_f_lab_order_id = SP.order_id WHERE SA.record_status='A' AND " +
@@ -429,8 +430,7 @@ let getTestAnalytes = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT analyte_id,analyte_type,result_unit, result from hims_f_ord_analytes \
-         where record_status='A' AND" +
+        "SELECT * from hims_f_ord_analytes where record_status='A' AND" +
           where.condition,
         where.values,
 
@@ -461,7 +461,7 @@ let updateLabSampleStatus = (req, res, next) => {
 
     debugLog("Input Data", req.body);
     let input = extend({}, req.body);
-    let collected = "";
+    let collected = ",";
     if (req.body.status == "R") {
       collected = ", collected='N' ,";
     }
@@ -481,6 +481,8 @@ let updateLabSampleStatus = (req, res, next) => {
           "update hims_f_lab_sample set `status`=?" +
           collected +
           "updated_date=?,updated_by=? where hims_d_lab_sample_id=?;";
+
+        debugLog("queryBuilder: ", queryBuilder);
         let inputs = [
           input.status,
           new Date(),

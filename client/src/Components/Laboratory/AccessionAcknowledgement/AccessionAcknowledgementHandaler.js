@@ -90,7 +90,7 @@ const getSampleCollectionDetails = $this => {
           };
         })
         .toArray();
-
+      debugger;
       $this.setState({ sample_collection: data });
     }
   });
@@ -125,18 +125,13 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
                 sample_collection[i].hims_d_lab_sample_id ===
                 row.hims_d_lab_sample_id
               ) {
-                sample_collection[i].collected =
-                  response.data.records.collected;
-                sample_collection[i].collected_by =
-                  response.data.records.collected_by;
-                sample_collection[i].collected_date =
-                  response.data.records.collected_date;
+                sample_collection[i].status = AccRej;
               }
             }
             debugger;
             $this.setState({ sample_collection: sample_collection }, () => {
               successfulMessage({
-                message: "Collected Successfully",
+                message: "Accepted Successfully",
                 title: "Success",
                 icon: "success"
               });

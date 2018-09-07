@@ -61,7 +61,11 @@ const AddAnalytes = ($this, context) => {
     let obj = {
       analyte_id: $this.state.analyte_id,
       analyte_type: $this.state.analyte_type,
-      result_unit: $this.state.result_unit
+      result_unit: $this.state.result_unit,
+      critical_low: $this.state.critical_low,
+      critical_high: $this.state.critical_high,
+      normal_low: $this.state.normal_low,
+      normal_high: $this.state.normal_high
     };
 
     if ($this.state.hims_d_investigation_test_id !== null) {
@@ -69,7 +73,11 @@ const AddAnalytes = ($this, context) => {
         analyte_id: $this.state.analyte_id,
         analyte_type: $this.state.analyte_type,
         result_unit: $this.state.result_unit,
-        test_id: $this.state.hims_d_investigation_test_id
+        test_id: $this.state.hims_d_investigation_test_id,
+        critical_low: $this.state.critical_low,
+        critical_high: $this.state.critical_high,
+        normal_low: $this.state.normal_low,
+        normal_high: $this.state.normal_high
       };
       insert_analytes.push(Insertobj);
     }
