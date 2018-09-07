@@ -52,6 +52,12 @@
         "label": "Medical Workbench Setup",
         "arlabel": "إعداد منضدة طبية",
         "path": "/MedicalWorkbenchSetup"
+      },
+      {
+        "name": "Pharmacy Setup",
+        "label": "Pharmacy Setup",
+        "arlabel": "إعداد الصيدلة",
+        "path": "/PharmacySetup"
       }
     ]
   },

@@ -40,6 +40,11 @@
         "name": "Investigation Setup",
         "label": "إعداد التحقيق",
         "path": "/InvestigationSetup"
+      },
+      {
+        "name": "Pharmacy Setup",
+        "label": "إعداد الصيدلة",
+        "path": "/PharmacySetup"
       }
     ]
   },

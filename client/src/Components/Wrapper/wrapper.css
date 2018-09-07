@@ -28,13 +28,13 @@ div[numberbox="true"] input[type="text"] {
 .algaeh-datePicker {
   border: 1px solid #d3d3d3;
   max-width: 100%;
-  padding-left: 6px;
   border-radius: 4px; }
   .algaeh-datePicker .react-date-picker__button {
     border: none;
     line-height: 1.94em; }
   .algaeh-datePicker .react-date-picker {
-    width: 100%; }
+    width: 100%;
+    padding-left: 6px; }
   .algaeh-datePicker .react-date-picker__button {
     width: 100%; }
   .algaeh-datePicker .react-date-picker__button__input {

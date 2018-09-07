@@ -197,8 +197,8 @@ const onchangegridcol = ($this, row, from, e) => {
     if (from === "Intial") {
       for (let i = 0; i < intIcd.length; i++) {
         if (
-          (intIcd[i].hims_f_patient_diagnosis_id =
-            row.hims_f_patient_diagnosis_id)
+          intIcd[i].hims_f_patient_diagnosis_id ===
+          row.hims_f_patient_diagnosis_id
         ) {
           intIcd[i] = row;
           $this.setState({
@@ -209,8 +209,8 @@ const onchangegridcol = ($this, row, from, e) => {
     } else if (from === "Final") {
       for (let i = 0; i < finIcd.length; i++) {
         if (
-          (finIcd[i].hims_f_patient_diagnosis_id =
-            row.hims_f_patient_diagnosis_id)
+          finIcd[i].hims_f_patient_diagnosis_id ===
+          row.hims_f_patient_diagnosis_id
         ) {
           finIcd[i] = row;
           $this.setState({

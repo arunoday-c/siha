@@ -190,11 +190,11 @@ class AddPatientForm extends PureComponent {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-add-patient-form">
-              <div className="container-fluid">
+              <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-8 primary-details">
                     <div className="col-lg-12">
-                      <div className="row">
+                      <div className="row" style={{ paddingBottom: "10px" }}>
                         <AlagehAutoComplete
                           div={{ className: "col-lg-2" }}
                           label={{
@@ -285,7 +285,7 @@ class AddPatientForm extends PureComponent {
                           }}
                         />
                       </div>
-                      <div className="row">
+                      <div className="row" style={{ paddingBottom: "10px" }}>
                         <AlgaehDateHandler
                           div={{ className: "col-lg-3" }}
                           label={{ fieldName: "date_of_birth", isImp: true }}
@@ -397,7 +397,8 @@ class AddPatientForm extends PureComponent {
                             }
                           }}
                         />
-
+                      </div>
+                      <div className="row" style={{ paddingBottom: "10px" }}>
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
@@ -505,7 +506,7 @@ class AddPatientForm extends PureComponent {
                         />
                       </div>
 
-                      <div className="row">
+                      <div className="row" style={{ paddingBottom: "10px" }}>
                         <AlagehFormGroup
                           div={{ className: "col-lg-3" }}
                           label={{
@@ -587,173 +588,176 @@ class AddPatientForm extends PureComponent {
                       </div>
                     </div>
                   </div>
-                  <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 secondary-details">
-                    <div className="row secondary-box-container" />
+                  <div className="col-lg-4 secondary-details">
+                    <div className="col-lg-12">
+                      <div className="row secondary-box-container">
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-6" }}
+                          label={{
+                            fieldName: "primary_identity_id",
+                            isImp: true
+                          }}
+                          selector={{
+                            name: "primary_identity_id",
+                            className: "select-fld",
+                            value: this.state.primary_identity_id,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "identity_document_name"
+                                  : "arabic_identity_document_name",
+                              valueField: "hims_d_identity_document_id",
+                              data: this.props.idtypes
+                            },
+                            onChange: texthandle.bind(this, this, context),
+                            others: {
+                              disabled: this.state.existingPatient
+                            }
+                          }}
+                        />
 
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-6" }}
-                        label={{
-                          fieldName: "primary_identity_id",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "primary_identity_id",
-                          className: "select-fld",
-                          value: this.state.primary_identity_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "identity_document_name"
-                                : "arabic_identity_document_name",
-                            valueField: "hims_d_identity_document_id",
-                            data: this.props.idtypes
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            disabled: this.state.existingPatient
-                          }
-                        }}
-                      />
-
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-6" }}
-                        label={{
-                          fieldName: "primary_id_no",
-                          isImp: true
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "primary_id_no",
-                          value: this.state.primary_id_no,
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            disabled: this.state.existingPatient
-                          }
-                        }}
-                      />
-                    </div>
-                    <div
-                      className="row secondary-box-container"
-                      style={{ paddingTop: "5px" }}
-                    >
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <div className="image-drop-area">
-                          <Dropzone
-                            onDrop={onDrop.bind(this, this, "filePreview")}
-                            id="attach-width"
-                            className="dropzone"
-                            accept="image/*"
-                            multiple={false}
-                            name="image"
-                          >
-                            <img
-                              // className="preview-image"
-                              src={this.state.filePreview}
-                              style={{ width: "100%", height: "88px" }}
-                            />
-
-                            <div className="attach-design text-center">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "attach_photo",
-                                  align: ""
-                                }}
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-6" }}
+                          label={{
+                            fieldName: "primary_id_no",
+                            isImp: true
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "primary_id_no",
+                            value: this.state.primary_id_no,
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: this.state.existingPatient
+                            }
+                          }}
+                        />
+                      </div>
+                      <div
+                        className="row secondary-box-container"
+                        style={{ paddingTop: "5px" }}
+                      >
+                        <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                          <div className="image-drop-area">
+                            <Dropzone
+                              onDrop={onDrop.bind(this, this, "filePreview")}
+                              id="attach-width"
+                              className="dropzone"
+                              accept="image/*"
+                              multiple={false}
+                              name="image"
+                            >
+                              <img
+                                // className="preview-image"
+                                src={this.state.filePreview}
+                                style={{ width: "100%", height: "108px" }}
                               />
-                            </div>
-                          </Dropzone>
-                        </div>
-                        {/* <div>
+
+                              <div className="attach-design text-center">
+                                <AlgaehLabel
+                                  label={{
+                                    fieldName: "attach_photo",
+                                    align: ""
+                                  }}
+                                />
+                              </div>
+                            </Dropzone>
+                          </div>
+                          {/* <div>
                         
                         </div> */}
-                      </div>
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <div className="image-drop-area">
-                          <Dropzone
-                            className="dropzone"
-                            onDrop={onDrop.bind(
-                              this,
-                              this,
-                              "filePrimaryPreview"
-                            )}
-                            id="attach-primary-id"
-                            accept="image/*"
-                            multiple={false}
-                            name="image"
-                          >
-                            <img
-                              //className="preview-image"
-                              src={this.state.filePrimaryPreview}
-                              style={{ width: "100%", height: "88px" }}
-                            />
-                            <div className="attach-design text-center">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "attach_idcard",
-                                  align: ""
-                                }}
-                              />
-                            </div>
-                          </Dropzone>
                         </div>
-                        <div />
+                        <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                          <div className="image-drop-area">
+                            <Dropzone
+                              className="dropzone"
+                              onDrop={onDrop.bind(
+                                this,
+                                this,
+                                "filePrimaryPreview"
+                              )}
+                              id="attach-primary-id"
+                              accept="image/*"
+                              multiple={false}
+                              name="image"
+                            >
+                              <img
+                                //className="preview-image"
+                                src={this.state.filePrimaryPreview}
+                                style={{ width: "100%", height: "108px" }}
+                              />
+                              <div className="attach-design text-center">
+                                <AlgaehLabel
+                                  label={{
+                                    fieldName: "attach_idcard",
+                                    align: ""
+                                  }}
+                                />
+                              </div>
+                            </Dropzone>
+                          </div>
+                          <div />
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{
-                          className: "col-lg-6"
-                        }}
-                        label={{
-                          fieldName: "marital_status",
-                          isImp: false
-                        }}
-                        selector={{
-                          name: "marital_status",
-                          className: "select-fld",
-                          value: this.state.marital_status,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "name"
-                                : "arabic_name",
-                            valueField: "value",
-                            data: variableJson.FORMAT_MARTIALSTS
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            disabled: this.state.existingPatient
-                          }
-                        }}
-                      />
+                      <div
+                        className="row secondary-box-container"
+                        style={{ paddingTop: "10px" }}
+                      >
+                        <AlagehAutoComplete
+                          div={{
+                            className: "col-lg-6"
+                          }}
+                          label={{
+                            fieldName: "marital_status",
+                            isImp: false
+                          }}
+                          selector={{
+                            name: "marital_status",
+                            className: "select-fld",
+                            value: this.state.marital_status,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "name"
+                                  : "arabic_name",
+                              valueField: "value",
+                              data: variableJson.FORMAT_MARTIALSTS
+                            },
+                            onChange: texthandle.bind(this, this, context),
+                            others: {
+                              disabled: this.state.existingPatient
+                            }
+                          }}
+                        />
 
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-6" }}
-                        label={{
-                          fieldName: "religion_id",
-                          isImp: false
-                        }}
-                        selector={{
-                          name: "religion_id",
-                          className: "select-fld",
-                          value: this.state.religion_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "religion_name"
-                                : "arabic_religion_name",
-                            valueField: "hims_d_religion_id",
-                            data: this.props.relegions
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            disabled: this.state.existingPatient
-                          }
-                        }}
-                      />
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-6" }}
+                          label={{
+                            fieldName: "religion_id",
+                            isImp: false
+                          }}
+                          selector={{
+                            name: "religion_id",
+                            className: "select-fld",
+                            value: this.state.religion_id,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "religion_name"
+                                  : "arabic_religion_name",
+                              valueField: "hims_d_religion_id",
+                              data: this.props.relegions
+                            },
+                            onChange: texthandle.bind(this, this, context),
+                            others: {
+                              disabled: this.state.existingPatient
+                            }
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

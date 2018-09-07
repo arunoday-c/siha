@@ -21,7 +21,8 @@ import {
   containeridhandle,
   AddAnalytes,
   updateLabInvestigation,
-  deleteLabInvestigation
+  deleteLabInvestigation,
+  onchangegridcol
 } from "./LabInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -387,7 +388,26 @@ class LabInvestigation extends Component {
                                 <AlgaehLabel
                                   label={{ fieldName: "normal_low" }}
                                 />
-                              )
+                              ),
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      value: row.normal_low,
+                                      className: "txt-fld",
+                                      name: "normal_low",
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
+                                      }
+                                    }}
+                                  />
+                                );
+                              }
                             },
                             ,
                             {
@@ -396,7 +416,26 @@ class LabInvestigation extends Component {
                                 <AlgaehLabel
                                   label={{ fieldName: "normal_high" }}
                                 />
-                              )
+                              ),
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      value: row.normal_high,
+                                      className: "txt-fld",
+                                      name: "normal_high",
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
+                                      }
+                                    }}
+                                  />
+                                );
+                              }
                             },
                             {
                               fieldName: "critical_low",
@@ -404,7 +443,26 @@ class LabInvestigation extends Component {
                                 <AlgaehLabel
                                   label={{ fieldName: "critical_low" }}
                                 />
-                              )
+                              ),
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      value: row.critical_low,
+                                      className: "txt-fld",
+                                      name: "critical_low",
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
+                                      }
+                                    }}
+                                  />
+                                );
+                              }
                             },
                             {
                               fieldName: "critical_high",
@@ -412,7 +470,26 @@ class LabInvestigation extends Component {
                                 <AlgaehLabel
                                   label={{ fieldName: "critical_high" }}
                                 />
-                              )
+                              ),
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      value: row.critical_high,
+                                      className: "txt-fld",
+                                      name: "critical_high",
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
+                                      }
+                                    }}
+                                  />
+                                );
+                              }
                             }
                           ]}
                           keyId="analyte_id"
