@@ -363,20 +363,20 @@ class DataGrid extends PureComponent {
   returnTableHeaderColumns = () => {
     return this.props.columns.map((row, i) => {
       return (
-        <td key={i.toString()}>
+        <th key={i.toString()}>
           {typeof row.label === "function" ? row.label() : row.label}
-        </td>
+        </th>
       );
     });
   };
   returnExpandColumn = () => {
     if (this.state.expanded != null) {
-      return <td />;
+      return <th scope="col" />;
     }
   };
   returnEditableColumn = () => {
     if (this.state.isEditable != null && this.state.isEditable) {
-      return <td />;
+      return <th scope="col" />;
     }
   };
   returnEditableButtons = (row, rowId) => {
@@ -623,27 +623,26 @@ class DataGrid extends PureComponent {
 
   render() {
     return (
-      <Paper
-        style={{ width: this.state.width != null ? this.state.width : "100%" }}
+      <div
+        className="table-responsive"
+        // style={{ width: this.state.width != null ? this.state.width : "100%" }}
       >
-        <div className="table-responsive table-sm">
-          <table
-            id={this.props.id}
-            className="table table-hover table-fixed"
-            {...this.props.others}
-          >
-            <thead>
-              <tr>
-                {this.returnEditableColumn()}
-                {this.returnTableHeaderColumns()}
-              </tr>
-            </thead>
-            <tbody>{this.renderTableRows()}</tbody>
-          </table>
+        <table
+          id={this.props.id}
+          className="table table-striped table-bordered table-hover table-sm"
+          {...this.props.others}
+        >
+          <thead>
+            <tr>
+              {this.returnEditableColumn()}
+              {this.returnTableHeaderColumns()}
+            </tr>
+          </thead>
+          <tbody>{this.renderTableRows()}</tbody>
+        </table>
 
-          {this.renderFooter()}
-        </div>
-      </Paper>
+        {this.renderFooter()}
+      </div>
     );
   }
 }
