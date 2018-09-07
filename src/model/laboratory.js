@@ -590,11 +590,7 @@ let updateLabResultEntry = (req, res, next) => {
             ref = null;
         }
 
-        // let valss = new LINQ(inputParam)
-        //   .Select(s => {
-        //     return s.status;
-        //   })
-        //   .ToArray();
+        let todayDate = new Date();
 
         debugLog("ref:", ref);
 
@@ -609,17 +605,17 @@ let updateLabResultEntry = (req, res, next) => {
             "',entered_by='" +
             user_id.updated_by +
             "',entered_date='" +
-            new Date() +
+            new Date().toLocaleString() +
             "',validate_by='" +
             user_id.updated_by +
             "',validated_date='" +
-            new Date() +
+            new Date().toLocaleString() +
             "',confirm_by='" +
             user_id.updated_by +
             "',confirmed_date='" +
-            new Date() +
+            new Date().toLocaleString() +
             "',updated_date='" +
-            new Date() +
+            new Date().toLocaleString() +
             "',updated_by='" +
             user_id.updated_by +
             "' WHERE order_id='" +
@@ -641,8 +637,8 @@ let updateLabResultEntry = (req, res, next) => {
             connection.query(
               "update hims_f_lab_order set `status`='" +
                 ref +
-                "',updated_date='" +
-                new Date() +
+                "',updated_date= '" +
+                new Date().toLocaleString() +
                 "',updated_by='" +
                 user_id.updated_by +
                 "' where hims_f_lab_order_id=? ",

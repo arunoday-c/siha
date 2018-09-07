@@ -444,7 +444,7 @@ let updateInvestigationTest = (req, res, next) => {
                         "', normal_high='" +
                         inputParam[i].normal_high +
                         "', updated_date='" +
-                        new Date() +
+                        new Date().toLocaleString() +
                         "',updated_by=\
 '" +
                         investigationDetails.updated_by +
