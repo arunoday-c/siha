@@ -1604,26 +1604,39 @@ let getReviewOfSystem = (req, res, next) => {
       if (error) {
         next(error);
       }
-
+      let ROS_header = req.query.hims_d_review_of_system_header_id;
       let where = whereCondition(extend(selectWhere, req.query));
-
-      connection.query(
-        "select RH.hims_d_review_of_system_header_id,RH.description as header_description,RD.hims_d_review_of_system_details_id,RD.description as detail_description from\
+      if (ROS_header == null || ROS_header == undefined) {
+        connection.query(
+          "SELECT hims_d_review_of_system_header_id, description FROM hims_d_review_of_system_header where record_status='A'",
+          (error, result) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      } else {
+        connection.query(
+          "select RH.hims_d_review_of_system_header_id,RH.description as header_description,RD.hims_d_review_of_system_details_id,RD.description as detail_description from\
         hims_d_review_of_system_header RH,hims_d_review_of_system_details RD where\
          RH.hims_d_review_of_system_header_id=RD.review_of_system_heder_id and RD.record_status='A' and RH.record_status='A' and" +
-          where.condition,
-        where.values,
+            where.condition,
+          where.values,
 
-        (error, result) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
+          (error, result) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            req.records = result;
+
+            next();
           }
-          req.records = result;
-
-          next();
-        }
-      );
+        );
+      }
     });
   } catch (e) {
     next(e);
