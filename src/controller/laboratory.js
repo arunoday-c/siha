@@ -7,7 +7,8 @@ import {
   insertLadOrderedServices,
   updateLabOrderServices,
   getTestAnalytes,
-  updateLabSampleStatus
+  updateLabSampleStatus,
+  updateLabResultEntry
 } from "../model/laboratory";
 
 export default ({ config, db }) => {
@@ -90,5 +91,25 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  //created by irfan: to update Lab Result Entry
+  api.put(
+    "/updateLabResultEntry",
+    updateLabResultEntry,
+    (req, res, next) => {
+      let resultSelect = req.records;
+      if (resultSelect.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: resultSelect
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
+    },
+    releaseConnection
+  );
+
   return api;
 };

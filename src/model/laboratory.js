@@ -541,10 +541,82 @@ let updateLabSampleStatus = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to update Lab Result Entry
+let updateLabResultEntry = (req, res, next) => {
+  debugFunction("updateLabResultEntry");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let user_id = extend({}, req.body);
+      let inputParam = extend([], req.body);
+      debugLog("ff:", user_id.updated_by);
+      debugLog("inputParam:", inputParam);
+      let Mystatus = new LINQ(inputParam).count(g => {
+        g.status;
+      });
+      // .GroupBy(s => {
+      //   status: s.status;
+      // });
+      // .ToArray();
+
+      debugLog("Mystatus:", Mystatus);
+
+      let qry = "";
+
+      for (let i = 0; i < req.body.length; i++) {
+        qry +=
+          " UPDATE `hims_f_ord_analytes` SET result='" +
+          inputParam[i].result +
+          "',`status`='" +
+          inputParam[i].status +
+          "',entered_by='" +
+          user_id.updated_by +
+          "',entered_date='" +
+          new Date() +
+          "',validate_by='" +
+          user_id.updated_by +
+          "',validated_date='" +
+          new Date() +
+          "',confirm_by='" +
+          user_id.updated_by +
+          "',confirmed_date='" +
+          new Date() +
+          "',updated_date='" +
+          new Date() +
+          "',updated_by='" +
+          user_id.updated_by +
+          "' WHERE order_id='" +
+          inputParam[i].order_id +
+          "'AND hims_f_ord_analytes_id='" +
+          inputParam[i].hims_f_ord_analytes_id +
+          "';";
+      }
+
+      connection.query(qry, (error, result) => {
+        if (error) {
+          releaseDBConnection(db, connection);
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   getLabOrderedServices,
   getTestAnalytes,
   insertLadOrderedServices,
   updateLabOrderServices,
-  updateLabSampleStatus
+  updateLabSampleStatus,
+  updateLabResultEntry
 };
