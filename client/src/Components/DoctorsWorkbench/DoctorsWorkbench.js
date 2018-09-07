@@ -436,7 +436,7 @@ class DoctorsWorkbench extends Component {
                         displayTemplate: data => {
                           return (
                             <span>
-                              {data.payment_type === "S" ? "Self" : "Insurance"}
+                              {data.payment_type === "I" ? "Insurance" : "Self"}
                             </span>
                           );
                         }
