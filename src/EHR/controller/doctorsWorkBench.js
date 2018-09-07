@@ -38,7 +38,8 @@ import {
   getPatientROS,
   updatePatientROS,
   updatePatientDiagnosis,
-  getPatientVitals
+  getPatientVitals,
+  addPatientVitals
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -611,5 +612,22 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  //created by irfan: to add patient vitals
+
+  api.post(
+    "/addPatientVitals",
+    addPatientVitals,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };
