@@ -1818,6 +1818,51 @@ let addPatientVitals = (req, res, next) => {
   }
 };
 
+//created by irfan: to add patient physical examination
+let addPatientPhysicalExamination = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO hims_f_episode_examination (`patient_id`, `episode_id`, `exam_header_id`, \
+        `exam_details_id`, `exam_subdetails_id`, `comments`, `created_date`, `created_by`, `updated_date`, `updated_by`) \
+        VALUE(?,?,?,?,?,?,?,?,?,?)",
+        [
+          inputparam.patient_id,
+          inputparam.episode_id,
+          inputparam.exam_header_id,
+          inputparam.exam_details_id,
+          inputparam.exam_subdetails_id,
+          inputparam.comments,
+          new Date(),
+          inputparam.created_by,
+          new Date(),
+          inputparam.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -1856,5 +1901,6 @@ module.exports = {
   getReviewOfSystem,
   updatePatientDiagnosis,
   getPatientVitals,
-  addPatientVitals
+  addPatientVitals,
+  addPatientPhysicalExamination
 };
