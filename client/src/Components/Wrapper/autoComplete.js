@@ -63,7 +63,8 @@ const styles = theme => ({
       paddingLeft: "4px"
     },
     ".Select-placeholder": {
-      backgroundColor: "#fff"
+      backgroundColor: "#fff",
+      color: "#212529"
     },
     ".Select-menu-outer": {
       backgroundColor: theme.palette.background.paper,
