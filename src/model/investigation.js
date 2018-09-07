@@ -433,14 +433,24 @@ let updateInvestigationTest = (req, res, next) => {
 
                     for (let i = 0; i < req.body.update_analytes.length; i++) {
                       qry +=
-                        " UPDATE `hims_m_lab_analyte` SET record_status='I', updated_date='" +
+                        " UPDATE `hims_m_lab_analyte` SET record_status='" +
+                        inputParam[i].record_status +
+                        "', critical_low='" +
+                        inputParam[i].critical_low +
+                        "', critical_high='" +
+                        inputParam[i].critical_high +
+                        "', normal_low='" +
+                        inputParam[i].normal_low +
+                        "', normal_high='" +
+                        inputParam[i].normal_high +
+                        "', updated_date='" +
                         new Date() +
                         "',updated_by=\
 '" +
                         investigationDetails.updated_by +
                         "' WHERE hims_m_lab_analyte_id='" +
                         inputParam[i].hims_m_lab_analyte_id +
-                        "' AND record_status='A' ;";
+                        "';";
                     }
 
                     connection.query(qry, (error, result_anlyt) => {
