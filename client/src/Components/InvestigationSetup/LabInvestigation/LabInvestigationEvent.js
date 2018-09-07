@@ -105,6 +105,7 @@ const AddAnalytes = ($this, context) => {
 };
 
 const updateLabInvestigation = ($this, context, row) => {
+  debugger;
   let analytes = $this.state.analytes;
   let update_analytes = $this.state.update_analytes;
 
@@ -119,11 +120,6 @@ const updateLabInvestigation = ($this, context, row) => {
         record_status: "A"
       };
 
-      for (let j = 0; j < update_analytes.length; j++) {
-        if ((update_analytes[j].analyte_id = row.analyte_id)) {
-          update_analytes.splice(j, 1);
-        }
-      }
       update_analytes.push(Updateobj);
     } else {
       let Updateobj = {
@@ -134,12 +130,18 @@ const updateLabInvestigation = ($this, context, row) => {
         normal_high: row.normal_high,
         record_status: "A"
       };
+
+      for (let j = 0; j < update_analytes.length; j++) {
+        if (update_analytes[j].analyte_id === row.analyte_id) {
+          update_analytes.splice(j, 1);
+        }
+      }
       update_analytes.push(Updateobj);
     }
   }
   debugger;
   for (let l = 0; l < analytes.length; l++) {
-    if ((analytes[l].analyte_id = row.analyte_id)) {
+    if (analytes[l].analyte_id === row.analyte_id) {
       analytes[l] = row;
     }
   }
@@ -174,7 +176,7 @@ const deleteLabInvestigation = ($this, context, row, rowId) => {
       update_analytes.push(Updateobj);
     } else {
       for (let k = 0; k < insert_analytes.length; k++) {
-        if ((insert_analytes[k].analyte_id = row.analyte_id)) {
+        if (insert_analytes[k].analyte_id === row.analyte_id) {
           insert_analytes.splice(k, 1);
         }
       }
@@ -194,11 +196,27 @@ const deleteLabInvestigation = ($this, context, row, rowId) => {
     });
   }
 };
+
+const onchangegridcol = ($this, row, e) => {
+  debugger;
+  let analytes = $this.state.analytes;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+
+  for (let x = 0; x < analytes.length; x++) {
+    if (analytes[x].analyte_id === row.analyte_id) {
+      analytes[x] = row;
+    }
+  }
+  $this.setState({ analytes: analytes });
+};
 export {
   texthandle,
   analyteidhandle,
   containeridhandle,
   AddAnalytes,
   updateLabInvestigation,
-  deleteLabInvestigation
+  deleteLabInvestigation,
+  onchangegridcol
 };

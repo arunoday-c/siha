@@ -66,9 +66,8 @@ const CloseTemplate = ($this, hims_d_rad_template_detail_id) => {
 
       for (let i = 0; i < RadTemplate.length; i++) {
         if (
-          (RadTemplate[
-            i
-          ].hims_d_rad_template_detail_id = hims_d_rad_template_detail_id)
+          RadTemplate[i].hims_d_rad_template_detail_id ===
+          hims_d_rad_template_detail_id
         ) {
           RadTemplate[i].template_name = $this.state.template_name;
           RadTemplate[i].template_html = $this.state.template_html;
@@ -114,7 +113,7 @@ const deleteRadInvestigation = ($this, context, row, rowId) => {
   } else {
     if (insert_rad_temp.length > 0) {
       for (let k = 0; k < insert_rad_temp.length; k++) {
-        if ((insert_rad_temp[k].template_name = row.template_name)) {
+        if (insert_rad_temp[k].template_name === row.template_name) {
           insert_rad_temp.splice(k, 1);
         }
       }

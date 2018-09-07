@@ -44,25 +44,36 @@ div[numberbox="true"] input[type="text"] {
   .algaeh-datePicker button {
     margin-left: 0px; }
 
-.table {
-  width: 100%;
-  border-bottom: 1.5px solid #f2f2f2; }
-  .table tbody {
-    height: 200px;
-    overflow: auto;
-    width: 100%; }
-  .table tbody tr {
-    cursor: pointer; }
-  .table tbody td {
-    vertical-align: middle;
-    white-space: nowrap;
-    font-size: 0.75rem;
-    text-align: center; }
-  .table thead tr td {
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    text-align: center; }
+.table-responsive {
+  border: 1px solid #e2e2e2;
+  border-radius: 4px; }
+  .table-responsive .table {
+    width: 100%;
+    border-bottom: 1.5px solid #f2f2f2;
+    margin: 0; }
+    .table-responsive .table thead tr th {
+      border-bottom: 2px solid #34b8bc !important;
+      vertical-align: middle !important;
+      background: #e8feff !important;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      text-align: center; }
+      .table-responsive .table thead tr th label.style_Label {
+        font-weight: bold; }
+    .table-responsive .table tbody {
+      height: 200px;
+      overflow: auto;
+      width: 100%; }
+      .table-responsive .table tbody tr {
+        cursor: pointer; }
+      .table-responsive .table tbody td {
+        vertical-align: middle;
+        white-space: nowrap;
+        font-size: 0.75rem;
+        text-align: center; }
+    .table-responsive .table div div {
+      height: auto !important;
+      min-height: auto !important; }
 
 .scrolling table {
   table-layout: inherit;

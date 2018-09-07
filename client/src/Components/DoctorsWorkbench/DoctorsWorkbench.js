@@ -369,102 +369,106 @@ class DoctorsWorkbench extends Component {
                     </IconButton>
                   </Tooltip>
                 </div>
-                <AlgaehDataGrid
-                  id="encounter_table"
-                  columns={[
-                    {
-                      fieldName: "status",
-                      label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                      disabled: true,
-                      displayTemplate: data => {
-                        return (
-                          <span>
-                            {data.status === "W" ? <span>WIP </span> : ""}
-                          </span>
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "patient_code",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                      ),
-                      displayTemplate: data => {
-                        return (
-                          <span
-                            className="pat-code"
-                            onClick={() => {
-                              setGlobal({
-                                "EHR-STD": "PatientProfile",
-                                current_patient: data.patient_id,
-                                episode_id: data.episode_id,
-                                visit_id: data.visit_id
-                              });
-                              document.getElementById("ehr-router").click();
-                            }}
-                          >
-                            {data.patient_code}
-                          </span>
-                        );
+                <div className="col-12 margin-top-15">
+                  <AlgaehDataGrid
+                    id="encounter_table"
+                    columns={[
+                      {
+                        fieldName: "status",
+                        label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                        disabled: true,
+                        displayTemplate: data => {
+                          return (
+                            <span>
+                              {data.status === "W" ? <span>WIP </span> : ""}
+                            </span>
+                          );
+                        }
                       },
-                      className: drow => {
-                        if (drow.checked_in === "N") return "testColor";
+                      {
+                        fieldName: "patient_code",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                        ),
+                        displayTemplate: data => {
+                          return (
+                            <span
+                              className="pat-code"
+                              onClick={() => {
+                                setGlobal({
+                                  "EHR-STD": "PatientProfile",
+                                  current_patient: data.patient_id,
+                                  episode_id: data.episode_id,
+                                  visit_id: data.visit_id
+                                });
+                                document.getElementById("ehr-router").click();
+                              }}
+                            >
+                              {data.patient_code}
+                            </span>
+                          );
+                        },
+                        className: drow => {
+                          if (drow.checked_in === "N") return "testColor";
+                        }
+                      },
+                      {
+                        fieldName: "full_name",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                        )
+                      },
+                      {
+                        fieldName: "date",
+                        label: <AlgaehLabel label={{ fieldName: "date" }} />
+                      },
+                      {
+                        fieldName: "time",
+                        label: <AlgaehLabel label={{ fieldName: "time" }} />
+                      },
+                      {
+                        fieldName: "patient_type",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "policy_group_description" }}
+                          />
+                        ),
+                        displayTemplate: data => {
+                          return (
+                            <span>
+                              {data.payment_type === "S" ? "Self" : "Insurance"}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "transfer_status",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "transfer_status" }}
+                          />
+                        )
                       }
-                    },
-                    {
-                      fieldName: "full_name",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
-                      )
-                    },
-                    {
-                      fieldName: "date",
-                      label: <AlgaehLabel label={{ fieldName: "date" }} />
-                    },
-                    {
-                      fieldName: "time",
-                      label: <AlgaehLabel label={{ fieldName: "time" }} />
-                    },
-                    {
-                      fieldName: "patient_type",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "policy_group_description" }}
-                        />
-                      ),
-                      displayTemplate: data => {
-                        return (
-                          <span>
-                            {data.payment_type === "S" ? "Self" : "Insurance"}
-                          </span>
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "transfer_status",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "transfer_status" }} />
-                      )
-                    }
-                  ]}
-                  rowClassName={row => {
-                    debugger;
-                    //return "testColor";
-                  }}
-                  keyId="encounter_code"
-                  dataSource={{
-                    data: Enumerable.from(this.state.data)
-                      .where(w => w.status !== "V")
-                      .toArray()
-                  }}
-                  isEditable={false}
-                  paging={{ page: 0, rowsPerPage: 10 }}
-                  events={{
-                    onDelete: row => {},
-                    onEdit: row => {},
-                    onDone: row => {}
-                  }}
-                />
+                    ]}
+                    rowClassName={row => {
+                      debugger;
+                      //return "testColor";
+                    }}
+                    keyId="encounter_code"
+                    dataSource={{
+                      data: Enumerable.from(this.state.data)
+                        .where(w => w.status !== "V")
+                        .toArray()
+                    }}
+                    isEditable={false}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onDelete: row => {},
+                      onEdit: row => {},
+                      onDone: row => {}
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
