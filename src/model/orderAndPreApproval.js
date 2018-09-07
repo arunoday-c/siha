@@ -151,7 +151,7 @@ let updatePreApproval = (req, res, next) => {
           '" +
           inputParam[i].apprv_status +
           "',updated_date='" +
-          new Date() +
+          new Date().toLocaleString() +
           "',updated_by='" +
           inputParam[i].updated_by +
           "' WHERE hims_f_service_approval_id='" +
@@ -575,7 +575,7 @@ let updateOrderedServicesBilled = (req, res, next) => {
           " UPDATE `hims_f_ordered_services` SET billed='" +
           OrderServices[i].billed +
           "',updated_date='" +
-          new Date() +
+          new Date().toLocaleString() +
           "',updated_by='" +
           OrderServices[i].updated_by +
           "' WHERE hims_f_ordered_services_id='" +
