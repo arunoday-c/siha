@@ -1746,8 +1746,8 @@ let getPatientVitals = (req, res, next) => {
       let input = extend({}, req.query);
 
       connection.query(
-        "select * from hims_f_patient_vitals where record_status='A' and patient_id=? and visit_id=? order by visit_date desc, visit_time desc;",
-        [input.patient_id, input.visit_id],
+        "select * from hims_f_patient_vitals where record_status='A' and patient_id=?  order by visit_date desc, visit_time desc;",
+        [input.patient_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
