@@ -554,58 +554,132 @@ let updateLabResultEntry = (req, res, next) => {
       if (error) {
         next(error);
       }
-      let user_id = extend({}, req.body);
-      let inputParam = extend([], req.body);
-      debugLog("ff:", user_id.updated_by);
-      debugLog("inputParam:", inputParam);
-      let Mystatus = new LINQ(inputParam).count(g => {
-        g.status;
-      });
-      // .GroupBy(s => {
-      //   status: s.status;
-      // });
-      // .ToArray();
 
-      debugLog("Mystatus:", Mystatus);
-
-      let qry = "";
-
-      for (let i = 0; i < req.body.length; i++) {
-        qry +=
-          " UPDATE `hims_f_ord_analytes` SET result='" +
-          inputParam[i].result +
-          "',`status`='" +
-          inputParam[i].status +
-          "',entered_by='" +
-          user_id.updated_by +
-          "',entered_date='" +
-          new Date() +
-          "',validate_by='" +
-          user_id.updated_by +
-          "',validated_date='" +
-          new Date() +
-          "',confirm_by='" +
-          user_id.updated_by +
-          "',confirmed_date='" +
-          new Date() +
-          "',updated_date='" +
-          new Date() +
-          "',updated_by='" +
-          user_id.updated_by +
-          "' WHERE order_id='" +
-          inputParam[i].order_id +
-          "'AND hims_f_ord_analytes_id='" +
-          inputParam[i].hims_f_ord_analytes_id +
-          "';";
-      }
-
-      connection.query(qry, (error, result) => {
+      connection.beginTransaction(error => {
         if (error) {
-          releaseDBConnection(db, connection);
-          next(error);
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
         }
-        req.records = result;
-        next();
+        let user_id = extend({}, req.body);
+        let inputParam = extend([], req.body);
+        debugLog("ff:", user_id.updated_by);
+        debugLog("inputParam:", inputParam);
+
+        let status_C = new LINQ(inputParam)
+          .Where(w => w.status == "C")
+          .ToArray().length;
+        let status_V = new LINQ(inputParam)
+          .Where(w => w.status == "V")
+          .ToArray().length;
+
+        let ref = null;
+
+        switch (inputParam.length) {
+          case status_C:
+            //Do functionality for C here
+            ref = "CF";
+            break;
+
+          case status_V:
+            //Do functionality for V here
+            ref = "V";
+            break;
+          default:
+            ref = null;
+        }
+
+        // let valss = new LINQ(inputParam)
+        //   .Select(s => {
+        //     return s.status;
+        //   })
+        //   .ToArray();
+
+        debugLog("ref:", ref);
+
+        let qry = "";
+
+        for (let i = 0; i < req.body.length; i++) {
+          qry +=
+            " UPDATE `hims_f_ord_analytes` SET result='" +
+            inputParam[i].result +
+            "',`status`='" +
+            inputParam[i].status +
+            "',entered_by='" +
+            user_id.updated_by +
+            "',entered_date='" +
+            new Date() +
+            "',validate_by='" +
+            user_id.updated_by +
+            "',validated_date='" +
+            new Date() +
+            "',confirm_by='" +
+            user_id.updated_by +
+            "',confirmed_date='" +
+            new Date() +
+            "',updated_date='" +
+            new Date() +
+            "',updated_by='" +
+            user_id.updated_by +
+            "' WHERE order_id='" +
+            inputParam[i].order_id +
+            "'AND hims_f_ord_analytes_id='" +
+            inputParam[i].hims_f_ord_analytes_id +
+            "';";
+        }
+
+        connection.query(qry, (error, results) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          if (results != null && ref != null) {
+            connection.query(
+              "update hims_f_lab_order set `status`='" +
+                ref +
+                "',updated_date='" +
+                new Date() +
+                "',updated_by='" +
+                user_id.updated_by +
+                "' where hims_f_lab_order_id=? ",
+              [inputParam[0].order_id],
+              (error, result) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  req.records = result;
+                  next();
+                });
+              }
+            );
+          } else {
+            connection.commit(error => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+              req.records = results;
+              next();
+            });
+          }
+        });
       });
     });
   } catch (e) {
