@@ -1606,7 +1606,8 @@ let getReviewOfSystem = (req, res, next) => {
       }
       let ROS_header = req.query.hims_d_review_of_system_header_id;
       let where = whereCondition(extend(selectWhere, req.query));
-      if (ROS_header == null || ROS_header == undefined) {
+      debugLog("ROS_header:", ROS_header);
+      if (ROS_header == "null" || ROS_header === undefined) {
         connection.query(
           "SELECT hims_d_review_of_system_header_id, description FROM hims_d_review_of_system_header where record_status='A'",
           (error, result) => {
