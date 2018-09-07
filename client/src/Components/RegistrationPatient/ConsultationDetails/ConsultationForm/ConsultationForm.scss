@@ -9,7 +9,8 @@
 }
 .hptl-phase1-add-consultation-form {
   .primary-details {
-    border-right: 1px solid #000;
+    border-right: 1px dashed #d3d3d3;
+    padding-top: 8px;
 
     .primary-box-container {
       .radio-design {
@@ -21,7 +22,7 @@
     }
   }
   .secondary-details {
-    padding: 5px;
+    padding-top: 8px;
     .secondary-box-container {
       padding: 5px;
     }

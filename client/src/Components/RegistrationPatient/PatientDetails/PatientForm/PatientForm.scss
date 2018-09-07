@@ -5,7 +5,8 @@
 
 .hptl-phase1-add-patient-form {
   .primary-details {
-    border-right: 1px solid #000;
+    border-right: 1px dashed #d3d3d3;
+    padding-top: 8px;
   }
   mark {
     background: none;
@@ -23,6 +24,7 @@
   }
 
   .secondary-details {
+    padding-top: 8px;
     .secondary-box-container {
       .attach-design {
         background: #8c8c8c;
