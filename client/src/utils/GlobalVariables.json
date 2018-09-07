@@ -241,7 +241,7 @@
     },
     {
       "name": "Chemical and Others",
-      "value": "CO"
+      "value": "C"
     },
     {
       "name": "NKA",
@@ -271,5 +271,12 @@
   "DIAG_TYPE": [
     { "name": "Primary", "value": "P" },
     { "name": "Secondary", "value": "S" }
+  ],
+  "ALLERGY_ONSET": [
+    { "name": "Childhood", "value": "C" },
+    { "name": "Preterms", "value": "P" },
+    { "name": "Teens", "value": "T" },
+    { "name": "Adulthood", "value": "A" },
+    { "name": "Onset Date", "value": "O" }
   ]
 }

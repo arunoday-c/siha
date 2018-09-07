@@ -564,13 +564,68 @@ class Subjective extends Component {
                           fieldName: "sample"
                         }}
                         selector={{
-                          name: "hims_d_allergiy_id",
+                          name: "hims_d_allergy_id",
                           className: "select-fld",
-                          value: this.state.hims_d_allergiy_id,
+                          value: this.state.hims_d_allergy_id,
                           dataSource: {
                             textField: "allergy_name",
-                            valueField: "hims_d_allergiy_id",
+                            valueField: "hims_d_allergy_id",
                             data: this.props.allallergies
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          forceLabel: "Onset"
+                        }}
+                        selector={{
+                          name: "allergy_onset",
+                          className: "select-fld",
+                          value: this.state.allergy_onset,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.ALLERGY_ONSET
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          forceLabel: "Onset Date"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "allergy_onset_date"
+                        }}
+                        maxDate={new Date()}
+                        events={{
+                          onChange: selectedDate => {
+                            this.setState({ allergy_onset_date: selectedDate });
+                          }
+                        }}
+                        value={this.state.allergy_onset_date}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          forceLabel: "Severity",
+                          fieldName: "sample"
+                        }}
+                        selector={{
+                          name: "allergy_severity",
+                          className: "select-fld",
+                          value: this.state.allergy_severity,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.PAIN_SEVERITY
                           },
                           onChange: this.dropDownHandle.bind(this)
                         }}
@@ -584,12 +639,12 @@ class Subjective extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "comment",
+                          name: "allergy_comment",
                           others: {
                             multiline: true,
                             rows: "4"
                           },
-                          value: this.state.comment,
+                          value: this.state.allergy_comment,
                           events: {
                             onChange: this.texthandle.bind(this)
                           }
@@ -601,28 +656,79 @@ class Subjective extends Component {
                   <div className="col-lg-8 popRightDiv">
                     <h6> List of Allergies</h6>
                     <hr />
-                    <div> Grid comes Here </div>
-                    <div>
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-12 margin-top-15" }}
-                        label={{
-                          fieldName: "Overall comments",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "comment",
-                          others: {
-                            multiline: true,
-                            rows: "4"
-                          },
-                          value: this.state.comment,
-                          events: {
-                            onChange: this.texthandle.bind(this)
+                    <AlgaehDataGrid
+                      id="patient-allergy-grid"
+                      columns={[
+                        {
+                          fieldName: "allergy_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Allergy Type" }}
+                            />
+                          ),
+                          displayTemplate: data => {
+                            return (
+                              <span>
+                                {data.allergy_type === "F" ? (
+                                  <span> Food</span>
+                                ) : data.allergy_type === "A" ? (
+                                  <span>Airborne </span>
+                                ) : data.allergy_type === "AI" ? (
+                                  <span>Animal and Insect </span>
+                                ) : data.allergy_type === "C" ? (
+                                  <span>Chemical and Others </span>
+                                ) : data.allergy_type === "N" ? (
+                                  <span>NKA </span>
+                                ) : data.allergy_type === "D" ? (
+                                  <span>Drug </span>
+                                ) : null}
+                              </span>
+                            );
                           }
-                        }}
-                      />
-                    </div>
+                        },
+                        {
+                          fieldName: "allergy_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Allergy Name" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "onset",
+                          label: <AlgaehLabel label={{ forceLabel: "Onset" }} />
+                        },
+                        {
+                          fieldName: "onset_date",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Onset Date" }} />
+                          )
+                        },
+                        {
+                          fieldName: "severity",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Severity" }} />
+                          )
+                        },
+                        {
+                          fieldName: "comment",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Comment" }} />
+                          )
+                        }
+                      ]}
+                      keyId="hims_f_patient_allergy_id"
+                      dataSource={{
+                        data: this.state.allAllergies
+                      }}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 5 }}
+                      events={{
+                        onDelete: row => {},
+                        onEdit: row => {},
+                        onDone: row => {}
+                      }}
+                    />
                   </div>
                 </div>
               </div>

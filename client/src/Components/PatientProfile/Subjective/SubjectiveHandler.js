@@ -13,9 +13,19 @@ const getAllAllergies = ($this, type) => {
       type: "ALL_ALLERGIES",
       mappingName: "allallergies"
     },
-    afterSuccess: data => {
-      console.log("allergy data from redux:", data);
-    }
+    afterSuccess: data => {}
+  });
+};
+
+const getPatientAllergies = ($this, type) => {
+  $this.props.getPatientAllergies({
+    uri: "/doctorsWorkBench/getPatientAllergies",
+    method: "GET",
+    redux: {
+      type: "PATIENT_ALLERGIES",
+      mappingName: "patientallergies"
+    },
+    afterSuccess: data => {}
   });
 };
 
@@ -36,4 +46,4 @@ const getReviewOfSystems = ($this, type) => {
   });
 };
 
-export { getAllAllergies, getReviewOfSystems };
+export { getAllAllergies, getReviewOfSystems, getPatientAllergies };
