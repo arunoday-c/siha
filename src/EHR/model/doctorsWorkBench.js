@@ -765,19 +765,59 @@ let updatdePatEncntrStatus = (req, res, next) => {
       if (error) {
         next(error);
       }
+
+      let currentEncounterNo = null;
+
       connection.query(
-        "UPDATE  hims_f_patient_encounter SET  `status`='W',updated_by=?,updated_date=now() WHERE\
-         hims_f_patient_encounter_id=? AND  record_status='A';",
-        [req.body.updated_by, req.body.patient_encounter_id],
+        "SELECT encounter_id FROM algaeh_d_app_config where param_name='VISITEXPERIDAY';",
         (error, result) => {
           if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
+            releaseDBConnection(db, connection);
+            next(error);
           }
-          req.records = result;
-          next();
+
+          currentEncounterNo = result[0].encounter_id;
+          debugLog("currentEncounterNo:", currentEncounterNo);
+
+          if (currentEncounterNo > 0) {
+            let nextEncounterNo = currentEncounterNo + 1;
+            debugLog("nextEncounterNo:", nextEncounterNo);
+
+            connection.query(
+              "update algaeh_d_app_config set encounter_id=?,updated_by=?,updated_date=? where param_name='VISITEXPERIDAY'",
+              [nextEncounterNo, req.body.updated_by, new Date()],
+              (error, updateResult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                if (updateResult != null) {
+                  connection.query(
+                    "UPDATE  hims_f_patient_encounter SET  `status`='W',updated_by=?,updated_date=? WHERE\
+         hims_f_patient_encounter_id=? AND  record_status='A';",
+                    [
+                      req.body.updated_by,
+                      new Date(),
+                      req.body.patient_encounter_id
+                    ],
+                    (error, result) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      req.records = result;
+                      next();
+                    }
+                  );
+                }
+              }
+            );
+          }
         }
       );
     });
