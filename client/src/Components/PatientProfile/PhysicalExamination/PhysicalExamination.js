@@ -35,9 +35,19 @@ class PhysicalExamination extends Component {
   handleClose() {
     this.setState({ openVitalModal: false });
   }
+  texthandle(e) {
+    debugger;
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
 
   componentDidMount() {
     getVitalHistory(this);
+  }
+
+  dropDownHandle(value) {
+    this.setState({ [value.name]: value.value });
   }
 
   render() {
@@ -96,8 +106,8 @@ class PhysicalExamination extends Component {
                                   <li className="each-vitals-box">
                                     <p>Oxystat</p>
                                     <span>
-                                      {data.oxystat
-                                        ? data.oxystat
+                                      {data.oxysat
+                                        ? data.oxysat
                                         : "Not Recorded"}
                                     </span>
                                     <span>%</span>
@@ -256,9 +266,9 @@ class PhysicalExamination extends Component {
                           others: {
                             type: "number"
                           },
-                          //value: this.state.department_name,
+                          value: this.state.weight,
                           events: {
-                            //  onChange: this.changeDeptName.bind(this)
+                            onChange: this.texthandle.bind(this)
                           }
                         }}
                       />
@@ -270,13 +280,13 @@ class PhysicalExamination extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "weight",
+                          name: "height",
                           others: {
                             type: "number"
                           },
-                          //value: this.state.department_name,
+                          value: this.state.height,
                           events: {
-                            //  onChange: this.changeDeptName.bind(this)
+                            onChange: this.texthandle.bind(this)
                           }
                         }}
                       />
@@ -288,17 +298,17 @@ class PhysicalExamination extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "weight",
+                          name: "oxysat",
                           others: {
                             type: "number"
                           },
-                          //value: this.state.department_name,
+                          value: this.state.oxysat,
                           events: {
-                            //  onChange: this.changeDeptName.bind(this)
+                            onChange: this.texthandle.bind(this)
                           }
                         }}
                       />
-                      <AlagehFormGroup
+                      {/* <AlagehFormGroup
                         div={{ className: "col vitalTopFld20" }}
                         label={{
                           forceLabel: "Heart Rate(bpm)",
@@ -306,13 +316,13 @@ class PhysicalExamination extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "weight",
+                          name: "hr",
                           others: {
                             type: "number"
                           },
-                          //value: this.state.department_name,
+                          value: this.state.department_name,
                           events: {
-                            //  onChange: this.changeDeptName.bind(this)
+                              onChange: this.texthandle.bind(this)
                           }
                         }}
                       />
@@ -324,7 +334,7 @@ class PhysicalExamination extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "weight",
+                          name: "rr",
                           others: {
                             type: "number"
                           },
@@ -332,26 +342,26 @@ class PhysicalExamination extends Component {
                           events: {
                             //  onChange: this.changeDeptName.bind(this)
                           }
-                        }}
-                      />
+                        }} 
+                      />*/}
                     </div>
                     <div className="row">
                       <AlagehAutoComplete
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Oral Temperature(C)"
+                          forceLabel: "Temperature From"
                         }}
                         selector={{
-                          name: "oral_temp",
+                          name: "temperature_from",
                           className: "select-fld",
-                          // value: this.state.pay_cash,
+                          value: this.state.temperature_from,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.PAIN_DURATION
-                          }
+                          },
 
-                          // onChange: texthandle.bind(this, this)
+                          onChange: this.dropDownHandle.bind(this)
                         }}
                       />
                       <AlagehFormGroup
@@ -361,17 +371,17 @@ class PhysicalExamination extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "weight",
+                          name: "temperature_celsisus",
                           others: {
                             type: "number"
                           },
-                          //value: this.state.department_name,
+                          value: this.state.temperature_celsisus,
                           events: {
-                            //  onChange: this.changeDeptName.bind(this)
+                            onChange: this.texthandle.bind(this)
                           }
                         }}
                       />
-                      <AlagehAutoComplete
+                      {/* <AlagehAutoComplete
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Blood Pressure"
@@ -388,7 +398,25 @@ class PhysicalExamination extends Component {
 
                           // onChange: texthandle.bind(this, this)
                         }}
+                      /> */}
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Blood Pressure"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "systolic",
+                          others: {
+                            type: "number"
+                          },
+                          value: this.state.systolic,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
                       />
+                      <span className="margin-top-15">/</span>
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
@@ -396,13 +424,13 @@ class PhysicalExamination extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "weight",
+                          name: "diastolic",
                           others: {
                             type: "number"
                           },
-                          //value: this.state.department_name,
+                          value: this.state.diastolic,
                           events: {
-                            //  onChange: this.changeDeptName.bind(this)
+                            onChange: this.texthandle.bind(this)
                           }
                         }}
                       />
