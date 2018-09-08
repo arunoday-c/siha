@@ -565,7 +565,7 @@ let updateLabResultEntry = (req, res, next) => {
         }
         let user_id = extend({}, req.body);
         let inputParam = extend([], req.body);
-        debugLog("ff:", user_id.updated_by);
+
         debugLog("inputParam:", inputParam);
 
         let status_C = new LINQ(inputParam)
@@ -579,12 +579,14 @@ let updateLabResultEntry = (req, res, next) => {
           .Where(w => w.status == "N")
           .ToArray().length;
 
-        let runtype = new LINQ(inputParam).Select(s => s.run_type);
+        let runtype = new LINQ(inputParam)
+          .Where(w => w.run_type != null)
+          .Select(s => s.run_type)
+          .ToArray();
 
-        debugLog("runtype: ", runtype);
         let ref = null;
 
-        switch (inputParam.length) {
+        switch (inputParam.length - 1) {
           case status_C:
             //Do functionality for C here
             ref = "CF";
@@ -658,8 +660,8 @@ let updateLabResultEntry = (req, res, next) => {
                 ref +
                 "',updated_date= '" +
                 new Date().toLocaleString() +
-                "',`run_type`='" +
-                runtype +
+                "',run_type='" +
+                runtype[0] +
                 "',updated_by='" +
                 user_id.updated_by +
                 "' where hims_f_lab_order_id=? ",
