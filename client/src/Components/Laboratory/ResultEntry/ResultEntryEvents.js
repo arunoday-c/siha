@@ -67,7 +67,7 @@ const onvalidate = $this => {
       dangerMode: true
     }).then(willProceed => {
       if (willProceed) {
-        test_analytes.push({ run_type: "N" });
+        test_analytes.push({ run_type: $this.state.run_type });
         UpdateLabOrder($this, test_analytes);
       }
     });
@@ -192,7 +192,7 @@ const resultEntryUpdate = $this => {
     }
   }
   if (enterResult === true) {
-    test_analytes.push({ run_type: "N" });
+    test_analytes.push({ run_type: $this.state.run_type });
     UpdateLabOrder($this, test_analytes);
   } else {
     swal("Invalid Input. Please enter input.", {
@@ -228,7 +228,7 @@ const onconfirm = $this => {
       dangerMode: true
     }).then(willProceed => {
       if (willProceed) {
-        test_analytes.push({ run_type: "N" });
+        test_analytes.push({ run_type: $this.state.run_type });
         UpdateLabOrder($this, test_analytes);
       }
     });
