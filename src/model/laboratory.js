@@ -603,6 +603,8 @@ let updateLabResultEntry = (req, res, next) => {
             inputParam[i].result +
             "',`status`='" +
             inputParam[i].status +
+            "',`remarks`='" +
+            inputParam[i].remarks +
             "',entered_by='" +
             user_id.updated_by +
             "',entered_date='" +

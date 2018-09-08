@@ -521,7 +521,32 @@ class ResultEntry extends Component {
                                       forceLabel: "Remarks"
                                     }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {row.validate === "N" ? (
+                                        <AlagehFormGroup
+                                          div={{}}
+                                          textBox={{
+                                            value: row.remarks,
+                                            className: "txt-fld",
+                                            name: "remarks",
+                                            events: {
+                                              onChange: onchangegridcol.bind(
+                                                this,
+                                                this,
+                                                row
+                                              )
+                                            }
+                                          }}
+                                        />
+                                      ) : (
+                                        row.remarks
+                                      )}
+                                    </span>
+                                  );
+                                }
                               }
                             ]}
                             keyId="patient_code"

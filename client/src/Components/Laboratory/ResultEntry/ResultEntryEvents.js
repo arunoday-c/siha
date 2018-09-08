@@ -13,7 +13,7 @@ const texthandle = ($this, e) => {
 
 const UpdateLabOrder = ($this, value) => {
   algaehApiCall({
-    uri: "/radiology/updateRadOrderedServices",
+    uri: "/laboratory/updateLabResultEntry",
     data: value,
     method: "PUT",
     onSuccess: response => {
@@ -23,6 +23,7 @@ const UpdateLabOrder = ($this, value) => {
           buttons: false,
           timer: 2000
         });
+        $this.setState({ test_analytes: value });
       }
     },
     onFailure: error => {
@@ -60,15 +61,9 @@ const onvalidate = $this => {
       dangerMode: true
     }).then(willProceed => {
       if (willProceed) {
-        // UpdateLabOrder($this, test_analytes);
-        swal("Done", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
-        });
+        UpdateLabOrder($this, test_analytes);
       }
     });
-    $this.setState({ test_analytes: test_analytes });
   }
 };
 
@@ -190,14 +185,7 @@ const resultEntryUpdate = $this => {
     }
   }
   if (enterResult === true) {
-    // UpdateLabOrder($this, test_analytes);
-    swal("Done", {
-      icon: "success",
-      buttons: false,
-      timer: 2000
-    });
-
-    $this.setState({ test_analytes: test_analytes });
+    UpdateLabOrder($this, test_analytes);
   } else {
     swal("Invalid Input. Please enter input.", {
       icon: "warning",
@@ -232,16 +220,9 @@ const onconfirm = $this => {
       dangerMode: true
     }).then(willProceed => {
       if (willProceed) {
-        // UpdateLabOrder($this, test_analytes);
-        swal("Done", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
-        });
+        UpdateLabOrder($this, test_analytes);
       }
     });
-
-    $this.setState({ test_analytes: test_analytes });
   }
 };
 
