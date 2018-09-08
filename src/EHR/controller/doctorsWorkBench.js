@@ -41,7 +41,8 @@ import {
   getPatientVitals,
   addPatientVitals,
   addPatientPhysicalExamination,
-  updatePatientAllergy
+  updatePatientAllergy,
+  addPatientDiet
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -662,6 +663,22 @@ export default ({ config, db }) => {
       } else {
         next(httpStatus.generateError(httpStatus.notFound, "No records found"));
       }
+    },
+    releaseConnection
+  );
+
+  //created by irfan: to add patient diet
+
+  api.post(
+    "/addPatientDiet",
+    addPatientDiet,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
     },
     releaseConnection
   );
