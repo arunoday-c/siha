@@ -26,14 +26,19 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { getAllAllergies, getReviewOfSystems } from "./SubjectiveHandler";
+import {
+  getAllAllergies,
+  getReviewOfSystems,
+  getPatientAllergies,
+  getReviewOfSystemsDetails,
+  getPatientROS
+} from "./SubjectiveHandler";
 
 let patChiefComplain = [];
 
 class Subjective extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       openComplain: false,
       openHpiModal: false,
@@ -48,7 +53,7 @@ class Subjective extends Component {
       patientROS: [],
       chief_complaint_name: null,
       chief_complaint_id: null,
-      system: "",
+      system: null,
       comment: "",
       duration: 0,
       hims_f_episode_chief_complaint_id: null,
@@ -74,6 +79,72 @@ class Subjective extends Component {
     this.setState({
       openROSModal: true
     });
+  }
+  resetAllergies() {
+    this.setState({
+      hims_d_allergy_id: "",
+      allergy_comment: "",
+      allergy_inactive: "",
+      allergy_onset: "",
+      allergy_severity: "",
+      allergy_onset_date: ""
+    });
+  }
+
+  addAllergyToPatient(e) {
+    e.preventDefault();
+    if (this.state.hims_d_allergy_id === "") {
+      this.setState({
+        allergyNameError: true,
+        allergyNameErrorText: "Required"
+      });
+    }
+    algaehApiCall({
+      uri: "/doctorsWorkBench/addPatientNewAllergy",
+      method: "POST",
+      data: {
+        patient_id: Window.global["current_patient"],
+        allergy_id: this.state.hims_d_allergy_id,
+        onset: this.state.allergy_onset,
+        onset_date: this.state.allergy_onset_date,
+        severity: this.state.allergy_severity,
+        comment: this.state.allergy_comment,
+        allergy_inactive: this.state.allergy_inactive
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          this.getPatientAllergies();
+          this.resetAllergies();
+          swal("Allergy added successfully . .", {
+            icon: "success",
+            buttons: false,
+            timer: 2000
+          });
+
+          //this.setState({ patientChiefComplains: response.data.records });
+          //console.log("Add Allergy Success:", response.data.records);
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
+  reloadState() {
+    this.setState({ ...this.state });
+  }
+
+  changeOnsetEdit(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    this.reloadState();
+  }
+
+  changeRosCommentEdit(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    this.reloadState();
   }
 
   showconfirmDialog(id) {
@@ -104,6 +175,130 @@ class Subjective extends Component {
       } else {
         swal("Delete request cancelled");
       }
+    });
+  }
+
+  resetPatientROS() {
+    this.setState({
+      hims_d_review_of_system_header_id: "",
+      hims_d_review_of_system_details_id: "",
+      ros_comment: ""
+    });
+  }
+
+  addPatientROS() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/addPatientROS",
+      method: "POST",
+      data: {
+        patient_id: Window.global["current_patient"],
+        episode_id: Window.global["episode_id"],
+        review_header_id: this.state.hims_d_review_of_system_header_id,
+        review_details_id: this.state.hims_d_review_of_system_details_id,
+        comment: this.state.ros_comment
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          getPatientROS(this);
+          this.resetPatientROS();
+          swal("Review of System Added successfully . .", {
+            icon: "success",
+            buttons: false,
+            timer: 2000
+          });
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
+  deleteAllergy(row) {
+    // console.log("delete Allergy row:", row);
+
+    swal({
+      title: "Are you sure you want to delete this Allergy?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        let data = {
+          allergy_inactive: row.allergy_inactive,
+          comment: row.comment,
+          onset: row.onset,
+          severity: row.severity,
+          onset_date: row.onset_date,
+          record_status: "I",
+          hims_f_patient_allergy_id: row.hims_f_patient_allergy_id
+        };
+        algaehApiCall({
+          uri: "/doctorsWorkBench/updatePatientAllergy",
+          data: data,
+          method: "PUT",
+          onSuccess: response => {
+            if (response.data.success) {
+              swal("Record deleted successfully . .", {
+                icon: "success",
+                buttons: false,
+                timer: 2000
+              });
+              this.getPatientAllergies();
+            }
+          },
+          onFailure: error => {}
+        });
+      } else {
+        swal("Delete request cancelled");
+      }
+    });
+  }
+  deleteROS(row) {
+    // console.log("delete Allergy row:", row);
+
+    swal({
+      title: "Are you sure you want to delete this Review of System?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        let data = {
+          patient_id: Window.global["current_patient"],
+          episode_id: Window.global["episode_id"],
+          review_header_id: row.hims_d_review_of_system_header_id,
+          review_details_id: row.hims_d_review_of_system_details_id,
+          comment: row.comment,
+          record_status: "A",
+          hims_f_encounter_review_id: row.hims_f_encounter_review_id
+        };
+        algaehApiCall({
+          uri: "/doctorsWorkBench/updatePatientROS",
+          data: data,
+          method: "PUT",
+          onSuccess: response => {
+            if (response.data.success) {
+              swal("Record deleted successfully . .", {
+                icon: "success",
+                buttons: false,
+                timer: 2000
+              });
+              getPatientROS(this);
+            }
+          },
+          onFailure: error => {}
+        });
+      } else {
+        swal("Delete request cancelled");
+      }
+    });
+  }
+
+  rosDropDownHandle(value) {
+    this.setState({ [value.name]: value.value }, () => {
+      getReviewOfSystemsDetails(
+        this,
+        this.state.hims_d_review_of_system_header_id
+      );
     });
   }
 
@@ -367,7 +562,8 @@ class Subjective extends Component {
 
   componentDidMount() {
     getAllAllergies(this, this.state.allergy_value);
-    getReviewOfSystems(this, this.state.system);
+    getReviewOfSystems(this);
+    getPatientROS(this);
     this.getPatientChiefComplains();
     this.getChiefComplainsList();
     this.getPatientAllergies();
@@ -416,18 +612,15 @@ class Subjective extends Component {
                           fieldName: "sample"
                         }}
                         selector={{
-                          name: "hims_f_episode_chief_complaint_id",
+                          name: "hims_d_review_of_system_header_id",
                           className: "select-fld",
-                          value: this.state.hims_f_episode_chief_complaint_id,
+                          value: this.state.hims_d_review_of_system_header_id,
                           dataSource: {
-                            textField: "hpi_description",
-                            valueField: "hims_d_hpi_header_id",
-                            data:
-                              this.state.chiefComplainList.length !== 0
-                                ? this.state.chiefComplainList
-                                : null
+                            textField: "description",
+                            valueField: "hims_d_review_of_system_header_id",
+                            data: this.props.allros
                           },
-                          onChange: this.dropDownHandle.bind(this)
+                          onChange: this.rosDropDownHandle.bind(this)
                         }}
                       />
 
@@ -438,16 +631,13 @@ class Subjective extends Component {
                           fieldName: "sample"
                         }}
                         selector={{
-                          name: "hims_f_episode_chief_complaint_id",
+                          name: "hims_d_review_of_system_details_id",
                           className: "select-fld",
-                          value: this.state.hims_f_episode_chief_complaint_id,
+                          value: this.state.hims_d_review_of_system_details_id,
                           dataSource: {
-                            textField: "hpi_description",
-                            valueField: "hims_d_hpi_header_id",
-                            data:
-                              this.state.chiefComplainList.length !== 0
-                                ? this.state.chiefComplainList
-                                : null
+                            textField: "detail_description",
+                            valueField: "hims_d_review_of_system_details_id",
+                            data: this.props.allrosdetails
                           },
                           onChange: this.dropDownHandle.bind(this)
                         }}
@@ -461,12 +651,12 @@ class Subjective extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "comment",
+                          name: "ros_comment",
                           others: {
                             multiline: true,
                             rows: "4"
                           },
-                          value: this.state.comment,
+                          value: this.state.ros_comment,
                           events: {
                             onChange: this.texthandle.bind(this)
                           }
@@ -477,12 +667,66 @@ class Subjective extends Component {
                   <div className="col-lg-8 popRightDiv">
                     <h6> List of Review Systems</h6>
                     <hr />
-                    <div> Grid comes Here </div>
+                    <AlgaehDataGrid
+                      id="ros-grid"
+                      columns={[
+                        {
+                          fieldName: "header_description",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "System" }} />
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "detail_description",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Symptoms" }} />
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "comment",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Remarks" }} />
+                          ),
+                          editorTemplate: data => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "ros_comment",
+                                  value: data.comment,
+                                  events: {
+                                    onChange: this.changeRosCommentEdit.bind(
+                                      this,
+                                      data
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        }
+                      ]}
+                      keyId="ros"
+                      dataSource={{
+                        data: this.props.patientros
+                      }}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 5 }}
+                      events={{
+                        onDelete: this.deleteROS.bind(this),
+                        onEdit: row => {},
+                        onDone: row => {}
+                      }}
+                    />
+
                     <div>
                       <AlagehFormGroup
                         div={{ className: "col-lg-12 margin-top-15" }}
                         label={{
-                          fieldName: "Overall comments",
+                          forceLabel: "Overall comments",
                           isImp: false
                         }}
                         textBox={{
@@ -505,7 +749,11 @@ class Subjective extends Component {
             </div>
             <div className="row popupFooter">
               <div className="col-lg-4">
-                <button type="button" className="btn btn-primary">
+                <button
+                  onClick={this.addPatientROS.bind(this)}
+                  type="button"
+                  className="btn btn-primary"
+                >
                   Add to Review List
                 </button>
                 <button type="button" className="btn btn-other">
@@ -594,23 +842,27 @@ class Subjective extends Component {
                         }}
                       />
 
-                      <AlgaehDateHandler
-                        div={{ className: "col-lg-12 margin-top-15" }}
-                        label={{
-                          forceLabel: "Onset Date"
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "allergy_onset_date"
-                        }}
-                        maxDate={new Date()}
-                        events={{
-                          onChange: selectedDate => {
-                            this.setState({ allergy_onset_date: selectedDate });
-                          }
-                        }}
-                        value={this.state.allergy_onset_date}
-                      />
+                      {this.state.allergy_onset === "O" ? (
+                        <AlgaehDateHandler
+                          div={{ className: "col-lg-12 margin-top-15" }}
+                          label={{
+                            forceLabel: "Onset Date"
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "allergy_onset_date"
+                          }}
+                          maxDate={new Date()}
+                          events={{
+                            onChange: selectedDate => {
+                              this.setState({
+                                allergy_onset_date: selectedDate
+                              });
+                            }
+                          }}
+                          value={this.state.allergy_onset_date}
+                        />
+                      ) : null}
 
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12 margin-top-15" }}
@@ -666,7 +918,27 @@ class Subjective extends Component {
                               label={{ forceLabel: "Allergy Type" }}
                             />
                           ),
+                          disabled: true,
                           displayTemplate: data => {
+                            return (
+                              <span>
+                                {data.allergy_type === "F" ? (
+                                  <span> Food</span>
+                                ) : data.allergy_type === "A" ? (
+                                  <span>Airborne </span>
+                                ) : data.allergy_type === "AI" ? (
+                                  <span>Animal and Insect </span>
+                                ) : data.allergy_type === "C" ? (
+                                  <span>Chemical and Others </span>
+                                ) : data.allergy_type === "N" ? (
+                                  <span>NKA </span>
+                                ) : data.allergy_type === "D" ? (
+                                  <span>Drug </span>
+                                ) : null}
+                              </span>
+                            );
+                          },
+                          editorTemplate: data => {
                             return (
                               <span>
                                 {data.allergy_type === "F" ? (
@@ -692,23 +964,85 @@ class Subjective extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Allergy Name" }}
                             />
-                          )
+                          ),
+                          disabled: true,
+                          editorTemplate: data => {
+                            return <span>{data.allergy_name}</span>;
+                          }
                         },
                         {
                           fieldName: "onset",
-                          label: <AlgaehLabel label={{ forceLabel: "Onset" }} />
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Onset" }} />
+                          ),
+                          displayTemplate: data => {
+                            return data.onset === "A" ? (
+                              <span>Adulthood</span>
+                            ) : data.onset === "T" ? (
+                              <span>Teenage</span>
+                            ) : data.onset === "P" ? (
+                              <span>Pre Terms</span>
+                            ) : data.onset === "C" ? (
+                              <span>Childhood</span>
+                            ) : data.onset === "O" ? (
+                              <span>Onset Date</span>
+                            ) : (
+                              ""
+                            );
+                          },
+                          editorTemplate: data => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "onset",
+                                  className: "select-fld",
+                                  value: data.onset,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.ALLERGY_ONSET
+                                  },
+                                  onChange: this.changeOnsetEdit.bind(
+                                    this,
+                                    data
+                                  )
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "onset_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Onset Date" }} />
-                          )
+                          ),
+                          displayTemplate: data => {
+                            return (
+                              <span>
+                                {data.onset
+                                  ? moment(data.onset_date).format("DD-MM-YYYY")
+                                  : ""}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "severity",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Severity" }} />
-                          )
+                          ),
+                          displayTemplate: data => {
+                            return data.severity === "MI" ? (
+                              <span>Mild</span>
+                            ) : data.severity === "MO" ? (
+                              <span>Moderate</span>
+                            ) : data.severity === "SE" ? (
+                              <span>Severe</span>
+                            ) : (
+                              ""
+                            );
+                          }
                         },
                         {
                           fieldName: "comment",
@@ -722,9 +1056,9 @@ class Subjective extends Component {
                         data: this.state.allAllergies
                       }}
                       isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 5 }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onDelete: row => {},
+                        onDelete: this.deleteAllergy.bind(this),
                         onEdit: row => {},
                         onDone: row => {}
                       }}
@@ -735,7 +1069,11 @@ class Subjective extends Component {
             </div>
             <div className="row popupFooter">
               <div className="col-lg-4">
-                <button type="button" className="btn btn-primary">
+                <button
+                  onClick={this.addAllergyToPatient.bind(this)}
+                  type="button"
+                  className="btn btn-primary"
+                >
                   Add to Alergy List
                 </button>
                 <button type="button" className="btn btn-other">
@@ -1689,7 +2027,9 @@ class Subjective extends Component {
 function mapStateToProps(state) {
   return {
     allallergies: state.allallergies,
-    allros: state.allros
+    allros: state.allros,
+    patientros: state.patientros,
+    allrosdetails: state.allrosdetails
   };
 }
 
@@ -1697,6 +2037,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getReviewOfSystems: AlgaehActions,
+      getReviewOfSystemsDetails: AlgaehActions,
+      getPatientROS: AlgaehActions,
       getAllAllergies: AlgaehActions
     },
     dispatch

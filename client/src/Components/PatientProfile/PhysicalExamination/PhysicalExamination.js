@@ -50,7 +50,7 @@ class PhysicalExamination extends Component {
             </div>
             <div className="col-lg-12 popupInner">
               <div className="row">
-                <div className="col-lg-4 popLeftDiv">
+                <div className="col-lg-3 popLeftDiv">
                   <h5>Vital Timeline</h5>
                   <hr />
                   <div className="timeline">
@@ -111,7 +111,7 @@ class PhysicalExamination extends Component {
                   </div>
                 </div>
 
-                <div className="col-lg-8 popRightDiv">
+                <div className="col-lg-9 popRightDiv">
                   <h5>Vital Charts</h5>
                   <hr />
                 </div>
@@ -245,7 +245,7 @@ class PhysicalExamination extends Component {
                   <div className="col-lg-12">
                     <div className="row margin-bottom-15">
                       <AlagehFormGroup
-                        div={{ className: "col vitalTopFld15" }}
+                        div={{ className: "col" }}
                         label={{
                           forceLabel: "Weight(Kg)",
                           isImp: true
