@@ -267,7 +267,6 @@ let insertOrderedServices = (req, res, next) => {
             let visit_id;
 
             let services = new LINQ(req.body)
-              .Where(g => g.pre_approval == "Y")
               .Select(s => {
                 patient_id = s.patient_id;
                 doctor_id = s.doctor_id;

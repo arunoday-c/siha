@@ -23,6 +23,12 @@ const UpdateLabOrder = ($this, value) => {
           buttons: false,
           timer: 2000
         });
+        debugger;
+        for (let k = 0; k < value.length; k++) {
+          if (value[k].run_type !== null && value[k].run_type !== undefined) {
+            value.splice(k, 1);
+          }
+        }
         $this.setState({ test_analytes: value });
       }
     },
@@ -61,6 +67,7 @@ const onvalidate = $this => {
       dangerMode: true
     }).then(willProceed => {
       if (willProceed) {
+        test_analytes.push({ run_type: "N" });
         UpdateLabOrder($this, test_analytes);
       }
     });
@@ -185,6 +192,7 @@ const resultEntryUpdate = $this => {
     }
   }
   if (enterResult === true) {
+    test_analytes.push({ run_type: "N" });
     UpdateLabOrder($this, test_analytes);
   } else {
     swal("Invalid Input. Please enter input.", {
@@ -220,6 +228,7 @@ const onconfirm = $this => {
       dangerMode: true
     }).then(willProceed => {
       if (willProceed) {
+        test_analytes.push({ run_type: "N" });
         UpdateLabOrder($this, test_analytes);
       }
     });
@@ -249,7 +258,7 @@ const onReRun = $this => {
     test_analytes[k].status = "N";
   }
   test_analytes.push(runtype);
-  debugger;
+
   if (success === true) {
     swal({
       title: "Are you sure want to Re-Run",

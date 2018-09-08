@@ -33,16 +33,18 @@ const serviceTypeHandeler = ($this, e) => {
 const serviceHandeler = ($this, e) => {
   $this.setState({
     [e.name]: e.value,
+    s_service_type: e.selected.service_type_id,
     insurance_service_name: e.selected.service_name
   });
 };
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
+  debugger;
   let preserviceInput = $this.state.preserviceInput || [];
   let serviceInput = [
     {
-      insured: $this.state.insured,
+      insured: $this.state.insured === null ? "N" : $this.state.insured,
       hims_d_services_id: $this.state.s_service,
       primary_insurance_provider_id: $this.state.insurance_provider_id,
       primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
@@ -301,6 +303,7 @@ const SaveOrdersServices = ($this, e) => {
     method: "POST",
     onSuccess: response => {
       if (response.data.success) {
+        this.setState({ saved: true });
         successfulMessage({
           message: "Ordered Successfully...",
           title: "Success",
