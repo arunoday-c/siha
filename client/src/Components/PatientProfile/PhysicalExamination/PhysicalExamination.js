@@ -32,7 +32,7 @@ class PhysicalExamination extends Component {
   }
 
   addVitals() {
-    this.setState({ openVitalModal: true });
+    this.setState({ openVitalModal: true, open: false });
   }
 
   handleClose() {
