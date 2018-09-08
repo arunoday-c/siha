@@ -20,35 +20,44 @@ const datehandle = ($this, ctrl, e) => {
 const addDiet = $this => {
   // doctorsWorkBench/addDietAdvice
   debugger;
-  let inputObj = {
-    patient_id: Window.global["current_patient"],
-    episode_id: Window.global["episode_id"],
-    diet_id: $this.state.diet_id,
-    till_date: $this.state.till_date,
-    comments: null
-  };
-  algaehApiCall({
-    uri: "/doctorsWorkBench/addDietAdvice",
-    data: inputObj,
-    method: "POST",
-    onSuccess: response => {
-      if (response.data.success) {
+  if ($this.state.diet_id === null) {
+    successfulMessage({
+      message: "Invalid Input. Please select Diet",
+      title: "Warning",
+      icon: "warning"
+    });
+  } else {
+    let inputObj = {
+      patient_id: Window.global["current_patient"],
+      episode_id: Window.global["episode_id"],
+      diet_id: $this.state.diet_id,
+      till_date: $this.state.till_date,
+      comments: null
+    };
+    algaehApiCall({
+      uri: "/doctorsWorkBench/addDietAdvice",
+      data: inputObj,
+      method: "POST",
+      onSuccess: response => {
+        if (response.data.success) {
+          successfulMessage({
+            message: "Added Succesfully...",
+            title: "Success",
+            icon: "success"
+          });
+        }
+        getDietList($this, $this);
+        $this.setState({ diet_id: null });
+      },
+      onFailure: error => {
         successfulMessage({
-          message: "Added Succesfully...",
+          message: error.message,
           title: "Success",
           icon: "success"
         });
       }
-      getDietList($this, $this);
-    },
-    onFailure: error => {
-      successfulMessage({
-        message: error.message,
-        title: "Success",
-        icon: "success"
-      });
-    }
-  });
+    });
+  }
 };
 
 const getDietList = $this => {

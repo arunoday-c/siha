@@ -28,7 +28,8 @@ class DietAdvice extends Component {
 
     this.state = {
       till_date: new Date(),
-      diet_id: null
+      diet_id: null,
+      addIcon: false
     };
   }
 
