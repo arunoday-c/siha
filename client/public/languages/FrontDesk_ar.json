@@ -87,7 +87,7 @@
   "expiry_date": "تاريخ الانتهاء",
   "amount": "كمية",
   "unbalanced_amount": "المبلغ غير المتوازن",
-
+  "bill_date": "تاريخ الفاتورة",
   "service_type_id": "نوع الخدمة",
   "services_id": "الخدمات",
   "quantity": "كمية",

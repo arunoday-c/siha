@@ -37,6 +37,14 @@ $forntSize: 0.7rem;
   }
 
   //Portlet Styles Start
+  .btn-primary {
+    background-color: #00bcb0;
+    border: #00bcb0;
+  }
+  .btn-primary:hover {
+    background-color: #00bcb0;
+    border: #00bcb0;
+  }
 
   .btn-primary:not(:disabled):not(.disabled).active,
   .btn-primary:not(:disabled):not(.disabled):active,

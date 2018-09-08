@@ -12,6 +12,7 @@ import {
   AlgaehLabel,
   Tooltip
 } from "../../../Wrapper/algaehWrapper";
+import moment from "moment";
 import {
   texthandle,
   datehandle,
@@ -34,7 +35,8 @@ class AddBillingForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      bill_number: ""
     };
   }
 
@@ -62,7 +64,7 @@ class AddBillingForm extends Component {
             <div className="hptl-phase1-add-billing-form">
               <div className="container-fluid">
                 <div className="row">
-                  <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 primary-details">
+                  <div className="col-lg-6 primary-details">
                     {/* <div className="container-fluid"> */}
                     <Paper className="Paper">
                       <div className="row primary-box-container">
@@ -72,194 +74,87 @@ class AddBillingForm extends Component {
                               fieldName: "bill"
                             }}
                           />
+                          <h6>
+                            {this.state.bill_number
+                              ? this.state.bill_number
+                              : "Not Generated"}
+                          </h6>
                         </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "bill_number",
-                            value: this.state.bill_number,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-                        <AlgaehDateHandler
-                          div={{ className: "col-lg-4" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "bill_date"
-                          }}
-                          disabled={true}
-                          maxDate={new Date()}
-                          minDate={new Date()}
-                          events={{
-                            onChange: null
-                          }}
-                          value={this.state.bill_date}
-                        />
 
-                        <div className="col-lg-2">
-                          <Tooltip id="tooltip-icon" title="Process Insurance">
-                            <IconButton className="go-button" color="primary">
-                              <PlayCircleFilled
-                                onClick={ProcessInsurance.bind(
-                                  this,
-                                  this,
-                                  context
-                                )}
-                              />
-                            </IconButton>
-                          </Tooltip>
+                        <div className="col-lg-3">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "bill_date"
+                            }}
+                          />
+                          <h6>
+                            {this.state.bill_date
+                              ? moment(this.state.bill_date).format(
+                                  "DD-MM-YYYY"
+                                )
+                              : "DD/MM/YYYY"}
+                          </h6>
                         </div>
                       </div>
 
                       <div className="row primary-box-container">
-                        <div className="col-lg-3">
+                        <div className="col-lg-4">
                           <AlgaehLabel
                             label={{
                               fieldName: "gross_total"
                             }}
                           />
+                          <h5>
+                            {this.state.gross_total
+                              ? "₹" + this.state.gross_total
+                              : "₹0.00"}
+                          </h5>
                         </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.gross_total,
-                            className: "txt-fld",
-                            name: "gross_total",
 
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-                      </div>
-
-                      <div className="row primary-box-container">
-                        <div className="col-lg-3">
+                        <div className="col-lg-4">
                           <AlgaehLabel
                             label={{
                               fieldName: "patient_payable"
                             }}
                           />
+                          <h5>
+                            {this.state.patient_payable
+                              ? "₹" + this.state.patient_payable
+                              : "₹0.00"}
+                          </h5>
                         </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.patient_payable,
-                            className: "txt-fld",
-                            name: "patient_payable",
 
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-                      </div>
-                      <div className="row primary-box-container">
-                        <div className="col-lg-3">
+                        <div className="col-lg-4">
                           <AlgaehLabel
                             label={{
                               fieldName: "advance"
                             }}
                           />
+                          <h5>
+                            {this.state.advance_amount
+                              ? "₹" + this.state.advance_amount
+                              : "₹0.00"}
+                          </h5>
                         </div>
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.advance_amount,
-                            className: "txt-fld",
-                            name: "advance_amount",
-
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-                        <div className="col-lg-1">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "advance_adjust"
-                            }}
-                          />
-                        </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-2" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.advance_adjust,
-                            className: "txt-fld",
-                            name: "advance_adjust",
-                            events: {
-                              onChange: adjustadvance.bind(this, this, context)
-                            }
-                          }}
-                        />
                       </div>
+                      <hr />
                       <div className="row primary-box-container">
                         <div className="col-lg-3">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "sheet_discount"
-                            }}
-                          />
-                        </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false, suffix: " %" },
-                            value: this.state.sheet_discount_percentage,
-                            className: "txt-fld",
-                            name: "sheet_discount_percentage",
-                            events: {
-                              onChange: discounthandle.bind(this, this, context)
-                            }
-                          }}
-                        />
-                        <div className="col-lg-1">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "sheet_discount_amount"
-                            }}
-                          />
-                        </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-2" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.sheet_discount_amount,
-                            className: "txt-fld",
-                            name: "sheet_discount_amount",
-
-                            events: {
-                              onChange: discounthandle.bind(this, this, context)
-                            }
-                          }}
-                        />
-
-                        <div className="col-lg-2">
                           <button
-                            className="htpl1-phase1-btn-primary"
+                            className="btn btn-primary btn-sm"
+                            type="button"
+                            onClick={ProcessInsurance.bind(this, this, context)}
+                          >
+                            Process Insurance
+                          </button>
+                        </div>
+                        <div className="col-lg-3">
+                          <button
+                            className="btn btn-primary btn-sm"
+                            type="button"
                             onClick={this.ShowBillDetails.bind(this)}
                           >
-                            Details....
+                            Bill Details
                           </button>
 
                           <DisplayOPBilling
@@ -281,15 +176,90 @@ class AddBillingForm extends Component {
                         </div>
                       </div>
                       <hr />
+                      <div className="row primary-box-container">
+                        <AlagehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "advance_adjust"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.advance_adjust,
+                            className: "txt-fld",
+                            name: "advance_adjust",
+                            events: {
+                              onChange: adjustadvance.bind(this, this, context)
+                            }
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "sheet_discount"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false, suffix: " %" },
+                            value: this.state.sheet_discount_percentage,
+                            className: "txt-fld",
+                            name: "sheet_discount_percentage",
+                            events: {
+                              onChange: discounthandle.bind(this, this, context)
+                            }
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "sheet_discount_amount"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.sheet_discount_amount,
+                            className: "txt-fld",
+                            name: "sheet_discount_amount",
+
+                            events: {
+                              onChange: discounthandle.bind(this, this, context)
+                            }
+                          }}
+                        />
+                      </div>
+                      <hr />
                       <div className="row last-box-container">
-                        <div className="col-lg-3 last-box-label">
+                        {/* <div className="col-lg-3 last-box-label">
                           <AlgaehLabel
                             label={{
                               fieldName: "bill_amount"
                             }}
                           />
+                        </div> */}
+
+                        <div className="col-lg-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "net_amount"
+                            }}
+                          />
+                          <h5>
+                            {this.state.net_amount
+                              ? "₹" + this.state.net_amount
+                              : "₹0.00"}
+                          </h5>
                         </div>
-                        <AlagehFormGroup
+
+                        <div className="col-lg-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "receiveable_amount"
+                            }}
+                          />
+                          <h5>
+                            {this.state.receiveable_amount
+                              ? "₹" + this.state.receiveable_amount
+                              : "₹0.00"}
+                          </h5>
+                        </div>
+                        {/* <AlagehFormGroup
                           div={{ className: "col-lg-3" }}
                           label={{
                             fieldName: "net_amount"
@@ -307,9 +277,9 @@ class AddBillingForm extends Component {
                               disabled: true
                             }
                           }}
-                        />
+                        /> */}
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-4" }}
                           label={{
                             fieldName: "credit_amount"
                           }}
@@ -327,7 +297,8 @@ class AddBillingForm extends Component {
                             }
                           }}
                         />
-                        <AlagehFormGroup
+
+                        {/* <AlagehFormGroup
                           div={{ className: "col-lg-3" }}
                           label={{
                             fieldName: "receiveable_amount"
@@ -345,16 +316,45 @@ class AddBillingForm extends Component {
                               disabled: true
                             }
                           }}
-                        />
+                        /> */}
                       </div>
                     </Paper>
                     {/* </div> */}
                   </div>
-                  <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 secondary-details">
+                  <div className="col-lg-6 secondary-details">
                     {/* <div className="container-fluid"> */}
                     <Paper className="Paper">
                       <div className="row secondary-box-container">
-                        <AlagehFormGroup
+                        <div className="col-lg-3">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "receipt_number"
+                            }}
+                          />
+                          <h6>
+                            {this.state.receipt_number
+                              ? this.state.receipt_number
+                              : "Not Generated"}
+                          </h6>
+                        </div>
+                        <div className="col-lg-3">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "receipt_date"
+                            }}
+                          />
+                          <h6>
+                            {this.state.receipt_date
+                              ? moment(this.state.receipt_date).format(
+                                  "DD-MM-YYYY"
+                                )
+                              : "DD/MM/YYYY"}
+                          </h6>
+                        </div>
+                      </div>
+
+                      <div className="row secondary-box-container">
+                        {/* <AlagehFormGroup
                           div={{ className: "col-lg-3" }}
                           label={{
                             fieldName: "receipt_number"
@@ -370,8 +370,8 @@ class AddBillingForm extends Component {
                               disabled: true
                             }
                           }}
-                        />
-                        <AlgaehDateHandler
+                        /> */}
+                        {/* <AlgaehDateHandler
                           div={{ className: "col-lg-3" }}
                           label={{ fieldName: "receipt_date" }}
                           textBox={{
@@ -385,7 +385,7 @@ class AddBillingForm extends Component {
                             onChange: null
                           }}
                           value={this.state.receipt_date}
-                        />
+                        /> */}
 
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
@@ -616,7 +616,20 @@ class AddBillingForm extends Component {
                       </div>
 
                       <div className="row secondary-box-container">
-                        <div className="col-lg-3">
+                        <div className="col-lg-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "unbalanced_amount"
+                            }}
+                          />
+                          <h5>
+                            {this.state.unbalanced_amount
+                              ? "₹" + this.state.unbalanced_amount
+                              : "₹0.00"}
+                          </h5>
+                        </div>
+
+                        {/* <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
                               fieldName: "unbalanced_amount"
@@ -638,10 +651,22 @@ class AddBillingForm extends Component {
                               disabled: true
                             }
                           }}
-                        />
+                        /> */}
                         {/* <div className="col-lg-6" /> */}
 
-                        <div className="col-lg-3">
+                        <div className="col-lg-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "total_amount"
+                            }}
+                          />
+                          <h5>
+                            {this.state.total_amount
+                              ? "₹" + this.state.total_amount
+                              : "₹0.00"}
+                          </h5>
+                        </div>
+                        {/* <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
                               fieldName: "total_amount"
@@ -664,7 +689,7 @@ class AddBillingForm extends Component {
                               disabled: true
                             }
                           }}
-                        />
+                        /> */}
                       </div>
                     </Paper>
                     {/* </div> */}

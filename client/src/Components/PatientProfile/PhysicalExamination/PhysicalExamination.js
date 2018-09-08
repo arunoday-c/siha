@@ -7,8 +7,11 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Modal from "@material-ui/core/Modal";
-import Button from "@material-ui/core/Button";
-import search from "../../../assets/svg/search.svg";
+import { getVitalHistory } from "./PhysicalExaminationHandlers";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../actions/algaehActions";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
@@ -33,6 +36,10 @@ class PhysicalExamination extends Component {
     this.setState({ openVitalModal: false });
   }
 
+  componentDidMount() {
+    getVitalHistory(this);
+  }
+
   render() {
     return (
       <div className="physical_examination">
@@ -43,170 +50,68 @@ class PhysicalExamination extends Component {
             </div>
             <div className="col-lg-12 popupInner">
               <div className="row">
-                <div className="col-lg-2 popLeftDiv">
+                <div className="col-lg-3 popLeftDiv">
                   <h5>Vital Timeline</h5>
                   <hr />
                   <div className="timeline">
-                    <div className="timelineContainer right">
-                      <div className="content">
-                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
-                        <div className="vitalsCntr">
-                          <ul className="vitals-box">
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="timelineContainer right">
-                      <div className="content">
-                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
-                        <div className="vitalsCntr">
-                          <ul className="vitals-box">
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="timelineContainer right">
-                      <div className="content">
-                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
-                        <div className="vitalsCntr">
-                          <ul className="vitals-box">
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="timelineContainer right">
-                      <div className="content">
-                        <p className="dateStamp">13/10/2018 - 11:38: AM</p>
-                        <div className="vitalsCntr">
-                          <ul className="vitals-box">
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                            <li className="each-vitals-box">
-                              <p>Weight</p>
-                              <span>75.5</span>
-                              <span>Kg</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
+                    {this.props.allvitals !== undefined
+                      ? this.props.allvitals.map((data, index) => (
+                          <div key={index} className="timelineContainer right">
+                            <div className="content">
+                              <p className="dateStamp">
+                                {data.visit_date} - {data.visit_time}
+                              </p>
+                              <div className="vitalsCntr">
+                                <ul className="vitals-box">
+                                  <li className="each-vitals-box">
+                                    <p>Weight</p>
+                                    <span>{data.weight}</span>
+                                    <span>Kg</span>
+                                  </li>
+                                  <li className="each-vitals-box">
+                                    <p>Height</p>
+                                    <span>{data.height}</span>
+                                    <span>Cms</span>
+                                  </li>
+                                  <li className="each-vitals-box">
+                                    <p>BMI</p>
+                                    <span>{data.bmi}</span>
+                                    <span>Kg/m2</span>
+                                  </li>
+                                  <li className="each-vitals-box">
+                                    <p>Blood Pressure</p>
+                                    <span>
+                                      {data.systolic}/ {data.diastolic}
+                                    </span>
+                                    <span>mmHg</span>
+                                  </li>
+                                  <li className="each-vitals-box">
+                                    <p>
+                                      Temperature(
+                                      {data.temperature_from})
+                                    </p>
+                                    <span>{data.temperature_celsisus}</span>
+                                    <span> &deg;C</span>
+                                  </li>
+                                  <li className="each-vitals-box">
+                                    <p>Oxystat</p>
+                                    <span>
+                                      {data.oxystat
+                                        ? data.oxystat
+                                        : "Not Recorded"}
+                                    </span>
+                                    <span>%</span>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      : null}
                   </div>
                 </div>
 
-                <div className="col-lg-10 popRightDiv">
+                <div className="col-lg-9 popRightDiv">
                   <h5>Vital Charts</h5>
                   <hr />
                 </div>
@@ -340,7 +245,7 @@ class PhysicalExamination extends Component {
                   <div className="col-lg-12">
                     <div className="row margin-bottom-15">
                       <AlagehFormGroup
-                        div={{ className: "col vitalTopFld15" }}
+                        div={{ className: "col" }}
                         label={{
                           forceLabel: "Weight(Kg)",
                           isImp: true
@@ -517,4 +422,24 @@ class PhysicalExamination extends Component {
   }
 }
 
-export default PhysicalExamination;
+function mapStateToProps(state) {
+  return {
+    allvitals: state.allvitals
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getVitalHistory: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PhysicalExamination)
+);

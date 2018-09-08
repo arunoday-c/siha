@@ -241,7 +241,7 @@
     },
     {
       "name": "Chemical and Others",
-      "value": "CO"
+      "value": "C"
     },
     {
       "name": "NKA",
@@ -277,5 +277,12 @@
     { "name": "Entered", "value": "E" },
     { "name": "Confirmed", "value": "C" },
     { "name": "Validated", "value": "V" }
+  ],
+  "ALLERGY_ONSET": [
+    { "name": "Childhood", "value": "C" },
+    { "name": "Pre Terms", "value": "P" },
+    { "name": "Teenage", "value": "T" },
+    { "name": "Adulthood", "value": "A" },
+    { "name": "Onset Date", "value": "O" }
   ]
 }

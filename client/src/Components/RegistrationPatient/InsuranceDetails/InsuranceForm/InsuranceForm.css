@@ -3,8 +3,8 @@
   border-radius: 5px; }
 
 .htpl-phase1-primary-insurance-form .primary-details {
-  padding-bottom: 15px;
-  border-right: 1px solid #000; }
+  padding-top: 8px;
+  border-right: 1px dashed #d3d3d3; }
 
 .htpl-phase1-primary-insurance-form mark {
   background: none;
@@ -41,7 +41,7 @@
   margin-top: 2%; }
 
 .htpl-phase1-primary-insurance-form .secondary-details {
-  padding-bottom: 15px; }
+  padding-top: 8px; }
   .htpl-phase1-primary-insurance-form .secondary-details .secondary-box-container .attach-design {
     background: #8c8c8c;
     color: #fff;
