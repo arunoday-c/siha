@@ -796,9 +796,10 @@ let updatdePatEncntrStatus = (req, res, next) => {
 
                 if (updateResult != null) {
                   connection.query(
-                    "UPDATE  hims_f_patient_encounter SET  `status`='W',updated_by=?,updated_date=? WHERE\
+                    "UPDATE  hims_f_patient_encounter SET  `status`='W',encounter_id=?,updated_by=?,updated_date=? WHERE\
          hims_f_patient_encounter_id=? AND  record_status='A';",
                     [
+                      currentEncounterNo,
                       req.body.updated_by,
                       new Date(),
                       req.body.patient_encounter_id
