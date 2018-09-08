@@ -1940,6 +1940,93 @@ let getPhysicalExamination = (req, res, next) => {
     next(e);
   }
 };
+
+let addDietAdvice = (req, res, next) => {
+  let dietadvice = {
+    hims_f_patient_diet_id: null,
+    patient_id: null,
+    episode_id: null,
+    diet_id: null,
+    comments: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
+  };
+
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+    let inputParam = extend(dietadvice, req.body);
+    connection.query(
+      "INSERT INTO `hims_f_patient_diet` (`patient_id`, `episode_id`,`diet_id`, `comments`, `till_date` \
+      , `created_by` ,`created_date`) \
+   VALUES ( ?, ?, ?, ?, ?, ?, ?)",
+      [
+        inputParam.patient_id,
+        inputParam.episode_id,
+        inputParam.diet_id,
+        inputParam.comments,
+        inputParam.till_date,
+        inputParam.created_by,
+        new Date()
+      ],
+      (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      }
+    );
+  });
+};
+
+let getEpisodeDietAdvice = (req, res, next) => {
+  let Diet = {
+    hims_f_patient_diet_id: "ALL",
+    patient_id: "ALL",
+    episode_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let pagePaging = "";
+    if (req.paging != null) {
+      let Page = paging(req.paging);
+      pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
+    }
+
+    let condition = whereCondition(extend(Diet, req.query));
+    selectStatement(
+      {
+        db: req.db,
+        query:
+          "SELECT * FROM `hims_f_patient_diet` WHERE `record_status`='A' AND " +
+          condition.condition +
+          " " +
+          pagePaging,
+        values: condition.values
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -1980,5 +2067,7 @@ module.exports = {
   getPatientVitals,
   addPatientVitals,
   addPatientPhysicalExamination,
-  updatePatientAllergy
+  updatePatientAllergy,
+  addDietAdvice,
+  getEpisodeDietAdvice
 };

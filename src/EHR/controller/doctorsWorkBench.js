@@ -41,7 +41,9 @@ import {
   getPatientVitals,
   addPatientVitals,
   addPatientPhysicalExamination,
-  updatePatientAllergy
+  updatePatientAllergy,
+  addDietAdvice,
+  getEpisodeDietAdvice
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -662,6 +664,36 @@ export default ({ config, db }) => {
       } else {
         next(httpStatus.generateError(httpStatus.notFound, "No records found"));
       }
+    },
+    releaseConnection
+  );
+
+  // created by nowshad : to add  diet Advice
+  api.post(
+    "/addDietAdvice",
+    addDietAdvice,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad : to  Diet Details for selcted Episode
+  api.get(
+    "/getEpisodeDietAdvice",
+    getEpisodeDietAdvice,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
     },
     releaseConnection
   );
