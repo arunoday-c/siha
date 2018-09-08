@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./plan.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
 import DietAdvice from "./DietAdvice/DietAdvice";
-
+import Referal from "./Referal/Referal";
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
   { food: "Pollen", active: "Yes" },
@@ -255,17 +255,18 @@ class Plan extends Component {
                   <div className="caption">
                     <h3 className="caption-subject">Refer To</h3>
                   </div>
-                  <div className="actions">
+                  {/* <div className="actions">
                     <a
                       href="javascript:;"
                       className="btn btn-primary btn-circle active"
                     >
                       <i className="fas fa-plus" />
                     </a>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="portlet-body">
-                  <div className="customRadio">
+                  <Referal />
+                  {/* <div className="customRadio">
                     <label className="radio inline">
                       <input
                         type="radio"
@@ -283,7 +284,7 @@ class Plan extends Component {
                       />
                       <span>External</span>
                     </label>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               {/* END Portlet PORTLET */}

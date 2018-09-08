@@ -2030,6 +2030,56 @@ let getEpisodeDietAdvice = (req, res, next) => {
     next(e);
   }
 };
+
+let addReferalDoctor = (req, res, next) => {
+  let referraldoc = {
+    hims_f_patient_referral_id: null,
+    patient_id: null,
+    episode_id: null,
+    referral_type: null,
+    sub_department_id: null,
+    hospital_name: null,
+    reason: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
+  };
+
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+    let inputParam = extend(referraldoc, req.body);
+    connection.query(
+      "INSERT INTO `hims_f_patient_referral` (`patient_id`, `episode_id`,`referral_type`, `sub_department_id`, \
+      `doctor_id` ,`hospital_name`, `reason`, `created_by` ,`created_date`) \
+      VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [
+        inputParam.patient_id,
+        inputParam.episode_id,
+        inputParam.referral_type,
+        inputParam.sub_department_id,
+        inputParam.doctor_id,
+        inputParam.hospital_name,
+        inputParam.reason,
+        inputParam.created_by,
+        new Date()
+      ],
+      (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      }
+    );
+  });
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -2072,5 +2122,6 @@ module.exports = {
   addPatientPhysicalExamination,
   updatePatientAllergy,
   addDietAdvice,
-  getEpisodeDietAdvice
+  getEpisodeDietAdvice,
+  addReferalDoctor
 };

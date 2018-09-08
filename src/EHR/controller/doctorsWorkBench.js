@@ -43,7 +43,8 @@ import {
   addPatientPhysicalExamination,
   updatePatientAllergy,
   addDietAdvice,
-  getEpisodeDietAdvice
+  getEpisodeDietAdvice,
+  addReferalDoctor
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -697,5 +698,21 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by Nowshad : to  add Referal Doctor
+  api.post(
+    "/addReferalDoctor",
+    addReferalDoctor,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };
