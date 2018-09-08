@@ -55,7 +55,7 @@ let getLabOrderedServices = (req, res, next) => {
       }
       db.query(
         "SELECT hims_f_lab_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
-        SA.status, cancelled, provider_id, ordered_date, test_type, lab_id_number, PAT.patient_code,PAT.full_name,\
+        SA.status, cancelled, provider_id, ordered_date, test_type, lab_id_number, run_type, PAT.patient_code,PAT.full_name,\
         PAT.date_of_birth, PAT.gender, SP.sample_id,SP.collected,\
         SP.collected_by, SP.collected_date,SP.hims_d_lab_sample_id,SP.status as sample_status from ((hims_f_lab_order SA inner join hims_f_patient PAT ON \
         SA.patient_id=PAT.hims_d_patient_id) inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id) \
@@ -172,6 +172,7 @@ let insertLadOrderedServices = (req, res, next) => {
                   test_id.join(",")
                 ],
                 (error, specimentRecords) => {
+                  debugLog("specimentRecords: ", specimentRecords);
                   if (error) {
                     releaseDBConnection(db, connection);
                     next(error);
@@ -373,7 +374,7 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
                 query +
                   ";update hims_f_lab_order set lab_id_number ='" +
                   labIdNumber +
-                  "' where hims_f_lab_order_id=" +
+                  "',status='CL' where hims_f_lab_order_id=" +
                   req.body.hims_f_lab_order_id,
                 condition,
                 (error, returns) => {
@@ -574,6 +575,13 @@ let updateLabResultEntry = (req, res, next) => {
           .Where(w => w.status == "V")
           .ToArray().length;
 
+        let status_N = new LINQ(inputParam)
+          .Where(w => w.status == "N")
+          .ToArray().length;
+
+        let runtype = new LINQ(inputParam).Select(s => s.run_type);
+
+        debugLog("runtype: ", runtype);
         let ref = null;
 
         switch (inputParam.length) {
@@ -585,6 +593,11 @@ let updateLabResultEntry = (req, res, next) => {
           case status_V:
             //Do functionality for V here
             ref = "V";
+            break;
+
+          case status_N:
+            //Do functionality for V here
+            ref = "CL";
             break;
           default:
             ref = null;
@@ -602,6 +615,14 @@ let updateLabResultEntry = (req, res, next) => {
             inputParam[i].result +
             "',`status`='" +
             inputParam[i].status +
+            "',`remarks`='" +
+            inputParam[i].remarks +
+            "',`run1`='" +
+            inputParam[i].run1 +
+            "',`run2`='" +
+            inputParam[i].run2 +
+            "',`run3`='" +
+            inputParam[i].run3 +
             "',entered_by='" +
             user_id.updated_by +
             "',entered_date='" +
@@ -632,13 +653,15 @@ let updateLabResultEntry = (req, res, next) => {
               next(error);
             });
           }
-
+          // ,run_type="' + runtype + '"
           if (results != null && ref != null) {
             connection.query(
               "update hims_f_lab_order set `status`='" +
                 ref +
                 "',updated_date= '" +
                 new Date().toLocaleString() +
+                "',`run_type`='" +
+                runtype +
                 "',updated_by='" +
                 user_id.updated_by +
                 "' where hims_f_lab_order_id=? ",
