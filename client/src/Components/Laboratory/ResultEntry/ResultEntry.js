@@ -24,7 +24,7 @@ import {
   onvalidate,
   onconfirm,
   confirmedgridcol,
-  validategridcol,
+  onReRun,
   resultEntryUpdate
 } from "./ResultEntryEvents";
 
@@ -567,7 +567,16 @@ class ResultEntry extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
+                onClick={onReRun.bind(this, this)}
+                disabled={this.state.status === "V" ? false : true}
+              >
+                Re-Run
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
                 onClick={onvalidate.bind(this, this)}
+                disabled={this.state.status === "V" ? true : false}
               >
                 Validate All
               </button>
@@ -576,6 +585,13 @@ class ResultEntry extends Component {
                 type="button"
                 className="btn btn-primary"
                 onClick={onconfirm.bind(this, this)}
+                disabled={
+                  this.state.status === "C"
+                    ? true
+                    : this.state.status === "V"
+                      ? true
+                      : false
+                }
               >
                 Confirm All
               </button>
@@ -583,6 +599,7 @@ class ResultEntry extends Component {
                 type="button"
                 className="btn btn-primary"
                 onClick={resultEntryUpdate.bind(this, this)}
+                disabled={this.state.status === "V" ? true : false}
               >
                 Save
               </button>

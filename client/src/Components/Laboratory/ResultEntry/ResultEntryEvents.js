@@ -226,6 +226,44 @@ const onconfirm = $this => {
   }
 };
 
+const onReRun = $this => {
+  debugger;
+  let test_analytes = $this.state.test_analytes;
+  let success = true;
+  let runtype = [];
+  for (let k = 0; k < test_analytes.length; k++) {
+    if ($this.state.run_type === "N") {
+      test_analytes[k].run1 = test_analytes[k].result;
+      runtype = { run_type: "1" };
+    } else if ($this.state.run_type === "1") {
+      test_analytes[k].run2 = test_analytes[k].result;
+      runtype = { run_type: "1" };
+    } else if ($this.state.run_type === "2") {
+      test_analytes[k].run3 = test_analytes[k].result;
+      runtype = { run_type: "1" };
+    }
+
+    test_analytes[k].result = null;
+    test_analytes[k].confirm = "N";
+    test_analytes[k].validate = "N";
+    test_analytes[k].status = "N";
+  }
+  test_analytes.push(runtype);
+  debugger;
+  if (success === true) {
+    swal({
+      title: "Are you sure want to Re-Run",
+      icon: "success",
+      buttons: true,
+      dangerMode: true
+    }).then(willProceed => {
+      if (willProceed) {
+        UpdateLabOrder($this, test_analytes);
+      }
+    });
+  }
+};
+
 export {
   texthandle,
   onvalidate,
@@ -233,5 +271,6 @@ export {
   onchangegridcol,
   onconfirm,
   confirmedgridcol,
+  onReRun,
   resultEntryUpdate
 };
