@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Modal from "@material-ui/core/Modal";
-import RichTextEditor from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 import "./ResultEntry.css";
@@ -18,12 +17,16 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
+import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import {
-  RAD_EXAM_STATUS,
-  FORMAT_RAD_STATUS,
-  RAD_REPORT_TYPE
-} from "../../../utils/GlobalVariables.json";
-import { onchangegridcol, getAnalytes, onvalidate } from "./ResultEntryEvents";
+  onchangegridcol,
+  getAnalytes,
+  onvalidate,
+  onconfirm,
+  confirmedgridcol,
+  validategridcol,
+  resultEntryUpdate
+} from "./ResultEntryEvents";
 
 class ResultEntry extends Component {
   constructor(props) {
@@ -288,15 +291,6 @@ class ResultEntry extends Component {
                                       : "Text";
                                 }
                               },
-                              //TODO
-                              {
-                                fieldName: "status",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{ forceLabel: "Last Result" }}
-                                  />
-                                )
-                              },
                               {
                                 fieldName: "result",
                                 label: (
@@ -308,21 +302,27 @@ class ResultEntry extends Component {
                                 ),
                                 displayTemplate: row => {
                                   return (
-                                    <AlagehFormGroup
-                                      div={{}}
-                                      textBox={{
-                                        value: row.result,
-                                        className: "txt-fld",
-                                        name: "result",
-                                        events: {
-                                          onChange: onchangegridcol.bind(
-                                            this,
-                                            this,
-                                            row
-                                          )
-                                        }
-                                      }}
-                                    />
+                                    <span>
+                                      {row.validate === "N" ? (
+                                        <AlagehFormGroup
+                                          div={{}}
+                                          textBox={{
+                                            value: row.result,
+                                            className: "txt-fld",
+                                            name: "result",
+                                            events: {
+                                              onChange: onchangegridcol.bind(
+                                                this,
+                                                this,
+                                                row
+                                              )
+                                            }
+                                          }}
+                                        />
+                                      ) : (
+                                        row.result
+                                      )}
+                                    </span>
                                   );
                                 }
                               },
@@ -335,7 +335,6 @@ class ResultEntry extends Component {
                                   />
                                 )
                               },
-
                               {
                                 fieldName: "confirm",
                                 label: (
@@ -344,7 +343,34 @@ class ResultEntry extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  return row.confirm === "N" ? "No" : "Yes";
+                                  return (
+                                    <span>
+                                      {row.validate === "N" ? (
+                                        <AlagehAutoComplete
+                                          div={{}}
+                                          selector={{
+                                            name: "confirm",
+                                            className: "select-fld",
+                                            value: row.confirm,
+                                            dataSource: {
+                                              textField: "name",
+                                              valueField: "value",
+                                              data: FORMAT_YESNO
+                                            },
+                                            onChange: confirmedgridcol.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )
+                                          }}
+                                        />
+                                      ) : row.confirm === "N" ? (
+                                        "No"
+                                      ) : (
+                                        "Yes"
+                                      )}
+                                    </span>
+                                  );
                                 }
                               },
                               {
@@ -355,7 +381,34 @@ class ResultEntry extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  return row.confirm === "N" ? "No" : "Yes";
+                                  return (
+                                    <span>
+                                      {row.validate === "N" ? (
+                                        <AlagehAutoComplete
+                                          div={{}}
+                                          selector={{
+                                            name: "validate",
+                                            className: "select-fld",
+                                            value: row.validate,
+                                            dataSource: {
+                                              textField: "name",
+                                              valueField: "value",
+                                              data: FORMAT_YESNO
+                                            },
+                                            onChange: onchangegridcol.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )
+                                          }}
+                                        />
+                                      ) : row.confirm === "N" ? (
+                                        "No"
+                                      ) : (
+                                        "Yes"
+                                      )}
+                                    </span>
+                                  );
                                 }
                               },
                               {
@@ -418,21 +471,37 @@ class ResultEntry extends Component {
                               },
                               //TODO
                               {
-                                fieldName: "full_name",
+                                fieldName: "critical_type",
                                 label: (
                                   <AlgaehLabel
                                     label={{ forceLabel: "Critical Type" }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return row.critical_type === "N"
+                                    ? "None"
+                                    : row.critical_type === "CL"
+                                      ? "Critical Low"
+                                      : row.critical_type === "CH"
+                                        ? "Critical High"
+                                        : row.critical_type === "L"
+                                          ? "Low"
+                                          : row.critical_type === "H"
+                                            ? "High"
+                                            : null;
+                                }
                               },
                               //TODO
                               {
-                                fieldName: "ordered_date",
+                                fieldName: "amended",
                                 label: (
                                   <AlgaehLabel
                                     label={{ forceLabel: "Ammend" }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return row.amended === "N" ? "No" : "Yes";
+                                }
                               },
                               //TODO
                               {
@@ -445,7 +514,7 @@ class ResultEntry extends Component {
                               },
                               //TODO
                               {
-                                fieldName: "scheduled_date_time",
+                                fieldName: "remarks",
                                 label: (
                                   <AlgaehLabel
                                     label={{
@@ -475,7 +544,22 @@ class ResultEntry extends Component {
                 className="btn btn-primary"
                 onClick={onvalidate.bind(this, this)}
               >
-                Validate
+                Validate All
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={onconfirm.bind(this, this)}
+              >
+                Confirm All
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={resultEntryUpdate.bind(this, this)}
+              >
+                Save
               </button>
               <button
                 type="button"

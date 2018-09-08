@@ -271,5 +271,11 @@
   "DIAG_TYPE": [
     { "name": "Primary", "value": "P" },
     { "name": "Secondary", "value": "S" }
+  ],
+  "LAB_RESULT_STATUS": [
+    { "name": "Not Entered", "value": "N" },
+    { "name": "Entered", "value": "E" },
+    { "name": "Confirmed", "value": "C" },
+    { "name": "Validated", "value": "V" }
   ]
 }

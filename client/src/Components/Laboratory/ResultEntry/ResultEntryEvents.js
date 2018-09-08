@@ -1,150 +1,75 @@
-import moment from "moment";
-import Enumerable from "linq";
 import swal from "sweetalert";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  debugger;
 
   $this.setState({
     [name]: value
   });
 };
 
-const examhandle = ($this, e) => {
-  debugger;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-
-  let exam_start_date_time = null;
-  let exam_end_date_time = null;
-  let report_type = "NS";
-  if (value === "ST") {
-    exam_start_date_time = moment(new Date())._d;
-  } else if (value === "CO") {
-    exam_start_date_time =
-      $this.state.exam_start_date_time || moment(new Date())._d;
-    exam_end_date_time = moment(new Date())._d;
-    report_type = "PR";
-  }
-  debugger;
-  if ($this.state.pre_exam_status === "CO") {
-    swal("Invalid Input. After Complete cant do any changes. .", {
-      icon: "warning",
-      buttons: false,
-      timer: 2000
-    });
-  } else {
-    $this.setState(
-      {
-        [name]: value,
-        exam_start_date_time: exam_start_date_time,
-        exam_end_date_time: exam_end_date_time,
-        report_type: report_type
-      },
-      () => {
-        UpdateRadOrder($this, "Exam");
+const UpdateLabOrder = ($this, value) => {
+  algaehApiCall({
+    uri: "/radiology/updateRadOrderedServices",
+    data: value,
+    method: "PUT",
+    onSuccess: response => {
+      if (response.data.success === true) {
+        swal("Done successfully . .", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
       }
-    );
-  }
-};
-
-const templatehandle = ($this, e) => {
-  debugger;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  debugger;
-  $this.setState({
-    [name]: value,
-    template_html: e.selected.template_html
-  });
-};
-
-const rtehandle = ($this, template_html) => {
-  $this.setState({ template_html });
-};
-
-const UpdateRadOrder = ($this, value) => {
-  debugger;
-  let inputobj = {};
-  let status = "",
-    report_type = "";
-  if ($this.state.exam_status === "AW") {
-    status = "UP";
-    report_type = "PR";
-  } else if ($this.state.exam_status === "ST") {
-    status = "UP";
-    report_type = "PR";
-  } else if ($this.state.exam_status === "CN") {
-    status = "CN";
-    report_type = "PR";
-  } else if ($this.state.exam_status === "CO") {
-    status = "RC";
-    report_type = "FL";
-  }
-
-  if (value === "Validate") {
-    status = "RA";
-  }
-  inputobj = {
-    hims_f_rad_order_id: $this.state.hims_f_rad_order_id,
-    status: status,
-    cancelled: $this.state.cancelled,
-    scheduled_date_time: moment(new Date())._d,
-    scheduled_by: $this.state.scheduled_by,
-    arrived: $this.state.arrived,
-    arrived_date: moment(new Date())._d,
-    validate_by: $this.state.validate_by,
-    validate_date_time: $this.state.validate_date_time,
-    attended_by: $this.state.attended_by,
-    technician_id: $this.state.technician_id,
-
-    attended_date_time: $this.state.attended_date_time,
-    exam_start_date_time: $this.state.exam_start_date_time,
-    exam_end_date_time: $this.state.exam_end_date_time,
-    exam_status: $this.state.exam_status,
-    report_type: report_type
-  };
-
-  swal({
-    title:
-      "Are you sure the patient" +
-      $this.state.full_name +
-      "for the procedure" +
-      $this.state.service_name,
-    icon: "success",
-    buttons: true,
-    dangerMode: true
-  }).then(willProceed => {
-    if (willProceed) {
-      algaehApiCall({
-        uri: "/radiology/updateRadOrderedServices",
-        data: inputobj,
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.success === true) {
-            swal("Done successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
-            });
-          }
-        },
-        onFailure: error => {
-          swal(error, {
-            icon: "success",
-            buttons: false,
-            timer: 2000
-          });
-        }
+    },
+    onFailure: error => {
+      swal(error, {
+        icon: "success",
+        buttons: false,
+        timer: 2000
       });
     }
   });
 };
 
 const onvalidate = $this => {
-  UpdateRadOrder($this, "Validate");
+  debugger;
+  let test_analytes = $this.state.test_analytes;
+  let success = true;
+  for (let k = 0; k < test_analytes.length; k++) {
+    if (test_analytes[k].confirm === "N") {
+      swal("Invalid Input. Please confirm the result", {
+        icon: "warning",
+        buttons: false,
+        timer: 2000
+      });
+      success = false;
+    } else {
+      test_analytes[k].status = "V";
+      test_analytes[k].validate = "Y";
+    }
+  }
+  if (success === true) {
+    swal({
+      title: "Are you sure want to Validate",
+      icon: "success",
+      buttons: true,
+      dangerMode: true
+    }).then(willProceed => {
+      if (willProceed) {
+        // UpdateLabOrder($this, test_analytes);
+        swal("Done", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
+      }
+    });
+    $this.setState({ test_analytes: test_analytes });
+  }
 };
 
 const getAnalytes = $this => {
@@ -158,9 +83,51 @@ const getAnalytes = $this => {
     },
     afterSuccess: data => {
       debugger;
+      for (let i = 0; i < data.length; i++) {
+        data[i].hims_f_lab_order_id = $this.state.hims_f_lab_order_id;
+        if (data[i].status === "E" || data[i].status === "N") {
+          data[i].validate = "N";
+          data[i].confirm = "N";
+        } else if (data[i].status === "C") {
+          data[i].validate = "N";
+          data[i].confirm = "Y";
+        } else if (data[i].status === "V") {
+          data[i].validate = "Y";
+          data[i].confirm = "Y";
+        }
+      }
       $this.setState({ test_analytes: data });
     }
   });
+};
+
+const confirmedgridcol = ($this, row, e) => {
+  debugger;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let test_analytes = $this.state.test_analytes;
+  if (row.result === null && value === "Y") {
+    swal("Invalid Input. Please enter the result", {
+      icon: "warning",
+      buttons: false,
+      timer: 2000
+    });
+  } else {
+    if (row.validate === "Y" && value === "N") {
+      row["validate"] = "N";
+    }
+
+    row[name] = value;
+    // row["status"] = "C";
+    for (let l = 0; l < test_analytes.length; l++) {
+      if (
+        test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
+      ) {
+        test_analytes[l] = row;
+      }
+    }
+    $this.setState({ test_analytes: test_analytes });
+  }
 };
 
 const onchangegridcol = ($this, row, e) => {
@@ -168,23 +135,122 @@ const onchangegridcol = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let test_analytes = $this.state.test_analytes;
-  row[name] = value;
-  for (let l = 0; l < test_analytes.length; l++) {
-    if (
-      test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
-    ) {
-      test_analytes[l] = row;
+
+  if (name === "validate") {
+    if (row.confirm === "N" && value === "Y") {
+      swal(
+        "Invalid Input. Without confirming cannot validate, please confirm",
+        {
+          icon: "warning",
+          buttons: false,
+          timer: 2000
+        }
+      );
+    } else {
+      // row["status"] = "V";
+      row[name] = value;
+      for (let l = 0; l < test_analytes.length; l++) {
+        if (
+          test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
+        ) {
+          test_analytes[l] = row;
+        }
+      }
+      $this.setState({ test_analytes: test_analytes });
+    }
+  } else {
+    row[name] = value;
+    for (let l = 0; l < test_analytes.length; l++) {
+      if (
+        test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
+      ) {
+        test_analytes[l] = row;
+      }
+    }
+    $this.setState({ test_analytes: test_analytes });
+  }
+};
+
+const resultEntryUpdate = $this => {
+  debugger;
+  let test_analytes = $this.state.test_analytes;
+  let enterResult = true;
+  for (let k = 0; k < test_analytes.length; k++) {
+    if (test_analytes[k].result !== null) {
+      test_analytes[k].status = "E";
+      if (test_analytes[k].confirm !== "N") {
+        test_analytes[k].status = "C";
+      }
+
+      if (test_analytes[k].validate !== "N") {
+        test_analytes[k].status = "V";
+      }
+    } else {
+      enterResult = false;
     }
   }
-  $this.setState({ test_analytes: test_analytes });
+  if (enterResult === true) {
+    // UpdateLabOrder($this, test_analytes);
+    swal("Done", {
+      icon: "success",
+      buttons: false,
+      timer: 2000
+    });
+
+    $this.setState({ test_analytes: test_analytes });
+  } else {
+    swal("Invalid Input. Please enter input.", {
+      icon: "warning",
+      buttons: false,
+      timer: 2000
+    });
+  }
+};
+
+const onconfirm = $this => {
+  debugger;
+  let test_analytes = $this.state.test_analytes;
+  let success = true;
+  for (let k = 0; k < test_analytes.length; k++) {
+    if (test_analytes[k].result === null) {
+      swal("Invalid Input. Please enter the result", {
+        icon: "warning",
+        buttons: false,
+        timer: 2000
+      });
+      success = false;
+    } else {
+      test_analytes[k].status = "C";
+      test_analytes[k].confirm = "Y";
+    }
+  }
+  if (success === true) {
+    swal({
+      title: "Are you sure want to Confirm",
+      icon: "success",
+      buttons: true,
+      dangerMode: true
+    }).then(willProceed => {
+      if (willProceed) {
+        // UpdateLabOrder($this, test_analytes);
+        swal("Done", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
+      }
+    });
+
+    $this.setState({ test_analytes: test_analytes });
+  }
 };
 
 export {
   texthandle,
-  examhandle,
-  templatehandle,
-  rtehandle,
   onvalidate,
   getAnalytes,
-  onchangegridcol
+  onchangegridcol,
+  onconfirm,
+  confirmedgridcol,
+  resultEntryUpdate
 };

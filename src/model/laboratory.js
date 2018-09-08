@@ -172,6 +172,7 @@ let insertLadOrderedServices = (req, res, next) => {
                   test_id.join(",")
                 ],
                 (error, specimentRecords) => {
+                  debugLog("specimentRecords: ", specimentRecords);
                   if (error) {
                     releaseDBConnection(db, connection);
                     next(error);
@@ -373,7 +374,7 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
                 query +
                   ";update hims_f_lab_order set lab_id_number ='" +
                   labIdNumber +
-                  "' where hims_f_lab_order_id=" +
+                  "',status='CL' where hims_f_lab_order_id=" +
                   req.body.hims_f_lab_order_id,
                 condition,
                 (error, returns) => {
