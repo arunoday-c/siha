@@ -2080,6 +2080,54 @@ let addReferalDoctor = (req, res, next) => {
   });
 };
 
+let addFollowUp = (req, res, next) => {
+  let followup = {
+    hims_f_patient_followup_id: null,
+    patient_id: null,
+    encounter_id: null,
+    followup_type: null,
+    followup_days: null,
+    followup_date: null,
+    followup_comments: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
+  };
+
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+    let inputParam = extend(followup, req.body);
+    connection.query(
+      "INSERT INTO `hims_f_patient_followup` (`patient_id`, `encounter_id`,`followup_type`, \
+      `followup_days` ,`followup_date`, `followup_comments`, `created_by` ,`created_date`) \
+      VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)",
+      [
+        inputParam.patient_id,
+        inputParam.encounter_id,
+        inputParam.followup_type,
+        inputParam.followup_days,
+        inputParam.followup_date,
+        inputParam.followup_comments,
+        inputParam.created_by,
+        new Date()
+      ],
+      (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      }
+    );
+  });
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -2123,5 +2171,6 @@ module.exports = {
   updatePatientAllergy,
   addDietAdvice,
   getEpisodeDietAdvice,
-  addReferalDoctor
+  addReferalDoctor,
+  addFollowUp
 };
