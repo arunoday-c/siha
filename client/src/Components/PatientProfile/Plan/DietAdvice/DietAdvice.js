@@ -1,0 +1,175 @@
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../../actions/algaehActions";
+
+import moment from "moment";
+import Options from "../../../../Options.json";
+import {
+  AlgaehDateHandler,
+  AlagehAutoComplete,
+  AlgaehDataGrid,
+  AlgaehLabel
+} from "../../../Wrapper/algaehWrapper";
+import "./DietAdvice.css";
+import "../../../../styles/site.css";
+
+import {
+  texthandle,
+  datehandle,
+  addDiet,
+  getDietList
+} from "./DietAdviceEvents";
+
+class DietAdvice extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      till_date: new Date(),
+      diet_id: null
+    };
+  }
+
+  componentDidMount() {
+    this.props.getDietMaster({
+      uri: "/dietmaster/selectDiet",
+      method: "GET",
+      redux: {
+        type: "DIET_GET_DATA",
+        mappingName: "dietmaster"
+      }
+    });
+
+    getDietList(this, this);
+  }
+
+  changeDateFormat = date => {
+    if (date != null) {
+      return moment(date).format(Options.dateFormat);
+    }
+  };
+
+  render() {
+    return (
+      <div className="hptl-diet-advice-form">
+        <div className="col-lg-12">
+          <div className="row" style={{ paddingBottom: "10px" }}>
+            <AlgaehDateHandler
+              div={{ className: "col-lg-5" }}
+              label={{ forceLabel: "Till Date" }}
+              textBox={{ className: "txt-fld", name: "till_date" }}
+              minDate={new Date()}
+              events={{
+                onChange: datehandle.bind(this, this)
+              }}
+              value={this.state.till_date}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col-lg-5" }}
+              label={{ forceLabel: "Diet" }}
+              selector={{
+                name: "diet_id",
+                className: "select-fld",
+                value: this.state.diet_id,
+                dataSource: {
+                  textField: "hims_d_diet_description",
+                  valueField: "hims_d_diet_master_id",
+                  data: this.props.dietmaster
+                },
+                onChange: texthandle.bind(this, this)
+              }}
+            />
+
+            <div className="actions" style={{ paddingTop: "3.5vh" }}>
+              <a
+                href="javascript:;"
+                className="btn btn-primary btn-circle active"
+              >
+                <i className="fas fa-plus" onClick={addDiet.bind(this, this)} />
+              </a>
+            </div>
+          </div>
+
+          <div className="col-lg-12">
+            <div className="row" style={{ paddingBottom: "10px" }}>
+              <AlgaehDataGrid
+                id="Lab_Result_grid"
+                columns={[
+                  {
+                    fieldName: "created_date",
+                    label: <AlgaehLabel label={{ forceLabel: "From Date" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>{this.changeDateFormat(row.created_date)}</span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "till_date",
+                    label: <AlgaehLabel label={{ forceLabel: "Till Date" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>{this.changeDateFormat(row.till_date)}</span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "diet_id",
+                    label: <AlgaehLabel label={{ forceLabel: "Diet" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.props.dietmaster === undefined
+                          ? []
+                          : this.props.dietmaster.filter(
+                              f => f.hims_d_diet_master_id === row.diet_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].hims_d_diet_description
+                            : ""}
+                        </span>
+                      );
+                    }
+                  }
+                ]}
+                keyId="patient_code"
+                dataSource={{
+                  data: this.props.dietList
+                }}
+                paging={{ page: 0, rowsPerPage: 3 }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    dietmaster: state.dietmaster,
+    dietList: state.dietList
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getDietMaster: AlgaehActions,
+      getDietList: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(DietAdvice)
+);

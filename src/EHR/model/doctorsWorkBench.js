@@ -848,13 +848,16 @@ select * from hims_f_patient_vitals where patient_id=? and visit_id=? order by v
   hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
   and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc;\
   select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id,icd.icd_description as diagnosis_name ,diagnosis_type, final_daignosis from hims_f_patient_diagnosis pd,hims_d_icd icd where pd.record_status='A'\
-  and patient_id=? and episode_id=? and pd.daignosis_id=icd.hims_d_icd_id;",
+  and patient_id=? and episode_id=? and pd.daignosis_id=icd.hims_d_icd_id;\
+ SELECT hims_f_patient_diet_id, patient_id, episode_id, diet_id, comments, till_date FROM hims_f_patient_diet where patient_id=? and episode_id=? and record_status='A'",
         [
           inputData.patient_id,
           inputData.episode_id,
           inputData.patient_id,
           inputData.visit_id,
           inputData.patient_id,
+          inputData.patient_id,
+          inputData.episode_id,
           inputData.patient_id,
           inputData.episode_id
         ],
@@ -867,7 +870,8 @@ select * from hims_f_patient_vitals where patient_id=? and visit_id=? order by v
             patient_profile: result[0],
             vitals: result[1],
             patient_allergies: result[2],
-            patientDiagnosis: result[3]
+            patientDiagnosis: result[3],
+            patient_diet: result[4]
           };
           next();
         }
@@ -1941,44 +1945,87 @@ let getPhysicalExamination = (req, res, next) => {
   }
 };
 
-//created by irfan: to add patient diet
-let addPatientDiet = (req, res, next) => {
-  debugFunction("hims_f_patient_diet");
+let addDietAdvice = (req, res, next) => {
+  let dietadvice = {
+    hims_f_patient_diet_id: null,
+    patient_id: null,
+    episode_id: null,
+    diet_id: null,
+    comments: null,
+    created_by: req.userIdentity.algaeh_d_app_user_id,
+    updated_by: req.userIdentity.algaeh_d_app_user_id
+  };
+
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+    let inputParam = extend(dietadvice, req.body);
+    connection.query(
+      "INSERT INTO `hims_f_patient_diet` (`patient_id`, `episode_id`,`diet_id`, `comments`, `till_date` \
+      , `created_by` ,`created_date`) \
+   VALUES ( ?, ?, ?, ?, ?, ?, ?)",
+      [
+        inputParam.patient_id,
+        inputParam.episode_id,
+        inputParam.diet_id,
+        inputParam.comments,
+        inputParam.till_date,
+        inputParam.created_by,
+        new Date()
+      ],
+      (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      }
+    );
+  });
+};
+
+let getEpisodeDietAdvice = (req, res, next) => {
+  let Diet = {
+    hims_f_patient_diet_id: "ALL",
+    patient_id: "ALL",
+    episode_id: "ALL"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
-    let db = req.db;
-    let inputparam = extend({}, req.body);
+    let pagePaging = "";
+    if (req.paging != null) {
+      let Page = paging(req.paging);
+      pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
+    }
 
-    db.getConnection((error, connection) => {
-      if (error) {
+    let condition = whereCondition(extend(Diet, req.query));
+    selectStatement(
+      {
+        db: req.db,
+        query:
+          "SELECT * FROM `hims_f_patient_diet` WHERE `record_status`='A' AND " +
+          condition.condition +
+          " " +
+          pagePaging,
+        values: condition.values
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
         next(error);
-      }
-
-      connection.query(
-        "INSERT INTO hims_f_patient_diet (patient_id, episode_id, diet_id, comments, `created_date`, `created_by`, `updated_date`, `updated_by`) \
-        VALUE(?,?,?,?,?,?,?,?)",
-        [
-          inputparam.patient_id,
-          inputparam.episode_id,
-          inputparam.diet_id,
-          inputparam.comments,
-          new Date(),
-          inputparam.created_by,
-          new Date(),
-          inputparam.updated_by
-        ],
-        (error, result) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+      },
+      true
+    );
   } catch (e) {
     next(e);
   }
@@ -2024,5 +2071,6 @@ module.exports = {
   addPatientVitals,
   addPatientPhysicalExamination,
   updatePatientAllergy,
-  addPatientDiet
+  addDietAdvice,
+  getEpisodeDietAdvice
 };

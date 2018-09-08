@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./plan.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
+import DietAdvice from "./DietAdvice/DietAdvice";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
@@ -239,17 +240,10 @@ class Plan extends Component {
                   <div className="caption">
                     <h3 className="caption-subject">Diet Advice</h3>
                   </div>
-                  <div className="actions">
-                    <a
-                      href="javascript:;"
-                      className="btn btn-primary btn-circle active"
-                    >
-                      <i className="fas fa-plus" />
-                    </a>
-                  </div>
                 </div>
                 <div className="portlet-body">
-                  <h4>Portlet Content</h4>
+                  <DietAdvice />
+                  {/* <h4>Portlet Content</h4> */}
                 </div>
               </div>
               {/* END Portlet PORTLET */}

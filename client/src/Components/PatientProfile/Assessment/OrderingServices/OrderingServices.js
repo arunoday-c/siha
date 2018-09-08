@@ -16,9 +16,7 @@ import {
 import {
   serviceTypeHandeler,
   serviceHandeler,
-  texthandle,
   ProcessService,
-  VisitSearch,
   deleteServices,
   SaveOrdersServices
 } from "./OrderingServicesHandaler";
@@ -61,7 +59,8 @@ class OrderingServices extends Component {
       preserviceInput: [],
       dummy_company_payble: 0,
       approval_limit_yesno: "N",
-      insurance_service_name: null
+      insurance_service_name: null,
+      saved: false
     };
   }
 
@@ -394,6 +393,7 @@ class OrderingServices extends Component {
                   style={{ marginRight: "15px" }}
                   className="htpl1-phase1-btn-primary"
                   onClick={SaveOrdersServices.bind(this, this)}
+                  disabled={this.state.saved}
                 >
                   <AlgaehLabel label={{ fieldName: "btnsave" }} />
                 </button>

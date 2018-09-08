@@ -42,7 +42,8 @@ import {
   addPatientVitals,
   addPatientPhysicalExamination,
   updatePatientAllergy,
-  addPatientDiet
+  addDietAdvice,
+  getEpisodeDietAdvice
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -667,11 +668,25 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  //created by irfan: to add patient diet
-
+  // created by nowshad : to add  diet Advice
   api.post(
-    "/addPatientDiet",
-    addPatientDiet,
+    "/addDietAdvice",
+    addDietAdvice,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad : to  Diet Details for selcted Episode
+  api.get(
+    "/getEpisodeDietAdvice",
+    getEpisodeDietAdvice,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

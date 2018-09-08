@@ -29,6 +29,7 @@ import investigation from "../controller/investigation";
 import icdcptcodes from "../controller/icdcptcodes";
 import radiology from "../controller/radiology";
 import algaehappuser from "../controller/algaehappuser";
+import dietmaster from "../controller/dietmaster";
 let router = express();
 
 //connect to DB
@@ -64,6 +65,7 @@ initializedDb(db => {
   router.use("/icdcptcodes", icdcptcodes({ config, db }));
   router.use("/radiology", radiology({ config, db }));
   router.use("/algaehappuser", algaehappuser({ config, db }));
+  router.use("/dietmaster", dietmaster({ config, db }));
 });
 
 export default router;
