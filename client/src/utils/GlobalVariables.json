@@ -284,5 +284,11 @@
     { "name": "Teenage", "value": "T" },
     { "name": "Adulthood", "value": "A" },
     { "name": "Onset Date", "value": "O" }
+  ],
+  "TEMP_FROM": [
+    { "name": "Oral", "value": "O" },
+    { "name": "Rectal", "value": "R" },
+    { "name": "Axillary", "value": "A" },
+    { "name": "Tymphanic", "value": "T" }
   ]
 }

@@ -3,7 +3,8 @@ import "./physical_examination.css";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Modal from "@material-ui/core/Modal";
@@ -12,6 +13,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert";
 
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
@@ -36,18 +39,77 @@ class PhysicalExamination extends Component {
     this.setState({ openVitalModal: false });
   }
   texthandle(e) {
-    debugger;
     this.setState({
       [e.target.name]: e.target.value
     });
   }
 
+  addPatientVitals(e) {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/addPatientVitals",
+      method: "POST",
+      data: {
+        patient_id: Window.global["current_patient"],
+        visit_id: Window.global["visit_id"],
+        visit_date: this.state.recorded_date,
+        visit_time: this.state.recorded_time,
+        case_type: "OP",
+        height: this.state.height,
+        weight: this.state.weight,
+        bmi: this.state.bmi,
+        oxysat: this.state.oxysat,
+        temperature_from: this.state.temperature_from,
+        temperature_celsisus: this.state.temperature_celsisus,
+        systolic: this.state.systolic,
+        diastolic: this.state.diastolic
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swal("Vitals recorded successfully . .", {
+            icon: "success",
+            buttons: false,
+            timer: 2000
+          });
+          getVitalHistory(this);
+          this.setPatientVitals();
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
+  setPatientVitals() {
+    this.props.allvitals !== undefined && this.props.allvitals.length !== 0
+      ? this.setState({
+          weight: this.props.allvitals[0].weight,
+          height: this.props.allvitals[0].height,
+          bmi: this.props.allvitals[0].bmi,
+          temperature_from: this.props.allvitals[0].temperature_from,
+          temperature_celsisus: this.props.allvitals[0].temperature_celsisus,
+          systolic: this.props.allvitals[0].systolic,
+          diastolic: this.props.allvitals[0].diastolic,
+          recorded_time: this.props.allvitals[0].visit_time,
+          recorded_date: this.props.allvitals[0].recorded_date
+        })
+      : null;
+  }
+
   componentDidMount() {
     getVitalHistory(this);
+    this.setPatientVitals();
   }
 
   dropDownHandle(value) {
     this.setState({ [value.name]: value.value });
+  }
+
+  calculatebmi() {
+    let w = this.state.weight;
+    let h = this.state.height;
+
+    if (w > 0 && h > 0) {
+      this.setState({ bmi: w / (((h / 100) * h) / 100) });
+    }
   }
 
   render() {
@@ -291,6 +353,25 @@ class PhysicalExamination extends Component {
                         }}
                       />
                       <AlagehFormGroup
+                        div={{ className: "col vitalTopFld15" }}
+                        label={{
+                          forceLabel: "BMI (Kg/m2)",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "bmi",
+                          others: {
+                            type: "number"
+                          },
+                          value: this.state.bmi,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+
+                      <AlagehFormGroup
                         div={{ className: "col vitalTopFld20" }}
                         label={{
                           forceLabel: "O2 Respiration(%)",
@@ -358,7 +439,7 @@ class PhysicalExamination extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.PAIN_DURATION
+                            data: GlobalVariables.TEMP_FROM
                           },
 
                           onChange: this.dropDownHandle.bind(this)
@@ -434,6 +515,54 @@ class PhysicalExamination extends Component {
                           }
                         }}
                       />
+                    </div>
+                    <div className="row">
+                      <AlgaehDateHandler
+                        div={{ className: "col" }}
+                        label={{ forceLabel: "Recorded Date", isImp: true }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "recorded_date"
+                        }}
+                        maxDate={new Date()}
+                        events={{
+                          onChange: selectedDate => {
+                            this.setState({ recorded_date: selectedDate });
+                          }
+                        }}
+                        value={this.state.recorded_date}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          isImp: true,
+                          forceLabel: "Recorded Time"
+                        }}
+                        textBox={{
+                          others: {
+                            type: "time"
+                          },
+                          className: "txt-fld",
+                          name: "recorded_time",
+                          value: this.state.recorded_time,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                      <div className="col margin-top-15">
+                        <button type="button" className="btn btn-default">
+                          Cancel
+                        </button>
+                        <button
+                          onClick={this.addPatientVitals.bind(this)}
+                          type="button"
+                          className="btn btn-primary"
+                        >
+                          Add new Vitals
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
