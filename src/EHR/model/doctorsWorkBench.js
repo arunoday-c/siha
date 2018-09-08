@@ -175,110 +175,110 @@ let physicalExaminationSubDetails = (req, res, next) => {
   }
 };
 
-//created by:irfan,to get physical examination header& details
-let getPhysicalExamination = (req, res, next) => {
-  let physicalExaminationHeaderModel = {
-    headerId: null
-  };
+// //created by:irfan,to get physical examination header& details
+// let getPhysicalExamination = (req, res, next) => {
+//   let physicalExaminationHeaderModel = {
+//     headerId: null
+//   };
 
-  let physicalExaminationDetailsModel = {
-    hims_d_physical_examination_details_id: null,
-    physical_examination_header_id: null
-  };
+//   let physicalExaminationDetailsModel = {
+//     hims_d_physical_examination_details_id: null,
+//     physical_examination_header_id: null
+//   };
 
-  let physicalExaminationSubDetailsModel = {
-    hims_d_physical_examination_subdetails_id: null,
-    physical_examination_details_id: null
-  };
+//   let physicalExaminationSubDetailsModel = {
+//     hims_d_physical_examination_subdetails_id: null,
+//     physical_examination_details_id: null
+//   };
 
-  debugFunction("getPhysicalExamination");
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+//   debugFunction("getPhysicalExamination");
+//   try {
+//     if (req.db == null) {
+//       next(httpStatus.dataBaseNotInitilizedError());
+//     }
+//     let db = req.db;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+//     db.getConnection((error, connection) => {
+//       if (error) {
+//         next(error);
+//       }
 
-      //if headerId not received then send all details
-      if (req.query.headerId == null || req.query.headerId == undefined) {
-        connection.query(
-          " SELECT * FROM hims_d_physical_examination_header where record_status='A'",
-          (error, result) => {
-            if (error) {
-              releaseDBConnection(db, connection);
-              next(error);
-            }
-            req.records = result;
-            next();
-          }
-        );
-      }
-      //if headerId  received then send specific details and sub details
-      else if (req.query.headerId != null) {
-        let headerInput = extend(physicalExaminationHeaderModel, req.query);
+//       //if headerId not received then send all details
+//       if (req.query.headerId == null || req.query.headerId == undefined) {
+//         connection.query(
+//           " SELECT * FROM hims_d_physical_examination_header where record_status='A'",
+//           (error, result) => {
+//             if (error) {
+//               releaseDBConnection(db, connection);
+//               next(error);
+//             }
+//             req.records = result;
+//             next();
+//           }
+//         );
+//       }
+//       //if headerId  received then send specific details and sub details
+//       else if (req.query.headerId != null) {
+//         let headerInput = extend(physicalExaminationHeaderModel, req.query);
 
-        connection.query(
-          "SELECT * FROM hims_d_physical_examination_header \
-      where hims_d_physical_examination_header_id=? and record_status='A'",
-          [headerInput.headerId],
-          (error, headerResult) => {
-            if (error) {
-              releaseDBConnection(db, connection);
-              next(error);
-            }
-            // req.records = detailResult;
+//         connection.query(
+//           "SELECT * FROM hims_d_physical_examination_header \
+//       where hims_d_physical_examination_header_id=? and record_status='A'",
+//           [headerInput.headerId],
+//           (error, headerResult) => {
+//             if (error) {
+//               releaseDBConnection(db, connection);
+//               next(error);
+//             }
+//             // req.records = detailResult;
 
-            connection.query(
-              "SELECT * FROM hims_d_physical_examination_details where \
-         physical_examination_header_id=? and record_status='A'",
-              [headerInput.headerId],
-              (error, detailResult) => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                }
+//             connection.query(
+//               "SELECT * FROM hims_d_physical_examination_details where \
+//          physical_examination_header_id=? and record_status='A'",
+//               [headerInput.headerId],
+//               (error, detailResult) => {
+//                 if (error) {
+//                   releaseDBConnection(db, connection);
+//                   next(error);
+//                 }
 
-                if (detailResult != null) {
-                  let details_id =
-                    detailResult[0].hims_d_physical_examination_details_id;
-                  debugLog(
-                    "detailsId:",
-                    detailResult[0].hims_d_physical_examination_details_id
-                  );
+//                 if (detailResult != null) {
+//                   let details_id =
+//                     detailResult[0].hims_d_physical_examination_details_id;
+//                   debugLog(
+//                     "detailsId:",
+//                     detailResult[0].hims_d_physical_examination_details_id
+//                   );
 
-                  connection.query(
-                    "SELECT * FROM hims_d_physical_examination_subdetails where\
-                    physical_examination_details_id=? and record_status='A'",
-                    [details_id],
-                    (error, subDetailResult) => {
-                      if (error) {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      }
+//                   connection.query(
+//                     "SELECT * FROM hims_d_physical_examination_subdetails where\
+//                     physical_examination_details_id=? and record_status='A'",
+//                     [details_id],
+//                     (error, subDetailResult) => {
+//                       if (error) {
+//                         releaseDBConnection(db, connection);
+//                         next(error);
+//                       }
 
-                      req.records = {
-                        header: headerResult,
-                        detail: detailResult,
-                        subDetail: subDetailResult
-                      };
-                      next();
-                    }
-                  );
-                }
-              }
-            );
-          }
-        );
-      }
-    });
-  } catch (e) {
-    next(e);
-  }
-};
+//                       req.records = {
+//                         header: headerResult,
+//                         detail: detailResult,
+//                         subDetail: subDetailResult
+//                       };
+//                       next();
+//                     }
+//                   );
+//                 }
+//               }
+//             );
+//           }
+//         );
+//       }
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
 
 //created by irfan:  to add order
 let addOrder = (req, res, next) => {
@@ -1940,6 +1940,74 @@ let updatePatientAllergy = (req, res, next) => {
   }
 };
 
+//created by irfan: to get physical examination
+let getPhysicalExamination = (req, res, next) => {
+  try {
+    debugFunction("getPhysicalExamination");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    debugLog("Input Data", req.query);
+    let input = extend({}, req.query);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        let queryBuilder = "";
+
+        if (a) {
+          queryBuilder =
+            "SELECT hims_d_physical_examination_header_id, examination_type, \
+            description as header_description, sub_department_id, assesment_type, \
+            mandatory as header_mandatory FROM hims_d_physical_examination_header where record_status='A';";
+        } else if (b) {
+          queryBuilder="SELECT hims_d_physical_examination_details_id, physical_examination_header_id, PD.description as detail_description, PD.mandatory as detail_mandatory ,\
+PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory FROM hims_d_physical_examination_details PD,\
+hims_d_physical_examination_header PH where PD.physical_examination_header_id=PH.hims_d_physical_examination_header_id  and   PH.record_status='A' and PD.record_status='A';"         
+
+        } else if (c) {
+
+
+          queryBuilder="SELECT hims_d_physical_examination_subdetails_id, PS.description as subdetail_description, PS.mandatory as subdetail_mandatory,hims_d_physical_examination_details_id, physical_examination_header_id, PD.description as detail_description, PD.mandatory as detail_mandatory ,\
+          PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory FROM hims_d_physical_examination_subdetails PS,hims_d_physical_examination_details PD,hims_d_physical_examination_header PH \
+          where  PS.physical_examination_details_id=PD.hims_d_physical_examination_details_id and\
+           PD.physical_examination_header_id=PH.hims_d_physical_examination_header_id  and\
+            PH.record_status='A' and PD.record_status='A' and PS.record_status='A';"
+        }
+        connection.query(queryBuilder, (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          connection.commit(error => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.records = result;
+            next();
+          });
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
