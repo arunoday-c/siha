@@ -2152,10 +2152,12 @@ let addEpisodeEncounterData = (req, res, next) => {
 
   debugLog("Input:", req.body);
 
+
+  //created_date, created_by, updated_date, updated_by, 
   db.query(
     "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,\
-           episode_id,age,payment_type)values(\
-            ?,?,?,?,?,?,?)",
+           episode_id,age,payment_type,created_date,created_by,updated_date,updated_by)values(\
+            ?,?,?,?,?,?,?,?,?,?,?)",
     [
       input.patient_id,
       input.provider_id,
@@ -2163,7 +2165,12 @@ let addEpisodeEncounterData = (req, res, next) => {
       input.source,
       input.episode_id,
       input.age,
-      input.payment_type
+      input.payment_type,
+      new Date(),
+      input.created_by,
+      new Date(),
+      input.updated_by
+
     ],
     (error, results) => {
       debugLog("result:");

@@ -590,8 +590,6 @@ let updateLabResultEntry = (req, res, next) => {
             ref = null;
         }
 
-        let todayDate = new Date();
-
         debugLog("ref:", ref);
 
         let qry = "";
