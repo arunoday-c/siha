@@ -201,13 +201,6 @@ class DoctorsWorkbench extends Component {
         <div className="row">
           <div className="my-calendar col-lg-12">
             <div style={{ height: "34px" }}>
-              {/* width: "calc(100% - 185px)",
-              <div className="arrow-box arrow-box-left">
-                <i className="fas fa-angle-left fa-2x" />
-              </div>
-              <div className="arrow-box arrow-box-right">
-                <i className="fas fa-angle-right fa-2x" />
-              </div> */}
               <div className="myDay_date">
                 <input
                   className="calender-date"
@@ -278,10 +271,6 @@ class DoctorsWorkbench extends Component {
           {/* Left Pane End */}
 
           {/* Right Pane Start */}
-
-          {/* <div className="col-lg-8 card encounters-panel">
-            <div className="card-body box-shadow-normal">
-              <h6 className="card-subtitle mb-2 text-muted">All Patients</h6> */}
 
           <div className="col-lg-8 card box-shadow-normal encounters-panel">
             <div className="portletHeader">
@@ -447,7 +436,7 @@ class DoctorsWorkbench extends Component {
                         displayTemplate: data => {
                           return (
                             <span>
-                              {data.payment_type === "S" ? "Self" : "Insurance"}
+                              {data.payment_type === "I" ? "Insurance" : "Self"}
                             </span>
                           );
                         }

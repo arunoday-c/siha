@@ -48,7 +48,8 @@ class PatientProfile extends Component {
       uri: "/doctorsWorkBench/getPatientProfile",
       data: {
         patient_id: Window.global["current_patient"],
-        episode_id: Window.global["episode_id"]
+        episode_id: Window.global["episode_id"],
+        visit_id: Window.global["visit_id"]
       },
       method: "GET",
       onSuccess: response => {
