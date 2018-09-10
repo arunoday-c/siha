@@ -128,6 +128,10 @@ var _algaehappuser = require("../controller/algaehappuser");
 
 var _algaehappuser2 = _interopRequireDefault(_algaehappuser);
 
+var _dietmaster = require("../controller/dietmaster");
+
+var _dietmaster2 = _interopRequireDefault(_dietmaster);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = (0, _express2.default)();
@@ -165,6 +169,7 @@ var router = (0, _express2.default)();
   router.use("/icdcptcodes", (0, _icdcptcodes2.default)({ config: _keys2.default, db: db }));
   router.use("/radiology", (0, _radiology2.default)({ config: _keys2.default, db: db }));
   router.use("/algaehappuser", (0, _algaehappuser2.default)({ config: _keys2.default, db: db }));
+  router.use("/dietmaster", (0, _dietmaster2.default)({ config: _keys2.default, db: db }));
 });
 
 exports.default = router;

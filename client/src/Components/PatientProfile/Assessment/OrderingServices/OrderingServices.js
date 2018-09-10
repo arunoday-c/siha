@@ -128,7 +128,7 @@ class OrderingServices extends Component {
     return (
       <div className="hptl-phase1-ordering-services-form">
         {/* <div className="main-details" /> */}
-        <div className="container-fluid" style={{ minHeight: "30vh" }}>
+        <div className="col-lg-12" style={{ minHeight: "30vh" }}>
           <div className="row form-details">
             <div className="col-lg-1">
               <AlgaehLabel
@@ -183,7 +183,7 @@ class OrderingServices extends Component {
 
             <div className="col-lg-3"> &nbsp; </div>
           </div>
-          <div className="row form-details">
+          <div className="row">
             <div className="col-lg-12">
               <AlgaehDataGrid
                 id="Services_Ordering"
@@ -384,9 +384,8 @@ class OrderingServices extends Component {
               />
             </div>
           </div>
-        </div>
-        <div className="container-fluid" style={{ marginBottom: "1vh" }}>
-          <div className="row" position="fixed">
+
+          <div className="row" position="fixed" style={{ marginTop: "2vh" }}>
             <div className="col-lg-12">
               <span className="float-right">
                 <button
