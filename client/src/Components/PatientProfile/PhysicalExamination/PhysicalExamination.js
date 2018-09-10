@@ -12,7 +12,8 @@ import {
   getVitalHistory,
   getPhysicalExaminations,
   getPhysicalExaminationsDetails,
-  getPhysicalExaminationsSubDetails
+  getPhysicalExaminationsSubDetails,
+  getPatientPhysicalExamination
 } from "./PhysicalExaminationHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -20,12 +21,6 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
-
-const AllergyData = [
-  { food: "grapes/citrus", active: "Yes" },
-  { food: "Pollen", active: "Yes" },
-  { food: "Iodine", active: "Yes" }
-];
 
 class PhysicalExamination extends Component {
   constructor(props) {
@@ -108,6 +103,7 @@ class PhysicalExamination extends Component {
     getVitalHistory(this);
     this.setPatientVitals();
     getPhysicalExaminations(this);
+    getPatientPhysicalExamination(this);
   }
 
   headerDropDownHandle(value) {
@@ -460,7 +456,7 @@ class PhysicalExamination extends Component {
                     ]}
                     keyId="code"
                     dataSource={{
-                      data: []
+                      data: this.props.all_patient_examinations
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
@@ -767,7 +763,8 @@ function mapStateToProps(state) {
     allvitals: state.allvitals,
     allexaminations: state.allexaminations,
     allexaminationsdetails: state.allexaminationsdetails,
-    allexaminationsubdetails: state.allexaminationsubdetails
+    allexaminationsubdetails: state.allexaminationsubdetails,
+    all_patient_examinations: state.all_patient_examinations
   };
 }
 
@@ -777,6 +774,7 @@ function mapDispatchToProps(dispatch) {
       getVitalHistory: AlgaehActions,
       getPhysicalExaminations: AlgaehActions,
       getPhysicalExaminationsDetails: AlgaehActions,
+      getPatientPhysicalExamination: AlgaehActions,
       getPhysicalExaminationsSubDetails: AlgaehActions
     },
     dispatch

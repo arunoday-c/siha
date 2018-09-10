@@ -112,6 +112,27 @@ const texthandle = ($this, data, ctrl, e) => {
 
 const updatePatientAllergy = ($this, row) => {
   debugger;
+
+  algaehApiCall({
+    uri: "/doctorsWorkbench/updatePatientAllergy",
+    method: "PUT",
+    data: {
+      patient_id: Window.global["current_patient"],
+      allergy_id: row.allergy_id,
+      hims_f_patient_allergy_id: row.hims_f_patient_allergy_id,
+      onset: row.allergy_onset,
+      onset_date: row.allergy_onset_date,
+      severity: row.allergy_severity,
+      comment: row.allergy_comment,
+      allergy_inactive: row.allergy_inactive
+    },
+    onSuccess: response => {
+      if (response.data.success) {
+        console.log("Allergy Update Response:", response.data.records);
+      }
+    },
+    onFailure: error => {}
+  });
 };
 
 export {

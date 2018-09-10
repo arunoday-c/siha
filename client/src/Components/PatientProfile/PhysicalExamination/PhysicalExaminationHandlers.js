@@ -64,9 +64,26 @@ const getPhysicalExaminationsSubDetails = ($this, detail_id, subdetail_id) => {
   });
 };
 
+const getPatientPhysicalExamination = $this => {
+  $this.props.getPatientPhysicalExamination({
+    uri: "/doctorsWorkBench/getPatientPhysicalExamination",
+    method: "GET",
+    data: {
+      patient_id: Window.global["current_patient"],
+      episode_id: Window.global["episode_id"]
+    },
+    redux: {
+      type: "ALL_PATIENT_EXAMINATIONS",
+      mappingName: "all_patient_examinations"
+    },
+    afterSuccess: data => {}
+  });
+};
+
 export {
   getVitalHistory,
   getPhysicalExaminations,
   getPhysicalExaminationsDetails,
-  getPhysicalExaminationsSubDetails
+  getPhysicalExaminationsSubDetails,
+  getPatientPhysicalExamination
 };

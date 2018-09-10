@@ -1992,7 +1992,7 @@ class Subjective extends Component {
                       className="btn btn-primary btn-circle active"
                       onClick={this.addAllergies}
                     >
-                      <i className="fas fa-plus" />
+                      <i className="fas fa-edit" />
                     </a>
                   </div>
                 </div>
