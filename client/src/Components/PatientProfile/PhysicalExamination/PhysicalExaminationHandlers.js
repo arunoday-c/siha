@@ -33,6 +33,7 @@ const getPhysicalExaminations = $this => {
 };
 
 const getPhysicalExaminationsDetails = ($this, detail_id) => {
+  debugger;
   $this.props.getPhysicalExaminationsDetails({
     uri: "/doctorsWorkBench/getPhysicalExamination/get",
     method: "GET",

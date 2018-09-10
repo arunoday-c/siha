@@ -45,6 +45,25 @@ class PhysicalExamination extends Component {
     });
   }
 
+  addExaminationToPatient() {
+    // console.log("PE State:", this.state);
+    algaehApiCall({
+      uri: "/doctorsWorkBench/addPatientPhysicalExamination",
+      method: "POST",
+      data: {
+        patient_id: Window.global["current_patient"],
+        episode_id: Window.global["episode_id"],
+        exam_header_id: this.state.hims_d_physical_examination_header_id,
+        exam_details_id: this.state.hims_d_physical_examination_details_id,
+        exam_subdetails_id: this.state
+          .hims_d_physical_examination_subdetails_id,
+        comments: this.state.examination_comment
+      },
+      onSuccess: response => {},
+      onFailure: error => {}
+    });
+  }
+
   openExaminationModal() {
     this.setState({ openExamnModal: true });
   }
@@ -109,10 +128,7 @@ class PhysicalExamination extends Component {
   headerDropDownHandle(value) {
     this.setState(
       { [value.name]: value.value },
-      getPhysicalExaminationsDetails(
-        this,
-        this.state.hims_d_physical_examination_header_id
-      )
+      getPhysicalExaminationsDetails(this, value.value)
     );
   }
 
@@ -233,7 +249,7 @@ class PhysicalExamination extends Component {
         <Modal open={this.state.openExamnModal}>
           <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Add EXamination</h4>
+              <h4>Add Examination</h4>
             </div>
             <div className="popupInner">
               <div className="col-lg-12">
@@ -325,29 +341,29 @@ class PhysicalExamination extends Component {
                     <h6> List of Examinations</h6>
                     <hr />
                     <AlgaehDataGrid
-                      id="patient_chart_grd"
+                      id="patient-exam-grid"
                       columns={[
                         {
-                          fieldName: "date",
+                          fieldName: "header_description",
                           label: "Examination Type"
                         },
                         {
-                          fieldName: "first_name",
+                          fieldName: "detail_description",
                           label: "Examination Description"
                         },
                         {
-                          fieldName: "",
+                          fieldName: "subdetail_description",
                           label: "Examination"
                         },
 
                         {
-                          fieldName: "active",
+                          fieldName: "comments",
                           label: "Comments"
                         }
                       ]}
-                      keyId="code"
+                      keyId="hims_f_episode_examination_id"
                       dataSource={{
-                        data: []
+                        data: this.props.all_patient_examinations
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 5 }}
@@ -369,7 +385,7 @@ class PhysicalExamination extends Component {
             <div className="row popupFooter">
               <div className="col-lg-4">
                 <button
-                  // onClick={this.addAllergyToPatient.bind(this)}
+                  onClick={this.addExaminationToPatient.bind(this)}
                   type="button"
                   className="btn btn-primary"
                 >
@@ -408,7 +424,7 @@ class PhysicalExamination extends Component {
                     <a className="btn btn-primary btn-circle active">
                       <i
                         onClick={this.openExaminationModal.bind(this)}
-                        className="fas fa-plus"
+                        className="fas fa-edit"
                       />
                     </a>
                   </div>
@@ -434,27 +450,27 @@ class PhysicalExamination extends Component {
                   </div>
 
                   <AlgaehDataGrid
-                    id="patient_chart_grd"
+                    id="patient-examn-grid"
                     columns={[
                       {
-                        fieldName: "date",
+                        fieldName: "header_description",
                         label: "Examination Type"
                       },
                       {
-                        fieldName: "first_name",
+                        fieldName: "detail_description",
                         label: "Examination Description"
                       },
                       {
-                        fieldName: "",
+                        fieldName: "subdetail_description",
                         label: "Examination"
                       },
 
                       {
-                        fieldName: "active",
+                        fieldName: "comments",
                         label: "Comments"
                       }
                     ]}
-                    keyId="code"
+                    keyId="hims_f_episode_examination_id"
                     dataSource={{
                       data: this.props.all_patient_examinations
                     }}
