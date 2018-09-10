@@ -2177,6 +2177,75 @@ let getPatientPhysicalExamination = (req, res, next) => {
     next(e);
   }
 };
+
+
+
+
+//created by irfan: to update or delete Patient physical examination 
+let updatePatientPhysicalExam = (req, res, next) => {
+  try {
+    debugFunction("updatePatientPhysicalExam");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    debugLog("Input Data", req.body);
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        let queryBuilder =
+          "UPDATE `hims_f_episode_examination` SET  `patient_id`=?,\
+          `episode_id`=?, `exam_header_id`=?, `exam_details_id`=?, `exam_subdetails_id`=?, `comments`=?,\
+          `updated_date`=?, `updated_by`=?, `record_status`=? WHERE `hims_f_episode_examination_id`=?;";
+        let inputs = [
+          input.patient_id,
+          input.episode_id,
+          input.exam_header_id,
+          input.exam_details_id,
+          input.exam_subdetails_id,
+          input.comments,         
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_f_episode_examination_id
+        ];
+
+        connection.query(queryBuilder, inputs, (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          connection.commit(error => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.records = result;
+            next();
+          });
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -2222,5 +2291,6 @@ module.exports = {
   getEpisodeDietAdvice,
   addReferalDoctor,
   addFollowUp,
-  getPatientPhysicalExamination
+  getPatientPhysicalExamination,
+  updatePatientPhysicalExam
 };
