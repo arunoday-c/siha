@@ -2130,7 +2130,7 @@ let addFollowUp = (req, res, next) => {
   });
 };
 
-//created by:irfan,to get Patient physical examination 
+//created by:irfan,to get Patient physical examination
 let getPatientPhysicalExamination = (req, res, next) => {
   debugFunction("getPatientPhysicalExamination");
   try {
@@ -2145,14 +2145,22 @@ let getPatientPhysicalExamination = (req, res, next) => {
       }
       let input = extend({}, req.query);
 
+      // select hims_f_episode_examination_id,  comments ,\
+      //   hims_d_physical_examination_header_id, PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory,\
+      //               hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory,\
+      //               hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory \
+      //               from hims_f_episode_examination EE,hims_d_physical_examination_header PH ,hims_d_physical_examination_details PD,hims_d_physical_examination_subdetails PS\
+      //               where EE.exam_header_id=PH.hims_d_physical_examination_header_id and EE.exam_details_id=PD.hims_d_physical_examination_details_id and EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id and \
+      //               EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?
       connection.query(
-        "select hims_f_episode_examination_id,  comments ,\
+        "select hims_f_episode_examination_id, patient_id, episode_id, exam_header_id, exam_details_id,exam_subdetails_id, comments ,\
         hims_d_physical_examination_header_id, PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory,\
                     hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory,\
-                    hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory \
-                    from hims_f_episode_examination EE,hims_d_physical_examination_header PH ,hims_d_physical_examination_details PD,hims_d_physical_examination_subdetails PS\
-                    where EE.exam_header_id=PH.hims_d_physical_examination_header_id and EE.exam_details_id=PD.hims_d_physical_examination_details_id and EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id and \
-                    EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?",
+                    hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory\
+                    from  ((hims_f_episode_examination EE  join hims_d_physical_examination_header PH on EE.exam_header_id=PH.hims_d_physical_examination_header_id) left join hims_d_physical_examination_details PD on\
+                      EE.exam_details_id=PD.hims_d_physical_examination_details_id )\
+                    left join hims_d_physical_examination_subdetails PS on EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id \
+                   where  EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?",
         [input.patient_id, input.episode_id],
         (error, result) => {
           if (error) {
