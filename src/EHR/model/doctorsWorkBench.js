@@ -849,7 +849,9 @@ select * from hims_f_patient_vitals where patient_id=? and visit_id=? order by v
   and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc;\
   select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id,icd.icd_description as diagnosis_name ,diagnosis_type, final_daignosis from hims_f_patient_diagnosis pd,hims_d_icd icd where pd.record_status='A'\
   and patient_id=? and episode_id=? and pd.daignosis_id=icd.hims_d_icd_id;\
- SELECT hims_f_patient_diet_id, patient_id, episode_id, diet_id, comments, till_date FROM hims_f_patient_diet where patient_id=? and episode_id=? and record_status='A'",
+  SELECT hims_f_patient_diet_id, patient_id, episode_id, diet_id, comments, till_date, DM.hims_d_diet_description,DM.diet_status,DM.hims_d_diet_note FROM\
+ hims_f_patient_diet PD,hims_d_diet_master DM where patient_id=? and episode_id=? and DM.record_status='A'\
+ and DM.hims_d_diet_master_id=PD.diet_id",
         [
           inputData.patient_id,
           inputData.episode_id,
