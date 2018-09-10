@@ -18,7 +18,8 @@ class PatientProfile extends Component {
       patientData: {},
       patientVitals: {},
       patientAllergies: [],
-      patientDiagnosis: []
+      patientDiagnosis: [],
+      patientDiet: []
     };
     this.changeTabs = this.changeTabs.bind(this);
   }
@@ -59,7 +60,8 @@ class PatientProfile extends Component {
             patientData: response.data.records.patient_profile[0],
             patientVitals: response.data.records.vitals[0],
             patientAllergies: response.data.records.patient_allergies,
-            patientDiagnosis: response.data.records.patientDiagnosis
+            patientDiagnosis: response.data.records.patientDiagnosis,
+            patientDiet: response.data.records.patient_diet
           });
         }
       },
@@ -311,12 +313,11 @@ class PatientProfile extends Component {
                 <i className="fas fa-utensils" />
                 <p>
                   <b>Diet:</b>
-                  <span className="listofA-D-D">Diet 1</span>
-                  <span className="listofA-D-D">Diet 2</span>
-                  <span className="listofA-D-D">Diet 3</span>
-                  <span className="listofA-D-D">Diet 4</span>
-                  <span className="listofA-D-D">Diet 5</span>
-                  <span className="listofA-D-D">Diet 6</span>
+                  {this.state.patientDiet.map((data, index) => (
+                    <span key={index} className="listofA-D-D">
+                      {data.hims_d_diet_description}
+                    </span>
+                  ))}
                 </p>
               </li>
             </ul>

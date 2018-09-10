@@ -849,7 +849,9 @@ select * from hims_f_patient_vitals where patient_id=? and visit_id=? order by v
   and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc;\
   select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id,icd.icd_description as diagnosis_name ,diagnosis_type, final_daignosis from hims_f_patient_diagnosis pd,hims_d_icd icd where pd.record_status='A'\
   and patient_id=? and episode_id=? and pd.daignosis_id=icd.hims_d_icd_id;\
- SELECT hims_f_patient_diet_id, patient_id, episode_id, diet_id, comments, till_date FROM hims_f_patient_diet where patient_id=? and episode_id=? and record_status='A'",
+  SELECT hims_f_patient_diet_id, patient_id, episode_id, diet_id, comments, till_date, DM.hims_d_diet_description,DM.diet_status,DM.hims_d_diet_note FROM\
+ hims_f_patient_diet PD,hims_d_diet_master DM where patient_id=? and episode_id=? and DM.record_status='A'\
+ and DM.hims_d_diet_master_id=PD.diet_id",
         [
           inputData.patient_id,
           inputData.episode_id,
@@ -2128,13 +2130,9 @@ let addFollowUp = (req, res, next) => {
   });
 };
 
-
-
-
-
 //created by:irfan,to get Patient physical examination
-let getPatientPhysicalExamination= (req, res, next) => {
-  debugFunction("getPatientVitals");
+let getPatientPhysicalExamination = (req, res, next) => {
+  debugFunction("getPatientPhysicalExamination");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -2147,9 +2145,23 @@ let getPatientPhysicalExamination= (req, res, next) => {
       }
       let input = extend({}, req.query);
 
+      // select hims_f_episode_examination_id,  comments ,\
+      //   hims_d_physical_examination_header_id, PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory,\
+      //               hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory,\
+      //               hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory \
+      //               from hims_f_episode_examination EE,hims_d_physical_examination_header PH ,hims_d_physical_examination_details PD,hims_d_physical_examination_subdetails PS\
+      //               where EE.exam_header_id=PH.hims_d_physical_examination_header_id and EE.exam_details_id=PD.hims_d_physical_examination_details_id and EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id and \
+      //               EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?
       connection.query(
-        "select * from hims_f_patient_vitals where record_status='A' and patient_id=?  order by visit_date desc, visit_time desc;",
-        [input.patient_id],
+        "select hims_f_episode_examination_id, patient_id, episode_id, exam_header_id, exam_details_id,exam_subdetails_id, comments ,\
+        hims_d_physical_examination_header_id, PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory,\
+                    hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory,\
+                    hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory\
+                    from  ((hims_f_episode_examination EE  join hims_d_physical_examination_header PH on EE.exam_header_id=PH.hims_d_physical_examination_header_id) left join hims_d_physical_examination_details PD on\
+                      EE.exam_details_id=PD.hims_d_physical_examination_details_id )\
+                    left join hims_d_physical_examination_subdetails PS on EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id \
+                   where  EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?",
+        [input.patient_id, input.episode_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -2165,6 +2177,75 @@ let getPatientPhysicalExamination= (req, res, next) => {
     next(e);
   }
 };
+
+
+
+
+//created by irfan: to update or delete Patient physical examination 
+let updatePatientPhysicalExam = (req, res, next) => {
+  try {
+    debugFunction("updatePatientPhysicalExam");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    debugLog("Input Data", req.body);
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        let queryBuilder =
+          "UPDATE `hims_f_episode_examination` SET  `patient_id`=?,\
+          `episode_id`=?, `exam_header_id`=?, `exam_details_id`=?, `exam_subdetails_id`=?, `comments`=?,\
+          `updated_date`=?, `updated_by`=?, `record_status`=? WHERE `hims_f_episode_examination_id`=?;";
+        let inputs = [
+          input.patient_id,
+          input.episode_id,
+          input.exam_header_id,
+          input.exam_details_id,
+          input.exam_subdetails_id,
+          input.comments,         
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_f_episode_examination_id
+        ];
+
+        connection.query(queryBuilder, inputs, (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          connection.commit(error => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.records = result;
+            next();
+          });
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -2209,5 +2290,7 @@ module.exports = {
   addDietAdvice,
   getEpisodeDietAdvice,
   addReferalDoctor,
-  addFollowUp
+  addFollowUp,
+  getPatientPhysicalExamination,
+  updatePatientPhysicalExam
 };
