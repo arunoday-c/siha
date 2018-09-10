@@ -4,7 +4,7 @@ import { AlgaehLabel, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
 import DietAdvice from "./DietAdvice/DietAdvice";
 import Referal from "./Referal/Referal";
 import FollowUp from "./FollowUp/FollowUp";
-
+import OrderMedication from "./OrderMedication/OrderMedication";
 const AllergyData = [
   { food: "grapes/citrus", active: "Yes" },
   { food: "Pollen", active: "Yes" },
@@ -100,53 +100,54 @@ class Plan extends Component {
                 {/*  {<this.state.pageDisplay />} */}
 
                 {this.state.pageDisplay === "OrderMedication" ? (
-                  <AlgaehDataGrid
-                    id="patient_chart_grd"
-                    columns={[
-                      {
-                        fieldName: "date",
-                        label: "Item Code"
-                      },
-                      {
-                        fieldName: "first_name",
-                        label: "Item Name"
-                      },
-                      {
-                        fieldName: "",
-                        label: "Frequency"
-                      },
+                  <OrderMedication />
+                ) : // <AlgaehDataGrid
+                //   id="patient_chart_grd"
+                //   columns={[
+                //     {
+                //       fieldName: "date",
+                //       label: "Item Code"
+                //     },
+                //     {
+                //       fieldName: "first_name",
+                //       label: "Item Name"
+                //     },
+                //     {
+                //       fieldName: "",
+                //       label: "Frequency"
+                //     },
 
-                      {
-                        fieldName: "active",
-                        label: "No. of Days"
-                      },
-                      {
-                        fieldName: "active",
-                        label: "Dispense"
-                      },
-                      {
-                        fieldName: "active",
-                        label: "Start Date"
-                      }
-                    ]}
-                    keyId="code"
-                    dataSource={{
-                      data: AllergyData
-                    }}
-                    isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 3 }}
-                    events={
-                      {
-                        // onDelete: this.deleteVisaType.bind(this),
-                        // onEdit: row => {},
-                        // onDone: row => {
-                        //   alert(JSON.stringify(row));
-                        // }
-                        // onDone: this.updateVisaTypes.bind(this)
-                      }
-                    }
-                  />
-                ) : this.state.pageDisplay === "ActiveMedication" ? (
+                //     {
+                //       fieldName: "active",
+                //       label: "No. of Days"
+                //     },
+                //     {
+                //       fieldName: "active",
+                //       label: "Dispense"
+                //     },
+                //     {
+                //       fieldName: "active",
+                //       label: "Start Date"
+                //     }
+                //   ]}
+                //   keyId="code"
+                //   dataSource={{
+                //     data: AllergyData
+                //   }}
+                //   isEditable={true}
+                //   paging={{ page: 0, rowsPerPage: 3 }}
+                //   events={
+                //     {
+                //       // onDelete: this.deleteVisaType.bind(this),
+                //       // onEdit: row => {},
+                //       // onDone: row => {
+                //       //   alert(JSON.stringify(row));
+                //       // }
+                //       // onDone: this.updateVisaTypes.bind(this)
+                //     }
+                //   }
+                // />
+                this.state.pageDisplay === "ActiveMedication" ? (
                   "Active Medication"
                 ) : this.state.pageDisplay === "MedicationHistory" ? (
                   <AlgaehDataGrid

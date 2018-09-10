@@ -31,7 +31,10 @@ import {
   getReviewOfSystems,
   getPatientAllergies,
   getReviewOfSystemsDetails,
-  getPatientROS
+  getPatientROS,
+  datehandle,
+  texthandle,
+  updatePatientAllergy
 } from "./SubjectiveHandler";
 
 let patChiefComplain = [];
@@ -528,6 +531,7 @@ class Subjective extends Component {
         patient_id: Window.global["current_patient"]
       },
       onSuccess: response => {
+        debugger;
         if (response.data.success) {
           this.setState({ allAllergies: response.data.records });
           console.log("Patient Allergies:", this.state.allAllergies);
@@ -1025,6 +1029,22 @@ class Subjective extends Component {
                                   : ""}
                               </span>
                             );
+                          },
+                          editorTemplate: data => {
+                            return (
+                              <AlgaehDateHandler
+                                div={{}}
+                                textBox={{
+                                  className: "txt-fld hidden",
+                                  name: "onset_date"
+                                }}
+                                minDate={new Date()}
+                                events={{
+                                  onChange: datehandle.bind(this, this, data)
+                                }}
+                                value={data.onset_date}
+                              />
+                            );
                           }
                         },
                         {
@@ -1042,13 +1062,46 @@ class Subjective extends Component {
                             ) : (
                               ""
                             );
+                          },
+                          editorTemplate: data => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "severity",
+                                  className: "select-fld",
+                                  value: data.severity,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.PAIN_SEVERITY
+                                  },
+                                  onChange: texthandle.bind(this, this, data)
+                                }}
+                              />
+                            );
                           }
                         },
                         {
                           fieldName: "comment",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Comment" }} />
-                          )
+                          ),
+                          editorTemplate: data => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "comment",
+                                  value: data.comment,
+                                  events: {
+                                    onChange: texthandle.bind(this, this, data)
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         }
                       ]}
                       keyId="hims_f_patient_allergy_id"
@@ -1060,7 +1113,7 @@ class Subjective extends Component {
                       events={{
                         onDelete: this.deleteAllergy.bind(this),
                         onEdit: row => {},
-                        onDone: row => {}
+                        onDone: updatePatientAllergy.bind(this, this)
                       }}
                     />
                   </div>
