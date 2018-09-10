@@ -2130,13 +2130,9 @@ let addFollowUp = (req, res, next) => {
   });
 };
 
-
-
-
-
-//created by:irfan,to get Patient physical examination
-let getPatientPhysicalExamination= (req, res, next) => {
-  debugFunction("getPatientVitals");
+//created by:irfan,to get Patient physical examination 
+let getPatientPhysicalExamination = (req, res, next) => {
+  debugFunction("getPatientPhysicalExamination");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -2150,8 +2146,14 @@ let getPatientPhysicalExamination= (req, res, next) => {
       let input = extend({}, req.query);
 
       connection.query(
-        "select * from hims_f_patient_vitals where record_status='A' and patient_id=?  order by visit_date desc, visit_time desc;",
-        [input.patient_id],
+        "select hims_f_episode_examination_id,  comments ,\
+        hims_d_physical_examination_header_id, PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory,\
+                    hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory,\
+                    hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory \
+                    from hims_f_episode_examination EE,hims_d_physical_examination_header PH ,hims_d_physical_examination_details PD,hims_d_physical_examination_subdetails PS\
+                    where EE.exam_header_id=PH.hims_d_physical_examination_header_id and EE.exam_details_id=PD.hims_d_physical_examination_details_id and EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id and \
+                    EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?",
+        [input.patient_id, input.episode_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -2211,5 +2213,6 @@ module.exports = {
   addDietAdvice,
   getEpisodeDietAdvice,
   addReferalDoctor,
-  addFollowUp
+  addFollowUp,
+  getPatientPhysicalExamination
 };
