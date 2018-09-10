@@ -1,7 +1,7 @@
 import Enumerable from "linq";
 import swal from "sweetalert";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-
+import moment from "moment";
 const getAllAllergies = ($this, type) => {
   $this.props.getAllAllergies({
     uri: "/doctorsWorkBench/getAllAllergies",
@@ -78,10 +78,49 @@ const getPatientROS = $this => {
   });
 };
 
+//Date Handaler Change
+const datehandle = ($this, data, ctrl, e) => {
+  let allAllergies = $this.state.allAllergies;
+  data[e] = moment(ctrl)._d;
+  for (let i = 0; i < allAllergies.length; i++) {
+    if (allAllergies[i].severity === data.severity) {
+      allAllergies[i] = data;
+    }
+  }
+  $this.setState({
+    allAllergies: allAllergies
+  });
+};
+
+//Text Handaler Change
+const texthandle = ($this, data, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let allAllergies = $this.state.allAllergies;
+  data[name] = value;
+  for (let i = 0; i < allAllergies.length; i++) {
+    if (allAllergies[i].severity === data.severity) {
+      allAllergies[i] = data;
+    }
+  }
+
+  $this.setState({
+    allAllergies: allAllergies
+  });
+};
+
+const updatePatientAllergy = ($this, row) => {
+  debugger;
+};
+
 export {
   getAllAllergies,
   getReviewOfSystems,
   getPatientAllergies,
   getReviewOfSystemsDetails,
-  getPatientROS
+  getPatientROS,
+  datehandle,
+  texthandle,
+  updatePatientAllergy
 };
