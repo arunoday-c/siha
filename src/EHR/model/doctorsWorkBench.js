@@ -2128,6 +2128,43 @@ let addFollowUp = (req, res, next) => {
   });
 };
 
+
+
+
+
+//created by:irfan,to get Patient physical examination
+let getPatientPhysicalExamination= (req, res, next) => {
+  debugFunction("getPatientVitals");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let input = extend({}, req.query);
+
+      connection.query(
+        "select * from hims_f_patient_vitals where record_status='A' and patient_id=?  order by visit_date desc, visit_time desc;",
+        [input.patient_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
