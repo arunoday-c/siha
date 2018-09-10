@@ -34,7 +34,8 @@ import {
   getPatientROS,
   datehandle,
   texthandle,
-  updatePatientAllergy
+  updatePatientAllergy,
+  updatePatientROS
 } from "./SubjectiveHandler";
 
 let patChiefComplain = [];
@@ -699,13 +700,10 @@ class Subjective extends Component {
                                 div={{}}
                                 textBox={{
                                   className: "txt-fld",
-                                  name: "ros_comment",
+                                  name: "comment",
                                   value: data.comment,
                                   events: {
-                                    onChange: this.changeRosCommentEdit.bind(
-                                      this,
-                                      data
-                                    )
+                                    onChange: texthandle.bind(this, this, data)
                                   }
                                 }}
                               />
@@ -722,7 +720,7 @@ class Subjective extends Component {
                       events={{
                         onDelete: this.deleteROS.bind(this),
                         onEdit: row => {},
-                        onDone: row => {}
+                        onDone: updatePatientROS.bind(this, this)
                       }}
                     />
 

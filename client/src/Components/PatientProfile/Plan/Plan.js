@@ -5,11 +5,9 @@ import DietAdvice from "./DietAdvice/DietAdvice";
 import Referal from "./Referal/Referal";
 import FollowUp from "./FollowUp/FollowUp";
 import OrderMedication from "./OrderMedication/OrderMedication";
-const AllergyData = [
-  { food: "grapes/citrus", active: "Yes" },
-  { food: "Pollen", active: "Yes" },
-  { food: "Iodine", active: "Yes" }
-];
+import ActiveMedication from "./ActiveMedication/ActiveMedication";
+import MedicationHistory from "./MedicationHistory/MedicationHistory";
+import OwnMedication from "./OwnMedication/OwnMedication";
 
 class Plan extends Component {
   constructor(props) {
@@ -101,95 +99,12 @@ class Plan extends Component {
 
                 {this.state.pageDisplay === "OrderMedication" ? (
                   <OrderMedication />
-                ) : // <AlgaehDataGrid
-                //   id="patient_chart_grd"
-                //   columns={[
-                //     {
-                //       fieldName: "date",
-                //       label: "Item Code"
-                //     },
-                //     {
-                //       fieldName: "first_name",
-                //       label: "Item Name"
-                //     },
-                //     {
-                //       fieldName: "",
-                //       label: "Frequency"
-                //     },
-
-                //     {
-                //       fieldName: "active",
-                //       label: "No. of Days"
-                //     },
-                //     {
-                //       fieldName: "active",
-                //       label: "Dispense"
-                //     },
-                //     {
-                //       fieldName: "active",
-                //       label: "Start Date"
-                //     }
-                //   ]}
-                //   keyId="code"
-                //   dataSource={{
-                //     data: AllergyData
-                //   }}
-                //   isEditable={true}
-                //   paging={{ page: 0, rowsPerPage: 3 }}
-                //   events={
-                //     {
-                //       // onDelete: this.deleteVisaType.bind(this),
-                //       // onEdit: row => {},
-                //       // onDone: row => {
-                //       //   alert(JSON.stringify(row));
-                //       // }
-                //       // onDone: this.updateVisaTypes.bind(this)
-                //     }
-                //   }
-                // />
-                this.state.pageDisplay === "ActiveMedication" ? (
-                  "Active Medication"
+                ) : this.state.pageDisplay === "ActiveMedication" ? (
+                  <ActiveMedication />
                 ) : this.state.pageDisplay === "MedicationHistory" ? (
-                  <AlgaehDataGrid
-                    id="patient_chart_grd"
-                    columns={[
-                      {
-                        fieldName: "food",
-                        label: "Food",
-                        disabled: true
-                      },
-                      {
-                        fieldName: "date",
-                        label: "On Set Date"
-                      },
-                      {
-                        fieldName: "first_name",
-                        label: "Comment"
-                      },
-                      {
-                        fieldName: "active",
-                        label: "Active"
-                      }
-                    ]}
-                    keyId="code"
-                    dataSource={{
-                      data: AllergyData
-                    }}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 3 }}
-                    events={
-                      {
-                        // onDelete: this.deleteVisaType.bind(this),
-                        // onEdit: row => {},
-                        // onDone: row => {
-                        //   alert(JSON.stringify(row));
-                        // }
-                        // onDone: this.updateVisaTypes.bind(this)
-                      }
-                    }
-                  />
+                  <MedicationHistory />
                 ) : this.state.pageDisplay === "OwnMedication" ? (
-                  "Own Medication"
+                  <OwnMedication />
                 ) : null}
               </div>
             </div>
@@ -200,35 +115,8 @@ class Plan extends Component {
                   <div className="caption">
                     <h3 className="caption-subject">Follow Up</h3>
                   </div>
-                  {/* <div className="actions">
-                    <a
-                      href="javascript:;"
-                      className="btn btn-primary btn-circle active"
-                    >
-                      <i className="fas fa-plus" />
-                    </a>
-                  </div> */}
                 </div>
                 <div className="portlet-body">
-                  {/* <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="patientType"
-                        value="OP Patient"
-                        checked
-                      />
-                      <span>OP Patient</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="patientType"
-                        value="IP Patient"
-                      />
-                      <span>IP Patient</span>
-                    </label>
-                  </div> */}
                   <FollowUp />
                 </div>
               </div>
@@ -247,7 +135,6 @@ class Plan extends Component {
                 </div>
                 <div className="portlet-body">
                   <DietAdvice />
-                  {/* <h4>Portlet Content</h4> */}
                 </div>
               </div>
               {/* END Portlet PORTLET */}
@@ -259,36 +146,9 @@ class Plan extends Component {
                   <div className="caption">
                     <h3 className="caption-subject">Refer To</h3>
                   </div>
-                  {/* <div className="actions">
-                    <a
-                      href="javascript:;"
-                      className="btn btn-primary btn-circle active"
-                    >
-                      <i className="fas fa-plus" />
-                    </a>
-                  </div> */}
                 </div>
                 <div className="portlet-body">
                   <Referal />
-                  {/* <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="patientType"
-                        value="OP Patient"
-                        checked
-                      />
-                      <span>Internal</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="patientType"
-                        value="IP Patient"
-                      />
-                      <span>External</span>
-                    </label>
-                  </div> */}
                 </div>
               </div>
               {/* END Portlet PORTLET */}

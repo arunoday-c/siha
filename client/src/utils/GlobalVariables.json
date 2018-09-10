@@ -290,5 +290,28 @@
     { "name": "Rectal", "value": "R" },
     { "name": "Axillary", "value": "A" },
     { "name": "Tymphanic", "value": "T" }
+  ],
+  "PRESCRIPTION_FREQ_PERIOD": [
+    { "name": "1-0-1", "value": "1" },
+    { "name": "1-0-0", "value": "2" },
+    { "name": "0-1-0", "value": "3" },
+    { "name": "0-0-1", "value": "4" },
+    { "name": "1-1-0", "value": "5" },
+    { "name": "0-1-1", "value": "6" },
+    { "name": "1-1-1", "value": "7" }
+  ],
+  "PRESCRIPTION_FREQ_TIME": [
+    { "name": "Per Day", "value": "D" },
+    { "name": "Per Hour", "value": "H" },
+    { "name": "Per Week", "value": "W" },
+    { "name": "Per Month", "value": "M" },
+    { "name": "Regular", "value": "R" },
+    { "name": "As Needed", "value": "N" },
+    { "name": "Bed Time", "value": "B" },
+    { "name": "Alternate Day", "value": "A" }
+  ],
+  "PRESCRIPTION_FREQ_DURATION": [
+    { "name": "After Meal", "value": "O" },
+    { "name": "Before Meal", "value": "R" }
   ]
 }

@@ -6,10 +6,17 @@ import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import IconButton from "@material-ui/core/IconButton";
 
 import {
+  PRESCRIPTION_FREQ_PERIOD,
+  PRESCRIPTION_FREQ_TIME,
+  PRESCRIPTION_FREQ_DURATION
+} from "../../../../utils/GlobalVariables.json";
+
+import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
+  AlgaehDateHandler,
   Tooltip
 } from "../../../Wrapper/algaehWrapper";
 
@@ -22,7 +29,6 @@ import {
 import "./OrderMedication.css";
 import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { getCookie } from "../../../../utils/algaehApiCall";
 
 class OrderMedication extends Component {
   constructor(props) {
@@ -36,9 +42,6 @@ class OrderMedication extends Component {
       patient_id: Window.global["current_patient"],
       visit_id: Window.global["visit_id"],
       doctor_id: null,
-
-      // patient_id: Window.global["current_patient"],
-      //   episode_id: Window.global["episode_id"]
 
       insured: null,
       insurance_provider_id: null,
@@ -68,15 +71,26 @@ class OrderMedication extends Component {
   }
 
   render() {
-    let orderedList =
-      this.state.orderservicesdata === undefined
-        ? [{}]
-        : this.state.orderservicesdata;
-
     return (
       <div className="hptl-phase1-order-medication-form">
         <div className="col-lg-12">
           <div className="row">
+            <AlagehAutoComplete
+              div={{ className: "col-lg-3" }}
+              label={{ forceLabel: "Generic Name" }}
+              selector={{
+                name: "diet_id",
+                className: "select-fld",
+                value: this.state.diet_id,
+                dataSource: {
+                  textField: "hims_d_diet_description",
+                  valueField: "hims_d_diet_master_id",
+                  data: this.props.dietmaster
+                },
+                onChange: texthandle.bind(this, this)
+              }}
+            />
+
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{ forceLabel: "Item Name" }}
@@ -94,25 +108,113 @@ class OrderMedication extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-lg-2" }}
               label={{ forceLabel: "Frequency" }}
               selector={{
                 name: "diet_id",
                 className: "select-fld",
                 value: this.state.diet_id,
                 dataSource: {
-                  textField: "hims_d_diet_description",
-                  valueField: "hims_d_diet_master_id",
-                  data: this.props.dietmaster
+                  textField: "name",
+                  valueField: "value",
+                  data: PRESCRIPTION_FREQ_PERIOD
                 },
                 onChange: texthandle.bind(this, this)
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col-lg-2" }}
+              label={{ forceLabel: "&nbsp;" }}
+              selector={{
+                name: "diet_id",
+                className: "select-fld",
+                value: this.state.diet_id,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: PRESCRIPTION_FREQ_TIME
+                },
+                onChange: texthandle.bind(this, this)
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col-lg-2" }}
+              label={{ forceLabel: "&nbsp;" }}
+              selector={{
+                name: "diet_id",
+                className: "select-fld",
+                value: this.state.diet_id,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: PRESCRIPTION_FREQ_DURATION
+                },
+                onChange: texthandle.bind(this, this)
+              }}
+            />
+          </div>
+          <div className="row">
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                forceLabel: "Dosage"
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "followup_comments",
+                value: this.state.followup_comments,
+                events: {
+                  onChange: texthandle.bind(this, this)
+                }
               }}
             />
 
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
-                forceLabel: "No.Of Days"
+                forceLabel: "Duration (Days)"
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "followup_comments",
+                value: this.state.followup_comments,
+                events: {
+                  onChange: texthandle.bind(this, this)
+                }
+              }}
+            />
+
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                forceLabel: "Total Quantity"
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "followup_comments",
+                value: this.state.followup_comments,
+                events: {
+                  onChange: texthandle.bind(this, this)
+                }
+              }}
+            />
+
+            <AlgaehDateHandler
+              div={{ className: "col-lg-3" }}
+              label={{ forceLabel: "Start Date" }}
+              textBox={{ className: "txt-fld" }}
+              maxDate={new Date()}
+              events={{
+                onChange: null
+              }}
+              value={this.state.date_of_birth}
+            />
+          </div>
+          <div className="row">
+            <AlagehFormGroup
+              div={{ className: "col-lg-11" }}
+              label={{
+                forceLabel: "Instructions"
               }}
               textBox={{
                 className: "txt-fld",
@@ -138,6 +240,12 @@ class OrderMedication extends Component {
                 id="Order_Medication"
                 columns={[
                   {
+                    fieldName: "quantity",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Generic Name" }} />
+                    )
+                  },
+                  {
                     fieldName: "service_type_id",
                     label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
                     displayTemplate: row => {
@@ -161,38 +269,40 @@ class OrderMedication extends Component {
                     },
                     disabled: true
                   },
-
                   {
-                    fieldName: "services_id",
-                    label: <AlgaehLabel label={{ forceLabel: "Frequency" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.serviceslist === undefined
-                          ? []
-                          : this.props.serviceslist.filter(
-                              f => f.hims_d_services_id === row.services_id
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? this.state.selectedLang === "en"
-                              ? display[0].service_name
-                              : display[0].arabic_service_name
-                            : ""}
-                        </span>
-                      );
-                    },
-                    disabled: true
+                    fieldName: "quantity",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Frequency Period" }} />
+                    )
                   },
                   {
                     fieldName: "quantity",
-                    label: <AlgaehLabel label={{ forceLabel: "No.Of Days" }} />
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Frequency Duration" }}
+                      />
+                    )
+                  },
+                  {
+                    fieldName: "quantity",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Frequency Type" }} />
+                    )
+                  },
+                  {
+                    fieldName: "quantity",
+                    label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />
+                  },
+                  {
+                    fieldName: "quantity",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Duration (Days)" }} />
+                    )
                   }
                 ]}
                 keyId="item_id"
                 dataSource={{
-                  data: orderedList
+                  data: this.state.orderservicesdata
                 }}
                 // isEditable={true}
                 paging={{ page: 0, rowsPerPage: 3 }}

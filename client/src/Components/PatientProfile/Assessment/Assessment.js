@@ -571,6 +571,10 @@ class Assessment extends Component {
                           className: "txt-fld",
                           name: "assesments_notes",
                           value: this.state.assesments_notes,
+                          others: {
+                            multiline: true,
+                            rows: "4"
+                          },
                           events: {
                             onChange: assnotetexthandle.bind(this, this)
                           }

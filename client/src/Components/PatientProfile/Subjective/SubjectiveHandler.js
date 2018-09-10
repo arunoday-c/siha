@@ -114,6 +114,10 @@ const updatePatientAllergy = ($this, row) => {
   debugger;
 };
 
+const updatePatientROS = ($this, row) => {
+  debugger;
+};
+
 export {
   getAllAllergies,
   getReviewOfSystems,
@@ -122,5 +126,6 @@ export {
   getPatientROS,
   datehandle,
   texthandle,
-  updatePatientAllergy
+  updatePatientAllergy,
+  updatePatientROS
 };
