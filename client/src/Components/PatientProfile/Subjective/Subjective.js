@@ -1426,9 +1426,9 @@ class Subjective extends Component {
                           fieldName: "sample"
                         }}
                         selector={{
-                          name: "hims_f_episode_chief_complaint_id",
+                          name: "chief_complaint_id",
                           className: "select-fld",
-                          value: this.state.hims_f_episode_chief_complaint_id,
+                          value: this.state.chief_complaint_id,
                           dataSource: {
                             textField: "hpi_description",
                             valueField: "hims_d_hpi_header_id",

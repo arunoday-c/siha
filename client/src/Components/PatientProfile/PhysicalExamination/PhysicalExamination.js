@@ -8,7 +8,12 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Modal from "@material-ui/core/Modal";
-import { getVitalHistory } from "./PhysicalExaminationHandlers";
+import {
+  getVitalHistory,
+  getPhysicalExaminations,
+  getPhysicalExaminationsDetails,
+  getPhysicalExaminationsSubDetails
+} from "./PhysicalExaminationHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -26,7 +31,8 @@ class PhysicalExamination extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openVitalModal: false
+      openVitalModal: false,
+      openExamnModal: false
     };
     this.handleClose = this.handleClose.bind(this);
   }
@@ -36,12 +42,16 @@ class PhysicalExamination extends Component {
   }
 
   handleClose() {
-    this.setState({ openVitalModal: false });
+    this.setState({ openVitalModal: false, openExamnModal: false });
   }
   texthandle(e) {
     this.setState({
       [e.target.name]: e.target.value
     });
+  }
+
+  openExaminationModal() {
+    this.setState({ openExamnModal: true });
   }
 
   addPatientVitals(e) {
@@ -97,6 +107,27 @@ class PhysicalExamination extends Component {
   componentDidMount() {
     getVitalHistory(this);
     this.setPatientVitals();
+    getPhysicalExaminations(this);
+  }
+
+  headerDropDownHandle(value) {
+    this.setState(
+      { [value.name]: value.value },
+      getPhysicalExaminationsDetails(
+        this,
+        this.state.hims_d_physical_examination_header_id
+      )
+    );
+  }
+
+  detailDropDownHandle(value) {
+    this.setState({ [value.name]: value.value }, () => {
+      getPhysicalExaminationsSubDetails(
+        this,
+        this.state.hims_d_physical_examination_header_id,
+        this.state.hims_d_physical_examination_details_id
+      );
+    });
   }
 
   dropDownHandle(value) {
@@ -110,6 +141,10 @@ class PhysicalExamination extends Component {
     if (w > 0 && h > 0) {
       this.setState({ bmi: w / (((h / 100) * h) / 100) });
     }
+  }
+
+  dropDownHandle(value) {
+    this.setState({ [value.name]: value.value });
   }
 
   render() {
@@ -197,6 +232,172 @@ class PhysicalExamination extends Component {
           </div>
         </Modal>
 
+        {/* Examination Modal Start*/}
+
+        <Modal open={this.state.openExamnModal}>
+          <div className="algaeh-modal">
+            <div className="popupHeader">
+              <h4>Add EXamination</h4>
+            </div>
+            <div className="popupInner">
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-4 popLeftDiv">
+                    <div className="complain-box">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12" }}
+                        label={{
+                          forceLabel: "Examination Type"
+                        }}
+                        selector={{
+                          name: "hims_d_physical_examination_header_id",
+                          className: "select-fld",
+                          value: this.state
+                            .hims_d_physical_examination_header_id,
+                          dataSource: {
+                            textField: "header_description",
+                            valueField: "hims_d_physical_examination_header_id",
+                            data: this.props.allexaminations
+                          },
+                          onChange: this.headerDropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          forceLabel: "Examination Description"
+                        }}
+                        selector={{
+                          name: "hims_d_physical_examination_details_id",
+                          className: "select-fld",
+                          value: this.state
+                            .hims_d_physical_examination_details_id,
+                          dataSource: {
+                            textField: "detail_description",
+                            valueField:
+                              "hims_d_physical_examination_details_id",
+                            data: this.props.allexaminationsdetails
+                          },
+                          onChange: this.detailDropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          forceLabel: "Examination"
+                        }}
+                        selector={{
+                          name: "hims_d_physical_examination_subdetails_id",
+                          className: "select-fld",
+                          value: this.state
+                            .hims_d_physical_examination_subdetails_id,
+                          dataSource: {
+                            textField: "subdetail_description",
+                            valueField:
+                              "hims_d_physical_examination_subdetails_id",
+                            data: this.props.allexaminationsubdetails
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          fieldName: "comments",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "examination_comment",
+                          others: {
+                            multiline: true,
+                            rows: "4"
+                          },
+                          value: this.state.examination_comment,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-lg-8 popRightDiv">
+                    <h6> List of Examinations</h6>
+                    <hr />
+                    <AlgaehDataGrid
+                      id="patient_chart_grd"
+                      columns={[
+                        {
+                          fieldName: "date",
+                          label: "Examination Type"
+                        },
+                        {
+                          fieldName: "first_name",
+                          label: "Examination Description"
+                        },
+                        {
+                          fieldName: "",
+                          label: "Examination"
+                        },
+
+                        {
+                          fieldName: "active",
+                          label: "Comments"
+                        }
+                      ]}
+                      keyId="code"
+                      dataSource={{
+                        data: []
+                      }}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 5 }}
+                      events={
+                        {
+                          // onDelete: this.deleteVisaType.bind(this),
+                          // onEdit: row => {},
+                          // onDone: row => {
+                          //   alert(JSON.stringify(row));
+                          // }
+                          // onDone: this.updateVisaTypes.bind(this)
+                        }
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row popupFooter">
+              <div className="col-lg-4">
+                <button
+                  // onClick={this.addAllergyToPatient.bind(this)}
+                  type="button"
+                  className="btn btn-primary"
+                >
+                  Add Examination
+                </button>
+                <button type="button" className="btn btn-other">
+                  Clear
+                </button>
+              </div>
+              <div className="col-lg-8">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={this.handleClose}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </Modal>
+
+        {/* Examination Modal End */}
+
         <div className="col-lg-12">
           <div className="row">
             <div className="col-lg-8">
@@ -206,29 +407,22 @@ class PhysicalExamination extends Component {
                   <div className="caption">
                     <h3 className="caption-subject">Physical Examination</h3>
                   </div>
+
+                  <div className="actions">
+                    <a className="btn btn-primary btn-circle active">
+                      <i
+                        onClick={this.openExaminationModal.bind(this)}
+                        className="fas fa-plus"
+                      />
+                    </a>
+                  </div>
                 </div>
 
                 <div className="portlet-body">
                   <div className="col-lg-12">
                     <div className="row" style={{ marginBottom: "10px" }}>
-                      {/* <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
-                        label={{
-                          forceLabel: "Search",
-                          isImp: true
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "search",
-
-                          //value: this.state.department_name,
-                          events: {
-                            //  onChange: this.changeDeptName.bind(this)
-                          }
-                        }}
-                      /> */}
                       <div className="col-4">
-                        <div className="form-group">
+                        {/* <div className="form-group">
                           <label>Search</label>
                           <div className="input-group">
                             <input type="text" className="form-control" />
@@ -238,7 +432,7 @@ class PhysicalExamination extends Component {
                               </span>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -248,36 +442,28 @@ class PhysicalExamination extends Component {
                     columns={[
                       {
                         fieldName: "date",
-                        label: "Item Code"
+                        label: "Examination Type"
                       },
                       {
                         fieldName: "first_name",
-                        label: "Item Name"
+                        label: "Examination Description"
                       },
                       {
                         fieldName: "",
-                        label: "Frequency"
+                        label: "Examination"
                       },
 
                       {
                         fieldName: "active",
-                        label: "No. of Days"
-                      },
-                      {
-                        fieldName: "active",
-                        label: "Dispense"
-                      },
-                      {
-                        fieldName: "active",
-                        label: "Start Date"
+                        label: "Comments"
                       }
                     ]}
                     keyId="code"
                     dataSource={{
-                      data: AllergyData
+                      data: []
                     }}
                     isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 3 }}
+                    paging={{ page: 0, rowsPerPage: 5 }}
                     events={
                       {
                         // onDelete: this.deleteVisaType.bind(this),
@@ -301,10 +487,7 @@ class PhysicalExamination extends Component {
                   </div>
 
                   <div className="actions">
-                    <a
-                      href="javascript:;"
-                      className="btn btn-primary btn-circle active"
-                    >
+                    <a className="btn btn-primary btn-circle active">
                       <i
                         onClick={this.addVitals.bind(this)}
                         className="fas fa-history"
@@ -581,14 +764,20 @@ class PhysicalExamination extends Component {
 
 function mapStateToProps(state) {
   return {
-    allvitals: state.allvitals
+    allvitals: state.allvitals,
+    allexaminations: state.allexaminations,
+    allexaminationsdetails: state.allexaminationsdetails,
+    allexaminationsubdetails: state.allexaminationsubdetails
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVitalHistory: AlgaehActions
+      getVitalHistory: AlgaehActions,
+      getPhysicalExaminations: AlgaehActions,
+      getPhysicalExaminationsDetails: AlgaehActions,
+      getPhysicalExaminationsSubDetails: AlgaehActions
     },
     dispatch
   );
