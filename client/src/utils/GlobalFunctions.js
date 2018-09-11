@@ -28,9 +28,9 @@ export function removeGlobal(name) {
 export function resizeImage(options) {
   let settings = { maxWidth: 400, maxHeight: 400, ...options };
   let canvas = document.createElement("canvas");
-  let ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0);
+
   let imageControl = document.getElementById(settings.imgId);
+
   let MAX_WIDTH = settings.maxWidth;
   let MAX_HEIGHT = settings.maxHeight;
   let width = imageControl.width;
@@ -49,6 +49,6 @@ export function resizeImage(options) {
   canvas.width = width;
   canvas.height = height;
   let ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0, width, height);
+  ctx.drawImage(imageControl, 0, 0, width, height);
   return canvas.toDataURL("image/png");
 }
