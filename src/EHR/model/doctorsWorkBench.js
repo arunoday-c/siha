@@ -725,13 +725,14 @@ let getMyDay = (req, res, next) => {
       }
       db.query(
         "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
-         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.created_date,E.visit_id from hims_f_patient_encounter E\
+         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id from hims_f_patient_encounter E\
          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id  where E.record_status='A' AND " +
           statusFlag +
           "" +
           dateDiff +
           " AND " +
-          where.condition,
+          where.condition +
+          "order by E.updated_date desc",
         where.values,
 
         (error, result) => {
@@ -1446,15 +1447,17 @@ let addPatientROS = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_encounter_review` (patient_id,episode_id,review_header_id,review_details_id,`comment`,created_by,updated_by)\
-        VALUE(?,?,?,?,?,?,?)",
+        "INSERT INTO `hims_f_encounter_review` (patient_id,episode_id,review_header_id,review_details_id,`comment`,created_date,created_by,updated_date,updated_by)\
+        VALUE(?,?,?,?,?,?,?,?,?)",
         [
           inputparam.patient_id,
           inputparam.episode_id,
           inputparam.review_header_id,
           inputparam.review_details_id,
           inputparam.comment,
+          new Date(),
           inputparam.created_by,
+          new Date(),
           inputparam.updated_by
         ],
         (error, result) => {
@@ -1971,8 +1974,8 @@ let addDietAdvice = (req, res, next) => {
     let inputParam = extend(dietadvice, req.body);
     connection.query(
       "INSERT INTO `hims_f_patient_diet` (`patient_id`, `episode_id`,`diet_id`, `comments`, `till_date` \
-      , `created_by` ,`created_date`) \
-   VALUES ( ?, ?, ?, ?, ?, ?, ?)",
+      , `created_by` ,`created_date`,updated_date,updated_by) \
+   VALUES ( ?, ?, ?, ?, ?, ?, ?,?,?)",
       [
         inputParam.patient_id,
         inputParam.episode_id,
@@ -1980,7 +1983,9 @@ let addDietAdvice = (req, res, next) => {
         inputParam.comments,
         inputParam.till_date,
         inputParam.created_by,
-        new Date()
+        new Date(),
+        new Date(),
+        inputParam.updated_by
       ],
       (error, result) => {
         releaseDBConnection(db, connection);

@@ -242,10 +242,10 @@ class DoctorsWorkbench extends Component {
                         onClick={this.moveToEncounterList}
                       >
                         <span className="op-sec-1">
-                          <i className="appointment-icon" />
-                          {/* <i className="walking-icon" /> */}
+                          {/* <i className="appointment-icon" /> */}
+                          <i className="walking-icon" />
                           <span className="opTime">
-                            {moment(data.created_date).format("HH:MM:SS A")}
+                            {moment(data.encountered_date).format("HH:mm A")}
                           </span>
                         </span>
                         <span className="op-sec-2">
@@ -427,23 +427,25 @@ class DoctorsWorkbench extends Component {
                         )
                       },
                       {
-                        fieldName: "created_date",
+                        fieldName: "encountered_date",
                         label: <AlgaehLabel label={{ fieldName: "date" }} />,
                         displayTemplate: data => {
                           return (
                             <span>
-                              {moment(data.created_date).format("DD-MM-YYYY")}
+                              {moment(data.encountered_date).format(
+                                "DD-MM-YYYY"
+                              )}
                             </span>
                           );
                         }
                       },
                       {
-                        fieldName: "created_date",
+                        fieldName: "encountered_date",
                         label: <AlgaehLabel label={{ fieldName: "time" }} />,
                         displayTemplate: data => {
                           return (
                             <span>
-                              {moment(data.created_date).format("HH:MM:SS A")}
+                              {moment(data.encountered_date).format("HH:mm A")}
                             </span>
                           );
                         }
