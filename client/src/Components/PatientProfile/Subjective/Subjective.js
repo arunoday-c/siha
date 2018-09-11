@@ -1022,7 +1022,7 @@ class Subjective extends Component {
                           displayTemplate: data => {
                             return (
                               <span>
-                                {data.onset
+                                {data.onset_date !== null
                                   ? moment(data.onset_date).format("DD-MM-YYYY")
                                   : ""}
                               </span>
@@ -1520,15 +1520,6 @@ class Subjective extends Component {
                         <h6>Nurse Chief Complaints</h6>
                         <div className="bordered-layout">
                           <ul>
-                            <li>
-                              <span>Leg Pain</span>
-                            </li>
-                            <li>
-                              <span>Leg Pain</span>
-                            </li>
-                            <li>
-                              <span>Leg Pain</span>
-                            </li>
                             <li>
                               <span>Leg Pain</span>
                             </li>

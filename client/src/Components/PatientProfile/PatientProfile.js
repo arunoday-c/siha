@@ -8,6 +8,7 @@ import Plan from "./Plan/Plan";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import moment from "moment";
 import { setGlobal, removeGlobal } from "../../utils/GlobalFunctions";
+import algaehLoader from "../Wrapper/fullPageLoader";
 
 class PatientProfile extends Component {
   constructor(props) {
@@ -42,9 +43,7 @@ class PatientProfile extends Component {
   }
 
   componentDidMount() {
-    //TODO
-    // Validations on API calls
-    debugger;
+    algaehLoader({ show: true });
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientProfile",
       data: {
@@ -56,13 +55,18 @@ class PatientProfile extends Component {
       onSuccess: response => {
         if (response.data.success) {
           console.log("Patient data:", response.data.records);
-          this.setState({
-            patientData: response.data.records.patient_profile[0],
-            patientVitals: response.data.records.vitals[0],
-            patientAllergies: response.data.records.patient_allergies,
-            patientDiagnosis: response.data.records.patientDiagnosis,
-            patientDiet: response.data.records.patient_diet
-          });
+          this.setState(
+            {
+              patientData: response.data.records.patient_profile[0],
+              patientVitals: response.data.records.vitals[0],
+              patientAllergies: response.data.records.patient_allergies,
+              patientDiagnosis: response.data.records.patientDiagnosis,
+              patientDiet: response.data.records.patient_diet
+            },
+            () => {
+              algaehLoader({ show: false });
+            }
+          );
         }
       },
       onFailure: error => {}

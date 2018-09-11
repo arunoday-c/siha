@@ -267,8 +267,8 @@ class DoctorsWorkbench extends Component {
                     ))
                 ) : (
                   <div className="col noPatientDiv">
-                    <h4>Relax</h4>
-                    <p>No Out Patient Available</p>
+                    {/* <h4>Relax</h4> */}
+                    <p>No Out Patients Available</p>
                   </div>
                 )}
               </ul>
@@ -294,86 +294,88 @@ class DoctorsWorkbench extends Component {
             </div>
             <div className="col-12">
               <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "status"
-                  }}
-                  selector={{
-                    name: "status",
-                    className: "select-fld",
-                    //value: this.state.consultation,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.DOC_WRK_BNCH_FILTER_CONDITIONS
-                    },
-                    //onChange: this.changeTexts.bind(this)
-                    onChange: () => {}
-                  }}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col" }}
-                  label={{ fieldName: "from_date", isImp: true }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "from_date"
-                  }}
-                  maxDate={new Date()}
-                  events={{
-                    //onChange: datehandle.bind(this, this)
-                    onChange: () => {}
-                  }}
-                  value={new Date()}
-                />
-
-                <AlgaehDateHandler
-                  div={{ className: "col" }}
-                  label={{ fieldName: "to_date", isImp: true }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "to_date"
-                  }}
-                  maxDate={new Date()}
-                  events={{
-                    //onChange: datehandle.bind(this, this)
-                    onChange: () => {}
-                  }}
-                  value={new Date()}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "patient_code",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "patient_code",
-                    // value: this.state.visit_type_code,
-                    //error: this.state.visit_type_code_error,
-                    //helperText: this.state.visit_type_code_error_txt,
-                    events: {
+                <div className="row" hidden={true} style={{ margin: "auto" }}>
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "status"
+                    }}
+                    selector={{
+                      name: "status",
+                      className: "select-fld",
+                      //value: this.state.consultation,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.DOC_WRK_BNCH_FILTER_CONDITIONS
+                      },
                       //onChange: this.changeTexts.bind(this)
                       onChange: () => {}
-                    }
-                  }}
-                />
-                <div className="col-lg-1">
-                  <Tooltip id="tooltip-icon" title="Search">
-                    <IconButton className="go-button">
-                      <Search onClick={() => {}} />
-                    </IconButton>
-                  </Tooltip>
-                </div>
+                    }}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col" }}
+                    label={{ fieldName: "from_date", isImp: true }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "from_date"
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      //onChange: datehandle.bind(this, this)
+                      onChange: () => {}
+                    }}
+                    value={new Date()}
+                  />
 
-                <div className="col-lg-1">
-                  <Tooltip id="tooltip-icon" title="Go">
-                    <IconButton className="go-button" color="primary">
-                      <PlayCircleFilled onClick={() => {}} />
-                    </IconButton>
-                  </Tooltip>
+                  <AlgaehDateHandler
+                    div={{ className: "col" }}
+                    label={{ fieldName: "to_date", isImp: true }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "to_date"
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      //onChange: datehandle.bind(this, this)
+                      onChange: () => {}
+                    }}
+                    value={new Date()}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "patient_code",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "patient_code",
+                      // value: this.state.visit_type_code,
+                      //error: this.state.visit_type_code_error,
+                      //helperText: this.state.visit_type_code_error_txt,
+                      events: {
+                        //onChange: this.changeTexts.bind(this)
+                        onChange: () => {}
+                      }
+                    }}
+                  />
+                  <div className="col-lg-1">
+                    <Tooltip id="tooltip-icon" title="Search">
+                      <IconButton className="go-button">
+                        <Search onClick={() => {}} />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+
+                  <div className="col-lg-1">
+                    <Tooltip id="tooltip-icon" title="Go">
+                      <IconButton className="go-button" color="primary">
+                        <PlayCircleFilled onClick={() => {}} />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
                 </div>
                 <div className="col-12 margin-top-15">
                   <AlgaehDataGrid
