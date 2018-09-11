@@ -77,9 +77,16 @@ class PhysicalExamination extends Component {
     });
   }
 
-  addExaminationToPatient() {
-    // console.log("PE State:", this.state);
+  resetExmnState() {
+    this.setState({
+      exam_header_id: "",
+      exam_details_id: "",
+      exam_subdetails_id: "",
+      comments: ""
+    });
+  }
 
+  addExaminationToPatient() {
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientPhysicalExamination",
       method: "POST",
@@ -94,6 +101,7 @@ class PhysicalExamination extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
+          this.resetExmnState.bind(this);
           getPatientPhysicalExamination(this);
           swal("Examination added successfully . .", {
             icon: "success",
@@ -178,7 +186,6 @@ class PhysicalExamination extends Component {
     this.setState({ [value.name]: value.value }, () => {
       getPhysicalExaminationsSubDetails(
         this,
-        this.state.hims_d_physical_examination_header_id,
         this.state.hims_d_physical_examination_details_id
       );
     });
@@ -348,7 +355,7 @@ class PhysicalExamination extends Component {
                           value: this.state
                             .hims_d_physical_examination_subdetails_id,
                           dataSource: {
-                            textField: "subdetail_description",
+                            textField: "sub_detail_description",
                             valueField:
                               "hims_d_physical_examination_subdetails_id",
                             data: this.props.allexaminationsubdetails

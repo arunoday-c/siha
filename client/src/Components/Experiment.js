@@ -1,8 +1,7 @@
 import React, { PureComponent, PropTypes } from "react";
 import { AlagehAutoComplete } from "./Wrapper/algaehWrapper";
 import { GlobalVariables } from "../utils/GlobalVariables.json";
-import algaehLoader from "./Wrapper/fullPageLoader";
-
+import { getPatientDetails } from "../utils/indexer";
 import RichTextEditor from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -23,16 +22,17 @@ export default class RadTemplate extends PureComponent {
     });
   };
 
-  openLoader() {
-    algaehLoader({ show: true });
-  }
-  closeLoader() {
-    algaehLoader({ show: false });
-  }
+  getIndexPatientDetails = e => {
+    getPatientDetails(null);
+  };
 
   render() {
     return (
       <React.Fragment>
+        <button onClick={this.getIndexPatientDetails.bind(this)}>
+          {" "}
+          Index db Get POC{" "}
+        </button>
         <div className="hptl-phase1-add-rad-tamplate-form">
           {/* <div className="hptl-phase1-add-advance-form"> */}
           <div className="container-fluid">

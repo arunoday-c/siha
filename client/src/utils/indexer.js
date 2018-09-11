@@ -127,3 +127,24 @@ export function setLocaion(data) {
       }).complete;
   });
 }
+export function getPatientDetails(callBack) {
+  debugger;
+  const dbPromise = idb.open("Hims", 1, upgradeDB => {
+    upgradeDB.createObjectStore("patientComplaints", { keyPath: "id" });
+  });
+
+  dbPromise
+    .then(db => {
+      return db
+        .transaction("patientComplaints")
+        .objectStore("patientComplaints")
+        .getAll();
+    })
+    .then(result => {
+      debugger;
+      alert(JSON.stringify(result));
+    })
+    .catch(e => {
+      alert(JSON.stringify(e));
+    });
+}
