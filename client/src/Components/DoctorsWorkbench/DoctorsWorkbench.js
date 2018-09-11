@@ -68,21 +68,24 @@ class DoctorsWorkbench extends Component {
         debugger;
         if (response.data.success) {
           this.loadListofData();
-          this.moveToPatientProfile(patient_encounter_id, patient_id);
+
+          setGlobal(
+            {
+              "EHR-STD": "PatientProfile",
+              current_patient: patient_id,
+              episode_id: patient_encounter_id
+            },
+            () => {
+              document.getElementById("ehr-router").click();
+            }
+          );
         }
       },
       onFailure: error => {}
     });
   }
 
-  moveToPatientProfile(ei, pi) {
-    setGlobal({
-      "EHR-STD": "PatientProfile",
-      current_patient: pi,
-      episode_id: ei
-    });
-    document.getElementById("ehr-router").click();
-  }
+  moveToPatientProfile() {}
 
   loadListofData() {
     this.props.getMyDay({
@@ -144,7 +147,8 @@ class DoctorsWorkbench extends Component {
     this.setState(
       {
         activeDateHeader: e.target.getAttribute("date"),
-        fromDate: e.target.getAttribute("date")
+        fromDate: e.target.getAttribute("date"),
+        toDate: e.target.getAttribute("date")
       },
       () => {
         this.loadListofData();
@@ -240,7 +244,9 @@ class DoctorsWorkbench extends Component {
                         <span className="op-sec-1">
                           <i className="appointment-icon" />
                           {/* <i className="walking-icon" /> */}
-                          <span className="opTime">11:44:00</span>
+                          <span className="opTime">
+                            {moment(data.created_date).format("HH:MM:SS A")}
+                          </span>
                         </span>
                         <span className="op-sec-2">
                           <span className="opPatientName">
@@ -421,12 +427,26 @@ class DoctorsWorkbench extends Component {
                         )
                       },
                       {
-                        fieldName: "date",
-                        label: <AlgaehLabel label={{ fieldName: "date" }} />
+                        fieldName: "created_date",
+                        label: <AlgaehLabel label={{ fieldName: "date" }} />,
+                        displayTemplate: data => {
+                          return (
+                            <span>
+                              {moment(data.created_date).format("DD-MM-YYYY")}
+                            </span>
+                          );
+                        }
                       },
                       {
-                        fieldName: "time",
-                        label: <AlgaehLabel label={{ fieldName: "time" }} />
+                        fieldName: "created_date",
+                        label: <AlgaehLabel label={{ fieldName: "time" }} />,
+                        displayTemplate: data => {
+                          return (
+                            <span>
+                              {moment(data.created_date).format("HH:MM:SS A")}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "patient_type",

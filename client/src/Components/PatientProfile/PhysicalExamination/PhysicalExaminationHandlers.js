@@ -21,8 +21,8 @@ const getPhysicalExaminations = $this => {
     uri: "/doctorsWorkBench/getPhysicalExamination/get",
     method: "GET",
     data: {
-      hims_d_physical_examination_details_id: null,
-      hims_d_physical_examination_subdetails_id: null
+      hims_d_physical_examination_header_id: null,
+      hims_d_physical_examination_details_id: null
     },
     redux: {
       type: "ALL_EXAMINATIONS",
@@ -32,14 +32,14 @@ const getPhysicalExaminations = $this => {
   });
 };
 
-const getPhysicalExaminationsDetails = ($this, detail_id) => {
+const getPhysicalExaminationsDetails = ($this, header_id) => {
   debugger;
   $this.props.getPhysicalExaminationsDetails({
     uri: "/doctorsWorkBench/getPhysicalExamination/get",
     method: "GET",
     data: {
-      hims_d_physical_examination_details_id: detail_id,
-      hims_d_physical_examination_subdetails_id: null
+      hims_d_physical_examination_header_id: header_id,
+      hims_d_physical_examination_details_id: null
     },
     redux: {
       type: "ALL_EXAMINATIONS_DETAILS",
@@ -49,13 +49,13 @@ const getPhysicalExaminationsDetails = ($this, detail_id) => {
   });
 };
 
-const getPhysicalExaminationsSubDetails = ($this, detail_id, subdetail_id) => {
+const getPhysicalExaminationsSubDetails = ($this, detail_id) => {
   $this.props.getPhysicalExaminationsSubDetails({
     uri: "/doctorsWorkBench/getPhysicalExamination/get",
     method: "GET",
     data: {
-      physical_examination_details_id: detail_id,
-      hims_d_physical_examination_subdetails_id: subdetail_id
+      hims_d_physical_examination_header_id: null,
+      hims_d_physical_examination_details_id: detail_id
     },
     redux: {
       type: "ALL_EXAMINATIONS_SUBDETAILS",
