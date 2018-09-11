@@ -430,6 +430,14 @@ class InvestigationSetup extends Component {
               Clear
             </button>
             <NewInvestigation
+              HeaderCaption={
+                <AlgaehLabel
+                  label={{
+                    fieldName: "investigation_setup",
+                    align: "ltr"
+                  }}
+                />
+              }
               open={this.state.isOpen}
               onClose={this.ShowModel.bind(this)}
               InvestigationPop={this.state.InvestigationPop}

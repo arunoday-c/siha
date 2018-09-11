@@ -68,6 +68,14 @@ class AddOPBillingForm extends Component {
         }
       });
     }
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "serviceslist"
+      }
+    });
   }
 
   ShowBillDetails(e) {
@@ -244,8 +252,6 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
-    let serviceList =
-      this.state.billdetails === undefined ? [{}] : this.state.billdetails;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -274,6 +280,7 @@ class AddOPBillingForm extends Component {
                         valueField: "hims_d_service_type_id",
                         data: this.props.servicetype
                       },
+                      others: { disabled: this.state.Billexists },
                       onChange: serviceTypeHandeler.bind(this, this, context)
                     }}
                   />
@@ -292,6 +299,7 @@ class AddOPBillingForm extends Component {
                         valueField: "hims_d_services_id",
                         data: this.props.services
                       },
+                      others: { disabled: this.state.Billexists },
                       onChange: serviceHandeler.bind(this, this, context)
                     }}
                   />
@@ -332,8 +340,8 @@ class AddOPBillingForm extends Component {
                     />
                   </div>
                 </div>
-                <div className="row form-details">
-                  <div className="col-lg-12">
+                <div className="col-lg-12">
+                  <div className="row form-details">
                     <AlgaehDataGrid
                       id="Bill_details"
                       columns={[
@@ -502,7 +510,7 @@ class AddOPBillingForm extends Component {
                       ]}
                       keyId="service_type_id"
                       dataSource={{
-                        data: serviceList
+                        data: this.state.billdetails
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 5 }}

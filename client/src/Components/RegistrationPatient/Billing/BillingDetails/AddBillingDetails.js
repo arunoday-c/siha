@@ -313,6 +313,38 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
   }
 };
 
+const checkcashhandaler = ($this, e) => {
+  debugger;
+  $this.setState(
+    {
+      Cashchecked: e.target.checked,
+      enableCash: !$this.state.enableCash,
+      cash_amount: $this.state.cash_amount
+    },
+    () => {
+      debugger;
+    }
+  );
+};
+
+const checkcardhandaler = ($this, e) => {
+  debugger;
+
+  $this.setState({
+    Cardchecked: e.target.checked,
+    enableCard: !$this.state.enableCard
+  });
+};
+
+const checkcheckhandaler = ($this, e) => {
+  debugger;
+
+  $this.setState({
+    Checkchecked: e.target.checked,
+    enableCheck: !$this.state.enableCheck
+  });
+};
+
 export {
   texthandle,
   datehandle,
@@ -321,5 +353,8 @@ export {
   cardtexthandle,
   chequetexthandle,
   adjustadvance,
-  ProcessInsurance
+  ProcessInsurance,
+  checkcashhandaler,
+  checkcardhandaler,
+  checkcheckhandaler
 };

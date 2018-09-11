@@ -1,5 +1,6 @@
 import swal from "sweetalert";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 const DeptselectedHandeler = ($this, context, e) => {
   $this.setState({
@@ -115,6 +116,7 @@ const generateBillDetails = ($this, context) => {
       secondary_network_office_id: $this.state.secondary_network_office_id
     }
   ];
+  AlgaehLoader({ show: true });
   $this.props.generateBill({
     uri: "/billing/getBillDetails",
     method: "POST",
@@ -135,6 +137,9 @@ const generateBillDetails = ($this, context) => {
         redux: {
           type: "BILL_HEADER_GEN_GET_DATA",
           mappingName: "genbill"
+        },
+        afterSuccess: data => {
+          AlgaehLoader({ show: false });
         }
       });
     }

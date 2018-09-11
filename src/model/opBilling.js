@@ -234,6 +234,7 @@ let selectBill = (req, res, next) => {
 
         "SELECT * FROM hims_f_billing_header INNER JOIN hims_f_billing_details ON \
         hims_f_billing_header.hims_f_billing_header_id=hims_f_billing_details.hims_f_billing_header_id \
+        inner join hims_f_patient as PAT on hims_f_billing_header.patient_id = PAT.hims_d_patient_id \
         where hims_f_billing_header.record_status='A' AND hims_f_billing_header.bill_number = '" +
           req.query.bill_number +
           "'",

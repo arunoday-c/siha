@@ -79,6 +79,7 @@ export default ({ config, db }) => {
                 company_res: s.company_res,
                 sec_company_res: s.sec_company_res,
                 patient_payable: s.patient_payable,
+                patient_payable_h: s.patient_payable,
                 company_payable: s.company_payable,
                 sec_company_payable: s.sec_company_payable,
                 patient_tax: s.patient_tax,
@@ -87,6 +88,7 @@ export default ({ config, db }) => {
                 net_tax: s.net_tax,
                 credit_amount: s.credit_amount,
                 receiveable_amount: s.receiveable_amount,
+                patient_code: s.patient_code,
                 // cancel_remarks: s.cancel_remarks,
                 // cancel_by: s.cancel_by,
                 bill_comments: s.bill_comments

@@ -21,7 +21,10 @@ import {
   cardtexthandle,
   chequetexthandle,
   adjustadvance,
-  ProcessInsurance
+  ProcessInsurance,
+  checkcashhandaler,
+  checkcardhandaler,
+  checkcheckhandaler
 } from "./AddBillingDetails";
 import MyContext from "../../../../utils/MyContext.js";
 import { withRouter } from "react-router-dom";
@@ -36,7 +39,13 @@ class AddBillingForm extends Component {
     super(props);
     this.state = {
       isOpen: false,
-      bill_number: ""
+      bill_number: "",
+      enableCash: false,
+      enableCard: true,
+      enableCheck: true,
+      Cashchecked: true,
+      Cardchecked: false,
+      Checkchecked: false
     };
   }
 
@@ -355,6 +364,9 @@ class AddBillingForm extends Component {
                         />
                       </div>
                       <hr style={{ margin: "0rem" }} />
+
+                      {/* Payment Type */}
+                      {/* Cash */}
                       <div className="row secondary-box-container">
                         <div
                           className="customCheckbox col-lg-2"
@@ -364,7 +376,13 @@ class AddBillingForm extends Component {
                             className="checkbox"
                             style={{ color: "#212529" }}
                           >
-                            <input type="checkbox" value="Front Desk" />
+                            <input
+                              type="checkbox"
+                              name="Pay by Cash"
+                              checked={this.state.Cashchecked}
+                              onChange={checkcashhandaler.bind(this, this)}
+                            />
+
                             <span style={{ fontSize: "0.8rem" }}>
                               Pay by Cash
                             </span>
@@ -383,10 +401,14 @@ class AddBillingForm extends Component {
                             value: this.state.cash_amount,
                             events: {
                               onChange: cashtexthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: this.state.enableCash
                             }
                           }}
                         />
                       </div>
+                      {/* Card */}
                       <div className="row secondary-box-container">
                         <div
                           className="customCheckbox col-lg-2"
@@ -396,32 +418,17 @@ class AddBillingForm extends Component {
                             className="checkbox"
                             style={{ color: "#212529" }}
                           >
-                            <input type="checkbox" value="Pay by Card" />
+                            <input
+                              type="checkbox"
+                              name="Pay by Card"
+                              checked={this.state.Cardchecked}
+                              onChange={checkcardhandaler.bind(this, this)}
+                            />
                             <span style={{ fontSize: "0.8rem" }}>
                               Pay by Card
                             </span>
                           </label>
                         </div>
-                        {/* <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          selector={{
-                            name: "pay_card",
-                            className: "select-fld",
-                            value: this.state.pay_card,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang == "en"
-                                  ? "name"
-                                  : "arabic_name",
-                              valueField: "value",
-                              data: variableJson.FORMAT_PAYTYPE
-                            },
-                            others: {
-                              disabled: true
-                            },
-                            onChange: texthandle.bind(this, this, context)
-                          }}
-                        /> */}
 
                         <AlagehFormGroup
                           div={{ className: "col-lg-2" }}
@@ -436,6 +443,9 @@ class AddBillingForm extends Component {
                             value: this.state.card_amount,
                             events: {
                               onChange: cardtexthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: this.state.enableCard
                             }
                           }}
                         />
@@ -450,6 +460,9 @@ class AddBillingForm extends Component {
                             value: this.state.card_number,
                             events: {
                               onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: this.state.enableCard
                             }
                           }}
                         />
@@ -463,6 +476,7 @@ class AddBillingForm extends Component {
                             className: "txt-fld",
                             name: "card_date"
                           }}
+                          disabled={this.state.enableCard}
                           minDate={new Date()}
                           events={{
                             onChange: datehandle.bind(this, this, context)
@@ -470,6 +484,7 @@ class AddBillingForm extends Component {
                           value={this.state.card_date}
                         />
                       </div>
+                      {/* Check */}
                       <div className="row secondary-box-container">
                         <div
                           className="customCheckbox col-lg-2"
@@ -479,7 +494,12 @@ class AddBillingForm extends Component {
                             className="checkbox"
                             style={{ color: "#212529" }}
                           >
-                            <input type="checkbox" value="Pay by Cheque" />
+                            <input
+                              type="checkbox"
+                              name="Pay by Cheque"
+                              checked={this.state.Checkchecked}
+                              onChange={checkcheckhandaler.bind(this, this)}
+                            />
                             <span style={{ fontSize: "0.8rem" }}>
                               Pay by Cheque
                             </span>
@@ -504,34 +524,12 @@ class AddBillingForm extends Component {
                               )
                             },
                             others: {
-                              "data-receipt": "true"
+                              // "data-receipt": "true",
+                              disabled: this.state.enableCheck
                             }
                           }}
                         />
-                        {/* <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "amount",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "pay_type",
-                            className: "select-fld",
-                            value: this.state.pay_cheque,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang == "en"
-                                  ? "name"
-                                  : "arabic_name",
-                              valueField: "value",
-                              data: variableJson.FORMAT_PAYTYPE
-                            },
-                            others: {
-                              disabled: true
-                            },
-                            onChange: texthandle.bind(this, this, context)
-                          }}
-                        /> */}
+
                         <AlagehFormGroup
                           div={{ className: "col-lg-5" }}
                           label={{
@@ -543,6 +541,9 @@ class AddBillingForm extends Component {
                             value: this.state.cheque_number,
                             events: {
                               onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: this.state.enableCheck
                             }
                           }}
                         />
@@ -557,6 +558,7 @@ class AddBillingForm extends Component {
                             name: "cheque_date"
                           }}
                           minDate={new Date()}
+                          disabled={this.state.enableCheck}
                           events={{
                             onChange: datehandle.bind(this, this, context)
                           }}

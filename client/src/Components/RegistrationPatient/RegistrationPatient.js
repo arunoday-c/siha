@@ -81,13 +81,13 @@ class RegistrationPatient extends Component {
   }
 
   ClearData(e) {
-    this.props.initialStatePatientData({
-      redux: {
-        type: "PAT_INIT_DATA",
-        mappingName: "patients",
-        data: {}
-      }
-    });
+    // this.props.initialStatePatientData({
+    //   redux: {
+    //     type: "PAT_INIT_DATA",
+    //     mappingName: "patients",
+    //     data: {}
+    //   }
+    // });
 
     let IOputs = emptyObject;
 

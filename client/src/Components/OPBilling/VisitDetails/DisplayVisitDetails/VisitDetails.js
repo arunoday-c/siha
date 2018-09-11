@@ -180,6 +180,7 @@ class DisplayVisitDetails extends Component {
                                   context
                                 )}
                                 checked={row.radioselect == 1 ? true : false}
+                                disabled={this.state.Billexists}
                               />
                             );
                           }

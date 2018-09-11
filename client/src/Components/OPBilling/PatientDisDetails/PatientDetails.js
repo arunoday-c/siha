@@ -34,7 +34,7 @@ export default class PatientDetails extends Component {
         <div className="tab-container toggle-section">
           <ul className="nav">
             <li className={"nav-item tab-button active"}>
-              <label class="style_Label ">Patient Details</label>
+              <label className="style_Label ">Patient Details</label>
             </li>
           </ul>
         </div>

@@ -16,11 +16,12 @@ import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/Billing";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import { getCookie } from "../../utils/algaehApiCall";
-
+import { ClearData } from "./OPBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
+import AlgaehLoader from "../Wrapper/fullPageLoader";
 
 var intervalId;
 
@@ -85,23 +86,39 @@ class PatientDisplayDetails extends Component {
     this.setState({ ...this.state, ...billOut, ...output });
   }
 
-  getPatientDetails() {
+  getPatientDetails($this, output) {
+    debugger;
     clearInterval(intervalId);
     intervalId = setInterval(() => {
+      AlgaehLoader({ show: true });
       this.props.getPatientDetails({
         uri: "/frontDesk/get",
         method: "GET",
         printInput: true,
-        data: { patient_code: this.state.patient_code },
+        data: { patient_code: this.state.patient_code || output.patient_code },
         redux: {
           type: "PAT_GET_DATA",
           mappingName: "patients"
         },
         afterSuccess: data => {
+          debugger;
+          if ($this.state.visit_id !== null) {
+            for (let i = 0; i < data.visitDetails.length; i++) {
+              if (
+                data.visitDetails[i].hims_f_patient_visit_id ===
+                $this.state.visit_id
+              ) {
+                data.visitDetails[i].radioselect = 1;
+              }
+            }
+            AlgaehLoader({ show: false });
+          }
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
+          // data.patientRegistration = output;
           this.setState(data.patientRegistration);
+          AlgaehLoader({ show: false });
         }
       });
       clearInterval(intervalId);
@@ -112,7 +129,8 @@ class PatientDisplayDetails extends Component {
     let $this = this;
     clearInterval(intervalId);
     intervalId = setInterval(() => {
-      this.props.getPatientDetails({
+      AlgaehLoader({ show: true });
+      this.props.getBIllDetails({
         uri: "/opBilling/get",
         method: "GET",
         printInput: true,
@@ -122,7 +140,11 @@ class PatientDisplayDetails extends Component {
           mappingName: "bills"
         },
         afterSuccess: data => {
-          $this.setState(data);
+          debugger;
+          data.Billexists = true;
+          $this.setState(data, () => {
+            this.getPatientDetails(this, data);
+          });
         }
       });
       clearInterval(intervalId);
@@ -140,9 +162,6 @@ class PatientDisplayDetails extends Component {
           expiry_date: null,
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
-          // created_by: getCookie("UserID"),
-          //created_date: new Date(),
-          //updated_by: null,
           updated_date: null,
           card_type: null
         });
@@ -154,9 +173,6 @@ class PatientDisplayDetails extends Component {
           expiry_date: this.state.card_date,
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
-          //  created_by: getCookie("UserID"),
-          // created_date: new Date(),
-          // updated_by: null,
           updated_date: null,
           card_type: null
         });
@@ -168,9 +184,6 @@ class PatientDisplayDetails extends Component {
           expiry_date: this.state.cheque_date,
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
-          //created_by: getCookie("UserID"),
-          // created_date: new Date(),
-          // updated_by: null,
           updated_date: null,
           card_type: null
         });
@@ -189,11 +202,16 @@ class PatientDisplayDetails extends Component {
 
   SaveBill(e) {
     this.GenerateReciept($this => {
+      let Inputobj = $this.state;
+      debugger;
+      Inputobj.patient_payable = $this.state.patient_payable_h;
+      AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/opBilling/addOpBIlling",
-        data: $this.state,
+        data: Inputobj,
         method: "POST",
         onSuccess: response => {
+          AlgaehLoader({ show: false });
           if (response.data.success) {
             $this.setState({
               bill_number: response.data.records.bill_number,
@@ -208,6 +226,7 @@ class PatientDisplayDetails extends Component {
           }
         },
         onFailure: error => {
+          AlgaehLoader({ show: false });
           successfulMessage({
             message: error.message,
             title: "Error",
@@ -275,17 +294,7 @@ class PatientDisplayDetails extends Component {
             />
           }
           printArea={true}
-          // ctrlName={<AlgaehLabel label={{ fieldName: "bill_number" }} />}
-          // screenName={
-          //   <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-          // }
-          //  dateLabel={<AlgaehLabel label={{ fieldName: "bill_date" }} />}
-          //  HideHalfbread={true}
-          // ctrlCode={this.state.bill_number}
-          //  ctrlDate={this.state.bill_date}
-          // ControlCode={this.getCtrlCode.bind(this)}
           selectedLang={this.state.selectedLang}
-          // searchName="bills"
         />
         <div className="spacing-push">
           <MyContext.Provider
@@ -295,7 +304,7 @@ class PatientDisplayDetails extends Component {
                 this.setState({ ...this.state, ...obj }, () => {
                   Object.keys(obj).map(key => {
                     if (key === "patient_code") {
-                      this.getPatientDetails();
+                      this.getPatientDetails(this, {});
                     }
                   });
                 });
@@ -317,7 +326,7 @@ class PatientDisplayDetails extends Component {
                   type="button"
                   className="btn btn-primary"
                   onClick={this.SaveBill.bind(this)}
-                  disabled={this.state.saveEnable}
+                  disabled={this.state.Billexists}
                 >
                   {/* <AlgaehLabel
                     label={{ fieldName: "btn_save", returnText: true }}
@@ -325,7 +334,11 @@ class PatientDisplayDetails extends Component {
                   Save
                 </button>
 
-                <button type="button" className="btn btn-default">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={ClearData.bind(this, this)}
+                >
                   {/* <AlgaehLabel
                     label={{ fieldName: "btn_clear", returnText: true }}
                   /> */}
@@ -352,6 +365,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientDetails: AlgaehActions,
+      getBIllDetails: AlgaehActions,
       initialbillingCalculations: AlgaehActions
     },
     dispatch

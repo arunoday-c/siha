@@ -25,6 +25,7 @@ const SearchDetails = ($this, context, e) => {
       const selectValue = $this.props.soptlightSearch.selectValue;
 
       $this.setState({ value: row[selectValue] }, () => {
+        debugger;
         if ($this.props.soptlightSearch.events !== undefined) {
           $this.props.soptlightSearch.events.onChange(row[selectValue]);
         }
