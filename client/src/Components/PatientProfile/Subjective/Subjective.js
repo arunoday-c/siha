@@ -37,6 +37,7 @@ import {
   updatePatientAllergy,
   updatePatientROS
 } from "./SubjectiveHandler";
+import algaehLoader from "../../Wrapper/fullPageLoader";
 
 let patChiefComplain = [];
 
@@ -484,7 +485,10 @@ class Subjective extends Component {
           //console.log("Patient chief complains:", response.data.records);
           this.setState(
             { patientChiefComplains: response.data.records },
-            setPatientChiefComplaints(response.data.records)
+            () => {
+              setPatientChiefComplaints(response.data.records);
+              algaehLoader({ show: false });
+            }
           );
         }
       },
@@ -554,7 +558,9 @@ class Subjective extends Component {
               };
             })
             .toArray();
-          this.setState({ patientAllergies: _allergies });
+          this.setState({ patientAllergies: _allergies }, () => {
+            algaehLoader({ show: false });
+          });
         }
       },
       onFailure: error => {}
@@ -566,6 +572,7 @@ class Subjective extends Component {
   // }
 
   componentDidMount() {
+    algaehLoader({ show: true });
     getAllAllergies(this, this.state.allergy_value);
     getReviewOfSystems(this);
     getPatientROS(this);

@@ -21,6 +21,7 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
+import algaehLoader from "../../Wrapper/fullPageLoader";
 
 class PhysicalExamination extends Component {
   constructor(props) {
@@ -186,8 +187,9 @@ class PhysicalExamination extends Component {
   }
 
   componentDidMount() {
+    algaehLoader({ show: true });
     getVitalHistory(this);
-    this.setPatientVitals();
+    //this.setPatientVitals();
     getPhysicalExaminations(this);
     getPatientPhysicalExamination(this);
   }
