@@ -362,6 +362,7 @@ let insertOrderedServices = (req, res, next) => {
                       ],
                       (error, resultPreAprvl) => {
                         if (error) {
+                          debugLog("Error 1 Here result ", error);
                           connection.rollback(() => {
                             releaseDBConnection(db, connection);
                             next(error);
@@ -375,12 +376,14 @@ let insertOrderedServices = (req, res, next) => {
                               next(error);
                             });
                           }
+                          debugLog("Here result ", resultPreAprvl);
                           req.records = resultPreAprvl;
                           next();
                         });
                       }
                     );
                   } else {
+                    debugLog("Commit result ");
                     connection.commit(error => {
                       if (error) {
                         connection.rollback(() => {
@@ -388,6 +391,7 @@ let insertOrderedServices = (req, res, next) => {
                           next(error);
                         });
                       }
+                      debugLog("resultOrder ", resultOrder);
                       req.records = resultOrder;
                       next();
                     });
@@ -581,18 +585,19 @@ let updateOrderedServicesBilled = (req, res, next) => {
           OrderServices[i].hims_f_ordered_services_id +
           "';";
       }
-
+      debugLog("Query", qry);
       if (qry != "") {
         connection.query(qry, (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
           }
+          debugLog("Query Result ", result);
           req.records = result;
           next();
         });
       } else {
-        req.records = result;
+        req.records = {};
         next();
       }
     });

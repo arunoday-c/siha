@@ -17,6 +17,7 @@ import {
   newReceiptData
 } from "../model/billing";
 import { LINQ } from "node-linq";
+import { insertLadOrderedServices } from "../model/laboratory";
 
 let billingCounter = 0;
 //created by irfan :to save opbilling data
@@ -90,28 +91,35 @@ let addOpBIlling = (req, res, next) => {
                 .Where(w => w.module_desc == "RECEIPT")
                 .FirstOrDefault();
               req.body.receipt_number = receipt.completeNumber;
-              return new Promise((resolve, reject) => {
-                debugLog("Inside Receipts");
-                delete req["options"]["onFailure"];
-                delete req["options"]["onSuccess"];
-                req.options.onFailure = error => {
-                  reject(error);
-                };
-                req.options.onSuccess = records => {
-                  resolve(records);
-                };
-                newReceiptData(req, res, next);
-              }).then(receiptData => {
-                connection.commit(error => {
-                  if (error) {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  }
-                  req.records = receiptData;
-                  if (billingCounter != 0) billingCounter = billingCounter - 1;
-                  next();
-                });
-              });
+              return (
+                new Promise((resolve, reject) => {
+                  debugLog("Inside Receipts");
+                  delete req["options"]["onFailure"];
+                  delete req["options"]["onSuccess"];
+                  req.options.onFailure = error => {
+                    reject(error);
+                  };
+                  req.options.onSuccess = records => {
+                    resolve(records);
+                  };
+                  newReceiptData(req, res, next);
+                })
+                  // .then(receiptData => {
+                  //   insertLadOrderedServices(req,res,next);
+                  // })
+                  .then(receiptData => {
+                    connection.commit(error => {
+                      if (error) {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      }
+                      req.records = receiptData;
+                      if (billingCounter != 0)
+                        billingCounter = billingCounter - 1;
+                      next();
+                    });
+                  })
+              );
             });
           })
 
