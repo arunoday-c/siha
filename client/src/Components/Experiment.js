@@ -1,6 +1,7 @@
 import React, { PureComponent, PropTypes } from "react";
 import { AlagehAutoComplete } from "./Wrapper/algaehWrapper";
 import { GlobalVariables } from "../utils/GlobalVariables.json";
+import algaehLoader from "./Wrapper/fullPageLoader";
 
 import RichTextEditor from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -9,7 +10,8 @@ export default class RadTemplate extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      value: ""
+      value: "",
+      loader: false
     };
   }
 
@@ -20,6 +22,13 @@ export default class RadTemplate extends PureComponent {
       debugger;
     });
   };
+
+  openLoader() {
+    algaehLoader({ show: true });
+  }
+  closeLoader() {
+    algaehLoader({ show: false });
+  }
 
   render() {
     return (
@@ -61,7 +70,11 @@ export default class RadTemplate extends PureComponent {
               className="txt-fld"
               style={{ padding: "10px", margin: "auto" }}
             >
-              0
+              <button onClick={this.openLoader.bind(this)}>Open Loader</button>
+
+              <button onClick={this.closeLoader.bind(this)}>
+                Close Loader
+              </button>
             </span>
           </div>
         </div>
