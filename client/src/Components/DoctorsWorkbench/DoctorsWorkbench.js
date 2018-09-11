@@ -21,6 +21,7 @@ import { getCookie } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
+import algaehLoader from "../Wrapper/fullPageLoader";
 
 class DoctorsWorkbench extends Component {
   constructor(props) {
@@ -88,6 +89,7 @@ class DoctorsWorkbench extends Component {
   moveToPatientProfile() {}
 
   loadListofData() {
+    algaehLoader({ show: true });
     this.props.getMyDay({
       uri: "/doctorsWorkBench/getMyDay",
       data: {
@@ -100,7 +102,9 @@ class DoctorsWorkbench extends Component {
         mappingName: "myday_list"
       },
       afterSuccess: data => {
-        this.setState({ data: data });
+        this.setState({ data: data }, () => {
+          algaehLoader({ show: false });
+        });
 
         let listofvisit = Enumerable.from(data)
           .where(w => w.status === "V")
