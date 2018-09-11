@@ -1190,8 +1190,8 @@ let addPatientNewAllergy = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, onset, onset_date, severity, `comment`, allergy_inactive, `created_by`,  `updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, onset, onset_date, severity, `comment`, allergy_inactive,created_date,`created_by`,updated_date,`updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?)",
         [
           inputparam.patient_id,
           inputparam.allergy_id,
@@ -1200,7 +1200,9 @@ let addPatientNewAllergy = (req, res, next) => {
           inputparam.severity,
           inputparam.comment,
           inputparam.allergy_inactive,
+          new Date(),
           inputparam.created_by,
+          new Date(),
           inputparam.updated_by
         ],
         (error, result) => {
