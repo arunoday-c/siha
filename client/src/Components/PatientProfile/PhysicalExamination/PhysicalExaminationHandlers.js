@@ -1,4 +1,4 @@
-import algaehApiCall from "../../../utils/algaehApiCall";
+import algaehLoader from "../../Wrapper/fullPageLoader";
 
 const getVitalHistory = $this => {
   $this.props.getVitalHistory({
@@ -77,7 +77,9 @@ const getPatientPhysicalExamination = $this => {
       type: "ALL_PATIENT_EXAMINATIONS",
       mappingName: "all_patient_examinations"
     },
-    afterSuccess: data => {}
+    afterSuccess: data => {
+      algaehLoader({ show: false });
+    }
   });
 };
 

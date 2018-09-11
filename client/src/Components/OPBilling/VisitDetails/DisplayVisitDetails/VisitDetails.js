@@ -154,8 +154,6 @@ class DisplayVisitDetails extends Component {
   }
 
   render() {
-    const vstDeatils =
-      this.state.visitDetails === null ? [{}] : this.state.visitDetails;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -290,7 +288,7 @@ class DisplayVisitDetails extends Component {
                       ]}
                       keyId="visit_code"
                       dataSource={{
-                        data: vstDeatils
+                        data: this.state.visitDetails
                       }}
                       // isEditable={true}
                       paging={{ page: 0, rowsPerPage: 5 }}

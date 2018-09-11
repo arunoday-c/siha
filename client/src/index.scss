@@ -40,6 +40,8 @@ $forntSize: 0.7rem;
   .btn-primary {
     background-color: #00bcb0;
     border: #00bcb0;
+    text-transform: uppercase;
+    font-size: 0.9rem;
   }
   .btn-primary:hover {
     background-color: #00bcb0;
@@ -51,6 +53,23 @@ $forntSize: 0.7rem;
   .show > .btn-primary.dropdown-toggle {
     background-color: #00bcb0;
     border: #00bcb0;
+  }
+  .btn-default {
+    background-color: #efefef;
+    border: 1px solid #efefef;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+  }
+  .btn-default:hover {
+    background-color: #00bcb0;
+    border: #00bcb0;
+  }
+
+  .btn-default:not(:disabled):not(.disabled).active,
+  .btn-default:not(:disabled):not(.disabled):active,
+  .show > .btn-default.dropdown-toggle {    
+    background-color: #efefef;
+    border: 1px solid #efefef;
   }
 
   /* Portlet */

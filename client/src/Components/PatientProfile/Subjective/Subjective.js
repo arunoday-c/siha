@@ -37,6 +37,7 @@ import {
   updatePatientAllergy,
   updatePatientROS
 } from "./SubjectiveHandler";
+import algaehLoader from "../../Wrapper/fullPageLoader";
 
 let patChiefComplain = [];
 
@@ -484,7 +485,10 @@ class Subjective extends Component {
           //console.log("Patient chief complains:", response.data.records);
           this.setState(
             { patientChiefComplains: response.data.records },
-            setPatientChiefComplaints(response.data.records)
+            () => {
+              setPatientChiefComplaints(response.data.records);
+              algaehLoader({ show: false });
+            }
           );
         }
       },
@@ -506,23 +510,23 @@ class Subjective extends Component {
     });
   }
 
-  getPatientROS() {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getPatientROS",
-      data: {
-        patient_id: Window.global["current_patient"],
-        episode_id: Window.global["episode_id"]
-      },
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success) {
-          // console.log("ROS Patient's:", response.data.records);
-          this.setState({ patientROS: response.data.records });
-        }
-      },
-      onFailure: error => {}
-    });
-  }
+  // getPatientROS() {
+  //   algaehApiCall({
+  //     uri: "/doctorsWorkBench/getPatientROS",
+  //     data: {
+  //       patient_id: Window.global["current_patient"],
+  //       episode_id: Window.global["episode_id"]
+  //     },
+  //     method: "GET",
+  //     onSuccess: response => {
+  //       if (response.data.success) {
+  //         // console.log("ROS Patient's:", response.data.records);
+  //         this.setState({ patientROS: response.data.records });
+  //       }
+  //     },
+  //     onFailure: error => {}
+  //   });
+  // }
 
   getPatientAllergies() {
     algaehApiCall({
@@ -554,7 +558,9 @@ class Subjective extends Component {
               };
             })
             .toArray();
-          this.setState({ patientAllergies: _allergies });
+          this.setState({ patientAllergies: _allergies }, () => {
+            algaehLoader({ show: false });
+          });
         }
       },
       onFailure: error => {}
@@ -566,13 +572,14 @@ class Subjective extends Component {
   // }
 
   componentDidMount() {
+    algaehLoader({ show: true });
     getAllAllergies(this, this.state.allergy_value);
     getReviewOfSystems(this);
     getPatientROS(this);
     this.getPatientChiefComplains();
     this.getChiefComplainsList();
     this.getPatientAllergies();
-    this.getPatientROS();
+    //this.getPatientROS();
   }
 
   openHPIAddModal(data) {
@@ -1022,7 +1029,7 @@ class Subjective extends Component {
                           displayTemplate: data => {
                             return (
                               <span>
-                                {data.onset
+                                {data.onset_date !== null
                                   ? moment(data.onset_date).format("DD-MM-YYYY")
                                   : ""}
                               </span>
@@ -1520,15 +1527,6 @@ class Subjective extends Component {
                         <h6>Nurse Chief Complaints</h6>
                         <div className="bordered-layout">
                           <ul>
-                            <li>
-                              <span>Leg Pain</span>
-                            </li>
-                            <li>
-                              <span>Leg Pain</span>
-                            </li>
-                            <li>
-                              <span>Leg Pain</span>
-                            </li>
                             <li>
                               <span>Leg Pain</span>
                             </li>
@@ -2055,13 +2053,15 @@ class Subjective extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {this.state.patientROS.map((data, index) => (
-                        <tr key={index}>
-                          <td>{data.header_description}</td>
-                          <td>{data.detail_description}</td>
-                          <td>{data.comment}</td>
-                        </tr>
-                      ))}
+                      {this.props.patientros !== undefined
+                        ? this.props.patientros.map((data, index) => (
+                            <tr key={index}>
+                              <td>{data.header_description}</td>
+                              <td>{data.detail_description}</td>
+                              <td>{data.comment}</td>
+                            </tr>
+                          ))
+                        : null}
                     </tbody>
                   </table>
                 </div>
