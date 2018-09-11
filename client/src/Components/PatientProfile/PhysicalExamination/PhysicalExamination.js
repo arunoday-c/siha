@@ -45,8 +45,41 @@ class PhysicalExamination extends Component {
     });
   }
 
+  deletePatientExamn(row) {
+    console.log("Delete Exam:", row);
+
+    swal({
+      title: "Are you sure you want to delete this EXamination?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        algaehApiCall({
+          uri: "/doctorsWorkBench/updatePatientPhysicalExam",
+          method: "PUT",
+          data: {
+            patient_id: Window.global["current_patient"],
+            episode_id: Window.global["episode_id"],
+            exam_header_id: row.hims_d_physical_examination_header_id,
+            exam_details_id: row.hims_d_physical_examination_details_id,
+            exam_subdetails_id: row.hims_d_physical_examination_subdetails_id,
+            comments: row.comments,
+            record_status: "I",
+            hims_f_episode_examination_id: row.hims_f_episode_examination_id
+          },
+          onSuccess: response => {},
+          onFailure: error => {}
+        });
+      } else {
+        swal("Delete request cancelled");
+      }
+    });
+  }
+
   addExaminationToPatient() {
     // console.log("PE State:", this.state);
+
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientPhysicalExamination",
       method: "POST",
@@ -59,7 +92,16 @@ class PhysicalExamination extends Component {
           .hims_d_physical_examination_subdetails_id,
         comments: this.state.examination_comment
       },
-      onSuccess: response => {},
+      onSuccess: response => {
+        if (response.data.success) {
+          getPatientPhysicalExamination(this);
+          swal("Examination added successfully . .", {
+            icon: "success",
+            buttons: false,
+            timer: 2000
+          });
+        }
+      },
       onFailure: error => {}
     });
   }
@@ -367,16 +409,14 @@ class PhysicalExamination extends Component {
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 5 }}
-                      events={
-                        {
-                          // onDelete: this.deleteVisaType.bind(this),
-                          // onEdit: row => {},
-                          // onDone: row => {
-                          //   alert(JSON.stringify(row));
-                          // }
-                          // onDone: this.updateVisaTypes.bind(this)
-                        }
-                      }
+                      events={{
+                        onDelete: this.deletePatientExamn.bind(this)
+                        // onEdit: row => {},
+                        // onDone: row => {
+                        //   alert(JSON.stringify(row));
+                        // }
+                        // onDone: this.updateVisaTypes.bind(this)
+                      }}
                     />
                   </div>
                 </div>
@@ -474,7 +514,7 @@ class PhysicalExamination extends Component {
                     dataSource={{
                       data: this.props.all_patient_examinations
                     }}
-                    isEditable={true}
+                    isEditable={false}
                     paging={{ page: 0, rowsPerPage: 5 }}
                     events={
                       {
