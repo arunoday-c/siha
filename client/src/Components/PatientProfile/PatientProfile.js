@@ -165,9 +165,9 @@ class PatientProfile extends Component {
               Payment:{" "}
               <b>
                 {this.state.patientData !== undefined
-                  ? this.state.patientData.payment_type === "S"
-                    ? "Self Paying"
-                    : "Insurance"
+                  ? this.state.patientData.payment_type === "I"
+                    ? "Insurance"
+                    : "Self"
                   : ""}
               </b>
             </span>
