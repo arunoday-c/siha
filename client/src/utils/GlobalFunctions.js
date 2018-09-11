@@ -4,13 +4,13 @@ export function successfulMessage(options) {
   options.timer = options.timer || 2500;
   options.icon = options.icon || "error";
   options.title = options.title || "Error";
-  options.button = options.button || true;
+  options.button = options.button || false;
 
   swal({
     title: options.title,
     text: options.message,
     icon: options.icon,
-    button: options.button,
+    buttons: options.button,
     timer: options.timer
   });
 }
