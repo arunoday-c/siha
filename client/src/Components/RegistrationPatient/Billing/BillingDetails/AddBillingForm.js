@@ -64,11 +64,11 @@ class AddBillingForm extends Component {
             <div className="hptl-phase1-add-billing-form">
               <div className="container-fluid">
                 <div className="row">
-                  <div className="col-lg-6 primary-details">
+                  <div className="col-lg-4 primary-details">
                     {/* <div className="container-fluid"> */}
                     <Paper className="Paper">
                       <div className="row primary-box-container">
-                        <div className="col-lg-3">
+                        <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
                               fieldName: "bill"
@@ -81,7 +81,7 @@ class AddBillingForm extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-lg-3">
+                        <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
                               fieldName: "bill_date"
@@ -137,9 +137,9 @@ class AddBillingForm extends Component {
                           </h5>
                         </div>
                       </div>
-                      <hr />
+                      <hr style={{ margin: "0.6rem 0rem" }} />
                       <div className="row primary-box-container">
-                        <div className="col-lg-3">
+                        <div className="col-lg-6">
                           <button
                             className="btn btn-primary btn-sm"
                             type="button"
@@ -148,7 +148,7 @@ class AddBillingForm extends Component {
                             Process Insurance
                           </button>
                         </div>
-                        <div className="col-lg-3">
+                        <div className="col-lg-6">
                           <button
                             className="btn btn-primary btn-sm"
                             type="button"
@@ -178,7 +178,7 @@ class AddBillingForm extends Component {
                       <hr />
                       <div className="row primary-box-container">
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-3" }}
                           label={{
                             fieldName: "advance_adjust"
                           }}
@@ -193,7 +193,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-6" }}
                           label={{
                             fieldName: "sheet_discount"
                           }}
@@ -208,7 +208,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-3" }}
                           label={{
                             fieldName: "sheet_discount_amount"
                           }}
@@ -247,37 +247,6 @@ class AddBillingForm extends Component {
                           </h5>
                         </div>
 
-                        <div className="col-lg-4">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "receiveable_amount"
-                            }}
-                          />
-                          <h5>
-                            {this.state.receiveable_amount
-                              ? "₹" + this.state.receiveable_amount
-                              : "₹0.00"}
-                          </h5>
-                        </div>
-                        {/* <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "net_amount"
-                          }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.net_amount,
-                            className: "txt-fld",
-                            name: "net_amount",
-
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        /> */}
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
                           label={{
@@ -297,31 +266,23 @@ class AddBillingForm extends Component {
                             }
                           }}
                         />
-
-                        {/* <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "receiveable_amount"
-                          }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.receiveable_amount,
-                            className: "txt-fld",
-                            name: "receiveable_amount",
-
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        /> */}
+                        <div className="col-lg-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "receiveable_amount"
+                            }}
+                          />
+                          <h5>
+                            {this.state.receiveable_amount
+                              ? "₹" + this.state.receiveable_amount
+                              : "₹0.00"}
+                          </h5>
+                        </div>
                       </div>
                     </Paper>
                     {/* </div> */}
                   </div>
-                  <div className="col-lg-6 secondary-details">
+                  <div className="col-lg-8 secondary-details">
                     {/* <div className="container-fluid"> */}
                     <Paper className="Paper">
                       <div className="row secondary-box-container">
@@ -351,42 +312,6 @@ class AddBillingForm extends Component {
                               : "DD/MM/YYYY"}
                           </h6>
                         </div>
-                      </div>
-
-                      <div className="row secondary-box-container">
-                        {/* <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "receipt_number"
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "receipt_number",
-                            value: this.state.receipt_number,
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        /> */}
-                        {/* <AlgaehDateHandler
-                          div={{ className: "col-lg-3" }}
-                          label={{ fieldName: "receipt_date" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "receipt_date"
-                          }}
-                          disabled={true}
-                          maxDate={new Date()}
-                          minDate={new Date()}
-                          events={{
-                            onChange: null
-                          }}
-                          value={this.state.receipt_date}
-                        /> */}
-
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
@@ -429,48 +354,24 @@ class AddBillingForm extends Component {
                           }}
                         />
                       </div>
-
+                      <hr style={{ margin: "0rem" }} />
                       <div className="row secondary-box-container">
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "pay_type"
-                          }}
-                          selector={{
-                            name: "pay_cash",
-                            className: "select-fld",
-                            value: this.state.pay_cash,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang == "en"
-                                  ? "name"
-                                  : "arabic_name",
-                              valueField: "value",
-                              data: variableJson.FORMAT_PAYTYPE
-                            },
-                            others: {
-                              disabled: true
-                            },
-                            onChange: texthandle.bind(this, this, context)
-                          }}
-                        />
-                        <div className="col-lg-3">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "card_check_number"
-                            }}
-                          />
+                        <div
+                          className="customCheckbox col-lg-2"
+                          style={{ border: "none", marginTop: "28px" }}
+                        >
+                          <label
+                            className="checkbox"
+                            style={{ color: "#212529" }}
+                          >
+                            <input type="checkbox" value="Front Desk" />
+                            <span style={{ fontSize: "0.8rem" }}>
+                              Pay by Cash
+                            </span>
+                          </label>
                         </div>
-                        <div className="col-lg-3">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "expiry_date"
-                            }}
-                          />
-                        </div>
-
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-2" }}
                           label={{
                             fieldName: "amount",
                             isImp: true
@@ -486,9 +387,22 @@ class AddBillingForm extends Component {
                           }}
                         />
                       </div>
-
                       <div className="row secondary-box-container">
-                        <AlagehAutoComplete
+                        <div
+                          className="customCheckbox col-lg-2"
+                          style={{ border: "none", marginTop: "28px" }}
+                        >
+                          <label
+                            className="checkbox"
+                            style={{ color: "#212529" }}
+                          >
+                            <input type="checkbox" value="Pay by Card" />
+                            <span style={{ fontSize: "0.8rem" }}>
+                              Pay by Card
+                            </span>
+                          </label>
+                        </div>
+                        {/* <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           selector={{
                             name: "pay_card",
@@ -507,10 +421,29 @@ class AddBillingForm extends Component {
                             },
                             onChange: texthandle.bind(this, this, context)
                           }}
-                        />
+                        /> */}
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-2" }}
+                          label={{
+                            fieldName: "amount",
+                            isImp: true
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            className: "txt-fld",
+                            name: "card_amount",
+                            value: this.state.card_amount,
+                            events: {
+                              onChange: cardtexthandle.bind(this, this, context)
+                            }
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-5" }}
+                          label={{
+                            fieldName: "card_check_number"
+                          }}
                           textBox={{
                             className: "txt-fld",
                             name: "card_number",
@@ -523,6 +456,9 @@ class AddBillingForm extends Component {
 
                         <AlgaehDateHandler
                           div={{ className: "col-lg-3" }}
+                          label={{
+                            fieldName: "expiry_date"
+                          }}
                           textBox={{
                             className: "txt-fld",
                             name: "card_date"
@@ -533,69 +469,28 @@ class AddBillingForm extends Component {
                           }}
                           value={this.state.card_date}
                         />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            className: "txt-fld",
-                            name: "card_amount",
-                            value: this.state.card_amount,
-                            events: {
-                              onChange: cardtexthandle.bind(this, this, context)
-                            }
-                          }}
-                        />
                       </div>
-
                       <div className="row secondary-box-container">
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          selector={{
-                            name: "pay_type",
-                            className: "select-fld",
-                            value: this.state.pay_cheque,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang == "en"
-                                  ? "name"
-                                  : "arabic_name",
-                              valueField: "value",
-                              data: variableJson.FORMAT_PAYTYPE
-                            },
-                            others: {
-                              disabled: true
-                            },
-                            onChange: texthandle.bind(this, this, context)
-                          }}
-                        />
+                        <div
+                          className="customCheckbox col-lg-2"
+                          style={{ border: "none", marginTop: "28px" }}
+                        >
+                          <label
+                            className="checkbox"
+                            style={{ color: "#212529" }}
+                          >
+                            <input type="checkbox" value="Pay by Cheque" />
+                            <span style={{ fontSize: "0.8rem" }}>
+                              Pay by Cheque
+                            </span>
+                          </label>
+                        </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "cheque_number",
-                            value: this.state.cheque_number,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            }
+                          div={{ className: "col-lg-2" }}
+                          label={{
+                            fieldName: "amount",
+                            isImp: true
                           }}
-                        />
-
-                        <AlgaehDateHandler
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "cheque_date"
-                          }}
-                          minDate={new Date()}
-                          events={{
-                            onChange: datehandle.bind(this, this, context)
-                          }}
-                          value={this.state.cheque_date}
-                        />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
                           textBox={{
                             decimal: { allowNegative: false },
                             className: "txt-fld",
@@ -613,22 +508,63 @@ class AddBillingForm extends Component {
                             }
                           }}
                         />
+                        {/* <AlagehAutoComplete
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            fieldName: "amount",
+                            isImp: true
+                          }}
+                          selector={{
+                            name: "pay_type",
+                            className: "select-fld",
+                            value: this.state.pay_cheque,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang == "en"
+                                  ? "name"
+                                  : "arabic_name",
+                              valueField: "value",
+                              data: variableJson.FORMAT_PAYTYPE
+                            },
+                            others: {
+                              disabled: true
+                            },
+                            onChange: texthandle.bind(this, this, context)
+                          }}
+                        /> */}
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-5" }}
+                          label={{
+                            fieldName: "card_check_number"
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "cheque_number",
+                            value: this.state.cheque_number,
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            }
+                          }}
+                        />
+
+                        <AlgaehDateHandler
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            fieldName: "expiry_date"
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "cheque_date"
+                          }}
+                          minDate={new Date()}
+                          events={{
+                            onChange: datehandle.bind(this, this, context)
+                          }}
+                          value={this.state.cheque_date}
+                        />
                       </div>
-
+                      <hr style={{ margin: "0rem" }} />
                       <div className="row secondary-box-container">
-                        <div className="col-lg-4">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "unbalanced_amount"
-                            }}
-                          />
-                          <h5>
-                            {this.state.unbalanced_amount
-                              ? "₹" + this.state.unbalanced_amount
-                              : "₹0.00"}
-                          </h5>
-                        </div>
-
                         {/* <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
@@ -653,6 +589,19 @@ class AddBillingForm extends Component {
                           }}
                         /> */}
                         {/* <div className="col-lg-6" /> */}
+                        <div className="col-lg-2" />
+                        <div className="col-lg-5">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "unbalanced_amount"
+                            }}
+                          />
+                          <h5>
+                            {this.state.unbalanced_amount
+                              ? "₹" + this.state.unbalanced_amount
+                              : "₹0.00"}
+                          </h5>
+                        </div>
 
                         <div className="col-lg-4">
                           <AlgaehLabel
