@@ -1190,8 +1190,8 @@ let addPatientNewAllergy = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, onset, onset_date, severity, `comment`, allergy_inactive, `created_by`,  `updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, onset, onset_date, severity, `comment`, allergy_inactive,created_date,`created_by`,updated_date,`updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?)",
         [
           inputparam.patient_id,
           inputparam.allergy_id,
@@ -1200,7 +1200,9 @@ let addPatientNewAllergy = (req, res, next) => {
           inputparam.severity,
           inputparam.comment,
           inputparam.allergy_inactive,
+          new Date(),
           inputparam.created_by,
+          new Date(),
           inputparam.updated_by
         ],
         (error, result) => {
@@ -1904,31 +1906,31 @@ let getPhysicalExamination = (req, res, next) => {
 
       if (
         input.hims_d_physical_examination_details_id == "null" &&
-        input.hims_d_physical_examination_subdetails_id == "null"
+        input.hims_d_physical_examination_header_id == "null"
       ) {
         queryBuilder =
           "SELECT hims_d_physical_examination_header_id, examination_type, \
             description as header_description, sub_department_id, assesment_type, \
             mandatory as header_mandatory FROM hims_d_physical_examination_header where record_status='A';";
         debugLog("only physical header");
-      } else if (input.hims_d_physical_examination_subdetails_id != "null") {
+      } else if (
+        input.hims_d_physical_examination_header_id != "null" &&
+        input.hims_d_physical_examination_details_id == "null"
+      ) {
         queryBuilder =
-          "SELECT hims_d_physical_examination_subdetails_id, PS.description as subdetail_description, PS.mandatory as subdetail_mandatory,hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory ,hims_d_physical_examination_header_id,\
-            PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory FROM hims_d_physical_examination_subdetails PS,hims_d_physical_examination_details PD,hims_d_physical_examination_header PH \
-            where  PS.physical_examination_details_id=PD.hims_d_physical_examination_details_id and\
-             PD.physical_examination_header_id=PH.hims_d_physical_examination_header_id  and\
-              PH.record_status='A' and PD.record_status='A' and PS.record_status='A' and hims_d_physical_examination_subdetails_id='" +
-          input.hims_d_physical_examination_subdetails_id +
+          "SELECT hims_d_physical_examination_details_id, physical_examination_header_id,\
+          description as detail_description, mandatory as detail_mandatory FROM hims_d_physical_examination_details\
+           where   record_status='A' and  physical_examination_header_id='" +
+          input.hims_d_physical_examination_header_id +
           "';";
-        debugLog("all physical header and detail and subDetail");
+        debugLog("only detail ");
       } else if (input.hims_d_physical_examination_details_id != "null") {
         queryBuilder =
-          "SELECT hims_d_physical_examination_details_id, physical_examination_header_id, PD.description as detail_description, PD.mandatory as detail_mandatory ,\
-            PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory FROM hims_d_physical_examination_details PD,\
-            hims_d_physical_examination_header PH where PD.physical_examination_header_id=PH.hims_d_physical_examination_header_id  and   PH.record_status='A' and PD.record_status='A' and hims_d_physical_examination_details_id='" +
+          "SELECT hims_d_physical_examination_subdetails_id, physical_examination_details_id, description as sub_detail_description,\
+          mandatory as sub_detail_mandatory from hims_d_physical_examination_subdetails where record_status='A' and physical_examination_details_id='" +
           input.hims_d_physical_examination_details_id +
           "'";
-        debugLog("only physical header and detail ");
+        debugLog("only sub -detail ");
       }
       connection.query(queryBuilder, (error, result) => {
         if (error) {
@@ -2178,10 +2180,7 @@ let getPatientPhysicalExamination = (req, res, next) => {
   }
 };
 
-
-
-
-//created by irfan: to update or delete Patient physical examination 
+//created by irfan: to update or delete Patient physical examination
 let updatePatientPhysicalExam = (req, res, next) => {
   try {
     debugFunction("updatePatientPhysicalExam");
@@ -2213,7 +2212,7 @@ let updatePatientPhysicalExam = (req, res, next) => {
           input.exam_header_id,
           input.exam_details_id,
           input.exam_subdetails_id,
-          input.comments,         
+          input.comments,
           new Date(),
           input.updated_by,
           input.record_status,

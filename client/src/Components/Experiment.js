@@ -9,7 +9,8 @@ export default class RadTemplate extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      value: ""
+      value: "",
+      loader: false
     };
   }
 
@@ -69,7 +70,11 @@ export default class RadTemplate extends PureComponent {
               className="txt-fld"
               style={{ padding: "10px", margin: "auto" }}
             >
-              0
+              <button onClick={this.openLoader.bind(this)}>Open Loader</button>
+
+              <button onClick={this.closeLoader.bind(this)}>
+                Close Loader
+              </button>
             </span>
           </div>
         </div>
