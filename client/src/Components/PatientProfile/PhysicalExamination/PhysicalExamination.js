@@ -86,6 +86,21 @@ class PhysicalExamination extends Component {
     });
   }
 
+  resetVitals() {
+    this.setState({
+      recorded_date: "",
+      recorded_time: "",
+      height: "",
+      weight: "",
+      bmi: "",
+      oxysat: "",
+      temperature_from: "",
+      temperature_celsisus: "",
+      systolic: "",
+      diastolic: ""
+    });
+  }
+
   addExaminationToPatient() {
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientPhysicalExamination",
@@ -139,13 +154,15 @@ class PhysicalExamination extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
+          debugger;
           swal("Vitals recorded successfully . .", {
             icon: "success",
             buttons: false,
             timer: 2000
           });
           getVitalHistory(this);
-          this.setPatientVitals();
+          //this.setPatientVitals();
+          this.resetVitals();
         }
       },
       onFailure: error => {}
@@ -794,7 +811,11 @@ class PhysicalExamination extends Component {
                         }}
                       />
                       <div className="col margin-top-15">
-                        <button type="button" className="btn btn-default">
+                        <button
+                          onClick={this.resetVitals.bind(this)}
+                          type="button"
+                          className="btn btn-default"
+                        >
                           Cancel
                         </button>
                         <button
