@@ -9,7 +9,7 @@ import { algaehApiCall } from "../../utils/algaehApiCall";
 import moment from "moment";
 import { setGlobal, removeGlobal } from "../../utils/GlobalFunctions";
 import algaehLoader from "../Wrapper/fullPageLoader";
-
+import Enumerable from "linq";
 class PatientProfile extends Component {
   constructor(props) {
     super(props);
@@ -55,11 +55,32 @@ class PatientProfile extends Component {
       onSuccess: response => {
         if (response.data.success) {
           console.log("Patient data:", response.data.records);
+          let _allergies = Enumerable.from(
+            response.data.records.patient_allergies
+          )
+            .groupBy("$.allergy_type", null, (k, g) => {
+              return {
+                allergy_type: k,
+                allergy_type_desc:
+                  k === "F"
+                    ? "Food"
+                    : k === "A"
+                      ? "Airborne"
+                      : k === "AI"
+                        ? "Animal  &  Insect"
+                        : k === "C"
+                          ? "Chemical & Others"
+                          : "",
+                allergyList: g.getSource()
+              };
+            })
+            .toArray();
+
           this.setState(
             {
               patientData: response.data.records.patient_profile[0],
               patientVitals: response.data.records.vitals[0],
-              patientAllergies: response.data.records.patient_allergies,
+              patientAllergies: _allergies,
               patientDiagnosis: response.data.records.patientDiagnosis,
               patientDiet: response.data.records.patient_diet
             },
@@ -72,12 +93,29 @@ class PatientProfile extends Component {
       onFailure: error => {}
     });
   }
+  setPatientGlobalParameters() {
+    if (Window.global["patientAllergies"] !== undefined) {
+      this.setState(
+        {
+          patientAllergies: Window.global["patientAllergies"]
+        },
+        () => {
+          removeGlobal("patientAllergies");
+        }
+      );
+    }
+  }
 
   render() {
     return (
       <div className="row patientProfile">
         <div className="patientInfo-Top box-shadow-normal">
           <div className="backBtn">
+            <button
+              id="btn-outer-component-load"
+              className="d-none"
+              onClick={this.setPatientGlobalParameters.bind(this)}
+            />
             <button
               onClick={() => {
                 setGlobal({ "EHR-STD": "DoctorsWorkbench" });
@@ -295,10 +333,35 @@ class PatientProfile extends Component {
                 <i className="fas fa-allergies" />
                 <p>
                   <b>Allergies:</b>
-                  {this.state.patientAllergies.map((data, index) => (
+                  {/* {this.state.patientAllergies.map((data, index) => (
+
                     <span key={index} className="listofA-D-D">
                       {data.allergy_name}
                     </span>
+                  ))} */}
+                  {this.state.patientAllergies.map((data, index) => (
+                    <React.Fragment key={index}>
+                      <b>{data.allergy_type_desc}</b>
+                      {data.allergyList.map((allergy, aIndex) => (
+                        <span
+                          key={aIndex}
+                          className={
+                            "listofA-D-D " +
+                            (allergy.allergy_inactive === "Y" ? "red" : "")
+                          }
+                          title={
+                            "Onset Date : " +
+                            allergy.onset_date +
+                            "\n Comment : " +
+                            allergy.comment +
+                            "\n Severity : " +
+                            allergy.severity
+                          }
+                        >
+                          {allergy.allergy_name}
+                        </span>
+                      ))}
+                    </React.Fragment>
                   ))}
                 </p>
               </li>
