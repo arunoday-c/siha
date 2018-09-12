@@ -99,11 +99,11 @@ let addBillData = (req, res, next) => {
     db.query(
       "INSERT INTO hims_f_billing_header ( patient_id, visit_id, bill_number,\
             incharge_or_provider, bill_date, advance_amount,advance_adjust, discount_amount \
-            , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount \
-            , company_res, sec_company_res, patient_payable, company_payable, sec_company_payable \
+            , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
+            , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
             , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount \
             , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
-              ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         inputParam.patient_id,
         inputParam.visit_id,
@@ -118,8 +118,10 @@ let addBillData = (req, res, next) => {
         inputParam.sheet_discount_amount,
         inputParam.sheet_discount_percentage,
         inputParam.net_amount,
+        inputParam.net_total,
         inputParam.company_res,
         inputParam.sec_company_res,
+        inputParam.patient_res,
         inputParam.patient_payable,
         inputParam.company_payable,
         inputParam.sec_company_payable,
@@ -1041,7 +1043,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               try {
                 if (insured === "Y") {
                   // let callInsurance =
-
+                  debugLog("Data: ", req.body[m]);
                   req.body[m].insurance_id =
                     req.body[m].primary_insurance_provider_id;
                   req.body[m].hims_d_insurance_network_office_id =
@@ -2152,8 +2154,7 @@ let addEpisodeEncounterData = (req, res, next) => {
 
   debugLog("Input:", req.body);
 
-
-  //created_date, created_by, updated_date, updated_by, 
+  //created_date, created_by, updated_date, updated_by,
   db.query(
     "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,\
            episode_id,age,payment_type,created_date,created_by,updated_date,updated_by)values(\
@@ -2170,7 +2171,6 @@ let addEpisodeEncounterData = (req, res, next) => {
       input.created_by,
       new Date(),
       input.updated_by
-
     ],
     (error, results) => {
       debugLog("result:");

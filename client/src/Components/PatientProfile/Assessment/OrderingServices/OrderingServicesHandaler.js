@@ -2,6 +2,7 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import extend from "extend";
 
 //Text Handaler Change
 const texthandle = ($this, e) => {
@@ -315,6 +316,43 @@ const SaveOrdersServices = ($this, e) => {
   });
 };
 
+const calculateAmount = ($this, row, ctrl, e) => {
+  e = e || ctrl;
+  debugger;
+  let orderservicesdata = $this.state.orderservicesdata;
+
+  row[e.target.name] = parseFloat(e.target.value);
+  let inputParam = [
+    {
+      hims_d_services_id: row.services_id,
+      quantity: row.quantity,
+      discount_amout:
+        e.target.name === "discount_percentage" ? 0 : row.discount_amout,
+      discount_percentage:
+        e.target.name === "discount_amout" ? 0 : row.discount_percentage
+    }
+  ];
+
+  $this.props.billingCalculations({
+    uri: "/billing/getBillDetails",
+    method: "POST",
+    data: inputParam,
+    redux: {
+      type: "BILL_GEN_GET_DATA",
+      mappingName: "xxx"
+    },
+    afterSuccess: data => {
+      extend(row, data.billdetails[0]);
+      for (let i = 0; i < orderservicesdata.length; i++) {
+        if (orderservicesdata[i].service_type_id === row.service_type_id) {
+          orderservicesdata[i] = row;
+        }
+      }
+      $this.setState({ orderservicesdata: orderservicesdata });
+    }
+  });
+};
+
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -322,5 +360,6 @@ export {
   ProcessService,
   VisitSearch,
   deleteServices,
-  SaveOrdersServices
+  SaveOrdersServices,
+  calculateAmount
 };

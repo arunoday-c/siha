@@ -70,6 +70,7 @@ class PatientDisplayDetails extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     let output = {};
     let billOut = {};
     if (

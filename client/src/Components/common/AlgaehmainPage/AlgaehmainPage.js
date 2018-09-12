@@ -22,6 +22,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import Menu from "@material-ui/core/Menu";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
+// import Login from "./"
 const drawerWidth = 230;
 
 const titleStyles = {
@@ -216,6 +217,10 @@ class PersistentDrawer extends React.Component {
       enlabl: e.currentTarget.getAttribute("label")
     });
   }
+
+  logoutLink(e) {
+    // <Login />;
+  }
   render() {
     const { classes } = this.props;
     const { anchor, sideopen } = this.state;
@@ -341,7 +346,7 @@ class PersistentDrawer extends React.Component {
                   </MenuItem>
                   <hr />
 
-                  <MenuItem>
+                  <MenuItem onClick={this.logoutLink.bind(this)}>
                     <i className="fas fa-sign-out-alt" /> Logout
                   </MenuItem>
                 </Menu>

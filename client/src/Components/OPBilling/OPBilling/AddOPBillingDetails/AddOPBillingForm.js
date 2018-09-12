@@ -86,6 +86,7 @@ class AddOPBillingForm extends Component {
   }
 
   ProcessToBill(context, e) {
+    debugger;
     let $this = this;
 
     let serviceInput = [
@@ -113,6 +114,7 @@ class AddOPBillingForm extends Component {
         mappingName: "xxx"
       },
       afterSuccess: data => {
+        debugger;
         if (data.billdetails[0].pre_approval === "Y") {
           successfulMessage({
             message:
@@ -147,18 +149,22 @@ class AddOPBillingForm extends Component {
   }
   //Calculate Row Detail
   calculateAmount(row, context, ctrl, e) {
+    debugger;
     e = e || ctrl;
     let $this = this;
+    let billdetails = this.state.billdetails;
 
     row[e.target.name] = parseFloat(e.target.value);
-    let inputParam = {
-      hims_d_services_id: this.state.s_service,
-      quantity: row.quantity,
-      discount_amout:
-        e.target.name === "discount_percentage" ? 0 : row.discount_amout,
-      discount_percentage:
-        e.target.name === "discount_amout" ? 0 : row.discount_percentage
-    };
+    let inputParam = [
+      {
+        hims_d_services_id: row.services_id,
+        quantity: row.quantity,
+        discount_amout:
+          e.target.name === "discount_percentage" ? 0 : row.discount_amout,
+        discount_percentage:
+          e.target.name === "discount_amout" ? 0 : row.discount_percentage
+      }
+    ];
 
     this.props.billingCalculations({
       uri: "/billing/getBillDetails",
@@ -170,7 +176,12 @@ class AddOPBillingForm extends Component {
       },
       afterSuccess: data => {
         extend(row, data.billdetails[0]);
-        $this.setState({});
+        for (let i = 0; i < billdetails.length; i++) {
+          if (billdetails[i].service_type_id === row.service_type_id) {
+            billdetails[i] = row;
+          }
+        }
+        $this.setState({ billdetails: billdetails });
       }
     });
   }
@@ -409,6 +420,13 @@ class AddOPBillingForm extends Component {
                           disabled: true
                         },
                         {
+                          fieldName: "unit_cost",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "unit_cost" }} />
+                          ),
+                          disabled: true
+                        },
+                        {
                           fieldName: "quantity",
                           label: (
                             <AlgaehLabel label={{ fieldName: "quantity" }} />
@@ -432,13 +450,6 @@ class AddOPBillingForm extends Component {
                               />
                             );
                           }
-                        },
-                        {
-                          fieldName: "unit_cost",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "unit_cost" }} />
-                          ),
-                          disabled: true
                         },
 
                         {

@@ -18,7 +18,8 @@ import {
   serviceHandeler,
   ProcessService,
   deleteServices,
-  SaveOrdersServices
+  SaveOrdersServices,
+  calculateAmount
 } from "./OrderingServicesHandaler";
 import "./OrderingServices.css";
 import "../../../../styles/site.css";
@@ -120,11 +121,6 @@ class OrderingServices extends Component {
   }
 
   render() {
-    let orderedList =
-      this.state.orderservicesdata === undefined
-        ? [{}]
-        : this.state.orderservicesdata;
-
     return (
       <div className="hptl-phase1-ordering-services-form">
         {/* <div className="main-details" /> */}
@@ -239,6 +235,11 @@ class OrderingServices extends Component {
                     disabled: true
                   },
                   {
+                    fieldName: "unit_cost",
+                    label: <AlgaehLabel label={{ fieldName: "unit_cost" }} />,
+                    disabled: true
+                  },
+                  {
                     fieldName: "quantity",
                     label: <AlgaehLabel label={{ fieldName: "quantity" }} />,
                     editorTemplate: row => {
@@ -250,17 +251,12 @@ class OrderingServices extends Component {
                             className: "txt-fld",
                             name: "quantity",
                             events: {
-                              onChange: null
+                              onChange: calculateAmount.bind(this, this, row)
                             }
                           }}
                         />
                       );
                     }
-                  },
-                  {
-                    fieldName: "unit_cost",
-                    label: <AlgaehLabel label={{ fieldName: "unit_cost" }} />,
-                    disabled: true
                   },
 
                   {
@@ -287,7 +283,7 @@ class OrderingServices extends Component {
                             className: "txt-fld",
                             name: "discount_percentage",
                             events: {
-                              onChange: null
+                              onChange: calculateAmount.bind(this, this, row)
                             }
                           }}
                         />
@@ -309,7 +305,7 @@ class OrderingServices extends Component {
                             className: "txt-fld",
                             name: "discount_amout",
                             events: {
-                              onChange: null
+                              onChange: calculateAmount.bind(this, this, row)
                             }
                           }}
                         />
@@ -372,7 +368,7 @@ class OrderingServices extends Component {
                 ]}
                 keyId="service_type_id"
                 dataSource={{
-                  data: orderedList
+                  data: this.state.orderservicesdata
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
@@ -421,7 +417,8 @@ function mapDispatchToProps(dispatch) {
       getServiceTypes: AlgaehActions,
       getServices: AlgaehActions,
       generateBill: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getPatientInsurance: AlgaehActions,
+      billingCalculations: AlgaehActions
     },
     dispatch
   );

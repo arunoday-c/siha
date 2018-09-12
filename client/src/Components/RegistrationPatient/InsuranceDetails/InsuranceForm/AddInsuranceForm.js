@@ -79,6 +79,7 @@ class AddInsuranceForm extends Component {
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -155,7 +156,8 @@ class AddInsuranceForm extends Component {
                               // this.state.selectedLang == "en" ? "insurance_provider_name" : "name",
                               valueField: "insurance_provider_id",
                               data:
-                                this.props.existinsurance === undefined
+                                this.props.existinsurance === undefined ||
+                                this.props.existinsurance.length === 0
                                   ? this.props.primaryinsurance
                                   : this.props.existinsurance
                             },
@@ -180,7 +182,8 @@ class AddInsuranceForm extends Component {
                               // this.state.selectedLang == "en" ? "sub_insurance_provider_name" : "name",
                               valueField: "sub_insurance_provider_id",
                               data:
-                                this.props.existinsurance === undefined
+                                this.props.existinsurance === undefined ||
+                                this.props.existinsurance.length === 0
                                   ? this.props.primaryinsurance
                                   : this.props.existinsurance
                             },
@@ -204,7 +207,8 @@ class AddInsuranceForm extends Component {
                               // this.state.selectedLang == "en" ? "network_type" : "name",
                               valueField: "network_id",
                               data:
-                                this.props.existinsurance === undefined
+                                this.props.existinsurance === undefined ||
+                                this.props.existinsurance.length === 0
                                   ? this.props.primaryinsurance
                                   : this.props.existinsurance
                             },
@@ -230,7 +234,8 @@ class AddInsuranceForm extends Component {
                               // this.state.selectedLang == "en" ? "name" : "name",
                               valueField: "policy_number",
                               data:
-                                this.props.existinsurance === undefined
+                                this.props.existinsurance === undefined ||
+                                this.props.existinsurance.length === 0
                                   ? this.props.primaryinsurance
                                   : this.props.existinsurance
                             },
