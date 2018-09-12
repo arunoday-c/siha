@@ -5,7 +5,8 @@ import {
   selectPattypeStatement,
   addPatientType,
   updatePatientType,
-  deletePatientType
+  deletePatientType,
+  getPatientType
 } from "../model/patientType";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
@@ -42,6 +43,25 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.get(
+    "/getPatientType",
+    getPatientType,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.length == 0) {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+
   api.post(
     "/add",
     addPatientType,

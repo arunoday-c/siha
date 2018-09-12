@@ -57,18 +57,7 @@ const updatePriceList = ($this, data) => {
           icon: "success"
         });
 
-        $this.props.getPriceList({
-          uri: "/insurance/getPriceList",
-          method: "GET",
-          printInput: true,
-          data: {
-            insurance_id: $this.state.insurance_provider_id
-          },
-          redux: {
-            type: "PRICE_LIST_GET_DATA",
-            mappingName: "pricelist"
-          }
-        });
+        getPriceList($this);
       }
     },
     onFailure: error => {}
@@ -82,14 +71,14 @@ const bulkUpdate = ($this, data) => {
     updateobj = {
       update: data,
       pre_approval: $this.state.pre_approval,
-     // updated_by: getCookie("UserID"),
+      // updated_by: getCookie("UserID"),
       insurance_id: $this.state.insurance_provider_id
     };
   } else if (data === "covered") {
     updateobj = {
       update: data,
       covered: $this.state.covered,
-     // updated_by: getCookie("UserID"),
+      // updated_by: getCookie("UserID"),
       insurance_id: $this.state.insurance_provider_id
     };
   } else if (data === "corporate_discount") {
@@ -106,7 +95,7 @@ const bulkUpdate = ($this, data) => {
           discountType: $this.state.applicable,
           update: data,
           corporate_discount: $this.state.corporate_discount,
-         // updated_by: getCookie("UserID"),
+          // updated_by: getCookie("UserID"),
           insurance_id: $this.state.insurance_provider_id
         };
       } else if ($this.state.applicable === "A") {
@@ -114,7 +103,7 @@ const bulkUpdate = ($this, data) => {
           discountType: $this.state.applicable,
           update: data,
           corporate_discount: $this.state.corporate_discount,
-         // updated_by: getCookie("UserID"),
+          // updated_by: getCookie("UserID"),
           insurance_id: $this.state.insurance_provider_id
         };
       }
@@ -132,22 +121,74 @@ const bulkUpdate = ($this, data) => {
           icon: "success"
         });
 
-        $this.props.getPriceList({
-          uri: "/insurance/getPriceList",
-          method: "GET",
-          printInput: true,
-          data: {
-            insurance_id: $this.state.insurance_provider_id
-          },
-          redux: {
-            type: "PRICE_LIST_GET_DATA",
-            mappingName: "pricelist"
-          }
-        });
+        getPriceList($this);
       }
     },
     onFailure: error => {}
   });
+};
+
+const serviceTypeHandeler = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      $this.props.getPriceList({
+        uri: "/insurance/getPriceList",
+        method: "GET",
+        printInput: true,
+        data: {
+          insurance_id: $this.state.insurance_provider_id,
+          service_type_id: $this.state.service_type_id
+        },
+        redux: {
+          type: "PRICE_LIST_GET_DATA",
+          mappingName: "pricelist"
+        }
+      });
+    }
+  );
+};
+
+const getPriceList = $this => {
+  $this.props.getPriceList({
+    uri: "/insurance/getPriceList",
+    method: "GET",
+    printInput: true,
+    data: {
+      insurance_id: $this.state.insurance_provider_id
+    },
+    redux: {
+      type: "PRICE_LIST_GET_DATA",
+      mappingName: "pricelist"
+    }
+  });
+};
+
+const Refresh = $this => {
+  $this.setState(
+    {
+      service_type_id: null
+    },
+    () => {
+      $this.props.getPriceList({
+        uri: "/insurance/getPriceList",
+        method: "GET",
+        printInput: true,
+        data: {
+          insurance_id: $this.state.insurance_provider_id
+        },
+        redux: {
+          type: "PRICE_LIST_GET_DATA",
+          mappingName: "pricelist"
+        }
+      });
+    }
+  );
 };
 
 export {
@@ -156,5 +197,8 @@ export {
   resetState,
   updatePriceList,
   onchangecalculation,
-  bulkUpdate
+  bulkUpdate,
+  serviceTypeHandeler,
+  getPriceList,
+  Refresh
 };

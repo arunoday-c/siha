@@ -24,7 +24,8 @@ import {
   ProcessInsurance,
   checkcashhandaler,
   checkcardhandaler,
-  checkcheckhandaler
+  checkcheckhandaler,
+  credittexthandle
 } from "./AddBillingDetails";
 import MyContext from "../../../../utils/MyContext.js";
 import { withRouter } from "react-router-dom";
@@ -268,10 +269,11 @@ class AddBillingForm extends Component {
                             name: "credit_amount",
 
                             events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: true
+                              onChange: credittexthandle.bind(
+                                this,
+                                this,
+                                context
+                              )
                             }
                           }}
                         />

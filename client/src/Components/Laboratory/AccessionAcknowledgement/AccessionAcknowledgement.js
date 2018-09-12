@@ -76,6 +76,10 @@ class AccessionAcknowledgement extends Component {
     });
   }
 
+  componentDidMount() {
+    getSampleCollectionDetails(this, this);
+  }
+
   render() {
     // let sampleCollection =
     //   this.state.billdetails === null ? [{}] : this.state.billdetails;

@@ -132,6 +132,20 @@ class AddPatientForm extends PureComponent {
         }
       });
     }
+
+    if (
+      this.props.patienttype === undefined ||
+      this.props.patienttype.length === 0
+    ) {
+      this.props.getPatientType({
+        uri: "/patientType/getPatientType",
+        method: "GET",
+        redux: {
+          type: "PATIENT_TYPE_GET_DATA",
+          mappingName: "patienttype"
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -402,35 +416,6 @@ class AddPatientForm extends PureComponent {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "country_id",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "country_id",
-                            className: "select-fld",
-                            value: this.state.country_id,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "country_name"
-                                  : "arabic_country_name",
-                              valueField: "hims_d_country_id",
-                              data: this.props.countries
-                            },
-                            onChange: countryStatehandle.bind(
-                              this,
-                              this,
-                              context
-                            ),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
                             fieldName: "nationality_id",
                             isImp: true
                           }}
@@ -455,22 +440,26 @@ class AddPatientForm extends PureComponent {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "city_id",
-                            isImp: false
+                            fieldName: "country_id",
+                            isImp: true
                           }}
                           selector={{
-                            name: "city_id",
+                            name: "country_id",
                             className: "select-fld",
-                            value: this.state.city_id,
+                            value: this.state.country_id,
                             dataSource: {
                               textField:
                                 this.state.selectedLang === "en"
-                                  ? "city_name"
-                                  : "city_arabic_name",
-                              valueField: "hims_d_city_id",
-                              data: this.props.cities
+                                  ? "country_name"
+                                  : "arabic_country_name",
+                              valueField: "hims_d_country_id",
+                              data: this.props.countries
                             },
-                            onChange: texthandle.bind(this, this, context),
+                            onChange: countryStatehandle.bind(
+                              this,
+                              this,
+                              context
+                            ),
                             others: {
                               disabled: this.state.existingPatient
                             }
@@ -504,29 +493,35 @@ class AddPatientForm extends PureComponent {
                             }
                           }}
                         />
-                      </div>
-
-                      <div className="row" style={{ paddingBottom: "10px" }}>
-                        <AlagehFormGroup
+                        <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "postal_code"
+                            fieldName: "city_id",
+                            isImp: false
                           }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "postal_code",
-                            value: this.state.postal_code,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
+                          selector={{
+                            name: "city_id",
+                            className: "select-fld",
+                            value: this.state.city_id,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "city_name"
+                                  : "city_arabic_name",
+                              valueField: "hims_d_city_id",
+                              data: this.props.cities
                             },
+                            onChange: texthandle.bind(this, this, context),
                             others: {
                               disabled: this.state.existingPatient
                             }
                           }}
                         />
+                      </div>
 
+                      <div className="row" style={{ paddingBottom: "10px" }}>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-6" }}
                           label={{
                             fieldName: "address1"
                           }}
@@ -543,18 +538,25 @@ class AddPatientForm extends PureComponent {
                           }}
                         />
 
-                        <AlagehFormGroup
+                        <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "address2"
+                            fieldName: "patient_type"
                           }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "address2",
-                            value: this.state.address2,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
+                          selector={{
+                            name: "patient_type",
+                            className: "select-fld",
+                            value: this.state.patient_type,
+
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "patitent_type_desc"
+                                  : "arabic_patitent_type_desc",
+                              valueField: "hims_d_patient_type_id",
+                              data: this.props.patienttype
                             },
+                            onChange: texthandle.bind(this, this, context),
                             others: {
                               disabled: this.state.existingPatient
                             }
@@ -785,7 +787,8 @@ function mapStateToProps(state) {
     countries: state.countries,
     countrystates: state.countrystates,
     patients: state.patients,
-    visatypes: state.visatypes
+    visatypes: state.visatypes,
+    patienttype: state.patienttype
   };
 }
 
@@ -799,7 +802,8 @@ function mapDispatchToProps(dispatch) {
       getCities: AlgaehActions,
       getCountries: AlgaehActions,
       getStates: AlgaehActions,
-      getVisatypes: AlgaehActions
+      getVisatypes: AlgaehActions,
+      getPatientType: AlgaehActions
     },
     dispatch
   );

@@ -330,6 +330,23 @@ const updateDiagnosis = ($this, row) => {
   });
 };
 
+const searchByhandaler = ($this, e) => {
+  let radioICD = true;
+  let radioDesc = false;
+  if (e.value === "C") {
+    radioICD = true;
+    radioDesc = false;
+  } else if (e.value === "D") {
+    radioICD = false;
+    radioDesc = true;
+  }
+
+  $this.setState({
+    radioICD: radioICD,
+    radioDesc: radioDesc
+  });
+};
+
 export {
   texthandle,
   assnotetexthandle,
@@ -341,5 +358,6 @@ export {
   onchangegridcol,
   deleteDiagnosis,
   deleteFinalDiagnosis,
-  updateDiagnosis
+  updateDiagnosis,
+  searchByhandaler
 };

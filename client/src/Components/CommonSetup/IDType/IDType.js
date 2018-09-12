@@ -259,7 +259,7 @@ class IDType extends Component {
                 textBox={{
                   className: "txt-fld",
                   name: "identity_document_name",
-                  value: this.state.arabic_identity_document_name,
+                  value: this.state.identity_document_name,
                   events: {
                     onChange: this.changeTexts.bind(this)
                   },

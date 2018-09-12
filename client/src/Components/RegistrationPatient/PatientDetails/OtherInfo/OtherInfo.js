@@ -138,6 +138,48 @@ class OtherInfo extends Component {
                   }}
                 />
               </div>
+              <div>
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "postal_code"
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "postal_code",
+                    value: this.state.postal_code,
+                    events: {
+                      onChange: AddPatientOtherHandlers(
+                        this,
+                        context
+                      ).texthandle.bind(this)
+                    },
+                    others: {
+                      disabled: this.state.existingPatient
+                    }
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-lg-9" }}
+                  label={{
+                    fieldName: "address2"
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "address2",
+                    value: this.state.address2,
+                    events: {
+                      onChange: AddPatientOtherHandlers(
+                        this,
+                        context
+                      ).texthandle.bind(this)
+                    },
+                    others: {
+                      disabled: this.state.existingPatient
+                    }
+                  }}
+                />
+              </div>
             </div>
           </div>
         )}

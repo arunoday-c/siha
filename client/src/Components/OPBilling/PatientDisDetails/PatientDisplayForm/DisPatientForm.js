@@ -1,5 +1,9 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
+import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./PatientDisplayForm.css";
 import {
   AlagehFormGroup,
@@ -9,7 +13,7 @@ import MyContext from "../../../../utils/MyContext.js";
 import { texthandle, PatientSearch } from "./DisPatientHandlers";
 import variableJson from "../../../../utils/GlobalVariables.json";
 
-export default class DisPatientForm extends Component {
+class DisPatientForm extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -18,6 +22,22 @@ export default class DisPatientForm extends Component {
   componentWillMount() {
     let InputOutput = this.props.BillingIOputs;
     this.setState({ ...this.state, ...InputOutput });
+  }
+  // PAT-A-0000365
+  componentDidMount() {
+    if (
+      this.props.patienttype === undefined ||
+      this.props.patienttype.length === 0
+    ) {
+      this.props.getPatientType({
+        uri: "/patientType/getPatientType",
+        method: "GET",
+        redux: {
+          type: "PATIENT_TYPE_GET_DATA",
+          mappingName: "patienttype"
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -75,7 +95,7 @@ export default class DisPatientForm extends Component {
                     }}
                   />
                   {/* Patient type */}
-                  <AlagehFormGroup
+                  {/* <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "patient_type"
@@ -88,6 +108,31 @@ export default class DisPatientForm extends Component {
                         onChange: null
                       },
                       disabled: true
+                    }}
+                  /> */}
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "patient_type"
+                    }}
+                    selector={{
+                      name: "patient_type",
+                      className: "select-fld",
+                      value: this.state.patient_type,
+
+                      dataSource: {
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "patitent_type_desc"
+                            : "arabic_patitent_type_desc",
+                        valueField: "hims_d_patient_type_id",
+                        data: this.props.patienttype
+                      },
+                      onChange: texthandle.bind(this, this, context),
+                      others: {
+                        disabled: true
+                      }
                     }}
                   />
 
@@ -125,3 +170,25 @@ export default class DisPatientForm extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    patienttype: state.patienttype
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getPatientType: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(DisPatientForm)
+);

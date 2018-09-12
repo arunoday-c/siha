@@ -217,6 +217,18 @@ class LabResult extends Component {
                       )
                     },
                     {
+                      fieldName: "run1",
+                      label: <AlgaehLabel label={{ forceLabel: "Run1" }} />
+                    },
+                    {
+                      fieldName: "run2",
+                      label: <AlgaehLabel label={{ forceLabel: "Run2" }} />
+                    },
+                    {
+                      fieldName: "run3",
+                      label: <AlgaehLabel label={{ forceLabel: "Run3" }} />
+                    },
+                    {
                       fieldName: "ordered_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Critical High" }} />

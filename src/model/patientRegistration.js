@@ -111,9 +111,9 @@ let insertPatientData = (req, res, next) => {
     , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
     , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
     , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
-    , `photo_file`, `primary_id_file`, `secondary_id_file`, `created_by`, `created_date`\
+    , `photo_file`, `primary_id_file`, `secondary_id_file`, `patient_type`, `created_by`, `created_date`\
     ,`city_id`,`state_id`,`country_id`)\
-     VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
+     VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
       [
         inputparam.patient_code,
         inputparam.registration_date,
@@ -146,6 +146,7 @@ let insertPatientData = (req, res, next) => {
         inputparam.photo_file,
         inputparam.primary_id_file,
         inputparam.secondary_id_file,
+        inputparam.patient_type,
         inputparam.created_by,
         new Date(),
         inputparam.city_id,

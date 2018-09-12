@@ -1,17 +1,11 @@
 import moment from "moment";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
+let texthandlerInterval = null;
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  let name;
-  let value;
-  if (e.name != null) {
-    name = e.name;
-    value = e.value;
-  } else {
-    name = e.target.name;
-    value = e.target.value;
-  }
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
 
   $this.setState({
     [name]: value
@@ -208,6 +202,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 
 const billheaderCalculation = ($this, context) => {
   var intervalId;
+  debugger;
   let serviceInput = {
     isReceipt: false,
     intCalculateall: false,
@@ -216,7 +211,8 @@ const billheaderCalculation = ($this, context) => {
     ),
     sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
     advance_adjust: parseFloat($this.state.advance_adjust),
-    gross_total: parseFloat($this.state.gross_total)
+    gross_total: parseFloat($this.state.gross_total),
+    credit_amount: parseFloat($this.state.credit_amount)
   };
 
   clearInterval(intervalId);
@@ -345,6 +341,34 @@ const checkcheckhandaler = ($this, e) => {
   });
 };
 
+const credittexthandle = ($this, context, ctrl, e) => {
+  e = e || ctrl;
+
+  if (e.target.value > $this.state.net_amount) {
+    successfulMessage({
+      message: "Invalid Input. Criedt amount cannot be greater than Net amount",
+      title: "Warning",
+      icon: "warning"
+    });
+  } else {
+    debugger;
+    $this.setState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => {
+        billheaderCalculation($this, context);
+      }
+    );
+
+    if (context != null) {
+      context.updateState({
+        [e.target.name]: e.target.value
+      });
+    }
+  }
+};
+
 export {
   texthandle,
   datehandle,
@@ -356,5 +380,6 @@ export {
   ProcessInsurance,
   checkcashhandaler,
   checkcardhandaler,
-  checkcheckhandaler
+  checkcheckhandaler,
+  credittexthandle
 };
