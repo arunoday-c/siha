@@ -219,9 +219,23 @@ class PersistentDrawer extends React.Component {
   }
 
   logoutLink(e) {
-    // <Login />;
+    window.location.href = window.location.origin + "/#";
   }
   render() {
+    const authToken = getCookie("authToken");
+    const keyResources = getCookie("keyResources");
+
+    if (authToken === "" || authToken === undefined) {
+      return (
+        <b>
+          No access, please re-login
+          <button onClick={this.logoutLink.bind(this)}>
+            Redirect to login
+          </button>
+        </b>
+      );
+    }
+
     const { classes } = this.props;
     const { anchor, sideopen } = this.state;
 
