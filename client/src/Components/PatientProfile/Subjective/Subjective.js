@@ -1497,7 +1497,12 @@ class Subjective extends Component {
                                 ? this.state.chiefComplainList
                                 : null
                           },
-                          onChange: this.dropDownHandle.bind(this)
+                          onChange: this.dropDownHandle.bind(this),
+                          userList: list => {
+                            //TODO need to change with appropriate service call --noor
+                            debugger;
+                            alert(JSON.stringify(list));
+                          }
                         }}
                       />
                       <div className="col-lg-2 displayInlineBlock">
