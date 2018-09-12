@@ -1,5 +1,3 @@
-import Enumerable from "linq";
-import swal from "sweetalert";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 const getAllAllergies = ($this, type) => {
