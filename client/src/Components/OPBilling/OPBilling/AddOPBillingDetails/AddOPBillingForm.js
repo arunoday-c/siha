@@ -162,7 +162,18 @@ class AddOPBillingForm extends Component {
         discount_amout:
           e.target.name === "discount_percentage" ? 0 : row.discount_amout,
         discount_percentage:
-          e.target.name === "discount_amout" ? 0 : row.discount_percentage
+          e.target.name === "discount_amout" ? 0 : row.discount_percentage,
+
+        insured: this.state.insured,
+        primary_insurance_provider_id: this.state.insurance_provider_id,
+        primary_network_office_id: this.state
+          .hims_d_insurance_network_office_id,
+        primary_network_id: this.state.network_id,
+        sec_insured: this.state.sec_insured,
+        secondary_insurance_provider_id: this.state
+          .secondary_insurance_provider_id,
+        secondary_network_id: this.state.secondary_network_id,
+        secondary_network_office_id: this.state.secondary_network_office_id
       }
     ];
 
@@ -390,6 +401,27 @@ class AddOPBillingForm extends Component {
                               </span>
                             );
                           },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "service_type_id",
+                                  className: "select-fld",
+                                  value: row.service_type_id,
+                                  dataSource: {
+                                    textField: "service_type",
+                                    valueField: "hims_d_service_type_id",
+                                    data: this.props.servicetype
+                                  },
+                                  others: {
+                                    disabled: true
+                                  },
+                                  onChange: null
+                                }}
+                              />
+                            );
+                          },
                           disabled: true
                         },
 
@@ -415,6 +447,27 @@ class AddOPBillingForm extends Component {
                                     : display[0].arabic_service_name
                                   : ""}
                               </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "services_id",
+                                  className: "select-fld",
+                                  value: row.services_id,
+                                  dataSource: {
+                                    textField: "service_name",
+                                    valueField: "hims_d_services_id",
+                                    data: this.props.services
+                                  },
+                                  others: {
+                                    disabled: true
+                                  },
+                                  onChange: null
+                                }}
+                              />
                             );
                           },
                           disabled: true
@@ -563,8 +616,8 @@ class AddOPBillingForm extends Component {
                           }}
                         />
                         <h5>
-                          {this.state.sub_total_amount
-                            ? "₹" + this.state.sub_total_amount
+                          {this.state.deductable_amount
+                            ? "₹" + this.state.deductable_amount
                             : "₹0.00"}
                         </h5>
                       </div>

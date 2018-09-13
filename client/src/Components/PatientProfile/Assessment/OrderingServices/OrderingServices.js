@@ -19,7 +19,8 @@ import {
   ProcessService,
   deleteServices,
   SaveOrdersServices,
-  calculateAmount
+  calculateAmount,
+  updateBillDetail
 } from "./OrderingServicesHandaler";
 import "./OrderingServices.css";
 import "../../../../styles/site.css";
@@ -39,21 +40,6 @@ class OrderingServices extends Component {
       visit_id: Window.global["visit_id"],
       doctor_id: null,
 
-      // patient_id: Window.global["current_patient"],
-      //   episode_id: Window.global["episode_id"]
-
-      insured: null,
-      insurance_provider_id: null,
-      hims_d_insurance_network_office_id: null,
-      sub_insurance_provider_id: null,
-      policy_number: null,
-      network_id: null,
-      sec_insured: null,
-      secondary_insurance_provider_id: null,
-      sec_sub_insurance_provider_id: null,
-      sec_policy_number: null,
-      secondary_network_id: null,
-      secondary_network_office_id: null,
       orderservicesdata: [],
       approval_amt: 0,
       preapp_limit_amount: 0,
@@ -61,7 +47,16 @@ class OrderingServices extends Component {
       dummy_company_payble: 0,
       approval_limit_yesno: "N",
       insurance_service_name: null,
-      saved: false
+      saved: false,
+
+      insured: "N",
+      primary_insurance_provider_id: null,
+      primary_network_office_id: null,
+      primary_network_id: null,
+      sec_insured: null,
+      secondary_insurance_provider_id: null,
+      secondary_network_id: null,
+      secondary_network_office_id: null
     };
   }
 
@@ -103,6 +98,34 @@ class OrderingServices extends Component {
       redux: {
         type: "SERVICES_GET_DATA",
         mappingName: "serviceslist"
+      }
+    });
+
+    this.props.getPatientInsurance({
+      uri: "/insurance/getPatientInsurance",
+      method: "GET",
+      data: {
+        patient_id: this.state.patient_id,
+        patient_visit_id: this.state.patient_visit_id
+      },
+      redux: {
+        type: "EXIT_INSURANCE_GET_DATA",
+        mappingName: "existinginsurance"
+      },
+      afterSuccess: data => {
+        if (data.length > 0) {
+          this.setState({
+            insured: "Y",
+            primary_insurance_provider_id: data.insurance_provider_id,
+            primary_network_office_id: data.hims_d_insurance_network_office_id,
+            primary_network_id: data.network_id,
+            sec_insured: data.sec_insured,
+            secondary_insurance_provider_id:
+              data.secondary_insurance_provider_id,
+            secondary_network_id: data.secondary_network_id,
+            secondary_network_office_id: data.secondary_network_office_id
+          });
+        }
       }
     });
   }
@@ -208,6 +231,27 @@ class OrderingServices extends Component {
                         </span>
                       );
                     },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "service_type_id",
+                            className: "select-fld",
+                            value: row.service_type_id,
+                            dataSource: {
+                              textField: "service_type",
+                              valueField: "hims_d_service_type_id",
+                              data: this.props.servicetype
+                            },
+                            others: {
+                              disabled: true
+                            },
+                            onChange: null
+                          }}
+                        />
+                      );
+                    },
                     disabled: true
                   },
 
@@ -230,6 +274,27 @@ class OrderingServices extends Component {
                               : display[0].arabic_service_name
                             : ""}
                         </span>
+                      );
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "services_id",
+                            className: "select-fld",
+                            value: row.services_id,
+                            dataSource: {
+                              textField: "service_name",
+                              valueField: "hims_d_services_id",
+                              data: this.props.services
+                            },
+                            others: {
+                              disabled: true
+                            },
+                            onChange: null
+                          }}
+                        />
                       );
                     },
                     disabled: true
@@ -374,10 +439,147 @@ class OrderingServices extends Component {
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{
                   onDelete: deleteServices.bind(this, this),
-                  onEdit: row => {}
-                  // onDone: this.updateBillDetail.bind(this)
+                  onEdit: row => {},
+                  onDone: updateBillDetail.bind(this, this)
                 }}
               />
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-lg-7">
+              <div className="row">
+                <div className="col-lg-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Copay Amount"
+                    }}
+                  />
+                  <h5>
+                    {this.state.copay_amount
+                      ? "₹" + this.state.copay_amount
+                      : "₹0.00"}
+                  </h5>
+                </div>
+                <div className="col-lg-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Deductable Amount"
+                    }}
+                  />
+                  <h5>
+                    {this.state.deductable_amount
+                      ? "₹" + this.state.deductable_amount
+                      : "₹0.00"}
+                  </h5>
+                </div>
+                <div className="col-lg-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Sec Copay Amount"
+                    }}
+                  />
+                  <h5>
+                    {this.state.sec_copay_amount
+                      ? "₹" + this.state.sec_copay_amount
+                      : "₹0.00"}
+                  </h5>
+                </div>
+                <div className="col-lg-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Sec Deductable Amount"
+                    }}
+                  />
+                  <h5>
+                    {this.state.sec_deductable_amount
+                      ? "₹" + this.state.sec_deductable_amount
+                      : "₹0.00"}
+                  </h5>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-5" style={{ textAlign: "right" }}>
+              <div className="row">
+                <div className="col-lg-4">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Sub Total"
+                    }}
+                  />
+                  <h5>
+                    {this.state.sub_total_amount
+                      ? "₹" + this.state.sub_total_amount
+                      : "₹0.00"}
+                  </h5>
+                </div>
+                <div className="col-lg-4">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Discount Amount"
+                    }}
+                  />
+                  <h5>
+                    {this.state.discount_amount
+                      ? "₹" + this.state.discount_amount
+                      : "₹0.00"}
+                  </h5>
+                </div>
+
+                <div className="col-lg-4">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Net Total"
+                    }}
+                  />
+                  <h5>
+                    {this.state.net_total
+                      ? "₹" + this.state.net_total
+                      : "₹0.00"}
+                  </h5>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-lg-12">
+            <div className="row">
+              <div className="col-lg-4">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Patient Payable"
+                  }}
+                />
+                <h5>
+                  {this.state.patient_payable
+                    ? "₹" + this.state.patient_payable
+                    : "₹0.00"}
+                </h5>
+              </div>
+              <div className="col-lg-4">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Company Payable"
+                  }}
+                />
+                <h5>
+                  {this.state.sub_total_amount
+                    ? "₹" + this.state.company_payble
+                    : "₹0.00"}
+                </h5>
+              </div>
+              <div className="col-lg-4">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Sec Company Payable"
+                  }}
+                />
+                <h5>
+                  {this.state.sec_company_paybale
+                    ? "₹" + this.state.sec_company_paybale
+                    : "₹0.00"}
+                </h5>
+              </div>
             </div>
           </div>
 

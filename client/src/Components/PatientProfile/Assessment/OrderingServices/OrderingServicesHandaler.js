@@ -131,6 +131,27 @@ const ProcessService = ($this, e) => {
                   preserviceInput: preserviceInput,
                   approval_limit_yesno: approval_limit_yesno
                 });
+
+                $this.props.billingCalculations({
+                  uri: "/billing/billingCalculations",
+                  method: "POST",
+                  data: { billdetails: data.billdetails },
+                  redux: {
+                    type: "BILL_HEADER_GEN_GET_DATA",
+                    mappingName: "genbill"
+                  },
+                  afterSuccess: data => {
+                    $this.setState({
+                      sub_total_amount: data.sub_total_amount,
+                      discount_amount: data.discount_amount,
+                      net_total: data.net_total,
+                      patient_payable: data.patient_payable,
+                      company_payble: data.company_payble,
+                      copay_amount: data.copay_amount,
+                      sec_copay_amount: data.sec_copay_amount
+                    });
+                  }
+                });
               }
             });
           }
@@ -163,6 +184,7 @@ const ProcessService = ($this, e) => {
         data.billdetails[0].doctor_id = "2";
 
         //If pre-approval required for selected service
+        debugger;
         if (
           data.billdetails[0].pre_approval === "Y" &&
           $this.state.approval_limit_yesno === "N"
@@ -172,8 +194,13 @@ const ProcessService = ($this, e) => {
             title: "Warning",
             icon: "warning"
           });
-        } else {
+        } else if (
+          data.billdetails[0].pre_approval === "N" &&
+          $this.state.approval_limit_yesno === "N"
+        ) {
           data.billdetails[0].pre_approval = "N";
+        } else {
+          data.billdetails[0].pre_approval = "Y";
         }
         if (data.billdetails.length !== 0) {
           existingservices.splice(0, 0, data.billdetails[0]);
@@ -187,6 +214,27 @@ const ProcessService = ($this, e) => {
           approval_amt: approval_amt,
           preserviceInput: preserviceInput,
           preapp_limit_amount: preapp_limit_amount
+        });
+
+        $this.props.billingCalculations({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: { billdetails: existingservices },
+          redux: {
+            type: "BILL_HEADER_GEN_GET_DATA",
+            mappingName: "genbill"
+          },
+          afterSuccess: data => {
+            $this.setState({
+              sub_total_amount: data.sub_total_amount,
+              discount_amount: data.discount_amount,
+              net_total: data.net_total,
+              patient_payable: data.patient_payable,
+              company_payble: data.company_payble,
+              copay_amount: data.copay_amount,
+              sec_copay_amount: data.sec_copay_amount
+            });
+          }
         });
       }
     }
@@ -228,18 +276,6 @@ const VisitSearch = ($this, e) => {
         },
         () => {
           if ($this.state.insured === "Y") {
-            $this.props.getPatientInsurance({
-              uri: "/insurance/getPatientInsurance",
-              method: "GET",
-              data: {
-                patient_id: $this.state.patient_id,
-                patient_visit_id: $this.state.patient_visit_id
-              },
-              redux: {
-                type: "EXIT_INSURANCE_GET_DATA",
-                mappingName: "existinginsurance"
-              }
-            });
           }
         }
       );
@@ -277,7 +313,8 @@ const deleteServices = ($this, row, rowId) => {
           $this.setState({
             orderservicesdata: data.billdetails,
             approval_amt: app_amt,
-            preserviceInput: preserviceInput
+            preserviceInput: preserviceInput,
+            approval_limit_yesno: "N"
           });
         }
       });
@@ -329,7 +366,20 @@ const calculateAmount = ($this, row, ctrl, e) => {
       discount_amout:
         e.target.name === "discount_percentage" ? 0 : row.discount_amout,
       discount_percentage:
-        e.target.name === "discount_amout" ? 0 : row.discount_percentage
+        e.target.name === "discount_amout" ? 0 : row.discount_percentage,
+
+      insured: $this.state.insured === null ? "N" : $this.state.insured,
+      primary_insurance_provider_id: $this.state.insurance_provider_id,
+      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
+      primary_network_id: $this.state.network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+      approval_amt: $this.state.approval_amt,
+      approval_limit_yesno: $this.state.approval_limit_yesno,
+      preapp_limit_amount: $this.state.preapp_limit_amount
     }
   ];
 
@@ -353,6 +403,31 @@ const calculateAmount = ($this, row, ctrl, e) => {
   });
 };
 
+const updateBillDetail = ($this, e) => {
+  $this.props.billingCalculations({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: { billdetails: $this.state.orderservicesdata },
+    redux: {
+      type: "BILL_HEADER_GEN_GET_DATA",
+      mappingName: "genbill"
+    },
+    afterSuccess: data => {
+      $this.setState({
+        sub_total_amount: data.sub_total_amount,
+        discount_amount: data.discount_amount,
+        net_total: data.net_total,
+        patient_payable: data.patient_payable,
+        company_payble: data.company_payble,
+        copay_amount: data.copay_amount,
+        sec_copay_amount: data.sec_copay_amount,
+        deductable_amount: data.deductable_amount,
+        sec_deductable_amount: data.sec_deductable_amount
+      });
+    }
+  });
+};
+
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -361,5 +436,6 @@ export {
   VisitSearch,
   deleteServices,
   SaveOrdersServices,
-  calculateAmount
+  calculateAmount,
+  updateBillDetail
 };
