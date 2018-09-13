@@ -161,7 +161,7 @@ class DisplayVisitDetails extends Component {
             <div className="hptl-display-active-visit-form">
               <div className="container-fluid">
                 <div className="row form-details">
-                  <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                  <div className="col-lg-12 gridWithRadio">
                     <AlgaehDataGrid
                       columns={[
                         {
@@ -169,7 +169,7 @@ class DisplayVisitDetails extends Component {
                           displayTemplate: row => {
                             return (
                               <Radio
-                                style={{ maxHeight: "10px" }}
+                                style={{ maxHeight: "10px", maxWidth: "30px" }}
                                 name="select"
                                 color="primary"
                                 onChange={this.handleChange.bind(
