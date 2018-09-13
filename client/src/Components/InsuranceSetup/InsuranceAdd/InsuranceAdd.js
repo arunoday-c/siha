@@ -81,6 +81,7 @@ class InsuranceAdd extends PureComponent {
   }
 
   componentDidMount() {
+    debugger;
     let prevLang = getCookie("Language");
 
     setGlobal({ selectedLang: prevLang });
@@ -98,6 +99,8 @@ class InsuranceAdd extends PureComponent {
     } else {
       if (this.state.insurance_provider_saved === false) {
         let IOputs = InsuranceSetup.inputParam();
+        let prevLang = getCookie("Language");
+        IOputs.selectedLang = prevLang;
         this.setState(IOputs);
       }
     }

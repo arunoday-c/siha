@@ -39,6 +39,7 @@ const serviceHandeler = ($this, e) => {
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
+  debugger;
   let preserviceInput = $this.state.preserviceInput || [];
   let serviceInput = [
     {
@@ -170,8 +171,13 @@ const ProcessService = ($this, e) => {
             title: "Warning",
             icon: "warning"
           });
-        } else {
+        } else if (
+          data.billdetails[0].pre_approval === "N" &&
+          $this.state.approval_limit_yesno === "N"
+        ) {
           data.billdetails[0].pre_approval = "N";
+        } else {
+          data.billdetails[0].pre_approval = "Y";
         }
         if (data.billdetails.length !== 0) {
           existingservices.splice(0, 0, data.billdetails[0]);
@@ -185,6 +191,7 @@ const ProcessService = ($this, e) => {
           approval_amt: approval_amt,
           preserviceInput: preserviceInput,
           preapp_limit_amount: preapp_limit_amount
+          // approval_limit_yesno: approval_limit_yesno
         });
       }
     }
@@ -260,6 +267,7 @@ const deleteServices = ($this, row, rowId) => {
   }
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
+      debugger;
       for (var i = 0; i < preserviceInput.length; i++) {
         preserviceInput[i].approval_limit_yesno = "N";
       }
@@ -275,7 +283,8 @@ const deleteServices = ($this, row, rowId) => {
           $this.setState({
             orderservicesdata: data.billdetails,
             approval_amt: app_amt,
-            preserviceInput: preserviceInput
+            preserviceInput: preserviceInput,
+            approval_limit_yesno: "N"
           });
         }
       });
