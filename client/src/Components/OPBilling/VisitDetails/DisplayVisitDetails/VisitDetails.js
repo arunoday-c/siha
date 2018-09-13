@@ -61,6 +61,7 @@ class DisplayVisitDetails extends Component {
 
   handleChange(row, context, e) {
     let $this = this;
+    let mode_of_pay = 1;
     let x = Enumerable.from(this.state.visitDetails)
       .where(w => w.radioselect == 1)
       .toArray();
@@ -74,15 +75,19 @@ class DisplayVisitDetails extends Component {
     }
     index = this.state.visitDetails.indexOf(row);
     this.state.visitDetails[index]["radioselect"] = 1;
-
+    if (row.insured === "Y") {
+      mode_of_pay = 2;
+    }
     this.setState(
       {
         incharge_or_provider: row.doctor_id,
         visit_id: row.hims_f_patient_visit_id,
         insured: row.insured,
-        sec_insured: row.sec_insured
+        sec_insured: row.sec_insured,
+        mode_of_pay: mode_of_pay
       },
       () => {
+        debugger;
         if (this.state.insured === "Y") {
           this.props.getPatientInsurance({
             uri: "/insurance/getPatientInsurance",
@@ -98,7 +103,7 @@ class DisplayVisitDetails extends Component {
           });
         }
 
-        this.props.getPatientInsurance({
+        this.props.getOrderList({
           uri: "/orderAndPreApproval/selectOrderServices",
           method: "GET",
           data: {
@@ -106,7 +111,7 @@ class DisplayVisitDetails extends Component {
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
-            mappingName: "existinsurance"
+            mappingName: "orderlist"
           },
           afterSuccess: data => {
             let pre_approval_Required = Enumerable.from(data)
@@ -148,7 +153,8 @@ class DisplayVisitDetails extends Component {
         incharge_or_provider: row.doctor_id,
         visit_id: row.hims_f_patient_visit_id,
         insured: row.insured,
-        sec_insured: row.sec_insured
+        sec_insured: row.sec_insured,
+        mode_of_pay: mode_of_pay
       });
     }
   }
@@ -314,7 +320,8 @@ function mapStateToProps(state) {
     visittypes: state.visittypes,
     deptanddoctors: state.deptanddoctors,
     existinsurance: state.existinsurance,
-    genbill: state.genbill
+    genbill: state.genbill,
+    orderlist: state.orderlist
   };
 }
 
@@ -324,7 +331,8 @@ function mapDispatchToProps(dispatch) {
       getVisittypes: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      billingCalculations: AlgaehActions
+      billingCalculations: AlgaehActions,
+      getOrderList: AlgaehActions
     },
     dispatch
   );

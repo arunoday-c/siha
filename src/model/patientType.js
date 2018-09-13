@@ -205,9 +205,46 @@ let deletePatientType = (req, res, next) => {
   }
 };
 
+let getPatientType = (req, res, next) => {
+  let whereStatement = {
+    hims_d_patient_type_id: "ALL",
+    patient_type_code: "ALL",
+    patitent_type_desc: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let where = whereCondition(extend(whereStatement, req.query));
+      connection.query(
+        "SELECT * FROM `hims_d_patient_type`  \
+       WHERE record_status='A' AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   selectPattypeStatement,
   addPatientType,
   updatePatientType,
-  deletePatientType
+  deletePatientType,
+  getPatientType
 };

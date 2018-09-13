@@ -313,5 +313,9 @@
   "PRESCRIPTION_FREQ_DURATION": [
     { "name": "After Meal", "value": "O" },
     { "name": "Before Meal", "value": "R" }
+  ],
+  "SEARCH_BY_ICD": [
+    { "name": "ICD Code", "value": "C" },
+    { "name": "ICD Name", "value": "D" }
   ]
 }

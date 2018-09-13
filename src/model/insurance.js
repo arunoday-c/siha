@@ -39,7 +39,7 @@ let getPatientInsurance = (req, res, next) => {
       if (req.query.patient_visit_id != null) {
         connection.query(
           "SELECT A.* ,B.* FROM \
-        (select  mIns.patient_id, mIns.patient_visit_id,\
+        (select mIns.patient_id as pri_patient_id, mIns.patient_visit_id as pri_patient_visit_id,\
          mIns.primary_insurance_provider_id as insurance_provider_id,\
          Ins.insurance_provider_name as insurance_provider_name,\
         mIns.primary_sub_id as sub_insurance_provider_id ,\
@@ -55,8 +55,8 @@ let getPatientInsurance = (req, res, next) => {
         INNER JOIN hims_d_insurance_network net ON mIns.primary_network_id=net.hims_d_insurance_network_id)\
         INNER JOIN hims_d_insurance_network_office netoff ON mIns.primary_policy_num=netoff.policy_number) where mIns.patient_id=?  and mIns.patient_visit_id =?\
         GROUP BY mIns.primary_policy_num)  AS A\
-        ,\
-         (select  mIns.secondary_insurance_provider_id , \
+        left join\
+        (select  mIns.patient_id as sec_patient_id , mIns.patient_visit_id  as sec_patient_visit_id, mIns.secondary_insurance_provider_id , \
          Ins.insurance_provider_name as secondary_insurance_provider_name,\
          mIns.secondary_sub_id as secondary_sub_insurance_provider_id,\
          sIns.insurance_sub_name as secondary_sub_insurance_provider_name, \
@@ -69,8 +69,7 @@ let getPatientInsurance = (req, res, next) => {
          INNER JOIN  hims_d_insurance_sub sIns ON mIns.secondary_sub_id= sIns.hims_d_insurance_sub_id) \
          INNER JOIN hims_d_insurance_network net ON mIns.secondary_network_id=net.hims_d_insurance_network_id)\
          INNER JOIN hims_d_insurance_network_office netoff ON mIns.secondary_policy_num=netoff.policy_number) where mIns.patient_id=? and mIns.patient_visit_id =?\
-         GROUP BY mIns.secondary_policy_num) AS B  ;",
-
+         GROUP BY mIns.secondary_policy_num) AS B  on A.pri_patient_id=B.sec_patient_id ;",
           [
             patientInsuranceModel.patient_id,
             patientInsuranceModel.patient_visit_id,
@@ -85,7 +84,8 @@ let getPatientInsurance = (req, res, next) => {
               });
             }
             req.records = result;
-
+            debugLog("output", result);
+            debugLog("er", error);
             next();
           }
         );
@@ -124,7 +124,6 @@ let getPatientInsurance = (req, res, next) => {
               });
             }
             req.records = result;
-
             next();
           }
         );

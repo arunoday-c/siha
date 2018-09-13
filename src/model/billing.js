@@ -772,9 +772,13 @@ let billingCalculations = (req, res, next) => {
       sendingObject.sheet_discount_amount = 0;
       sendingObject.sheet_discount_percentage = 0;
       sendingObject.advance_adjust = 0;
-
       sendingObject.net_amount = sendingObject.patient_payable;
-      sendingObject.receiveable_amount = sendingObject.net_amount;
+      if (inputParam.credit_amount > 0) {
+        sendingObject.receiveable_amount =
+          sendingObject.net_amount - inputParam.credit_amount;
+      } else {
+        sendingObject.receiveable_amount = sendingObject.net_amount;
+      }
 
       //Reciept
       sendingObject.cash_amount = sendingObject.receiveable_amount;
@@ -806,8 +810,16 @@ let billingCalculations = (req, res, next) => {
 
         sendingObject.net_amount =
           inputParam.gross_total - sendingObject.sheet_discount_amount;
-        sendingObject.receiveable_amount =
-          sendingObject.net_amount - inputParam.advance_adjust;
+
+        if (inputParam.credit_amount > 0) {
+          sendingObject.receiveable_amount =
+            sendingObject.net_amount -
+            inputParam.advance_adjust -
+            inputParam.credit_amount;
+        } else {
+          sendingObject.receiveable_amount =
+            sendingObject.net_amount - inputParam.advance_adjust;
+        }
 
         sendingObject.cash_amount = sendingObject.receiveable_amount;
         sendingObject.card_amount = 0;

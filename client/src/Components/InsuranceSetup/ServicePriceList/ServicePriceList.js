@@ -22,7 +22,10 @@ import {
   onchangegridcol,
   updatePriceList,
   onchangecalculation,
-  bulkUpdate
+  bulkUpdate,
+  serviceTypeHandeler,
+  getPriceList,
+  Refresh
 } from "./ServicePriceListHandaler";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import Paper from "@material-ui/core/Paper";
@@ -47,18 +50,7 @@ class SubInsurance extends PureComponent {
 
   componentDidMount() {
     if (this.state.insurance_provider_id !== null) {
-      this.props.getPriceList({
-        uri: "/insurance/getPriceList",
-        method: "GET",
-        printInput: true,
-        data: {
-          insurance_id: this.state.insurance_provider_id
-        },
-        redux: {
-          type: "PRICE_LIST_GET_DATA",
-          mappingName: "pricelist"
-        }
-      });
+      getPriceList(this, this);
     } else {
       this.props.initialPriceList({
         redux: {
@@ -68,6 +60,15 @@ class SubInsurance extends PureComponent {
         }
       });
     }
+
+    this.props.getServiceTypes({
+      uri: "/serviceType",
+      method: "GET",
+      redux: {
+        type: "SERVIES_TYPES_GET_DATA",
+        mappingName: "servicetype"
+      }
+    });
   }
 
   render() {
@@ -77,6 +78,45 @@ class SubInsurance extends PureComponent {
         <div className="hptl-phase1-price-insurance-form">
           <div className="container-fluid">
             {/* Services Details */}
+            <div style={{ paddingTop: "10px" }}>
+              <Paper style={{ padding: "15px", border: "1px solid #5f5f5f" }}>
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "filter_by"
+                    }}
+                    selector={{
+                      name: "service_type_id",
+                      className: "select-fld",
+                      value: this.state.service_type_id,
+                      dataSource: {
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "service_type"
+                            : "arabic_service_type",
+                        valueField: "hims_d_service_type_id",
+                        data: this.props.servicetype
+                      },
+                      onChange: serviceTypeHandeler.bind(this, this)
+                    }}
+                  />
+
+                  <div className="col-lg-1">
+                    <Tooltip id="tooltip-icon" title="Refresh">
+                      <IconButton className="go-button" color="primary">
+                        <i
+                          class="fas fa-sync-alt"
+                          aria-hidden="true"
+                          onClick={Refresh.bind(this, this)}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                </div>
+              </Paper>
+            </div>
+
             <div style={{ paddingTop: "10px" }}>
               <Paper style={{ padding: "15px", border: "1px solid #5f5f5f" }}>
                 <div className="row">
@@ -385,7 +425,8 @@ class SubInsurance extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    pricelist: state.pricelist
+    pricelist: state.pricelist,
+    servicetype: state.servicetype
   };
 }
 
@@ -393,7 +434,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPriceList: AlgaehActions,
-      initialPriceList: AlgaehActions
+      initialPriceList: AlgaehActions,
+      getServiceTypes: AlgaehActions
     },
     dispatch
   );

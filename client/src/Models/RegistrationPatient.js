@@ -67,7 +67,7 @@ export default {
       status: "V",
       checked_in: "N",
       nurse_examine: "N",
-      patient_type: "S",
+      patient_type: null,
 
       widthImg: "",
       open: false,

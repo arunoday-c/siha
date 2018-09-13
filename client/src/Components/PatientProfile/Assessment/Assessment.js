@@ -22,14 +22,15 @@ import {
   onchangegridcol,
   deleteDiagnosis,
   deleteFinalDiagnosis,
-  updateDiagnosis
+  updateDiagnosis,
+  searchByhandaler
 } from "./AssessmentEvents";
 import OrderingServices from "./OrderingServices/OrderingServices";
 import LabResults from "./LabResult/LabResult";
 import RadResults from "./RadResult/RadResult";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
-import { DIAG_TYPE } from "../../../utils/GlobalVariables.json";
+import { DIAG_TYPE, SEARCH_BY_ICD } from "../../../utils/GlobalVariables.json";
 
 class Assessment extends Component {
   constructor(props) {
@@ -47,7 +48,9 @@ class Assessment extends Component {
       selectdIcd: [],
       insertInitialDiad: [],
       patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"]
+      episode_id: Window.global["episode_id"],
+      search_by: "C",
+      f_search_by: "C"
     };
   }
 
@@ -91,9 +94,31 @@ class Assessment extends Component {
                   <div className="col-lg-3 caption">
                     <h3 className="caption-subject">Initial Diagnosis</h3>
                   </div>
+                  <div className="col-lg-2">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Search By"
+                      }}
+                    />
+                  </div>
 
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-4" }}
+                    div={{ className: "col-lg-2" }}
+                    selector={{
+                      name: "search_by",
+                      className: "select-fld",
+                      value: this.state.search_by,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: SEARCH_BY_ICD
+                      },
+                      onChange: texthandle.bind(this, this)
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "daignosis_id"
                     }}
@@ -102,7 +127,10 @@ class Assessment extends Component {
                       className: "select-fld",
                       value: this.state.daignosis_id,
                       dataSource: {
-                        textField: "icd_description",
+                        textField:
+                          this.state.search_by === "C"
+                            ? "icd_code"
+                            : "icd_description",
                         valueField: "hims_d_icd_id",
                         data: this.props.icdcodes
                       },
@@ -120,7 +148,8 @@ class Assessment extends Component {
                       />
                     </a>
                   </div>
-
+                </div>
+                <div className="row portlet-title">
                   <div className="col-lg-4 actions">
                     <Button
                       style={{ backgroundColor: "#D5D5D5" }}
@@ -159,13 +188,6 @@ class Assessment extends Component {
                                   onChange={selectdIcd.bind(this, this, row)}
                                   checked={row.radioselect == 1 ? true : false}
                                 />
-                                {/* <IconButton
-                                  color="primary"
-                                  title="Delete"
-                                  style={{ maxHeight: "4vh" }}
-                                >
-                                  <i class="fa fa-trash" />
-                                </IconButton> */}
                               </span>
                             );
                           },
@@ -293,9 +315,31 @@ class Assessment extends Component {
                     <h3 className="caption-subject">Final Diagnosis</h3>
                   </div>
 
-                  <div className="col-lg-3">&nbsp;</div>
+                  <div className="col-lg-2">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Search By"
+                      }}
+                    />
+                  </div>
+
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-5" }}
+                    div={{ className: "col-lg-3" }}
+                    selector={{
+                      name: "f_search_by",
+                      className: "select-fld",
+                      value: this.state.f_search_by,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: SEARCH_BY_ICD
+                      },
+                      onChange: texthandle.bind(this, this)
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "icd_id"
                     }}
@@ -304,7 +348,10 @@ class Assessment extends Component {
                       className: "select-fld",
                       value: this.state.f_icd_id,
                       dataSource: {
-                        textField: "icd_description",
+                        textField:
+                          this.state.f_search_by === "C"
+                            ? "icd_code"
+                            : "icd_description",
                         valueField: "hims_d_icd_id",
                         data: this.props.icdcodes
                       },
@@ -329,31 +376,6 @@ class Assessment extends Component {
                     <AlgaehDataGrid
                       id="intial_icd"
                       columns={[
-                        // {
-                        //   fieldName: "Actions",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{
-                        //         forceLabel: "Actions"
-                        //       }}
-                        //     />
-                        //   ),
-
-                        //   displayTemplate: row => {
-                        //     return (
-                        //       <span>
-                        //         <IconButton
-                        //           color="primary"
-                        //           title="Delete"
-                        //           style={{ maxHeight: "4vh" }}
-                        //         >
-                        //           <i class="fa fa-trash" />
-                        //         </IconButton>
-                        //       </span>
-                        //     );
-                        //   },
-                        //   disabled: true
-                        // },
                         {
                           fieldName: "diagnosis_type",
                           label: (
@@ -490,20 +512,7 @@ class Assessment extends Component {
                       />
                     }
                   </li>
-                  {/* <li
-                    style={{ marginRight: 2 }}
-                    algaehtabs={"Packages"}
-                    className={"nav-item tab-button"}
-                    onClick={this.openTab.bind(this)}
-                  >
-                    {
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Packages"
-                        }}
-                      />
-                    }
-                  </li> */}
+
                   <li
                     style={{ marginRight: 2 }}
                     algaehtabs={"LabResults"}

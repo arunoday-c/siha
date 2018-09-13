@@ -117,7 +117,7 @@ class PatientDisplayDetails extends Component {
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
-          // data.patientRegistration = output;
+          data.patientRegistration.mode_of_pay = 1;
           this.setState(data.patientRegistration);
           AlgaehLoader({ show: false });
         }

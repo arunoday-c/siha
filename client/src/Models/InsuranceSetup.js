@@ -38,7 +38,8 @@ export default {
       update_network_plan_insurance: [],
 
       MandatoryMsg: null,
-      snackeropen: false
+      snackeropen: false,
+      service_type_id: null
     };
     return output;
   }

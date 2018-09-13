@@ -38,7 +38,7 @@ import {
   updatePatientROS
 } from "./SubjectiveHandler";
 import algaehLoader from "../../Wrapper/fullPageLoader";
-
+import { setGlobal } from "../../../utils/GlobalFunctions";
 let patChiefComplain = [];
 
 class Subjective extends Component {
@@ -539,7 +539,7 @@ class Subjective extends Component {
         debugger;
         if (response.data.success) {
           this.setState({ allAllergies: response.data.records });
-          console.log("Patient Allergies:", this.state.allAllergies);
+
           let _allergies = Enumerable.from(response.data.records)
             .groupBy("$.allergy_type", null, (k, g) => {
               return {
@@ -558,8 +558,10 @@ class Subjective extends Component {
               };
             })
             .toArray();
+          setGlobal({ patientAllergies: _allergies });
           this.setState({ patientAllergies: _allergies }, () => {
             algaehLoader({ show: false });
+            document.getElementById("btn-outer-component-load").click();
           });
         }
       },
@@ -1495,7 +1497,12 @@ class Subjective extends Component {
                                 ? this.state.chiefComplainList
                                 : null
                           },
-                          onChange: this.dropDownHandle.bind(this)
+                          onChange: this.dropDownHandle.bind(this),
+                          userList: list => {
+                            //TODO need to change with appropriate service call --noor
+                            debugger;
+                            alert(JSON.stringify(list));
+                          }
                         }}
                       />
                       <div className="col-lg-2 displayInlineBlock">
