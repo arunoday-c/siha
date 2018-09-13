@@ -26,3 +26,6 @@
 .hptl-display-active-visit-form td {
   font-size: 11px;
   border-right: 1px solid #e6e6e6; }
+
+.gridWithRadio table th:first-child {
+  width: 16px !important; }

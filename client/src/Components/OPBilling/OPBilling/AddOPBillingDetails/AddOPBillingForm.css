@@ -2,17 +2,12 @@
   background: #fff;
   border-radius: 5px; }
 
-.hptl-phase1-op-add-billing-form .primary-details {
-  padding: 10px; }
-  .hptl-phase1-op-add-billing-form .primary-details .primary-box-container {
-    padding-top: 12.5px;
-    padding-left: 10px; }
+.hptl-phase1-op-add-billing-form .primary-details .primary-box-container {
+  padding-top: 12.5px;
+  padding-left: 10px; }
 
-.hptl-phase1-op-add-billing-form .secondary-details {
-  padding: 10px; }
-
-.hptl-phase1-op-add-billing-form text {
-  color: #000; }
+.hptl-phase1-op-add-billing-form .patientRespo {
+  background: #f8f8f8; }
 
 .hptl-phase1-op-add-billing-form .form-details {
   padding: 5px;
@@ -28,9 +23,8 @@
   margin-top: -10px; }
 
 .hptl-phase1-op-add-billing-form .Paper {
-  padding: 10px;
   min-height: 35vh;
-  border: 1px solid #5f5f5f; }
+  border: 1px solid #d3d3d3; }
 
 .hptl-phase1-op-add-billing-form th,
 .hptl-phase1-op-add-billing-form td {
@@ -39,3 +33,13 @@
 
 .insurance-amt-details {
   padding-bottom: 5px; }
+
+#Bill_details input[type="text"] {
+  width: 10%; }
+
+#Bill_details input[type="text"]:disabled {
+  border: none;
+  background: none;
+  color: #000; }
+  #Bill_details input[type="text"]:disabled :after {
+    border: none; }

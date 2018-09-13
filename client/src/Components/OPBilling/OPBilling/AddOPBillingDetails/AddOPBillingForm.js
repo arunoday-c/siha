@@ -21,6 +21,8 @@ import {
   discounthandle,
   adjustadvance
 } from "./AddOPBillingHandaler";
+import ReciptForm from "../ReciptDetails/ReciptForm";
+
 import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Paper from "@material-ui/core/Paper";
@@ -542,58 +544,7 @@ class AddOPBillingForm extends Component {
                 </div>
 
                 <div className="row">
-                  <div className="col-lg-7">
-                    <div className="row">
-                      <div className="col-lg-3">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "copay_amount"
-                          }}
-                        />
-                        <h5>
-                          {this.state.copay_amount
-                            ? "₹" + this.state.copay_amount
-                            : "₹0.00"}
-                        </h5>
-                      </div>
-                      <div className="col-lg-3">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "deductable_amount"
-                          }}
-                        />
-                        <h5>
-                          {this.state.sub_total_amount
-                            ? "₹" + this.state.sub_total_amount
-                            : "₹0.00"}
-                        </h5>
-                      </div>
-                      <div className="col-lg-3">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "seco_copay_amount"
-                          }}
-                        />
-                        <h5>
-                          {this.state.sec_copay_amount
-                            ? "₹" + this.state.sec_copay_amount
-                            : "₹0.00"}
-                        </h5>
-                      </div>
-                      <div className="col-lg-3">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "sec_deductable_amount"
-                          }}
-                        />
-                        <h5>
-                          {this.state.sec_deductable_amount
-                            ? "₹" + this.state.sec_deductable_amount
-                            : "₹0.00"}
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
+                  <div className="col-lg-7" />
                   <div className="col-lg-5" style={{ textAlign: "right" }}>
                     <div className="row">
                       <div className="col-lg-4">
@@ -602,11 +553,11 @@ class AddOPBillingForm extends Component {
                             fieldName: "sub_total_amount"
                           }}
                         />
-                        <h5>
+                        <h6>
                           {this.state.sub_total_amount
                             ? "₹" + this.state.sub_total_amount
                             : "₹0.00"}
-                        </h5>
+                        </h6>
                       </div>
                       <div className="col-lg-4">
                         <AlgaehLabel
@@ -614,11 +565,11 @@ class AddOPBillingForm extends Component {
                             fieldName: "discount_amount"
                           }}
                         />
-                        <h5>
+                        <h6>
                           {this.state.discount_amount
                             ? "₹" + this.state.discount_amount
                             : "₹0.00"}
-                        </h5>
+                        </h6>
                       </div>
 
                       <div className="col-lg-4">
@@ -627,235 +578,221 @@ class AddOPBillingForm extends Component {
                             fieldName: "net_total"
                           }}
                         />
-                        <h5>
+                        <h6>
                           {this.state.net_total
                             ? "₹" + this.state.net_total
                             : "₹0.00"}
-                        </h5>
+                        </h6>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="row">
-                  <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 primary-details">
+                  <div className="col-lg-4">
                     <Paper className="Paper">
-                      <div className="row primary-box-container">
-                        <div className="col-lg-3" style={{ marginTop: "20px" }}>
+                      <div className="row">
+                        <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
-                              fieldName: "patient"
+                              fieldName: "copay_amount"
                             }}
                           />
+                          <h6>
+                            {this.state.copay_amount
+                              ? "₹" + this.state.copay_amount
+                              : "₹0.00"}
+                          </h6>
                         </div>
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "responsiblity"
-                          }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.patient_res,
-                            className: "txt-fld",
-                            name: "patient_res",
-
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "tax"
-                          }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.patient_tax,
-                            className: "txt-fld",
-                            name: "patient_tax",
-
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "payable"
-                          }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.patient_payable_h,
-                            className: "txt-fld",
-                            name: "patient_payable",
-
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
+                        <div className="col-lg-6">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "deductable_amount"
+                            }}
+                          />
+                          <h6>
+                            {this.state.sub_total_amount
+                              ? "₹" + this.state.sub_total_amount
+                              : "₹0.00"}
+                          </h6>
+                        </div>
+                        <div className="col-lg-6">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "seco_copay_amount"
+                            }}
+                          />
+                          <h6>
+                            {this.state.sec_copay_amount
+                              ? "₹" + this.state.sec_copay_amount
+                              : "₹0.00"}
+                          </h6>
+                        </div>
+                        <div className="col-lg-6">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "sec_deductable_amount"
+                            }}
+                          />
+                          <h6>
+                            {this.state.sec_deductable_amount
+                              ? "₹" + this.state.sec_deductable_amount
+                              : "₹0.00"}
+                          </h6>
+                        </div>
                       </div>
-
-                      <div className="row primary-box-container">
-                        <div className="col-lg-3">
+                      <div className="row">
+                        <div className="col-lg-12 patientRespo">
                           <AlgaehLabel
                             label={{
-                              fieldName: "company"
+                              fieldName: "patient_lbl"
                             }}
                           />
+                          <div className="row insurance-details">
+                            <div className="col-5">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "responsibility_lbl"
+                                }}
+                              />
+                              <h6>
+                                {this.state.patient_res
+                                  ? "₹" + this.state.patient_res
+                                  : "₹0.00"}
+                              </h6>
+                            </div>
+
+                            <div className="col-3">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "tax_lbl"
+                                }}
+                              />
+                              <h6>
+                                {this.state.patient_tax
+                                  ? "₹" + this.state.patient_tax
+                                  : "₹0.00"}
+                              </h6>
+                            </div>
+
+                            <div className="col-4">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "payable_lbl"
+                                }}
+                              />
+                              <h6>
+                                {this.state.patient_payable_h
+                                  ? "₹" + this.state.patient_payable_h
+                                  : "₹0.00"}
+                              </h6>
+                            </div>
+                          </div>
                         </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.company_res,
-                            className: "txt-fld",
-                            name: "company_res",
+                        {/* <div className="col-lg-1"> &nbsp; </div> */}
 
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.company_tax,
-                            className: "txt-fld",
-                            name: "company_tax",
-
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.company_payble,
-                            className: "txt-fld",
-                            name: "company_payble",
-
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-                      </div>
-
-                      <div className="row primary-box-container">
-                        <div className="col-lg-3">
+                        <div className="col-lg-12">
                           <AlgaehLabel
                             label={{
-                              fieldName: "seco_company"
+                              fieldName: "company_lbl"
                             }}
                           />
+                          <div className="row insurance-details">
+                            <div className="col-5">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "responsibility_lbl"
+                                }}
+                              />
+                              <h6>
+                                {this.state.company_res
+                                  ? "₹" + this.state.company_res
+                                  : "₹0.00"}
+                              </h6>
+                            </div>
+
+                            <div className="col-3">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "tax_lbl"
+                                }}
+                              />
+                              <h6>
+                                {this.state.company_tax
+                                  ? "₹" + this.state.company_tax
+                                  : "₹0.00"}
+                              </h6>
+                            </div>
+
+                            <div className="col-4">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "payable_lbl"
+                                }}
+                              />
+                              <h6>
+                                {this.state.company_payble
+                                  ? "₹" + this.state.company_payble
+                                  : "₹0.00"}
+                              </h6>
+                            </div>
+                          </div>
                         </div>
 
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.sec_company_res,
-                            className: "txt-fld",
-                            name: "sec_company_res",
+                        <div className="col-lg-12">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "sec_comp_lbl"
+                            }}
+                          />
+                          <div className="row insurance-details">
+                            <div className="col-5">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "responsibility_lbl"
+                                }}
+                              />
+                              <h6>
+                                {this.state.sec_company_res
+                                  ? "₹" + this.state.sec_company_res
+                                  : "₹0.00"}
+                              </h6>
+                            </div>
 
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
+                            <div className="col-3">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "tax_lbl"
+                                }}
+                              />
+                              <h6>
+                                {this.state.sec_company_tax
+                                  ? "₹" + this.state.sec_company_tax
+                                  : "₹0.00"}
+                              </h6>
+                            </div>
 
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.sec_company_tax,
-                            className: "txt-fld",
-                            name: "sec_company_tax",
-
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.sec_company_paybale,
-                            className: "txt-fld",
-                            name: "sec_company_paybale",
-
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
+                            <div className="col-4">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "payable_lbl"
+                                }}
+                              />
+                              <h6>
+                                {this.state.sec_company_paybale
+                                  ? "₹" + this.state.sec_company_paybale
+                                  : "₹0.00"}
+                              </h6>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </Paper>
                   </div>
 
-                  <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 secondary-details">
+                  <div className="col-lg-8">
                     <Paper className="Paper">
                       <div className="row secondary-box-container">
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
-                          label={{
-                            fieldName: "advance_amount"
-                          }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.advance_amount,
-                            className: "txt-fld",
-                            name: "advance_amount",
-
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
                           label={{
@@ -872,29 +809,6 @@ class AddOPBillingForm extends Component {
                             }
                           }}
                         />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
-                          label={{
-                            fieldName: "net_amount"
-                          }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.net_amount,
-                            className: "txt-fld",
-                            name: "net_amount",
-
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-                      </div>
-
-                      <div className="row secondary-box-container">
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
                           label={{
@@ -928,9 +842,41 @@ class AddOPBillingForm extends Component {
                             }
                           }}
                         />
+                      </div>
+
+                      <hr />
+                      <div
+                        className="row secondary-box-container"
+                        style={{ marginBottom: "10px" }}
+                      >
+                        <div className="col-3">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "advance_amount"
+                            }}
+                          />
+                          <h6>
+                            {this.state.company_payble
+                              ? "₹" + this.state.advance_amount
+                              : "₹0.00"}
+                          </h6>
+                        </div>
+
+                        <div className="col-3">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "net_amount"
+                            }}
+                          />
+                          <h6>
+                            {this.state.net_amount
+                              ? "₹" + this.state.net_amount
+                              : "₹0.00"}
+                          </h6>
+                        </div>
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
+                          div={{ className: "col-lg-3" }}
                           label={{
                             fieldName: "credit_amount"
                           }}
@@ -938,40 +884,34 @@ class AddOPBillingForm extends Component {
                             decimal: { allowNegative: false },
                             value: this.state.credit_amount,
                             className: "txt-fld",
-                            name: "credit_amount",
+                            name: "state_credit_amount",
 
                             events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: true
+                              onChange: null
                             }
                           }}
                         />
-                      </div>
 
-                      <div className="row secondary-box-container">
-                        <div className="col-lg-8"> &nbsp;</div>
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
-                          label={{
-                            fieldName: "receiveable_amount"
+                        <div
+                          className="col-3"
+                          style={{
+                            background: " #44b8bd",
+                            color: " #fff"
                           }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.receiveable_amount,
-                            className: "txt-fld",
-                            name: "receiveable_amount",
-
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
+                        >
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "receiveable_amount"
+                            }}
+                          />
+                          <h4>
+                            {this.state.receiveable_amount
+                              ? "₹" + this.state.receiveable_amount
+                              : "₹0.00"}
+                          </h4>
+                        </div>
                       </div>
+                      <ReciptForm BillingIOputs={this.props.BillingIOputs} />
                     </Paper>
                   </div>
                 </div>

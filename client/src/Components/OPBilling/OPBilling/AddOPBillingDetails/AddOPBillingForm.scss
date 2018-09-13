@@ -5,20 +5,14 @@
 
 .hptl-phase1-op-add-billing-form {
   .primary-details {
-    padding: 10px;
-
     .primary-box-container {
       padding-top: 12.5px;
       padding-left: 10px;
     }
   }
 
-  .secondary-details {
-    padding: 10px;
-  }
-
-  text {
-    color: #000;
+  .patientRespo {
+    background: #f8f8f8;
   }
 
   .form-details {
@@ -38,9 +32,8 @@
   }
 
   .Paper {
-    padding: 10px;
     min-height: 35vh;
-    border: 1px solid #5f5f5f;
+    border: 1px solid #d3d3d3;
   }
 
   th,
@@ -52,4 +45,17 @@
 
 .insurance-amt-details {
   padding-bottom: 5px;
+}
+#Bill_details {
+  input[type="text"] {
+    width: 10%;
+  }
+  input[type="text"]:disabled {
+    border: none;
+    background: none;
+    color: #000;
+    :after {
+      border: none;
+    }
+  }
 }

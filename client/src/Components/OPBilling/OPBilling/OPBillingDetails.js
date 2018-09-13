@@ -102,20 +102,6 @@ export default class OPBillingDetails extends Component {
             </li>
             <li
               style={{ marginRight: 2 }}
-              algaehtabs={"ReceiptDetails"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Receipt Details"
-                  }}
-                />
-              }
-            </li>
-            <li
-              style={{ marginRight: 2 }}
               algaehtabs={"PrimaryInsurance"}
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
@@ -150,8 +136,6 @@ export default class OPBillingDetails extends Component {
 
           {this.state.pageDisplay === "BillingDetails" ? (
             <AddOPBillingDetails BillingIOputs={this.props.BillingIOputs} />
-          ) : this.state.pageDisplay === "ReceiptDetails" ? (
-            <ReciptForm BillingIOputs={this.props.BillingIOputs} />
           ) : this.state.pageDisplay === "PrimaryInsurance" ? (
             <PrimaryInsurance BillingIOputs={this.props.BillingIOputs} />
           ) : this.state.pageDisplay === "SecondaryDetails" ? (
