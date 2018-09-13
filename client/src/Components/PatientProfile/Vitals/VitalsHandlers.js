@@ -7,8 +7,8 @@ const getVitalHistory = $this => {
       visit_id: Window.global["visit_id"]
     },
     redux: {
-      type: "ALL_VITALS",
-      mappingName: "allvitals"
+      type: "PATIENT_VITALS",
+      mappingName: "patient_vitals"
     },
     afterSuccess: data => {}
   });

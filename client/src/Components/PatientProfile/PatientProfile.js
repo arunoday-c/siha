@@ -10,6 +10,18 @@ import moment from "moment";
 import { setGlobal, removeGlobal } from "../../utils/GlobalFunctions";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../actions/algaehActions";
+import {
+  getPatientProfile,
+  getPatientVitals,
+  getPatientAllergies,
+  getPatientDiet,
+  getPatientDiagnosis
+} from "./PatientProfileHandlers";
+
 class PatientProfile extends Component {
   constructor(props) {
     super(props);
@@ -43,55 +55,61 @@ class PatientProfile extends Component {
   }
 
   componentDidMount() {
-    algaehLoader({ show: true });
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getPatientProfile",
-      data: {
-        patient_id: Window.global["current_patient"],
-        episode_id: Window.global["episode_id"],
-        visit_id: Window.global["visit_id"]
-      },
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success) {
-          console.log("Patient data:", response.data.records);
-          let _allergies = Enumerable.from(
-            response.data.records.patient_allergies
-          )
-            .groupBy("$.allergy_type", null, (k, g) => {
-              return {
-                allergy_type: k,
-                allergy_type_desc:
-                  k === "F"
-                    ? "Food"
-                    : k === "A"
-                      ? "Airborne"
-                      : k === "AI"
-                        ? "Animal  &  Insect"
-                        : k === "C"
-                          ? "Chemical & Others"
-                          : "",
-                allergyList: g.getSource()
-              };
-            })
-            .toArray();
+    // algaehLoader({ show: true });
+    // algaehApiCall({
+    //   uri: "/doctorsWorkBench/getPatientProfile",
+    //   data: {
+    //     patient_id: Window.global["current_patient"],
+    //     episode_id: Window.global["episode_id"],
+    //     visit_id: Window.global["visit_id"]
+    //   },
+    //   method: "GET",
+    //   onSuccess: response => {
+    //     if (response.data.success) {
+    //       console.log("Patient data:", response.data.records);
+    //       let _allergies = Enumerable.from(
+    //         response.data.records.patient_allergies
+    //       )
+    //         .groupBy("$.allergy_type", null, (k, g) => {
+    //           return {
+    //             allergy_type: k,
+    //             allergy_type_desc:
+    //               k === "F"
+    //                 ? "Food"
+    //                 : k === "A"
+    //                   ? "Airborne"
+    //                   : k === "AI"
+    //                     ? "Animal  &  Insect"
+    //                     : k === "C"
+    //                       ? "Chemical & Others"
+    //                       : "",
+    //             allergyList: g.getSource()
+    //           };
+    //         })
+    //         .toArray();
 
-          this.setState(
-            {
-              patientData: response.data.records.patient_profile[0],
-              patientVitals: response.data.records.vitals[0],
-              patientAllergies: _allergies,
-              patientDiagnosis: response.data.records.patientDiagnosis,
-              patientDiet: response.data.records.patient_diet
-            },
-            () => {
-              algaehLoader({ show: false });
-            }
-          );
-        }
-      },
-      onFailure: error => {}
-    });
+    //       this.setState(
+    //         {
+    //           patientData: response.data.records.patient_profile[0],
+    //           patientVitals: response.data.records.vitals[0],
+    //           patientAllergies: _allergies,
+    //           patientDiagnosis: response.data.records.patientDiagnosis,
+    //           patientDiet: response.data.records.patient_diet
+    //         },
+    //         () => {
+    //           algaehLoader({ show: false });
+    //         }
+    //       );
+    //     }
+    //   },
+    //   onFailure: error => {}
+    // });
+
+    getPatientProfile(this);
+    getPatientAllergies(this);
+    getPatientVitals(this);
+    getPatientDiagnosis(this);
+    getPatientDiet(this);
   }
   setPatientGlobalParameters() {
     if (Window.global["patientAllergies"] !== undefined) {
@@ -133,26 +151,26 @@ class PatientProfile extends Component {
           </div>
           <div className="patientName">
             <h6>
-              {this.state.patientData !== undefined
-                ? this.state.patientData.full_name
+              {this.props.patient_profile !== undefined
+                ? this.props.patient_profile[0].full_name
                 : ""}
             </h6>
             <p>
-              {this.state.patientData !== undefined
-                ? this.state.patientData.gender
+              {this.props.patient_profile !== undefined
+                ? this.props.patient_profile[0].gender
                 : ""}
               ,{" "}
-              {this.state.patientData !== undefined
-                ? this.state.patientData.age_in_years
-                : ""}
+              {this.props.patient_profile !== undefined
+                ? this.props.patient_profile[0].age_in_years
+                : 0}
               Y{" "}
-              {this.state.patientData !== undefined
-                ? this.state.patientData.age_in_months
-                : ""}
+              {this.props.patient_profile !== undefined
+                ? this.props.patient_profile[0].age_in_months
+                : 0}
               M{" "}
-              {this.state.patientData !== undefined
-                ? this.state.patientData.age_in_days
-                : ""}
+              {this.props.patient_profile !== undefined
+                ? this.props.patient_profile[0].age_in_days
+                : 0}
               D
             </p>
           </div>
@@ -161,8 +179,8 @@ class PatientProfile extends Component {
               DOB:
               <b>
                 {moment(
-                  this.state.patientData !== undefined
-                    ? this.state.patientData.date_of_birth
+                  this.props.patient_profile !== undefined
+                    ? this.props.patient_profile[0].date_of_birth
                     : ""
                 ).format("DD-MM-YYYY")}
               </b>
@@ -170,16 +188,16 @@ class PatientProfile extends Component {
             <span>
               Mobile:{" "}
               <b>
-                {this.state.patientData !== undefined
-                  ? this.state.patientData.contact_number
+                {this.props.patient_profile !== undefined
+                  ? this.props.patient_profile[0].contact_number
                   : ""}
               </b>
             </span>
             <span>
               Nationality:{" "}
               <b>
-                {this.state.patientData !== undefined
-                  ? this.state.patientData.nationality
+                {this.props.patient_profile !== undefined
+                  ? this.props.patient_profile[0].nationality
                   : ""}
               </b>
             </span>
@@ -188,8 +206,8 @@ class PatientProfile extends Component {
             <span>
               MRN:{" "}
               <b>
-                {this.state.patientData !== undefined
-                  ? this.state.patientData.patient_code
+                {this.props.patient_profile !== undefined
+                  ? this.props.patient_profile[0].patient_code
                   : ""}
               </b>
             </span>
@@ -197,8 +215,8 @@ class PatientProfile extends Component {
               Encounter:{" "}
               <b>
                 {moment(
-                  this.state.patientData !== undefined
-                    ? this.state.patientData.Encounter_Date
+                  this.props.patient_profile !== undefined
+                    ? this.props.patient_profile[0].Encounter_Date
                     : ""
                 ).format("DD-MM-YYYY HH:MM:SS A")}
               </b>
@@ -206,8 +224,8 @@ class PatientProfile extends Component {
             <span>
               Payment:{" "}
               <b>
-                {this.state.patientData !== undefined
-                  ? this.state.patientData.payment_type === "I"
+                {this.props.patient_profile !== undefined
+                  ? this.props.patient_profile[0].payment_type === "I"
                     ? "Insurance"
                     : "Self"
                   : ""}
@@ -218,24 +236,28 @@ class PatientProfile extends Component {
             <span>
               BP:{" "}
               <b>
-                {this.state.patientVitals !== undefined
-                  ? this.state.patientVitals.systolic
+                {this.props.patient_vitals !== undefined &&
+                this.props.patient_vitals.length !== 0
+                  ? this.props.patient_vitals[0].systolic
                   : 0}
                 /
-                {this.state.patientVitals !== undefined
-                  ? this.state.patientVitals.diastolic
+                {this.props.patient_vitals !== undefined &&
+                this.props.patient_vitals.length !== 0
+                  ? this.props.patient_vitals[0].diastolic
                   : 0}
               </b>
             </span>
             <span>
               Temp(C):{" "}
               <b>
-                {this.state.patientVitals !== undefined
-                  ? this.state.patientVitals.temperature_celsisus
+                {this.props.patient_vitals !== undefined &&
+                this.props.patient_vitals.length !== 0
+                  ? this.props.patient_vitals[0].temperature_celsisus
                   : 0}{" "}
                 (
-                {this.state.patientVitals !== undefined
-                  ? this.state.patientVitals.temperature_from
+                {this.props.patient_vitals !== undefined &&
+                this.props.patient_vitals.length !== 0
+                  ? this.props.patient_vitals[0].temperature_from
                   : 0}
                 )
               </b>
@@ -243,8 +265,9 @@ class PatientProfile extends Component {
             <span>
               H:{" "}
               <b>
-                {this.state.patientVitals !== undefined
-                  ? this.state.patientVitals.height
+                {this.props.patient_vitals !== undefined &&
+                this.props.patient_vitals.length !== 0
+                  ? this.props.patient_vitals[0].height
                   : 0}{" "}
                 CM
               </b>
@@ -252,8 +275,9 @@ class PatientProfile extends Component {
             <span>
               W:{" "}
               <b>
-                {this.state.patientVitals !== undefined
-                  ? this.state.patientVitals.weight
+                {this.props.patient_vitals !== undefined &&
+                this.props.patient_vitals.length !== 0
+                  ? this.props.patient_vitals[0].weight
                   : 0}{" "}
                 KG
               </b>
@@ -268,8 +292,9 @@ class PatientProfile extends Component {
               BMI :{" "}
               <b>
                 {" "}
-                {this.state.patientVitals !== undefined
-                  ? this.state.patientVitals.bmi
+                {this.props.patient_vitals !== undefined &&
+                this.props.patient_vitals.length !== 0
+                  ? this.props.patient_vitals[0].bmi
                   : 0}{" "}
               </b>
             </span>
@@ -408,4 +433,32 @@ class PatientProfile extends Component {
   }
 }
 
-export default PatientProfile;
+function mapStateToProps(state) {
+  return {
+    patient_profile: state.patient_profile,
+    patient_allergies: state.patient_allergies,
+    patient_vitals: state.patient_vitals,
+    patient_diet: state.patient_diet,
+    patient_diagnosis: state.patient_diagnosis
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getPatientProfile: AlgaehActions,
+      getPatientAllergies: AlgaehActions,
+      getPatientDiet: AlgaehActions,
+      getPatientDiagnosis: AlgaehActions,
+      getPatientVitals: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PatientProfile)
+);
