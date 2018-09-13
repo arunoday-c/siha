@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import moment from "moment";
 import {
   texthandle,
   datehandle,
@@ -44,41 +44,32 @@ class AddReciptForm extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-add-recipt-form">
-              <div className="container-fluid form-details">
-                <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "receipt_number",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "receipt_number",
-                      value: this.state.receipt_number,
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                  <AlgaehDateHandler
-                    div={{ className: "col-lg-3" }}
-                    label={{ fieldName: "receipt_date", isImp: true }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "receipt_date"
-                    }}
-                    disabled={true}
-                    maxDate={new Date()}
-                    events={{
-                      onChange: datehandle.bind(this, this, context)
-                    }}
-                    value={this.state.receipt_date}
-                  />
-
+              <div className="container-fluid">
+                <div className="row secondary-box-container">
+                  <div className="col-lg-3">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "receipt_number"
+                      }}
+                    />
+                    <h6>
+                      {this.state.receipt_number
+                        ? this.state.receipt_number
+                        : "Not Generated"}
+                    </h6>
+                  </div>
+                  <div className="col-lg-3">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "receipt_date"
+                      }}
+                    />
+                    <h6>
+                      {this.state.receipt_date
+                        ? moment(this.state.receipt_date).format("DD-MM-YYYY")
+                        : "DD/MM/YYYY"}
+                    </h6>
+                  </div>
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -123,7 +114,210 @@ class AddReciptForm extends Component {
                     }}
                   />
                 </div>
+                <hr />
 
+                {/* Payment Type */}
+                {/* Cash */}
+                <div className="row secondary-box-container">
+                  <div
+                    className="customCheckbox col-lg-2"
+                    style={{ border: "none", marginTop: "28px" }}
+                  >
+                    <label className="checkbox" style={{ color: "#212529" }}>
+                      <input
+                        type="checkbox"
+                        name="Pay by Cash"
+                        checked={this.state.Cashchecked}
+                        // onChange={checkcashhandaler.bind(this, this)}
+                      />
+
+                      <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
+                    </label>
+                  </div>
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-2" }}
+                    label={{
+                      fieldName: "amount",
+                      isImp: true
+                    }}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      className: "txt-fld",
+                      name: "cash_amount",
+                      value: this.state.cash_amount,
+                      events: {
+                        onChange: cashtexthandle.bind(this, this, context)
+                      }
+                    }}
+                  />
+                </div>
+                {/* Card */}
+                <div className="row secondary-box-container">
+                  <div
+                    className="customCheckbox col-lg-2"
+                    style={{ border: "none", marginTop: "28px" }}
+                  >
+                    <label className="checkbox" style={{ color: "#212529" }}>
+                      <input
+                        type="checkbox"
+                        name="Pay by Card"
+                        checked={this.state.Cardchecked}
+                        // onChange={checkcardhandaler.bind(this, this)}
+                      />
+                      <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
+                    </label>
+                  </div>
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-2" }}
+                    label={{
+                      fieldName: "amount",
+                      isImp: true
+                    }}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      className: "txt-fld",
+                      name: "card_amount",
+                      value: this.state.card_amount,
+                      events: {
+                        onChange: cardtexthandle.bind(this, this, context)
+                      },
+                      others: {
+                        receipt: true
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-5" }}
+                    label={{
+                      fieldName: "card_check_number"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "card_number",
+                      value: this.state.card_number,
+                      events: {
+                        onChange: texthandle.bind(this, this, context)
+                      },
+                      others: {
+                        disabled: this.state.enableCard
+                      }
+                    }}
+                  />
+
+                  <AlgaehDateHandler
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "expiry_date"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "card_date"
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      onChange: datehandle.bind(this, this, context)
+                    }}
+                    value={this.state.card_date}
+                  />
+                </div>
+                {/* Check */}
+                <div className="row secondary-box-container">
+                  <div
+                    className="customCheckbox col-lg-2"
+                    style={{ border: "none", marginTop: "28px" }}
+                  >
+                    <label className="checkbox" style={{ color: "#212529" }}>
+                      <input
+                        type="checkbox"
+                        name="Pay by Cheque"
+                        checked={this.state.Checkchecked}
+                        // onChange={checkcheckhandaler.bind(this, this)}
+                      />
+                      <span style={{ fontSize: "0.8rem" }}>Pay by Cheque</span>
+                    </label>
+                  </div>
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-2" }}
+                    label={{
+                      fieldName: "amount",
+                      isImp: true
+                    }}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      className: "txt-fld",
+                      name: "cheque_amount",
+                      value: this.state.cheque_amount,
+                      events: {
+                        onChange: chequetexthandle.bind(this, this, context)
+                      },
+                      others: {
+                        "data-receipt": "true"
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-5" }}
+                    label={{
+                      fieldName: "card_check_number"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "cheque_number",
+                      value: this.state.cheque_number,
+                      events: {
+                        onChange: texthandle.bind(this, this, context)
+                      }
+                    }}
+                  />
+
+                  <AlgaehDateHandler
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "expiry_date"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "cheque_date"
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      onChange: datehandle.bind(this, this, context)
+                    }}
+                    value={this.state.cheque_date}
+                  />
+                </div>
+                <div className="row secondary-box-container">
+                  <div className="col-lg-2" />
+                  <div className="col-lg-5">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "unbalanced_amount"
+                      }}
+                    />
+                    <h6>
+                      {this.state.unbalanced_amount
+                        ? "₹" + this.state.unbalanced_amount
+                        : "₹0.00"}
+                    </h6>
+                  </div>
+                </div>
+                {/* below old one */}
+                {/*
+                
+                  <div className="col-lg-4">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "total_amount"
+                      }}
+                    />
+                    <h6>
+                      {this.state.total_amount
+                        ? "₹" + this.state.total_amount
+                        : "₹0.00"}
+                    </h6>
+                  </div>
                 <div className="row primary-box-container">
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
@@ -332,7 +526,6 @@ class AddReciptForm extends Component {
                       }
                     }}
                   />
-                  {/* <div className="col-lg-6" /> */}
 
                   <div className="col-lg-3">
                     <AlgaehLabel
@@ -359,6 +552,7 @@ class AddReciptForm extends Component {
                     }}
                   />
                 </div>
+                */}
               </div>
               <br />
             </div>

@@ -31,16 +31,7 @@ export default class PatientDetails extends Component {
 
     return (
       <div className="hptl-phase1-Display-patient-details">
-        <div className="tab-container toggle-section">
-          <ul className="nav">
-            <li className={"nav-item tab-button active"}>
-              <label className="style_Label ">Patient Details</label>
-            </li>
-          </ul>
-        </div>
-        <div className="patient-section">
-          <PatientDisplayForm BillingIOputs={this.props.BillingIOputs} />
-        </div>
+        <PatientDisplayForm BillingIOputs={this.props.BillingIOputs} />
       </div>
     );
   }

@@ -84,8 +84,6 @@ let getPatientInsurance = (req, res, next) => {
               });
             }
             req.records = result;
-            debugLog("output", result);
-            debugLog("er", error);
             next();
           }
         );
