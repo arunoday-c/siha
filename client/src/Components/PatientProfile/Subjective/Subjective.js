@@ -3,6 +3,7 @@ import "./subjective.css";
 import Allergies from "../Allergies/Allergies";
 import ReviewofSystems from "../ReviewofSystems/ReviewofSystems";
 import ChiefComplaints from "../ChiefComplaints/ChiefComplaints.js";
+import PatientHistory from "../PatientHistory/PatientHistory";
 
 class Subjective extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class Subjective extends Component {
           <div className="row">
             <div className="col-lg-8">
               <ChiefComplaints />
+              <PatientHistory />
             </div>
 
             <div className="col-lg-4">

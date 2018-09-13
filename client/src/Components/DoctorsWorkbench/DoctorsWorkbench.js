@@ -459,9 +459,7 @@ class DoctorsWorkbench extends Component {
                       {
                         fieldName: "patient_type",
                         label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "policy_group_description" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Pay Type" }} />
                         ),
                         displayTemplate: data => {
                           return (
@@ -470,15 +468,16 @@ class DoctorsWorkbench extends Component {
                             </span>
                           );
                         }
-                      },
-                      {
-                        fieldName: "transfer_status",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "transfer_status" }}
-                          />
-                        )
                       }
+                      // ,
+                      // {
+                      //   fieldName: "transfer_status",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ fieldName: "transfer_status" }}
+                      //     />
+                      //   )
+                      // }
                     ]}
                     rowClassName={row => {
                       debugger;

@@ -14,12 +14,50 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
+import { Line } from "react-chartjs-2";
+
+const LineData = {
+  labels: [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ],
+  datasets: [
+    {
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: "#00BCB0",
+      borderColor: "#DCAC66",
+      borderCapStyle: "butt",
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: "miter",
+      pointBorderColor: "#00BCB0",
+      pointBackgroundColor: "#00BCB0",
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointRadius: 4,
+      pointHitRadius: 50,
+      data: [6500, 5900, 8000, 8100, 5600]
+    }
+  ]
+};
 
 class Vitals extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openVitalModal: false
+      openVitalModal: false,
+      weight: ""
     };
     this.handleClose = this.handleClose.bind(this);
   }
@@ -70,39 +108,44 @@ class Vitals extends Component {
   }
 
   addPatientVitals(e) {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/addPatientVitals",
-      method: "POST",
-      data: {
-        patient_id: Window.global["current_patient"],
-        visit_id: Window.global["visit_id"],
-        visit_date: this.state.recorded_date,
-        visit_time: this.state.recorded_time,
-        case_type: "OP",
-        height: this.state.height,
-        weight: this.state.weight,
-        bmi: this.state.bmi,
-        oxysat: this.state.oxysat,
-        temperature_from: this.state.temperature_from,
-        temperature_celsisus: this.state.temperature_celsisus,
-        systolic: this.state.systolic,
-        diastolic: this.state.diastolic
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          debugger;
-          swal("Vitals recorded successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
-          });
-          getVitalHistory(this);
-          //this.setPatientVitals();
-          this.resetVitals();
-        }
-      },
-      onFailure: error => {}
-    });
+    e.preventDefault();
+
+    if (this.state.weight.length === 0) {
+      alert("Please Capture at least one field");
+    } else {
+      algaehApiCall({
+        uri: "/doctorsWorkBench/addPatientVitals",
+        method: "POST",
+        data: {
+          patient_id: Window.global["current_patient"],
+          visit_id: Window.global["visit_id"],
+          visit_date: this.state.recorded_date,
+          visit_time: this.state.recorded_time,
+          case_type: "OP",
+          height: this.state.height,
+          weight: this.state.weight,
+          bmi: this.state.bmi,
+          oxysat: this.state.oxysat,
+          temperature_from: this.state.temperature_from,
+          temperature_celsisus: this.state.temperature_celsisus,
+          systolic: this.state.systolic,
+          diastolic: this.state.diastolic
+        },
+        onSuccess: response => {
+          if (response.data.success) {
+            swal("Vitals recorded successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+            getVitalHistory(this);
+            //this.setPatientVitals();
+            this.resetVitals();
+          }
+        },
+        onFailure: error => {}
+      });
+    }
   }
 
   render() {
@@ -119,8 +162,8 @@ class Vitals extends Component {
                   <h5>Vital Timeline</h5>
                   <hr />
                   <div className="timeline">
-                    {this.props.allvitals !== undefined
-                      ? this.props.allvitals.map((data, index) => (
+                    {this.props.patient_vitals !== undefined
+                      ? this.props.patient_vitals.map((data, index) => (
                           <div key={index} className="timelineContainer right">
                             <div className="content">
                               <p className="dateStamp">
@@ -179,6 +222,30 @@ class Vitals extends Component {
                 <div className="col-lg-9 popRightDiv">
                   <h5>Vital Charts</h5>
                   <hr />
+                  <Line
+                    height={60}
+                    options={{
+                      maintainAspectRatio: true,
+                      legend: false
+                    }}
+                    data={LineData}
+                  />
+                  <Line
+                    height={60}
+                    options={{
+                      maintainAspectRatio: true,
+                      legend: false
+                    }}
+                    data={LineData}
+                  />
+                  <Line
+                    height={60}
+                    options={{
+                      maintainAspectRatio: true,
+                      legend: false
+                    }}
+                    data={LineData}
+                  />
                 </div>
               </div>
             </div>
@@ -471,7 +538,7 @@ class Vitals extends Component {
 
 function mapStateToProps(state) {
   return {
-    allvitals: state.allvitals
+    patient_vitals: state.patient_vitals
   };
 }
 

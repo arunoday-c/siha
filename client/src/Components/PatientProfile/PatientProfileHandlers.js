@@ -1,3 +1,5 @@
+import Enumerable from "linq";
+import { setGlobal } from "../../utils/GlobalFunctions.js";
 const getPatientProfile = $this => {
   $this.props.getPatientProfile({
     uri: "/doctorsWorkBench/getPatientProfile",
@@ -40,7 +42,27 @@ const getPatientAllergies = $this => {
       type: "PATIENT_ALLERGIES",
       mappingName: "patient_allergies"
     },
-    afterSuccess: data => {}
+    afterSuccess: data => {
+      let _allergies = Enumerable.from(data)
+        .groupBy("$.allergy_type", null, (k, g) => {
+          return {
+            allergy_type: k,
+            allergy_type_desc:
+              k === "F"
+                ? "Food"
+                : k === "A"
+                  ? "Airborne"
+                  : k === "AI"
+                    ? "Animal  &  Insect"
+                    : k === "C"
+                      ? "Chemical & Others"
+                      : "",
+            allergyList: g.getSource()
+          };
+        })
+        .toArray();
+      setGlobal({ patientAllergies: _allergies });
+    }
   });
 };
 

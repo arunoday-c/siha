@@ -612,7 +612,7 @@ class Allergies extends Component {
                     <th> {tables.allergy_type_desc} </th>
                     <th>Onset Date</th>
                     <th>Comment</th>
-                    <th>Active</th>
+                    <th>Inactive</th>
                   </tr>
                 </thead>
                 <tbody>

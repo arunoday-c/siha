@@ -403,9 +403,6 @@ class AddBillingForm extends Component {
                             value: this.state.cash_amount,
                             events: {
                               onChange: cashtexthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.enableCash
                             }
                           }}
                         />
@@ -445,9 +442,6 @@ class AddBillingForm extends Component {
                             value: this.state.card_amount,
                             events: {
                               onChange: cardtexthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.enableCard
                             }
                           }}
                         />
@@ -462,9 +456,6 @@ class AddBillingForm extends Component {
                             value: this.state.card_number,
                             events: {
                               onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.enableCard
                             }
                           }}
                         />
@@ -478,7 +469,6 @@ class AddBillingForm extends Component {
                             className: "txt-fld",
                             name: "card_date"
                           }}
-                          disabled={this.state.enableCard}
                           minDate={new Date()}
                           events={{
                             onChange: datehandle.bind(this, this, context)
@@ -524,10 +514,6 @@ class AddBillingForm extends Component {
                                 this,
                                 context
                               )
-                            },
-                            others: {
-                              // "data-receipt": "true",
-                              disabled: this.state.enableCheck
                             }
                           }}
                         />
@@ -543,9 +529,6 @@ class AddBillingForm extends Component {
                             value: this.state.cheque_number,
                             events: {
                               onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.enableCheck
                             }
                           }}
                         />
@@ -560,7 +543,6 @@ class AddBillingForm extends Component {
                             name: "cheque_date"
                           }}
                           minDate={new Date()}
-                          disabled={this.state.enableCheck}
                           events={{
                             onChange: datehandle.bind(this, this, context)
                           }}
