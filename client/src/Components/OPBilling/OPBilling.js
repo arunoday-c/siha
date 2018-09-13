@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import PatientDetails from "./PatientDisDetails/PatientDetails.js";
-import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails.js";
 import DisplayVisitDetails from "./VisitDetails/DisplayVisitDetails.js";
 import OPBillingDetails from "./OPBilling/OPBillingDetails";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
@@ -22,6 +21,7 @@ import { successfulMessage } from "../../utils/GlobalFunctions";
 import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
+import Enumerable from "linq";
 
 var intervalId;
 
@@ -64,6 +64,20 @@ class PatientDisplayDetails extends Component {
           type: "BILL_HEADER_GEN_GET_DATA",
           mappingName: "genbill",
           data: {}
+        }
+      });
+    }
+
+    if (
+      this.props.patienttype === undefined ||
+      this.props.patienttype.length === 0
+    ) {
+      this.props.getPatientType({
+        uri: "/patientType/getPatientType",
+        method: "GET",
+        redux: {
+          type: "PATIENT_TYPE_GET_DATA",
+          mappingName: "patienttype"
         }
       });
     }
@@ -114,6 +128,22 @@ class PatientDisplayDetails extends Component {
             }
             AlgaehLoader({ show: false });
           }
+          debugger;
+          // let x = Enumerable.from($this.props.patienttype)
+          //   .where(
+          //     w =>
+          //       w.hims_d_patient_type_id ==
+          //       data.patientRegistration.patient_type
+          //   )
+          //   .Select(s => {
+          //     return {
+          //       patient_type:
+          //         this.state.selectedLang === "en"
+          //           ? s.patitent_type_desc
+          //           : s.arabic_patitent_type_desc
+          //     };
+          //   })
+          //   .toArray();
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
@@ -358,7 +388,8 @@ function mapStateToProps(state) {
   return {
     genbill: state.genbill,
     patients: state.patients,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
+    patienttype: state.patienttype
   };
 }
 
@@ -367,7 +398,8 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientDetails: AlgaehActions,
       getBIllDetails: AlgaehActions,
-      initialbillingCalculations: AlgaehActions
+      initialbillingCalculations: AlgaehActions,
+      getPatientType: AlgaehActions
     },
     dispatch
   );

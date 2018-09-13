@@ -127,7 +127,7 @@ class DisPatientForm extends Component {
                         },
                         onChange: texthandle.bind(this, this, context),
                         others: {
-                          disabled: this.state.existingPatient
+                          disabled: true
                         }
                       }}
                     />

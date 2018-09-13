@@ -25,7 +25,9 @@ import {
   onconfirm,
   confirmedgridcol,
   onReRun,
-  resultEntryUpdate
+  resultEntryUpdate,
+  onchangegridresult,
+  onchangegridamended
 } from "./ResultEntryEvents";
 
 class ResultEntry extends Component {
@@ -311,7 +313,7 @@ class ResultEntry extends Component {
                                             className: "txt-fld",
                                             name: "result",
                                             events: {
-                                              onChange: onchangegridcol.bind(
+                                              onChange: onchangegridresult.bind(
                                                 this,
                                                 this,
                                                 row
@@ -500,7 +502,34 @@ class ResultEntry extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  return row.amended === "N" ? "No" : "Yes";
+                                  return (
+                                    <span>
+                                      {row.amended === "N" ? (
+                                        <AlagehAutoComplete
+                                          div={{}}
+                                          selector={{
+                                            name: "amended",
+                                            className: "select-fld",
+                                            value: row.amended,
+                                            dataSource: {
+                                              textField: "name",
+                                              valueField: "value",
+                                              data: FORMAT_YESNO
+                                            },
+                                            onChange: onchangegridamended.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )
+                                          }}
+                                        />
+                                      ) : row.amended === "N" ? (
+                                        "No"
+                                      ) : (
+                                        "Yes"
+                                      )}
+                                    </span>
+                                  );
                                 }
                               },
                               //TODO

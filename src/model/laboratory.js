@@ -567,6 +567,7 @@ let updateLabResultEntry = (req, res, next) => {
         let inputParam = extend([], req.body);
 
         debugLog("inputParam:", inputParam);
+        let amended = "";
 
         let status_C = new LINQ(inputParam)
           .Where(w => w.status == "C")
@@ -577,6 +578,10 @@ let updateLabResultEntry = (req, res, next) => {
 
         let status_N = new LINQ(inputParam)
           .Where(w => w.status == "N")
+          .ToArray().length;
+
+        let status_E = new LINQ(inputParam)
+          .Where(w => w.status == "E")
           .ToArray().length;
 
         let runtype = new LINQ(inputParam)
@@ -598,7 +603,11 @@ let updateLabResultEntry = (req, res, next) => {
             break;
 
           case status_N:
-            //Do functionality for V here
+            //Do functionality for CL here
+            ref = "CL";
+            break;
+
+          case status_E:
             ref = "CL";
             break;
           default:
@@ -610,6 +619,15 @@ let updateLabResultEntry = (req, res, next) => {
         let qry = "";
 
         for (let i = 0; i < req.body.length; i++) {
+          if (inputParam[i].amended === "Y") {
+            amended =
+              "',amended_by='" +
+              user_id.updated_by +
+              "',amended_date='" +
+              new Date().toLocaleString();
+          } else {
+            amended = "";
+          }
           qry +=
             " UPDATE `hims_f_ord_analytes` SET result='" +
             inputParam[i].result +
@@ -635,6 +653,9 @@ let updateLabResultEntry = (req, res, next) => {
             user_id.updated_by +
             "',confirmed_date='" +
             new Date().toLocaleString() +
+            "',amended='" +
+            inputParam[i].amended +
+            amended +
             "',updated_date='" +
             new Date().toLocaleString() +
             "',updated_by='" +
