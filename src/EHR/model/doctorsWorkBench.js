@@ -1936,6 +1936,8 @@ let getPhysicalExamination = (req, res, next) => {
 
       let input = req.query;
 
+      debugLog("separtment:", req.userIdentity.sub_department_id);
+
       if (
         input.hims_d_physical_examination_details_id == "null" &&
         input.hims_d_physical_examination_header_id == "null"
@@ -1943,7 +1945,11 @@ let getPhysicalExamination = (req, res, next) => {
         queryBuilder =
           "SELECT hims_d_physical_examination_header_id, examination_type, \
             description as header_description, sub_department_id, assesment_type, \
-            mandatory as header_mandatory FROM hims_d_physical_examination_header where record_status='A';";
+            mandatory as header_mandatory FROM hims_d_physical_examination_header where record_status='A'and examination_type='G';\
+            SELECT hims_d_physical_examination_header_id, examination_type,description as header_description, sub_department_id, assesment_type,\
+            mandatory as header_mandatory FROM hims_d_physical_examination_header where record_status='A'and examination_type='S' and sub_department_id='" +
+          req.userIdentity.sub_department_id +
+          "';";
         debugLog("only physical header");
       } else if (
         input.hims_d_physical_examination_header_id != "null" &&
@@ -1971,6 +1977,7 @@ let getPhysicalExamination = (req, res, next) => {
             next(error);
           });
         }
+        debugLog("result", result[1]);
 
         req.records = result;
         next();
@@ -2331,5 +2338,3 @@ module.exports = {
   getPatientDiagnosis,
   getPatientDiet
 };
-
-
