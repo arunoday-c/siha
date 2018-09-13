@@ -11,7 +11,8 @@ const texthandle = ($this, e) => {
   });
 };
 
-const UpdateLabOrder = ($this, value) => {
+const UpdateLabOrder = ($this, value, status) => {
+  debugger;
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     data: value,
@@ -29,7 +30,7 @@ const UpdateLabOrder = ($this, value) => {
             value.splice(k, 1);
           }
         }
-        $this.setState({ test_analytes: value });
+        $this.setState({ test_analytes: value, status: status });
       }
     },
     onFailure: error => {
@@ -62,13 +63,13 @@ const onvalidate = $this => {
   if (success === true) {
     swal({
       title: "Are you sure want to Validate",
-      icon: "success",
+      icon: "warning",
       buttons: true,
       dangerMode: true
     }).then(willProceed => {
       if (willProceed) {
         test_analytes.push({ run_type: $this.state.run_type });
-        UpdateLabOrder($this, test_analytes);
+        UpdateLabOrder($this, test_analytes, "V");
       }
     });
   }
@@ -177,29 +178,45 @@ const resultEntryUpdate = $this => {
   debugger;
   let test_analytes = $this.state.test_analytes;
   let enterResult = true;
+  let enterRemarks = true;
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].result !== null) {
-      test_analytes[k].status = "E";
-      if (test_analytes[k].confirm !== "N") {
-        test_analytes[k].status = "C";
-      }
+      if (
+        test_analytes[k].remarks === null &&
+        test_analytes[k].amended === "Y"
+      ) {
+        enterRemarks = false;
+      } else {
+        test_analytes[k].status = "E";
+        if (test_analytes[k].confirm !== "N") {
+          test_analytes[k].status = "C";
+        }
 
-      if (test_analytes[k].validate !== "N") {
-        test_analytes[k].status = "V";
+        if (test_analytes[k].validate !== "N") {
+          test_analytes[k].status = "V";
+        }
       }
     } else {
       enterResult = false;
     }
   }
-  if (enterResult === true) {
+  if (enterResult === true && enterRemarks === true) {
     test_analytes.push({ run_type: $this.state.run_type });
-    UpdateLabOrder($this, test_analytes);
+    UpdateLabOrder($this, test_analytes, "E");
   } else {
-    swal("Invalid Input. Please enter input.", {
-      icon: "warning",
-      buttons: false,
-      timer: 2000
-    });
+    if (enterResult === false) {
+      swal("Invalid Input. Please enter input.", {
+        icon: "warning",
+        buttons: false,
+        timer: 2000
+      });
+    } else if (enterRemarks === false) {
+      swal("Invalid Input. Please enter Remarks for Ammended.", {
+        icon: "warning",
+        buttons: false,
+        timer: 2000
+      });
+    }
   }
 };
 
@@ -223,13 +240,13 @@ const onconfirm = $this => {
   if (success === true) {
     swal({
       title: "Are you sure want to Confirm",
-      icon: "success",
+      icon: "warning",
       buttons: true,
       dangerMode: true
     }).then(willProceed => {
       if (willProceed) {
         test_analytes.push({ run_type: $this.state.run_type });
-        UpdateLabOrder($this, test_analytes);
+        UpdateLabOrder($this, test_analytes, "CF");
       }
     });
   }
@@ -262,15 +279,81 @@ const onReRun = $this => {
   if (success === true) {
     swal({
       title: "Are you sure want to Re-Run",
-      icon: "success",
+      icon: "warning",
       buttons: true,
       dangerMode: true
     }).then(willProceed => {
       if (willProceed) {
-        UpdateLabOrder($this, test_analytes);
+        UpdateLabOrder($this, test_analytes, "N");
       }
     });
   }
+};
+
+const onchangegridresult = ($this, row, e) => {
+  debugger;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let test_analytes = $this.state.test_analytes;
+
+  row[name] = value;
+  for (let l = 0; l < test_analytes.length; l++) {
+    if (
+      test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
+    ) {
+      if (row.result >= row.normal_low && row.result <= row.normal_high) {
+        row["critical_type"] = "N";
+      } else if (row.result <= row.critical_low && row.critical_low !== 0) {
+        row["critical_type"] = "CL";
+      } else if (row.result < row.normal_low && row.result > row.critical_low) {
+        row["critical_type"] = "L";
+      } else if (row.result >= row.critical_high) {
+        row["critical_type"] = "CH";
+      } else if (
+        row.result > row.normal_high &&
+        row.result < row.critical_high
+      ) {
+        row["critical_type"] = "H";
+      }
+
+      test_analytes[l] = row;
+    }
+  }
+  $this.setState({ test_analytes: test_analytes });
+};
+
+const onchangegridamended = ($this, row, e) => {
+  debugger;
+
+  swal({
+    title: "Are you sure you want to Ammend?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true
+  }).then(willProceed => {
+    if (willProceed) {
+      let name = e.name || e.target.name;
+      let value = e.value || e.target.value;
+      let test_analytes = $this.state.test_analytes;
+
+      row[name] = value;
+      for (let l = 0; l < test_analytes.length; l++) {
+        if (
+          test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
+        ) {
+          row["confirm"] = "N";
+          row["validate"] = "N";
+          row["status"] = "E";
+
+          test_analytes[l] = row;
+        }
+      }
+      $this.setState({
+        test_analytes: test_analytes,
+        status: "CL"
+      });
+    }
+  });
 };
 
 export {
@@ -281,5 +364,7 @@ export {
   onconfirm,
   confirmedgridcol,
   onReRun,
-  resultEntryUpdate
+  resultEntryUpdate,
+  onchangegridresult,
+  onchangegridamended
 };

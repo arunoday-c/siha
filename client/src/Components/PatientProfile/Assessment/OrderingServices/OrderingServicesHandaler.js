@@ -45,7 +45,7 @@ const ProcessService = ($this, e) => {
   let preserviceInput = $this.state.preserviceInput || [];
   let serviceInput = [
     {
-      insured: $this.state.insured === null ? "N" : $this.state.insured,
+      insured: $this.state.insured,
       hims_d_services_id: $this.state.s_service,
       primary_insurance_provider_id: $this.state.insurance_provider_id,
       primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
@@ -194,13 +194,8 @@ const ProcessService = ($this, e) => {
             title: "Warning",
             icon: "warning"
           });
-        } else if (
-          data.billdetails[0].pre_approval === "N" &&
-          $this.state.approval_limit_yesno === "N"
-        ) {
-          data.billdetails[0].pre_approval = "N";
         } else {
-          data.billdetails[0].pre_approval = "Y";
+          data.billdetails[0].pre_approval = "N";
         }
         if (data.billdetails.length !== 0) {
           existingservices.splice(0, 0, data.billdetails[0]);
