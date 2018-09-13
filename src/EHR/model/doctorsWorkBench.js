@@ -860,7 +860,7 @@ PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episod
   }
 };
 
-//created by irfan: to  get Patient Vitals getPatientVitals
+//created by irfan: to  get Patient Vitals
 let getPatientVitals = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -873,6 +873,35 @@ let getPatientVitals = (req, res, next) => {
       connection.query(
         "select * from hims_f_patient_vitals where patient_id=? and visit_id=? order by visit_date desc, visit_time desc;",
         [inputData.patient_id, inputData.visit_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to  getPatientAllergies
+let getPatientAllergies = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
+        hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
+        and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc;",
+        [inputData.patient_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -1693,8 +1722,6 @@ let updatePatientROS = (req, res, next) => {
   }
 };
 
-
-
 //created by irfan: to add patient vitals
 let addPatientVitals = (req, res, next) => {
   try {
@@ -2257,7 +2284,7 @@ module.exports = {
   addReviewOfSysDetails,
   getReviewOfSystem,
   updatePatientDiagnosis,
- 
+
   addPatientVitals,
   addPatientPhysicalExamination,
   updatePatientAllergy,
@@ -2267,6 +2294,6 @@ module.exports = {
   addFollowUp,
   getPatientPhysicalExamination,
   updatePatientPhysicalExam,
-  getPatientVitals
+  getPatientVitals,
+  getPatientAllergies
 };
-

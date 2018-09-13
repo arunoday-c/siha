@@ -47,7 +47,8 @@ import {
   addReferalDoctor,
   addFollowUp,
   getPatientPhysicalExamination,
-  updatePatientPhysicalExam
+  updatePatientPhysicalExam,
+  getPatientAllergies
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -765,6 +766,19 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
-
+  //created by irfan: to  get Patient Allergies
+  api.get(
+    "/getPatientAllergies",
+    getPatientAllergies,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };
