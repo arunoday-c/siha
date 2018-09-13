@@ -1,0 +1,21 @@
+<div>
+    <p>Pateint Code: <span data-parameter="patient_code"></span></p>
+    <!-- <p data-parameter="patient_code"></p> -->
+    <p>Pateint Name</p>
+    <p data-parameter="full_name"></p>
+
+    <p>Bill Date </p>
+    <p data-parameter="bill_date"></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Bill Type</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody data-list="bill_details" list-template="patientTable">""</tbody>
+    </table>
+    <script id="patientTable" type="text/x-algaeh-template">
+       <tr><td data-list-parameter="bill_type">""</td><td data-list-parameter="amount">""</td></tr>
+    </script>
+</div>

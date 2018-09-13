@@ -324,7 +324,19 @@ class PatientDisplayDetails extends Component {
               value={this.state.bill_date}
             />
           }
-          printArea={true}
+          printArea={{
+            menuitems: [
+              {
+                label: "Print Receipt",
+                events: {
+                  onClick: () => {
+                    console.log("Patient state", this.state);
+                    AlgaehLoader({ show: true });
+                  }
+                }
+              }
+            ]
+          }}
           selectedLang={this.state.selectedLang}
         />
         <div className="spacing-push">

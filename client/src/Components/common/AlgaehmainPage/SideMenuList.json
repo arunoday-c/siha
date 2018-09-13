@@ -220,7 +220,7 @@
         "name": "Prescription List",
         "label": "Prescription List",
         "arlabel": "قائمة وصفة طبية",
-        "path": "/Prescription"
+        "path": "/PrescriptionList"
       }
     ]
   },

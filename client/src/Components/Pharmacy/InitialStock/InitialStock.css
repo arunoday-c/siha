@@ -1,0 +1,15 @@
+.hptl-phase1-initial-stock-form {
+  background: #ffff;
+  border-radius: 5px;
+  margin-top: 12vh; }
+  .hptl-phase1-initial-stock-form .form-details {
+    padding: 5px;
+    padding-bottom: 0px; }
+  .hptl-phase1-initial-stock-form mark {
+    background: none;
+    color: red; }
+  .hptl-phase1-initial-stock-form .form-group {
+    padding: 2vh; }
+  .hptl-phase1-initial-stock-form .go-button {
+    cursor: pointer;
+    margin-top: 2.5vh; }

@@ -208,7 +208,7 @@ class AddBillingForm extends Component {
                             fieldName: "sheet_discount"
                           }}
                           textBox={{
-                            decimal: { allowNegative: false, suffix: " %" },
+                            decimal: { allowNegative: false },
                             value: this.state.sheet_discount_percentage,
                             className: "txt-fld",
                             name: "sheet_discount_percentage",

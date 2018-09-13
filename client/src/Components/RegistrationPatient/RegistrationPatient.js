@@ -30,6 +30,7 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import AlgaehReport from "../Wrapper/printReports";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
+import moment from "moment";
 // function Transition(props) {
 //   return <Slide direction="up" {...props} />;
 // }
@@ -426,23 +427,41 @@ class RegistrationPatient extends Component {
                         }
                       },
                       data: {
-                        patient_code: this.state.patient_code,
-                        full_name: this.state.full_name,
-                        patient_details: [
-                          { patient_code: "PAT-A-0000002", full_name: "Kumar" },
-                          { patient_code: "PAT-A-0000003", full_name: "Ruchi" }
-                        ]
+                        patient_code: this.state.patient_code
+                        // full_name: this.state.full_name
+                        // patient_details: [
+                        //   {
+                        //     patient_code: this.state.patient_code,
+                        //     full_name: this.state.full_name
+                        //   }
+                        // ]
                       }
                     });
                   }
                 }
               },
               {
-                label: "Print Label",
+                label: "Print Receipt",
                 events: {
                   onClick: () => {
-                    console.log("Patient state", this.state);
-                    AlgaehLoader({ show: true });
+                    AlgaehReport({
+                      report: {
+                        fileName: "printreceipt"
+                      },
+                      data: {
+                        patient_code: this.state.patient_code,
+                        full_name: this.state.full_name,
+                        bill_date: moment(this.state.bill_date).format(
+                          "DD/MM/YYYY"
+                        ),
+                        bill_details: [
+                          {
+                            bill_type: this.state.patient_code,
+                            amount: this.state.receiveable_amount
+                          }
+                        ]
+                      }
+                    });
                   }
                 }
               }

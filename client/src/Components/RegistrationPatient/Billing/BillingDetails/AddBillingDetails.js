@@ -163,12 +163,12 @@ const adjustadvance = ($this, context, ctrl, e) => {
 
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-
+  debugger;
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
-  if ([e.target.name] === "sheet_discount_percentage") {
-    sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
+  if ([e.target.name] == "sheet_discount_percentage") {
+    sheet_discount_percentage = parseFloat(e.target.value);
     sheet_discount_amount = 0;
   } else {
     sheet_discount_amount = parseFloat(e.target.value);

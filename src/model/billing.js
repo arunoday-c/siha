@@ -11,6 +11,7 @@ import moment from "moment";
 import { debugLog, debugFunction } from "../utils/logging";
 import appsettings from "../utils/appsettings.json";
 import { LINQ } from "node-linq";
+import math from "mathjs";
 //import { inflate } from "zlib";
 
 let addBillData = (req, res, next) => {
@@ -794,6 +795,7 @@ let billingCalculations = (req, res, next) => {
         // Sheet Level Discount Nullify
         sendingObject.sheet_discount_percentage = 0;
         sendingObject.sheet_discount_amount = 0;
+
         if (inputParam.sheet_discount_amount > 0) {
           sendingObject.sheet_discount_percentage =
             (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
@@ -807,6 +809,16 @@ let billingCalculations = (req, res, next) => {
             (inputParam.gross_total * inputParam.sheet_discount_percentage) /
             100;
         }
+        
+        sendingObject.sheet_discount_amount = math.round(
+          sendingObject.sheet_discount_amount,
+          2
+        );
+        sendingObject.sheet_discount_percentage = math.round(
+          sendingObject.sheet_discount_percentage,
+          2
+        );
+        
 
         sendingObject.net_amount =
           inputParam.gross_total - sendingObject.sheet_discount_amount;
