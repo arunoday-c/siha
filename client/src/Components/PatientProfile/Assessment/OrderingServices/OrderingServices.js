@@ -149,15 +149,11 @@ class OrderingServices extends Component {
         {/* <div className="main-details" /> */}
         <div className="col-lg-12" style={{ minHeight: "30vh" }}>
           <div className="row form-details">
-            <div className="col-lg-1">
-              <AlgaehLabel
-                label={{
-                  fieldName: "select_service"
-                }}
-              />
-            </div>
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "select_service"
+              }}
               selector={{
                 name: "s_service_type",
                 className: "select-fld",
@@ -175,7 +171,10 @@ class OrderingServices extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col-lg-3" }}
+              label={{
+                forceLabel: "Select Service Type"
+              }}
               selector={{
                 name: "s_service",
                 className: "select-fld",
@@ -192,12 +191,14 @@ class OrderingServices extends Component {
               }}
             />
 
-            <div className="col-lg-1">
-              <Tooltip id="tooltip-icon" title="Process">
-                <IconButton className="go-button" color="primary">
-                  <PlayCircleFilled onClick={ProcessService.bind(this, this)} />
-                </IconButton>
-              </Tooltip>
+            <div className="col-lg-3">
+              <button
+                className="btn btn-primary"
+                style={{ marginTop: "24px" }}
+                onClick={ProcessService.bind(this, this)}
+              >
+                Add New Service
+              </button>
             </div>
 
             <div className="col-lg-3"> &nbsp; </div>
@@ -449,51 +450,39 @@ class OrderingServices extends Component {
           <div className="row">
             <div className="col-lg-7">
               <div className="row">
-                <div className="col-lg-3">
+                <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Copay Amount"
+                      forceLabel: "Patient Payable"
                     }}
                   />
                   <h5>
-                    {this.state.copay_amount
-                      ? "₹" + this.state.copay_amount
+                    {this.state.patient_payable
+                      ? "₹" + this.state.patient_payable
                       : "₹0.00"}
                   </h5>
                 </div>
-                <div className="col-lg-3">
+                <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Deductable Amount"
+                      forceLabel: "Company Payable"
                     }}
                   />
                   <h5>
-                    {this.state.deductable_amount
-                      ? "₹" + this.state.deductable_amount
+                    {this.state.sub_total_amount
+                      ? "₹" + this.state.company_payble
                       : "₹0.00"}
                   </h5>
                 </div>
-                <div className="col-lg-3">
+                <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Sec Copay Amount"
+                      forceLabel: "Sec Company Payable"
                     }}
                   />
                   <h5>
-                    {this.state.sec_copay_amount
-                      ? "₹" + this.state.sec_copay_amount
-                      : "₹0.00"}
-                  </h5>
-                </div>
-                <div className="col-lg-3">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Sec Deductable Amount"
-                    }}
-                  />
-                  <h5>
-                    {this.state.sec_deductable_amount
-                      ? "₹" + this.state.sec_deductable_amount
+                    {this.state.sec_company_paybale
+                      ? "₹" + this.state.sec_company_paybale
                       : "₹0.00"}
                   </h5>
                 </div>
@@ -538,47 +527,6 @@ class OrderingServices extends Component {
                       : "₹0.00"}
                   </h5>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-lg-12">
-            <div className="row">
-              <div className="col-lg-4">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Patient Payable"
-                  }}
-                />
-                <h5>
-                  {this.state.patient_payable
-                    ? "₹" + this.state.patient_payable
-                    : "₹0.00"}
-                </h5>
-              </div>
-              <div className="col-lg-4">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Company Payable"
-                  }}
-                />
-                <h5>
-                  {this.state.sub_total_amount
-                    ? "₹" + this.state.company_payble
-                    : "₹0.00"}
-                </h5>
-              </div>
-              <div className="col-lg-4">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Sec Company Payable"
-                  }}
-                />
-                <h5>
-                  {this.state.sec_company_paybale
-                    ? "₹" + this.state.sec_company_paybale
-                    : "₹0.00"}
-                </h5>
               </div>
             </div>
           </div>

@@ -8,7 +8,6 @@ import "../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehDateHandler,
   AlagehAutoComplete
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -17,7 +16,9 @@ import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
-import AppBar from "@material-ui/core/AppBar";
+
+import { setGlobal } from "../../utils/GlobalFunctions";
+import { getCookie } from "../../utils/algaehApiCall";
 
 class InsuranceSetup extends Component {
   constructor(props) {
@@ -44,6 +45,9 @@ class InsuranceSetup extends Component {
         }
       });
     }
+    let prevLang = getCookie("Language");
+    setGlobal({ selectedLang: prevLang });
+    this.setState({ selectedLang: prevLang });
   }
 
   ShowModel(e) {
@@ -120,7 +124,7 @@ class InsuranceSetup extends Component {
                 columns={[
                   {
                     fieldName: "edit_option",
-                    label: "Actions",
+                    label: <AlgaehLabel label={{ fieldName: "edit_option" }} />,
                     disabled: false,
                     displayTemplate: row => {
                       return (
@@ -131,7 +135,10 @@ class InsuranceSetup extends Component {
                             className: "select-fld",
                             value: row.edit_option,
                             dataSource: {
-                              textField: "name",
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "name"
+                                  : "arabic_name",
                               valueField: "value",
                               data: GlobalVariables.FORMAT_INSURANCE_EDIT_OPTION
                             },
@@ -142,13 +149,10 @@ class InsuranceSetup extends Component {
                     }
                   },
                   {
-                    fieldName: "sl_no",
-                    label: "#",
-                    disabled: true
-                  },
-                  {
                     fieldName: "insurance_type",
-                    label: "Type",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "insurance_type" }} />
+                    ),
                     disabled: true,
                     displayTemplate: row => {
                       return row.insurance_type === "I"
@@ -158,22 +162,32 @@ class InsuranceSetup extends Component {
                   },
                   {
                     fieldName: "currency",
-                    label: "Currency",
+                    label: <AlgaehLabel label={{ fieldName: "currency" }} />,
                     disabled: true
                   },
                   {
                     fieldName: "insurance_provider_name",
-                    label: "Insurance Name",
+                    label: (
+                      <AlgaehLabel
+                        label={{ fieldName: "insurance_provider_name" }}
+                      />
+                    ),
                     disabled: true
                   },
                   {
                     fieldName: "insurance_provider_code",
-                    label: "Provider ID",
+                    label: (
+                      <AlgaehLabel
+                        label={{ fieldName: "insurance_provider_code" }}
+                      />
+                    ),
                     disabled: true
                   },
                   {
                     fieldName: "payment_type",
-                    label: "Payment Type",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "payment_type" }} />
+                    ),
                     disabled: true
                   },
                   {
@@ -183,7 +197,11 @@ class InsuranceSetup extends Component {
                   },
                   {
                     fieldName: "effective_start_date",
-                    label: "Active From",
+                    label: (
+                      <AlgaehLabel
+                        label={{ fieldName: "effective_start_date" }}
+                      />
+                    ),
                     displayTemplate: row => {
                       return (
                         <span>
@@ -195,7 +213,11 @@ class InsuranceSetup extends Component {
                   },
                   {
                     fieldName: "effective_end_date",
-                    label: "Valid Upto",
+                    label: (
+                      <AlgaehLabel
+                        label={{ fieldName: "effective_end_date" }}
+                      />
+                    ),
                     displayTemplate: row => {
                       return (
                         <span>

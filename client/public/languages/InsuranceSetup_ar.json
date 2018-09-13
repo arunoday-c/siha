@@ -60,5 +60,9 @@
   "covered": "مغطى",
 
   "corporate_discount": "خصم الشركات",
-  "applicable": "قابل للتطبيق"
+  "applicable": "قابل للتطبيق",
+  "filter_by": "مصنف بواسطة",
+
+  "edit_option": "عمل",
+  "currency": "دقة"
 }

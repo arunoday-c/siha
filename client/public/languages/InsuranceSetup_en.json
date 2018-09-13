@@ -69,5 +69,9 @@
   "covered": "Covered",
 
   "corporate_discount": "Corporate Discount",
-  "applicable": "Applicable"
+  "applicable": "Applicable",
+  "filter_by": "Filter By",
+
+  "edit_option": "Action",
+  "currency": "Currency"
 }

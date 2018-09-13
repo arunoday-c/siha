@@ -340,13 +340,14 @@ const SaveOrdersServices = ($this, e) => {
     data: $this.state.orderservicesdata,
     method: "POST",
     onSuccess: response => {
+      debugger;
       if (response.data.success) {
-        this.setState({ saved: true });
         successfulMessage({
           message: "Ordered Successfully...",
           title: "Success",
           icon: "success"
         });
+        this.setState({ saved: true });
       }
     },
     onFailure: error => {}

@@ -51,13 +51,13 @@ class RegistrationPatient extends Component {
     setGlobal({ selectedLang: "en" });
   }
   componentDidMount() {
+    debugger;
     // AlgaehLoader({ show: true });
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
-    this.setState({
-      selectedLang: prevLang
-    });
+
     let IOputs = emptyObject;
+    IOputs.selectedLang = prevLang;
     this.setState(IOputs);
     if (this.state.saveEnable === "clear") {
       this.props.initialStatePatientData({
