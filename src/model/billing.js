@@ -1106,10 +1106,11 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   // debugLog("not covered", {});
                   insured = "N";
                 }
-
+                debugLog("Pre approval: ", approval_limit_yesno);
                 if (approval_limit_yesno === "Y") {
                   pre_approval = "Y";
                 }
+                debugLog("Pre approval: ", pre_approval);
 
                 if (pre_approval === "N") {
                   pre_approval =
@@ -1961,7 +1962,7 @@ function insuranceServiceDetails(body, db, next, connection, resolve) {
 
   debugLog("connection string:", connection);
   connection.query(
-    "select price_from ,copay_consultation,copay_percent_rad,copay_percent_trt,copay_percent_dental,\
+    "select price_from ,copay_consultation,copay_percent,copay_percent_rad,copay_percent_trt,copay_percent_dental,\
     copay_medicine, preapp_limit from hims_d_insurance_network_office where hims_d_insurance_network_office_id=?",
     [input.hims_d_insurance_network_office_id],
     (error, resultOffic) => {

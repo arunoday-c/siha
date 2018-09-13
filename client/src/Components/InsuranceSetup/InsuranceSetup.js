@@ -8,7 +8,6 @@ import "../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehDateHandler,
   AlagehAutoComplete
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -18,6 +17,8 @@ import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
 import AppBar from "@material-ui/core/AppBar";
+import { setGlobal } from "../../utils/GlobalFunctions";
+import { getCookie } from "../../utils/algaehApiCall";
 
 class InsuranceSetup extends Component {
   constructor(props) {
@@ -44,6 +45,9 @@ class InsuranceSetup extends Component {
         }
       });
     }
+    let prevLang = getCookie("Language");
+    setGlobal({ selectedLang: prevLang });
+    this.setState({ selectedLang: prevLang });
   }
 
   ShowModel(e) {

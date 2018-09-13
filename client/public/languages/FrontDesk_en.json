@@ -141,5 +141,6 @@
   "attach_back": "Back Side",
   "card_number": "Card Number",
   "bill_date": "Bill Date",
-  "bill_details": "Bill Details"
+  "bill_details": "Bill Details",
+  "patient_type": "Patient Type"
 }

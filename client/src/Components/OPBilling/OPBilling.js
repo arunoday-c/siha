@@ -37,7 +37,7 @@ class PatientDisplayDetails extends Component {
       pay_card: "CD",
       pay_cheque: "CH",
       cash_amount: 0,
-      card_number: "",
+      card_check_number: "",
       card_date: null,
       card_amount: 0,
       cheque_number: "",
@@ -170,7 +170,7 @@ class PatientDisplayDetails extends Component {
       if (this.state.card_amount > 0) {
         obj.push({
           hims_f_receipt_header_id: null,
-          card_check_number: this.state.card_number,
+          card_check_number: this.state.card_check_number,
           expiry_date: this.state.card_date,
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,

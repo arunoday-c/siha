@@ -146,7 +146,10 @@ class SubInsurance extends PureComponent {
                       className: "select-fld",
                       value: this.state.applicable,
                       dataSource: {
-                        textField: "name",
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "name"
+                            : "arabic_name",
                         valueField: "value",
                         data: GlobalVariables.FORMAT_DISCOUNT
                       },
