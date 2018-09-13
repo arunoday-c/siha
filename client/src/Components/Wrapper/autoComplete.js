@@ -59,6 +59,9 @@ const styles = theme => ({
       backgroundColor: "#fff",
       color: "#212529"
     },
+    ".mandatory .Select-placeholder": {
+      backgroundColor: "#fffff6"
+    },
     ".Select-menu-outer": {
       backgroundColor: theme.palette.background.paper,
       boxShadow: theme.shadows[2],

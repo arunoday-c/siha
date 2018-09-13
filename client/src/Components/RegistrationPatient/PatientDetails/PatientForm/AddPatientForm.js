@@ -207,559 +207,555 @@ class AddPatientForm extends PureComponent {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-8 primary-details">
-                    <div className="col-lg-12">
-                      <div className="row" style={{ paddingBottom: "10px" }}>
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-2" }}
-                          label={{
-                            fieldName: "title_id",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "title_id",
-                            className: "select-fld",
-                            value: this.state.title_id,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang == "en"
-                                  ? "title"
-                                  : "arabic_title",
-                              valueField: "his_d_title_id",
-                              data: this.props.titles
-                            },
-                            onChange: titlehandle.bind(this, this, context),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
-                          label={{
-                            fieldName: "full_name",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "full_name",
-                            value: this.state.full_name,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                            // error: this.state.open
-                            // helperText: this.state.MandatoryMsg
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
-                          label={{
-                            fieldName: "arabic_name",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "arabic_name",
-                            value: this.state.arabic_name,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-2" }}
-                          label={{
-                            fieldName: "gender",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "gender",
-                            className: "select-fld",
-                            value: this.state.gender,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "name"
-                                  : "arabic_name",
-                              valueField: "value",
-                              data: variableJson.FORMAT_GENDER
-                            },
-                            onChange: texthandle.bind(this, this, context),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-                      </div>
-                      <div className="row" style={{ paddingBottom: "10px" }}>
-                        <AlgaehDateHandler
-                          div={{ className: "col-lg-3" }}
-                          label={{ fieldName: "date_of_birth", isImp: true }}
-                          textBox={{ className: "txt-fld" }}
-                          maxDate={new Date()}
-                          events={{
-                            onChange: calculateAge.bind(this, this, context)
-                          }}
-                          disabled={this.state.existingPatient}
-                          value={
-                            this.state.date_of_birth !== undefined
-                              ? this.state.date_of_birth
-                              : null
+                    <div className="row" style={{ paddingBottom: "10px" }}>
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-2 mandatory" }}
+                        label={{
+                          fieldName: "title_id",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "title_id",
+                          className: "select-fld",
+                          value: this.state.title_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang == "en"
+                                ? "title"
+                                : "arabic_title",
+                            valueField: "his_d_title_id",
+                            data: this.props.titles
+                          },
+                          onChange: titlehandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
                           }
-                        />
+                        }}
+                      />
 
-                        <AlgaehDateHandler
-                          div={{ className: "col-lg-3" }}
-                          label={{ fieldName: "hijiri_date", isImp: true }}
-                          textBox={{ className: "txt-fld" }}
-                          //maxDate={this.state.CurrentDate}
-                          disabled={this.state.existingPatient}
-                          // events={{onChange: AddPatientHandlers(this,context).CalculateAge.bind(this)}}
-                          value={this.state.hijiri_date}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-1" }}
-                          label={{
-                            fieldName: "age",
-                            isImp: true
-                          }}
-                          textBox={{
-                            value: this.state.age,
-                            className: "txt-fld",
-                            name: "age",
-                            number: {
-                              thousandSeparator: ","
-                            },
-                            events: {
-                              onChange: setAge.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4 mandatory" }}
+                        label={{
+                          fieldName: "full_name",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+                          value: this.state.full_name,
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                          // error: this.state.open
+                          // helperText: this.state.MandatoryMsg
+                        }}
+                      />
 
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-1" }}
-                          label={{
-                            fieldName: "AGEMM",
-                            forceLabel: "&nbsp;",
-                            isImp: false
-                          }}
-                          textBox={{
-                            value: this.state.AGEMM,
-                            className: "txt-fld",
-                            name: "AGEMM",
-                            number: {
-                              thousandSeparator: ","
-                            },
-                            events: {
-                              onChange: setAge.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4 mandatory" }}
+                        label={{
+                          fieldName: "arabic_name",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "arabic_name",
+                          value: this.state.arabic_name,
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
 
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-1" }}
-                          label={{
-                            fieldName: "AGEDD",
-                            forceLabel: "&nbsp;",
-                            isImp: false
-                          }}
-                          textBox={{
-                            value: this.state.AGEDD,
-                            className: "txt-fld",
-                            name: "AGEDD",
-                            number: {
-                              thousandSeparator: ","
-                            },
-                            events: {
-                              onChange: setAge.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "contact_number",
-                            isImp: true
-                          }}
-                          textBox={{
-                            value: this.state.contact_number,
-                            className: "txt-fld",
-                            name: "contact_number",
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-2 mandatory" }}
+                        label={{
+                          fieldName: "gender",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "gender",
+                          className: "select-fld",
+                          value: this.state.gender,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "name"
+                                : "arabic_name",
+                            valueField: "value",
+                            data: variableJson.FORMAT_GENDER
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="row" style={{ paddingBottom: "10px" }}>
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{ fieldName: "date_of_birth", isImp: true }}
+                        textBox={{ className: "txt-fld" }}
+                        maxDate={new Date()}
+                        events={{
+                          onChange: calculateAge.bind(this, this, context)
+                        }}
+                        disabled={this.state.existingPatient}
+                        value={
+                          this.state.date_of_birth !== undefined
+                            ? this.state.date_of_birth
+                            : null
+                        }
+                      />
 
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-                      </div>
-                      <div className="row" style={{ paddingBottom: "10px" }}>
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "nationality_id",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "nationality_id",
-                            className: "select-fld",
-                            value: this.state.nationality_id,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "nationality"
-                                  : "arabic_nationality",
-                              valueField: "hims_d_nationality_id",
-                              data: this.props.nationalities
-                            },
-                            onChange: texthandle.bind(this, this, context),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "country_id",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "country_id",
-                            className: "select-fld",
-                            value: this.state.country_id,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "country_name"
-                                  : "arabic_country_name",
-                              valueField: "hims_d_country_id",
-                              data: this.props.countries
-                            },
-                            onChange: countryStatehandle.bind(
-                              this,
-                              this,
-                              context
-                            ),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "state_id",
-                            isImp: false
-                          }}
-                          selector={{
-                            name: "state_id",
-                            className: "select-fld",
-                            value: this.state.state_id,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "state_name"
-                                  : "arabic_state_name",
-                              valueField: "hims_d_state_id",
-                              data: this.props.countrystates
-                            },
-                            onChange: countryStatehandle.bind(
-                              this,
-                              this,
-                              context
-                            ),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "city_id",
-                            isImp: false
-                          }}
-                          selector={{
-                            name: "city_id",
-                            className: "select-fld",
-                            value: this.state.city_id,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "city_name"
-                                  : "city_arabic_name",
-                              valueField: "hims_d_city_id",
-                              data: this.props.cities
-                            },
-                            onChange: texthandle.bind(this, this, context),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-                      </div>
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{ fieldName: "hijiri_date", isImp: true }}
+                        textBox={{ className: "txt-fld" }}
+                        //maxDate={this.state.CurrentDate}
+                        disabled={this.state.existingPatient}
+                        // events={{onChange: AddPatientHandlers(this,context).CalculateAge.bind(this)}}
+                        value={this.state.hijiri_date}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-1 mandatory" }}
+                        label={{
+                          fieldName: "age",
+                          isImp: true
+                        }}
+                        textBox={{
+                          value: this.state.age,
+                          className: "txt-fld",
+                          name: "age",
+                          number: {
+                            thousandSeparator: ","
+                          },
+                          events: {
+                            onChange: setAge.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
 
-                      <div className="row" style={{ paddingBottom: "10px" }}>
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-6" }}
-                          label={{
-                            fieldName: "address1"
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "address1",
-                            value: this.state.address1,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-1 mandatory" }}
+                        label={{
+                          fieldName: "AGEMM",
+                          forceLabel: "&nbsp;",
+                          isImp: false
+                        }}
+                        textBox={{
+                          value: this.state.AGEMM,
+                          className: "txt-fld",
+                          name: "AGEMM",
+                          number: {
+                            thousandSeparator: ","
+                          },
+                          events: {
+                            onChange: setAge.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
 
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "patient_type"
-                          }}
-                          selector={{
-                            name: "patient_type",
-                            className: "select-fld",
-                            value: this.state.patient_type,
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-1 mandatory" }}
+                        label={{
+                          fieldName: "AGEDD",
+                          forceLabel: "&nbsp;",
+                          isImp: false
+                        }}
+                        textBox={{
+                          value: this.state.AGEDD,
+                          className: "txt-fld",
+                          name: "AGEDD",
+                          number: {
+                            thousandSeparator: ","
+                          },
+                          events: {
+                            onChange: setAge.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
+                          fieldName: "contact_number",
+                          isImp: true
+                        }}
+                        textBox={{
+                          value: this.state.contact_number,
+                          className: "txt-fld",
+                          name: "contact_number",
 
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "patitent_type_desc"
-                                  : "arabic_patitent_type_desc",
-                              valueField: "hims_d_patient_type_id",
-                              data: this.props.patienttype
-                            },
-                            onChange: texthandle.bind(this, this, context),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="row" style={{ paddingBottom: "10px" }}>
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
+                          fieldName: "nationality_id",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "nationality_id",
+                          className: "select-fld",
+                          value: this.state.nationality_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "nationality"
+                                : "arabic_nationality",
+                            valueField: "hims_d_nationality_id",
+                            data: this.props.nationalities
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
+                          fieldName: "country_id",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "country_id",
+                          className: "select-fld",
+                          value: this.state.country_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "country_name"
+                                : "arabic_country_name",
+                            valueField: "hims_d_country_id",
+                            data: this.props.countries
+                          },
+                          onChange: countryStatehandle.bind(
+                            this,
+                            this,
+                            context
+                          ),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "state_id",
+                          isImp: false
+                        }}
+                        selector={{
+                          name: "state_id",
+                          className: "select-fld",
+                          value: this.state.state_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "state_name"
+                                : "arabic_state_name",
+                            valueField: "hims_d_state_id",
+                            data: this.props.countrystates
+                          },
+                          onChange: countryStatehandle.bind(
+                            this,
+                            this,
+                            context
+                          ),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "city_id",
+                          isImp: false
+                        }}
+                        selector={{
+                          name: "city_id",
+                          className: "select-fld",
+                          value: this.state.city_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "city_name"
+                                : "city_arabic_name",
+                            valueField: "hims_d_city_id",
+                            data: this.props.cities
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+                    </div>
 
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "visa_type_id"
-                          }}
-                          selector={{
-                            name: "visa_type_id",
-                            className: "select-fld",
-                            value: this.state.visa_type_id,
+                    <div className="row" style={{ paddingBottom: "10px" }}>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          fieldName: "address1"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "address1",
+                          value: this.state.address1,
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
 
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "visa_type"
-                                  : "arabic_visa_type",
-                              valueField: "hims_d_visa_type_id",
-                              data: this.props.visatypes
-                            },
-                            onChange: texthandle.bind(this, this, context),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-                      </div>
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "patient_type"
+                        }}
+                        selector={{
+                          name: "patient_type",
+                          className: "select-fld",
+                          value: this.state.patient_type,
+
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "patitent_type_desc"
+                                : "arabic_patitent_type_desc",
+                            valueField: "hims_d_patient_type_id",
+                            data: this.props.patienttype
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "visa_type_id"
+                        }}
+                        selector={{
+                          name: "visa_type_id",
+                          className: "select-fld",
+                          value: this.state.visa_type_id,
+
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "visa_type"
+                                : "arabic_visa_type",
+                            valueField: "hims_d_visa_type_id",
+                            data: this.props.visatypes
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="col-lg-4 secondary-details">
-                    <div className="col-lg-12">
-                      <div className="row secondary-box-container">
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-6" }}
-                          label={{
-                            fieldName: "primary_identity_id",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "primary_identity_id",
-                            className: "select-fld",
-                            value: this.state.primary_identity_id,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "identity_document_name"
-                                  : "arabic_identity_document_name",
-                              valueField: "hims_d_identity_document_id",
-                              data: this.props.idtypes
-                            },
-                            onChange: texthandle.bind(this, this, context),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
+                    <div className="row secondary-box-container">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-6 mandatory" }}
+                        label={{
+                          fieldName: "primary_identity_id",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "primary_identity_id",
+                          className: "select-fld",
+                          value: this.state.primary_identity_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "identity_document_name"
+                                : "arabic_identity_document_name",
+                            valueField: "hims_d_identity_document_id",
+                            data: this.props.idtypes
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
 
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-6" }}
-                          label={{
-                            fieldName: "primary_id_no",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "primary_id_no",
-                            value: this.state.primary_id_no,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-                      </div>
-                      <div
-                        className="row secondary-box-container"
-                        style={{ paddingTop: "5px" }}
-                      >
-                        <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                          <div className="image-drop-area">
-                            <Dropzone
-                              onDrop={onDrop.bind(this, this, "filePreview")}
-                              id="attach-width"
-                              className="dropzone"
-                              accept="image/*"
-                              multiple={false}
-                              name="image"
-                            >
-                              <img
-                                // className="preview-image"
-                                src={this.state.filePreview}
-                                style={{ width: "100%", height: "108px" }}
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6 mandatory" }}
+                        label={{
+                          fieldName: "primary_id_no",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "primary_id_no",
+                          value: this.state.primary_id_no,
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+                    </div>
+                    <div
+                      className="row secondary-box-container"
+                      style={{ paddingTop: "5px" }}
+                    >
+                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                        <div className="image-drop-area">
+                          <Dropzone
+                            onDrop={onDrop.bind(this, this, "filePreview")}
+                            id="attach-width"
+                            className="dropzone"
+                            accept="image/*"
+                            multiple={false}
+                            name="image"
+                          >
+                            <img
+                              // className="preview-image"
+                              src={this.state.filePreview}
+                              style={{ width: "100%", height: "108px" }}
+                            />
+
+                            <div className="attach-design text-center">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "attach_photo",
+                                  align: ""
+                                }}
                               />
-
-                              <div className="attach-design text-center">
-                                <AlgaehLabel
-                                  label={{
-                                    fieldName: "attach_photo",
-                                    align: ""
-                                  }}
-                                />
-                              </div>
-                            </Dropzone>
-                          </div>
-                          {/* <div>
+                            </div>
+                          </Dropzone>
+                        </div>
+                        {/* <div>
                         
                         </div> */}
-                        </div>
-                        <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                          <div className="image-drop-area">
-                            <Dropzone
-                              className="dropzone"
-                              onDrop={onDrop.bind(
-                                this,
-                                this,
-                                "filePrimaryPreview"
-                              )}
-                              id="attach-primary-id"
-                              accept="image/*"
-                              multiple={false}
-                              name="image"
-                            >
-                              <img
-                                //className="preview-image"
-                                src={this.state.filePrimaryPreview}
-                                style={{ width: "100%", height: "108px" }}
+                      </div>
+                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                        <div className="image-drop-area">
+                          <Dropzone
+                            className="dropzone"
+                            onDrop={onDrop.bind(
+                              this,
+                              this,
+                              "filePrimaryPreview"
+                            )}
+                            id="attach-primary-id"
+                            accept="image/*"
+                            multiple={false}
+                            name="image"
+                          >
+                            <img
+                              //className="preview-image"
+                              src={this.state.filePrimaryPreview}
+                              style={{ width: "100%", height: "108px" }}
+                            />
+                            <div className="attach-design text-center">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "attach_idcard",
+                                  align: ""
+                                }}
                               />
-                              <div className="attach-design text-center">
-                                <AlgaehLabel
-                                  label={{
-                                    fieldName: "attach_idcard",
-                                    align: ""
-                                  }}
-                                />
-                              </div>
-                            </Dropzone>
-                          </div>
-                          <div />
+                            </div>
+                          </Dropzone>
                         </div>
+                        <div />
                       </div>
+                    </div>
 
-                      <div
-                        className="row secondary-box-container"
-                        style={{ paddingTop: "10px" }}
-                      >
-                        <AlagehAutoComplete
-                          div={{
-                            className: "col-lg-6"
-                          }}
-                          label={{
-                            fieldName: "marital_status",
-                            isImp: false
-                          }}
-                          selector={{
-                            name: "marital_status",
-                            className: "select-fld",
-                            value: this.state.marital_status,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "name"
-                                  : "arabic_name",
-                              valueField: "value",
-                              data: variableJson.FORMAT_MARTIALSTS
-                            },
-                            onChange: texthandle.bind(this, this, context),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
+                    <div
+                      className="row secondary-box-container"
+                      style={{ paddingTop: "10px" }}
+                    >
+                      <AlagehAutoComplete
+                        div={{
+                          className: "col-lg-6"
+                        }}
+                        label={{
+                          fieldName: "marital_status",
+                          isImp: false
+                        }}
+                        selector={{
+                          name: "marital_status",
+                          className: "select-fld",
+                          value: this.state.marital_status,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "name"
+                                : "arabic_name",
+                            valueField: "value",
+                            data: variableJson.FORMAT_MARTIALSTS
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
 
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-6" }}
-                          label={{
-                            fieldName: "religion_id",
-                            isImp: false
-                          }}
-                          selector={{
-                            name: "religion_id",
-                            className: "select-fld",
-                            value: this.state.religion_id,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "religion_name"
-                                  : "arabic_religion_name",
-                              valueField: "hims_d_religion_id",
-                              data: this.props.relegions
-                            },
-                            onChange: texthandle.bind(this, this, context),
-                            others: {
-                              disabled: this.state.existingPatient
-                            }
-                          }}
-                        />
-                      </div>
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          fieldName: "religion_id",
+                          isImp: false
+                        }}
+                        selector={{
+                          name: "religion_id",
+                          className: "select-fld",
+                          value: this.state.religion_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "religion_name"
+                                : "arabic_religion_name",
+                            valueField: "hims_d_religion_id",
+                            data: this.props.relegions
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
                     </div>
                   </div>
                 </div>

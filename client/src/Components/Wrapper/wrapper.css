@@ -44,6 +44,9 @@ div[numberbox="true"] input[type="text"] {
   .algaeh-datePicker button {
     margin-left: 0px; }
 
+.mandatory .algaeh-datePicker {
+  background: #fffff6; }
+
 .table-responsive {
   border: 1px solid #e2e2e2;
   border-radius: 4px; }
