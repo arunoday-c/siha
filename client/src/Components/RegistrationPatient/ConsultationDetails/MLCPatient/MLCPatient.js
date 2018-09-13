@@ -57,9 +57,9 @@ export default class MLCPatient extends Component {
       <MyContext.Consumer>
         {context => (
           <div className="hptl-phase1-add-mlcpatient-form">
-            <div className="container-fluid">
+            <div className="col-lg-12">
               <div className="row">
-                <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
+                <div className="col">
                   <Checkbox
                     onChange={this.CheckboxhandleChange.bind(this, context)}
                   />
@@ -71,7 +71,7 @@ export default class MLCPatient extends Component {
                 </div>
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     fieldName: "mlc_accident_reg_no",
                     isImp: true
@@ -90,7 +90,7 @@ export default class MLCPatient extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     fieldName: "mlc_police_station",
                     isImp: true
@@ -110,7 +110,7 @@ export default class MLCPatient extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     fieldName: "mlc_wound_certified_date",
                     isImp: true

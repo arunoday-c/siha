@@ -138,7 +138,7 @@ class OtherInfo extends Component {
                   }}
                 />
               </div>
-              <div>
+              <div className="row" style={{ paddingBottom: "10px" }}>
                 <AlagehFormGroup
                   div={{ className: "col-lg-3" }}
                   label={{
@@ -160,7 +160,7 @@ class OtherInfo extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-lg-9" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "address2"
                   }}
