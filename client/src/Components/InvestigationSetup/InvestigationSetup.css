@@ -1,10 +1,5 @@
 .hims_investigationsetup {
-  background: #fff;
-  border-radius: 5px;
-  padding-top: 2%;
-  padding-right: 3px;
-  padding-left: 3px;
-  padding-bottom: 1%; }
+  padding-top: 20px; }
   .hims_investigationsetup .toggle-section {
     margin: 10px;
     margin-bottom: 0px; }

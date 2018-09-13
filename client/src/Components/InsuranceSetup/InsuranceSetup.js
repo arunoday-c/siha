@@ -16,7 +16,7 @@ import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
-
+import AppBar from "@material-ui/core/AppBar";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { getCookie } from "../../utils/algaehApiCall";
 
@@ -84,7 +84,7 @@ class InsuranceSetup extends Component {
 
   render() {
     return (
-      <div className="insurancesetup">
+      <div>
         <BreadCrumb
           title={
             <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
@@ -108,172 +108,156 @@ class InsuranceSetup extends Component {
             }
           ]}
         />
-        <div className="row insurancesetup">
-          <div className="col-lg-12">
-            <div className="tab-container toggle-section">
+        <div className="row" style={{ marginTop: 90 }}>
+          {/* <div className="tab-container toggle-section">
               <ul className="nav">
                 <li className={"nav-item tab-button active"}>
-                  Insurance Provider List
+                  <label class="style_Label ">Insurance Provider List</label>
                 </li>
               </ul>
-            </div>
+            </div> */}
 
-            <div className="insurance-section">
-              <AlgaehDataGrid
-                id="insurance_grid"
-                columns={[
-                  {
-                    fieldName: "edit_option",
-                    label: <AlgaehLabel label={{ fieldName: "edit_option" }} />,
-                    disabled: false,
-                    displayTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "edit_option",
-                            className: "select-fld",
-                            value: row.edit_option,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "name"
-                                  : "arabic_name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_INSURANCE_EDIT_OPTION
-                            },
-                            onChange: this.setUpdateComponent.bind(this, row)
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "insurance_type",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "insurance_type" }} />
-                    ),
-                    disabled: true,
-                    displayTemplate: row => {
-                      return row.insurance_type === "I"
-                        ? "Insurance Company"
-                        : "Inactive";
-                    }
-                  },
-                  {
-                    fieldName: "currency",
-                    label: <AlgaehLabel label={{ fieldName: "currency" }} />,
-                    disabled: true
-                  },
-                  {
-                    fieldName: "insurance_provider_name",
-                    label: (
-                      <AlgaehLabel
-                        label={{ fieldName: "insurance_provider_name" }}
+          <div className="col-lg-12">
+            <AlgaehDataGrid
+              id="insurance_grid"
+              columns={[
+                {
+                  fieldName: "edit_option",
+                  label: "Actions",
+                  disabled: false,
+                  displayTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{}}
+                        selector={{
+                          name: "edit_option",
+                          className: "select-fld",
+                          value: row.edit_option,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.FORMAT_INSURANCE_EDIT_OPTION
+                          },
+                          onChange: this.setUpdateComponent.bind(this, row)
+                        }}
                       />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "insurance_provider_code",
-                    label: (
-                      <AlgaehLabel
-                        label={{ fieldName: "insurance_provider_code" }}
-                      />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "payment_type",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "payment_type" }} />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "credit_period",
-                    label: "Credit Period",
-                    disabled: true
-                  },
-                  {
-                    fieldName: "effective_start_date",
-                    label: (
-                      <AlgaehLabel
-                        label={{ fieldName: "effective_start_date" }}
-                      />
-                    ),
-                    displayTemplate: row => {
-                      return (
-                        <span>
-                          {this.changeDateFormat(row.effective_start_date)}
-                        </span>
-                      );
-                    },
-                    disabled: true
-                  },
-                  {
-                    fieldName: "effective_end_date",
-                    label: (
-                      <AlgaehLabel
-                        label={{ fieldName: "effective_end_date" }}
-                      />
-                    ),
-                    displayTemplate: row => {
-                      return (
-                        <span>
-                          {this.changeDateFormat(row.effective_end_date)}
-                        </span>
-                      );
-                    },
-                    disabled: true
+                    );
                   }
-                ]}
-                keyId="identity_document_code"
-                dataSource={{
-                  data:
-                    this.props.insProviders === undefined
-                      ? []
-                      : this.props.insProviders
-                }}
-                // isEditable={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
-              />
-            </div>
+                },
+                {
+                  fieldName: "sl_no",
+                  label: "#",
+                  disabled: true
+                },
+                {
+                  fieldName: "insurance_type",
+                  label: "Type",
+                  disabled: true,
+                  displayTemplate: row => {
+                    return row.insurance_type === "I"
+                      ? "Insurance Company"
+                      : "Inactive";
+                  }
+                },
+                {
+                  fieldName: "currency",
+                  label: "Currency",
+                  disabled: true
+                },
+                {
+                  fieldName: "insurance_provider_name",
+                  label: "Insurance Name",
+                  disabled: true
+                },
+                {
+                  fieldName: "insurance_provider_code",
+                  label: "Provider ID",
+                  disabled: true
+                },
+                {
+                  fieldName: "payment_type",
+                  label: "Payment Type",
+                  disabled: true
+                },
+                {
+                  fieldName: "credit_period",
+                  label: "Credit Period",
+                  disabled: true
+                },
+                {
+                  fieldName: "effective_start_date",
+                  label: "Active From",
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {this.changeDateFormat(row.effective_start_date)}
+                      </span>
+                    );
+                  },
+                  disabled: true
+                },
+                {
+                  fieldName: "effective_end_date",
+                  label: "Valid Upto",
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {this.changeDateFormat(row.effective_end_date)}
+                      </span>
+                    );
+                  },
+                  disabled: true
+                }
+              ]}
+              keyId="identity_document_code"
+              dataSource={{
+                data:
+                  this.props.insProviders === undefined
+                    ? []
+                    : this.props.insProviders
+              }}
+              // isEditable={true}
+              paging={{ page: 0, rowsPerPage: 10 }}
+            />
           </div>
         </div>
         {/* Footer Start */}
 
-        {/* <div className="hptl-phase1-footer">
-          <AppBar position="static" className="main" />
-        </div> */}
-        <div className="fixed-bottom insurance-footer">
-          <div className="float-right">
-            <button
-              className="htpl1-phase1-btn-primary"
-              style={{ margin: "10px" }}
-              onClick={this.ShowModel.bind(this)}
-            >
-              ADD NEW
-            </button>
-          </div>
+        <div className="hptl-phase1-footer">
+          <AppBar position="static" className="main">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.ShowModel.bind(this)}
+                >
+                  {/* <AlgaehLabel
+                    label={{ fieldName: "btn_save", returnText: true }}
+                  /> */}
+                  Add New
+                </button>
 
-          <InsuranceAdd
-            HeaderCaption={
-              <AlgaehLabel
-                label={{
-                  fieldName: "add_insurance",
-                  align: "ltr"
-                }}
-              />
-            }
-            open={this.state.isOpen}
-            onClose={this.ShowModel.bind(this)}
-            opencomponent={this.state.opencomponent}
-            addfunctionality={this.state.addfunctionality}
-            buttonenable={this.state.buttonenable}
-            insurance_provider_id={this.state.insurance_provider_id}
-            insurance_provider_name={this.state.insurance_provider_name}
-          />
+                <InsuranceAdd
+                  HeaderCaption={
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "add_insurance",
+                        align: "ltr"
+                      }}
+                    />
+                  }
+                  open={this.state.isOpen}
+                  onClose={this.ShowModel.bind(this)}
+                  opencomponent={this.state.opencomponent}
+                  addfunctionality={this.state.addfunctionality}
+                  buttonenable={this.state.buttonenable}
+                  insurance_provider_id={this.state.insurance_provider_id}
+                  insurance_provider_name={this.state.insurance_provider_name}
+                />
+              </div>
+            </div>
+          </AppBar>
         </div>
 
         {/* Footer End */}

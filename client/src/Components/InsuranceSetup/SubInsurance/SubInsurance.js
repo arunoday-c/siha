@@ -40,8 +40,8 @@ class SubInsurance extends PureComponent {
       transaction_number: null,
       card_format: null,
       effective_start_date: null,
-      effective_end_date: null,
-     // created_by: getCookie("UserID")
+      effective_end_date: null
+      // created_by: getCookie("UserID")
     };
     this.baseState = this.state;
   }
@@ -270,7 +270,7 @@ class SubInsurance extends PureComponent {
                 </div>
 
                 <div className="row form-details">
-                  <div className="col-lg-12">
+                  <div className="col-12 popLeftDiv">
                     <AlgaehDataGrid
                       id="sub_insurance_grid"
                       columns={[

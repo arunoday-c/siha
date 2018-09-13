@@ -10,7 +10,8 @@ export default class RadTemplate extends PureComponent {
     super(props);
     this.state = {
       value: "",
-      loader: false
+      loader: false,
+      chiefComplainList: []
     };
   }
 
@@ -25,6 +26,10 @@ export default class RadTemplate extends PureComponent {
   getIndexPatientDetails = e => {
     getPatientDetails(null);
   };
+
+  dropDownHandle(e) {
+    this.setState({ [e.name]: e.value });
+  }
 
   render() {
     return (
@@ -65,17 +70,33 @@ export default class RadTemplate extends PureComponent {
               </div>
             </div>
           </div>
-          <div className="col-lg-1">
-            <span
-              className="txt-fld"
-              style={{ padding: "10px", margin: "auto" }}
-            >
-              <button onClick={this.openLoader.bind(this)}>Open Loader</button>
-
-              <button onClick={this.closeLoader.bind(this)}>
-                Close Loader
-              </button>
-            </span>
+          <div className="col">
+            <AlagehAutoComplete
+              div={{ className: "col-lg-10 displayInlineBlock" }}
+              label={{
+                forceLabel: "Chief Complaint",
+                fieldName: "sample"
+              }}
+              selector={{
+                name: "chief_complaint_id",
+                className: "select-fld",
+                value: this.state.chief_complaint_id,
+                dataSource: {
+                  textField: "hpi_description",
+                  valueField: "hims_d_hpi_header_id",
+                  data:
+                    this.state.chiefComplainList.length !== 0
+                      ? this.state.chiefComplainList
+                      : null
+                },
+                onChange: this.dropDownHandle.bind(this),
+                userList: list => {
+                  //TODO need to change with appropriate service call --noor
+                  debugger;
+                  alert(JSON.stringify(list));
+                }
+              }}
+            />
           </div>
         </div>
       </React.Fragment>

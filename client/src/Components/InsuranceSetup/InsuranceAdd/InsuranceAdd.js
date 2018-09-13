@@ -165,11 +165,25 @@ class InsuranceAdd extends PureComponent {
         <div className="hptl-phase1-add-insurance-form">
           {this.props.addfunctionality === true ? (
             <Modal className="model-set" open={this.props.open}>
-              <div
-                style={{
-                  backgroundColor: "#fff"
-                }}
-              >
+              <div className="algaeh-modal">
+                <div className="popupHeader">
+                  <div className="row">
+                    <div className="col-lg-8">
+                      <h4>{this.props.HeaderCaption}</h4>
+                    </div>
+                    <div className="col-lg-4">
+                      <button
+                        type="button"
+                        className=""
+                        onClick={e => {
+                          this.onClose(e);
+                        }}
+                      >
+                        <i className="fas fa-times-circle" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
                 <MyContext.Provider
                   value={{
                     state: this.state,
@@ -178,11 +192,6 @@ class InsuranceAdd extends PureComponent {
                     }
                   }}
                 >
-                  <div className="colorPrimary">
-                    <Typography variant="title">
-                      {this.props.HeaderCaption}
-                    </Typography>
-                  </div>
                   <div className="stepper-set">
                     <Stepper
                       activeStep={activeStep}
@@ -209,55 +218,48 @@ class InsuranceAdd extends PureComponent {
                     </div>
                     <br />
 
-                    <div className="row" position="fixed">
-                      <div className="col-lg-12">
-                        <span className="float-left">
-                          <button
-                            // className="htpl1-phase1-btn-others"
-                            disabled={activeStep === 0}
-                            onClick={handleBack.bind(this, this)}
-                            className={
-                              classes.backButton + " htpl1-phase1-btn-secondary"
-                            }
-                          >
-                            Previous
-                          </button>
-
-                          <button
-                            className="htpl1-phase1-btn-secondary"
-                            color="primary"
-                            onClick={handleNext.bind(this, this)}
-                          >
-                            Save & Close
-                          </button>
-                        </span>
-
-                        <span className="float-right">
-                          <button
-                            className="htpl1-phase1-btn-secondary"
-                            onClick={e => {
-                              this.onClose(e);
-                            }}
-                          >
-                            Cancel
-                          </button>
-
-                          <button
-                            className="htpl1-phase1-btn-primary"
-                            style={{ float: "right" }}
-                            onClick={handleNext.bind(this, this)}
-                          >
-                            {activeStep === steps.length - 1
-                              ? "Finish"
-                              : "Save & Next"}
-                          </button>
-
-                          <AHSnackbar
-                            open={this.state.snackeropen}
-                            handleClose={this.handleClose}
-                            MandatoryMsg={this.state.MandatoryMsg}
-                          />
-                        </span>
+                    <div className="row popupFooter">
+                      <div className="col-lg-4">
+                        <button
+                          disabled={activeStep === 0}
+                          onClick={handleBack.bind(this, this)}
+                          type="button"
+                          className="btn btn-default button-left"
+                        >
+                          Previous
+                        </button>
+                      </div>
+                      <div className="col-lg-8">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={handleNext.bind(this, this)}
+                        >
+                          {activeStep === steps.length - 1
+                            ? "Finish"
+                            : "Save & Next"}
+                        </button>
+                        <button
+                          onClick={handleNext.bind(this, this)}
+                          type="button"
+                          className="btn btn-default"
+                        >
+                          Save & Close
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-default"
+                          onClick={e => {
+                            this.onClose(e);
+                          }}
+                        >
+                          Cancel
+                        </button>
+                        <AHSnackbar
+                          open={this.state.snackeropen}
+                          handleClose={this.handleClose}
+                          MandatoryMsg={this.state.MandatoryMsg}
+                        />
                       </div>
                     </div>
                   </div>
@@ -266,11 +268,25 @@ class InsuranceAdd extends PureComponent {
             </Modal>
           ) : (
             <Modal className="model-set" open={this.props.open}>
-              <div
-                style={{
-                  backgroundColor: "#fff"
-                }}
-              >
+              <div className="algaeh-modal">
+                <div className="popupHeader">
+                  <div className="row">
+                    <div className="col-lg-8">
+                      <h4>{this.props.HeaderCaption}</h4>
+                    </div>
+                    <div className="col-lg-4">
+                      <button
+                        type="button"
+                        className=""
+                        onClick={e => {
+                          this.onClose(e);
+                        }}
+                      >
+                        <i className="fas fa-times-circle" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
                 <MyContext.Provider
                   value={{
                     state: this.state,
@@ -279,41 +295,30 @@ class InsuranceAdd extends PureComponent {
                     }
                   }}
                 >
-                  <div className="colorPrimary">
-                    <Typography variant="title">
-                      {this.props.HeaderCaption}
-                    </Typography>
+                  <div className="popupInner">
+                    {getStepContent(this.props.opencomponent, this)}
                   </div>
 
-                  <div>{getStepContent(this.props.opencomponent, this)}</div>
-
-                  <br />
-
-                  <div className="row" position="fixed">
-                    <div className="container-fluid">
-                      <div className="col-lg-12">
-                        <span className="float-left">
-                          <button
-                            className="htpl1-phase1-btn-secondary"
-                            onClick={e => {
-                              this.onClose(e);
-                            }}
-                          >
-                            Close
-                          </button>
-                        </span>
-                        {this.props.opencomponent === "1" ? (
-                          <span className="float-right">
-                            <button
-                              style={{ marginRight: "15px" }}
-                              className="htpl1-phase1-btn-primary"
-                              onClick={updatedata.bind(this, this)}
-                            >
-                              Update
-                            </button>
-                          </span>
-                        ) : null}
-                      </div>
+                  <div className="popupFooter">
+                    <div className="col-lg-12">
+                      {this.props.opencomponent === "1" ? (
+                        <button
+                          onClick={updatedata.bind(this, this)}
+                          type="button"
+                          className="btn btn-primary"
+                        >
+                          Update
+                        </button>
+                      ) : null}
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={e => {
+                          this.onClose(e);
+                        }}
+                      >
+                        Close
+                      </button>
                     </div>
                   </div>
                 </MyContext.Provider>

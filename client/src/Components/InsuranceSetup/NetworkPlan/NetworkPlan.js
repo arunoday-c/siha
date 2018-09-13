@@ -147,7 +147,7 @@ class NetworkPlan extends PureComponent {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-network-plan-form">
-              <div className="container-fluid">
+              <div className="col-12 popLeftDiv">
                 {/* Services Details */}
                 <div className="row insurance-details">
                   <div className="col-lg-12 button-details">
