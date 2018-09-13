@@ -28,6 +28,7 @@ import { FORMAT_LAB_RAD } from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
 import NewInvestigation from "./NewInvestigation/NewInvestigation";
+import AppBar from "@material-ui/core/AppBar";
 
 class InvestigationSetup extends Component {
   constructor(props) {
@@ -165,108 +166,102 @@ class InvestigationSetup extends Component {
             }
           ]}
         />
-        <div className="container-fluid" style={{ marginTop: "85px" }}>
-          <div className="row">
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "investigation_type"
-              }}
-              selector={{
-                name: "investigation_type",
-                className: "select-fld",
-                value: this.state.investigation_type,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: FORMAT_LAB_RAD
-                },
-                onChange: texthandle.bind(this, this)
-              }}
-            />
+        <div className="row">
+          <div className="col-lg-12" style={{ marginTop: "75px" }}>
+            <div className="row">
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "investigation_type"
+                }}
+                selector={{
+                  name: "investigation_type",
+                  className: "select-fld",
+                  value: this.state.investigation_type,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: FORMAT_LAB_RAD
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
 
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "test_name"
-              }}
-              selector={{
-                name: "test_id",
-                className: "select-fld",
-                value: this.state.test_id,
-                dataSource: {
-                  textField: "description",
-                  valueField: "hims_d_investigation_test_id",
-                  data: this.state.InvestigationName
-                },
-                onChange: texthandle.bind(this, this)
-              }}
-            />
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "test_name"
+                }}
+                selector={{
+                  name: "test_id",
+                  className: "select-fld",
+                  value: this.state.test_id,
+                  dataSource: {
+                    textField: "description",
+                    valueField: "hims_d_investigation_test_id",
+                    data: this.state.InvestigationName
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
 
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "category_id"
-              }}
-              selector={{
-                name: "category_id",
-                className: "select-fld",
-                value: this.state.category_id,
-                dataSource: {
-                  textField: "category_name",
-                  valueField: "hims_d_test_category_id",
-                  data: this.props.testcategory
-                },
-                onChange: texthandle.bind(this, this)
-              }}
-            />
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "category_id"
+                }}
+                selector={{
+                  name: "category_id",
+                  className: "select-fld",
+                  value: this.state.category_id,
+                  dataSource: {
+                    textField: "category_name",
+                    valueField: "hims_d_test_category_id",
+                    data: this.props.testcategory
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
 
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "lab_section_id"
-              }}
-              selector={{
-                name: "lab_section_id",
-                className: "select-fld",
-                value: this.state.lab_section_id,
-                dataSource: {
-                  textField: "description",
-                  valueField: "hims_d_lab_section_id",
-                  data: this.props.labsection
-                },
-                onChange: texthandle.bind(this, this)
-              }}
-            />
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "lab_section_id"
+                }}
+                selector={{
+                  name: "lab_section_id",
+                  className: "select-fld",
+                  value: this.state.lab_section_id,
+                  dataSource: {
+                    textField: "description",
+                    valueField: "hims_d_lab_section_id",
+                    data: this.props.labsection
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
 
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "specimen_id"
-              }}
-              selector={{
-                name: "specimen_id",
-                className: "select-fld",
-                value: this.state.specimen_id,
-                dataSource: {
-                  textField: "description",
-                  valueField: "hims_d_lab_specimen_id",
-                  data: this.props.labspecimen
-                },
-                onChange: texthandle.bind(this, this)
-              }}
-            />
-            {/* <div className="col-lg-1">
-                <IconButton className="go-button" color="primary">
-                  <PlayCircleFilled
-                    onClick={getSampleCollectionDetails.bind(this, this)}
-                  />
-                </IconButton>
-              </div> */}
-          </div>
-          <div className="row hims_investigationsetup">
-            <div className="col-lg-12">
-              <div className="investigation-section">
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "specimen_id"
+                }}
+                selector={{
+                  name: "specimen_id",
+                  className: "select-fld",
+                  value: this.state.specimen_id,
+                  dataSource: {
+                    textField: "description",
+                    valueField: "hims_d_lab_specimen_id",
+                    data: this.props.labspecimen
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+            </div>
+            <hr />
+            <div className="row">
+              <div className="col-lg-12">
                 <AlgaehDataGrid
                   id="investigation_grid"
                   columns={[
@@ -364,18 +359,6 @@ class InvestigationSetup extends Component {
                         );
                       }
                     },
-                    // {
-                    //   fieldName: "created_date",
-                    //   label: (
-                    //     <AlgaehLabel label={{ fieldName: "created_date" }} />
-                    //   ),
-                    //   displayTemplate: row => {
-                    //     return (
-                    //       <span>{this.changeDateFormat(row.created_date)}</span>
-                    //     );
-                    //   },
-                    //   disabled: true
-                    // },
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
@@ -412,37 +395,48 @@ class InvestigationSetup extends Component {
           </div>
         </div>
         {/* Footer Start */}
-        <div className="fixed-bottom investigation-footer">
-          <div className="float-right">
-            <button
-              className="htpl1-phase1-btn-primary"
-              style={{ margin: "10px" }}
-              onClick={this.ShowModel.bind(this)}
-            >
-              ADD NEW
-            </button>
 
-            <button
-              className="htpl1-phase1-btn-primary"
-              style={{ margin: "10px" }}
-              onClick={this.clearData.bind(this)}
-            >
-              Clear
-            </button>
-            <NewInvestigation
-              HeaderCaption={
-                <AlgaehLabel
-                  label={{
-                    fieldName: "investigation_setup",
-                    align: "ltr"
-                  }}
+        <div className="hptl-phase1-footer">
+          <AppBar position="static" className="main">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.ShowModel.bind(this)}
+                >
+                  {/* <AlgaehLabel
+                    label={{ fieldName: "btn_save", returnText: true }}
+                  /> */}
+                  Add New
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={this.clearData.bind(this)}
+                >
+                  {/* <AlgaehLabel
+                    label={{ fieldName: "btn_save", returnText: true }}
+                  /> */}
+                  Clear
+                </button>
+
+                <NewInvestigation
+                  HeaderCaption={
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "investigation_setup",
+                        align: "ltr"
+                      }}
+                    />
+                  }
+                  open={this.state.isOpen}
+                  onClose={this.ShowModel.bind(this)}
+                  InvestigationPop={this.state.InvestigationPop}
                 />
-              }
-              open={this.state.isOpen}
-              onClose={this.ShowModel.bind(this)}
-              InvestigationPop={this.state.InvestigationPop}
-            />
-          </div>
+              </div>
+            </div>
+          </AppBar>
         </div>
         {/* Footer End */}
       </div>

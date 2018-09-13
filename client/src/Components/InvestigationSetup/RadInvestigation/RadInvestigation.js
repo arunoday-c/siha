@@ -59,8 +59,8 @@ class RadInvestigation extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-add-rad-investigation-form">
-              <div className="container-fluid">
-                <div className="row form-details">
+              <div className="col-12 popRightDiv">
+                <div className="row ">
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -144,7 +144,7 @@ class RadInvestigation extends Component {
                 </div>
 
                 <Paper className="Paper">
-                  <div className="row form-details">
+                  <div className="row ">
                     <div className="col-lg-12">
                       <button
                         className="htpl1-phase1-btn-primary"
@@ -155,7 +155,7 @@ class RadInvestigation extends Component {
                       </button>
                     </div>
                   </div>
-                  <div className="row form-details">
+                  <div className="row ">
                     <div className="col-lg-12">
                       <AlgaehDataGrid
                         id="template_grid"

@@ -76,9 +76,9 @@ class SubInsurance extends PureComponent {
     return (
       <React.Fragment>
         <div className="hptl-phase1-price-insurance-form">
-          <div className="container-fluid">
+          <div className="col-12 popLeftDiv">
             {/* Services Details */}
-            <div style={{ paddingTop: "10px" }}>
+            <div>
               <Paper style={{ padding: "15px", border: "1px solid #5f5f5f" }}>
                 <div className="row">
                   <AlagehAutoComplete

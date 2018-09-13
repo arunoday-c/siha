@@ -84,11 +84,28 @@ class NewInvestigation extends PureComponent {
         <div className="hptl-phase1-add-investigation-form">
           <Modal open={this.props.open}>
             <div className="algaeh-modal">
-              <div className="popupHeader">{this.props.HeaderCaption}</div>
+              <div className="popupHeader">
+                <div className="row">
+                  <div className="col-lg-8">
+                    <h4>{this.props.HeaderCaption}</h4>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-              <div className="col-lg-12 popupInner">
-                <div className="col-lg-12">
-                  <div className="row form-details">
+              <div className="popupInner">
+                <div className="col-12 popRightDiv">
+                  <div className="row">
                     <AlagehAutoComplete
                       div={{ className: "col-lg-3" }}
                       label={{
@@ -114,7 +131,7 @@ class NewInvestigation extends PureComponent {
                       }}
                     />
                   </div>
-                  <div className="row form-details">
+                  <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col-lg-3" }}
                       label={{
@@ -227,26 +244,15 @@ class NewInvestigation extends PureComponent {
                   </MyContext.Provider>
                 </div>
               </div>
-              <div className="row popupFooter">
-                <div className="col-lg-8"> &nbsp;</div>
 
-                <div className="col-lg-2">
+              <div className="row popupFooter">
+                <div className="col-lg-4"> &nbsp;</div>
+
+                <div className="col-lg-8">
                   <button
-                    variant="contained"
-                    className="htpl1-phase1-btn-secondary"
-                    onClick={e => {
-                      this.onClose(e);
-                    }}
-                  >
-                    <AlgaehLabel label={{ fieldName: "btnCancel" }} />
-                  </button>
-                </div>
-                <div className="col-lg-2">
-                  <button
-                    className="htpl1-phase1-btn-primary"
                     onClick={InsertLabTest.bind(this, this)}
-                    color="primary"
-                    variant="contained"
+                    type="button"
+                    className="btn btn-primary"
                   >
                     {this.state.hims_d_investigation_test_id === null ? (
                       <AlgaehLabel label={{ fieldName: "btnSave" }} />
@@ -254,13 +260,21 @@ class NewInvestigation extends PureComponent {
                       <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
                     )}
                   </button>
+                  <button
+                    onClick={e => {
+                      this.onClose(e);
+                    }}
+                    type="button"
+                    className="btn btn-default"
+                  >
+                    Cancel
+                  </button>
+                  <AHSnackbar
+                    open={this.state.open}
+                    handleClose={this.handleClose}
+                    MandatoryMsg={this.state.MandatoryMsg}
+                  />
                 </div>
-
-                <AHSnackbar
-                  open={this.state.open}
-                  handleClose={this.handleClose}
-                  MandatoryMsg={this.state.MandatoryMsg}
-                />
               </div>
             </div>
           </Modal>

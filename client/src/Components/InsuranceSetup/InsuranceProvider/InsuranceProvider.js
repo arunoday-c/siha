@@ -68,7 +68,7 @@ class InsuranceProvider extends PureComponent {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-insurance-provider-form">
-              <div className="container-fluid">
+              <div className="popRightDiv">
                 {/* Services Details */}
                 <div className="row">
                   <AlagehFormGroup
