@@ -1,5 +1,6 @@
 .hptl-phase1-recipt-form {
-  background: #fff;
+  background: #e9feff;
+  border: 1px solid #44b8bd;
   border-radius: 5px; }
 
 .hptl-phase1-add-recipt-form label {
@@ -11,7 +12,7 @@
   color: red; }
 
 .hptl-phase1-add-recipt-form .form-details {
-  padding: 10px;
+  padding-top: 10px;
   padding-bottom: 0px; }
 
 .hptl-phase1-add-recipt-form .radio-design {

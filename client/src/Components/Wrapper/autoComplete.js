@@ -1,8 +1,4 @@
-import React, { PureComponent, Component } from "react";
-// import ClearIcon from "@material-ui/icons/Clear";
-// import CancelIcon from "@material-ui/icons/Cancel";
-// import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
-//import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import React, { Component } from "react";
 import Select from "react-select";
 import Label from "../Wrapper/label";
 import "react-select/dist/react-select.css";
@@ -18,10 +14,7 @@ const styles = theme => ({
   chip: {
     margin: theme.spacing.unit / 4
   },
-  // We had to use a lot of global selectors in order to style react-select.
-  // We are waiting on https://github.com/JedWatson/react-select/issues/1679
-  // to provide a much better implementation.
-  // Also, we had to reset the default style injected by the library.
+
   "@global": {
     ".Select-control": {
       borderRadius: "none",
@@ -111,6 +104,7 @@ const styles = theme => ({
 });
 class AutoComplete extends Component {
   handleChange = value => {
+    debugger;
     if (value !== null) {
       if (
         this.props.selector.multi !== undefined &&
@@ -186,6 +180,20 @@ class AutoComplete extends Component {
     return false;
   }
 
+  bluringEvent(e) {
+    if (this.props.selector.userList !== undefined) {
+      if (e.currentTarget.value !== "") {
+        if (
+          this.state.single === undefined ||
+          this.state.single === null ||
+          this.state.single === ""
+        ) {
+          this.props.selector.userList(e.currentTarget.value.split(","));
+        }
+      }
+    }
+  }
+
   renderAutoComplete = () => {
     return (
       <TextField
@@ -206,6 +214,7 @@ class AutoComplete extends Component {
                 valueComponent={this.props.selector.valueComponet}
                 optionComponent={this.props.selector.optionComponent}
                 selectedValue={this.props.selector.value}
+                onBlur={this.bluringEvent.bind(this)}
                 clearable={false}
                 {...this.props.selector.others}
               />

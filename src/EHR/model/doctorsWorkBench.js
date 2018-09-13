@@ -840,42 +840,17 @@ let getPatientProfile = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "SELECT P.hims_d_patient_id,P.full_name,P.patient_code,P.gender,P.date_of_birth,P.contact_number,N.nationality,\
-        PV.age_in_years,PV.age_in_months,PV.age_in_days,PE.payment_type,PE.created_date as Encounter_Date \
+        PV.age_in_years,PV.age_in_months,PV.age_in_days,PE.payment_type,PE.updated_date as Encounter_Date \
 from ( (hims_f_patient P inner join hims_f_patient_encounter PE  on P.hims_d_patient_id=PE.patient_id)\
 inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
-PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episode_id=?;\
-select * from hims_f_patient_vitals where patient_id=? and visit_id=? order by visit_date desc, visit_time desc;\
- select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
-  hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
-  and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc;\
-  select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id,icd.icd_description as diagnosis_name ,diagnosis_type, final_daignosis from hims_f_patient_diagnosis pd,hims_d_icd icd where pd.record_status='A'\
-  and patient_id=? and episode_id=? and pd.daignosis_id=icd.hims_d_icd_id;\
-  SELECT hims_f_patient_diet_id, patient_id, episode_id, diet_id, comments, till_date, DM.hims_d_diet_description,DM.diet_status,DM.hims_d_diet_note FROM\
- hims_f_patient_diet PD,hims_d_diet_master DM where patient_id=? and episode_id=? and DM.record_status='A'\
- and DM.hims_d_diet_master_id=PD.diet_id",
-        [
-          inputData.patient_id,
-          inputData.episode_id,
-          inputData.patient_id,
-          inputData.visit_id,
-          inputData.patient_id,
-          inputData.patient_id,
-          inputData.episode_id,
-          inputData.patient_id,
-          inputData.episode_id
-        ],
+PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episode_id=?;",
+        [inputData.patient_id, inputData.episode_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
           }
-          req.records = {
-            patient_profile: result[0],
-            vitals: result[1],
-            patient_allergies: result[2],
-            patientDiagnosis: result[3],
-            patient_diet: result[4]
-          };
+          req.records = result;
           next();
         }
       );
@@ -885,6 +860,122 @@ select * from hims_f_patient_vitals where patient_id=? and visit_id=? order by v
   }
 };
 
+//created by irfan: to  get Patient Vitals
+let getPatientVitals = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select * from hims_f_patient_vitals where patient_id=? and visit_id=? order by visit_date desc, visit_time desc;",
+        [inputData.patient_id, inputData.visit_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to  getPatientAllergies
+let getPatientAllergies = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
+        hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
+        and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc;",
+        [inputData.patient_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to  getPatientDiet
+let getPatientDiet = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT hims_f_patient_diet_id, patient_id, episode_id, diet_id, comments, till_date, DM.hims_d_diet_description,DM.diet_status,DM.hims_d_diet_note FROM\
+        hims_f_patient_diet PD,hims_d_diet_master DM where patient_id=? and episode_id=? and DM.record_status='A'\
+        and DM.hims_d_diet_master_id=PD.diet_id",
+        [inputData.patient_id, inputData.episode_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to  getPatientDiagnosis
+let getPatientDiagnosis = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id,icd.icd_description as diagnosis_name ,diagnosis_type, final_daignosis from hims_f_patient_diagnosis pd,hims_d_icd icd where pd.record_status='A'\
+        and patient_id=? and episode_id=? and pd.daignosis_id=icd.hims_d_icd_id;",
+        [inputData.patient_id, inputData.episode_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 //created by irfan: to get chief complaints(HPI header) against (doctors)sub-department_id
 let getChiefComplaints = (req, res, next) => {
   try {
@@ -1404,34 +1495,6 @@ let addPatientDiagnosis = (req, res, next) => {
   }
 };
 
-//created by irfan: to get patient diagnosis
-let getPatientDiagnosis = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let inputData = extend({}, req.query);
-
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id, diagnosis_type, final_daignosis from hims_f_patient_diagnosis where record_status='A' and patient_id=? and episode_id=?; ",
-        [inputData.patient_id, inputData.episode_id],
-        (error, result) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
 //created by irfan: to add patient encounter review
 let addPatientROS = (req, res, next) => {
   try {
@@ -1685,40 +1748,6 @@ let updatePatientROS = (req, res, next) => {
           });
         });
       });
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
-//created by:irfan,to get Patient vitals
-let getPatientVitals = (req, res, next) => {
-  debugFunction("getPatientVitals");
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      let input = extend({}, req.query);
-
-      connection.query(
-        "select * from hims_f_patient_vitals where record_status='A' and patient_id=?  order by visit_date desc, visit_time desc;",
-        [input.patient_id],
-        (error, result) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-          req.records = result;
-
-          next();
-        }
-      );
     });
   } catch (e) {
     next(e);
@@ -2279,7 +2308,7 @@ module.exports = {
   getPatientAllergy,
   updatePatientChiefComplaints,
   addPatientDiagnosis,
-  getPatientDiagnosis,
+
   addPatientROS,
   getPatientROS,
   updatePatientROS,
@@ -2287,7 +2316,7 @@ module.exports = {
   addReviewOfSysDetails,
   getReviewOfSystem,
   updatePatientDiagnosis,
-  getPatientVitals,
+
   addPatientVitals,
   addPatientPhysicalExamination,
   updatePatientAllergy,
@@ -2296,5 +2325,11 @@ module.exports = {
   addReferalDoctor,
   addFollowUp,
   getPatientPhysicalExamination,
-  updatePatientPhysicalExam
+  updatePatientPhysicalExam,
+  getPatientVitals,
+  getPatientAllergies,
+  getPatientDiagnosis,
+  getPatientDiet
 };
+
+
