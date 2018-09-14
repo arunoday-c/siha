@@ -45,7 +45,36 @@ div[numberbox="true"] input[type="text"] {
     margin-left: 0px; }
 
 .mandatory .algaeh-datePicker {
-  background: #fffff6; }
+  background: #fff2f6; }
+
+.mandatory .Select-placeholder {
+  background-color: #fff2f6; }
+
+.mandatory input[type="text"] {
+  background-color: #fff2f6; }
+
+input[type="text"]:disabled {
+  background: #f0f0f0;
+  border: 1px solid #d3d3d3;
+  color: #000;
+  font-weight: bold; }
+
+.is-disabled .Select-control {
+  border: 1px solid #d3d3d3; }
+
+.is-disabled .Select-value {
+  background: #f0f0f0;
+  color: #000;
+  font-weight: bold; }
+
+.is-disabled .Select-arrow-zone {
+  display: none; }
+
+.is-disabled .Select-placeholder {
+  background: #f0f0f0; }
+
+.algaeh-datePicker .react-date-picker--disabled button {
+  display: none; }
 
 .table-responsive {
   border: 1px solid #e2e2e2;

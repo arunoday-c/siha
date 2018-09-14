@@ -228,7 +228,8 @@ class AddPatientForm extends PureComponent {
                           },
                           onChange: titlehandle.bind(this, this, context),
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "1"
                           }
                         }}
                       />
@@ -247,7 +248,8 @@ class AddPatientForm extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "2"
                           }
                           // error: this.state.open
                           // helperText: this.state.MandatoryMsg
@@ -255,7 +257,7 @@ class AddPatientForm extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4 mandatory" }}
+                        div={{ className: "col-lg-4 mandatory arabic-txt-fld" }}
                         label={{
                           fieldName: "arabic_name",
                           isImp: true
@@ -268,7 +270,8 @@ class AddPatientForm extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "3"
                           }
                         }}
                       />
@@ -293,14 +296,15 @@ class AddPatientForm extends PureComponent {
                           },
                           onChange: texthandle.bind(this, this, context),
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "4"
                           }
                         }}
                       />
                     </div>
                     <div className="row" style={{ paddingBottom: "10px" }}>
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-3 mandatory" }}
+                        div={{ className: "col-lg-3 mandatory", tabIndex: "5" }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
                         textBox={{ className: "txt-fld" }}
                         maxDate={new Date()}
@@ -316,7 +320,7 @@ class AddPatientForm extends PureComponent {
                       />
 
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-3 mandatory" }}
+                        div={{ className: "col-lg-3 mandatory", tabIndex: "6" }}
                         label={{ fieldName: "hijiri_date", isImp: true }}
                         textBox={{ className: "txt-fld" }}
                         //maxDate={this.state.CurrentDate}
@@ -341,7 +345,8 @@ class AddPatientForm extends PureComponent {
                             onChange: setAge.bind(this, this, context)
                           },
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "7"
                           }
                         }}
                       />
@@ -364,7 +369,8 @@ class AddPatientForm extends PureComponent {
                             onChange: setAge.bind(this, this, context)
                           },
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "8"
                           }
                         }}
                       />
@@ -387,7 +393,8 @@ class AddPatientForm extends PureComponent {
                             onChange: setAge.bind(this, this, context)
                           },
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "9"
                           }
                         }}
                       />
@@ -406,7 +413,8 @@ class AddPatientForm extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "10"
                           }
                         }}
                       />
@@ -458,7 +466,8 @@ class AddPatientForm extends PureComponent {
                           },
                           onChange: texthandle.bind(this, this, context),
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "11"
                           }
                         }}
                       />
@@ -486,7 +495,8 @@ class AddPatientForm extends PureComponent {
                             context
                           ),
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "12"
                           }
                         }}
                       />
@@ -562,7 +572,6 @@ class AddPatientForm extends PureComponent {
                           }
                         }}
                       />
-
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -611,7 +620,8 @@ class AddPatientForm extends PureComponent {
                           },
                           onChange: texthandle.bind(this, this, context),
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "14"
                           }
                         }}
                       />
@@ -630,7 +640,8 @@ class AddPatientForm extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "15"
                           }
                         }}
                       />
