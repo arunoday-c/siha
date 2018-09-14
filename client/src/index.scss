@@ -571,6 +571,65 @@ $forntSize: 0.7rem;
     }
   }
 
+  // Recipt CSS starts Down
+  .cashReciptStyles {
+    .receipt-header {
+      text-align: center;
+      line-height: 62px;
+      font-size: 1.3rem;
+      text-transform: uppercase;
+      color: #717171;
+    }
+    .hospitalLogo {
+      width: 150px;
+      height: 70px;
+      background: #f3f3f3;
+      border-radius: 5px;
+      line-height: 70px;
+      color: #ccc;
+      text-align: center;
+    }
+    .hospitalAddress {
+      font-size: 0.7rem;
+      width: 250px;
+      text-align: right;
+      float: right;
+      margin: 0;
+      padding: 0;
+    }
+    .table-report {
+      border: none;
+      border-bottom: 2px;
+      .table {
+        tbody {
+          td {
+            text-align: left;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #44b8bd;
+            border: none;
+          }
+          td:first-child {
+            color: #696969;
+            text-transform: none;
+          }
+          td:nth-child(4) {
+            color: #696969;
+            text-transform: none;
+          }
+        }
+      }
+    }
+
+    .text-danger strong {
+      color: #9f181c;
+    }
+    .receipt-header-mid {
+      margin: 15px 0 5px;
+      overflow: hidden;
+    }
+  }
+
   .tab-container {
     .tab-button {
       font-size: $forntSize;

@@ -424,6 +424,47 @@
         background: #efefef;
         color: #5a5a5a;
         border: 1px solid #adadad; }
+  :global .cashReciptStyles .receipt-header {
+    text-align: center;
+    line-height: 62px;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    color: #717171; }
+  :global .cashReciptStyles .hospitalLogo {
+    width: 150px;
+    height: 70px;
+    background: #f3f3f3;
+    border-radius: 5px;
+    line-height: 70px;
+    color: #ccc;
+    text-align: center; }
+  :global .cashReciptStyles .hospitalAddress {
+    font-size: 0.7rem;
+    width: 250px;
+    text-align: right;
+    float: right;
+    margin: 0;
+    padding: 0; }
+  :global .cashReciptStyles .table-report {
+    border: none;
+    border-bottom: 2px; }
+    :global .cashReciptStyles .table-report .table tbody td {
+      text-align: left;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #44b8bd;
+      border: none; }
+    :global .cashReciptStyles .table-report .table tbody td:first-child {
+      color: #696969;
+      text-transform: none; }
+    :global .cashReciptStyles .table-report .table tbody td:nth-child(4) {
+      color: #696969;
+      text-transform: none; }
+  :global .cashReciptStyles .text-danger strong {
+    color: #9f181c; }
+  :global .cashReciptStyles .receipt-header-mid {
+    margin: 15px 0 5px;
+    overflow: hidden; }
   :global .tab-container .tab-button {
     font-size: 0.7rem;
     font-weight: normal;

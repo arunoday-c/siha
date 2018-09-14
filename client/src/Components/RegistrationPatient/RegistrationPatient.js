@@ -34,6 +34,8 @@ import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import AlgaehReport from "../Wrapper/printReports";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
+import Options from "../../Options.json";
+
 // function Transition(props) {
 //   return <Slide direction="up" {...props} />;
 // }
@@ -72,6 +74,14 @@ class RegistrationPatient extends Component {
         }
       });
     }
+    this.props.getProviderDetails({
+      uri: "/employee/get",
+      method: "GET",
+      redux: {
+        type: "DOCTOR_GET_DATA",
+        mappingName: "providers"
+      }
+    });
 
     if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
       this.props.initialbillingCalculations({
@@ -440,13 +450,6 @@ class RegistrationPatient extends Component {
                       },
                       data: {
                         patient_code: this.state.patient_code
-                        // full_name: this.state.full_name
-                        // patient_details: [
-                        //   {
-                        //     patient_code: this.state.patient_code,
-                        //     full_name: this.state.full_name
-                        //   }
-                        // ]
                       }
                     });
                   }
@@ -456,6 +459,7 @@ class RegistrationPatient extends Component {
                 label: "Print Receipt",
                 events: {
                   onClick: () => {
+                    debugger;
                     AlgaehReport({
                       report: {
                         fileName: "printreceipt"
@@ -463,15 +467,13 @@ class RegistrationPatient extends Component {
                       data: {
                         patient_code: this.state.patient_code,
                         full_name: this.state.full_name,
+                        advance_amount: this.state.advance_amount,
                         bill_date: moment(this.state.bill_date).format(
-                          "DD/MM/YYYY"
+                          Options.dateFormat
                         ),
-                        bill_details: [
-                          {
-                            bill_type: this.state.patient_code,
-                            amount: this.state.receiveable_amount
-                          }
-                        ]
+                        receipt_number: this.state.receipt_number,
+                        doctor_name: this.state.doctor_name,
+                        bill_details: this.state.billdetails
                       }
                     });
                   }
@@ -614,7 +616,8 @@ function mapStateToProps(state) {
   return {
     patients: state.patients,
     genbill: state.genbill,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
+    providers: state.providers
   };
 }
 
@@ -628,7 +631,8 @@ function mapDispatchToProps(dispatch) {
       generateBill: AlgaehActions,
       initialStateBillGen: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      initialbillingCalculations: AlgaehActions
+      initialbillingCalculations: AlgaehActions,
+      getProviderDetails: AlgaehActions
     },
     dispatch
   );

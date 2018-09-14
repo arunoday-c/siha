@@ -1,6 +1,7 @@
 import swal from "sweetalert";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import Enumerable from "linq";
 
 const DeptselectedHandeler = ($this, context, e) => {
   $this.setState({
@@ -39,19 +40,30 @@ const unsuccessfulSignIn = (message, title) => {
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
+  debugger;
+  let employee_list = Enumerable.from($this.props.providers)
+    .where(w => w.hims_d_employee_id == e.value)
+    .toArray();
+  let doctor_name = "";
+  if (employee_list !== null && employee_list.length > 0) {
+    doctor_name = employee_list[0].full_name;
+  }
   if ($this.state.hims_d_patient_id != null) {
     algaehApiCall({
       uri: "/visit/checkVisitExists",
       data: $this.state,
       onSuccess: response => {
         if (response.data.success == true) {
+          debugger;
+
           $this.setState(
             {
               [e.name]: e.value,
               visittypeselect: false,
               hims_d_services_id: e.selected.services_id,
               incharge_or_provider: e.value,
-              provider_id: e.value
+              provider_id: e.value,
+              doctor_name: doctor_name
             },
             () => {
               generateBillDetails($this, context);
@@ -62,7 +74,8 @@ const doctorselectedHandeler = ($this, context, e) => {
               [e.name]: e.value,
               hims_d_services_id: e.selected.services_id,
               incharge_or_provider: e.value,
-              provider_id: e.value
+              provider_id: e.value,
+              doctor_name: doctor_name
             });
           }
         } else {
@@ -84,7 +97,8 @@ const doctorselectedHandeler = ($this, context, e) => {
         visittypeselect: false,
         hims_d_services_id: e.selected.services_id,
         incharge_or_provider: e.value,
-        provider_id: e.value
+        provider_id: e.value,
+        doctor_name: doctor_name
       },
       () => {
         generateBillDetails($this, context);
@@ -95,7 +109,8 @@ const doctorselectedHandeler = ($this, context, e) => {
         [e.name]: e.value,
         hims_d_services_id: e.selected.services_id,
         incharge_or_provider: e.value,
-        provider_id: e.value
+        provider_id: e.value,
+        doctor_name: doctor_name
       });
     }
   }

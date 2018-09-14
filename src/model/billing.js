@@ -1385,6 +1385,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   },
                   {
                     service_type_id: records.service_type_id,
+                    service_name: records.service_name,
                     services_id: servicesDetails.hims_d_services_id,
                     quantity: quantity,
                     unit_cost: unit_cost,

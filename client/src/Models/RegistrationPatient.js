@@ -61,6 +61,8 @@ export default {
       hims_d_services_id: null,
       patient_visit_id: null,
       consultation: null,
+      doctor_name: null,
+      service_name: null,
 
       provider_id: null,
       source: "O",
