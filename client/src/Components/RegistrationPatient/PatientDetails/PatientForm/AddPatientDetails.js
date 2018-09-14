@@ -164,8 +164,11 @@ const numberSet = ($this, context, cntrl, e) => {
   }
 };
 
-const onDrop = ($this, file, fileType) => {
+const onDrop = ($this, file, context, fileType) => {
   $this.setState({ [file]: fileType[0].preview });
+  if (context !== undefined) {
+    context.updateState({ [file]: fileType[0].preview });
+  }
 };
 
 export {
