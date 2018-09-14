@@ -32,3 +32,25 @@
     top: -1px;
     left: 15px;
     height: 101px; }
+
+input[type="text"]:disabled {
+  background: white;
+  border: none;
+  color: #000;
+  font-weight: bold; }
+
+.is-disabled .Select-control {
+  background-color: #f9f9f9;
+  color: #000;
+  font-weight: bold;
+  border: none; }
+
+.is-disabled .Select-value {
+  background: #fff;
+  border-bottom: 1px dotted #949494; }
+
+.is-disabled .Select-arrow-zone {
+  display: none; }
+
+.algaeh-datePicker .react-date-picker--disabled button {
+  display: none; }

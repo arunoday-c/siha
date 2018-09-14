@@ -59,3 +59,7 @@
   padding: 10px; }
   .hptl-phase1-add-billing-form .secondary-details .secondary-box-container {
     padding: 8px; }
+
+.totalAmt {
+  background: #44b8bd;
+  color: #fff; }
