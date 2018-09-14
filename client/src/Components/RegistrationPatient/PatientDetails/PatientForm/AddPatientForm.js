@@ -641,7 +641,12 @@ class AddPatientForm extends PureComponent {
                       <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                         <div className="image-drop-area">
                           <Dropzone
-                            onDrop={onDrop.bind(this, this, "filePreview")}
+                            onDrop={onDrop.bind(
+                              this,
+                              this,
+                              "filePreview",
+                              context
+                            )}
                             id="attach-width"
                             className="dropzone"
                             accept="image/*"

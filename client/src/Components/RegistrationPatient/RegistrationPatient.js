@@ -24,7 +24,10 @@ import AlgaehLabel from "../Wrapper/label.js";
 import { getCookie } from "../../utils/algaehApiCall";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import AddAdvanceModal from "../Advance/AdvanceModal";
-import { successfulMessage } from "../../utils/GlobalFunctions";
+import {
+  successfulMessage,
+  imageToByteArray
+} from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
@@ -153,15 +156,20 @@ class RegistrationPatient extends Component {
     }
   }
   SavePatientDetails(e) {
+    debugger;
     const err = Validations(this);
 
     if (!err) {
       this.GenerateReciept($this => {
         AlgaehLoader({ show: true });
         if ($this.state.hims_d_patient_id === null) {
+          const _data = {
+            ...$this.state,
+            patient_Image: imageToByteArray(this.state.filePreview)
+          };
           algaehApiCall({
             uri: "/frontDesk/add",
-            data: $this.state,
+            data: _data,
             method: "POST",
             onSuccess: response => {
               AlgaehLoader({ show: false });

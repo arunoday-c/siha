@@ -87,6 +87,8 @@ jspm_packages/
 
 # log directories
 logs/
+# document directories
+Documents/
 
 # server dist directiory
 dist/
