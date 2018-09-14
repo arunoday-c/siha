@@ -68,7 +68,16 @@ class Examination extends Component {
             record_status: "I",
             hims_f_episode_examination_id: row.hims_f_episode_examination_id
           },
-          onSuccess: response => {},
+          onSuccess: response => {
+            if (response.data.success) {
+              getPatientPhysicalExamination(this);
+              swal("Examination deleted successfully . .", {
+                icon: "success",
+                buttons: false,
+                timer: 2000
+              });
+            }
+          },
           onFailure: error => {}
         });
       } else {

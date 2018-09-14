@@ -105,13 +105,6 @@ class DoctorsWorkbench extends Component {
         this.setState({ data: data }, () => {
           algaehLoader({ show: false });
         });
-
-        let listofvisit = Enumerable.from(data)
-          .where(w => w.status === "V")
-          .toArray();
-        let listofattanedvisit = Enumerable.from(data)
-          .where(w => w.status === "W")
-          .toArray();
       }
     });
   }
