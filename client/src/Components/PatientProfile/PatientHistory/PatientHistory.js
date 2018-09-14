@@ -32,14 +32,14 @@ class PatientHistory extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "assesments_notes",
-                    //value: this.state.assesments_notes,
+                    name: "medical_history",
+                    value: this.state.medical_history,
                     others: {
                       multiline: true,
                       rows: "10"
                     },
                     events: {
-                      //onChange: assnotetexthandle.bind(this, this)
+                      onChange: this.textHandle.bind(this)
                     }
                   }}
                 />
@@ -61,14 +61,14 @@ class PatientHistory extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "assesments_notes",
-                    //value: this.state.assesments_notes,
+                    name: "social_history",
+                    value: this.state.social_history,
                     others: {
                       multiline: true,
                       rows: "10"
                     },
                     events: {
-                      //onChange: assnotetexthandle.bind(this, this)
+                      onChange: this.textHandle.bind(this)
                     }
                   }}
                 />
@@ -90,14 +90,14 @@ class PatientHistory extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "assesments_notes",
-                    //value: this.state.assesments_notes,
+                    name: "surgical_history",
+                    value: this.state.surgical_history,
                     others: {
                       multiline: true,
                       rows: "10"
                     },
                     events: {
-                      //onChange: assnotetexthandle.bind(this, this)
+                      onChange: this.textHandle.bind(this)
                     }
                   }}
                 />

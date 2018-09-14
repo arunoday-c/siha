@@ -5,6 +5,15 @@ import Examination from "../Examination/Examination";
 import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 
 class PhysicalExamination extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  textHandle(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
   render() {
     return (
       <div className="physical_examination">
@@ -31,14 +40,14 @@ class PhysicalExamination extends Component {
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "assesments_notes",
-                      //value: this.state.assesments_notes,
+                      name: "examination_notes",
+                      value: this.state.examination_notes,
                       others: {
                         multiline: true,
                         rows: "10"
                       },
                       events: {
-                        //onChange: assnotetexthandle.bind(this, this)
+                        onChange: this.textHandle.bind(this)
                       }
                     }}
                   />
