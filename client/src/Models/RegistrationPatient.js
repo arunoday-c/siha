@@ -68,6 +68,9 @@ export default {
       checked_in: "N",
       nurse_examine: "N",
       patient_type: null,
+      patient_Image: null,
+      filePreview: null,
+      filePrimaryPreview: null,
 
       widthImg: "",
       open: false,

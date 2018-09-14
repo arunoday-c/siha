@@ -14,18 +14,20 @@ export default ({ config, db }) => {
   api.post(
     "/add",
     addFrontDesk,
-    // (req, res, next) => {
-    //   debugLog("Data:");
-    //   if (req.body.patient_Image != null) {
-    //     downloadImage(
-    //       req.body.patient_Image,
-    //       req.body.patient_code,
-    //       req.body.patient_code
-    //     );
-    //     delete req.body.patient_Image;
-    //   }
-    //   next();
-    // },
+    (req, res, next) => {
+      debugLog("Data: ", req.body.patient_Image);
+      debugLog("req.body: ", req.body);
+      if (req.body.patient_Image != null) {
+        debugLog("Download Image : ");
+        downloadImage(
+          req.body.patient_Image,
+          req.body.patient_code,
+          req.body.patient_code
+        );
+        delete req.body.patient_Image;
+      }
+      next();
+    },
     (req, res, next) => {
       debugLog("Data1:");
       res.status(httpStatus.ok).json({
