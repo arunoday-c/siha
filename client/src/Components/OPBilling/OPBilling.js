@@ -32,7 +32,7 @@ class PatientDisplayDetails extends Component {
       selectedLang: "en",
       s_service_type: null,
       s_service: null,
-      mode_of_pay: 1,
+      mode_of_pay: "None",
       pay_cash: "CA",
       pay_card: "CD",
       pay_cheque: "CH",
@@ -104,6 +104,7 @@ class PatientDisplayDetails extends Component {
   getPatientDetails($this, output) {
     debugger;
     clearInterval(intervalId);
+    let patient_type = "";
     intervalId = setInterval(() => {
       AlgaehLoader({ show: true });
       this.props.getPatientDetails({
@@ -129,25 +130,39 @@ class PatientDisplayDetails extends Component {
             AlgaehLoader({ show: false });
           }
           debugger;
-          // let x = Enumerable.from($this.props.patienttype)
-          //   .where(
-          //     w =>
-          //       w.hims_d_patient_type_id ==
-          //       data.patientRegistration.patient_type
-          //   )
-          //   .Select(s => {
-          //     return {
-          //       patient_type:
-          //         this.state.selectedLang === "en"
-          //           ? s.patitent_type_desc
-          //           : s.arabic_patitent_type_desc
-          //     };
-          //   })
-          //   .toArray();
+          let x = Enumerable.from($this.props.patienttype)
+            .where(
+              w =>
+                w.hims_d_patient_type_id ==
+                data.patientRegistration.patient_type
+            )
+            .toArray();
+
+          if (x != null && x.length > 0) {
+            data.patientRegistration.patient_type = x[0].patitent_type_desc;
+          } else {
+            data.patientRegistration.patient_type = "Not Selected";
+          }
+
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
-          data.patientRegistration.mode_of_pay = 1;
+          data.patientRegistration.mode_of_pay = "None";
+          //Insurance
+          data.patientRegistration.insurance_provider_name = null;
+          data.patientRegistration.sub_insurance_provider_name = null;
+          data.patientRegistration.network_type = null;
+          data.patientRegistration.policy_number = null;
+          data.patientRegistration.card_number = null;
+          data.patientRegistration.effective_end_date = null;
+          //Sec
+          data.patientRegistration.secondary_insurance_provider_name = null;
+          data.patientRegistration.secondary_sub_insurance_provider_name = null;
+          data.patientRegistration.secondary_network_type = null;
+          data.patientRegistration.secondary_policy_number = null;
+          data.patientRegistration.card_number = null;
+          data.patientRegistration.secondary_effective_end_date = null;
+
           this.setState(data.patientRegistration);
           AlgaehLoader({ show: false });
         }

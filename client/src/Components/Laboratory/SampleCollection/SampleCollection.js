@@ -13,7 +13,8 @@ import {
   texthandle,
   PatientSearch,
   datehandle,
-  getSampleCollectionDetails
+  getSampleCollectionDetails,
+  Refresh
 } from "./SampleCollectionHandaler";
 
 import {
@@ -21,7 +22,8 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  Tooltip
 } from "../../Wrapper/algaehWrapper";
 
 import {
@@ -215,12 +217,26 @@ class SampleCollection extends Component {
                 }}
               />
 
+              <div className="col-lg-1" style={{ paddingTop: "4vh" }}>
+                <button
+                  className="btn btn-primary btn-sm"
+                  type="button"
+                  onClick={getSampleCollectionDetails.bind(this, this)}
+                >
+                  Load Data
+                </button>
+              </div>
+
               <div className="col-lg-1">
-                <IconButton className="go-button" color="primary">
-                  <PlayCircleFilled
-                    onClick={getSampleCollectionDetails.bind(this, this)}
-                  />
-                </IconButton>
+                <Tooltip id="tooltip-icon" title="Refresh">
+                  <IconButton className="go-button" color="primary">
+                    <i
+                      class="fas fa-sync-alt"
+                      aria-hidden="true"
+                      onClick={Refresh.bind(this, this)}
+                    />
+                  </IconButton>
+                </Tooltip>
               </div>
             </div>
 

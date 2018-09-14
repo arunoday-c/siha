@@ -61,7 +61,7 @@ class DisplayVisitDetails extends Component {
 
   handleChange(row, context, e) {
     let $this = this;
-    let mode_of_pay = 1;
+    let mode_of_pay = "Self";
     let x = Enumerable.from(this.state.visitDetails)
       .where(w => w.radioselect == 1)
       .toArray();
@@ -76,7 +76,7 @@ class DisplayVisitDetails extends Component {
     index = this.state.visitDetails.indexOf(row);
     this.state.visitDetails[index]["radioselect"] = 1;
     if (row.insured === "Y") {
-      mode_of_pay = 2;
+      mode_of_pay = "Insurance";
     }
     this.setState(
       {

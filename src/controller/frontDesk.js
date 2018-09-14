@@ -1,6 +1,6 @@
 import { Router } from "express";
-import extend from "extend";
-
+//import extend from "extend";
+import { downloadImage, readFileToBase64 } from "../utils/images";
 import { releaseConnection } from "../utils";
 import {
   addFrontDesk,
@@ -13,6 +13,17 @@ export default ({ config, db }) => {
   api.post(
     "/add",
     addFrontDesk,
+    (req, res, next) => {
+      if (req.body.patient_Image != null) {
+        downloadImage(
+          req.body.patient_Image,
+          req.body.patient_code,
+          req.body.patient_code
+        );
+        delete req.body.patient_Image;
+      }
+      next();
+    },
     (req, res, next) => {
       res.status(httpStatus.ok).json({
         success: true,
@@ -43,9 +54,13 @@ export default ({ config, db }) => {
       if (req.records == null) {
         next(httpStatus.generateError(httpStatus.notFound, "No records found"));
       } else {
+        const patient_Image = readFileToBase64(
+          req.query.patient_code,
+          req.query.patient_code
+        );
         res.status(httpStatus.ok).json({
           success: true,
-          records: req.records
+          records: { ...req.records, patient_Image: patient_Image }
         });
         next();
       }
