@@ -185,11 +185,14 @@ var addFrontDesk = function addFrontDesk(req, res, next) {
                       (0, _billing.addEpisodeEncounterData)(req, res, next);
                     }).then(function (encounterResult) {
                       connection.commit(function (error) {
+                        (0, _logging.debugLog)("After Episode Error: ", error);
                         if (error) {
+                          (0, _logging.debugLog)("Error: ", error);
                           (0, _utils.releaseDBConnection)(db, connection);
                           next(error);
                         }
                         req.records = encounterResult;
+                        (0, _logging.debugLog)("encounterResult: ", encounterResult);
                         if (requestCounter != 0) requestCounter = requestCounter - 1;
                         next();
                       });
@@ -426,7 +429,9 @@ var updateFrontDesk = function updateFrontDesk(req, res, next) {
                     req.options.onSuccess = function (records) {
                       resolve(records);
                     };
+                    (0, _logging.debugLog)("Before Episode");
                     (0, _billing.addEpisodeEncounterData)(req, res, next);
+                    (0, _logging.debugLog)("After Episode");
                   }).then(function (encounterResult) {
                     connection.commit(function (error) {
                       if (error) {
