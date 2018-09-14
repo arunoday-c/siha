@@ -245,35 +245,39 @@ class NewInvestigation extends PureComponent {
                 </div>
               </div>
 
-              <div className="row popupFooter">
-                <div className="col-lg-4"> &nbsp;</div>
+              <div className="popupFooter">
+                <div className="col-lg-12">
+                  <div className="row">
+                    <div className="col-lg-4"> &nbsp;</div>
 
-                <div className="col-lg-8">
-                  <button
-                    onClick={InsertLabTest.bind(this, this)}
-                    type="button"
-                    className="btn btn-primary"
-                  >
-                    {this.state.hims_d_investigation_test_id === null ? (
-                      <AlgaehLabel label={{ fieldName: "btnSave" }} />
-                    ) : (
-                      <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                    )}
-                  </button>
-                  <button
-                    onClick={e => {
-                      this.onClose(e);
-                    }}
-                    type="button"
-                    className="btn btn-default"
-                  >
-                    Cancel
-                  </button>
-                  <AHSnackbar
-                    open={this.state.open}
-                    handleClose={this.handleClose}
-                    MandatoryMsg={this.state.MandatoryMsg}
-                  />
+                    <div className="col-lg-8">
+                      <button
+                        onClick={InsertLabTest.bind(this, this)}
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        {this.state.hims_d_investigation_test_id === null ? (
+                          <AlgaehLabel label={{ fieldName: "btnSave" }} />
+                        ) : (
+                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                        )}
+                      </button>
+                      <button
+                        onClick={e => {
+                          this.onClose(e);
+                        }}
+                        type="button"
+                        className="btn btn-default"
+                      >
+                        Cancel
+                      </button>
+                      <AHSnackbar
+                        open={this.state.open}
+                        handleClose={this.handleClose}
+                        MandatoryMsg={this.state.MandatoryMsg}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

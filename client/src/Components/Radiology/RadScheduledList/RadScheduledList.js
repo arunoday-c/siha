@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import RadResultEntry from "../RadResultEntry/RadResultEntry";
@@ -16,7 +15,8 @@ import {
   datehandle,
   getRadTestList,
   openResultEntry,
-  closeResultEntry
+  closeResultEntry,
+  Refresh
 } from "./RadScheduledListEvents";
 
 import {
@@ -24,7 +24,8 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  Tooltip
 } from "../../Wrapper/algaehWrapper";
 
 import {
@@ -36,10 +37,6 @@ import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
-import directRoutes from "../../../Dynamicroutes";
-
-// import SampleCollectionModal from "../SampleCollections/SampleCollectionModal";
-// import SampleCollectionModal from "../SampleCollections/SampleCollections";
 
 class RadScheduledList extends Component {
   constructor(props) {
@@ -209,10 +206,25 @@ class RadScheduledList extends Component {
                 />
               </div>
 
+              <div className="col-lg-1" style={{ paddingTop: "4vh" }}>
+                <button
+                  className="btn btn-primary btn-sm"
+                  type="button"
+                  onClick={getRadTestList.bind(this, this)}
+                >
+                  Load Data
+                </button>
+              </div>
               <div className="col-lg-1">
-                <IconButton className="go-button" color="primary">
-                  <PlayCircleFilled onClick={getRadTestList.bind(this, this)} />
-                </IconButton>
+                <Tooltip id="tooltip-icon" title="Refresh">
+                  <IconButton className="go-button" color="primary">
+                    <i
+                      class="fas fa-sync-alt"
+                      aria-hidden="true"
+                      onClick={Refresh.bind(this, this)}
+                    />
+                  </IconButton>
+                </Tooltip>
               </div>
             </div>
 
@@ -267,11 +279,13 @@ class RadScheduledList extends Component {
                           ? "Ordered"
                           : row.status === "S"
                             ? "Scheduled"
-                            : row.status === "CN"
-                              ? "Cancelled"
-                              : row.status === "CF"
-                                ? "Confirmed"
-                                : "Validated";
+                            : row.status === "UP"
+                              ? "Under Process"
+                              : row.status === "CN"
+                                ? "Cancelled"
+                                : row.status === "RC"
+                                  ? "Confirmed"
+                                  : "Validated";
                       }
                     },
                     {

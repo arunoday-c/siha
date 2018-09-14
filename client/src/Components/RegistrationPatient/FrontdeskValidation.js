@@ -139,6 +139,15 @@ export function Validations(state) {
     });
   }
 
+  if (state.state.patient_type === null) {
+    isError = true;
+    state.setState({
+      open: true,
+      MandatoryMsg: "Invalid Input. Please select the Patient Type."
+    });
+    return isError;
+  }
+
   if (state.state.unbalanced_amount > 0) {
     isError = true;
 

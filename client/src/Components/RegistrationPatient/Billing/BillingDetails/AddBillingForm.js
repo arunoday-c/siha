@@ -114,11 +114,11 @@ class AddBillingForm extends Component {
                               fieldName: "gross_total"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.gross_total
                               ? "₹" + this.state.gross_total
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-lg-4">
@@ -127,11 +127,11 @@ class AddBillingForm extends Component {
                               fieldName: "patient_payable"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.patient_payable
                               ? "₹" + this.state.patient_payable
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-lg-4">
@@ -140,11 +140,11 @@ class AddBillingForm extends Component {
                               fieldName: "advance"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.advance_amount
                               ? "₹" + this.state.advance_amount
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
                       </div>
                       <hr style={{ margin: "0.6rem 0rem" }} />
@@ -250,11 +250,11 @@ class AddBillingForm extends Component {
                               fieldName: "net_amount"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.net_amount
                               ? "₹" + this.state.net_amount
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <AlagehFormGroup
@@ -283,11 +283,11 @@ class AddBillingForm extends Component {
                               fieldName: "receiveable_amount"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.receiveable_amount
                               ? "₹" + this.state.receiveable_amount
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
                       </div>
                     </Paper>
@@ -324,9 +324,10 @@ class AddBillingForm extends Component {
                           </h6>
                         </div>
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-3 mandatory" }}
                           label={{
-                            fieldName: "counter_id"
+                            fieldName: "counter_id",
+                            isImp: true
                           }}
                           selector={{
                             name: "counter_id",
@@ -345,9 +346,10 @@ class AddBillingForm extends Component {
                         />
 
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-3 mandatory" }}
                           label={{
-                            fieldName: "shift_id"
+                            fieldName: "shift_id",
+                            isImp: true
                           }}
                           selector={{
                             name: "shift_id",
@@ -371,7 +373,7 @@ class AddBillingForm extends Component {
                       {/* Cash */}
                       <div className="row secondary-box-container">
                         <div
-                          className="customCheckbox col-lg-2"
+                          className="customCheckbox col-lg-3"
                           style={{ border: "none", marginTop: "28px" }}
                         >
                           <label
@@ -391,7 +393,7 @@ class AddBillingForm extends Component {
                           </label>
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-2" }}
+                          div={{ className: "col-lg-2 mandatory" }}
                           label={{
                             fieldName: "amount",
                             isImp: true
@@ -410,7 +412,7 @@ class AddBillingForm extends Component {
                       {/* Card */}
                       <div className="row secondary-box-container">
                         <div
-                          className="customCheckbox col-lg-2"
+                          className="customCheckbox col-lg-3"
                           style={{ border: "none", marginTop: "28px" }}
                         >
                           <label
@@ -446,7 +448,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-lg-5" }}
+                          div={{ className: "col-lg-4" }}
                           label={{
                             fieldName: "card_check_number"
                           }}
@@ -479,7 +481,7 @@ class AddBillingForm extends Component {
                       {/* Check */}
                       <div className="row secondary-box-container">
                         <div
-                          className="customCheckbox col-lg-2"
+                          className="customCheckbox col-lg-3"
                           style={{ border: "none", marginTop: "28px" }}
                         >
                           <label
@@ -519,7 +521,7 @@ class AddBillingForm extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-5" }}
+                          div={{ className: "col-lg-4" }}
                           label={{
                             fieldName: "card_check_number"
                           }}
@@ -575,21 +577,21 @@ class AddBillingForm extends Component {
                           }}
                         /> */}
                         {/* <div className="col-lg-6" /> */}
-                        <div className="col-lg-2" />
-                        <div className="col-lg-5">
+                        <div className="col-lg-3" />
+                        <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
                               fieldName: "unbalanced_amount"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.unbalanced_amount
                               ? "₹" + this.state.unbalanced_amount
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
-                        <div className="col-lg-4">
+                        <div className="col-lg-3 totalAmt">
                           <AlgaehLabel
                             label={{
                               fieldName: "total_amount"

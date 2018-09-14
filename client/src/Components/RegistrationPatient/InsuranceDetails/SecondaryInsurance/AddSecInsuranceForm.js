@@ -47,6 +47,10 @@ class AddSecInsuranceForm extends Component {
     this.widthImg = width + 1;
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState(nextProps.PatRegIOputs);
+  }
+
   componentWillMount() {
     let InputOutput = this.props.PatRegIOputs;
     this.setState({ ...this.state, ...InputOutput });

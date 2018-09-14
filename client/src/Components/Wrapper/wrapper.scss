@@ -61,9 +61,46 @@ div[numberbox="true"] {
     margin-left: 0px;
   }
 }
-.mandatory .algaeh-datePicker {
-  background: #fffff6;
+.mandatory {
+  .algaeh-datePicker {
+    background: #fff2f6;
+  }
+  .Select-placeholder {
+    background-color: #fff2f6;
+  }
+  input[type="text"] {
+    background-color: #fff2f6;
+  }
 }
+
+input[type="text"]:disabled {
+  background: #f0f0f0;
+  border: 1px solid #d3d3d3;
+  color: #000;
+  font-weight: bold;
+}
+.is-disabled {
+  .Select-control {
+    border: 1px solid #d3d3d3;
+  }
+  .Select-value {
+    background: #f0f0f0;
+    color: #000;
+    font-weight: bold;
+  }
+  .Select-arrow-zone {
+    display: none;
+  }
+  .Select-placeholder {
+    background: #f0f0f0;
+  }
+}
+.algaeh-datePicker .react-date-picker--disabled {
+  button {
+    display: none;
+  }
+}
+
 // .algaeh-datePicker {
 //   border-bottom: 1px solid #6c757d;
 //   background-color: #fbfbfb;

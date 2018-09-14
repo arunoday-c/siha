@@ -122,7 +122,7 @@ let updatePreApproval = (req, res, next) => {
           inputParam[i].requested_date +
           "',requested_by=\
           '" +
-          inputParam[i].requested_by +
+          req.userIdentity.algaeh_d_app_user_id +
           "',requested_mode=\
           '" +
           inputParam[i].requested_mode +
@@ -153,7 +153,7 @@ let updatePreApproval = (req, res, next) => {
           "',updated_date='" +
           new Date().toLocaleString() +
           "',updated_by='" +
-          inputParam[i].updated_by +
+          req.userIdentity.algaeh_d_app_user_id +
           "' WHERE hims_f_service_approval_id='" +
           inputParam[i].hims_f_service_approval_id +
           "';";

@@ -109,11 +109,29 @@ const closeResultEntry = $this => {
   });
 };
 
+const Refresh = $this => {
+  let month = moment().format("MM");
+  let year = moment().format("YYYY");
+
+  $this.setState(
+    {
+      from_date: moment("01" + month + year, "DDMMYYYY")._d,
+      to_date: new Date(),
+      patient_id: null,
+      patient_code: null
+    },
+    () => {
+      getRadTestList($this);
+    }
+  );
+};
+
 export {
   texthandle,
   PatientSearch,
   datehandle,
   getRadTestList,
   openResultEntry,
-  closeResultEntry
+  closeResultEntry,
+  Refresh
 };
