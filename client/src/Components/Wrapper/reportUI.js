@@ -41,9 +41,7 @@ export default class ReportUI extends Component {
                 <button
                   type="button"
                   className=""
-                  onClick={e => {
-                    this.onClose(e);
-                  }}
+                  onClick={this.handleClose.bind(this)}
                 >
                   <i className="fas fa-times-circle" />
                 </button>

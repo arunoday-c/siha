@@ -22,7 +22,10 @@ import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
+import AlgaehReport from "../Wrapper/printReports";
 
+import moment from "moment";
+import Options from "../../Options.json";
 var intervalId;
 
 class PatientDisplayDetails extends Component {
@@ -345,8 +348,23 @@ class PatientDisplayDetails extends Component {
                 label: "Print Receipt",
                 events: {
                   onClick: () => {
-                    console.log("Patient state", this.state);
-                    AlgaehLoader({ show: true });
+                    debugger;
+                    AlgaehReport({
+                      report: {
+                        fileName: "printreceipt"
+                      },
+                      data: {
+                        patient_code: this.state.patient_code,
+                        full_name: this.state.full_name,
+                        advance_amount: this.state.advance_amount,
+                        bill_date: moment(this.state.bill_date).format(
+                          Options.dateFormat
+                        ),
+                        receipt_number: this.state.receipt_number,
+                        doctor_name: this.state.doctor_name,
+                        bill_details: this.state.billdetails
+                      }
+                    });
                   }
                 }
               }

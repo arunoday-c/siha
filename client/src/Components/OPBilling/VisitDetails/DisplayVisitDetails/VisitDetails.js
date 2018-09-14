@@ -67,6 +67,15 @@ class DisplayVisitDetails extends Component {
       .toArray();
     var index;
 
+    let doctor_name = "";
+
+    let employee_list = Enumerable.from(this.props.deptanddoctors.doctors)
+      .where(w => w.employee_id == row.doctor_id)
+      .toArray();
+    if (employee_list !== null && employee_list.length > 0) {
+      doctor_name = employee_list[0].full_name;
+    }
+
     if (x != null && x.length > 0) {
       index = this.state.visitDetails.indexOf(x[0]);
       if (index > -1) {
@@ -84,7 +93,8 @@ class DisplayVisitDetails extends Component {
         visit_id: row.hims_f_patient_visit_id,
         insured: row.insured,
         sec_insured: row.sec_insured,
-        mode_of_pay: mode_of_pay
+        mode_of_pay: mode_of_pay,
+        doctor_name: doctor_name
       },
       () => {
         debugger;
@@ -154,7 +164,8 @@ class DisplayVisitDetails extends Component {
         visit_id: row.hims_f_patient_visit_id,
         insured: row.insured,
         sec_insured: row.sec_insured,
-        mode_of_pay: mode_of_pay
+        mode_of_pay: mode_of_pay,
+        doctor_name: doctor_name
       });
     }
   }
