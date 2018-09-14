@@ -105,7 +105,7 @@ const ProcessService = ($this, e) => {
                   data.billdetails[i].visit_id = $this.state.visit_id;
                   data.billdetails[i].patient_id = $this.state.patient_id;
 
-                  data.billdetails[i].doctor_id = "2";
+                  data.billdetails[i].doctor_id = Window.global["provider_id"];
                   data.billdetails[i].insurance_provider_id =
                     $this.state.insurance_provider_id;
                   data.billdetails[i].insurance_sub_id =
@@ -181,7 +181,7 @@ const ProcessService = ($this, e) => {
           $this.state.hims_d_insurance_network_office_id;
 
         data.billdetails[0].requested_quantity = data.billdetails[0].quantity;
-        data.billdetails[0].doctor_id = "2";
+        data.billdetails[0].doctor_id = Window.global["provider_id"];
 
         //If pre-approval required for selected service
         debugger;

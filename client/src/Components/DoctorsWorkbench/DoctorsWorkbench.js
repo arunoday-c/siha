@@ -406,7 +406,8 @@ class DoctorsWorkbench extends Component {
                                   current_patient: data.patient_id,
                                   episode_id: data.episode_id,
                                   visit_id: data.visit_id,
-                                  encounter_id: data.encounter_id
+                                  encounter_id: data.encounter_id,
+                                  provider_id: data.provider_id
                                 });
                                 document.getElementById("ehr-router").click();
                               }}

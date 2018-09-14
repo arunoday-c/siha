@@ -29,60 +29,7 @@ export default class OPBillingDetails extends Component {
   }
 
   render() {
-    let BillingDetails = this.state.actionBillingDetails ? "active" : "";
-    let ReciptDetails = this.state.actionReciptDetails ? "" : "active";
-
     return (
-      // <div className="hptl-phase1-opbilling-details margin-top-15 margin-bottom-15 ">
-      //   <div className="tab-container toggle-section">
-      //     <ul className="nav">
-      //       <li
-      //         className={"nav-item tab-button " + BillingDetails}
-      //         id="BillingDetails"
-      //         onClick={this.openTab.bind(this, "Billing-details")}
-      //       >
-      //         <label className="style_Label ">Billing Details</label>
-      //       </li>
-      //       <li
-      //         className={"nav-item tab-button " + ReciptDetails}
-      //         id="ReciptDetails"
-      //         onClick={this.openTab.bind(this, "Recipts-details")}
-      //       >
-      //         <label className="style_Label ">Recipt Details</label>
-      //       </li>
-      //       <li
-      //         className={"nav-item tab-button " + PrimaryInsurance}
-      //         id="PrimaryInsurance"
-      //         onClick={this.openTab.bind(this, "Primary-insurance")}
-      //       >
-      //         <label className="style_Label ">Primary Insurance</label>
-      //       </li>
-      //       <li
-      //         className={"nav-item tab-button " + SecondaryInsurance}
-      //         id="SecondaryInsurance"
-      //         onClick={this.openTab.bind(this, "Secondary-insurance")}
-      //       >
-      //         <label className="style_Label ">Secondary Insurance</label>
-      //       </li>
-      //     </ul>
-      //   </div>
-
-      //   <div className="opbilling-section">
-      //     {this.state.actionBillingDetails ? (
-      //       <AddOPBillingDetails BillingIOputs={this.props.BillingIOputs} />
-      //     ) : null}
-      //     {this.state.actionReciptDetails ? null : (
-      //       <ReciptForm BillingIOputs={this.props.BillingIOputs} />
-      //     )}
-      //     {this.state.actionPrimaryDesign ? null : (
-      //       <PrimaryInsurance BillingIOputs={this.props.BillingIOputs} />
-      //     )}
-      //     {this.state.actionSecondaryDesign ? null : (
-      //       <SecondaryInsurance BillingIOputs={this.props.BillingIOputs} />
-      //     )}
-      //   </div>
-
-      // </div>
       <div className="hptl-phase1-opbilling-details margin-top-15 margin-bottom-15 ">
         <div className="tab-container toggle-section">
           <ul className="nav">

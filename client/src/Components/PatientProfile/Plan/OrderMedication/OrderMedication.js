@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import IconButton from "@material-ui/core/IconButton";
 
 import {
   PRESCRIPTION_FREQ_PERIOD,
@@ -16,58 +14,65 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler,
-  Tooltip
+  AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 
 import {
   texthandle,
-  ProcessService,
-  deleteServices,
-  SaveOrdersServices
+  genericnamehandle,
+  itemhandle,
+  AddItems,
+  deleteItems,
+  datehandle,
+  SaveMedication,
+  dateFormater
 } from "./OrderMedicationEvents";
 import "./OrderMedication.css";
 import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import moment from "moment";
 
 class OrderMedication extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      s_service_type: null,
-      s_service: null,
-      selectedLang: "en",
-
       patient_id: Window.global["current_patient"],
-      visit_id: Window.global["visit_id"],
-      doctor_id: null,
+      encounter_id: Window.global["encounter_id"],
 
-      insured: null,
-      insurance_provider_id: null,
-      hims_d_insurance_network_office_id: null,
-      sub_insurance_provider_id: null,
-      policy_number: null,
-      network_id: null,
-      sec_insured: null,
-      secondary_insurance_provider_id: null,
-      sec_sub_insurance_provider_id: null,
-      sec_policy_number: null,
-      secondary_network_id: null,
-      secondary_network_office_id: null,
-      orderservicesdata: [],
-      approval_amt: 0,
-      preapp_limit_amount: 0,
-      preserviceInput: [],
-      dummy_company_payble: 0,
-      approval_limit_yesno: "N",
-      insurance_service_name: null,
-      saved: false
+      provider_id: Window.global["provider_id"],
+      episode_id: Window.global["episode_id"],
+
+      itemlist: [],
+      medicationitems: [],
+      start_date: moment(new Date())._d,
+      savebutton: true
     };
   }
 
-  playclick() {
-    debugger;
+  componentDidMount() {
+    this.props.getItems({
+      uri: "/itemmaster/getItems",
+      method: "GET",
+      redux: {
+        type: "DIET_GET_DATA",
+        mappingName: "itemlist"
+      },
+      afterSuccess: data => {
+        debugger;
+        this.setState({
+          itemlist: data
+        });
+      }
+    });
+    this.props.getGenerics({
+      uri: "/genericmaster/getGenerics",
+      method: "GET",
+      redux: {
+        type: "DIET_GET_DATA",
+        mappingName: "genericlist"
+      }
+    });
   }
 
   render() {
@@ -79,15 +84,15 @@ class OrderMedication extends Component {
               div={{ className: "col-lg-3" }}
               label={{ forceLabel: "Generic Name" }}
               selector={{
-                name: "diet_id",
+                name: "generic_id",
                 className: "select-fld",
-                value: this.state.diet_id,
+                value: this.state.generic_id,
                 dataSource: {
-                  textField: "hims_d_diet_description",
-                  valueField: "hims_d_diet_master_id",
-                  data: this.props.dietmaster
+                  textField: "generic_name",
+                  valueField: "hims_d_item_generic_id",
+                  data: this.props.genericlist
                 },
-                onChange: texthandle.bind(this, this)
+                onChange: genericnamehandle.bind(this, this)
               }}
             />
 
@@ -95,15 +100,15 @@ class OrderMedication extends Component {
               div={{ className: "col-lg-3" }}
               label={{ forceLabel: "Item Name" }}
               selector={{
-                name: "diet_id",
+                name: "item_id",
                 className: "select-fld",
-                value: this.state.diet_id,
+                value: this.state.item_id,
                 dataSource: {
-                  textField: "hims_d_diet_description",
-                  valueField: "hims_d_diet_master_id",
-                  data: this.props.dietmaster
+                  textField: "item_description",
+                  valueField: "hims_d_item_master_id",
+                  data: this.state.itemlist
                 },
-                onChange: texthandle.bind(this, this)
+                onChange: itemhandle.bind(this, this)
               }}
             />
 
@@ -111,9 +116,9 @@ class OrderMedication extends Component {
               div={{ className: "col-lg-2" }}
               label={{ forceLabel: "Frequency" }}
               selector={{
-                name: "diet_id",
+                name: "frequency",
                 className: "select-fld",
-                value: this.state.diet_id,
+                value: this.state.frequency,
                 dataSource: {
                   textField: "name",
                   valueField: "value",
@@ -126,9 +131,9 @@ class OrderMedication extends Component {
               div={{ className: "col-lg-2" }}
               label={{ forceLabel: "&nbsp;" }}
               selector={{
-                name: "diet_id",
+                name: "frequency_type",
                 className: "select-fld",
-                value: this.state.diet_id,
+                value: this.state.frequency_type,
                 dataSource: {
                   textField: "name",
                   valueField: "value",
@@ -141,9 +146,9 @@ class OrderMedication extends Component {
               div={{ className: "col-lg-2" }}
               label={{ forceLabel: "&nbsp;" }}
               selector={{
-                name: "diet_id",
+                name: "frequency_time",
                 className: "select-fld",
-                value: this.state.diet_id,
+                value: this.state.frequency_time,
                 dataSource: {
                   textField: "name",
                   valueField: "value",
@@ -161,8 +166,8 @@ class OrderMedication extends Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "followup_comments",
-                value: this.state.followup_comments,
+                name: "dosage",
+                value: this.state.dosage,
                 events: {
                   onChange: texthandle.bind(this, this)
                 }
@@ -176,8 +181,8 @@ class OrderMedication extends Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "followup_comments",
-                value: this.state.followup_comments,
+                name: "no_of_days",
+                value: this.state.no_of_days,
                 events: {
                   onChange: texthandle.bind(this, this)
                 }
@@ -191,8 +196,8 @@ class OrderMedication extends Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "followup_comments",
-                value: this.state.followup_comments,
+                name: "dispense",
+                value: this.state.dispense,
                 events: {
                   onChange: texthandle.bind(this, this)
                 }
@@ -202,17 +207,17 @@ class OrderMedication extends Component {
             <AlgaehDateHandler
               div={{ className: "col-lg-3" }}
               label={{ forceLabel: "Start Date" }}
-              textBox={{ className: "txt-fld" }}
+              textBox={{ className: "txt-fld", name: "start_date" }}
               maxDate={new Date()}
               events={{
-                onChange: null
+                onChange: datehandle.bind(this, this)
               }}
-              value={this.state.date_of_birth}
+              value={this.state.start_date}
             />
           </div>
           <div className="row">
             <AlagehFormGroup
-              div={{ className: "col-lg-11" }}
+              div={{ className: "col-lg-10" }}
               label={{
                 forceLabel: "Instructions"
               }}
@@ -226,12 +231,14 @@ class OrderMedication extends Component {
               }}
             />
 
-            <div className="col-lg-1">
-              <Tooltip id="tooltip-icon" title="Process">
-                <IconButton className="go-button" color="primary">
-                  <PlayCircleFilled onClick={ProcessService.bind(this, this)} />
-                </IconButton>
-              </Tooltip>
+            <div className="col-lg-2" style={{ paddingTop: "4vh" }}>
+              <button
+                className="btn btn-primary btn-sm"
+                type="button"
+                onClick={AddItems.bind(this, this)}
+              >
+                Add Item
+              </button>
             </div>
           </div>
           <div className="col-lg-12">
@@ -240,29 +247,42 @@ class OrderMedication extends Component {
                 id="Order_Medication"
                 columns={[
                   {
-                    fieldName: "quantity",
+                    fieldName: "generic_id",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Generic Name" }} />
-                    )
-                  },
-                  {
-                    fieldName: "service_type_id",
-                    label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
+                    ),
                     displayTemplate: row => {
                       let display =
-                        this.props.servicetype === undefined
+                        this.props.genericlist === undefined
                           ? []
-                          : this.props.servicetype.filter(
-                              f =>
-                                f.hims_d_service_type_id === row.service_type_id
+                          : this.props.genericlist.filter(
+                              f => f.hims_d_item_generic_id === row.generic_id
                             );
 
                       return (
                         <span>
                           {display !== undefined && display.length !== 0
-                            ? this.state.selectedLang === "en"
-                              ? display[0].service_type
-                              : display[0].arabic_service_type
+                            ? display[0].generic_name
+                            : ""}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "item_id",
+                    label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.state.itemlist === undefined
+                          ? []
+                          : this.state.itemlist.filter(
+                              f => f.hims_d_item_master_id === row.item_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== undefined && display.length !== 0
+                            ? display[0].item_description
                             : ""}
                         </span>
                       );
@@ -270,44 +290,84 @@ class OrderMedication extends Component {
                     disabled: true
                   },
                   {
-                    fieldName: "quantity",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Frequency Period" }} />
-                    )
+                    fieldName: "frequency",
+                    label: <AlgaehLabel label={{ forceLabel: "Frequency" }} />,
+                    displayTemplate: row => {
+                      return row.frequency == "0"
+                        ? "1-0-1"
+                        : row.frequency == "1"
+                          ? "1-0-0"
+                          : row.frequency == "2"
+                            ? "0-0-1"
+                            : row.frequency == "3"
+                              ? "0-1-0"
+                              : row.frequency == "4"
+                                ? "1-1-0"
+                                : row.frequency == "5"
+                                  ? "0-1-1"
+                                  : row.frequency == "6"
+                                    ? "1-1-1"
+                                    : null;
+                    }
                   },
                   {
-                    fieldName: "quantity",
-                    label: (
-                      <AlgaehLabel
-                        label={{ forceLabel: "Frequency Duration" }}
-                      />
-                    )
-                  },
-                  {
-                    fieldName: "quantity",
+                    fieldName: "frequency_type",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Frequency Type" }} />
-                    )
+                    ),
+                    displayTemplate: row => {
+                      return row.frequency_type == "PD"
+                        ? "Per Day"
+                        : row.frequency_type == "PH"
+                          ? "Per Hour"
+                          : row.frequency_type == "PW"
+                            ? "Per Week"
+                            : row.frequency_type == "PM"
+                              ? "Per Month"
+                              : row.frequency_type == "AD"
+                                ? "Alternate Day"
+                                : null;
+                    }
                   },
                   {
-                    fieldName: "quantity",
+                    fieldName: "frequency_time",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Frequency Time" }} />
+                    ),
+                    displayTemplate: row => {
+                      return row.frequency_time == "BM"
+                        ? "Before Meals"
+                        : row.frequency_time == "AM"
+                          ? "After Meals"
+                          : null;
+                    }
+                  },
+                  {
+                    fieldName: "dosage",
                     label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />
                   },
                   {
-                    fieldName: "quantity",
+                    fieldName: "no_of_days",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Duration (Days)" }} />
                     )
+                  },
+                  {
+                    fieldName: "start_date",
+                    label: <AlgaehLabel label={{ forceLabel: "Start Date" }} />,
+                    displayTemplate: row => {
+                      return <span>{dateFormater(row.start_date)}</span>;
+                    }
                   }
                 ]}
                 keyId="item_id"
                 dataSource={{
-                  data: this.state.orderservicesdata
+                  data: this.state.medicationitems
                 }}
                 // isEditable={true}
                 paging={{ page: 0, rowsPerPage: 3 }}
                 events={{
-                  onDelete: deleteServices.bind(this, this),
+                  onDelete: deleteItems.bind(this, this),
                   onEdit: row => {}
                   // onDone: this.updateBillDetail.bind(this)
                 }}
@@ -325,7 +385,7 @@ class OrderMedication extends Component {
                 <button
                   style={{ marginRight: "15px" }}
                   className="htpl1-phase1-btn-primary"
-                  onClick={SaveOrdersServices.bind(this, this)}
+                  onClick={SaveMedication.bind(this, this)}
                   disabled={this.state.saved}
                 >
                   <AlgaehLabel label={{ fieldName: "btnsave" }} />
@@ -341,21 +401,16 @@ class OrderMedication extends Component {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    services: state.services,
-    orderservices: state.orderservices,
-    existinginsurance: state.existinginsurance,
-    serviceslist: state.serviceslist
+    itemlist: state.itemlist,
+    genericlist: state.genericlist
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
-      generateBill: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getItems: AlgaehActions,
+      getGenerics: AlgaehActions
     },
     dispatch
   );

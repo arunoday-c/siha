@@ -32,12 +32,6 @@ class AddPatientForm extends PureComponent {
 
     this.state = {
       value: "",
-      // file: {
-      //   filePreview: null,
-      //   filePrimaryPreview: null
-      // },
-      filePreview: null,
-      filePrimaryPreview: null,
 
       DOBErrorMsg: "",
       DOBError: false,
@@ -441,7 +435,8 @@ class AddPatientForm extends PureComponent {
                           },
                           onChange: texthandle.bind(this, this, context),
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            tabIndex: "11"
                           }
                         }}
                       />
@@ -467,7 +462,7 @@ class AddPatientForm extends PureComponent {
                           onChange: texthandle.bind(this, this, context),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "11"
+                            tabIndex: "12"
                           }
                         }}
                       />
@@ -496,7 +491,7 @@ class AddPatientForm extends PureComponent {
                           ),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "12"
+                            tabIndex: "13"
                           }
                         }}
                       />
