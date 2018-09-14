@@ -257,7 +257,7 @@ class AddPatientForm extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4 mandatory" }}
+                        div={{ className: "col-lg-4 mandatory arabic-txt-fld" }}
                         label={{
                           fieldName: "arabic_name",
                           isImp: true

@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import "./PrimaryInsuranceDetails.css";
 import "./../../../../styles/site.css";
 import { AlagehFormGroup, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
+import moment from "moment";
+import Options from "../../../../Options.json";
+
 export default class AddInsuranceForm extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +27,33 @@ export default class AddInsuranceForm extends Component {
           <div className="row">
             <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 primary-details">
               <div className="row primary-box-container">
-                <AlagehFormGroup
+                <div className="col-lg-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "insurance_company"
+                    }}
+                  />
+                  <h6>
+                    {this.state.insurance_provider_name
+                      ? this.state.insurance_provider_name
+                      : "Insurance Company"}
+                  </h6>
+                </div>
+
+                <div className="col-lg-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "sub_insurance_company"
+                    }}
+                  />
+                  <h6>
+                    {this.state.sub_insurance_provider_name
+                      ? this.state.sub_insurance_provider_name
+                      : "Sub Insurance Company"}
+                  </h6>
+                </div>
+
+                {/* <AlagehFormGroup
                   div={{ className: "col-lg-6" }}
                   label={{
                     fieldName: "insurance_company"
@@ -38,9 +67,9 @@ export default class AddInsuranceForm extends Component {
                     },
                     disabled: true
                   }}
-                />
+                /> */}
 
-                <AlagehFormGroup
+                {/* <AlagehFormGroup
                   div={{ className: "col-lg-6" }}
                   label={{
                     fieldName: "sub_insurance_company"
@@ -54,10 +83,33 @@ export default class AddInsuranceForm extends Component {
                     },
                     disabled: true
                   }}
-                />
+                /> */}
               </div>
               <div className="row primary-box-container">
-                <AlagehFormGroup
+                <div className="col-lg-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "plan_desc"
+                    }}
+                  />
+                  <h6>
+                    {this.state.network_type ? this.state.network_type : "Plan"}
+                  </h6>
+                </div>
+
+                <div className="col-lg-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "policy_no"
+                    }}
+                  />
+                  <h6>
+                    {this.state.policy_number
+                      ? this.state.policy_number
+                      : "Policy No."}
+                  </h6>
+                </div>
+                {/* <AlagehFormGroup
                   div={{ className: "col-lg-6" }}
                   label={{
                     fieldName: "plan_desc"
@@ -87,11 +139,38 @@ export default class AddInsuranceForm extends Component {
                     },
                     disabled: true
                   }}
-                />
+                /> */}
               </div>
 
               <div className="row primary-box-container">
-                <AlagehFormGroup
+                <div className="col-lg-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "card_no"
+                    }}
+                  />
+                  <h6>
+                    {this.state.card_number
+                      ? this.state.card_number
+                      : "Card No."}
+                  </h6>
+                </div>
+
+                <div className="col-lg-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "ins_expiry_date"
+                    }}
+                  />
+                  <h6>
+                    {this.state.effective_end_date
+                      ? moment(this.state.effective_end_date).format(
+                          Options.dateFormat
+                        )
+                      : "Expiry Date"}
+                  </h6>
+                </div>
+                {/* <AlagehFormGroup
                   div={{ className: "col-lg-6" }}
                   label={{
                     fieldName: "card_no"
@@ -121,7 +200,7 @@ export default class AddInsuranceForm extends Component {
                     },
                     disabled: true
                   }}
-                />
+                /> */}
               </div>
             </div>
             <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 primary-details">

@@ -99,4 +99,27 @@ const getSampleCollectionDetails = $this => {
   });
 };
 
-export { texthandle, PatientSearch, datehandle, getSampleCollectionDetails };
+const Refresh = $this => {
+  let month = moment().format("MM");
+  let year = moment().format("YYYY");
+
+  $this.setState(
+    {
+      from_date: moment("01" + month + year, "DDMMYYYY")._d,
+      to_date: new Date(),
+      patient_id: null,
+      patient_code: null
+    },
+    () => {
+      getSampleCollectionDetails($this);
+    }
+  );
+};
+
+export {
+  texthandle,
+  PatientSearch,
+  datehandle,
+  getSampleCollectionDetails,
+  Refresh
+};
