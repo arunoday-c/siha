@@ -182,11 +182,14 @@ let addFrontDesk = (req, res, next) => {
                           addEpisodeEncounterData(req, res, next);
                         }).then(encounterResult => {
                           connection.commit(error => {
+                            debugLog("After Episode Error: ", error);
                             if (error) {
+                              debugLog("Error: ", error);
                               releaseDBConnection(db, connection);
                               next(error);
                             }
                             req.records = encounterResult;
+                            debugLog("encounterResult: ", encounterResult);
                             if (requestCounter != 0)
                               requestCounter = requestCounter - 1;
                             next();
@@ -436,7 +439,9 @@ let updateFrontDesk = (req, res, next) => {
                       req.options.onSuccess = records => {
                         resolve(records);
                       };
+                      debugLog("Before Episode");
                       addEpisodeEncounterData(req, res, next);
+                      debugLog("After Episode");
                     }).then(encounterResult => {
                       connection.commit(error => {
                         if (error) {

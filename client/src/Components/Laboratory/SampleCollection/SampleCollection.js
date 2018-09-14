@@ -75,9 +75,14 @@ class SampleCollection extends Component {
     });
   }
   CloseCollectionModel(e) {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
+    this.setState(
+      {
+        isOpen: !this.state.isOpen
+      },
+      () => {
+        getSampleCollectionDetails(this, this);
+      }
+    );
   }
 
   componentDidMount() {

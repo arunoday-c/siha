@@ -58,6 +58,9 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       title: "Warning",
       icon: "warning"
     });
+    $this.setState({
+      [e.target.name]: 0
+    });
   } else {
     $this.setState(
       {
@@ -80,8 +83,15 @@ const cardtexthandle = ($this, context, ctrl, e) => {
   let card_amount = parseFloat(e.target.value);
   let cheque_amount = parseFloat($this.state.cheque_amount);
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
-
+  debugger;
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
+    $this.setState({
+      [e.target.name]: $this.state.card_amount
+    });
+    if (context != null) {
+      context.updateState({ [e.target.name]: $this.state.card_amount });
+    }
+
     successfulMessage({
       message: "Invalid Input. Sum of all amount to be equal to Receivable.",
       title: "Warning",
@@ -116,6 +126,9 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       message: "Invalid Input. Sum of all amount to be equal to Receivable.",
       title: "Warning",
       icon: "warning"
+    });
+    $this.setState({
+      [e.target.name]: 0
     });
   } else {
     $this.setState(

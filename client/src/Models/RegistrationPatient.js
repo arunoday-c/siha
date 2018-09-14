@@ -102,6 +102,7 @@ export default {
       age_in_years: null,
       age_in_months: null,
       age_in_days: null,
+      payment_type: "S",
 
       primary_insurance_provider_id: null,
       primary_sub_id: null,

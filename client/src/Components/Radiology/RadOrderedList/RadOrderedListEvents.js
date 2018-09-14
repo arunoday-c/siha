@@ -101,7 +101,12 @@ const getRadTestList = $this => {
 
 const UpdateRadOrder = ($this, row) => {
   let inputobj = row;
-
+  let strMessage =
+    "Are you sure the patient " +
+    row.full_name +
+    " has arrived for the procedure " +
+    row.service_name;
+  debugger;
   if (inputobj.arrived === "N") {
     inputobj = {
       hims_f_rad_order_id: row.hims_f_rad_order_id,
@@ -124,9 +129,9 @@ const UpdateRadOrder = ($this, row) => {
 
     swal({
       title:
-        "Are you sure the patient" +
+        "Are you sure the patient " +
         row.full_name +
-        "for the procedure" +
+        " has arrived for the procedure " +
         row.service_name,
       icon: "success",
       buttons: true,
@@ -179,10 +184,28 @@ const UpdateRadOrder = ($this, row) => {
   }
 };
 
+const Refresh = $this => {
+  let month = moment().format("MM");
+  let year = moment().format("YYYY");
+
+  $this.setState(
+    {
+      from_date: moment("01" + month + year, "DDMMYYYY")._d,
+      to_date: new Date(),
+      patient_id: null,
+      patient_code: null
+    },
+    () => {
+      getRadTestList($this);
+    }
+  );
+};
+
 export {
   texthandle,
   PatientSearch,
   datehandle,
   getRadTestList,
-  UpdateRadOrder
+  UpdateRadOrder,
+  Refresh
 };

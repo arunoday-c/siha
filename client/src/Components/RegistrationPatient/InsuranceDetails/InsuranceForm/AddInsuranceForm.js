@@ -73,9 +73,14 @@ class AddInsuranceForm extends Component {
       context.updateState({
         insured: value,
         insuranceYes: !this.state.insuranceYes,
-        patient_type: PatType
+        patient_type: PatType,
+        payment_type: PatType
       });
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(nextProps.PatRegIOputs);
   }
 
   render() {

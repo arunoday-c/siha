@@ -120,9 +120,14 @@ const ResultEntryModel = ($this, row) => {
 };
 
 const closeResultEntry = ($this, e) => {
-  $this.setState({
-    isOpen: !$this.state.isOpen
-  });
+  $this.setState(
+    {
+      isOpen: !$this.state.isOpen
+    },
+    () => {
+      getSampleCollectionDetails($this);
+    }
+  );
 };
 
 const Refresh = $this => {

@@ -415,6 +415,32 @@ class AddPatientForm extends PureComponent {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
+                          fieldName: "patient_type",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "patient_type",
+                          className: "select-fld",
+                          value: this.state.patient_type,
+
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "patitent_type_desc"
+                                : "arabic_patitent_type_desc",
+                            valueField: "hims_d_patient_type_id",
+                            data: this.props.patienttype
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
                           fieldName: "nationality_id",
                           isImp: true
                         }}
@@ -492,6 +518,9 @@ class AddPatientForm extends PureComponent {
                           }
                         }}
                       />
+                    </div>
+
+                    <div className="row" style={{ paddingBottom: "10px" }}>
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -516,9 +545,6 @@ class AddPatientForm extends PureComponent {
                           }
                         }}
                       />
-                    </div>
-
-                    <div className="row" style={{ paddingBottom: "10px" }}>
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
@@ -531,31 +557,6 @@ class AddPatientForm extends PureComponent {
                           events: {
                             onChange: texthandle.bind(this, this, context)
                           },
-                          others: {
-                            disabled: this.state.existingPatient
-                          }
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "patient_type"
-                        }}
-                        selector={{
-                          name: "patient_type",
-                          className: "select-fld",
-                          value: this.state.patient_type,
-
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "patitent_type_desc"
-                                : "arabic_patitent_type_desc",
-                            valueField: "hims_d_patient_type_id",
-                            data: this.props.patienttype
-                          },
-                          onChange: texthandle.bind(this, this, context),
                           others: {
                             disabled: this.state.existingPatient
                           }

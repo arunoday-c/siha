@@ -95,7 +95,9 @@ class RegistrationPatient extends Component {
 
     let IOputs = emptyObject;
 
-    this.setState(IOputs);
+    this.setState(IOputs, () => {
+      debugger;
+    });
   }
 
   GenerateReciept(callback) {
@@ -319,6 +321,8 @@ class RegistrationPatient extends Component {
               data.patientRegistration.patient_id =
                 data.patientRegistration.hims_d_patient_id;
               data.patientRegistration.existingPatient = true;
+              debugger;
+              data.patientRegistration.arabic_name = "No Name";
               $this.setState(data.patientRegistration);
 
               $this.props.getPatientInsurance({

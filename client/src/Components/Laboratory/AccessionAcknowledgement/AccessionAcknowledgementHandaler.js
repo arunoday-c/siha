@@ -136,6 +136,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
                 icon: "success"
               });
             });
+            getSampleCollectionDetails($this);
           }
         },
         onFailure: error => {

@@ -161,7 +161,8 @@ let insertLadOrderedServices = (req, res, next) => {
                 "select services_id,specimen_id FROM  hims_m_lab_specimen,hims_d_investigation_test where \
                   hims_d_investigation_test_id=hims_m_lab_specimen.test_id and hims_m_lab_specimen.record_status='A' and test_id in (?); \
                   select hims_f_lab_order_id,service_id from hims_f_lab_order where record_status='A' and visit_id =? and service_id in (?); \
-                  select hims_d_investigation_test.services_id,analyte_type,result_unit,analyte_id \
+                  select hims_d_investigation_test.services_id,analyte_type,result_unit,analyte_id,critical_low,critical_high, \
+                  normal_low,normal_high \
                   from hims_d_investigation_test,hims_m_lab_analyte where \
                  hims_d_investigation_test_id=hims_m_lab_analyte.test_id and hims_m_lab_analyte.record_status='A' \
                  and hims_m_lab_analyte.test_id in  (?);",
@@ -213,7 +214,11 @@ let insertLadOrderedServices = (req, res, next) => {
                         "order_id",
                         "analyte_id",
                         "analyte_type",
-                        "result_unit"
+                        "result_unit",
+                        "critical_low",
+                        "critical_high",
+                        "normal_low",
+                        "normal_high"
                       ];
                       const labAnalytes = new LINQ(specimentRecords[2])
                         .Select(s => {
@@ -223,10 +228,16 @@ let insertLadOrderedServices = (req, res, next) => {
                               .Where(w => w.service_id == s.services_id)
                               .FirstOrDefault().hims_f_lab_order_id,
                             analyte_type: s.analyte_type,
-                            result_unit: s.result_unit
+                            result_unit: s.result_unit,
+                            critical_low: s.critical_low,
+                            critical_high: s.critical_high,
+                            normal_low: s.normal_low,
+                            normal_high: s.normal_high
                           };
                         })
                         .ToArray();
+
+                      debugLog("labAnalytes: ", labAnalytes);
                       connection.query(
                         "insert into hims_f_ord_analytes(" +
                           analyts.join(",") +
