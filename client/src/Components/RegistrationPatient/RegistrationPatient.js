@@ -55,10 +55,11 @@ class RegistrationPatient extends Component {
     let IOputs = emptyObject;
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
+    // AlgaehLoader({ show: true });
   }
   componentDidMount() {
     debugger;
-    // AlgaehLoader({ show: true });
+
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
 
@@ -175,13 +176,19 @@ class RegistrationPatient extends Component {
       this.GenerateReciept($this => {
         AlgaehLoader({ show: true });
         if ($this.state.hims_d_patient_id === null) {
-          const _data = {
-            ...$this.state,
-            patient_Image: imageToByteArray(this.state.filePreview)
-          };
+          let patientdata = {};
+
+          if ($this.state.filePreview !== null) {
+            patientdata = {
+              ...$this.state,
+              patient_Image: imageToByteArray(this.state.filePreview)
+            };
+          } else {
+            patientdata = $this.state;
+          }
           algaehApiCall({
             uri: "/frontDesk/add",
-            data: _data,
+            data: patientdata,
             method: "POST",
             onSuccess: response => {
               AlgaehLoader({ show: false });
@@ -293,6 +300,7 @@ class RegistrationPatient extends Component {
     if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
       this.setState({ ...this.state, ...nextProps.genbill });
     }
+    AlgaehLoader({ show: false });
   }
   getCtrlCode(patcode) {
     let $this = this;
@@ -314,6 +322,10 @@ class RegistrationPatient extends Component {
             data.patientRegistration.patient_id =
               data.patientRegistration.hims_d_patient_id;
             data.patientRegistration.existingPatient = true;
+
+            debugger;
+            data.patientRegistration.filePreview =
+              "data:image/png;base64, " + data.patient_Image;
             $this.setState(data.patientRegistration);
 
             $this.props.getPatientInsurance({
@@ -332,6 +344,8 @@ class RegistrationPatient extends Component {
                 data.patientRegistration.hims_d_patient_id;
               data.patientRegistration.existingPatient = true;
               debugger;
+              data.patientRegistration.filePreview =
+                "data:image/png;base64, " + data.patient_Image;
               data.patientRegistration.arabic_name = "No Name";
               $this.setState(data.patientRegistration);
 

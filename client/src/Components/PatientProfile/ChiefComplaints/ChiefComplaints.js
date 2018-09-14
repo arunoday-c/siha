@@ -171,7 +171,6 @@ class ChiefComplaints extends Component {
   }
 
   updatePatientChiefComplaints() {
-    // console.log("State:", this.state);
     algaehApiCall({
       uri: "/doctorsWorkBench/updatePatientChiefComplaints",
       method: "PUT",
@@ -636,7 +635,7 @@ class ChiefComplaints extends Component {
                         <div className="bordered-layout">
                           <ul>
                             <li>
-                              <span>Leg Pain</span>
+                              <span />
                             </li>
                           </ul>
                         </div>
@@ -994,7 +993,6 @@ class ChiefComplaints extends Component {
                   fieldName: "duration",
                   label: <AlgaehLabel label={{ fieldName: "duration" }} />
                 },
-
                 {
                   fieldName: "interval",
                   label: <AlgaehLabel label={{ fieldName: "interval" }} />,
@@ -1007,7 +1005,9 @@ class ChiefComplaints extends Component {
                           ? "Week(s)"
                           : data.interval === "M"
                             ? "Month(s)"
-                            : "Year(s)";
+                            : data.interval === "Y"
+                              ? "Year(s)"
+                              : "";
                   }
                 },
                 {
