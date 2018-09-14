@@ -123,7 +123,25 @@ class DisplayOPBilling extends PureComponent {
         <div className="hptl-phase1-op-display-billing-form">
           <Modal open={this.props.show}>
             <div className="algaeh-modal">
-              <div className="popupHeader">{this.props.HeaderCaption} </div>
+              <div className="popupHeader">
+                <div className="row">
+                  <div className="col-lg-8">
+                    <h4>{this.props.HeaderCaption}</h4>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <div className="col-lg-12 popupInner">
                 {/* Services Details */}
                 <div className="row form-details" style={{ paddingBottom: 0 }}>
@@ -227,7 +245,7 @@ class DisplayOPBilling extends PureComponent {
                         fieldName: "quantity"
                       }}
                     />
-                    <h5>{this.state.quantity ? this.state.quantity : "0"}</h5>
+                    <h6>{this.state.quantity ? this.state.quantity : "0"}</h6>
                   </div>
 
                   <div className="col-lg-2">
@@ -236,11 +254,11 @@ class DisplayOPBilling extends PureComponent {
                         fieldName: "unit_cost"
                       }}
                     />
-                    <h5>
+                    <h6>
                       {this.state.unit_cost
                         ? "₹" + this.state.unit_cost
                         : "₹0.00"}
-                    </h5>
+                    </h6>
                   </div>
 
                   <div className="col-lg-2">
@@ -249,11 +267,11 @@ class DisplayOPBilling extends PureComponent {
                         fieldName: "gross_amount"
                       }}
                     />
-                    <h5>
+                    <h6>
                       {this.state.gross_amount
                         ? "₹" + this.state.gross_amount
                         : "₹0.00"}
-                    </h5>
+                    </h6>
                   </div>
 
                   <div className="col-lg-2">
@@ -262,11 +280,11 @@ class DisplayOPBilling extends PureComponent {
                         fieldName: "discount_percentage"
                       }}
                     />
-                    <h5>
+                    <h6>
                       {this.state.discount_percentage
                         ? this.state.discount_percentage + "%"
                         : "0.00%"}
-                    </h5>
+                    </h6>
                   </div>
 
                   <div className="col-lg-2">
@@ -275,11 +293,11 @@ class DisplayOPBilling extends PureComponent {
                         fieldName: "discount_amout"
                       }}
                     />
-                    <h5>
+                    <h6>
                       {this.state.discount_amout
                         ? "₹" + this.state.discount_amout
                         : "₹0.00"}
-                    </h5>
+                    </h6>
                   </div>
 
                   <div className="col-lg-2">
@@ -288,11 +306,11 @@ class DisplayOPBilling extends PureComponent {
                         fieldName: "net_amout"
                       }}
                     />
-                    <h5>
+                    <h6>
                       {this.state.net_amout
                         ? "₹" + this.state.net_amout
                         : "₹0.00"}
-                    </h5>
+                    </h6>
                   </div>
                 </div>
                 <hr />
@@ -312,11 +330,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "copay_percentage"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.copay_percentage
                               ? this.state.copay_percentage + "%"
                               : "0.00%"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col">
@@ -325,11 +343,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "copay_amount"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.copay_amount
                               ? "₹" + this.state.copay_amount
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-3">
@@ -338,11 +356,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "deductable_percentage"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.deductable_percentage
                               ? this.state.deductable_percentage + "%"
                               : "0.00%"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-4">
@@ -351,11 +369,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "deductable_amount"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.deductable_amount
                               ? "₹" + this.state.deductable_amount
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
                       </div>
                     </Paper>
@@ -375,11 +393,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "sec_copay_percntage"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.sec_copay_percntage
                               ? this.state.sec_copay_percntage + "%"
                               : "0.00%"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col">
@@ -388,11 +406,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "sec_copay_amount"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.sec_copay_amount
                               ? "₹" + this.state.sec_copay_amount
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-3">
@@ -401,11 +419,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "sec_deductable_percentage"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.sec_deductable_percentage
                               ? this.state.sec_deductable_percentage + "%"
                               : "0.00%"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-4">
@@ -414,11 +432,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "sec_deductable_amount"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.sec_deductable_amount
                               ? "₹" + this.state.sec_deductable_amount
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
                       </div>
                     </Paper>
@@ -441,11 +459,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "responsibility_lbl"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.patient_resp
                               ? "₹" + this.state.patient_resp
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-3">
@@ -454,11 +472,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "tax_lbl"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.patient_tax
                               ? "₹" + this.state.patient_tax
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-4">
@@ -467,11 +485,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "payable_lbl"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.patient_payable
                               ? "₹" + this.state.patient_payable
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
                       </div>
                     </Paper>
@@ -492,11 +510,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "responsibility_lbl"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.comapany_resp
                               ? "₹" + this.state.comapany_resp
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-3">
@@ -505,11 +523,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "tax_lbl"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.company_tax
                               ? "₹" + this.state.company_tax
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-4">
@@ -518,11 +536,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "payable_lbl"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.company_payble
                               ? "₹" + this.state.company_payble
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
                       </div>
                     </Paper>
@@ -544,11 +562,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "responsibility_lbl"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.sec_company_res
                               ? "₹" + this.state.sec_company_res
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-3">
@@ -557,11 +575,11 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "tax_lbl"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.sec_company_tax
                               ? "₹" + this.state.sec_company_tax
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
 
                         <div className="col-4">
@@ -570,28 +588,33 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "payable_lbl"
                             }}
                           />
-                          <h5>
+                          <h6>
                             {this.state.sec_company_paybale
                               ? "₹" + this.state.sec_company_paybale
                               : "₹0.00"}
-                          </h5>
+                          </h6>
                         </div>
                       </div>
                     </Paper>
                   </div>
                 </div>
               </div>
-              <div className="row popupFooter">
+              <div className="popupFooter">
                 <div className="col-lg-12">
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={e => {
-                      this.onClose(e);
-                    }}
-                  >
-                    Close
-                  </button>
+                  <div className="row">
+                    <div className="col-lg-4"> &nbsp;</div>
+                    <div className="col-lg-8">
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={e => {
+                          this.onClose(e);
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

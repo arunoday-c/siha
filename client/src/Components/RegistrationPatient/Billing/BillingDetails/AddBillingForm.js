@@ -324,9 +324,10 @@ class AddBillingForm extends Component {
                           </h6>
                         </div>
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-3 mandatory" }}
                           label={{
-                            fieldName: "counter_id"
+                            fieldName: "counter_id",
+                            isImp: true
                           }}
                           selector={{
                             name: "counter_id",
@@ -345,9 +346,10 @@ class AddBillingForm extends Component {
                         />
 
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-3 mandatory" }}
                           label={{
-                            fieldName: "shift_id"
+                            fieldName: "shift_id",
+                            isImp: true
                           }}
                           selector={{
                             name: "shift_id",
@@ -391,7 +393,7 @@ class AddBillingForm extends Component {
                           </label>
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-2" }}
+                          div={{ className: "col-lg-2 mandatory" }}
                           label={{
                             fieldName: "amount",
                             isImp: true

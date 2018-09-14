@@ -474,6 +474,59 @@ class AddPatientForm extends PureComponent {
                           }
                         }}
                       />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
+                          fieldName: "patient_type",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "patient_type",
+                          className: "select-fld",
+                          value: this.state.patient_type,
+
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "patitent_type_desc"
+                                : "arabic_patitent_type_desc",
+                            valueField: "hims_d_patient_type_id",
+                            data: this.props.patienttype
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "visa_type_id"
+                        }}
+                        selector={{
+                          name: "visa_type_id",
+                          className: "select-fld",
+                          value: this.state.visa_type_id,
+
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "visa_type"
+                                : "arabic_visa_type",
+                            valueField: "hims_d_visa_type_id",
+                            data: this.props.visatypes
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.existingPatient
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="row" style={{ paddingBottom: "10px" }}>
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -526,9 +579,6 @@ class AddPatientForm extends PureComponent {
                           }
                         }}
                       />
-                    </div>
-
-                    <div className="row" style={{ paddingBottom: "10px" }}>
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
@@ -541,56 +591,6 @@ class AddPatientForm extends PureComponent {
                           events: {
                             onChange: texthandle.bind(this, this, context)
                           },
-                          others: {
-                            disabled: this.state.existingPatient
-                          }
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "patient_type"
-                        }}
-                        selector={{
-                          name: "patient_type",
-                          className: "select-fld",
-                          value: this.state.patient_type,
-
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "patitent_type_desc"
-                                : "arabic_patitent_type_desc",
-                            valueField: "hims_d_patient_type_id",
-                            data: this.props.patienttype
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            disabled: this.state.existingPatient
-                          }
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "visa_type_id"
-                        }}
-                        selector={{
-                          name: "visa_type_id",
-                          className: "select-fld",
-                          value: this.state.visa_type_id,
-
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "visa_type"
-                                : "arabic_visa_type",
-                            valueField: "hims_d_visa_type_id",
-                            data: this.props.visatypes
-                          },
-                          onChange: texthandle.bind(this, this, context),
                           others: {
                             disabled: this.state.existingPatient
                           }
