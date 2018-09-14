@@ -10,7 +10,7 @@ import Print from "@material-ui/icons/Print";
 import MyContext from "../../../utils/MyContext.js";
 import "./SampleCollections.css";
 import "../../../styles/site.css";
-import { CollectSample } from "./SampleCollectionEvent";
+import { CollectSample, printBarcode } from "./SampleCollectionEvent";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
@@ -196,7 +196,11 @@ class SampleCollectionPatient extends PureComponent {
                                           title="Barcode"
                                         >
                                           <Print
-                                          //   onClick={PringBarcode.bind(this, this, row)}
+                                            onClick={printBarcode.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )}
                                           />
                                         </IconButton>
                                       )}

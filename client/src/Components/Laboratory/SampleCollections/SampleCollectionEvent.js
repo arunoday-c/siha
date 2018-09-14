@@ -1,5 +1,6 @@
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
+import AlgaehReport from "../../Wrapper/printReports";
 
 const CollectSample = ($this, context, row) => {
   debugger;
@@ -52,4 +53,24 @@ const CollectSample = ($this, context, row) => {
   });
 };
 
-export { CollectSample };
+const printBarcode = ($this, row, e) => {
+  debugger;
+  AlgaehReport({
+    report: {
+      fileName: "sampleBarcode",
+      barcode: {
+        parameter: "patient_code",
+        options: {
+          format: "",
+          lineColor: "#0aa",
+          width: 4,
+          height: 40
+        }
+      }
+    },
+    data: {
+      patient_code: $this.state.patient_code + row.service_code
+    }
+  });
+};
+export { CollectSample, printBarcode };

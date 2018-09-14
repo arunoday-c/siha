@@ -95,7 +95,7 @@ class DisPatientForm extends Component {
                       </h6>
                     </div>
 
-                    {/* <div className="col-lg-3">
+                    <div className="col-lg-3">
                       <AlgaehLabel
                         label={{
                           fieldName: "patient_type"
@@ -106,8 +106,21 @@ class DisPatientForm extends Component {
                           ? this.state.patient_type
                           : "Patient Type"}
                       </h6>
-                    </div> */}
-                    <AlagehAutoComplete
+                    </div>
+
+                    <div className="col-lg-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "mode_of_pay"
+                        }}
+                      />
+                      <h6>
+                        {this.state.mode_of_pay
+                          ? this.state.mode_of_pay
+                          : "Mode of Payment"}
+                      </h6>
+                    </div>
+                    {/* <AlagehAutoComplete
                       div={{ className: "col-lg-3" }}
                       label={{
                         fieldName: "patient_type"
@@ -130,9 +143,9 @@ class DisPatientForm extends Component {
                           disabled: true
                         }
                       }}
-                    />
+                    /> */}
                     {/* Mode of payment */}
-                    <AlagehAutoComplete
+                    {/* <AlagehAutoComplete
                       div={{ className: "col-lg-5" }}
                       label={{
                         fieldName: "mode_of_pay",
@@ -155,7 +168,7 @@ class DisPatientForm extends Component {
                         },
                         onChange: null
                       }}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
