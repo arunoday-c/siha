@@ -45,7 +45,13 @@ div[numberbox="true"] input[type="text"] {
     margin-left: 0px; }
 
 .mandatory .algaeh-datePicker {
-  background: #fffff6; }
+  background: #fff2f6; }
+
+.mandatory .Select-placeholder {
+  background-color: #fff2f6; }
+
+.mandatory input[type="text"] {
+  background-color: #fff2f6; }
 
 .table-responsive {
   border: 1px solid #e2e2e2;

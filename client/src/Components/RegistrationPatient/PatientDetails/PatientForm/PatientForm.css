@@ -34,23 +34,24 @@
     height: 101px; }
 
 input[type="text"]:disabled {
-  background: white;
-  border: none;
+  background: #f0f0f0;
+  border: 1px solid #d3d3d3;
   color: #000;
   font-weight: bold; }
 
 .is-disabled .Select-control {
-  background-color: #f9f9f9;
-  color: #000;
-  font-weight: bold;
-  border: none; }
+  border: 1px solid #d3d3d3; }
 
 .is-disabled .Select-value {
-  background: #fff;
-  border-bottom: 1px dotted #949494; }
+  background: #f0f0f0;
+  color: #000;
+  font-weight: bold; }
 
 .is-disabled .Select-arrow-zone {
   display: none; }
+
+.is-disabled .Select-placeholder {
+  background: #f0f0f0; }
 
 .algaeh-datePicker .react-date-picker--disabled button {
   display: none; }

@@ -61,9 +61,18 @@ div[numberbox="true"] {
     margin-left: 0px;
   }
 }
-.mandatory .algaeh-datePicker {
-  background: #fffff6;
+.mandatory {
+  .algaeh-datePicker {
+    background: #fff2f6;
+  }
+  .Select-placeholder {
+    background-color: #fff2f6;
+  }
+  input[type="text"] {
+    background-color: #fff2f6;
+  }
 }
+
 // .algaeh-datePicker {
 //   border-bottom: 1px solid #6c757d;
 //   background-color: #fbfbfb;
