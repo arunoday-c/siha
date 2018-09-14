@@ -17,29 +17,37 @@ const texthandle = ($this, ctrl, e) => {
 //Save Order
 const SaveMedication = ($this, e) => {
   debugger;
-  let inputObj = {
-    patient_id: $this.state.patient_id,
-    encounter_id: $this.state.encounter_id,
-    provider_id: $this.state.provider_id,
-    episode_id: $this.state.episode_id,
-    medicationitems: $this.state.medicationitems
-  };
-  // algaehApiCall({
-  //   uri: "/orderAndPreApproval/insertOrderedServices",
-  //   data: $this.state.orderservicesdata,
-  //   method: "POST",
-  //   onSuccess: response => {
-  //     if (response.data.success) {
-  //       this.setState({ saved: true });
-  //       successfulMessage({
-  //         message: "Ordered Successfully...",
-  //         title: "Success",
-  //         icon: "success"
-  //       });
-  //     }
-  //   },
-  //   onFailure: error => {}
-  // });
+  if ($this.state.medicationitems.length > 0) {
+    let inputObj = {
+      patient_id: $this.state.patient_id,
+      encounter_id: $this.state.encounter_id,
+      provider_id: $this.state.provider_id,
+      episode_id: $this.state.episode_id,
+      medicationitems: $this.state.medicationitems
+    };
+    algaehApiCall({
+      uri: "/orderMedication/addPatientPrescription",
+      data: inputObj,
+      method: "POST",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ savebutton: true });
+          successfulMessage({
+            message: "Ordered Successfully...",
+            title: "Success",
+            icon: "success"
+          });
+        }
+      },
+      onFailure: error => {}
+    });
+  } else {
+    successfulMessage({
+      message: "Invalid Input. Please enter the items",
+      title: "Success",
+      icon: "success"
+    });
+  }
 };
 
 const genericnamehandle = ($this, ctrl, e) => {
@@ -84,7 +92,8 @@ const AddItems = $this => {
   };
   medicationitems.push(medicationobj);
   $this.setState({
-    medicationitems: medicationitems
+    medicationitems: medicationitems,
+    savebutton: false
   });
 };
 

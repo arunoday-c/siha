@@ -23,7 +23,11 @@ class Examination extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openExamnModal: false
+      openExamnModal: false,
+      hims_d_physical_examination_header_id: "",
+      hims_d_physical_examination_details_id: "",
+      hims_d_physical_examination_subdetails_id: "",
+      examination_comment: ""
     };
     this.handleClose = this.handleClose.bind(this);
   }
@@ -74,11 +78,12 @@ class Examination extends Component {
   }
 
   resetExmnState() {
+    debugger;
     this.setState({
-      exam_header_id: "",
-      exam_details_id: "",
-      exam_subdetails_id: "",
-      comments: ""
+      hims_d_physical_examination_header_id: "",
+      hims_d_physical_examination_details_id: "",
+      hims_d_physical_examination_subdetails_id: "",
+      examination_comment: ""
     });
   }
 
@@ -97,8 +102,8 @@ class Examination extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          this.resetExmnState.bind(this);
           getPatientPhysicalExamination(this);
+          this.resetExmnState();
           swal("Examination added successfully . .", {
             icon: "success",
             buttons: false,
@@ -162,7 +167,10 @@ class Examination extends Component {
                           dataSource: {
                             textField: "header_description",
                             valueField: "hims_d_physical_examination_header_id",
-                            data: this.props.allexaminations
+                            data:
+                              this.props.allexaminations !== undefined
+                                ? this.props.allexaminations[0]
+                                : []
                           },
                           onChange: this.headerDropDownHandle.bind(this)
                         }}

@@ -270,7 +270,7 @@ let selectDepartment = (req, res, next) => {
       let Page = paging(req.paging);
       pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
     }
-
+    debugFunction("inside selectDepartment");
     let condition = whereCondition(extend(departWhereCondition, req.query));
     selectStatement(
       {
@@ -313,6 +313,7 @@ let selectSubDepartment = (req, res, next) => {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
+    debugFunction("inside selectSubDepartment");
     let condition = whereCondition(
       extend(subDepartmentWhereCondition, req.query)
     );
@@ -480,11 +481,12 @@ let updateSubDepartment = (req, res, next) => {
   }
 };
 
+//created by:Noor to get sub departments
 let selectdoctors = (req, res, next) => {
   let inputClicnicalNonClinicalDept = {
     department_type: "ALL"
   };
-
+  debugFunction("selectdoctors");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -584,6 +586,111 @@ let selectdoctors = (req, res, next) => {
   }
 };
 
+//created by:irfan to get sub departments
+let selectdoctorsDATA = (req, res, next) => {
+  let inputClicnicalNonClinicalDept = {
+    department_type: "ALL"
+  };
+  debugFunction("selectdoctors");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = extend(inputClicnicalNonClinicalDept, req.query);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let connectionString = "";
+      if (where.department_type == "CLINICAL") {
+        connectionString = " and hims_d_department.department_type='CLINICAL' ";
+      } else if (where.department_type == "NON-CLINICAL") {
+        connectionString =
+          " and hims_d_department.department_type='NON-CLINICAL' ";
+      }
+
+      connection.query(
+        "select hims_d_sub_department.hims_d_sub_department_id ,sub_department_code,sub_department_name\
+         ,sub_department_desc, arabic_sub_department_name, hims_d_sub_department.department_id,hims_d_department.department_type \
+         from hims_d_sub_department,hims_d_department where \
+         hims_d_sub_department.department_id=hims_d_department.hims_d_department_id \
+         and hims_d_department.record_status='A' and sub_department_status='A' \
+         " +
+          connectionString,
+        (error, result) => {
+          if (error) {
+            connection.release();
+            next(error);
+          }
+          req.records = result;
+          //sbdepartment = extend(sbdepartment, result.body);
+          // console.log(sbdepartment);
+          debugLog("result of sub", result);
+          next();
+        }
+      );
+
+      // connection.query(
+      //   "select hims_m_employee_department_mappings.employee_id,\
+      //    hims_m_employee_department_mappings.sub_department_id,\
+      // concat( hims_d_employee.first_name,' ',\
+      // hims_d_employee.middle_name,' ',\
+      // hims_d_employee.last_name) full_name,\
+      // hims_d_employee.arabic_name,\
+      // hims_d_employee.services_id,\
+      // hims_d_sub_department.department_id,\
+      // hims_d_sub_department.sub_department_name,\
+      // hims_d_sub_department.arabic_sub_department_name\
+      // from hims_m_employee_department_mappings,\
+      // hims_d_employee,hims_d_sub_department,hims_d_department,\
+      // hims_d_employee_category,hims_m_category_speciality_mappings\
+      // where\
+      // hims_d_department.hims_d_department_id = hims_d_sub_department.department_id\
+      // and hims_m_employee_department_mappings.employee_id = hims_d_employee.hims_d_employee_id \
+      // and hims_d_sub_department.hims_d_sub_department_id= hims_m_employee_department_mappings.sub_department_id\
+      // and hims_m_employee_department_mappings.record_status='A'\
+      // and hims_d_department.hims_d_department_id = hims_d_sub_department.department_id\
+      // and hims_d_sub_department.record_status='A'\
+      // and hims_d_employee.record_status ='A'\
+      // and hims_d_sub_department.sub_department_status='A'\
+      // and hims_d_employee.employee_status='A'\
+      // and hims_d_department.department_type='CLINICAL'\
+      // and hims_d_employee.isdoctor='Y'\
+      // group by hims_m_employee_department_mappings.employee_id,hims_m_employee_department_mappings.sub_department_id;",
+      //   (error, results) => {
+      //     connection.release();
+      //     if (error) {
+      //       next(error);
+      //     }
+
+      //     let departments = new LINQ(results).GroupBy(g => g.sub_department_id);
+      //     let doctors = new LINQ(results).GroupBy(g => g.employee_id);
+      //     // .SelectMany(s => {
+      //     //   return s;
+      //     // })
+      //     // .ToArray();
+      //     // .Select(s => {
+      //     //   debugLog("log of ", s);
+      //     //   return {
+      //     //     sub_department_id: s.sub_department_id,
+      //     //     sub_department_name: s.sub_department_name,
+      //     //     employee_id: s.employee_id
+      //     //   };
+      //     // });
+      //     //.ToArray();
+
+      //     req.records = { departments: departments, doctors: doctors };
+      //     //extend(sbdepartment, doctorsInfo);
+      //     next();
+      //   }
+      // );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   addDepartment,
   updateDepartment,
