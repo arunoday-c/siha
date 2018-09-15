@@ -21,6 +21,7 @@ import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import algaehLoader from "../../Wrapper/fullPageLoader";
+import swal from "sweetalert";
 let patChiefComplain = [];
 
 class ChiefComplaints extends Component {
@@ -38,20 +39,58 @@ class ChiefComplaints extends Component {
       pain: "NH",
       score: 0,
       severity: "MI",
-      onset_date: new Date()
+      onset_date: new Date(),
+      episode_id: "",
+      interval: "",
+      duration: "",
+      comment: "",
+      hims_f_episode_chief_complaint_id: ""
     };
     this.handleClose = this.handleClose.bind(this);
     this.addChiefComplain = this.addChiefComplain.bind(this);
     this.setPainScale = this.setPainScale.bind(this);
+    this.fillComplainDetails = this.fillComplainDetails.bind(this);
   }
 
   componentDidMount() {
     this.getChiefComplainsList();
+    this.getPatientChiefComplains();
   }
 
   texthandle(e) {
     this.setState({
       [e.target.name]: e.target.value
+    });
+  }
+
+  showconfirmDialog(id) {
+    swal({
+      title: "Are you sure you want to delete this Chief Complain?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        let data = { hims_f_episode_chief_complaint_id: id };
+        algaehApiCall({
+          uri: "/doctorsWorkBench/deletePatientChiefComplaints",
+          data: data,
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.success) {
+              swal("Record deleted successfully . .", {
+                icon: "success",
+                buttons: false,
+                timer: 2000
+              });
+              this.getPatientChiefComplains();
+            }
+          },
+          onFailure: error => {}
+        });
+      } else {
+        swal("Delete request cancelled");
+      }
     });
   }
 
