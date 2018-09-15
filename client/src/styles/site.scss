@@ -689,8 +689,12 @@ input[type="text"]:disabled {
   }
 }
 .algaeh-datePicker .react-date-picker--disabled {
-  button {
-    display: none;
+  .react-date-picker__button {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    button {
+      display: none;
+    }
   }
 }
 

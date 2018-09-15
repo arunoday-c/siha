@@ -544,8 +544,11 @@ input[type="text"]:disabled {
 .is-disabled .Select-placeholder {
   background: #f0f0f0; }
 
-.algaeh-datePicker .react-date-picker--disabled button {
-  display: none; }
+.algaeh-datePicker .react-date-picker--disabled .react-date-picker__button {
+  padding-top: 3px;
+  padding-bottom: 3px; }
+  .algaeh-datePicker .react-date-picker--disabled .react-date-picker__button button {
+    display: none; }
 
 .table-responsive {
   border: 1px solid #e2e2e2;

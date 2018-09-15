@@ -16,7 +16,7 @@
   /* The circles on the timeline */
   /* Place the container to the right */ }
   .timeline .timelineContainer {
-    padding: 5px 0 10px 5px;
+    padding: 5px 0 3px 5px;
     position: relative;
     width: 90%; }
   .timeline .timelineContainer::after {
@@ -32,9 +32,16 @@
     left: 10px; }
   .timeline .content {
     position: relative;
-    padding: 4px 0 0 16px; }
+    padding: 4px 0 13px 16px;
+    border-bottom: 2px dashed #cecece; }
     .timeline .content .dateStamp {
-      font-size: 0.8rem; }
+      font-size: 0.8rem;
+      background: #2ebcb0;
+      color: #fff;
+      padding: 2px 10px;
+      margin: 0;
+      margin-bottom: 7px;
+      border-radius: 7px; }
     .timeline .content ul.vitals-box {
       margin: 0;
       padding: 0;
@@ -43,13 +50,15 @@
         margin: 5px 0 0;
         padding: 5px 10px;
         list-style: none;
-        border: 2px solid #cecece;
-        border-radius: 5px; }
+        border: 1px solid #41bcaf;
+        border-radius: 5px;
+        background: #fffbf3; }
         .timeline .content ul.vitals-box li.each-vitals-box p {
-          font-size: 0.9rem;
+          font-size: 0.8rem;
           margin: 0;
           padding: 0;
-          margin-bottom: 10px; }
+          margin-bottom: 5px;
+          text-transform: uppercase; }
         .timeline .content ul.vitals-box li.each-vitals-box span:first-child {
           font-size: 1.5rem; }
         .timeline .content ul.vitals-box li.each-vitals-box span:last-child {
