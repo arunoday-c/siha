@@ -201,7 +201,7 @@ class AddPatientForm extends PureComponent {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-8 primary-details">
-                    <div className="row" style={{ paddingBottom: "10px" }}>
+                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-2 mandatory" }}
                         label={{
@@ -296,7 +296,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
                     </div>
-                    <div className="row" style={{ paddingBottom: "10px" }}>
+                    <div className="row paddin-bottom-5">
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3 mandatory", tabIndex: "5" }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
@@ -413,7 +413,7 @@ class AddPatientForm extends PureComponent {
                         }}
                       />
                     </div>
-                    <div className="row" style={{ paddingBottom: "10px" }}>
+                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
@@ -525,7 +525,7 @@ class AddPatientForm extends PureComponent {
                       />
                     </div>
 
-                    <div className="row" style={{ paddingBottom: "10px" }}>
+                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -663,7 +663,6 @@ class AddPatientForm extends PureComponent {
                             <img
                               // className="preview-image"
                               src={this.state.filePreview}
-                              style={{ width: "100%", height: "108px" }}
                             />
 
                             <div className="attach-design text-center">
@@ -697,7 +696,6 @@ class AddPatientForm extends PureComponent {
                             <img
                               //className="preview-image"
                               src={this.state.filePrimaryPreview}
-                              style={{ width: "100%", height: "108px" }}
                             />
                             <div className="attach-design text-center">
                               <AlgaehLabel

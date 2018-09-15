@@ -16,7 +16,10 @@
 .hptl-phase1-add-patient-form .text_field {
   width: 100% !important;
   background-color: #fbfbfb;
-  margin-right: "5px"; }
+  margin-right: 5px; }
+
+.hptl-phase1-add-patient-form .paddin-bottom-5 {
+  padding-bottom: 4px; }
 
 .hptl-phase1-add-patient-form .secondary-details {
   padding-top: 8px; }

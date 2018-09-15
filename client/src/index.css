@@ -496,34 +496,6 @@
     border: solid 1px #eceff1; }
     :global .tab-container .tab-content .tab-item {
       position: relative; }
-  :global .image-drop-area {
-    border: 1px solid #93a4ad;
-    min-height: 101px;
-    position: relative;
-    background-color: #eaeaea; }
-    :global .image-drop-area .dropzone {
-      min-width: 100%;
-      min-height: 100%; }
-    :global .image-drop-area .drop-message {
-      font-size: 14px;
-      color: #485a63;
-      margin: 8px 0px;
-      min-width: 130px;
-      padding-left: 0px; }
-  :global .image-ins-drop-area {
-    border: 1px solid #93a4ad;
-    min-height: 80px;
-    position: relative;
-    background-color: #eaeaea; }
-    :global .image-ins-drop-area .dropzone {
-      min-width: 100%;
-      min-height: 100%; }
-    :global .image-ins-drop-area .drop-message {
-      font-size: 14px;
-      color: #485a63;
-      margin: 8px 0px;
-      min-width: 130px;
-      padding-left: 0px; }
   :global .htpl-phase1-radio-btn {
     margin-right: 5px;
     -webkit-appearance: none;
@@ -661,21 +633,6 @@
     border: solid 1px #eceff1; }
     :global .ins-tab-container .tab-content .tab-item {
       position: relative; }
-  :global .ins-Dis-image-drop-area {
-    border: 1px solid #93a4ad;
-    min-height: 80px;
-    position: relative;
-    background-color: #eaeaea;
-    font-size: 11px; }
-    :global .ins-Dis-image-drop-area .dropzone {
-      min-width: 100%;
-      min-height: 100%; }
-    :global .ins-Dis-image-drop-area .drop-message {
-      font-size: 11px;
-      color: #485a63;
-      margin: 8px 0px;
-      min-width: 130px;
-      padding-left: 0px; }
   :global .spacing-push {
     margin-top: 5.5em !important; }
   :global .box-shadow {
