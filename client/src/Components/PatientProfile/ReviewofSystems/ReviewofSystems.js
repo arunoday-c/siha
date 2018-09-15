@@ -313,7 +313,11 @@ class ReviewofSystems extends Component {
                 >
                   Add to Review List
                 </button>
-                <button type="button" className="btn btn-other">
+                <button
+                  onClick={this.resetPatientROS.bind(this)}
+                  type="button"
+                  className="btn btn-other"
+                >
                   Clear
                 </button>
               </div>

@@ -563,7 +563,11 @@ class Allergies extends Component {
                 >
                   Add to Alergy List
                 </button>
-                <button type="button" className="btn btn-other">
+                <button
+                  onClick={this.resetAllergies.bind(this)}
+                  type="button"
+                  className="btn btn-other"
+                >
                   Clear
                 </button>
               </div>

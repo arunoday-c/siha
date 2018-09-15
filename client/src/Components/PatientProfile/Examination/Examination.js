@@ -299,7 +299,11 @@ class Examination extends Component {
                 >
                   Add Examination
                 </button>
-                <button type="button" className="btn btn-other">
+                <button
+                  onClick={this.resetExmnState.bind(this)}
+                  type="button"
+                  className="btn btn-other"
+                >
                   Clear
                 </button>
               </div>
