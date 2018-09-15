@@ -11,6 +11,11 @@ import {
   AlagehFormGroup,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
+import { getAllChiefComplaints } from "./ChiefComplaintsHandlers";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
@@ -53,6 +58,7 @@ class ChiefComplaints extends Component {
   }
 
   componentDidMount() {
+    getAllChiefComplaints(this);
     this.getChiefComplainsList();
     this.getPatientChiefComplains();
   }
@@ -637,8 +643,9 @@ class ChiefComplaints extends Component {
                             textField: "hpi_description",
                             valueField: "hims_d_hpi_header_id",
                             data:
-                              this.state.chiefComplainList.length !== 0
-                                ? this.state.chiefComplainList
+                              this.props.allchiefcomplaints !== undefined &&
+                              this.props.allchiefcomplaints.length !== 0
+                                ? this.props.allchiefcomplaints
                                 : null
                           },
                           onChange: this.dropDownHandle.bind(this)
@@ -1106,4 +1113,24 @@ class ChiefComplaints extends Component {
   }
 }
 
-export default ChiefComplaints;
+function mapStateToProps(state) {
+  return {
+    allchiefcomplaints: state.allchiefcomplaints
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getAllChiefComplaints: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ChiefComplaints)
+);

@@ -334,7 +334,7 @@ class Vitals extends Component {
                 <AlagehFormGroup
                   div={{ className: "col vitalTopFld20" }}
                   label={{
-                    forceLabel: "O2 Respiration(%)",
+                    forceLabel: "O2 Sat(%)",
                     isImp: true
                   }}
                   textBox={{
