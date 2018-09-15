@@ -29,7 +29,9 @@ const getPhysicalExaminationsDetails = ($this, header_id) => {
       type: "ALL_EXAMINATIONS_DETAILS",
       mappingName: "allexaminationsdetails"
     },
-    afterSuccess: data => {}
+    afterSuccess: data => {
+      debugger;
+    }
   });
 };
 
