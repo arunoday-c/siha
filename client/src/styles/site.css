@@ -48,7 +48,7 @@ body {
     min-height: 100%; }
     :global .image-drop-area .dropzone img {
       width: 100%;
-      height: 76px; }
+      height: 81px; }
   :global .image-drop-area .drop-message {
     color: #485a63;
     margin: 8px 0px;
