@@ -1,0 +1,79 @@
+.appointment {
+  .my-calendar {
+    text-align: center;
+    background: #00afa4;
+    color: #fff;
+
+    .myDay_date {
+      float: none;
+      margin: 4px auto 2px;
+    }
+
+    .myDay_date input {
+      border: 1px solid #1d887f;
+      color: #fff;
+      background: #28a59a;
+      font-size: 17px;
+      padding: 1px;
+      text-align: center;
+      border-radius: 3px;
+    }
+
+    .arrow-box {
+      width: 60px;
+      cursor: pointer;
+    }
+    .arrow-box:hover {
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .arrow-box-left {
+      float: left;
+    }
+    .arrow-box-right {
+      float: right;
+    }
+    // .calendar {
+    //   width: 100%;
+    //   overflow: hidden;
+    //   float: left;
+    // }
+    // .calendar > ol {
+    //   margin: 0;
+    //   padding: 0;
+    //   //width: 1559px;
+    // }
+
+    .calendar .col {
+      border: 1px solid #009e94;
+      font-size: 1.3rem;
+      padding-right: 3px;
+      padding-left: 3px;
+    }
+    .calendar .col:hover {
+      background: #009e94;
+      cursor: pointer;
+    }
+
+    .calendar .col span {
+      padding: 0;
+      margin: 0;
+      display: block;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+    }
+    .activeDate {
+      border-bottom: 4px solid yellow !important;
+      background: #009e94;
+    }
+    .CurrentDate {
+      border-top: 2px solid yellow !important;
+    }
+  }
+
+  table {
+    tr {
+      text-align: center;
+    }
+  }
+}

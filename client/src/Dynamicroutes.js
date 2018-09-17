@@ -31,6 +31,7 @@ import RadScheduledList from "./Components/Radiology/RadScheduledList/RadSchedul
 import ResultEntryList from "./Components/Laboratory/ResultEntryList/ResultEntryList";
 import InitialStock from "./Components/Pharmacy/InitialStock/InitialStock";
 import PrescriptionList from "./Components/Pharmacy/PrescriptionList/PrescriptionList";
+import Appointment from "./Components/Appointment/Appointment";
 
 // function height() {
 //   let height =
@@ -67,7 +68,8 @@ const componts = (selectedLang, breadStyle) => {
     RadScheduledList: <RadScheduledList SelectLanguage={selectedLang} />,
     ResultEntryList: <ResultEntryList SelectLanguage={selectedLang} />,
     InitialStock: <InitialStock SelectLanguage={selectedLang} />,
-    PrescriptionList: <PrescriptionList SelectLanguage={selectedLang} />
+    PrescriptionList: <PrescriptionList SelectLanguage={selectedLang} />,
+    Appointment: <Appointment SelectLanguage={selectedLang} />
   };
 };
 
