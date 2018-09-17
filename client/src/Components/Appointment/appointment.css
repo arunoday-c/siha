@@ -45,3 +45,10 @@
 
 .appointment table tr {
   text-align: center; }
+
+.appointment table th {
+  color: #009e94; }
+
+.appointment table td i {
+  color: #009e94;
+  cursor: pointer; }

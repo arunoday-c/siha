@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import "./appointment.css";
 import moment from "moment";
-import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
-
+import { AlagehAutoComplete, AlagehFormGroup } from "../Wrapper/algaehWrapper";
+import Modal from "@material-ui/core/Modal";
 class Appointment extends Component {
   constructor(props) {
     super(props);
@@ -10,7 +10,8 @@ class Appointment extends Component {
     this.state = {
       selectedHDate: moment(dateToday, "YYYYMMDD")._d,
       fromDate: new Date(),
-      toDate: new Date()
+      toDate: new Date(),
+      showApt: false
     };
   }
 
@@ -24,6 +25,12 @@ class Appointment extends Component {
   monthChangeHandler(e) {
     let dt = moment(e.target.value + "-01", "YYYY-MM-DD")._d;
     this.setState({ selectedHDate: dt, activeDateHeader: dt });
+  }
+
+  handleClose() {
+    this.setState({
+      showApt: false
+    });
   }
 
   liGenerate() {
@@ -87,9 +94,113 @@ class Appointment extends Component {
     );
   }
 
+  showModal() {
+    this.setState({
+      showApt: true
+    });
+  }
+
   render() {
     return (
       <div className="appointment">
+        {/* Pop up start */}
+        <Modal open={this.state.showApt}>
+          <div className="algaeh-modal">
+            <div className="popupHeader">
+              <h4>Book an Appointment</h4>
+            </div>
+            <div className="popupInner">
+              <AlagehFormGroup
+                div={{ className: "col-lg-12 margin-top-15" }}
+                label={{
+                  forceLabel: "Full Name",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "full_name",
+
+                  //value: this.state.allergy_comment,
+                  events: {
+                    // onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-lg-12 margin-top-15" }}
+                label={{
+                  forceLabel: "Mobile No.",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "mob_no",
+
+                  // value: this.state.allergy_comment,
+                  events: {
+                    // onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col-lg-12 margin-top-15" }}
+                label={{
+                  forceLabel: "Visit Type"
+                }}
+                selector={{
+                  name: "visit_type",
+                  className: "select-fld",
+                  //value: this.state.allergy_severity,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value"
+                    //data: GlobalVariables.PAIN_SEVERITY
+                  }
+                  //onChange: this.dropDownHandle.bind(this)
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-lg-12 margin-top-15" }}
+                label={{
+                  forceLabel: "Visit Purpose.",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "allergy_comment",
+                  others: {
+                    multiline: true,
+                    rows: "4"
+                  },
+                  value: this.state.allergy_comment,
+                  events: {
+                    // onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+            </div>
+            <div className="row popupFooter">
+              <div className="col">
+                <button
+                  //onClick={this.addAllergyToPatient.bind(this)}
+                  type="button"
+                  className="btn btn-primary"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={this.handleClose.bind(this)}
+                  type="button"
+                  className="btn btn-other"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </Modal>
+        {/* Pop up end */}
         {/* Calendar Component Starts */}
         <div className="row">
           <div className="my-calendar col-lg-12">
@@ -157,23 +268,130 @@ class Appointment extends Component {
                 <th>
                   <i className="far fa-clock" />
                 </th>
-                <th>First</th>
-                <th>Last</th>
-                <th>Handle</th>
+                <th>Dr. Norman John</th>
+                <th>Dr. Norman John</th>
+                <th>Dr. Norman John</th>
+                <th>Dr. Norman John</th>
+                <th>Dr. Norman John</th>
+                <th>Dr. Norman John</th>
+                <th>Dr. Norman John</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th scope="row">1</th>
+                <td scope="row">09:00 AM</td>
                 <td>Mark</td>
                 <td>Otto</td>
-                <td>@mdo</td>
+                <td>mdo</td>
+                <td>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td>Otto</td>
+                <td>mdo</td>
+                <td>mdo</td>
               </tr>
               <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
+                <td scope="row">09:15 AM</td>
+                <td>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
                 <td>Thornton</td>
-                <td>@fat</td>
+                <td>fat</td>
+                <td>Jacob</td>
+                <td>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td>fat</td>
+                <td>fat</td>
+              </tr>
+              <tr>
+                <td scope="row">09:30 AM</td>
+                <td>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td>Thornton</td>
+                <td>fat</td>
+                <td>Jacob</td>
+                <td>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td>fat</td>
+                <td>fat</td>
+              </tr>
+              <tr>
+                <td scope="row">09:45 AM</td>
+                <td>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td>Thornton</td>
+                <td>fat</td>
+                <td>Jacob</td>
+                <td>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td>fat</td>
+                <td>fat</td>
+              </tr>
+              <tr>
+                <td scope="row">10:00 AM</td>
+                <td>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td>Thornton</td>
+                <td>fat</td>
+                <td>Jacob</td>
+                <td>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td>fat</td>
+                <td>fat</td>
+              </tr>
+              <tr>
+                <td scope="row">10:15 AM</td>
+                <td>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td>Thornton</td>
+                <td>fat</td>
+                <td>Jacob</td>
+                <td>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td>fat</td>
+                <td>fat</td>
               </tr>
             </tbody>
           </table>
