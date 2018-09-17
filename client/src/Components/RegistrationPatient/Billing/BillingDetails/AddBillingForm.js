@@ -199,6 +199,9 @@ class AddBillingForm extends Component {
                             name: "advance_adjust",
                             events: {
                               onChange: adjustadvance.bind(this, this, context)
+                            },
+                            others: {
+                              placeholder: "0.00"
                             }
                           }}
                         />
@@ -214,6 +217,9 @@ class AddBillingForm extends Component {
                             name: "sheet_discount_percentage",
                             events: {
                               onChange: discounthandle.bind(this, this, context)
+                            },
+                            others: {
+                              placeholder: "0.00"
                             }
                           }}
                         />
@@ -223,13 +229,20 @@ class AddBillingForm extends Component {
                             fieldName: "sheet_discount_amount"
                           }}
                           textBox={{
-                            decimal: { allowNegative: false },
+                            decimal: {
+                              allowNegative: false,
+                              thousandSeparator: ",",
+                              customInput: "0.00"
+                            },
                             value: this.state.sheet_discount_amount,
                             className: "txt-fld",
                             name: "sheet_discount_amount",
 
                             events: {
                               onChange: discounthandle.bind(this, this, context)
+                            },
+                            others: {
+                              placeholder: "0.00"
                             }
                           }}
                         />
@@ -274,6 +287,9 @@ class AddBillingForm extends Component {
                                 this,
                                 context
                               )
+                            },
+                            others: {
+                              placeholder: "0.00"
                             }
                           }}
                         />
@@ -405,6 +421,9 @@ class AddBillingForm extends Component {
                             value: this.state.cash_amount,
                             events: {
                               onChange: cashtexthandle.bind(this, this, context)
+                            },
+                            others: {
+                              placeholder: "0.00"
                             }
                           }}
                         />
@@ -444,6 +463,9 @@ class AddBillingForm extends Component {
                             value: this.state.card_amount,
                             events: {
                               onChange: cardtexthandle.bind(this, this, context)
+                            },
+                            others: {
+                              placeholder: "0.00"
                             }
                           }}
                         />
@@ -516,6 +538,9 @@ class AddBillingForm extends Component {
                                 this,
                                 context
                               )
+                            },
+                            others: {
+                              placeholder: "0.00"
                             }
                           }}
                         />

@@ -682,43 +682,6 @@ $forntSize: 0.7rem;
       }
     }
   }
-  .image-drop-area {
-    border: 1px solid #93a4ad;
-    min-height: 101px;
-    position: relative;
-    background-color: #eaeaea;
-    .dropzone {
-      min-width: 100%;
-      min-height: 100%;
-    }
-
-    .drop-message {
-      font-size: 14px;
-      color: #485a63;
-      margin: 8px 0px;
-      min-width: 130px;
-      padding-left: 0px;
-    }
-  }
-
-  .image-ins-drop-area {
-    border: 1px solid #93a4ad;
-    min-height: 80px;
-    position: relative;
-    background-color: #eaeaea;
-    .dropzone {
-      min-width: 100%;
-      min-height: 100%;
-    }
-
-    .drop-message {
-      font-size: 14px;
-      color: #485a63;
-      margin: 8px 0px;
-      min-width: 130px;
-      padding-left: 0px;
-    }
-  }
 
   .htpl-phase1-radio-btn {
     margin-right: 5px;
@@ -901,26 +864,6 @@ $forntSize: 0.7rem;
       .tab-item {
         position: relative;
       }
-    }
-  }
-
-  .ins-Dis-image-drop-area {
-    border: 1px solid #93a4ad;
-    min-height: 80px;
-    position: relative;
-    background-color: #eaeaea;
-    font-size: 11px;
-    .dropzone {
-      min-width: 100%;
-      min-height: 100%;
-    }
-
-    .drop-message {
-      font-size: 11px;
-      color: #485a63;
-      margin: 8px 0px;
-      min-width: 130px;
-      padding-left: 0px;
     }
   }
 

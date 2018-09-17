@@ -63,12 +63,8 @@ class Assessment extends Component {
         mappingName: "icdcodes"
       }
     });
-    debugger;
-    getPatientDiagnosis(this);
-  }
 
-  componentWillUnmount() {
-    debugger;
+    getPatientDiagnosis(this);
   }
 
   openTab(e) {

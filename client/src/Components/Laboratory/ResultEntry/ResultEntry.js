@@ -533,14 +533,14 @@ class ResultEntry extends Component {
                                 }
                               },
                               //TODO
-                              {
-                                fieldName: "status",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{ forceLabel: "Equipment Name" }}
-                                  />
-                                )
-                              },
+                              // {
+                              //   fieldName: "status",
+                              //   label: (
+                              //     <AlgaehLabel
+                              //       label={{ forceLabel: "Equipment Name" }}
+                              //     />
+                              //   )
+                              // },
                               //TODO
                               {
                                 fieldName: "remarks",

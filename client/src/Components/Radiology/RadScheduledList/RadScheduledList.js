@@ -219,7 +219,7 @@ class RadScheduledList extends Component {
                 <Tooltip id="tooltip-icon" title="Refresh">
                   <IconButton className="go-button" color="primary">
                     <i
-                      class="fas fa-sync-alt"
+                      className="fas fa-sync-alt"
                       aria-hidden="true"
                       onClick={Refresh.bind(this, this)}
                     />

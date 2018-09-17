@@ -180,10 +180,27 @@ class Vitals extends Component {
               <h4>Patient Vitals</h4>
             </div>
             <div className="col-lg-12 popupInner">
+              <div
+                className="row"
+                style={{
+                  paddingTop: "10px"
+                }}
+              >
+                <div
+                  className="col-lg-3"
+                  style={{ borderBottom: "1px solid #e5e5e5" }}
+                >
+                  <h6>Vital Timeline</h6>
+                </div>
+                <div
+                  className="col-lg-9"
+                  style={{ borderBottom: "1px solid #e5e5e5" }}
+                >
+                  <h6>Vital Charts</h6>
+                </div>
+              </div>
               <div className="row">
                 <div className="col-lg-3 popLeftDiv">
-                  <h5>Vital Timeline</h5>
-                  <hr />
                   <div className="timeline">
                     {this.props.patient_vitals !== undefined
                       ? this.props.patient_vitals.map((data, index) => (
@@ -243,8 +260,6 @@ class Vitals extends Component {
                 </div>
 
                 <div className="col-lg-9 popRightDiv">
-                  <h5>Vital Charts</h5>
-                  <hr />
                   <Line
                     height={60}
                     options={{

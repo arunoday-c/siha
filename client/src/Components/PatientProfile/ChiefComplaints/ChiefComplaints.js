@@ -58,9 +58,14 @@ class ChiefComplaints extends Component {
   }
 
   componentDidMount() {
+    debugger;
     getAllChiefComplaints(this);
     this.getChiefComplainsList();
     this.getPatientChiefComplains();
+  }
+
+  componentWillReceiveProps() {
+    debugger;
   }
 
   texthandle(e) {
@@ -246,40 +251,63 @@ class ChiefComplaints extends Component {
   }
 
   getPatientChiefComplains() {
-    algaehApiCall({
+    debugger;
+    // algaehApiCall({
+    //   uri: "/doctorsWorkBench/getPatientChiefComplaints",
+    //   data: {
+    //     episode_id: Window.global["episode_id"]
+    //   },
+    //   method: "GET",
+    //   onSuccess: response => {
+    //     if (response.data.success) {
+    //       debugger;
+    //       //console.log("Patient chief complains:", response.data.records);
+    //       this.setState({ patientChiefComplains: response.data.records });
+    //     }
+    //   },
+    //   onFailure: error => {}
+    // });
+
+    this.props.getPatientChiefComplains({
       uri: "/doctorsWorkBench/getPatientChiefComplaints",
       data: {
         episode_id: Window.global["episode_id"]
       },
       method: "GET",
-      onSuccess: response => {
-        if (response.data.success) {
-          //console.log("Patient chief complains:", response.data.records);
-          this.setState(
-            { patientChiefComplains: response.data.records },
-            () => {
-              // setPatientChiefComplaints(response.data.records);
-              algaehLoader({ show: false });
-            }
-          );
-        }
+      redux: {
+        type: "PAT_CHIEF_COMPLAINTS_GET_DATA",
+        mappingName: "patientChiefComplains"
       },
-      onFailure: error => {}
+      afterSuccess: data => {
+        this.setState({ patientChiefComplains: data });
+      }
     });
   }
 
   getChiefComplainsList() {
-    algaehApiCall({
+    this.props.getChiefComplainsList({
       uri: "/doctorsWorkBench/getChiefComplaints",
       method: "GET",
-      onSuccess: response => {
-        if (response.data.success) {
-          console.log("Subdepartment chief complains:", response.data.records);
-          this.setState({ chiefComplainList: response.data.records });
-        }
+      redux: {
+        type: "CHIEF_COMPLAINTS_GET_DATA",
+        mappingName: "chiefComplainList"
       },
-      onFailure: error => {}
+      afterSuccess: data => {
+        this.setState({ chiefComplainList: data });
+      }
     });
+    // algaehApiCall({
+    //   uri: "/doctorsWorkBench/getChiefComplaints",
+    //   method: "GET",
+    //   onSuccess: response => {
+    //     if (response.data.success) {
+    //       debugger;
+    //       console.log("Subdepartment chief complains:", response.data.records);
+    //       this.setState({ chiefComplainList: response.data.records });
+    //     }
+    //   },
+    //   onFailure: error => {}
+    // });
   }
 
   fillComplainDetails(e) {
@@ -1092,10 +1120,7 @@ class ChiefComplaints extends Component {
               ]}
               keyId="patient_id"
               dataSource={{
-                data:
-                  this.state.patientChiefComplains.length !== 0
-                    ? this.state.patientChiefComplains
-                    : []
+                data: this.state.patientChiefComplains
               }}
               isEditable={false}
               paging={{ page: 0, rowsPerPage: 5 }}
@@ -1115,14 +1140,18 @@ class ChiefComplaints extends Component {
 
 function mapStateToProps(state) {
   return {
-    allchiefcomplaints: state.allchiefcomplaints
+    allchiefcomplaints: state.allchiefcomplaints,
+    patientChiefComplains: state.patientChiefComplains,
+    chiefComplainList: state.chiefComplainList
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getAllChiefComplaints: AlgaehActions
+      getAllChiefComplaints: AlgaehActions,
+      getPatientChiefComplains: AlgaehActions,
+      getChiefComplainsList: AlgaehActions
     },
     dispatch
   );

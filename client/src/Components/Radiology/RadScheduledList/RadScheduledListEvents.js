@@ -104,9 +104,14 @@ const openResultEntry = ($this, row) => {
 };
 
 const closeResultEntry = $this => {
-  $this.setState({
-    resultEntry: !$this.state.resultEntry
-  });
+  $this.setState(
+    {
+      resultEntry: !$this.state.resultEntry
+    },
+    () => {
+      getRadTestList($this);
+    }
+  );
 };
 
 const Refresh = $this => {

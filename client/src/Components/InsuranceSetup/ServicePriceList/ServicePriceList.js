@@ -72,6 +72,7 @@ class SubInsurance extends PureComponent {
   }
 
   render() {
+    debugger;
     console.log("Name", this.state.insurance_provider_name);
     return (
       <React.Fragment>
@@ -106,12 +107,15 @@ class SubInsurance extends PureComponent {
                     <Tooltip id="tooltip-icon" title="Refresh">
                       <IconButton className="go-button" color="primary">
                         <i
-                          class="fas fa-sync-alt"
+                          className="fas fa-sync-alt"
                           aria-hidden="true"
                           onClick={Refresh.bind(this, this)}
                         />
                       </IconButton>
                     </Tooltip>
+                  </div>
+                  <div className="col-lg-4" style={{ marginTop: "3vh" }}>
+                    <h5> INSURAR: {this.state.insurance_provider_name}</h5>
                   </div>
                 </div>
               </Paper>

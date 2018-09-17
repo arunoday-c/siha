@@ -13,21 +13,45 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  Tooltip
 } from "../../Wrapper/algaehWrapper";
+
+import {
+  getMedicationList,
+  PatientSearch,
+  Refresh,
+  datehandle,
+  ListOfItems
+} from "./PrescriptionListEvents";
 
 import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
+import ListofItems from "./ListofItems/ListofItems";
 
 class PrescriptionList extends Component {
   constructor(props) {
     super(props);
-    let month = moment().format("MM");
-    let year = moment().format("YYYY");
-    this.state = {};
+
+    this.state = {
+      prescription_date: new Date(),
+      medication_list: [],
+      patient_id: null,
+      item_list: [],
+      itemlist: false
+    };
+  }
+
+  componentDidMount() {
+    getMedicationList(this, this);
+  }
+
+  changeDateFormat({ value }) {
+    if (value !== null) {
+      return moment(value).format(Options.dateFormat);
+    }
   }
 
   render() {
@@ -69,11 +93,11 @@ class PrescriptionList extends Component {
               <AlgaehDateHandler
                 div={{ className: "col-lg-2" }}
                 label={{ forceLabel: "Select Date" }}
-                textBox={{ className: "txt-fld", name: "to_date" }}
+                textBox={{ className: "txt-fld", name: "prescription_date" }}
                 events={{
-                  onChange: null
+                  onChange: datehandle.bind(this, this)
                 }}
-                value={this.state.to_date}
+                value={this.state.prescription_date}
               />
               <AlagehFormGroup
                 div={{ className: "col-lg-2" }}
@@ -96,16 +120,34 @@ class PrescriptionList extends Component {
               <div className="col-lg-1 form-group">
                 <span
                   className="fas fa-search fa-2x"
-                  //   onClick={PatientSearch.bind(this, this)}
+                  onClick={PatientSearch.bind(this, this)}
                 />
               </div>
 
+              <div className="col-lg-4"> &nbsp; </div>
+
+              <div className="col-lg-1" style={{ paddingTop: "4vh" }}>
+                <button
+                  className="btn btn-primary btn-sm"
+                  type="button"
+                  onClick={getMedicationList.bind(this, this)}
+                >
+                  Load Data
+                </button>
+              </div>
+
+              <div className="col-lg-1"> &nbsp; </div>
+
               <div className="col-lg-1">
-                <IconButton className="go-button" color="primary">
-                  <PlayCircleFilled
-                  // onClick={getSampleCollectionDetails.bind(this, this)}
-                  />
-                </IconButton>
+                <Tooltip id="tooltip-icon" title="Refresh">
+                  <IconButton className="go-button" color="primary">
+                    <i
+                      className="fas fa-sync-alt"
+                      aria-hidden="true"
+                      onClick={Refresh.bind(this, this)}
+                    />
+                  </IconButton>
+                </Tooltip>
               </div>
             </div>
 
@@ -129,15 +171,29 @@ class PrescriptionList extends Component {
                       disabled: true
                     },
                     {
-                      fieldName: "ordered_date",
+                      fieldName: "prescription_date",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "ordered_date" }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "Prescription Date" }}
+                        />
                       ),
-                      //   displayTemplate: row => {
-                      //     return (
-                      //       <span>{this.changeDateFormat(row.ordered_date)}</span>
-                      //     );
-                      //   },
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {this.changeDateFormat(row.prescription_date)}
+                          </span>
+                        );
+                      },
+                      disabled: true
+                    },
+                    {
+                      fieldName: "number_of_items",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Number Of Items" }}
+                        />
+                      ),
+
                       disabled: true
                     },
 
@@ -153,10 +209,7 @@ class PrescriptionList extends Component {
                               style={{ maxHeight: "4vh" }}
                             >
                               <Collections
-                              // onClick={this.ShowCollectionModel.bind(
-                              //   this,
-                              //   row
-                              // )}
+                                onClick={ListOfItems.bind(this, this, row)}
                               />
                             </IconButton>
                           </span>
@@ -166,11 +219,17 @@ class PrescriptionList extends Component {
                   ]}
                   keyId="patient_code"
                   dataSource={{
-                    data: this.state.sample_collection
+                    data: this.state.medication_list
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
+              <ListofItems
+                show={this.state.itemlist}
+                onClose={ListOfItems.bind(this, this)}
+                selectedLang={this.state.selectedLang}
+                inputsparameters={this.state.item_list}
+              />
             </div>
           </div>
         </div>
@@ -181,14 +240,14 @@ class PrescriptionList extends Component {
 
 function mapStateToProps(state) {
   return {
-    samplecollection: state.samplecollection
+    medicationlist: state.medicationlist
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getSampleCollection: AlgaehActions
+      getMedicationList: AlgaehActions
     },
     dispatch
   );
