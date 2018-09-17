@@ -47,7 +47,30 @@ const LineData = {
       pointHoverRadius: 5,
       pointRadius: 4,
       pointHitRadius: 50,
-      data: [6500, 5900, 8000, 8100, 5600]
+      data: [6500, 5900, 8000, 8100, 5600, 9000]
+    }
+  ]
+};
+
+const LineData1 = {
+  labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  datasets: [
+    {
+      fill: false,
+      lineTension: 0.9,
+      backgroundColor: "#00BCB0",
+      borderColor: "#DCAC66",
+      borderCapStyle: "butt",
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: "miter",
+      pointBorderColor: "#00BCB0",
+      pointBackgroundColor: "#00BCB0",
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointRadius: 4,
+      pointHitRadius: 50,
+      data: [65, 59, 80, 80, 56, 90]
     }
   ]
 };
@@ -236,7 +259,7 @@ class Vitals extends Component {
                       maintainAspectRatio: true,
                       legend: false
                     }}
-                    data={LineData}
+                    data={LineData1}
                   />
                   <Line
                     height={60}
