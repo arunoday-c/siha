@@ -41,10 +41,7 @@ export default {
       photo_file: "",
       primary_id_file: "",
       secondary_id_file: "",
-      //created_by: getCookie("UserID"),
-      // created_date: CurrentDate,
-      /// updated_by: null,
-      updated_date: null,
+
       visit_type: null,
       visit_date: CurrentDate,
       department_id: null,
@@ -73,6 +70,7 @@ export default {
       patient_Image: null,
       filePreview: null,
       filePrimaryPreview: null,
+      vat_applicable: "N",
 
       widthImg: "",
       open: false,

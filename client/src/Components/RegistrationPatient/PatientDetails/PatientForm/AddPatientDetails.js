@@ -171,6 +171,22 @@ const onDrop = ($this, file, context, fileType) => {
   }
 };
 
+const nationalityhandle = ($this, context, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
+  });
+
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({ [name]: value });
+    }
+    clearInterval(texthandlerInterval);
+  }, 1000);
+};
 export {
   texthandle,
   titlehandle,
@@ -178,5 +194,6 @@ export {
   setAge,
   numberSet,
   onDrop,
-  countryStatehandle
+  countryStatehandle,
+  nationalityhandle
 };
