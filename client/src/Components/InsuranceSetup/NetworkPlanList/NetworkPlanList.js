@@ -35,74 +35,85 @@ class NetworkPlanList extends PureComponent {
               this.onClose(e);
             }}
           >
-            <div className="hptl-phase1-add-insurance-form">
-              <div className="container-fluid">
-                {/* Services Details */}
+            <div className="algaeh-modal">
+              <div className="popupHeader">
+                <h4> Network Plans </h4>
+              </div>
+              <div className="hptl-phase1-add-insurance-form">
+                <div className="container-fluid">
+                  {/* Services Details */}
 
-                <div className="row">
-                  <AlgaehDataGrid
-                    id="pla_list_grid"
-                    columns={[
-                      {
-                        fieldName: "network_type",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "network_type" }} />
-                        )
-                        // subinsuranceprovider
-                      },
-                      {
-                        fieldName: "policy_number",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "policy_number" }} />
-                        )
-                      },
-                      {
-                        fieldName: "employer",
-                        label: <AlgaehLabel label={{ fieldName: "employer" }} />
-                      },
-                      {
-                        fieldName: "insurance_sub_id",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "sub_insurance_id" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.subinsuranceprovider === undefined
-                              ? []
-                              : this.props.subinsuranceprovider.filter(
-                                  f =>
-                                    f.hims_d_insurance_sub_id ===
-                                    row.insurance_sub_id
-                                );
+                  <div className="row">
+                    <AlgaehDataGrid
+                      id="pla_list_grid"
+                      columns={[
+                        {
+                          fieldName: "network_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "network_type" }}
+                            />
+                          )
+                          // subinsuranceprovider
+                        },
+                        {
+                          fieldName: "policy_number",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "policy_number" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "employer",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "employer" }} />
+                          )
+                        },
+                        {
+                          fieldName: "insurance_sub_id",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "sub_insurance_id" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            let display =
+                              this.props.subinsuranceprovider === undefined
+                                ? []
+                                : this.props.subinsuranceprovider.filter(
+                                    f =>
+                                      f.hims_d_insurance_sub_id ===
+                                      row.insurance_sub_id
+                                  );
 
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].insurance_sub_name
-                                  : display[0].arabic_sub_name
-                                : ""}
-                            </span>
-                          );
+                            return (
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? this.state.selectedLang === "en"
+                                    ? display[0].insurance_sub_name
+                                    : display[0].arabic_sub_name
+                                  : ""}
+                              </span>
+                            );
+                          }
                         }
-                      }
-                    ]}
-                    keyId="network_type"
-                    dataSource={{
-                      data:
-                        this.props.networkandplans === undefined
-                          ? []
-                          : this.props.networkandplans
-                    }}
-                    algaehSearch={true}
-                    // isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 5 }}
-                    onRowSelect={row => {
-                      this.onClose(row);
-                    }}
-                  />
+                      ]}
+                      keyId="network_type"
+                      dataSource={{
+                        data:
+                          this.props.networkandplans === undefined
+                            ? []
+                            : this.props.networkandplans
+                      }}
+                      algaehSearch={true}
+                      // isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 5 }}
+                      onRowSelect={row => {
+                        this.onClose(row);
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

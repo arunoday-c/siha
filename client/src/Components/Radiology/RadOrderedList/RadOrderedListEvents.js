@@ -149,20 +149,7 @@ const UpdateRadOrder = ($this, row) => {
                 buttons: false,
                 timer: 2000
               });
-              $this.props.getRadiologyTestList({
-                uri: "/radiology/getRadOrderedServices",
-                method: "PUT",
-                data: inputobj,
-                redux: {
-                  type: "RAD_LIST_GET_DATA",
-                  mappingName: "radtestlist"
-                },
-                afterSuccess: data => {
-                  $this.setState({
-                    isOpen: !$this.state.isOpen
-                  });
-                }
-              });
+              getRadTestList($this);
             }
           },
           onFailure: error => {
