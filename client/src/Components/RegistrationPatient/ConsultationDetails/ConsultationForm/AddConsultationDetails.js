@@ -120,6 +120,8 @@ const generateBillDetails = ($this, context) => {
   let serviceInput = [
     {
       insured: $this.state.insured,
+      //TODO change middle ware to promisify function --added by Nowshad
+      vat_applicable: "N",
       hims_d_services_id: $this.state.hims_d_services_id,
       primary_insurance_provider_id: $this.state.primary_insurance_provider_id,
       primary_network_office_id: $this.state.primary_network_office_id,
