@@ -39,6 +39,7 @@ class OrderingServices extends Component {
       patient_id: Window.global["current_patient"],
       visit_id: Window.global["visit_id"],
       doctor_id: null,
+      vat_applicable: this.props.vat_applicable,
 
       orderservicesdata: [],
       approval_amt: 0,
@@ -144,6 +145,7 @@ class OrderingServices extends Component {
   }
 
   render() {
+    debugger;
     return (
       <div className="hptl-phase1-ordering-services-form">
         {/* <div className="main-details" /> */}

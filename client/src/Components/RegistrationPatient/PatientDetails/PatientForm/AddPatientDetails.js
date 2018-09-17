@@ -174,18 +174,42 @@ const onDrop = ($this, file, context, fileType) => {
 const nationalityhandle = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  //TODO HOSPITAL
+  $this.props.getHospitalDetails({
+    uri: "/organization/getOrganization",
+    method: "GET",
+    data: { hims_d_hospital_id: 1 },
+    redux: {
+      type: "HOSPITAL_DETAILS_GET_DATA",
+      mappingName: "hospitaldetails"
+    },
+    afterSuccess: data => {
+      debugger;
+      let vat_applicable = "Y";
 
-  $this.setState({
-    [name]: value
-  });
+      if (
+        data[0].local_vat_applicable === "N" &&
+        data[0].default_nationality === value
+      ) {
+        vat_applicable = "N";
+      }
+      $this.setState({
+        [name]: value,
+        vat_applicable: vat_applicable
+      });
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({ [name]: value });
+      clearInterval(texthandlerInterval);
+      texthandlerInterval = setInterval(() => {
+        if (context !== undefined) {
+          context.updateState({
+            [name]: value,
+            vat_applicable: vat_applicable
+          });
+        }
+        clearInterval(texthandlerInterval);
+      }, 1000);
     }
-    clearInterval(texthandlerInterval);
-  }, 1000);
+  });
 };
 export {
   texthandle,

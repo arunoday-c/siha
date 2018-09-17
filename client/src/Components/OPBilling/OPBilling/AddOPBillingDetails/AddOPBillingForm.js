@@ -94,7 +94,7 @@ class AddOPBillingForm extends Component {
     let serviceInput = [
       {
         insured: this.state.insured,
-        vat_applicable: "Y",
+        vat_applicable: this.state.vat_applicable,
         hims_d_services_id: this.state.s_service,
         primary_insurance_provider_id: this.state.insurance_provider_id,
         primary_network_office_id: this.state
@@ -161,7 +161,7 @@ class AddOPBillingForm extends Component {
     let inputParam = [
       {
         hims_d_services_id: row.services_id,
-        vat_applicable: "Y",
+        vat_applicable: this.state.vat_applicable,
         quantity: row.quantity,
         discount_amout:
           e.target.name === "discount_percentage" ? 0 : row.discount_amout,

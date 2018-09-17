@@ -558,7 +558,9 @@ class Assessment extends Component {
                 ) */}
               <div className="grid-section">
                 {this.state.pageDisplay === "Orders" ? (
-                  <OrderingServices />
+                  <OrderingServices
+                    vat_applicable={this.props.vat_applicable}
+                  />
                 ) : this.state.pageDisplay === "LabResults" ? (
                   <LabResults />
                 ) : this.state.pageDisplay === "RisResults" ? (
