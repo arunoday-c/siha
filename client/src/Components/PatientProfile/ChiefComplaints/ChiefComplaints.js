@@ -73,7 +73,7 @@ class ChiefComplaints extends Component {
 
   showconfirmDialog(id) {
     swal({
-      title: "Are you sure you want to delete this Chief Complain?",
+      title: "Are you sure you want to delete this Chief Complaint?",
       icon: "warning",
       buttons: true,
       dangerMode: true

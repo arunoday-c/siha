@@ -60,7 +60,6 @@ const LineData1 = {
       lineTension: 0.9,
       backgroundColor: "#00BCB0",
       borderColor: "#DCAC66",
-      borderCapStyle: "butt",
       borderDash: [],
       borderDashOffset: 0.0,
       borderJoinStyle: "miter",
