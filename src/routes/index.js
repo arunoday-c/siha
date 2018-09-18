@@ -30,8 +30,8 @@ import icdcptcodes from "../controller/icdcptcodes";
 import radiology from "../controller/radiology";
 import algaehappuser from "../controller/algaehappuser";
 import dietmaster from "../controller/dietmaster";
-import itemmaster from "../controller/itemmaster";
-import genericmaster from "../controller/genericmaster";
+import itemmaster from "../Pharmacy/controller/itemmaster";
+import genericmaster from "../Pharmacy/controller/genericmaster";
 import orderMedication from "../controller/orderMedication";
 import organization from "../controller/organization";
 
