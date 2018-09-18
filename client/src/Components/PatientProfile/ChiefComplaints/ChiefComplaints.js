@@ -682,7 +682,7 @@ class ChiefComplaints extends Component {
                       <div className="col-lg-2 displayInlineBlock">
                         <i
                           className="fas fa-plus fa-1x"
-                          style={{ color: "#00BCB0", cursor: "pointer" }}
+                          style={{ color: "#34b8bc", cursor: "pointer" }}
                           onClick={this.addChiefComplain}
                         />
                       </div>

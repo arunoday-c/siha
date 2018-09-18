@@ -13,7 +13,7 @@
 
   .my-calendar {
     text-align: center;
-    background: #00afa4;
+    background: #34b8bc;
     color: #fff;
 
     .myDay_date {
@@ -24,7 +24,7 @@
     .myDay_date input {
       border: 1px solid #1d887f;
       color: #fff;
-      background: #28a59a;
+      background: #45a4aa;
       font-size: 17px;
       padding: 1px;
       text-align: center;
@@ -57,13 +57,13 @@
     // }
 
     .calendar .col {
-      border: 1px solid #009e94;
+      border: 1px solid #3aa4a9;
       font-size: 1.3rem;
       padding-right: 3px;
       padding-left: 3px;
     }
     .calendar .col:hover {
-      background: #009e94;
+      background: #3aa4a9;
       cursor: pointer;
     }
 
@@ -76,7 +76,7 @@
     }
     .activeDate {
       border-bottom: 4px solid yellow !important;
-      background: #009e94;
+      background: #3aa4a9;
     }
     .CurrentDate {
       border-top: 2px solid yellow !important;

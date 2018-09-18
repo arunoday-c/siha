@@ -19,8 +19,8 @@ const middleware = applyMiddleware(thunk, logger);
 const theme = createMuiTheme({
   palette: {
     primary: {
-      light: "#00BCB0",
-      main: "#00BCB0",
+      light: "#34b8bc",
+      main: "#34b8bc",
       dark: "#3A95AA",
       contrastText: "#fff"
     }
