@@ -98,9 +98,10 @@ const showconfirmDialog = ($this, id) => {
   }).then(willDelete => {
     if (willDelete) {
       let data = {
-        hims_d_insurance_sub_id: id,
+        hims_d_insurance_sub_id: id
         //updated_by: getCookie("UserID")
       };
+      debugger;
       algaehApiCall({
         uri: "/insurance/deleteSubInsurance",
         data: data,
@@ -117,13 +118,14 @@ const showconfirmDialog = ($this, id) => {
               method: "GET",
               printInput: true,
               data: {
-                insurance_sub_code: $this.state.insurance_provider_id
+                insurance_provider_id: $this.state.insurance_provider_id
               },
               redux: {
                 type: "SUB_INSURANCE_GET_DATA",
                 mappingName: "subinsuranceprovider"
               },
               afterSuccess: data => {
+                debugger;
                 $this.setState({ sub_insurance: data });
               }
             });
@@ -158,7 +160,7 @@ const updateSubInsurance = ($this, data) => {
           method: "GET",
           printInput: true,
           data: {
-            insurance_sub_code: $this.state.insurance_provider_id
+            insurance_provider_id: $this.state.insurance_provider_id
           },
           redux: {
             type: "SUB_INSURANCE_GET_DATA",

@@ -11,6 +11,9 @@ const getPatientProfile = $this => {
     redux: {
       type: "PATIENT_PROFILE",
       mappingName: "patient_profile"
+    },
+    afterSuccess: data => {
+      debugger;
     }
   });
 };

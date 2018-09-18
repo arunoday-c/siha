@@ -151,21 +151,13 @@ class NetworkPlan extends PureComponent {
                 {/* Services Details */}
                 <div className="row insurance-details">
                   <div className="col-lg-12 button-details">
-                    <AlgaehLabel
-                      label={{ fieldName: "", forceLabel: "INSURAR: " }}
-                    />
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "",
-                        forceLabel: this.state.insurance_provider_name
-                      }}
-                    />
+                    <h5> INSURAR: {this.state.insurance_provider_name}</h5>
 
                     <Button
                       variant="outlined"
                       size="small"
                       color="primary"
-                      style={{ float: "right" }}
+                      style={{ float: "right", marginTop: "-4vh" }}
                       onClick={addNewNetwork.bind(this, this)}
                     >
                       Add New

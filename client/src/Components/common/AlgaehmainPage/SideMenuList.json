@@ -68,7 +68,7 @@
     "subMenu": [
       {
         "name": "Appointment",
-        "label": "Appointment",
+        "label": "Doctor Appointment",
         "arlabel": "موعد",
         "path": "/Appointment"
       },
