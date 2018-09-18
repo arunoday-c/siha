@@ -3,10 +3,10 @@ import {
   releaseDBConnection,
   selectStatement,
   deleteRecord
-} from "../utils";
+} from "../../utils";
 import extend from "extend";
-import httpStatus from "../utils/httpStatus";
-import { logger, debugFunction, debugLog } from "../utils/logging";
+import httpStatus from "../../utils/httpStatus";
+import { logger, debugFunction, debugLog } from "../../utils/logging";
 
 //Section
 let getItems = (req, res, next) => {
