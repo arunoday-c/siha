@@ -85,7 +85,7 @@ class Vitals extends Component {
     this.handleClose = this.handleClose.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     getVitalHistory(this);
   }
 
