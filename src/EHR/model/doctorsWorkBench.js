@@ -1171,8 +1171,8 @@ let addPatientChiefComplaints = (req, res, next) => {
           if (result[0] == null) {
             connection.query(
               "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
-    severity,score,pain,comment,created_by,updated_by) \
-  values(?,?,?,?,?,?,?,?,?,?,?)",
+    severity,score,pain,comment,created_by,updated_by,created_date,updated_date) \
+  values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
               [
                 input.episode_id,
                 input.chief_complaint_id,
@@ -1184,7 +1184,9 @@ let addPatientChiefComplaints = (req, res, next) => {
                 input.pain,
                 input.comment,
                 input.created_by,
-                input.updated_by
+                input.updated_by,
+                new Date(),
+                new Date()
               ],
               (error, results) => {
                 if (error) {
@@ -1219,9 +1221,11 @@ let getPatientChiefComplaints = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select PE.hims_f_patient_encounter_id,PE.patient_id,PE.created_date as Encounter_Date , ecc.episode_id,ecc.hims_f_episode_chief_complaint_id,ecc.chief_complaint_id,hh.hpi_description as chief_complaint_name,ecc.onset_date,ecc.interval,ecc.duration,ecc.severity,\
-        ecc.score,ecc.pain,ecc.comment from ( (hims_f_episode_chief_complaint ecc inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=ecc.chief_complaint_id )    inner join hims_f_patient_encounter PE on PE.episode_id=ecc.episode_id)\
-        where ecc.record_status='A'and ecc.episode_id=? ",
+        "select hh.hims_d_hpi_header_id,hh.hpi_description as chief_complaint_name,PE.hims_f_patient_encounter_id,PE.patient_id,\
+        max(PE.updated_date) as Encounter_Date , ecc.hims_f_episode_chief_complaint_id,ecc.episode_id,ecc.chief_complaint_id,\
+        ecc.onset_date,ecc.`interval`,ecc.duration,ecc.severity,ecc.score,ecc.pain,ecc.`comment`\
+        from ( (hims_f_episode_chief_complaint ecc inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=ecc.chief_complaint_id )    inner join hims_f_patient_encounter PE on PE.episode_id=ecc.episode_id)\
+        where ecc.record_status='A'and ecc.episode_id=? group by chief_complaint_id ",
         [inputData.episode_id],
         (error, result) => {
           if (error) {
@@ -1250,8 +1254,8 @@ let deletePatientChiefComplaints = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "update hims_f_episode_chief_complaint set record_status='I' where hims_f_episode_chief_complaint_id=?",
-        [req.body.hims_f_episode_chief_complaint_id],
+        "update hims_f_episode_chief_complaint set record_status='I',updated_date=? where hims_f_episode_chief_complaint_id=?",
+        [new Date(),req.body.hims_f_episode_chief_complaint_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -2315,7 +2319,6 @@ module.exports = {
   getPatientAllergy,
   updatePatientChiefComplaints,
   addPatientDiagnosis,
-
   addPatientROS,
   getPatientROS,
   updatePatientROS,
@@ -2323,7 +2326,6 @@ module.exports = {
   addReviewOfSysDetails,
   getReviewOfSystem,
   updatePatientDiagnosis,
-
   addPatientVitals,
   addPatientPhysicalExamination,
   updatePatientAllergy,
