@@ -97,7 +97,45 @@ class DisplayOPBilling extends PureComponent {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    this.setState(
+      {
+        hims_f_billing_details_id: null,
+        hims_f_billing_header_id: null,
+        service_type_id: null,
+        services_id: null,
+        quantity: 0,
+        unit_cost: 0,
+        insurance_yesno: "N",
+        gross_amount: 0,
+        discount_amout: 0,
+        discount_percentage: 0,
+        net_amout: 0,
+        copay_percentage: 0,
+        copay_amount: 0,
+        deductable_amount: 0,
+        deductable_percentage: 0,
+        tax_inclusive: "N",
+        patient_tax: 0,
+        company_tax: 0,
+        total_tax: 0,
+        patient_resp: 0,
+        patient_payable: 0,
+        comapany_resp: 0,
+        company_payble: 0,
+        sec_company: "N",
+        sec_deductable_percentage: 0,
+        sec_deductable_amount: 0,
+        sec_company_res: 0,
+        sec_company_tax: 0,
+        sec_company_paybale: 0,
+        sec_copay_percntage: 0,
+        sec_copay_amount: 0,
+        billservicevalue: null
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
 
   displayServiceBills() {

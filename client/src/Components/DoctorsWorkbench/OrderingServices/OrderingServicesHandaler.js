@@ -44,6 +44,7 @@ const ProcessService = ($this, e) => {
   let serviceInput = [
     {
       insured: $this.state.insured,
+      vat_applicable: "Y",
       hims_d_services_id: $this.state.s_service,
       primary_insurance_provider_id: $this.state.insurance_provider_id,
       primary_network_office_id: $this.state.hims_d_insurance_network_office_id,

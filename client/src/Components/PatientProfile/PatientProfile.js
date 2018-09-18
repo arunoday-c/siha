@@ -423,7 +423,9 @@ class PatientProfile extends Component {
           ) : this.state.pageDisplay === "phy_exam" ? (
             <PhysicalExamination />
           ) : this.state.pageDisplay === "assesment" ? (
-            <Assesment />
+            <Assesment
+              vat_applicable={this.props.patient_profile[0].vat_applicable}
+            />
           ) : this.state.pageDisplay === "plan" ? (
             <Plan />
           ) : null}

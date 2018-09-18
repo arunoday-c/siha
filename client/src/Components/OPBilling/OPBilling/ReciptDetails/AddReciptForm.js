@@ -183,7 +183,7 @@ class AddReciptForm extends Component {
                         onChange: cardtexthandle.bind(this, this, context)
                       },
                       others: {
-                        receipt: true
+                        disabled: true
                       }
                     }}
                   />

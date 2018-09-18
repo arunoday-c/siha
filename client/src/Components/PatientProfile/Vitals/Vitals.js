@@ -35,6 +35,29 @@ const LineData = {
     {
       fill: false,
       lineTension: 0.1,
+      backgroundColor: "#34b8bc",
+      borderColor: "#DCAC66",
+      borderCapStyle: "butt",
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: "miter",
+      pointBorderColor: "#34b8bc",
+      pointBackgroundColor: "#34b8bc",
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointRadius: 4,
+      pointHitRadius: 50,
+      data: [6500, 5900, 8000, 8100, 5600, 9000]
+    }
+  ]
+};
+
+const LineData1 = {
+  labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  datasets: [
+    {
+      fill: false,
+      lineTension: 0.9,
       backgroundColor: "#00BCB0",
       borderColor: "#DCAC66",
       borderCapStyle: "butt",
@@ -47,7 +70,7 @@ const LineData = {
       pointHoverRadius: 5,
       pointRadius: 4,
       pointHitRadius: 50,
-      data: [6500, 5900, 8000, 8100, 5600]
+      data: [65, 59, 80, 80, 56, 90]
     }
   ]
 };
@@ -62,7 +85,7 @@ class Vitals extends Component {
     this.handleClose = this.handleClose.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     getVitalHistory(this);
   }
 
@@ -251,7 +274,7 @@ class Vitals extends Component {
                       maintainAspectRatio: true,
                       legend: false
                     }}
-                    data={LineData}
+                    data={LineData1}
                   />
                   <Line
                     height={60}

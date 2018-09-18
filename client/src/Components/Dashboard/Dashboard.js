@@ -19,7 +19,7 @@ const BarData = {
       data: [0, 40, 60, 60, 80, 90, 80],
       label: "Patients Count Weekly",
       backgroundColor: "#DCAC66",
-      hoverBackgroundColor: "#00BCB0"
+      hoverBackgroundColor: "#34b8bc"
     }
   ]
 };
@@ -29,8 +29,8 @@ const PieData = {
   datasets: [
     {
       data: [50, 300],
-      backgroundColor: ["#00BCB0", "#DCAC66"],
-      hoverBackgroundColor: ["#00BCB0", "#DCAC66"]
+      backgroundColor: ["#34b8bc", "#DCAC66"],
+      hoverBackgroundColor: ["#34b8bc", "#DCAC66"]
     }
   ]
 };
@@ -54,14 +54,14 @@ const LineData = {
     {
       fill: false,
       lineTension: 0.1,
-      backgroundColor: "#00BCB0",
+      backgroundColor: "#34b8bc",
       borderColor: "#DCAC66",
       borderCapStyle: "butt",
       borderDash: [],
       borderDashOffset: 0.0,
       borderJoinStyle: "miter",
-      pointBorderColor: "#00BCB0",
-      pointBackgroundColor: "#00BCB0",
+      pointBorderColor: "#34b8bc",
+      pointBackgroundColor: "#34b8bc",
       pointBorderWidth: 1,
       pointHoverRadius: 5,
       pointRadius: 4,

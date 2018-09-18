@@ -1,0 +1,93 @@
+.appointment .my-calendar {
+  text-align: center;
+  background: #00afa4;
+  color: #fff; }
+  .appointment .my-calendar .myDay_date {
+    float: none;
+    margin: 4px auto 2px; }
+  .appointment .my-calendar .myDay_date input {
+    border: 1px solid #1d887f;
+    color: #fff;
+    background: #28a59a;
+    font-size: 17px;
+    padding: 1px;
+    text-align: center;
+    border-radius: 3px; }
+  .appointment .my-calendar .arrow-box {
+    width: 60px;
+    cursor: pointer; }
+  .appointment .my-calendar .arrow-box:hover {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+  .appointment .my-calendar .arrow-box-left {
+    float: left; }
+  .appointment .my-calendar .arrow-box-right {
+    float: right; }
+  .appointment .my-calendar .calendar .col {
+    border: 1px solid #009e94;
+    font-size: 1.3rem;
+    padding-right: 3px;
+    padding-left: 3px; }
+  .appointment .my-calendar .calendar .col:hover {
+    background: #009e94;
+    cursor: pointer; }
+  .appointment .my-calendar .calendar .col span {
+    padding: 0;
+    margin: 0;
+    display: block;
+    font-size: 0.6rem;
+    text-transform: uppercase; }
+  .appointment .my-calendar .activeDate {
+    border-bottom: 4px solid yellow !important;
+    background: #009e94; }
+  .appointment .my-calendar .CurrentDate {
+    border-top: 2px solid yellow !important; }
+
+.appointment table tr {
+  text-align: center; }
+
+.appointment table th {
+  color: #009e94; }
+
+.appointment table td i {
+  color: #009e94;
+  cursor: pointer; }
+
+.appointment .tg {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+.appointment .tg td {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  padding: 10px 5px;
+  border-style: solid;
+  border-width: 1px;
+  overflow: hidden;
+  word-break: normal;
+  border-color: black; }
+
+.appointment .tg th {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  padding: 10px 5px;
+  border-style: solid;
+  border-width: 1px;
+  overflow: hidden;
+  word-break: normal;
+  border-color: black; }
+
+.appointment .tg .tg-baqh {
+  text-align: center;
+  vertical-align: top; }
+
+.appointment .tg .tg-c3ow {
+  border-color: inherit;
+  text-align: center;
+  vertical-align: top; }
+
+.appointment .tg .tg-amwm {
+  font-weight: bold;
+  text-align: center;
+  vertical-align: top; }

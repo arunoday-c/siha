@@ -809,7 +809,7 @@ let billingCalculations = (req, res, next) => {
             (inputParam.gross_total * inputParam.sheet_discount_percentage) /
             100;
         }
-        
+
         sendingObject.sheet_discount_amount = math.round(
           sendingObject.sheet_discount_amount,
           2
@@ -818,7 +818,6 @@ let billingCalculations = (req, res, next) => {
           sendingObject.sheet_discount_percentage,
           2
         );
-        
 
         sendingObject.net_amount =
           inputParam.gross_total - sendingObject.sheet_discount_amount;
@@ -1005,6 +1004,11 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               sec_company_res = 0,
               sec_company_paybale = 0;
 
+            let patient_tax = 0,
+              company_tax = 0,
+              sec_company_tax = 0,
+              total_tax = 0;
+
             let quantity =
               servicesDetails.quantity === undefined
                 ? 1
@@ -1054,6 +1058,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                 ? "N"
                 : servicesDetails.pre_approval;
 
+            let vat_applicable = servicesDetails.vat_applicable;
             let preapp_limit_exceed = "N";
             let ser_net_amount = 0;
             let ser_gross_amt = 0;
@@ -1260,8 +1265,26 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   }
 
                   patient_resp = copay_amount;
-                  patient_payable = copay_amount;
                   comapany_resp = net_amout - patient_resp;
+
+                  debugLog("VAT APPLY:", vat_applicable);
+                  if (vat_applicable == "Y" && records.vat_applicable == "Y") {
+                    debugLog("VAT APPLY:");
+                    patient_tax = math.round(
+                      (patient_resp * records.vat_percent) / 100,
+                      2
+                    );
+                    company_tax = math.round(
+                      (comapany_resp * records.vat_percent) / 100,
+                      2
+                    );
+                    total_tax = patient_tax + company_tax;
+                  }
+
+                  debugLog("Pat VAT APPLY:", patient_tax);
+                  debugLog("Company VAT APPLY:", company_tax);
+                  debugLog("Total VAT APPLY:", total_tax);
+                  patient_payable = copay_amount + patient_tax;
                   debugLog("COmpany Amount:", comapany_resp);
                   debugLog("Approved:", approved_amount);
                   if (
@@ -1274,7 +1297,10 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     comapany_resp = approved_amount;
                   }
 
-                  company_payble = net_amout - patient_payable;
+                  company_payble = net_amout - patient_resp;
+                  debugLog("Company Pay Net:", company_payble);
+                  company_payble = company_payble + company_tax;
+                  debugLog("Company Pay:", company_payble);
 
                   preapp_limit_amount = policydtls.preapp_limit;
                   if (policydtls.preapp_limit !== 0) {
@@ -1319,7 +1345,18 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   }
                   net_amout = gross_amount - discount_amout;
                   patient_resp = net_amout;
-                  patient_payable = net_amout;
+
+                  debugLog("VAT APPLY:", vat_applicable);
+                  if (vat_applicable == "Y" && records.vat_applicable == "Y") {
+                    debugLog("VAT APPLY:");
+                    patient_tax = math.round(
+                      (patient_resp * records.vat_percent) / 100,
+                      2
+                    );
+                    total_tax = patient_tax;
+                  }
+
+                  patient_payable = net_amout + patient_tax;
                 }
               })
 
@@ -1328,7 +1365,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
                 if (secpolicydtls != null) {
                   //secondary Insurance
-                  sec_unit_cost = patient_payable;
+                  sec_unit_cost = patient_resp;
 
                   //Patient And Company
                   if (secpolicydtls.copay_status === "Y") {
@@ -1336,15 +1373,113 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     sec_copay_percntage =
                       (sec_copay_amount / sec_unit_cost) * 100;
                   } else {
-                    sec_copay_percntage = secpolicydtls.copay_consultation;
+                    // sec_copay_percntage = secpolicydtls.copay_consultation;
+
+                    if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Consultation == records.service_type_id
+                    ) {
+                      debugLog("Consutation", secpolicydtls.copay_consultation);
+                      sec_copay_percntage = secpolicydtls.copay_consultation;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Procedure == records.service_type_id
+                    ) {
+                      sec_copay_percntage = secpolicydtls.copay_percent_trt;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Provider == records.service_type_id
+                    ) {
+                      sec_copay_percntage = secpolicydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .InventoryItem == records.service_type_id
+                    ) {
+                      //Not there
+                      sec_copay_percntage = secpolicydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.Lab ==
+                      records.service_type_id
+                    ) {
+                      debugLog("Lab: ", secpolicydtls.copay_percent);
+                      sec_copay_percntage = secpolicydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .NursingCare == records.service_type_id
+                    ) {
+                      //Not There
+                      sec_copay_percntage = secpolicydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Miscellaneous == records.service_type_id
+                    ) {
+                      //Not There
+                      sec_copay_percntage = secpolicydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Anesthesia == records.service_type_id
+                    ) {
+                      //Not There
+                      sec_copay_percntage = secpolicydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.Bed ==
+                      records.service_type_id
+                    ) {
+                      //Not There
+                      sec_copay_percntage = secpolicydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.OT ==
+                      records.service_type_id
+                    ) {
+                      //Not There
+                      sec_copay_percntage = secpolicydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Radiology == records.service_type_id
+                    ) {
+                      sec_copay_percntage = secpolicydtls.copay_percent_rad;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Pharmacy == records.service_type_id
+                    ) {
+                      sec_copay_percntage = secpolicydtls.copay_medicine;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .NonService == records.service_type_id
+                    ) {
+                      //Not There
+                      sec_copay_percntage = secpolicydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.Package ==
+                      records.service_type_id
+                    ) {
+                      //Not There
+                      sec_copay_percntage = secpolicydtls.copay_percent;
+                    }
                     sec_copay_amount =
                       (sec_unit_cost * sec_copay_percntage) / 100;
                   }
 
                   patient_resp = sec_copay_amount;
-                  patient_payable = sec_copay_amount;
                   sec_company_res = sec_unit_cost - patient_resp;
-                  sec_company_paybale = sec_unit_cost - patient_payable;
+
+                  if (vat_applicable == "Y" && records.vat_applicable == "Y") {
+                    debugLog("VAT APPLY:");
+                    patient_tax = math.round(
+                      (patient_resp * records.vat_percent) / 100,
+                      2
+                    );
+                    sec_company_tax = math.round(
+                      (sec_company_res * records.vat_percent) / 100,
+                      2
+                    );
+
+                    total_tax = patient_tax + company_tax + sec_company_res;
+                  }
+
+                  patient_payable = patient_resp + patient_tax;
+                  sec_company_paybale =
+                    sec_unit_cost - patient_resp + sec_company_tax;
                 }
                 let out = extend(
                   {
@@ -1400,6 +1535,10 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
                     comapany_resp: comapany_resp,
                     company_payble: company_payble,
+                    patient_tax: patient_tax,
+                    company_tax: company_tax,
+                    sec_company_tax: sec_company_tax,
+                    total_tax: total_tax,
 
                     sec_copay_percntage: sec_copay_percntage,
                     sec_copay_amount: sec_copay_amount,

@@ -11,7 +11,10 @@ import {
   AlagehFormGroup,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-import { getAllChiefComplaints } from "./ChiefComplaintsHandlers";
+import {
+  getAllChiefComplaints,
+  getPatientChiefComplaints
+} from "./ChiefComplaintsHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -58,14 +61,8 @@ class ChiefComplaints extends Component {
   }
 
   componentDidMount() {
-    debugger;
     getAllChiefComplaints(this);
-    this.getChiefComplainsList();
-    this.getPatientChiefComplains();
-  }
-
-  componentWillReceiveProps() {
-    debugger;
+    getPatientChiefComplaints(this);
   }
 
   texthandle(e) {
@@ -94,7 +91,7 @@ class ChiefComplaints extends Component {
                 buttons: false,
                 timer: 2000
               });
-              this.getPatientChiefComplains();
+              getPatientChiefComplaints(this);
             }
           },
           onFailure: error => {}
@@ -119,8 +116,8 @@ class ChiefComplaints extends Component {
     });
   };
 
-  handleChangeComplete = () => {
-    console.log("Change event completed");
+  handleChangeComplete = pain => {
+    console.log("Change event completed with:", pain);
   };
 
   setPainScale(pain_number, e) {
@@ -134,7 +131,6 @@ class ChiefComplaints extends Component {
       { score: pain_number },
 
       () => {
-        debugger;
         switch (pain_number) {
           case 0:
             this.setState({ pain: "NH" });
@@ -213,7 +209,7 @@ class ChiefComplaints extends Component {
       data: data,
       onSuccess: response => {
         if (response.data.success) {
-          this.getPatientChiefComplains();
+          getPatientChiefComplaints(this);
         }
       },
       onFailure: error => {}
@@ -250,71 +246,17 @@ class ChiefComplaints extends Component {
     });
   }
 
-  getPatientChiefComplains() {
-    debugger;
-    // algaehApiCall({
-    //   uri: "/doctorsWorkBench/getPatientChiefComplaints",
-    //   data: {
-    //     episode_id: Window.global["episode_id"]
-    //   },
-    //   method: "GET",
-    //   onSuccess: response => {
-    //     if (response.data.success) {
-    //       debugger;
-    //       //console.log("Patient chief complains:", response.data.records);
-    //       this.setState({ patientChiefComplains: response.data.records });
-    //     }
-    //   },
-    //   onFailure: error => {}
-    // });
-
-    this.props.getPatientChiefComplains({
-      uri: "/doctorsWorkBench/getPatientChiefComplaints",
-      data: {
-        episode_id: Window.global["episode_id"]
-      },
-      method: "GET",
-      redux: {
-        type: "PAT_CHIEF_COMPLAINTS_GET_DATA",
-        mappingName: "patientChiefComplains"
-      },
-      afterSuccess: data => {
-        this.setState({ patientChiefComplains: data });
-      }
-    });
-  }
-
-  getChiefComplainsList() {
-    this.props.getChiefComplainsList({
-      uri: "/doctorsWorkBench/getChiefComplaints",
-      method: "GET",
-      redux: {
-        type: "CHIEF_COMPLAINTS_GET_DATA",
-        mappingName: "chiefComplainList"
-      },
-      afterSuccess: data => {
-        this.setState({ chiefComplainList: data });
-      }
-    });
-    // algaehApiCall({
-    //   uri: "/doctorsWorkBench/getChiefComplaints",
-    //   method: "GET",
-    //   onSuccess: response => {
-    //     if (response.data.success) {
-    //       debugger;
-    //       console.log("Subdepartment chief complains:", response.data.records);
-    //       this.setState({ chiefComplainList: response.data.records });
-    //     }
-    //   },
-    //   onFailure: error => {}
-    // });
-  }
-
   fillComplainDetails(e) {
     this.updatePatientChiefComplaints();
     const id = parseInt(e.currentTarget.getAttribute("data-cpln-id"));
-    this.getPatientChiefComplains();
-    let cce = Enumerable.from(this.state.patientChiefComplains)
+    getPatientChiefComplaints(this);
+
+    let cce = Enumerable.from(
+      this.props.patient_chief_complaints !== undefined &&
+      this.props.patient_chief_complaints.length !== 0
+        ? this.props.patient_chief_complaints
+        : null
+    )
       .where(w => w.hims_f_episode_chief_complaint_id === id)
       .firstOrDefault();
     this.setState({ ...cce });
@@ -328,9 +270,11 @@ class ChiefComplaints extends Component {
   }
 
   render() {
-    patChiefComplain = this.state.patientChiefComplains
-      ? this.state.patientChiefComplains
-      : [];
+    patChiefComplain =
+      this.props.patient_chief_complaints !== undefined &&
+      this.props.patient_chief_complaints.length !== 0
+        ? this.props.patient_chief_complaints
+        : [];
     return (
       <React.Fragment>
         {/* HPI Modal Start */}
@@ -682,7 +626,7 @@ class ChiefComplaints extends Component {
                       <div className="col-lg-2 displayInlineBlock">
                         <i
                           className="fas fa-plus fa-1x"
-                          style={{ color: "#00BCB0", cursor: "pointer" }}
+                          style={{ color: "#34b8bc", cursor: "pointer" }}
                           onClick={this.addChiefComplain}
                         />
                       </div>
@@ -1120,7 +1064,11 @@ class ChiefComplaints extends Component {
               ]}
               keyId="patient_id"
               dataSource={{
-                data: this.state.patientChiefComplains
+                data:
+                  this.props.patient_chief_complaints !== undefined &&
+                  this.props.patient_chief_complaints.length !== 0
+                    ? this.props.patient_chief_complaints
+                    : []
               }}
               isEditable={false}
               paging={{ page: 0, rowsPerPage: 5 }}
@@ -1141,8 +1089,7 @@ class ChiefComplaints extends Component {
 function mapStateToProps(state) {
   return {
     allchiefcomplaints: state.allchiefcomplaints,
-    patientChiefComplains: state.patientChiefComplains,
-    chiefComplainList: state.chiefComplainList
+    patient_chief_complaints: state.patient_chief_complaints
   };
 }
 
@@ -1150,8 +1097,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getAllChiefComplaints: AlgaehActions,
-      getPatientChiefComplains: AlgaehActions,
-      getChiefComplainsList: AlgaehActions
+      getPatientChiefComplaints: AlgaehActions
     },
     dispatch
   );

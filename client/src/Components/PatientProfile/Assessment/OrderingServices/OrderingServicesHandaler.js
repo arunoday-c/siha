@@ -46,6 +46,7 @@ const ProcessService = ($this, e) => {
   let serviceInput = [
     {
       insured: $this.state.insured,
+      vat_applicable: $this.state.vat_applicable,
       hims_d_services_id: $this.state.s_service,
       primary_insurance_provider_id: $this.state.insurance_provider_id,
       primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
@@ -365,6 +366,7 @@ const calculateAmount = ($this, row, ctrl, e) => {
         e.target.name === "discount_amout" ? 0 : row.discount_percentage,
 
       insured: $this.state.insured === null ? "N" : $this.state.insured,
+      vat_applicable: $this.state.vat_applicable,
       primary_insurance_provider_id: $this.state.insurance_provider_id,
       primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
       primary_network_id: $this.state.network_id,

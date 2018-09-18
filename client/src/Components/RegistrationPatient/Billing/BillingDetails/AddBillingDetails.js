@@ -283,6 +283,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
     let serviceInput = [
       {
         insured: $this.state.insured,
+        vat_applicable: $this.state.vat_applicable,
         hims_d_services_id: $this.state.hims_d_services_id,
         primary_insurance_provider_id:
           $this.state.primary_insurance_provider_id,

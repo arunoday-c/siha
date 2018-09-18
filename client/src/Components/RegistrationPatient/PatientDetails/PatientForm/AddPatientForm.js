@@ -13,7 +13,8 @@ import {
   calculateAge,
   setAge,
   onDrop,
-  countryStatehandle
+  countryStatehandle,
+  nationalityhandle
 } from "./AddPatientDetails.js";
 import MyContext from "../../../../utils/MyContext.js";
 import AHSnackbar from "../../../common/Inputs/AHSnackbar.js";
@@ -459,7 +460,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_nationality_id",
                             data: this.props.nationalities
                           },
-                          onChange: texthandle.bind(this, this, context),
+                          onChange: nationalityhandle.bind(this, this, context),
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "12"
@@ -794,7 +795,8 @@ function mapStateToProps(state) {
     countrystates: state.countrystates,
     patients: state.patients,
     visatypes: state.visatypes,
-    patienttype: state.patienttype
+    patienttype: state.patienttype,
+    hospitaldetails: state.hospitaldetails
   };
 }
 
@@ -809,7 +811,8 @@ function mapDispatchToProps(dispatch) {
       getCountries: AlgaehActions,
       getStates: AlgaehActions,
       getVisatypes: AlgaehActions,
-      getPatientType: AlgaehActions
+      getPatientType: AlgaehActions,
+      getHospitalDetails: AlgaehActions
     },
     dispatch
   );

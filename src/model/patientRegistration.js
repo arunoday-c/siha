@@ -54,6 +54,7 @@ let updatePatientRegistrstion = (req, res, next) => {
 let insertPatientData = (req, res, next) => {
   try {
     debugFunction("Insert Patient Registration");
+    debugLog("Insert Patient Registration", req.body);
 
     let inputparam = extend(
       {
@@ -87,6 +88,7 @@ let insertPatientData = (req, res, next) => {
         photo_file: "",
         primary_id_file: "",
         secondary_id_file: "",
+        vat_applicable: "N",
         created_by: req.userIdentity.algaeh_d_app_user_id,
 
         updated_by: req.userIdentity.algaeh_d_app_user_id,
@@ -111,9 +113,9 @@ let insertPatientData = (req, res, next) => {
     , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
     , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
     , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
-    , `photo_file`, `primary_id_file`, `secondary_id_file`, `patient_type`, `created_by`, `created_date`\
+    , `photo_file`, `primary_id_file`, `secondary_id_file`, `patient_type`,`vat_applicable`, `created_by`, `created_date`\
     ,`city_id`,`state_id`,`country_id`)\
-     VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
+     VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
       [
         inputparam.patient_code,
         inputparam.registration_date,
@@ -147,6 +149,7 @@ let insertPatientData = (req, res, next) => {
         inputparam.primary_id_file,
         inputparam.secondary_id_file,
         inputparam.patient_type,
+        inputparam.vat_applicable,
         inputparam.created_by,
         new Date(),
         inputparam.city_id,
@@ -274,11 +277,11 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
     , `title_id`, `first_name`, `middle_name`, `last_name`, `full_name`, `arabic_name`, `gender`, `religion_id`\
     , `date_of_birth`, `age`, `marital_status`, `address1`, `address2`, `contact_number`\
     , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
-    , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
+    , `relationship_with_patient`, `vat_applicable`,`visa_type_id`, `nationality_id`, `postal_code`\
     , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
     , `photo_file`, `primary_id_file`, `secondary_id_file`, `created_by`, `created_date`\
     ,`city_id`,`state_id`,`country_id`)\
-     VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
+     VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ,? ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
       [
         inputparam.patient_code,
         inputparam.registration_date,
@@ -301,6 +304,7 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
         inputparam.emergency_contact_name,
         inputparam.emergency_contact_number,
         inputparam.relationship_with_patient,
+        inputparam.vat_applicable,
         // checkIsNull(inputparam.contact_number, 0),
         // checkIsNull(inputparam.secondary_contact_number, 0),
         // checkIsNull(inputparam.email, ""),
@@ -518,7 +522,7 @@ let selectData = (dataBase, req, callBack) => {
   , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
   , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
   , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
-  , `photo_file`, `primary_id_file`, `secondary_id_file`,`city_id`,`state_id`,`country_id` \
+  , `photo_file`, `primary_id_file`, `secondary_id_file`,`city_id`,`state_id`,`country_id`,`vat_applicable` \
    FROM `hims_f_patient`\
    WHERE `record_status`='A' " +
         where.condition,

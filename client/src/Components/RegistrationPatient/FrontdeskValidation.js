@@ -138,7 +138,7 @@ export function Validations(state) {
       icon: "error"
     });
   }
-
+  debugger;
   if (state.state.patient_type === null) {
     isError = true;
     state.setState({
