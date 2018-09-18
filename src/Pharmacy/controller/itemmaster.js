@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { releaseConnection } from "../utils";
-import httpStatus from "../utils/httpStatus";
+import { releaseConnection } from "../../utils";
+import httpStatus from "../../utils/httpStatus";
 import { getItems } from "../model/itemmaster";
 export default ({ config, db }) => {
   let api = Router();

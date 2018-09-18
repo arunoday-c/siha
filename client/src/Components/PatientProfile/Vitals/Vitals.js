@@ -35,14 +35,14 @@ const LineData = {
     {
       fill: false,
       lineTension: 0.1,
-      backgroundColor: "#00BCB0",
+      backgroundColor: "#34b8bc",
       borderColor: "#DCAC66",
       borderCapStyle: "butt",
       borderDash: [],
       borderDashOffset: 0.0,
       borderJoinStyle: "miter",
-      pointBorderColor: "#00BCB0",
-      pointBackgroundColor: "#00BCB0",
+      pointBorderColor: "#34b8bc",
+      pointBackgroundColor: "#34b8bc",
       pointBorderWidth: 1,
       pointHoverRadius: 5,
       pointRadius: 4,
@@ -85,7 +85,7 @@ class Vitals extends Component {
     this.handleClose = this.handleClose.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     getVitalHistory(this);
   }
 

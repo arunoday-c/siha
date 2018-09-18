@@ -31,7 +31,7 @@ const titleStyles = {
     padding: "5px"
   },
   organisation: {
-    color: "#00BCB0",
+    color: "#34b8bc",
     padding: "5px"
   }
 };
@@ -81,7 +81,7 @@ const styles = theme => ({
   },
   content: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
+    // backgroundColor: theme.palette.background.default,
 
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
