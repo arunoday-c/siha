@@ -115,10 +115,13 @@ export function algaehApiCall(options) {
       cancelRequest = {
         cancelToken: source.token
       };
+
       let previousRequestId =
-        Window.global["req_cancel"] === undefined
+        Window.global === undefined
           ? []
-          : Window.global["req_cancel"];
+          : Window.global["req_cancel"] === undefined
+            ? []
+            : Window.global["req_cancel"];
       previousRequestId.push({ id: settings.cancelRequestId, source: source });
       const removeAdd = Enumerable.from(previousRequestId)
         .where(w => w.id !== settings.cancelRequestId)
@@ -145,9 +148,11 @@ export function algaehApiCall(options) {
           settings.cancelRequestId !== ""
         ) {
           let previousRequestId =
-            Window.global["req_cancel"] === undefined
+            Window.global === undefined
               ? []
-              : Window.global["req_cancel"];
+              : Window.global["req_cancel"] === undefined
+                ? []
+                : Window.global["req_cancel"];
           const removeAdd = Enumerable.from(previousRequestId)
             .where(w => w.id !== settings.cancelRequestId)
             .toArray();
@@ -165,9 +170,11 @@ export function algaehApiCall(options) {
           settings.cancelRequestId !== ""
         ) {
           let previousRequestId =
-            Window.global["req_cancel"] === undefined
+            Window.global === undefined
               ? []
-              : Window.global["req_cancel"];
+              : Window.global["req_cancel"] === undefined
+                ? []
+                : Window.global["req_cancel"];
           const removeAdd = Enumerable.from(previousRequestId)
             .where(w => w.id !== settings.cancelRequestId)
             .toArray();
