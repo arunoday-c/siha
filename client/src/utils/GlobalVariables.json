@@ -314,5 +314,9 @@
   "SEARCH_BY_ICD": [
     { "name": "ICD Code", "value": "C" },
     { "name": "ICD Name", "value": "D" }
+  ],
+  "FORMAT_PHARMACY_STORE": [
+    { "name": "Main Store", "arabic_name": "المخزن الرئيسي", "value": "MN" },
+    { "name": "Sub Store", "arabic_name": "المتجر الفرعي", "value": "SS" }
   ]
 }

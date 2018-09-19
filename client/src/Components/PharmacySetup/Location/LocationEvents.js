@@ -19,7 +19,7 @@ const onchangegridcol = ($this, row, e) => {
   resetState($this);
 };
 
-const updateItemGroup = ($this, data) => {
+const updateLocation = ($this, data) => {
   // data.updated_by = getCookie("UserID");
 
   algaehApiCall({
@@ -33,7 +33,7 @@ const updateItemGroup = ($this, data) => {
           buttons: false,
           timer: 2000
         });
-        getItemGroup($this);
+        getLocation($this);
       }
     },
     onFailure: error => {}
@@ -42,7 +42,7 @@ const updateItemGroup = ($this, data) => {
 
 const showconfirmDialog = ($this, id) => {
   swal({
-    title: "Are you sure you want to delete this Analytes?",
+    title: "Are you sure you want to delete this Category?",
     icon: "warning",
     buttons: true,
     dangerMode: true
@@ -63,7 +63,7 @@ const showconfirmDialog = ($this, id) => {
               buttons: false,
               timer: 2000
             });
-            getItemGroup($this);
+            getLocation($this);
           }
         },
         onFailure: error => {}
@@ -72,11 +72,11 @@ const showconfirmDialog = ($this, id) => {
   });
 };
 
-const deleteItemGroup = ($this, row) => {
+const deleteLocation = ($this, row) => {
   showconfirmDialog($this, row.hims_d_lab_analytes_id);
 };
 
-const insertItemGroup = ($this, e) => {
+const insertLocation = ($this, e) => {
   e.preventDefault();
   if ($this.state.description.length == 0) {
     $this.setState({
@@ -96,11 +96,11 @@ const insertItemGroup = ($this, e) => {
         if (response.data.success == true) {
           resetState($this);
           //Handle Successful Add here
-          getItemGroup($this);
+          getLocation($this);
 
           swal({
             title: "Success",
-            text: "Group added successfully",
+            text: "Category added successfully",
             icon: "success",
             button: false,
             timer: 2500
@@ -122,35 +122,13 @@ const insertItemGroup = ($this, e) => {
   }
 };
 
-const getItemGroup = $this => {
-  $this.props.getItemGroup({
+const getLocation = $this => {
+  $this.props.getLocation({
     uri: "/labmasters/selectAnalytes",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
-      mappingName: "itemgroup"
-    },
-    afterSuccess: data => {
-      if (data.length === 0 || data.length === undefined) {
-        if (data.response.data.success === false) {
-          successfulMessage({
-            message: data.response.data.message,
-            title: "Warning",
-            icon: "warning"
-          });
-        }
-      }
-    }
-  });
-};
-
-const getItemCategory = $this => {
-  $this.props.getItemCategory({
-    uri: "/labmasters/selectAnalytes",
-    method: "GET",
-    redux: {
-      type: "ANALYTES_GET_DATA",
-      mappingName: "itemcategory"
+      mappingName: "location"
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
@@ -169,9 +147,8 @@ const getItemCategory = $this => {
 export {
   changeTexts,
   onchangegridcol,
-  insertItemGroup,
-  updateItemGroup,
-  deleteItemGroup,
-  getItemGroup,
-  getItemCategory
+  insertLocation,
+  updateLocation,
+  deleteLocation,
+  getLocation
 };

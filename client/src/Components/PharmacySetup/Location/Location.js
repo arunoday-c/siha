@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import "./ItemUOM.css";
+import "./Location.css";
 import Button from "@material-ui/core/Button";
 
 import { withRouter } from "react-router-dom";
@@ -14,27 +14,27 @@ import {
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
-// import swal from "sweetalert";
+
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import {
   changeTexts,
   onchangegridcol,
-  insertItemUOM,
-  updateItemUOM,
-  deleteItemUOM,
-  getItemUOM
-} from "./ItemUOMEvents";
+  insertLocation,
+  updateLocation,
+  deleteLocation,
+  getLocation
+} from "./LocationEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
 
-class ItemUOM extends Component {
+class Location extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      hims_d_item_uom_id: "",
-      uom_description: "",
+      hims_d_pharmacy_location_id: "",
+      location_description: "",
 
       description_error: false,
       description_error_txt: ""
@@ -48,8 +48,7 @@ class ItemUOM extends Component {
     this.setState({
       selectedLang: prevLang
     });
-
-    // getItemUOM(this, this);
+    // getLocation(this, this);
   }
 
   dateFormater({ date }) {
@@ -80,8 +79,8 @@ class ItemUOM extends Component {
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "uom_description",
-                  value: this.state.uom_description,
+                  name: "location_description",
+                  value: this.state.location_description,
                   error: this.state.description_error,
                   helperText: this.state.description_error_txt,
                   events: {
@@ -90,10 +89,29 @@ class ItemUOM extends Component {
                 }}
               />
 
+              <AlagehAutoComplete
+                div={{ className: "col-lg-2" }}
+                label={{
+                  fieldName: "location_type",
+                  isImp: true
+                }}
+                selector={{
+                  name: "location_type",
+                  className: "select-fld",
+                  value: this.state.location_type,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: GlobalVariables.FORMAT_PHARMACY_STORE
+                  },
+                  onChange: changeTexts.bind(this, this)
+                }}
+              />
+
               <div className="col-lg-3 align-middle">
                 <br />
                 <Button
-                  onClick={insertItemUOM.bind(this, this)}
+                  onClick={insertLocation.bind(this, this)}
                   variant="raised"
                   color="primary"
                 >
@@ -106,22 +124,53 @@ class ItemUOM extends Component {
           <div className="row form-details">
             <div className="col">
               <AlgaehDataGrid
-                id="item_uom"
+                id="pharmacy_location"
                 columns={[
                   {
-                    fieldName: "uom_description",
+                    fieldName: "location_description",
                     label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
                     editorTemplate: row => {
                       return (
                         <AlagehFormGroup
                           div={{}}
                           textBox={{
-                            value: row.uom_description,
+                            value: row.location_description,
                             className: "txt-fld",
-                            name: "uom_description",
+                            name: "location_description",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
                             }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "location_type",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "location_type" }} />
+                    ),
+                    displayTemplate: row => {
+                      return row.location_type === "MN"
+                        ? "Mian Store"
+                        : row.location_type === "SS"
+                          ? "Sub Store"
+                          : null;
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "location_type",
+                            className: "select-fld",
+                            value: row.location_type,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_PHARMACY_STORE
+                            },
+                            onChange: onchangegridcol.bind(this, this, row)
                           }}
                         />
                       );
@@ -143,19 +192,21 @@ class ItemUOM extends Component {
                     disabled: true
                   },
                   {
-                    fieldName: "uom_status",
+                    fieldName: "location_status",
                     label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
                     displayTemplate: row => {
-                      return row.uom_status === "A" ? "Active" : "Inactive";
+                      return row.location_status === "A"
+                        ? "Active"
+                        : "Inactive";
                     },
                     editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "uom_status",
+                            name: "location_status",
                             className: "select-fld",
-                            value: row.uom_status,
+                            value: row.location_status,
                             dataSource: {
                               textField: "name",
                               valueField: "value",
@@ -168,18 +219,18 @@ class ItemUOM extends Component {
                     }
                   }
                 ]}
-                keyId="hims_d_item_uom_id"
+                keyId="hims_d_pharmacy_location_id"
                 dataSource={{
                   data:
-                    this.props.itemuom === undefined ? [] : this.props.itemuom
+                    this.props.location === undefined ? [] : this.props.location
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{
-                  onDelete: deleteItemUOM.bind(this, this),
+                  onDelete: deleteLocation.bind(this, this),
                   onEdit: row => {},
 
-                  onDone: updateItemUOM.bind(this, this)
+                  onDone: updateLocation.bind(this, this)
                 }}
               />
             </div>
@@ -192,14 +243,14 @@ class ItemUOM extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemuom: state.itemuom
+    location: state.location
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getItemUOM: AlgaehActions
+      getLocation: AlgaehActions
     },
     dispatch
   );
@@ -209,5 +260,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(ItemUOM)
+  )(Location)
 );
