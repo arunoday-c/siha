@@ -73,7 +73,6 @@ class ChiefComplaints extends Component {
       },
       method: "GET",
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           const masterChiefComplaints =
             this.props.allchiefcomplaints !== undefined &&
