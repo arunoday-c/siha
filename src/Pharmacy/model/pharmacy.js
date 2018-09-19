@@ -403,7 +403,7 @@ let getPharmacyUom = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_pharmacy_uom_id, uom_description, uom_status FROM hims_d_pharmacy_uom where record_status='A' AND " +
+        "select * FROM hims_d_pharmacy_uom where record_status='A' AND " +
           where.condition,
         where.values,
         (error, result) => {

@@ -124,7 +124,7 @@ const insertItemUOM = ($this, e) => {
 
 const getItemUOM = $this => {
   $this.props.getItemUOM({
-    uri: "/pharmacy/getItemUom",
+    uri: "/pharmacy/getPharmacyUom",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
