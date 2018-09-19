@@ -42,7 +42,7 @@ class Examination extends Component {
     });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     getPhysicalExaminations(this);
     getPatientPhysicalExamination(this);
   }

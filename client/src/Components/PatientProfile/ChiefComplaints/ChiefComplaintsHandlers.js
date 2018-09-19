@@ -10,4 +10,20 @@ const getAllChiefComplaints = $this => {
   });
 };
 
-export { getAllChiefComplaints };
+const getPatientChiefComplaints = $this => {
+  $this.props.getPatientChiefComplaints({
+    uri: "/doctorsWorkBench/getPatientChiefComplaints",
+    data: {
+      patient_id: Window.global["current_patient"],
+      episode_id: Window.global["episode_id"]
+    },
+    method: "GET",
+    redux: {
+      type: "PATIENT_CHIEF_COMPLAINTS",
+      mappingName: "patient_chief_complaints"
+    },
+    afterSuccess: data => {}
+  });
+};
+
+export { getAllChiefComplaints, getPatientChiefComplaints };

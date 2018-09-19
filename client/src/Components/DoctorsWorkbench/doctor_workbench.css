@@ -10,7 +10,7 @@
 
 .doctor_workbench .my-calendar {
   text-align: center;
-  background: #00afa4;
+  background: #34b8bc;
   color: #fff; }
   .doctor_workbench .my-calendar .myDay_date {
     float: none;
@@ -18,7 +18,7 @@
   .doctor_workbench .my-calendar .myDay_date input {
     border: 1px solid #1d887f;
     color: #fff;
-    background: #28a59a;
+    background: #45a4aa;
     font-size: 17px;
     padding: 1px;
     text-align: center;
@@ -34,12 +34,12 @@
   .doctor_workbench .my-calendar .arrow-box-right {
     float: right; }
   .doctor_workbench .my-calendar .calendar .col {
-    border: 1px solid #009e94;
+    border: 1px solid #3aa4a9;
     font-size: 1.3rem;
     padding-right: 3px;
     padding-left: 3px; }
   .doctor_workbench .my-calendar .calendar .col:hover {
-    background: #009e94;
+    background: #3aa4a9;
     cursor: pointer; }
   .doctor_workbench .my-calendar .calendar .col span {
     padding: 0;
@@ -49,7 +49,7 @@
     text-transform: uppercase; }
   .doctor_workbench .my-calendar .activeDate {
     border-bottom: 4px solid yellow !important;
-    background: #009e94; }
+    background: #3aa4a9; }
   .doctor_workbench .my-calendar .CurrentDate {
     border-top: 2px solid yellow !important; }
 

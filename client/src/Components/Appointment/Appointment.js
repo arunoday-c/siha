@@ -262,7 +262,7 @@ class Appointment extends Component {
         </div>
 
         <div className="col-lg-12 card box-shadow-normal">
-          <table className="table table-bordered">
+          {/* <table className="table table-bordered">
             <thead>
               <tr>
                 <th>
@@ -275,6 +275,16 @@ class Appointment extends Component {
                 <th>Dr. Norman John</th>
                 <th>Dr. Norman John</th>
                 <th>Dr. Norman John</th>
+              </tr>
+              <tr>
+                <th>Booked</th>
+                <th>Standby</th>
+                <th>Booked</th>
+                <th>Standby</th>
+                <th>Booked</th>
+                <th>Standby</th>
+                <th>Booked</th>
+                <th>Standby</th>
               </tr>
             </thead>
             <tbody>
@@ -394,6 +404,300 @@ class Appointment extends Component {
                 <td>fat</td>
               </tr>
             </tbody>
+          </table> */}
+
+          <table className="tg">
+            <tr>
+              <th className="tg-c3ow">Time</th>
+              <th className="tg-amwm" colspan="2">
+                Dr. Norman John
+              </th>
+              <th className="tg-amwm" colspan="2">
+                Dr. Norman John
+              </th>
+              <th className="tg-amwm" colspan="2">
+                Dr. Norman John
+              </th>
+              <th className="tg-amwm" colspan="2">
+                Dr. Norman John
+              </th>
+              <th className="tg-amwm" colspan="2">
+                Dr. Norman John
+              </th>
+              <th className="tg-amwm" colspan="2">
+                Dr. Norman John
+              </th>
+            </tr>
+            <tr>
+              <td className="tg-baqh" />
+              <td className="tg-baqh">BOOKED</td>
+              <td className="tg-baqh">STANDBY</td>
+              <td className="tg-baqh">BOOKED</td>
+              <td className="tg-baqh">STANDBY</td>
+              <td className="tg-baqh">BOOKED</td>
+              <td className="tg-baqh">STANDBY</td>
+              <td className="tg-baqh">BOOKED</td>
+              <td className="tg-baqh">STANDBY</td>
+              <td className="tg-baqh">BOOKED</td>
+              <td className="tg-baqh">STANDBY</td>
+              <td className="tg-baqh">BOOKED</td>
+              <td className="tg-baqh">STANDBY</td>
+            </tr>
+            <tr>
+              <th className="tg-amwm">09:00 AM</th>
+              <td className="tg-baqh">John Doe </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+            </tr>
+            <tr>
+              <th className="tg-amwm">09:15 AM</th>
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+            </tr>
+            <tr>
+              <th className="tg-amwm">09:30 AM</th>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+            </tr>
+            <tr>
+              <th className="tg-amwm">09:45 AM</th>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+            </tr>
+            <tr>
+              <th className="tg-amwm">10:00 AM</th>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+            </tr>
+            <tr>
+              <th className="tg-amwm">10:15 AM</th>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+            </tr>
+            <tr>
+              <th className="tg-amwm">10:30 AM</th>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+            </tr>
+            <tr>
+              <th className="tg-amwm">10:45 AM</th>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+            </tr>
+            <tr>
+              <th className="tg-amwm">11:00 AM</th>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+            </tr>
+            <tr>
+              <th className="tg-amwm">11:15 AM</th>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+            </tr>
+            <tr>
+              <th className="tg-amwm">11:30 AM</th>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+              <td className="tg-baqh">
+                {" "}
+                <i
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              </td>
+              <td className="tg-baqh" />
+            </tr>
           </table>
         </div>
       </div>

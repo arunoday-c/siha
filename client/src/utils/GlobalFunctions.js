@@ -22,7 +22,9 @@ export function setGlobal(obj) {
 }
 
 export function removeGlobal(name) {
-  if (name !== undefined) delete Window.global[name];
+  if (name !== undefined && Window.global !== undefined) {
+    delete Window.global[name];
+  }
 }
 
 export function resizeImage(options) {

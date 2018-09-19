@@ -376,7 +376,7 @@ class DataGrid extends PureComponent {
   };
   returnEditableColumn = () => {
     if (this.state.isEditable != null && this.state.isEditable) {
-      return <th scope="col" />;
+      return <th scope="col" className="col" />;
     }
   };
   returnEditableButtons = (row, rowId) => {
