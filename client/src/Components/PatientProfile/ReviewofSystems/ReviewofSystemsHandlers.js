@@ -7,6 +7,7 @@ const getReviewOfSystems = $this => {
       type: "ALL_ROS",
       mappingName: "allros"
     },
+    cancelRequestId: "ros-cancel",
     afterSuccess: data => {
       console.log("ROS data from redux:", data);
     }
@@ -61,15 +62,10 @@ const texthandle = ($this, data, ctrl, e) => {
   data[name] = value;
 };
 
-const updatePatientROS = ($this, row) => {
-  debugger;
-};
-
 export {
   getReviewOfSystems,
   getReviewOfSystemsDetails,
   getPatientROS,
   datehandle,
-  texthandle,
-  updatePatientROS
+  texthandle
 };

@@ -1644,8 +1644,7 @@ let getReviewOfSystem = (req, res, next) => {
               next(error);
             }
             req.records = result;
-
-            next();
+            setTimeout(next(), 10000);
           }
         );
       }
@@ -1715,6 +1714,7 @@ let updatePatientROS = (req, res, next) => {
             next(error);
           });
         }
+
         let queryBuilder =
           " update hims_f_encounter_review set patient_id=?, episode_id=?,review_header_id=?,review_details_id=?,`comment`=?,\
           updated_date=?,updated_by=?, record_status=? where hims_f_encounter_review_id=?;";

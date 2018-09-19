@@ -22,7 +22,16 @@ const getPatientChiefComplaints = $this => {
       type: "PATIENT_CHIEF_COMPLAINTS",
       mappingName: "patient_chief_complaints"
     },
-    afterSuccess: data => {}
+    afterSuccess: data => {
+      const masterChiefComplaints =
+        $this.props.allchiefcomplaints !== undefined &&
+        $this.props.allchiefcomplaints.length !== 0
+          ? $this.masterChiefComplaintsSortList(
+              $this.props.patient_chief_complaints
+            )
+          : [];
+      $this.setState({ masterChiefComplaints: masterChiefComplaints });
+    }
   });
 };
 
