@@ -18,13 +18,14 @@ import {
   updatePatientROS
 } from "./ReviewofSystemsHandlers";
 import swal from "sweetalert";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, cancelRequest } from "../../../utils/algaehApiCall";
 
 class ReviewofSystems extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openROSModal: false
+      openROSModal: false,
+      comment: ""
     };
     this.handleClose = this.handleClose.bind(this);
   }
@@ -33,12 +34,40 @@ class ReviewofSystems extends Component {
     getPatientROS(this);
   }
 
-  texthandler = ($this, data, ctrl, e) => {
-    e = e || ctrl;
+  componentWillUnmount() {
+    cancelRequest("ros-cancel");
+  }
+
+  updatePatientROS(data) {
+    data.record_status = "A";
+    algaehApiCall({
+      uri: "/doctorsWorkBench/updatePatientROS",
+      method: "PUT",
+      data: data,
+      onSuccess: response => {
+        if (response.data.success) {
+          getPatientROS(this);
+          swal("Review of System Updated successfully . .", {
+            icon: "success",
+            buttons: false,
+            timer: 2000
+          });
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
+  refreshState() {
+    this.setState({ ...this.state });
+  }
+
+  texthandler(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
-    data[name] = value;
-  };
+    row[name] = value;
+    this.refreshState();
+  }
 
   handleClose() {
     this.setState({ openROSModal: false });
@@ -133,7 +162,7 @@ class ReviewofSystems extends Component {
           review_header_id: row.hims_d_review_of_system_header_id,
           review_details_id: row.hims_d_review_of_system_details_id,
           comment: row.comment,
-          record_status: "A",
+          record_status: "I",
           hims_f_encounter_review_id: row.hims_f_encounter_review_id
         };
         algaehApiCall({
@@ -255,7 +284,22 @@ class ReviewofSystems extends Component {
                           fieldName: "comment",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Remarks" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.comment,
+                                  className: "txt-fld",
+                                  name: "comment",
+                                  events: {
+                                    onChange: this.texthandler.bind(this, row)
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         }
                       ]}
                       keyId="ros"
@@ -267,7 +311,7 @@ class ReviewofSystems extends Component {
                       events={{
                         onDelete: this.deleteROS.bind(this),
                         onEdit: row => {},
-                        onDone: updatePatientROS.bind(this, this)
+                        onDone: this.updatePatientROS.bind(this)
                       }}
                     />
 

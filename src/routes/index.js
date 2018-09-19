@@ -32,6 +32,7 @@ import algaehappuser from "../controller/algaehappuser";
 import dietmaster from "../controller/dietmaster";
 import orderMedication from "../controller/orderMedication";
 import organization from "../controller/organization";
+import pharmacy from "../Pharmacy/controller/pharmacy";
 
 let router = express();
 
@@ -72,6 +73,7 @@ initializedDb(db => {
 
   router.use("/orderMedication", orderMedication({ config, db }));
   router.use("/organization", organization({ config, db }));
+  router.use("/pharmacy", pharmacy({ config, db }));
 });
 
 export default router;
