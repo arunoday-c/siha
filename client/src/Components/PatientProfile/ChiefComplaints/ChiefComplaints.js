@@ -52,7 +52,9 @@ class ChiefComplaints extends Component {
       interval: "",
       duration: "",
       comment: "",
-      hims_f_episode_chief_complaint_id: ""
+      hims_f_episode_chief_complaint_id: "",
+      new_chief_complaint: "",
+      ifCheckBoxChange: false
     };
     this.handleClose = this.handleClose.bind(this);
     this.addChiefComplain = this.addChiefComplain.bind(this);
@@ -73,7 +75,7 @@ class ChiefComplaints extends Component {
 
   showconfirmDialog(id) {
     swal({
-      title: "Are you sure you want to delete this Chief Complain?",
+      title: "Are you sure you want to delete this Chief Complaint?",
       icon: "warning",
       buttons: true,
       dangerMode: true
@@ -99,6 +101,22 @@ class ChiefComplaints extends Component {
       } else {
         swal("Delete request cancelled");
       }
+    });
+  }
+
+  addNewChiefComplaint(e) {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/addNewChiefComplaint",
+      data: {
+        hpi_description: this.state.new_chief_complaint
+      },
+      method: "post",
+      onSuccess: response => {
+        if (response.data.success) {
+          getAllChiefComplaints(this);
+        }
+      },
+      onFailure: error => {}
     });
   }
 
@@ -262,11 +280,17 @@ class ChiefComplaints extends Component {
     this.setState({ ...cce });
   }
   openHPIAddModal(data) {
-    console.log("Data:", data);
     this.setState({
       openHpiModal: true,
       hims_f_episode_chief_complaint_id: data.hims_f_episode_chief_complaint_id
     });
+  }
+
+  checkboxCheckChiefComplaints(patChiefComplain, hims_d_hpi_header_id) {
+    const row = Enumerable.from(patChiefComplain)
+      .where(w => w.chief_complaint_id === hims_d_hpi_header_id)
+      .firstOrDefault();
+    return row !== undefined ? true : false;
   }
 
   render() {
@@ -274,6 +298,11 @@ class ChiefComplaints extends Component {
       this.props.patient_chief_complaints !== undefined &&
       this.props.patient_chief_complaints.length !== 0
         ? this.props.patient_chief_complaints
+        : [];
+    const masterChiefComplaints =
+      this.props.allchiefcomplaints !== undefined &&
+      this.props.allchiefcomplaints.length !== 0
+        ? this.props.allchiefcomplaints
         : [];
     return (
       <React.Fragment>
@@ -601,7 +630,7 @@ class ChiefComplaints extends Component {
                 <div className="row">
                   <div className="col-lg-4 popLeftDiv">
                     <div className="complain-box">
-                      <AlagehAutoComplete
+                      {/* <AlagehAutoComplete
                         div={{ className: "col-lg-10 displayInlineBlock" }}
                         label={{
                           forceLabel: "Chief Complaint",
@@ -620,14 +649,39 @@ class ChiefComplaints extends Component {
                                 ? this.props.allchiefcomplaints
                                 : null
                           },
-                          onChange: this.dropDownHandle.bind(this)
+                          onChange: this.dropDownHandle.bind(this),
+                          userList: list => {
+                            for (let i = 0; i < list.length; i++) {
+                              this.addNewChiefComplaint(list[i]);
+                            }
+                          }
+                        }}
+                      /> */}
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Add New Chief Complaint",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          value: this.state.new_chief_complaint,
+                          events: {
+                            onChange: e => {
+                              debugger;
+                              this.setState({
+                                new_chief_complaint: e.currentTarget.value
+                              });
+                            }
+                          }
                         }}
                       />
+
                       <div className="col-lg-2 displayInlineBlock">
                         <i
                           className="fas fa-plus fa-1x"
                           style={{ color: "#34b8bc", cursor: "pointer" }}
-                          onClick={this.addChiefComplain}
+                          onClick={this.addNewChiefComplaint.bind(this)}
                         />
                       </div>
                       <div className="col-12">
@@ -635,7 +689,7 @@ class ChiefComplaints extends Component {
                           <ul>
                             {/* patientChiefComplains */}
 
-                            {patChiefComplain.map((data, index) => (
+                            {/* {patChiefComplain.map((data, index) => (
                               <li
                                 key={index}
                                 data-cpln-id={
@@ -645,7 +699,60 @@ class ChiefComplaints extends Component {
                               >
                                 <span> {data.chief_complaint_name} </span>
                               </li>
-                            ))}
+                            ))} */}
+                            {masterChiefComplaints.map((data, index) => {
+                              return (
+                                <li
+                                  key={index}
+                                  data-cpln-id={data.hims_d_hpi_header_id}
+                                  onClick={this.fillComplainDetails}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    id={"chif_" + data.hims_d_hpi_header_id}
+                                    checked={this.checkboxCheckChiefComplaints(
+                                      patChiefComplain,
+                                      data.hims_d_hpi_header_id
+                                    )}
+                                    data-cpln-id={data.hims_d_hpi_header_id}
+                                    onChange={e => {
+                                      debugger;
+                                      if (e.currentTarget.checked) {
+                                        this.setState(
+                                          {
+                                            onset_date: new Date(),
+                                            severity: 0,
+                                            score: 0,
+                                            pain: 0,
+                                            comment: "",
+                                            chief_complaint_id: e.currentTarget.getAttribute(
+                                              "data-cpln-id"
+                                            )
+                                          },
+                                          () => {
+                                            this.addChiefComplain();
+                                          }
+                                        );
+                                      } else {
+                                        this.deleteChiefComplain(
+                                          e.currentTarget.getAttribute(
+                                            "data-cpln-id"
+                                          ),
+                                          null
+                                        );
+                                      }
+                                    }}
+                                  />
+                                  <label
+                                    htmlFor={
+                                      "chif_" + data.hims_d_hpi_header_id
+                                    }
+                                  >
+                                    {data.hpi_description}
+                                  </label>
+                                </li>
+                              );
+                            })}
                           </ul>
                         </div>
                         <br />
