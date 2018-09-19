@@ -1255,7 +1255,7 @@ let deletePatientChiefComplaints = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "update hims_f_episode_chief_complaint set record_status='I',updated_date=? where hims_f_episode_chief_complaint_id=?",
-        [new Date(),req.body.hims_f_episode_chief_complaint_id],
+        [new Date(), req.body.hims_f_episode_chief_complaint_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -1647,8 +1647,7 @@ let getReviewOfSystem = (req, res, next) => {
               next(error);
             }
             req.records = result;
-
-            next();
+            setTimeout(next(), 10000);
           }
         );
       }
@@ -1718,6 +1717,7 @@ let updatePatientROS = (req, res, next) => {
             next(error);
           });
         }
+
         let queryBuilder =
           " update hims_f_encounter_review set patient_id=?, episode_id=?,review_header_id=?,review_details_id=?,`comment`=?,\
           updated_date=?,updated_by=?, record_status=? where hims_f_encounter_review_id=?;";
