@@ -53,18 +53,53 @@ class ChiefComplaints extends Component {
       duration: "",
       comment: "",
       hims_f_episode_chief_complaint_id: "",
-      new_chief_complaint: "",
-      ifCheckBoxChange: false
+      new_chief_complaint: [],
+      ifCheckBoxChange: false,
+      masterChiefComplaints: []
     };
+
     this.handleClose = this.handleClose.bind(this);
     this.addChiefComplain = this.addChiefComplain.bind(this);
     this.setPainScale = this.setPainScale.bind(this);
     this.fillComplainDetails = this.fillComplainDetails.bind(this);
   }
 
+  getPatientChiefComplaintsDetails() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientChiefComplaints",
+      data: {
+        patient_id: Window.global["current_patient"],
+        episode_id: Window.global["episode_id"]
+      },
+      method: "GET",
+      onSuccess: response => {
+        debugger;
+        if (response.data.success) {
+          const masterChiefComplaints =
+            this.props.allchiefcomplaints !== undefined &&
+            this.props.allchiefcomplaints.length !== 0
+              ? this.masterChiefComplaintsSortList(response.data.records)
+              : [];
+          this.setState({
+            patientChiefComplains: response.data.records,
+            masterChiefComplaints: masterChiefComplaints
+          });
+        }
+      },
+      onFailure: error => {
+        swal(error.message, {
+          icon: "error",
+          buttons: false,
+          timer: 2000
+        });
+      }
+    });
+  }
+
   componentDidMount() {
     getAllChiefComplaints(this);
-    getPatientChiefComplaints(this);
+    this.getPatientChiefComplaintsDetails();
+    // getPatientChiefComplaints(this);
   }
 
   texthandle(e) {
@@ -93,7 +128,8 @@ class ChiefComplaints extends Component {
                 buttons: false,
                 timer: 2000
               });
-              getPatientChiefComplaints(this);
+              this.getPatientChiefComplaintsDetails();
+              //getPatientChiefComplaints(this);
             }
           },
           onFailure: error => {}
@@ -114,6 +150,8 @@ class ChiefComplaints extends Component {
       onSuccess: response => {
         if (response.data.success) {
           getAllChiefComplaints(this);
+          //getPatientChiefComplaints(this);
+          this.getPatientChiefComplaintsDetails();
         }
       },
       onFailure: error => {}
@@ -232,7 +270,8 @@ class ChiefComplaints extends Component {
       data: data,
       onSuccess: response => {
         if (response.data.success) {
-          getPatientChiefComplaints(this);
+          //getPatientChiefComplaints(this);
+          this.getPatientChiefComplaintsDetails();
         }
       },
       onFailure: error => {}
@@ -272,8 +311,8 @@ class ChiefComplaints extends Component {
   fillComplainDetails(e) {
     this.updatePatientChiefComplaints();
     const id = parseInt(e.currentTarget.getAttribute("data-cpln-id"));
-    getPatientChiefComplaints(this);
-
+    //getPatientChiefComplaints(this);
+    this.getPatientChiefComplaintsDetails();
     let cce = Enumerable.from(
       this.props.patient_chief_complaints !== undefined &&
       this.props.patient_chief_complaints.length !== 0
@@ -291,24 +330,23 @@ class ChiefComplaints extends Component {
     });
   }
 
-  checkboxCheckChiefComplaints(patChiefComplain, hims_d_hpi_header_id) {
-    const row = Enumerable.from(patChiefComplain)
-      .where(w => w.chief_complaint_id === hims_d_hpi_header_id)
-      .firstOrDefault();
-    return row;
+  masterChiefComplaintsSortList(patChiefComplain) {
+    let allChiefComp = this.props.allchiefcomplaints;
+    for (let i = 0; i < patChiefComplain.length; i++) {
+      let idex = Enumerable.from(allChiefComp)
+        .where(
+          w =>
+            w.hims_d_hpi_header_id === patChiefComplain[i]["chief_complaint_id"]
+        )
+        .firstOrDefault();
+      allChiefComp.splice(allChiefComp.indexOf(idex), 1);
+    }
+    return allChiefComp;
   }
 
   render() {
-    patChiefComplain =
-      this.props.patient_chief_complaints !== undefined &&
-      this.props.patient_chief_complaints.length !== 0
-        ? this.props.patient_chief_complaints
-        : [];
-    const masterChiefComplaints =
-      this.props.allchiefcomplaints !== undefined &&
-      this.props.allchiefcomplaints.length !== 0
-        ? this.props.allchiefcomplaints
-        : [];
+    patChiefComplain = this.state.patientChiefComplains;
+
     return (
       <React.Fragment>
         {/* HPI Modal Start */}
@@ -635,11 +673,10 @@ class ChiefComplaints extends Component {
                 <div className="row">
                   <div className="col-lg-4 popLeftDiv">
                     <div className="complain-box">
-                      {/* <AlagehAutoComplete
+                      <AlagehAutoComplete
                         div={{ className: "col-lg-10 displayInlineBlock" }}
                         label={{
-                          forceLabel: "Chief Complaint",
-                          fieldName: "sample"
+                          forceLabel: "Chief Complaint"
                         }}
                         selector={{
                           name: "chief_complaint_id",
@@ -648,22 +685,19 @@ class ChiefComplaints extends Component {
                           dataSource: {
                             textField: "hpi_description",
                             valueField: "hims_d_hpi_header_id",
-                            data:
-                              this.props.allchiefcomplaints !== undefined &&
-                              this.props.allchiefcomplaints.length !== 0
-                                ? this.props.allchiefcomplaints
-                                : null
+                            data: this.state.masterChiefComplaints
                           },
                           onChange: this.dropDownHandle.bind(this),
                           userList: list => {
-                            for (let i = 0; i < list.length; i++) {
-                              this.addNewChiefComplaint(list[i]);
-                            }
+                            this.setState({ new_chief_complaint: list });
+                            // for (let i = 0; i < list.length; i++) {
+                            //   this.addNewChiefComplaint(list[i]);
+                            // }
                           }
                         }}
-                      /> */}
+                      />
 
-                      <AlagehFormGroup
+                      {/* <AlagehFormGroup
                         div={{ className: "col-lg-10 displayInlineBlock" }}
                         label={{
                           forceLabel: "Add New Chief Complaint",
@@ -681,7 +715,7 @@ class ChiefComplaints extends Component {
                             }
                           }
                         }}
-                      />
+                      /> */}
 
                       <div className="col-lg-2 displayInlineBlock">
                         <i
@@ -696,7 +730,7 @@ class ChiefComplaints extends Component {
                           <ul>
                             {/* patientChiefComplains */}
 
-                            {/* {patChiefComplain.map((data, index) => (
+                            {patChiefComplain.map((data, index) => (
                               <li
                                 key={index}
                                 data-cpln-id={
@@ -706,8 +740,8 @@ class ChiefComplaints extends Component {
                               >
                                 <span> {data.chief_complaint_name} </span>
                               </li>
-                            ))} */}
-                            {masterChiefComplaints.map((data, index) => {
+                            ))}
+                            {/* {masterChiefComplaints.map((data, index) => {
                               const rowdtl = this.checkboxCheckChiefComplaints(
                                 patChiefComplain,
                                 data.hims_d_hpi_header_id
@@ -765,7 +799,7 @@ class ChiefComplaints extends Component {
                                   </label>
                                 </li>
                               );
-                            })}
+                            })} */}
                           </ul>
                         </div>
                         <br />
@@ -821,7 +855,7 @@ class ChiefComplaints extends Component {
                         <AlagehFormGroup
                           div={{ className: "divDur" }}
                           label={{
-                            fieldName: "",
+                            forceLabel: "",
                             isImp: false
                           }}
                           textBox={{
@@ -941,7 +975,6 @@ class ChiefComplaints extends Component {
                         <AlagehAutoComplete
                           div={{ className: "" }}
                           label={{
-                            fieldName: "pain",
                             forceLabel: "Pain",
                             isImp: true
                           }}
@@ -1187,11 +1220,7 @@ class ChiefComplaints extends Component {
               ]}
               keyId="patient_id"
               dataSource={{
-                data:
-                  this.props.patient_chief_complaints !== undefined &&
-                  this.props.patient_chief_complaints.length !== 0
-                    ? this.props.patient_chief_complaints
-                    : []
+                data: this.state.patientChiefComplains
               }}
               isEditable={false}
               paging={{ page: 0, rowsPerPage: 5 }}
@@ -1211,16 +1240,16 @@ class ChiefComplaints extends Component {
 
 function mapStateToProps(state) {
   return {
-    allchiefcomplaints: state.allchiefcomplaints,
-    patient_chief_complaints: state.patient_chief_complaints
+    allchiefcomplaints: state.allchiefcomplaints
+    //   patient_chief_complaints: state.patient_chief_complaints
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getAllChiefComplaints: AlgaehActions,
-      getPatientChiefComplaints: AlgaehActions
+      getAllChiefComplaints: AlgaehActions
+      // getPatientChiefComplaints: AlgaehActions
     },
     dispatch
   );

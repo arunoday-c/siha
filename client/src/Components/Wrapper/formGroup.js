@@ -73,7 +73,6 @@ export default class FormGroup extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    debugger;
     if (
       nextProps.textBox.value !== this.state.value ||
       nextProps.textBox.error !== this.state.error ||
