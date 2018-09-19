@@ -5,6 +5,7 @@ import ItemCategory from "./ItemCategory/ItemCategory";
 import ItemGeneric from "./ItemGeneric/ItemGeneric";
 import ItemGroup from "./ItemGroup/ItemGroup";
 import ItemUOM from "./ItemUOM/ItemUOM";
+import Location from "./Location/Location";
 
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -125,6 +126,20 @@ class PharmacySetup extends Component {
                 />
               }
             </li>
+            <li
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              algaehtabs={"Location"}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "location"
+                  }}
+                />
+              }
+            </li>
           </ul>
         </div>
 
@@ -139,6 +154,8 @@ class PharmacySetup extends Component {
             <ItemGroup />
           ) : this.state.pageDisplay === "ItemUOM" ? (
             <ItemUOM />
+          ) : this.state.pageDisplay === "Location" ? (
+            <Location />
           ) : null}
         </div>
       </div>

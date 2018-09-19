@@ -1,25 +1,22 @@
 {
-  "Lab_setup": "Lab Setup",
-  "lab_settings": "Settings",
-  "lab_section": "Lab Section",
-  "lab_container": "Lab Container",
-  "lab_specimen": "Lab Specimen",
-  "lab_equipment": "Equipment",
-  "lab_analyte": "Analyte",
-  "test_category": "Test Category",
+  "Pharmacy_setup": "إعداد الصيدلة",
+  "Pharmacy_settings": "إعدادات",
+  "item_category": "الفئة بند",
+  "item_generic": "بند عام",
+  "item_group": "بند مجموعة",
+  "item_uom": "بند UOM",
+  "location": "الموقع",
 
-  "Addbutton": "Add to list",
+  "Addbutton": "أضف إلى القائمة",
 
-  "type_code": "Code",
-  "type_desc": "Description",
-  "inv_status": "Status",
-  "arabic_type_desc": "Arabic Name",
-  "created_by": "Created By",
-  "created_date": "Created Date",
+  "inv_status": "الحالة",
 
-  "storage_type": "Storage Type",
-  "machine_analyte_code": "Machine Analyte Code",
-  "analyte_type": "Analyte Type",
-  "result_unit": "Result Unit",
-  "category_name": "Category Name"
+  "type_code": "الشفرة",
+  "type_desc": "لاسم",
+  "arabic_type_desc": "الاسم العربي",
+  "created_by": "صنع من قبل",
+  "created_date": "الإنشاءخ تاريخ",
+
+  "category_id": "الفئة",
+  "location_type": "نوع الموقع"
 }

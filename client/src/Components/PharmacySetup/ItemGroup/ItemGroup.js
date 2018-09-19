@@ -25,7 +25,8 @@ import {
   insertItemGroup,
   updateItemGroup,
   deleteItemGroup,
-  getItemGroup
+  getItemGroup,
+  getItemCategory
 } from "./ItemGroupEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -52,6 +53,7 @@ class ItemGroup extends Component {
       selectedLang: prevLang
     });
     // getItemGroup(this, this);
+    // getItemCategory(this, this);
   }
 
   dateFormater({ date }) {
@@ -126,7 +128,7 @@ class ItemGroup extends Component {
           <div className="row form-details">
             <div className="col">
               <AlgaehDataGrid
-                id="visa_grd"
+                id="item_group"
                 columns={[
                   {
                     fieldName: "group_description",
@@ -151,11 +153,20 @@ class ItemGroup extends Component {
                     fieldName: "category_id",
                     label: <AlgaehLabel label={{ fieldName: "category_id" }} />,
                     displayTemplate: row => {
-                      return row.category_id === "QU"
-                        ? "Quality"
-                        : row.category_id === "QN"
-                          ? "Quantity"
-                          : "Text";
+                      let display =
+                        this.props.itemcategory === undefined
+                          ? []
+                          : this.props.itemcategory.filter(
+                              f => f.hims_d_item_category_id === row.category_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].category_desc
+                            : ""}
+                        </span>
+                      );
                     },
                     editorTemplate: row => {
                       return (
@@ -220,7 +231,7 @@ class ItemGroup extends Component {
                     }
                   }
                 ]}
-                keyId="hims_d_lab_section_id"
+                keyId="hims_d_item_group_id"
                 dataSource={{
                   data:
                     this.props.itemgroup === undefined
@@ -246,14 +257,16 @@ class ItemGroup extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemgroup: state.itemgroup
+    itemgroup: state.itemgroup,
+    itemcategory: state.itemcategory
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getItemGroup: AlgaehActions
+      getItemGroup: AlgaehActions,
+      getItemCategory: AlgaehActions
     },
     dispatch
   );

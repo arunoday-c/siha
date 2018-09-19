@@ -5,6 +5,7 @@
   "item_generic": "Item Generic",
   "item_group": "Item Group",
   "item_uom": "Item UOM",
+  "location": "Locatiom",
 
   "Addbutton": "Add to list",
 
@@ -15,5 +16,6 @@
   "created_by": "Created By",
   "created_date": "Created Date",
 
-  "category_id": "Category"
+  "category_id": "Category",
+  "location_type": "Location Type"
 }

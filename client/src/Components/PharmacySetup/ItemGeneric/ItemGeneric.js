@@ -107,7 +107,7 @@ class ItemGeneric extends Component {
           <div className="row form-details">
             <div className="col">
               <AlgaehDataGrid
-                id="visa_grd"
+                id="item_generic"
                 columns={[
                   {
                     fieldName: "description",
@@ -120,56 +120,6 @@ class ItemGeneric extends Component {
                             value: row.description,
                             className: "txt-fld",
                             name: "description",
-                            events: {
-                              onChange: onchangegridcol.bind(this, this, row)
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "analyte_type",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "analyte_type" }} />
-                    ),
-                    displayTemplate: row => {
-                      return row.analyte_type === "QU"
-                        ? "Quality"
-                        : row.analyte_type === "QN"
-                          ? "Quantity"
-                          : "Text";
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "analyte_type",
-                            className: "select-fld",
-                            value: row.analyte_type,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_ANALYTE_TYPE
-                            },
-                            onChange: onchangegridcol.bind(this, this, row)
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "result_unit",
-                    label: <AlgaehLabel label={{ fieldName: "result_unit" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.result_unit,
-                            className: "txt-fld",
-                            name: "result_unit",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
                             }
@@ -194,19 +144,21 @@ class ItemGeneric extends Component {
                     disabled: true
                   },
                   {
-                    fieldName: "section_status",
+                    fieldName: "item_generic_status",
                     label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
                     displayTemplate: row => {
-                      return row.analyte_status === "A" ? "Active" : "Inactive";
+                      return row.item_generic_status === "A"
+                        ? "Active"
+                        : "Inactive";
                     },
                     editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "section_status",
+                            name: "item_generic_status",
                             className: "select-fld",
-                            value: row.section_status,
+                            value: row.item_generic_status,
                             dataSource: {
                               textField: "name",
                               valueField: "value",
@@ -219,7 +171,7 @@ class ItemGeneric extends Component {
                     }
                   }
                 ]}
-                keyId="hims_d_lab_section_id"
+                keyId="hims_d_item_generic_id"
                 dataSource={{
                   data:
                     this.props.itemgeneric === undefined
