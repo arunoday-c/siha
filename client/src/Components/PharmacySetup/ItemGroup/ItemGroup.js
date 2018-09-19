@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import "./Analyte.css";
+import "./ItemGroup.css";
 import Button from "@material-ui/core/Button";
 // import moment from "moment";
 // import { algaehApiCall } from "../../../utils/algaehApiCall";
@@ -22,23 +22,22 @@ import { getCookie } from "../../../utils/algaehApiCall.js";
 import {
   changeTexts,
   onchangegridcol,
-  insertLabAnalytes,
-  updateLabAnalytes,
-  deleteLabAnalytes
-} from "./AnalyteEvents";
+  insertItemGroup,
+  updateItemGroup,
+  deleteItemGroup,
+  getItemGroup
+} from "./ItemGroupEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
 
-class LabAnalyte extends Component {
+class ItemGroup extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      hims_d_lab_section_id: "",
-      description: "",
-      analyte_type: null,
-      result_unit: null,
+      hims_d_item_group_id: "",
+      group_description: "",
+      category_id: null,
 
       description_error: false,
       description_error_txt: ""
@@ -52,25 +51,7 @@ class LabAnalyte extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    this.props.getLabAnalytes({
-      uri: "/labmasters/selectAnalytes",
-      method: "GET",
-      redux: {
-        type: "ANALYTES_GET_DATA",
-        mappingName: "labanalytes"
-      },
-      afterSuccess: data => {
-        if (data.length === 0 || data.length === undefined) {
-          if (data.response.data.success === false) {
-            successfulMessage({
-              message: data.response.data.message,
-              title: "Warning",
-              icon: "warning"
-            });
-          }
-        }
-      }
-    });
+    // getItemGroup(this, this);
   }
 
   dateFormater({ date }) {
@@ -101,8 +82,8 @@ class LabAnalyte extends Component {
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "description",
-                  value: this.state.description,
+                  name: "group_description",
+                  value: this.state.group_description,
                   error: this.state.description_error,
                   helperText: this.state.description_error_txt,
                   events: {
@@ -114,13 +95,13 @@ class LabAnalyte extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-lg-2" }}
                 label={{
-                  fieldName: "analyte_type",
+                  fieldName: "category_id",
                   isImp: true
                 }}
                 selector={{
-                  name: "analyte_type",
+                  name: "category_id",
                   className: "select-fld",
-                  value: this.state.analyte_type,
+                  value: this.state.category_id,
                   dataSource: {
                     textField: "name",
                     valueField: "value",
@@ -129,26 +110,10 @@ class LabAnalyte extends Component {
                   onChange: changeTexts.bind(this, this)
                 }}
               />
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "result_unit",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "result_unit",
-                  value: this.state.result_unit,
-                  events: {
-                    onChange: changeTexts.bind(this, this)
-                  }
-                }}
-              />
-
               <div className="col-lg-3 align-middle">
                 <br />
                 <Button
-                  onClick={insertLabAnalytes.bind(this, this)}
+                  onClick={insertItemGroup.bind(this, this)}
                   variant="raised"
                   color="primary"
                 >
@@ -164,16 +129,16 @@ class LabAnalyte extends Component {
                 id="visa_grd"
                 columns={[
                   {
-                    fieldName: "description",
+                    fieldName: "group_description",
                     label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
                     editorTemplate: row => {
                       return (
                         <AlagehFormGroup
                           div={{}}
                           textBox={{
-                            value: row.description,
+                            value: row.group_description,
                             className: "txt-fld",
-                            name: "description",
+                            name: "group_description",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
                             }
@@ -183,14 +148,12 @@ class LabAnalyte extends Component {
                     }
                   },
                   {
-                    fieldName: "analyte_type",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "analyte_type" }} />
-                    ),
+                    fieldName: "category_id",
+                    label: <AlgaehLabel label={{ fieldName: "category_id" }} />,
                     displayTemplate: row => {
-                      return row.analyte_type === "QU"
+                      return row.category_id === "QU"
                         ? "Quality"
-                        : row.analyte_type === "QN"
+                        : row.category_id === "QN"
                           ? "Quantity"
                           : "Text";
                     },
@@ -199,9 +162,9 @@ class LabAnalyte extends Component {
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "analyte_type",
+                            name: "category_id",
                             className: "select-fld",
-                            value: row.analyte_type,
+                            value: row.category_id,
                             dataSource: {
                               textField: "name",
                               valueField: "value",
@@ -213,25 +176,7 @@ class LabAnalyte extends Component {
                       );
                     }
                   },
-                  {
-                    fieldName: "result_unit",
-                    label: <AlgaehLabel label={{ fieldName: "result_unit" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.result_unit,
-                            className: "txt-fld",
-                            name: "result_unit",
-                            events: {
-                              onChange: onchangegridcol.bind(this, this, row)
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
+
                   {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
@@ -248,19 +193,21 @@ class LabAnalyte extends Component {
                     disabled: true
                   },
                   {
-                    fieldName: "analyte_status",
+                    fieldName: "item_generic_status",
                     label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
                     displayTemplate: row => {
-                      return row.analyte_status === "A" ? "Active" : "Inactive";
+                      return row.item_generic_status === "A"
+                        ? "Active"
+                        : "Inactive";
                     },
                     editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "analyte_status",
+                            name: "item_generic_status",
                             className: "select-fld",
-                            value: row.analyte_status,
+                            value: row.item_generic_status,
                             dataSource: {
                               textField: "name",
                               valueField: "value",
@@ -276,17 +223,17 @@ class LabAnalyte extends Component {
                 keyId="hims_d_lab_section_id"
                 dataSource={{
                   data:
-                    this.props.labanalytes === undefined
+                    this.props.itemgroup === undefined
                       ? []
-                      : this.props.labanalytes
+                      : this.props.itemgroup
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{
-                  onDelete: deleteLabAnalytes.bind(this, this),
+                  onDelete: deleteItemGroup.bind(this, this),
                   onEdit: row => {},
 
-                  onDone: updateLabAnalytes.bind(this, this)
+                  onDone: updateItemGroup.bind(this, this)
                 }}
               />
             </div>
@@ -299,14 +246,14 @@ class LabAnalyte extends Component {
 
 function mapStateToProps(state) {
   return {
-    labanalytes: state.labanalytes
+    itemgroup: state.itemgroup
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getLabAnalytes: AlgaehActions
+      getItemGroup: AlgaehActions
     },
     dispatch
   );
@@ -316,5 +263,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(LabAnalyte)
+  )(ItemGroup)
 );

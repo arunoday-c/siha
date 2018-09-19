@@ -55,7 +55,7 @@ class OrderMedication extends Component {
       uri: "/itemmaster/getItems",
       method: "GET",
       redux: {
-        type: "DIET_GET_DATA",
+        type: "ITEMS_GET_DATA",
         mappingName: "itemlist"
       },
       afterSuccess: data => {
@@ -69,7 +69,7 @@ class OrderMedication extends Component {
       uri: "/genericmaster/getGenerics",
       method: "GET",
       redux: {
-        type: "DIET_GET_DATA",
+        type: "GENERIC_GET_DATA",
         mappingName: "genericlist"
       }
     });

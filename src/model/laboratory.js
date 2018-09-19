@@ -652,6 +652,8 @@ let updateLabResultEntry = (req, res, next) => {
             inputParam[i].run2 +
             "',`run3`='" +
             inputParam[i].run3 +
+            "',`critical_type`='" +
+            inputParam[i].critical_type +
             "',entered_by='" +
             user_id.updated_by +
             "',entered_date='" +
