@@ -175,8 +175,8 @@ let addItemGroup = (req, res, next) => {
   }
 };
 
-//created by irfan: to add   Item Uom
-let addItemUom = (req, res, next) => {
+//created by irfan: to add   add Pharmacy Uom
+let addPharmacyUom = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -190,7 +190,7 @@ let addItemUom = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_d_item_uom` (`uom_description`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+        "INSERT INTO `hims_d_pharmacy_uom` (`uom_description`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
         VALUE(?,?,?,?,?)",
         [
           input.uom_description,
@@ -388,10 +388,10 @@ let getItemGroup = (req, res, next) => {
   }
 };
 
-//created by irfan: to get item Uom
-let getItemUom = (req, res, next) => {
+//created by irfan: to get get Pharmacy Uom
+let getPharmacyUom = (req, res, next) => {
   let selectWhere = {
-    hims_d_item_uom_id: "ALL"
+    hims_d_pharmacy_uom_id: "ALL"
   };
   try {
     if (req.db == null) {
@@ -403,7 +403,7 @@ let getItemUom = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select * FROM hims_d_item_uom where record_status='A' AND" +
+        "select hims_d_pharmacy_uom_id, uom_description, uom_status FROM hims_d_pharmacy_uom where record_status='A' AND " +
           where.condition,
         where.values,
         (error, result) => {
@@ -458,12 +458,13 @@ module.exports = {
   addItemCategory,
   addItemGeneric,
   addItemGroup,
-  addItemUom,
+  addPharmacyUom,
   addPharmacyLocation,
+
   getItemMaster,
   getItemCategory,
   getItemGeneric,
   getItemGroup,
-  getItemUom,
+  getPharmacyUom,
   getPharmacyLocation
 };

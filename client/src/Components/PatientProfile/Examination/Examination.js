@@ -42,9 +42,40 @@ class Examination extends Component {
     });
   }
 
+  updateExamination(data) {
+    data.record_status = "A";
+    algaehApiCall({
+      uri: "/doctorsWorkBench/updatePatientPhysicalExam",
+      data: data,
+      method: "PUT",
+      onSuccess: response => {
+        if (response.data.success) {
+          swal("Record updated successfully . .", {
+            icon: "success",
+            buttons: false,
+            timer: 2000
+          });
+          getPatientPhysicalExamination(this);
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
   componentDidMount() {
     getPhysicalExaminations(this);
     getPatientPhysicalExamination(this);
+  }
+
+  refreshState() {
+    this.setState({ ...this.state });
+  }
+
+  texthandler(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    this.refreshState();
   }
 
   deletePatientExamn(row) {
@@ -255,20 +286,38 @@ class Examination extends Component {
                       columns={[
                         {
                           fieldName: "header_description",
-                          label: "Examination Type"
+                          label: "Examination Type",
+                          disabled: true
                         },
                         {
                           fieldName: "detail_description",
-                          label: "Examination Description"
+                          label: "Examination Description",
+                          disabled: true
                         },
                         {
                           fieldName: "subdetail_description",
-                          label: "Examination"
+                          label: "Examination",
+                          disabled: true
                         },
 
                         {
                           fieldName: "comments",
-                          label: "Comments"
+                          label: "Comments",
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.comments,
+                                  className: "txt-fld",
+                                  name: "comments",
+                                  events: {
+                                    onChange: this.texthandler.bind(this, row)
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         }
                       ]}
                       keyId="hims_f_episode_examination_id"
@@ -278,12 +327,8 @@ class Examination extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 5 }}
                       events={{
-                        onDelete: this.deletePatientExamn.bind(this)
-                        // onEdit: row => {},
-                        // onDone: row => {
-                        //   alert(JSON.stringify(row));
-                        // }
-                        // onDone: this.updateVisaTypes.bind(this)
+                        onDelete: this.deletePatientExamn.bind(this),
+                        onDone: this.updateExamination.bind(this)
                       }}
                     />
                   </div>

@@ -6,13 +6,13 @@ import {
   addItemCategory,
   addItemGeneric,
   addItemGroup,
-  addItemUom,
+  addPharmacyUom,
+  getPharmacyUom,
   addPharmacyLocation,
   getItemMaster,
   getItemCategory,
   getItemGeneric,
   getItemGroup,
-  getItemUom,
   getPharmacyLocation
 } from "../model/pharmacy";
 
@@ -77,10 +77,10 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan :to  add ItemUom
+  // created by irfan :to  add PharmacyUom
   api.post(
-    "/addItemUom",
-    addItemUom,
+    "/addPharmacyUom",
+    addPharmacyUom,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -167,10 +167,10 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan :to getItemUom
+  // created by irfan :to getPharmacyUom
   api.get(
-    "/getItemUom",
-    getItemUom,
+    "/getPharmacyUom",
+    getPharmacyUom,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

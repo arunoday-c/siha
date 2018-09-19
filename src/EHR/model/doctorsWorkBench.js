@@ -1006,20 +1006,13 @@ let getChiefComplaints = (req, res, next) => {
 
 //created by irfan:  to add new chief complaints (hpi header)
 let addNewChiefComplaint = (req, res, next) => {
-  let chiefComplaintModel = {
-    hpi_description: null,
-    sub_department_id: null,
-    created_by: null,
-    updated_by: null
-  };
-
   debugFunction("addNewChiefComplaint");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let input = extend(chiefComplaintModel, req.body);
+    let input = extend({}, req.body);
 
     let header = req.headers["x-app-user-identity"];
     header = decryption(header);
@@ -1031,24 +1024,28 @@ let addNewChiefComplaint = (req, res, next) => {
         releaseDBConnection(db, connection);
         next(error);
       }
+      const insurtColumns = ["hpi_description", "created_by", "updated_by"];
 
       connection.query(
-        "insert into hims_d_hpi_header( hpi_description,\
-           sub_department_id,created_by,  updated_by)values(\
-              ?,?,?,?)",
+        "INSERT INTO hims_d_hpi_header(" +
+          insurtColumns.join(",") +
+          ",`sub_department_id`,created_date,update_date) VALUES ?",
         [
-          input.hpi_description,
-          input.sub_department_id,
-          input.created_by,
-          input.updated_by
+          jsonArrayToObject({
+            sampleInputObject: insurtColumns,
+            arrayObj: req.body,
+            newFieldToInsert: [input.sub_department_id, new Date(), new Date()],
+            req: req
+          })
         ],
-        (error, results) => {
+        (error, result) => {
           if (error) {
-            next(error);
             releaseDBConnection(db, connection);
+            next(error);
           }
+
           debugLog("Results are recorded...");
-          req.records = results;
+          req.records = result;
           next();
         }
       );
@@ -1255,7 +1252,7 @@ let deletePatientChiefComplaints = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "update hims_f_episode_chief_complaint set record_status='I',updated_date=? where hims_f_episode_chief_complaint_id=?",
-        [new Date(),req.body.hims_f_episode_chief_complaint_id],
+        [new Date(), req.body.hims_f_episode_chief_complaint_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -1647,8 +1644,7 @@ let getReviewOfSystem = (req, res, next) => {
               next(error);
             }
             req.records = result;
-
-            next();
+            setTimeout(next(), 10000);
           }
         );
       }
@@ -1718,6 +1714,7 @@ let updatePatientROS = (req, res, next) => {
             next(error);
           });
         }
+
         let queryBuilder =
           " update hims_f_encounter_review set patient_id=?, episode_id=?,review_header_id=?,review_details_id=?,`comment`=?,\
           updated_date=?,updated_by=?, record_status=? where hims_f_encounter_review_id=?;";

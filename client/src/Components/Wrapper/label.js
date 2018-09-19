@@ -97,7 +97,10 @@ class Label extends PureComponent {
   };
   componentWillMount() {
     if (this.props.label !== undefined) {
-      if (this.props.label.language !== undefined) {
+      if (
+        this.props.label.language !== undefined &&
+        this.props.label.fieldName !== undefined
+      ) {
         this.setState({ Language: this.props.label.language.fileName });
       } else {
         this.setState({ Language: getCookie("Language") });
@@ -116,7 +119,10 @@ class Label extends PureComponent {
     if (nextProps !== undefined) {
       if (this.currentPageCanRender()) {
         if (this.props.label !== undefined) {
-          if (this.props.label.forceLabel === undefined) {
+          if (
+            this.props.label.forceLabel === undefined &&
+            this.props.label.fieldName !== undefined
+          ) {
             this.getTargetLanguage(this.props.label.fieldName, data => {
               this.setState({ languageBind: data });
             });
