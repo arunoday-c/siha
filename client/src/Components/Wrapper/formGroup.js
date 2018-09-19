@@ -12,7 +12,8 @@ export default class FormGroup extends Component {
       textLanguageBind: null,
       value: null,
       error: false,
-      helperText: ""
+      helperText: "",
+      disabled: false
     };
   }
 
@@ -36,15 +37,23 @@ export default class FormGroup extends Component {
         : this.props.textBox.number !== undefined
           ? 0
           : "";
+
     this.setState({
-      value: this.props.textBox.value ? this.props.textBox.value : textTypeValue
+      value: this.props.textBox.value
+        ? this.props.textBox.value
+        : textTypeValue,
+      disabled:
+        this.props.textBox.disabled !== undefined
+          ? this.props.textBox.disabled
+          : false
     });
   }
   componentWillReceiveProps(props) {
     if (
       props.textBox.value !== this.state.value ||
       props.textBox.error !== this.state.error ||
-      props.textBox.helperText !== this.state.helperText
+      props.textBox.helperText !== this.state.helperText ||
+      props.textBox.disabled !== this.state.disabled
     ) {
       let textTypeValue =
         props.textBox.decimal !== undefined
@@ -56,16 +65,20 @@ export default class FormGroup extends Component {
       this.setState({
         value: props.textBox.value ? props.textBox.value : textTypeValue,
         error: props.textBox.error,
-        helperText: props.textBox.helperText
+        helperText: props.textBox.helperText,
+        disabled:
+          props.textBox.disabled !== undefined ? props.textBox.disabled : false
       });
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    debugger;
     if (
       nextProps.textBox.value !== this.state.value ||
       nextProps.textBox.error !== this.state.error ||
-      nextProps.textBox.helperText !== this.state.helperText
+      nextProps.textBox.helperText !== this.state.helperText ||
+      nextProps.textBox.disabled !== this.state.disabled
     ) {
       return true;
     }
@@ -74,35 +87,35 @@ export default class FormGroup extends Component {
   }
 
   textBoxRender = () => {
-    if (this.props.textBox != null) {
-      if (this.props.textBox.decimal != null) {
+    if (this.props.textBox !== undefined) {
+      if (this.props.textBox.decimal !== undefined) {
         return (
           <NumberFormat
             name={this.props.textBox.name}
             customInput={TextField}
             thousandSeparator={
-              this.props.textBox.decimal.thousandSeparator == null
+              this.props.textBox.decimal.thousandSeparator === undefined
                 ? ","
                 : this.props.textBox.decimal.thousandSeparator
             }
             decimalSeparator={
-              this.props.textBox.decimal.decimalSeparator == null
+              this.props.textBox.decimal.decimalSeparator === undefined
                 ? "."
                 : this.props.textBox.decimal.decimalSeparator
             }
             allowNegative={
-              this.props.textBox.decimal.allowNegative == null
+              this.props.textBox.decimal.allowNegative === undefined
                 ? true
                 : this.props.textBox.decimal.allowNegative
             }
             decimalScale={
-              this.props.textBox.decimal.decimalScale == null
+              this.props.textBox.decimal.decimalScale === undefined
                 ? 2
                 : this.props.textBox.decimal.decimalScale
             }
             fixedDecimalScale={true}
             onValueChange={
-              this.props.textBox.events != null
+              this.props.textBox.events !== undefined
                 ? this.props.textBox.events.onChange
                 : () => {}
             }
@@ -111,15 +124,13 @@ export default class FormGroup extends Component {
             prefix={this.props.textBox.decimal.prefix}
             suffix={this.props.textBox.decimal.suffix}
             value={
-              this.props.textBox.value == null ? 0 : this.props.textBox.value
+              this.props.textBox.value === undefined
+                ? 0
+                : this.props.textBox.value
             }
-            disabled={
-              this.props.textBox.disabled != null
-                ? this.props.textBox.disabled
-                : null
-            }
+            disabled={this.state.disabled}
             ref={
-              this.props.textBox.ref != null
+              this.props.textBox.ref !== undefined
                 ? ele => {
                     return this.props.textBox.ref(ele);
                   }
@@ -129,23 +140,23 @@ export default class FormGroup extends Component {
             {...this.props.textBox.others}
           />
         );
-      } else if (this.props.textBox.number != null) {
+      } else if (this.props.textBox.number !== undefined) {
         return (
           <NumberFormat
             name={this.props.textBox.name}
             customInput={TextField}
             thousandSeparator={
-              this.props.textBox.number.thousandSeparator == null
+              this.props.textBox.number.thousandSeparator === undefined
                 ? ","
                 : this.props.textBox.number.thousandSeparator
             }
             allowNegative={
-              this.props.textBox.number.allowNegative == null
+              this.props.textBox.number.allowNegative === undefined
                 ? true
                 : this.props.textBox.number.allowNegative
             }
             onValueChange={
-              this.props.textBox.events != null
+              this.props.textBox.events !== undefined
                 ? this.props.textBox.events.onChange
                 : () => {}
             }
@@ -156,27 +167,23 @@ export default class FormGroup extends Component {
             prefix={this.props.textBox.number.prefix}
             suffix={this.props.textBox.number.suffix}
             ref={
-              this.props.textBox.ref != null
+              this.props.textBox.ref !== undefined
                 ? ele => {
                     return this.props.textBox.ref(ele);
                   }
                 : null
             }
-            disabled={
-              this.props.textBox.disabled != null
-                ? this.props.textBox.disabled
-                : null
-            }
+            disabled={this.state.disabled}
             {...this.props.textBox.others}
           />
         );
-      } else if (this.props.textBox.mask != null) {
+      } else if (this.props.textBox.mask !== undefined) {
         return (
           <NumberFormat
             name={this.props.textBox.name}
             customInput={TextField}
             onValueChange={
-              this.props.textBox.events != null
+              this.props.textBox.events !== undefined
                 ? this.props.textBox.events.onChange
                 : () => {}
             }
@@ -184,13 +191,9 @@ export default class FormGroup extends Component {
             className={this.props.textBox.className}
             value={this.props.textBox.value}
             format={this.props.textBox.mask.format}
-            disabled={
-              this.props.textBox.disabled != null
-                ? this.props.textBox.disabled
-                : null
-            }
+            disabled={this.state.disabled}
             ref={
-              this.props.textBox.ref != null
+              this.props.textBox.ref !== undefined
                 ? ele => {
                     return this.props.textBox.ref(ele);
                   }
@@ -214,14 +217,10 @@ export default class FormGroup extends Component {
             onKeyUp={this.props.textBox.events.onKeyUp}
             error={this.state.error}
             helperText={this.state.helperText}
-            disabled={
-              this.props.textBox.disabled != null
-                ? this.props.textBox.disabled
-                : null
-            }
+            disabled={this.state.disabled}
             autoComplete={"off"}
             ref={
-              this.props.textBox.ref != null
+              this.props.textBox.ref !== undefined
                 ? ele => {
                     return this.props.textBox.ref(ele);
                   }
@@ -237,7 +236,7 @@ export default class FormGroup extends Component {
   };
 
   renderOthers = () => {
-    if (this.props.div != null) {
+    if (this.props.div !== undefined) {
       return this.props.div.others;
     }
   };
@@ -245,7 +244,9 @@ export default class FormGroup extends Component {
   render() {
     return (
       <div
-        className={this.props.div != null ? this.props.div.className : null}
+        className={
+          this.props.div !== undefined ? this.props.div.className : null
+        }
         {...this.renderOthers()}
       >
         {this.labelRender()}

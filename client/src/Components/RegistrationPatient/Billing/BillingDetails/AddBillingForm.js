@@ -46,7 +46,8 @@ class AddBillingForm extends Component {
       enableCheck: true,
       Cashchecked: true,
       Cardchecked: false,
-      Checkchecked: false
+      Checkchecked: false,
+      errorInCash: false
     };
   }
 
@@ -408,6 +409,7 @@ class AddBillingForm extends Component {
                             </span>
                           </label>
                         </div>
+
                         <AlagehFormGroup
                           div={{ className: "col-lg-2 mandatory" }}
                           label={{
@@ -416,8 +418,10 @@ class AddBillingForm extends Component {
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
+                            disabled: !this.state.Cashchecked,
                             className: "txt-fld",
                             name: "cash_amount",
+                            error: this.state.errorInCash,
                             value: this.state.cash_amount,
                             events: {
                               onChange: cashtexthandle.bind(this, this, context)
@@ -457,6 +461,7 @@ class AddBillingForm extends Component {
                             isImp: true
                           }}
                           textBox={{
+                            disabled: !this.state.Cardchecked,
                             decimal: { allowNegative: false },
                             className: "txt-fld",
                             name: "card_amount",
@@ -475,6 +480,7 @@ class AddBillingForm extends Component {
                             fieldName: "card_check_number"
                           }}
                           textBox={{
+                            disabled: !this.state.Cardchecked,
                             className: "txt-fld",
                             name: "card_number",
                             value: this.state.card_number,
@@ -493,6 +499,7 @@ class AddBillingForm extends Component {
                             className: "txt-fld",
                             name: "card_date"
                           }}
+                          disabled={!this.state.Cardchecked}
                           minDate={new Date()}
                           events={{
                             onChange: datehandle.bind(this, this, context)
@@ -528,6 +535,7 @@ class AddBillingForm extends Component {
                             isImp: true
                           }}
                           textBox={{
+                            disabled: !this.state.Checkchecked,
                             decimal: { allowNegative: false },
                             className: "txt-fld",
                             name: "cheque_amount",
@@ -551,6 +559,7 @@ class AddBillingForm extends Component {
                             fieldName: "card_check_number"
                           }}
                           textBox={{
+                            disabled: !this.state.Checkchecked,
                             className: "txt-fld",
                             name: "cheque_number",
                             value: this.state.cheque_number,
@@ -569,6 +578,7 @@ class AddBillingForm extends Component {
                             className: "txt-fld",
                             name: "cheque_date"
                           }}
+                          disabled={!this.state.Checkchecked}
                           minDate={new Date()}
                           events={{
                             onChange: datehandle.bind(this, this, context)

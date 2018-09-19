@@ -58,9 +58,16 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       title: "Warning",
       icon: "warning"
     });
-    $this.setState({
-      [e.target.name]: 0
-    });
+
+    $this.setState(
+      {
+        [e.target.name]: 0,
+        errorInCash: true
+      },
+      () => {
+        $this.setState({ errorInCash: false });
+      }
+    );
   } else {
     $this.setState(
       {
