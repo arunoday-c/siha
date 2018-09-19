@@ -31,7 +31,7 @@ import radiology from "../controller/radiology";
 import algaehappuser from "../controller/algaehappuser";
 import dietmaster from "../controller/dietmaster";
 import itemMaster from "../Pharmacy/controller/itemMaster";
-import genericMaster from "../Pharmacy/controller/genericMaster";
+
 import orderMedication from "../controller/orderMedication";
 import organization from "../controller/organization";
 
@@ -72,7 +72,7 @@ initializedDb(db => {
   router.use("/algaehappuser", algaehappuser({ config, db }));
   router.use("/dietmaster", dietmaster({ config, db }));
   router.use("/itemMaster", itemMaster({ config, db }));
-  router.use("/genericMaster", genericMaster({ config, db }));
+
   router.use("/orderMedication", orderMedication({ config, db }));
   router.use("/organization", organization({ config, db }));
 });

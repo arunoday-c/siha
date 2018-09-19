@@ -1158,7 +1158,7 @@ let addPatientChiefComplaints = (req, res, next) => {
         where " +
           input.chief_complaint_id +
           " in (SELECT chief_complaint_id FROM hims_f_episode_chief_complaint\
-        WHERE episode_id =?)  and episode_id=? and record_status='A' ;",
+        WHERE episode_id =? and record_status='A')  and episode_id=? and record_status='A' ;",
         [input.episode_id, input.episode_id],
         (error, result) => {
           if (error) {
@@ -1166,7 +1166,7 @@ let addPatientChiefComplaints = (req, res, next) => {
             next(error);
           }
 
-          debugLog("my_result", result);
+          debugLog("my_result", result[0]);
 
           if (result[0] == null) {
             connection.query(

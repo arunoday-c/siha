@@ -50,9 +50,6 @@ let getItems = (req, res, next) => {
 
 //created by irfan: to add in itemMaster
 let addItemMaster = (req, res, next) => {
-  // created_by: req.userIdentity.algaeh_d_app_user_id
-  // updated_by: req.userIdentity.algaeh_d_app_user_id
-
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -102,9 +99,6 @@ let addItemMaster = (req, res, next) => {
 
 //created by irfan: to add in itemMaster
 let addItemCategory = (req, res, next) => {
-  // created_by: req.userIdentity.algaeh_d_app_user_id
-  // updated_by: req.userIdentity.algaeh_d_app_user_id
-
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -143,9 +137,6 @@ let addItemCategory = (req, res, next) => {
 };
 //created by irfan: to add  itemMaster
 let addItemGeneric = (req, res, next) => {
-  // created_by: req.userIdentity.algaeh_d_app_user_id
-  // updated_by: req.userIdentity.algaeh_d_app_user_id
-
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -167,6 +158,46 @@ let addItemGeneric = (req, res, next) => {
           input.created_by,
           new Date(),
           input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add  itemMaster
+let addItemGroup = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_item_group` (`group_description`, `category_id`, `created_by`, `created_date`, `updated_by`, `updated_date`) \
+        VALUE(?,?,?,?,?,?)",
+        [
+          input.group_description,
+          input.category_id,
+          input.created_by,
+          new Date(),
+          input.updated_by,
+          new Date()
         ],
         (error, result) => {
           if (error) {
