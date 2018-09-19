@@ -688,6 +688,7 @@ class ChiefComplaints extends Component {
                           },
                           onChange: this.dropDownHandle.bind(this),
                           userList: list => {
+                            debugger;
                             this.setState({ new_chief_complaint: list });
                             // for (let i = 0; i < list.length; i++) {
                             //   this.addNewChiefComplaint(list[i]);
