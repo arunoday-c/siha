@@ -30,8 +30,8 @@ import icdcptcodes from "../controller/icdcptcodes";
 import radiology from "../controller/radiology";
 import algaehappuser from "../controller/algaehappuser";
 import dietmaster from "../controller/dietmaster";
-import itemmaster from "../Pharmacy/controller/itemmaster";
-import genericmaster from "../Pharmacy/controller/genericmaster";
+import itemMaster from "../Pharmacy/controller/itemMaster";
+import genericMaster from "../Pharmacy/controller/genericMaster";
 import orderMedication from "../controller/orderMedication";
 import organization from "../controller/organization";
 
@@ -71,8 +71,8 @@ initializedDb(db => {
   router.use("/radiology", radiology({ config, db }));
   router.use("/algaehappuser", algaehappuser({ config, db }));
   router.use("/dietmaster", dietmaster({ config, db }));
-  router.use("/itemmaster", itemmaster({ config, db }));
-  router.use("/genericmaster", genericmaster({ config, db }));
+  router.use("/itemMaster", itemMaster({ config, db }));
+  router.use("/genericMaster", genericMaster({ config, db }));
   router.use("/orderMedication", orderMedication({ config, db }));
   router.use("/organization", organization({ config, db }));
 });

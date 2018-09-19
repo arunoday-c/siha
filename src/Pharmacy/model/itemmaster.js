@@ -8,7 +8,7 @@ import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../../utils/logging";
 
-//Section
+// created by Nowshad Section
 let getItems = (req, res, next) => {
   let labSection = {
     hims_d_item_master_id: "ALL"
@@ -48,6 +48,144 @@ let getItems = (req, res, next) => {
   }
 };
 
+//created by irfan: to add in itemMaster
+let addItemMaster = (req, res, next) => {
+  // created_by: req.userIdentity.algaeh_d_app_user_id
+  // updated_by: req.userIdentity.algaeh_d_app_user_id
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_item_master` (`item_code`, `item_description`, `structure_id`,\
+         `generic_id`, `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`, `stocking_uom_id`, `created_date`, `created_by`, `update_date`, `updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.item_code,
+          input.item_description,
+          input.structure_id,
+          input.generic_id,
+          input.category_id,
+          input.group_id,
+          input.item_uom_id,
+          input.purchase_uom_id,
+          input.sales_uom_id,
+          input.stocking_uom_id,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add in itemMaster
+let addItemCategory = (req, res, next) => {
+  // created_by: req.userIdentity.algaeh_d_app_user_id
+  // updated_by: req.userIdentity.algaeh_d_app_user_id
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_item_category` (`category_desc`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+        VALUE(?,?,?,?,?)",
+        [
+          input.category_desc,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to add  itemMaster
+let addItemGeneric = (req, res, next) => {
+  // created_by: req.userIdentity.algaeh_d_app_user_id
+  // updated_by: req.userIdentity.algaeh_d_app_user_id
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_item_generic` (`generic_name`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+        VALUE(?,?,?,?,?)",
+        [
+          input.generic_name,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
-  getItems
+  getItems,
+  addItemMaster,
+  addItemCategory,
+  addItemGeneric
 };

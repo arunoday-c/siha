@@ -1,7 +1,12 @@
 import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
-import { getItems } from "../model/itemmaster";
+import {
+  getItems,
+  addItemMaster,
+  addItemCategory,
+  addItemGeneric
+} from "../model/itemMaster";
 export default ({ config, db }) => {
   let api = Router();
 
@@ -9,6 +14,49 @@ export default ({ config, db }) => {
   api.get(
     "/getItems",
     getItems,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to add Item Master
+  api.post(
+    "/addItemMaster",
+    addItemMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan :to add Item Category
+  api.post(
+    "/addItemCategory",
+    addItemCategory,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan :to add ItemGeneric
+  api.post(
+    "/addItemGeneric",
+    addItemGeneric,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
