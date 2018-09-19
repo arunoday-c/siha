@@ -1,14 +1,19 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import "./common_setup.css";
 import "../../index.css";
 import PatientType from "./PatientType/PatientType.js";
-import AccidentType from "./AccidentType/AccidentType.js";
+// import AccidentType from "./AccidentType/AccidentType.js";
 import VisaType from "./VisaType/VisaType.js";
 import IDType from "./IDType/IDType";
 import VisitType from "./VisitType/VisitType";
-import EquipmentType from "./EquipmentType/EquipmentType";
+//import EquipmentType from "./EquipmentType/EquipmentType";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+import { AlgaehActions } from "../../actions/algaehActions";
 
 class CommonSetup extends Component {
   constructor(props) {
@@ -32,6 +37,17 @@ class CommonSetup extends Component {
   SideMenuBarOpen(sidOpen) {
     this.setState({
       sidBarOpen: sidOpen
+    });
+  }
+
+  componentDidMount() {
+    this.props.getUserDetails({
+      uri: "/algaehappuser/selectAppUsers",
+      method: "GET",
+      redux: {
+        type: "USER_DETAILS_GET_DATA",
+        mappingName: "userdrtails"
+      }
     });
   }
 
@@ -110,7 +126,7 @@ class CommonSetup extends Component {
                 />
               }
             </li>
-            <li
+            {/* <li
               algaehtabs={"AccidentType"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button"}
@@ -137,18 +153,19 @@ class CommonSetup extends Component {
                   }}
                 />
               }
-            </li>
+            </li> */}
           </ul>
         </div>
 
         <div className="common-section">
           {/*  {<this.state.pageDisplay />} */}
 
-          {this.state.pageDisplay === "AccidentType" ? (
+          {/* {this.state.pageDisplay === "AccidentType" ? (
             <AccidentType />
           ) : this.state.pageDisplay === "EquipmentType" ? (
             <EquipmentType />
-          ) : this.state.pageDisplay === "VisitType" ? (
+          ) : */}
+          {this.state.pageDisplay === "VisitType" ? (
             <VisitType />
           ) : this.state.pageDisplay === "VisaType" ? (
             <VisaType />
@@ -163,4 +180,24 @@ class CommonSetup extends Component {
   }
 }
 
-export default CommonSetup;
+function mapStateToProps(state) {
+  return {
+    userdrtails: state.userdrtails
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getUserDetails: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CommonSetup)
+);

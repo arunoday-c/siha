@@ -50,7 +50,7 @@ class ItemGeneric extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    // getItemGeneric(this, this);
+    getItemGeneric(this, this);
   }
 
   dateFormater({ date }) {
@@ -110,16 +110,16 @@ class ItemGeneric extends Component {
                 id="item_generic"
                 columns={[
                   {
-                    fieldName: "description",
+                    fieldName: "generic_name",
                     label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
                     editorTemplate: row => {
                       return (
                         <AlagehFormGroup
                           div={{}}
                           textBox={{
-                            value: row.description,
+                            value: row.generic_name,
                             className: "txt-fld",
-                            name: "description",
+                            name: "generic_name",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
                             }
@@ -131,6 +131,22 @@ class ItemGeneric extends Component {
                   {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    },
                     disabled: true
                   },
                   {
@@ -179,7 +195,7 @@ class ItemGeneric extends Component {
                       : this.props.itemgeneric
                 }}
                 isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
+                paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteItemGeneric.bind(this, this),
                   onEdit: row => {},
@@ -197,7 +213,8 @@ class ItemGeneric extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemgeneric: state.itemgeneric
+    itemgeneric: state.itemgeneric,
+    userdrtails: state.userdrtails
   };
 }
 

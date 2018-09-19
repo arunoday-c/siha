@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import "./PharmacySetup.css";
 import "../../index.css";
 import ItemCategory from "./ItemCategory/ItemCategory";
@@ -9,6 +13,7 @@ import Location from "./Location/Location";
 
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+import { AlgaehActions } from "../../actions/algaehActions";
 
 class PharmacySetup extends Component {
   constructor(props) {
@@ -32,6 +37,17 @@ class PharmacySetup extends Component {
   SideMenuBarOpen(sidOpen) {
     this.setState({
       sidBarOpen: sidOpen
+    });
+  }
+
+  componentDidMount() {
+    this.props.getUserDetails({
+      uri: "/algaehappuser/selectAppUsers",
+      method: "GET",
+      redux: {
+        type: "USER_DETAILS_GET_DATA",
+        mappingName: "userdrtails"
+      }
     });
   }
 
@@ -163,4 +179,24 @@ class PharmacySetup extends Component {
   }
 }
 
-export default PharmacySetup;
+function mapStateToProps(state) {
+  return {
+    userdrtails: state.userdrtails
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getUserDetails: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PharmacySetup)
+);

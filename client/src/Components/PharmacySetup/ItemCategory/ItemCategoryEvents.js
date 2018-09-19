@@ -78,7 +78,7 @@ const deleteItemCategory = ($this, row) => {
 
 const insertItemCategory = ($this, e) => {
   e.preventDefault();
-  if ($this.state.description.length == 0) {
+  if ($this.state.category_desc.length == 0) {
     $this.setState({
       description_error: true,
       description_error_txt: "Description cannot be blank"
@@ -124,21 +124,19 @@ const insertItemCategory = ($this, e) => {
 
 const getItemCategory = $this => {
   $this.props.getItemCategory({
-    uri: "/labmasters/selectAnalytes",
+    uri: "/pharmacy/getItemCategory",
     method: "GET",
     redux: {
-      type: "ANALYTES_GET_DATA",
+      type: "ITEM_CATEGORY_GET_DATA",
       mappingName: "itemcategory"
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
-        if (data.response.data.success === false) {
-          successfulMessage({
-            message: data.response.data.message,
-            title: "Warning",
-            icon: "warning"
-          });
-        }
+        successfulMessage({
+          message: "No Records Found",
+          title: "Warning",
+          icon: "warning"
+        });
       }
     }
   });

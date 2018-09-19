@@ -49,7 +49,7 @@ class ItemUOM extends Component {
       selectedLang: prevLang
     });
 
-    // getItemUOM(this, this);
+    getItemUOM(this, this);
   }
 
   dateFormater({ date }) {
@@ -130,6 +130,22 @@ class ItemUOM extends Component {
                   {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    },
                     disabled: true
                   },
                   {
@@ -174,7 +190,7 @@ class ItemUOM extends Component {
                     this.props.itemuom === undefined ? [] : this.props.itemuom
                 }}
                 isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
+                paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteItemUOM.bind(this, this),
                   onEdit: row => {},
@@ -192,7 +208,8 @@ class ItemUOM extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemuom: state.itemuom
+    itemuom: state.itemuom,
+    userdrtails: state.userdrtails
   };
 }
 

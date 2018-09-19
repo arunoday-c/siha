@@ -78,10 +78,15 @@ const deleteItemGroup = ($this, row) => {
 
 const insertItemGroup = ($this, e) => {
   e.preventDefault();
-  if ($this.state.description.length == 0) {
+  if ($this.state.group_description.length == 0) {
     $this.setState({
       description_error: true,
       description_error_txt: "Description cannot be blank"
+    });
+  } else if ($this.state.category_id == null) {
+    $this.setState({
+      category_error: true,
+      category_error_txt: "Select Category"
     });
   } else {
     $this.setState({
@@ -124,7 +129,7 @@ const insertItemGroup = ($this, e) => {
 
 const getItemGroup = $this => {
   $this.props.getItemGroup({
-    uri: "/labmasters/selectAnalytes",
+    uri: "/pharmacy/getItemGroup",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
@@ -132,13 +137,11 @@ const getItemGroup = $this => {
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
-        if (data.response.data.success === false) {
-          successfulMessage({
-            message: data.response.data.message,
-            title: "Warning",
-            icon: "warning"
-          });
-        }
+        successfulMessage({
+          message: "No Records Found",
+          title: "Warning",
+          icon: "warning"
+        });
       }
     }
   });
@@ -146,22 +149,11 @@ const getItemGroup = $this => {
 
 const getItemCategory = $this => {
   $this.props.getItemCategory({
-    uri: "/labmasters/selectAnalytes",
+    uri: "/pharmacy/getItemCategory",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
       mappingName: "itemcategory"
-    },
-    afterSuccess: data => {
-      if (data.length === 0 || data.length === undefined) {
-        if (data.response.data.success === false) {
-          successfulMessage({
-            message: data.response.data.message,
-            title: "Warning",
-            icon: "warning"
-          });
-        }
-      }
     }
   });
 };

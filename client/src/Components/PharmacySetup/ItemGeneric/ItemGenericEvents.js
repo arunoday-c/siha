@@ -78,7 +78,7 @@ const deleteItemGeneric = ($this, row) => {
 
 const insertItemGeneric = ($this, e) => {
   e.preventDefault();
-  if ($this.state.description.length == 0) {
+  if ($this.state.generic_name.length == 0) {
     $this.setState({
       description_error: true,
       description_error_txt: "Description cannot be blank"
@@ -124,7 +124,7 @@ const insertItemGeneric = ($this, e) => {
 
 const getItemGeneric = $this => {
   $this.props.getItemGeneric({
-    uri: "/labmasters/selectAnalytes",
+    uri: "/pharmacy/getItemGeneric",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
@@ -132,13 +132,11 @@ const getItemGeneric = $this => {
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
-        if (data.response.data.success === false) {
-          successfulMessage({
-            message: data.response.data.message,
-            title: "Warning",
-            icon: "warning"
-          });
-        }
+        successfulMessage({
+          message: "No Records Found",
+          title: "Warning",
+          icon: "warning"
+        });
       }
     }
   });

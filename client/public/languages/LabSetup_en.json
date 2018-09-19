@@ -21,5 +21,6 @@
   "machine_analyte_code": "Machine Analyte Code",
   "analyte_type": "Analyte Type",
   "result_unit": "Result Unit",
-  "category_name": "Category Name"
+  "category_name": "Category Name",
+  "container_id": "Container Code"
 }

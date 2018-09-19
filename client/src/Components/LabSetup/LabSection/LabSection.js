@@ -139,6 +139,22 @@ class LabSection extends Component {
                   {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    },
                     disabled: true
                   },
                   {
@@ -187,7 +203,7 @@ class LabSection extends Component {
                       : this.props.labsection
                 }}
                 isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
+                paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteLabSection.bind(this, this),
                   onEdit: row => {},
@@ -204,7 +220,8 @@ class LabSection extends Component {
 
 function mapStateToProps(state) {
   return {
-    labsection: state.labsection
+    labsection: state.labsection,
+    userdrtails: state.userdrtails
   };
 }
 

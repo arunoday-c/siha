@@ -78,10 +78,15 @@ const deleteLocation = ($this, row) => {
 
 const insertLocation = ($this, e) => {
   e.preventDefault();
-  if ($this.state.description.length == 0) {
+  if ($this.state.location_description.length == 0) {
     $this.setState({
       description_error: true,
       description_error_txt: "Description cannot be blank"
+    });
+  } else if ($this.state.location_type == null) {
+    $this.setState({
+      description_error: true,
+      description_error_txt: "Please select Location Type"
     });
   } else {
     $this.setState({
@@ -90,7 +95,7 @@ const insertLocation = ($this, e) => {
     });
 
     algaehApiCall({
-      uri: "/labmasters/insertAnalytes",
+      uri: "/pharmacy/addPharmacyLocation",
       data: $this.state,
       onSuccess: response => {
         if (response.data.success == true) {
@@ -124,7 +129,7 @@ const insertLocation = ($this, e) => {
 
 const getLocation = $this => {
   $this.props.getLocation({
-    uri: "/labmasters/selectAnalytes",
+    uri: "/pharmacy/getPharmacyLocation",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
@@ -132,15 +137,24 @@ const getLocation = $this => {
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
-        if (data.response.data.success === false) {
-          successfulMessage({
-            message: data.response.data.message,
-            title: "Warning",
-            icon: "warning"
-          });
-        }
+        successfulMessage({
+          message: "No Records Found",
+          title: "Warning",
+          icon: "warning"
+        });
       }
     }
+  });
+};
+
+const allowPos = ($this, e) => {
+  let allow_pos = "N";
+  if (!$this.state.allowpos === true) {
+    allow_pos = "Y";
+  }
+  $this.setState({
+    allow_pos: allow_pos,
+    allowpos: !$this.state.allowpos
   });
 };
 
@@ -150,5 +164,6 @@ export {
   insertLocation,
   updateLocation,
   deleteLocation,
-  getLocation
+  getLocation,
+  allowPos
 };

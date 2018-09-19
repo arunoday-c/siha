@@ -205,6 +205,7 @@ let insertContainer = (req, res, next) => {
   let labContainer = {
     hims_d_lab_container_id: null,
     description: null,
+    container_id: null,
     container_status: "A",
     created_by: req.userIdentity.algaeh_d_app_user_id,
 
@@ -220,11 +221,12 @@ let insertContainer = (req, res, next) => {
     }
     let inputParam = extend(labContainer, req.body);
     connection.query(
-      "INSERT INTO `hims_d_lab_container` (`description`, \
+      "INSERT INTO `hims_d_lab_container` (`description`, `container_id`, \
           `created_by` ,`created_date`,`container_status`) \
-       VALUES ( ?, ?, ?, ?)",
+       VALUES ( ?, ?, ?, ?, ?)",
       [
         inputParam.description,
+        imputParam.container_id,
         inputParam.created_by,
         new Date(),
         inputParam.container_status
@@ -244,6 +246,7 @@ let insertContainer = (req, res, next) => {
 let updateContainer = (req, res, next) => {
   let labSection = {
     hims_d_lab_container_id: null,
+    container_id: null,
     description: null,
     container_status: "A",
     created_by: req.userIdentity.algaeh_d_app_user_id,
@@ -261,10 +264,11 @@ let updateContainer = (req, res, next) => {
     let inputParam = extend(labSection, req.body);
     connection.query(
       "UPDATE `hims_d_lab_container` \
-         SET `description`=?, `updated_by`=?, `updated_date`=?,container_status=? \
+         SET `description`=?, `container_id`=?,`updated_by`=?, `updated_date`=?,container_status=? \
          WHERE `record_status`='A' and `hims_d_lab_container_id`=?",
       [
         inputParam.description,
+        inputParam.container_id,
         inputParam.updated_by,
         new Date(),
         inputParam.container_status,

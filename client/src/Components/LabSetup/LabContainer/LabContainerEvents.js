@@ -97,6 +97,11 @@ const insertLabContainer = ($this, e) => {
       description_error: true,
       description_error_txt: "Description cannot be blank"
     });
+  } else if ($this.state.container_id.length == 0) {
+    $this.setState({
+      container_id_error: true,
+      container_id_error_txt: "Container Code cannot be blank"
+    });
   } else {
     $this.setState({
       description_error: false,

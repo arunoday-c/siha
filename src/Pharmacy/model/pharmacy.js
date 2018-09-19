@@ -230,7 +230,7 @@ let addPharmacyLocation = (req, res, next) => {
 
       connection.query(
         "INSERT INTO `hims_d_pharmacy_location` (`location_description`,  `location_type`, `allow_pos`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
-        VALUE(?,?,?,?,?)",
+        VALUE(?,?,?,?,?,?,?)",
         [
           input.location_description,
           input.location_type,
@@ -304,7 +304,7 @@ let getItemCategory = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_item_category_id, category_desc, category_status FROM hims_d_item_category where record_status='A' AND" +
+        "select * FROM hims_d_item_category where record_status='A' AND" +
           where.condition,
         where.values,
         (error, result) => {
@@ -337,7 +337,7 @@ let getItemGeneric = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_item_generic_id, generic_name, item_generic_status FROM hims_d_item_generic where record_status='A' AND" +
+        "select * FROM hims_d_item_generic where record_status='A' AND" +
           where.condition,
         where.values,
         (error, result) => {
@@ -370,7 +370,7 @@ let getItemGroup = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_item_group_id, group_description, category_id, group_status FROM hims_d_item_group where record_status='A' AND" +
+        "select * FROM hims_d_item_group where record_status='A' AND" +
           where.condition,
         where.values,
         (error, result) => {
@@ -403,7 +403,7 @@ let getItemUom = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_item_uom_id, uom_description, uom_status FROM hims_d_item_uom where record_status='A' AND" +
+        "select * FROM hims_d_item_uom where record_status='A' AND" +
           where.condition,
         where.values,
         (error, result) => {
@@ -436,7 +436,7 @@ let getPharmacyLocation = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_pharmacy_location_id, location_description, location_status, location_type, allow_pos FROM hims_d_pharmacy_location where record_status='A' AND" +
+        "select * FROM hims_d_pharmacy_location where record_status='A' AND" +
           where.condition,
         where.values,
         (error, result) => {
