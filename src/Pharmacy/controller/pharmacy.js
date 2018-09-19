@@ -2,32 +2,22 @@ import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  getItems,
   addItemMaster,
   addItemCategory,
   addItemGeneric,
   addItemGroup,
   addItemUom,
-  addPharmacyLocation
+  addPharmacyLocation,
+  getItemMaster,
+  getItemCategory,
+  getItemGeneric,
+  getItemGroup,
+  getItemUom,
+  getPharmacyLocation
 } from "../model/pharmacy";
 
 export default ({ config, db }) => {
   let api = Router();
-
-  // created by Nowshad : to get list of test based on condition
-  api.get(
-    "/getItems",
-    getItems,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
 
   // created by irfan :to add Item Master
   api.post(
@@ -117,5 +107,94 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan :to getItemMaster
+  api.get(
+    "/getItemMaster",
+    getItemMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to getItemCategory
+  api.get(
+    "/getItemCategory",
+    getItemCategory,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to getItemGeneric
+  api.get(
+    "/getItemGeneric",
+    getItemGeneric,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to  getItemGroup
+  api.get(
+    "/getItemGroup",
+    getItemGroup,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to getItemUom
+  api.get(
+    "/getItemUom",
+    getItemUom,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to getPharmacyLocation
+  api.get(
+    "/getPharmacyLocation",
+    getPharmacyLocation,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };

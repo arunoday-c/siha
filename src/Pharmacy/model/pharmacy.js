@@ -9,46 +9,6 @@ import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../../utils/logging";
 
-// created by Nowshad Section
-let getItems = (req, res, next) => {
-  let labSection = {
-    hims_d_item_master_id: "ALL"
-  };
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let pagePaging = "";
-    if (req.paging != null) {
-      let Page = paging(req.paging);
-      pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
-    }
-
-    let condition = whereCondition(extend(labSection, req.query));
-    selectStatement(
-      {
-        db: req.db,
-        query:
-          "SELECT * FROM `hims_d_item_master` WHERE `record_status`='A' AND " +
-          condition.condition +
-          " " +
-          pagePaging,
-        values: condition.values
-      },
-      result => {
-        req.records = result;
-        next();
-      },
-      error => {
-        next(error);
-      },
-      true
-    );
-  } catch (e) {
-    next(e);
-  }
-};
-
 //created by irfan: to add in itemMaster
 let addItemMaster = (req, res, next) => {
   try {
@@ -294,12 +254,216 @@ let addPharmacyLocation = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to get item master
+let getItemMaster = (req, res, next) => {
+  let selectWhere = {
+    hims_d_item_master_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "hims_d_item_master_id, item_code, item_description, structure_id, generic_id, category_id,\
+         group_id, item_uom_id, purchase_uom_id, sales_uom_id, stocking_uom_id,item_status, where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get item category
+let getItemCategory = (req, res, next) => {
+  let selectWhere = {
+    hims_d_item_category_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "hims_d_item_category_id, category_desc, category_status where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get item Generic
+let getItemGeneric = (req, res, next) => {
+  let selectWhere = {
+    hims_d_item_generic_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "hims_d_item_generic_id, generic_name, item_generic_status where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get item Generic
+let getItemGroup = (req, res, next) => {
+  let selectWhere = {
+    hims_d_item_group_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "hims_d_item_group_id, group_description, category_id, group_status where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get item Uom
+let getItemUom = (req, res, next) => {
+  let selectWhere = {
+    hims_d_item_uom_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "hims_d_item_uom_id, uom_description, uom_status where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Pharmacy Location
+let getPharmacyLocation = (req, res, next) => {
+  let selectWhere = {
+    hims_d_pharmacy_location_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "hims_d_pharmacy_location_id, location_description, location_status, location_type, allow_pos where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
-  getItems,
   addItemMaster,
   addItemCategory,
   addItemGeneric,
   addItemGroup,
   addItemUom,
-  addPharmacyLocation
+  addPharmacyLocation,
+  getItemMaster,
+  getItemCategory,
+  getItemGeneric,
+  getItemGroup,
+  getItemUom,
+  getPharmacyLocation
 };
