@@ -1,0 +1,22 @@
+{
+  "Pharmacy_setup": "إعداد الصيدلة",
+  "Pharmacy_settings": "إعدادات",
+  "item_category": "الفئة بند",
+  "item_generic": "بند عام",
+  "item_group": "بند مجموعة",
+  "item_uom": "بند UOM",
+  "location": "الموقع",
+
+  "Addbutton": "أضف إلى القائمة",
+
+  "inv_status": "الحالة",
+
+  "type_code": "الشفرة",
+  "type_desc": "لاسم",
+  "arabic_type_desc": "الاسم العربي",
+  "created_by": "صنع من قبل",
+  "created_date": "الإنشاءخ تاريخ",
+
+  "category_id": "الفئة",
+  "location_type": "نوع الموقع"
+}

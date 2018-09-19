@@ -121,6 +121,11 @@ class ChiefComplaints extends Component {
   }
 
   deleteChiefComplain(data, e) {
+    this.showconfirmDialog(data);
+  }
+
+  deleteChiefComplaintFromGrid(data) {
+    debugger;
     this.showconfirmDialog(data.hims_f_episode_chief_complaint_id);
   }
 
@@ -290,7 +295,7 @@ class ChiefComplaints extends Component {
     const row = Enumerable.from(patChiefComplain)
       .where(w => w.chief_complaint_id === hims_d_hpi_header_id)
       .firstOrDefault();
-    return row !== undefined ? true : false;
+    return row;
   }
 
   render() {
@@ -623,7 +628,7 @@ class ChiefComplaints extends Component {
         >
           <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Add Chief Complaint</h4>
+              <h4>Add / Edit Chief Complaint</h4>
             </div>
             <div className="popupInner">
               <div className="col-lg-12">
@@ -657,8 +662,9 @@ class ChiefComplaints extends Component {
                           }
                         }}
                       /> */}
+
                       <AlagehFormGroup
-                        div={{ className: "col" }}
+                        div={{ className: "col-lg-10 displayInlineBlock" }}
                         label={{
                           forceLabel: "Add New Chief Complaint",
                           isImp: false
@@ -684,7 +690,8 @@ class ChiefComplaints extends Component {
                           onClick={this.addNewChiefComplaint.bind(this)}
                         />
                       </div>
-                      <div className="col-12">
+
+                      <div className="col-lg-12">
                         <div className="bordered-layout">
                           <ul>
                             {/* patientChiefComplains */}
@@ -701,20 +708,27 @@ class ChiefComplaints extends Component {
                               </li>
                             ))} */}
                             {masterChiefComplaints.map((data, index) => {
+                              const rowdtl = this.checkboxCheckChiefComplaints(
+                                patChiefComplain,
+                                data.hims_d_hpi_header_id
+                              );
                               return (
                                 <li
                                   key={index}
                                   data-cpln-id={data.hims_d_hpi_header_id}
-                                  onClick={this.fillComplainDetails}
+                                  //onClick={this.fillComplainDetails}
                                 >
                                   <input
                                     type="checkbox"
                                     id={"chif_" + data.hims_d_hpi_header_id}
-                                    checked={this.checkboxCheckChiefComplaints(
-                                      patChiefComplain,
-                                      data.hims_d_hpi_header_id
-                                    )}
-                                    data-cpln-id={data.hims_d_hpi_header_id}
+                                    checked={
+                                      rowdtl !== undefined ? true : false
+                                    }
+                                    data-cpln-id={
+                                      rowdtl !== undefined
+                                        ? rowdtl.hims_f_episode_chief_complaint_id
+                                        : null
+                                    }
                                     onChange={e => {
                                       debugger;
                                       if (e.currentTarget.checked) {
@@ -725,9 +739,8 @@ class ChiefComplaints extends Component {
                                             score: 0,
                                             pain: 0,
                                             comment: "",
-                                            chief_complaint_id: e.currentTarget.getAttribute(
-                                              "data-cpln-id"
-                                            )
+                                            chief_complaint_id:
+                                              data.hims_d_hpi_header_id
                                           },
                                           () => {
                                             this.addChiefComplain();
@@ -1160,7 +1173,10 @@ class ChiefComplaints extends Component {
                         <IconButton
                           color="primary"
                           title="Delete"
-                          onClick={this.deleteChiefComplain.bind(this, data)}
+                          onClick={this.deleteChiefComplaintFromGrid.bind(
+                            this,
+                            data
+                          )}
                         >
                           <Delete />
                         </IconButton>

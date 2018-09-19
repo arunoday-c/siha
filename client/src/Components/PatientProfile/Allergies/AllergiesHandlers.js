@@ -47,9 +47,9 @@ const texthandle = ($this, data, ctrl, e) => {
     allAllergies: allAllergies
   });
 };
+
 const updatePatientAllergy = ($this, row) => {
   debugger;
-
   algaehApiCall({
     uri: "/doctorsWorkbench/updatePatientAllergy",
     method: "PUT",
@@ -66,6 +66,7 @@ const updatePatientAllergy = ($this, row) => {
     onSuccess: response => {
       if (response.data.success) {
         console.log("Allergy Update Response:", response.data.records);
+        $this.getPatientAllergies();
       }
     },
     onFailure: error => {}

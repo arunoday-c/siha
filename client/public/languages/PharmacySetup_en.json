@@ -1,0 +1,21 @@
+{
+  "Pharmacy_setup": "Pharmacy Setup",
+  "Pharmacy_settings": "Settings",
+  "item_category": "Item Category",
+  "item_generic": "Item Generic",
+  "item_group": "Item Group",
+  "item_uom": "Item UOM",
+  "location": "Locatiom",
+
+  "Addbutton": "Add to list",
+
+  "type_code": "Code",
+  "type_desc": "Description",
+  "inv_status": "Status",
+  "arabic_type_desc": "Arabic Name",
+  "created_by": "Created By",
+  "created_date": "Created Date",
+
+  "category_id": "Category",
+  "location_type": "Location Type"
+}

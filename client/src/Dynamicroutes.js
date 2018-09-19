@@ -32,7 +32,7 @@ import ResultEntryList from "./Components/Laboratory/ResultEntryList/ResultEntry
 import InitialStock from "./Components/Pharmacy/InitialStock/InitialStock";
 import PrescriptionList from "./Components/Pharmacy/PrescriptionList/PrescriptionList";
 import Appointment from "./Components/Appointment/Appointment";
-
+import PharmacySetup from "./Components/PharmacySetup/PharmacySetup";
 // function height() {
 //   let height =
 //     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -69,7 +69,8 @@ const componts = (selectedLang, breadStyle) => {
     ResultEntryList: <ResultEntryList SelectLanguage={selectedLang} />,
     InitialStock: <InitialStock SelectLanguage={selectedLang} />,
     PrescriptionList: <PrescriptionList SelectLanguage={selectedLang} />,
-    Appointment: <Appointment SelectLanguage={selectedLang} />
+    Appointment: <Appointment SelectLanguage={selectedLang} />,
+    PharmacySetup: <PharmacySetup SelectLanguage={selectedLang} />
   };
 };
 

@@ -33,6 +33,13 @@ class ReviewofSystems extends Component {
     getPatientROS(this);
   }
 
+  texthandler = ($this, data, ctrl, e) => {
+    e = e || ctrl;
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    data[name] = value;
+  };
+
   handleClose() {
     this.setState({ openROSModal: false });
   }
@@ -248,22 +255,7 @@ class ReviewofSystems extends Component {
                           fieldName: "comment",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Remarks" }} />
-                          ),
-                          editorTemplate: data => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "comment",
-                                  value: data.comment,
-                                  events: {
-                                    onChange: texthandle.bind(this, this, data)
-                                  }
-                                }}
-                              />
-                            );
-                          }
+                          )
                         }
                       ]}
                       keyId="ros"

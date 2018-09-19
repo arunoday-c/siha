@@ -199,22 +199,47 @@ class LabResult extends Component {
                       label: <AlgaehLabel label={{ forceLabel: "Unit" }} />
                     },
                     {
-                      fieldName: "status",
+                      fieldName: "normal_low",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Normal Low" }} />
                       )
                     },
                     {
-                      fieldName: "ordered_date",
+                      fieldName: "normal_high",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Normal High" }} />
                       )
                     },
                     {
-                      fieldName: "status",
+                      fieldName: "critical_low",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Critical Low" }} />
                       )
+                    },
+                    {
+                      fieldName: "critical_high",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Critical High" }} />
+                      )
+                    },
+                    {
+                      fieldName: "critical_type",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Critical Type" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.critical_type === "N"
+                          ? "None"
+                          : row.critical_type === "CL"
+                            ? "Critical Low"
+                            : row.critical_type === "CH"
+                              ? "Critical High"
+                              : row.critical_type === "L"
+                                ? "Low"
+                                : row.critical_type === "H"
+                                  ? "High"
+                                  : null;
+                      }
                     },
                     {
                       fieldName: "run1",
@@ -227,12 +252,6 @@ class LabResult extends Component {
                     {
                       fieldName: "run3",
                       label: <AlgaehLabel label={{ forceLabel: "Run3" }} />
-                    },
-                    {
-                      fieldName: "ordered_date",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Critical High" }} />
-                      )
                     },
                     {
                       fieldName: "status",

@@ -22,7 +22,10 @@ import "./AddReciptForm.css";
 import "./../../../../styles/site.css";
 import variableJson from "../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-
+const locations = [
+  { name: "Pharmacy Main Store", value: "0" },
+  { name: "Day Clinics", value: "1" }
+];
 class AddReciptForm extends Component {
   constructor(props) {
     super(props);
@@ -128,6 +131,7 @@ class AddReciptForm extends Component {
                         type="checkbox"
                         name="Pay by Cash"
                         checked={this.state.Cashchecked}
+                        checked={true}
                         // onChange={checkcashhandaler.bind(this, this)}
                       />
 

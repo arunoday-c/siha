@@ -26,6 +26,17 @@ class InitialStock extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.getItems({
+      uri: "/itemmaster/getItems",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "itemlist"
+      }
+    });
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -37,7 +48,6 @@ class InitialStock extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            //breadWidth={this.props.breadWidth}
             pageNavPath={[
               {
                 pageName: (
@@ -57,59 +67,37 @@ class InitialStock extends Component {
                 )
               }
             ]}
-            soptlightSearch={{
-              label: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Invoice Number", returnText: true }}
-                />
-              ),
-              value: this.state.invoice_number,
-              selectValue: "invoice_number",
-              events: {
-                onChange: getCtrlCode.bind(this, this)
-              },
-              jsonFile: {
-                fileName: "spotlightSearch",
-                fieldName: "frontDesk.patients"
-              },
-              searchName: "patients"
-            }}
-            userArea={
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: (
-                    <AlgaehLabel label={{ forceLabel: "Invoice Date" }} />
-                  ),
-                  className: "internal-label"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "bread_registration_date"
-                }}
-                disabled={true}
-                events={{
-                  onChange: null
-                }}
-                value={this.state.invoice_date}
-              />
-            }
-            selectedLang={this.state.selectedLang}
           />
+
           <div className="hptl-phase1-initial-stock-form">
             <div className="col-lg-12">
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Item Name" }}
+                  label={{ forceLabel: "Location" }}
                   selector={{
-                    name: "diet_id",
+                    name: "location_id",
                     className: "select-fld",
-                    value: this.state.diet_id,
+                    value: this.state.location_id,
                     dataSource: {
                       textField: "hims_d_diet_description",
                       valueField: "hims_d_diet_master_id",
                       data: this.props.dietmaster
+                    },
+                    onChange: null
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{ forceLabel: "Item Name" }}
+                  selector={{
+                    name: "item_id",
+                    className: "select-fld",
+                    value: this.state.item_id,
+                    dataSource: {
+                      textField: "item_description",
+                      valueField: "hims_d_item_master_id",
+                      data: this.props.itemlist
                     },
                     onChange: null
                   }}
@@ -122,8 +110,8 @@ class InitialStock extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "followup_comments",
-                    value: this.state.followup_comments,
+                    name: "batch_no",
+                    value: this.state.batch_no,
                     events: {
                       onChange: null
                     }
@@ -133,12 +121,12 @@ class InitialStock extends Component {
                 <AlgaehDateHandler
                   div={{ className: "col-lg-3" }}
                   label={{ forceLabel: "Expiry Date" }}
-                  textBox={{ className: "txt-fld" }}
+                  textBox={{ className: "txt-fld", name: "expirt_date" }}
                   maxDate={new Date()}
                   events={{
                     onChange: null
                   }}
-                  value={this.state.date_of_birth}
+                  value={this.state.expirt_date}
                 />
 
                 <AlagehFormGroup
@@ -148,8 +136,8 @@ class InitialStock extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "followup_comments",
-                    value: this.state.followup_comments,
+                    name: "quantity",
+                    value: this.state.quantity,
                     events: {
                       onChange: null
                     }
@@ -163,10 +151,9 @@ class InitialStock extends Component {
                   }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.advance_adjust,
+                    value: this.state.unit_cost,
                     className: "txt-fld",
-                    name: "advance_adjust",
-
+                    name: "unit_cost",
                     events: {
                       onChange: null
                     }
@@ -275,21 +262,14 @@ class InitialStock extends Component {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    services: state.services,
-    orderservices: state.orderservices,
-    existinginsurance: state.existinginsurance,
-    serviceslist: state.serviceslist
+    itemlist: state.itemlist
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
-      generateBill: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getItems: AlgaehActions
     },
     dispatch
   );
