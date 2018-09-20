@@ -52,7 +52,7 @@ class OrderMedication extends Component {
 
   componentDidMount() {
     this.props.getItems({
-      uri: "/itemmaster/getItems",
+      uri: "/pharmacy/getItemMaster",
       method: "GET",
       redux: {
         type: "ITEMS_GET_DATA",
@@ -66,7 +66,7 @@ class OrderMedication extends Component {
       }
     });
     this.props.getGenerics({
-      uri: "/genericmaster/getGenerics",
+      uri: "/pharmacy/getItemGeneric",
       method: "GET",
       redux: {
         type: "GENERIC_GET_DATA",

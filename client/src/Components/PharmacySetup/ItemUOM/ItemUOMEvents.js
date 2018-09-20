@@ -78,7 +78,7 @@ const deleteItemUOM = ($this, row) => {
 
 const insertItemUOM = ($this, e) => {
   e.preventDefault();
-  if ($this.state.description.length == 0) {
+  if ($this.state.uom_description.length == 0) {
     $this.setState({
       description_error: true,
       description_error_txt: "Description cannot be blank"
@@ -124,7 +124,7 @@ const insertItemUOM = ($this, e) => {
 
 const getItemUOM = $this => {
   $this.props.getItemUOM({
-    uri: "/labmasters/selectAnalytes",
+    uri: "/pharmacy/getPharmacyUom",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
@@ -132,13 +132,11 @@ const getItemUOM = $this => {
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
-        if (data.response.data.success === false) {
-          successfulMessage({
-            message: data.response.data.message,
-            title: "Warning",
-            icon: "warning"
-          });
-        }
+        successfulMessage({
+          message: "No Records Found",
+          title: "Warning",
+          icon: "warning"
+        });
       }
     }
   });

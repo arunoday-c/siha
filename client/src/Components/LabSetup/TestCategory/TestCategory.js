@@ -141,6 +141,22 @@ class TestCategory extends Component {
                   {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    },
                     disabled: true
                   },
                   {
@@ -189,7 +205,7 @@ class TestCategory extends Component {
                       : this.props.testcategory
                 }}
                 isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
+                paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteTestCategory.bind(this, this),
                   onEdit: row => {},
@@ -206,7 +222,8 @@ class TestCategory extends Component {
 
 function mapStateToProps(state) {
   return {
-    testcategory: state.testcategory
+    testcategory: state.testcategory,
+    userdrtails: state.userdrtails
   };
 }
 

@@ -1,15 +1,20 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import "./LabSetup.css";
 import "../../index.css";
 import LabSection from "./LabSection/LabSection";
 import LabContainer from "./LabContainer/LabContainer";
 import LabSpecimen from "./LabSpecimen/LabSpecimen";
-import Equipment from "./Equipment/Equipment";
+// import Equipment from "./Equipment/Equipment";
 import Analyte from "./Analyte/Analyte";
 import TestCategory from "./TestCategory/TestCategory";
 
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+import { AlgaehActions } from "../../actions/algaehActions";
 
 class LabSetup extends Component {
   constructor(props) {
@@ -33,6 +38,17 @@ class LabSetup extends Component {
   SideMenuBarOpen(sidOpen) {
     this.setState({
       sidBarOpen: sidOpen
+    });
+  }
+
+  componentDidMount() {
+    this.props.getUserDetails({
+      uri: "/algaehappuser/selectAppUsers",
+      method: "GET",
+      redux: {
+        type: "USER_DETAILS_GET_DATA",
+        mappingName: "userdrtails"
+      }
     });
   }
 
@@ -123,7 +139,7 @@ class LabSetup extends Component {
                 />
               }
             </li>
-            <li
+            {/* <li
               algaehtabs={"Equipment"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button "}
@@ -136,7 +152,7 @@ class LabSetup extends Component {
                   }}
                 />
               }
-            </li>
+            </li> */}
 
             <li
               algaehtabs={"TestCategory"}
@@ -166,15 +182,37 @@ class LabSetup extends Component {
             <LabSpecimen />
           ) : this.state.pageDisplay === "Analyte" ? (
             <Analyte />
-          ) : this.state.pageDisplay === "Equipment" ? (
-            <Equipment />
           ) : this.state.pageDisplay === "TestCategory" ? (
             <TestCategory />
           ) : null}
+
+          {/* : this.state.pageDisplay === "Equipment" ? (
+            <Equipment />
+          ) */}
         </div>
       </div>
     );
   }
 }
 
-export default LabSetup;
+function mapStateToProps(state) {
+  return {
+    userdrtails: state.userdrtails
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getUserDetails: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LabSetup)
+);

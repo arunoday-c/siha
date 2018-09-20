@@ -36,9 +36,12 @@ class LabContainer extends Component {
     this.state = {
       hims_d_lab_container_id: "",
       description: "",
+      container_id: null,
 
       description_error: false,
-      description_error_txt: ""
+      description_error_txt: "",
+      container_id_error: false,
+      container_id_error_txt: ""
     };
     this.baseState = this.state;
   }
@@ -97,6 +100,24 @@ class LabContainer extends Component {
                 }}
               />
 
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "container_id",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "container_id",
+                  value: this.state.container_id,
+                  error: this.state.container_id_error,
+                  helperText: this.state.container_id_error_txt,
+                  events: {
+                    onChange: changeTexts.bind(this, this)
+                  }
+                }}
+              />
+
               <div className="col-lg-3 align-middle">
                 <br />
                 <Button
@@ -136,8 +157,45 @@ class LabContainer extends Component {
                   },
 
                   {
+                    fieldName: "container_id",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "container_id" }} />
+                    ),
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            value: row.container_id,
+                            className: "txt-fld",
+                            name: "container_id",
+                            events: {
+                              onChange: onchangegridcol.bind(this, this, row)
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    },
                     disabled: true
                   },
                   {
@@ -186,7 +244,7 @@ class LabContainer extends Component {
                       : this.props.labcontainer
                 }}
                 isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
+                paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteLabContainer.bind(this, this),
                   onEdit: row => {},
@@ -203,7 +261,8 @@ class LabContainer extends Component {
 
 function mapStateToProps(state) {
   return {
-    labcontainer: state.labcontainer
+    labcontainer: state.labcontainer,
+    userdrtails: state.userdrtails
   };
 }
 

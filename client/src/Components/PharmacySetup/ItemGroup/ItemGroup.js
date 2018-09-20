@@ -41,7 +41,9 @@ class ItemGroup extends Component {
       category_id: null,
 
       description_error: false,
-      description_error_txt: ""
+      description_error_txt: "",
+      category_error: false,
+      category_error_txt: ""
     };
     this.baseState = this.state;
   }
@@ -52,8 +54,8 @@ class ItemGroup extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    // getItemGroup(this, this);
-    // getItemCategory(this, this);
+    getItemGroup(this, this);
+    getItemCategory(this, this);
   }
 
   dateFormater({ date }) {
@@ -104,14 +106,17 @@ class ItemGroup extends Component {
                   name: "category_id",
                   className: "select-fld",
                   value: this.state.category_id,
+                  error: this.state.category_error,
+                  helperText: this.state.category_error_txt,
                   dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.FORMAT_ANALYTE_TYPE
+                    textField: "category_desc",
+                    valueField: "hims_d_item_category_id",
+                    data: this.props.itemcategory
                   },
                   onChange: changeTexts.bind(this, this)
                 }}
               />
+
               <div className="col-lg-3 align-middle">
                 <br />
                 <Button
@@ -191,6 +196,22 @@ class ItemGroup extends Component {
                   {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    },
                     disabled: true
                   },
                   {
@@ -239,7 +260,7 @@ class ItemGroup extends Component {
                       : this.props.itemgroup
                 }}
                 isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
+                paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteItemGroup.bind(this, this),
                   onEdit: row => {},
@@ -258,7 +279,8 @@ class ItemGroup extends Component {
 function mapStateToProps(state) {
   return {
     itemgroup: state.itemgroup,
-    itemcategory: state.itemcategory
+    itemcategory: state.itemcategory,
+    userdrtails: state.userdrtails
   };
 }
 

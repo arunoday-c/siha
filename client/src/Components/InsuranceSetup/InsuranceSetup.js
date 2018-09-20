@@ -145,11 +145,11 @@ class InsuranceSetup extends Component {
                     );
                   }
                 },
-                {
-                  fieldName: "sl_no",
-                  label: "#",
-                  disabled: true
-                },
+                // {
+                //   fieldName: "sl_no",
+                //   label: "#",
+                //   disabled: true
+                // },
                 {
                   fieldName: "insurance_type",
                   label: "Type",
