@@ -29,22 +29,53 @@ const itemchangeText = ($this, e) => {
 };
 
 const AddItems = $this => {
-  let ListItems = $this.state.ListItems;
-  let itemObj = {
-    location_id: $this.state.location_id,
-    category_id: $this.state.category_id,
-    group_id: $this.state.group_id,
-    item_id: $this.state.item_id,
-    batch_no: $this.state.batch_no,
-    expirt_date: $this.state.expirt_date,
-    quantity: $this.state.quantity,
-    unit_cost: $this.state.unit_cost,
-    quantity: $this.state.quantity
-  };
-  ListItems.push(itemObj);
-  $this.setState({
-    ListItems: ListItems
-  });
+  if ($this.state.location_id === null) {
+    $this.setState({
+      SnackbarOpen: true,
+      MandatoryMsg: "Invalid Input. Please select Location."
+    });
+  } else if ($this.state.item_id === null) {
+    $this.setState({
+      SnackbarOpen: true,
+      MandatoryMsg: "Invalid Input. Please select Item."
+    });
+  } else if ($this.state.batch_no === null) {
+    $this.setState({
+      SnackbarOpen: true,
+      MandatoryMsg: "Invalid Input. Batch No. cannot be blank."
+    });
+  } else if ($this.state.expirt_date === null) {
+    $this.setState({
+      SnackbarOpen: true,
+      MandatoryMsg: "Invalid Input. Please select Expiry Date."
+    });
+  } else if ($this.state.quantity === 0) {
+    $this.setState({
+      SnackbarOpen: true,
+      MandatoryMsg: "Invalid Input. Quantity cannot be blank."
+    });
+  } else if ($this.state.unit_cost === 0) {
+    $this.setState({
+      SnackbarOpen: true,
+      MandatoryMsg: "Invalid Input. Unit Cost cannot be blank."
+    });
+  } else {
+    let ListItems = $this.state.ListItems;
+    let itemObj = {
+      location_id: $this.state.location_id,
+      category_id: $this.state.category_id,
+      group_id: $this.state.group_id,
+      item_id: $this.state.item_id,
+      batch_no: $this.state.batch_no,
+      expirt_date: $this.state.expirt_date,
+      quantity: $this.state.quantity,
+      unit_cost: $this.state.unit_cost
+    };
+    ListItems.push(itemObj);
+    $this.setState({
+      ListItems: ListItems
+    });
+  }
 };
 
 const datehandle = ($this, ctrl, e) => {
@@ -59,11 +90,16 @@ const dateFormater = ({ value }) => {
   }
 };
 
+const getCtrlCode = ($this, docNumber) => {
+  debugger;
+};
+
 export {
   changeTexts,
   itemchangeText,
   numberchangeTexts,
   AddItems,
   datehandle,
-  dateFormater
+  dateFormater,
+  getCtrlCode
 };

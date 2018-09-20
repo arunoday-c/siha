@@ -129,20 +129,37 @@
     { "name": "Amount", "arabic_name": "مبلغ", "value": "A" }
   ],
   "PAIN_SCALE": [
-    { "name": "No Hurt", "arabic_name": "لا ألم", "value": "NH" },
-    { "name": "Hurts Little Bit", "arabic_name": "يؤلم قليلا", "value": "HLB" },
+    { "name": "No Hurt", "arabic_name": "لا ألم", "value": "NH", "score": 0 },
+    {
+      "name": "Hurts Little Bit",
+      "arabic_name": "يؤلم قليلا",
+      "value": "HLB",
+      "score": 2
+    },
     {
       "name": "Hurts Little More",
       "arabic_name": "يؤلمني أكثر",
-      "value": "HLM"
+      "value": "HLM",
+      "score": 4
     },
-    { "name": "Hurts Even More", "arabic_name": "يضر أكثر", "value": "HEM" },
+    {
+      "name": "Hurts Even More",
+      "arabic_name": "يضر أكثر",
+      "value": "HEM",
+      "score": 6
+    },
     {
       "name": "Hurts Whole Lot",
       "arabic_name": "يؤلم الجامع الكثير",
-      "value": "HWL"
+      "value": "HWL",
+      "score": 8
     },
-    { "name": "Hurts Worst", "arabic_name": "يسيء أسوأ", "value": "HW" }
+    {
+      "name": "Hurts Worst",
+      "arabic_name": "يسيء أسوأ",
+      "value": "HW",
+      "score": 10
+    }
   ],
   "FORMAT_SUMISSION": [
     { "name": "Submit", "arabic_name": "ادة تقديم", "value": "S" },

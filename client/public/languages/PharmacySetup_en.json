@@ -17,5 +17,6 @@
   "created_date": "Created Date",
 
   "category_id": "Category",
-  "location_type": "Location Type"
+  "location_type": "Location Type",
+  "allow_pos": "Allow POS"
 }

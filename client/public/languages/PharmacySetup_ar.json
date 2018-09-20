@@ -18,5 +18,6 @@
   "created_date": "الإنشاءخ تاريخ",
 
   "category_id": "الفئة",
-  "location_type": "نوع الموقع"
+  "location_type": "نوع الموقع",
+  "allow_pos": "السماح POS"
 }

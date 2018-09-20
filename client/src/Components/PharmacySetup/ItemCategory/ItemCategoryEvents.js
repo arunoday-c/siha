@@ -21,9 +21,10 @@ const onchangegridcol = ($this, row, e) => {
 
 const updateItemCategory = ($this, data) => {
   // data.updated_by = getCookie("UserID");
+  debugger;
 
   algaehApiCall({
-    uri: "/labmasters/updateAnalytes",
+    uri: "/pharmacy/updateItemCategory",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -40,7 +41,7 @@ const updateItemCategory = ($this, data) => {
   });
 };
 
-const showconfirmDialog = ($this, id) => {
+const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this Category?",
     icon: "warning",
@@ -48,14 +49,17 @@ const showconfirmDialog = ($this, id) => {
     dangerMode: true
   }).then(willDelete => {
     if (willDelete) {
+      debugger;
       let data = {
-        hims_d_lab_analytes_id: id
-        // updated_by: getCookie("UserID")
+        hims_d_item_category_id: row.hims_d_item_category_id,
+        category_desc: row.category_desc,
+        category_status: row.category_status,
+        record_status: "I"
       };
       algaehApiCall({
-        uri: "/labmasters/deleteAnalytes",
+        uri: "/pharmacy/updateItemCategory",
         data: data,
-        method: "DELETE",
+        method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
             swal("Record deleted successfully . .", {
@@ -73,7 +77,7 @@ const showconfirmDialog = ($this, id) => {
 };
 
 const deleteItemCategory = ($this, row) => {
-  showconfirmDialog($this, row.hims_d_lab_analytes_id);
+  showconfirmDialog($this, row);
 };
 
 const insertItemCategory = ($this, e) => {
@@ -90,7 +94,7 @@ const insertItemCategory = ($this, e) => {
     });
 
     algaehApiCall({
-      uri: "/labmasters/insertAnalytes",
+      uri: "/pharmacy/addItemCategory",
       data: $this.state,
       onSuccess: response => {
         if (response.data.success == true) {

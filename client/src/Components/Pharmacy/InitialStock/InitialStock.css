@@ -1,7 +1,8 @@
 .hptl-phase1-initial-stock-form {
   background: #ffff;
   border-radius: 5px;
-  margin-top: 12vh; }
+  margin-top: 12vh;
+  min-height: 80vh; }
   .hptl-phase1-initial-stock-form .form-details {
     padding: 5px;
     padding-bottom: 0px; }

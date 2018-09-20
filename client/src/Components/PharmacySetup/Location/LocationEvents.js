@@ -23,7 +23,7 @@ const updateLocation = ($this, data) => {
   // data.updated_by = getCookie("UserID");
 
   algaehApiCall({
-    uri: "/labmasters/updateAnalytes",
+    uri: "/pharmacy/updatePharmacyLocation",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -40,7 +40,7 @@ const updateLocation = ($this, data) => {
   });
 };
 
-const showconfirmDialog = ($this, id) => {
+const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this Category?",
     icon: "warning",
@@ -49,13 +49,17 @@ const showconfirmDialog = ($this, id) => {
   }).then(willDelete => {
     if (willDelete) {
       let data = {
-        hims_d_lab_analytes_id: id
-        // updated_by: getCookie("UserID")
+        hims_d_pharmacy_location_id: row.hims_d_pharmacy_location_id,
+        location_description: row.location_description,
+        location_status: row.location_status,
+        location_type: row.location_type,
+        allow_pos: row.allow_pos,
+        record_status: "I"
       };
       algaehApiCall({
-        uri: "/labmasters/deleteAnalytes",
+        uri: "/pharmacy/updatePharmacyLocation",
         data: data,
-        method: "DELETE",
+        method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
             swal("Record deleted successfully . .", {
@@ -73,7 +77,7 @@ const showconfirmDialog = ($this, id) => {
 };
 
 const deleteLocation = ($this, row) => {
-  showconfirmDialog($this, row.hims_d_lab_analytes_id);
+  showconfirmDialog($this, row);
 };
 
 const insertLocation = ($this, e) => {

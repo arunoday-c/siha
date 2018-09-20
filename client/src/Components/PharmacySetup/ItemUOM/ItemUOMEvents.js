@@ -23,7 +23,7 @@ const updateItemUOM = ($this, data) => {
   // data.updated_by = getCookie("UserID");
 
   algaehApiCall({
-    uri: "/labmasters/updateAnalytes",
+    uri: "/pharmacy/updatePharmacyUom",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -40,7 +40,7 @@ const updateItemUOM = ($this, data) => {
   });
 };
 
-const showconfirmDialog = ($this, id) => {
+const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this UOM?",
     icon: "warning",
@@ -49,13 +49,15 @@ const showconfirmDialog = ($this, id) => {
   }).then(willDelete => {
     if (willDelete) {
       let data = {
-        hims_d_lab_analytes_id: id
-        // updated_by: getCookie("UserID")
+        hims_d_pharmacy_uom_id: row.hims_d_pharmacy_uom_id,
+        uom_description: row.uom_description,
+        uom_status: row.uom_status,
+        record_status: "I"
       };
       algaehApiCall({
-        uri: "/labmasters/deleteAnalytes",
+        uri: "/pharmacy/updatePharmacyUom",
         data: data,
-        method: "DELETE",
+        method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
             swal("Record deleted successfully . .", {
@@ -73,7 +75,7 @@ const showconfirmDialog = ($this, id) => {
 };
 
 const deleteItemUOM = ($this, row) => {
-  showconfirmDialog($this, row.hims_d_lab_analytes_id);
+  showconfirmDialog($this, row);
 };
 
 const insertItemUOM = ($this, e) => {
@@ -90,7 +92,7 @@ const insertItemUOM = ($this, e) => {
     });
 
     algaehApiCall({
-      uri: "/labmasters/insertAnalytes",
+      uri: "/pharmacy/addPharmacyUom",
       data: $this.state,
       onSuccess: response => {
         if (response.data.success == true) {
