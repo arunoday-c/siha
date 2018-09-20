@@ -3,8 +3,7 @@ import extend from "extend";
 import {
   selectStatement,
   paging,
-  whereCondition,
-  deleteRecord,
+  whereCondition, 
   releaseDBConnection,
   jsonArrayToObject
 } from "../../utils";

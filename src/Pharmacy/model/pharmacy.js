@@ -1,5 +1,9 @@
 "use strict";
-import { whereCondition, releaseDBConnection } from "../../utils";
+import {
+  whereCondition,
+  releaseDBConnection,
+  jsonArrayToObject
+} from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../../utils/logging";
@@ -17,36 +21,96 @@ let addItemMaster = (req, res, next) => {
       if (error) {
         next(error);
       }
-
-      connection.query(
-        "INSERT INTO `hims_d_item_master` (`item_code`, `item_description`, `structure_id`,\
-         `generic_id`, `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`, `stocking_uom_id`, `created_date`, `created_by`, `update_date`, `updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          input.item_code,
-          input.item_description,
-          input.structure_id,
-          input.generic_id,
-          input.category_id,
-          input.group_id,
-          input.item_uom_id,
-          input.purchase_uom_id,
-          input.sales_uom_id,
-          input.stocking_uom_id,
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
-        ],
-        (error, result) => {
-          if (error) {
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
             releaseDBConnection(db, connection);
             next(error);
-          }
-          req.records = result;
-          next();
+          });
         }
-      );
+        connection.query(
+          "INSERT INTO `hims_d_item_master` (`item_code`, `item_description`, `structure_id`,\
+         `generic_id`, `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`, `stocking_uom_id`, `created_date`, `created_by`, `update_date`, `updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          [
+            input.item_code,
+            input.item_description,
+            input.structure_id,
+            input.generic_id,
+            input.category_id,
+            input.group_id,
+            input.item_uom_id,
+            input.purchase_uom_id,
+            input.sales_uom_id,
+            input.stocking_uom_id,
+            new Date(),
+            input.created_by,
+            new Date(),
+            input.updated_by
+          ],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+
+            debugLog(" item master id :", result.insertId);
+            // req.records = spResult;
+            // next();
+
+            if (result.insertId != null) {
+              const insurtColumns = [
+                "uom_id",
+                "stocking_uom",
+                "conversion_factor",
+                "uom_status",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_m_item_uom(" +
+                  insurtColumns.join(",") +
+                  ",item_master_id,created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: req.body.detail_item_uom,
+                    newFieldToInsert: [result.insertId, new Date(), new Date()],
+                    req: req
+                  })
+                ],
+                (error, detailResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    req.records = detailResult;
+                    next();
+                  });
+                }
+              );
+            } else {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+          }
+        );
+      });
     });
   } catch (e) {
     next(e);

@@ -201,8 +201,10 @@ let addInvestigationTest = (req, res, next) => {
 
                   connection.commit(error => {
                     if (error) {
-                      releaseDBConnection(db, connection);
-                      next(error);
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
                     }
                     req.records = radiolgyResult;
                     next();
