@@ -1644,7 +1644,7 @@ let getReviewOfSystem = (req, res, next) => {
               next(error);
             }
             req.records = result;
-            setTimeout(next(), 10000);
+            next();
           }
         );
       }
