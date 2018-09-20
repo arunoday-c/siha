@@ -487,6 +487,7 @@ let updateItemCategory = (req, res, next) => {
     next(e);
   }
 };
+
 //created by irfan: to updateItemGroup
 let updateItemGroup = (req, res, next) => {
   try {
@@ -525,6 +526,43 @@ let updateItemGroup = (req, res, next) => {
     next(e);
   }
 };
+//created by irfan: to update ItemGeneric
+let updateItemGeneric = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_item_generic` SET `generic_name`=?, `item_generic_status`=?,\
+        `updated_date`=? , `updated_by`=?, `record_status`=? WHERE  record_status='A' and `hims_d_item_generic_id`=?",
+        [
+          input.generic_name,
+          input.item_generic_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_item_generic_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 
 module.exports = {
   addItemMaster,
@@ -540,5 +578,6 @@ module.exports = {
   getPharmacyUom,
   getPharmacyLocation,
   updateItemCategory,
-  updateItemGroup
+  updateItemGroup,
+  updateItemGeneric
 };
