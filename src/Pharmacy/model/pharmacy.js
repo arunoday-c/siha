@@ -487,6 +487,44 @@ let updateItemCategory = (req, res, next) => {
     next(e);
   }
 };
+//created by irfan: to updateItemGroup
+let updateItemGroup = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_item_group` SET `group_description`=?, `category_id`=?, `group_status`=?,\
+        `updated_by`=?, `updated_date`=?, `record_status`=? WHERE  `record_status`='A' and `hims_d_item_group_id`=?;",
+        [
+          input.group_description,
+          input.category_id,
+          input.group_status,
+          input.updated_by,
+          new Date(),
+          input.record_status,
+          input.hims_d_item_group_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 
 module.exports = {
   addItemMaster,
@@ -501,5 +539,6 @@ module.exports = {
   getItemGroup,
   getPharmacyUom,
   getPharmacyLocation,
-  updateItemCategory
+  updateItemCategory,
+  updateItemGroup
 };

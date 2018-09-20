@@ -14,7 +14,8 @@ import {
   getItemGeneric,
   getItemGroup,
   getPharmacyLocation,
-  updateItemCategory
+  updateItemCategory,
+  updateItemGroup
 } from "../model/pharmacy";
 
 export default ({ config, db }) => {
@@ -198,10 +199,25 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan :updateItemCategory
+  // created by irfan :update Item Category
   api.put(
     "/updateItemCategory",
     updateItemCategory,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :update Item Group
+  api.put(
+    "/updateItemGroup",
+    updateItemGroup,
     (req, res, next) => {
       let results = req.records;
       res.status(httpStatus.ok).json({
