@@ -182,9 +182,9 @@ class ItemGroup extends Component {
                             className: "select-fld",
                             value: row.category_id,
                             dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_ANALYTE_TYPE
+                              textField: "category_desc",
+                              valueField: "hims_d_item_category_id",
+                              data: this.props.itemcategory
                             },
                             onChange: onchangegridcol.bind(this, this, row)
                           }}
@@ -225,21 +225,19 @@ class ItemGroup extends Component {
                     disabled: true
                   },
                   {
-                    fieldName: "item_generic_status",
+                    fieldName: "group_status",
                     label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
                     displayTemplate: row => {
-                      return row.item_generic_status === "A"
-                        ? "Active"
-                        : "Inactive";
+                      return row.group_status === "A" ? "Active" : "Inactive";
                     },
                     editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "item_generic_status",
+                            name: "group_status",
                             className: "select-fld",
-                            value: row.item_generic_status,
+                            value: row.group_status,
                             dataSource: {
                               textField: "name",
                               valueField: "value",

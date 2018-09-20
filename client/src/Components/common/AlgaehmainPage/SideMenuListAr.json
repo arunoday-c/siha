@@ -190,6 +190,16 @@
         "name": "Prescription List",
         "label": "قائمة وصفة طبية",
         "path": "/PrescriptionList"
+      },
+      {
+        "name": "Stock Enquiry",
+        "label": "مخزون تحقيق",
+        "path": "/StockEnquiry"
+      },
+      {
+        "name": "Item Moment Enquiry",
+        "label": "البند لحظة التحقيق",
+        "path": "/ItemMomentEnquiry"
       }
     ]
   },
