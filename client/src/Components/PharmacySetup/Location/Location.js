@@ -195,6 +195,35 @@ class Location extends Component {
                     }
                   },
                   {
+                    fieldName: "allow_pos",
+                    label: <AlgaehLabel label={{ fieldName: "allow_pos" }} />,
+                    displayTemplate: row => {
+                      return row.allow_pos === "N"
+                        ? "No"
+                        : row.allow_pos === "Y"
+                          ? "Yes"
+                          : null;
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "allow_pos",
+                            className: "select-fld",
+                            value: row.allow_pos,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_YESNO
+                            },
+                            onChange: onchangegridcol.bind(this, this, row)
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
                     displayTemplate: row => {

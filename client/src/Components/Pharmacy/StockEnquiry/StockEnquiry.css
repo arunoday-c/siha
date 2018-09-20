@@ -1,16 +1,16 @@
-.hptl-phase1-pos-form {
+.hptl-phase1-stock-enquiry-form {
   background: #ffff;
   border-radius: 5px;
   margin-top: 12vh;
   min-height: 80vh; }
-  .hptl-phase1-pos-form .form-details {
+  .hptl-phase1-stock-enquiry-form .form-details {
     padding: 5px;
     padding-bottom: 0px; }
-  .hptl-phase1-pos-form mark {
+  .hptl-phase1-stock-enquiry-form mark {
     background: none;
     color: red; }
-  .hptl-phase1-pos-form .form-group {
+  .hptl-phase1-stock-enquiry-form .form-group {
     padding: 2vh; }
-  .hptl-phase1-pos-form .go-button {
+  .hptl-phase1-stock-enquiry-form .go-button {
     cursor: pointer;
     margin-top: 2.5vh; }

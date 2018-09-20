@@ -221,6 +221,18 @@
         "label": "Prescription List",
         "arlabel": "قائمة وصفة طبية",
         "path": "/PrescriptionList"
+      },
+      {
+        "name": "Stock Enquiry",
+        "label": "Stock Enquiry",
+        "arlabel": "مخزون تحقيق",
+        "path": "/StockEnquiry"
+      },
+      {
+        "name": "Item Moment Enquiry",
+        "label": "Item Moment Enquiry",
+        "arlabel": "البند لحظة التحقيق",
+        "path": "/ItemMomentEnquiry"
       }
     ]
   },

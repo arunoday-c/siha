@@ -23,7 +23,7 @@ const updateItemGeneric = ($this, data) => {
   // data.updated_by = getCookie("UserID");
 
   algaehApiCall({
-    uri: "/labmasters/updateAnalytes",
+    uri: "/pharmacy/updateItemGeneric",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -40,7 +40,7 @@ const updateItemGeneric = ($this, data) => {
   });
 };
 
-const showconfirmDialog = ($this, id) => {
+const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this Generic?",
     icon: "warning",
@@ -49,13 +49,15 @@ const showconfirmDialog = ($this, id) => {
   }).then(willDelete => {
     if (willDelete) {
       let data = {
-        hims_d_lab_analytes_id: id
-        // updated_by: getCookie("UserID")
+        hims_d_item_generic_id: row.hims_d_item_generic_id,
+        generic_name: row.generic_name,
+        item_generic_status: row.item_generic_status,
+        record_status: "I"
       };
       algaehApiCall({
-        uri: "/labmasters/deleteAnalytes",
+        uri: "/pharmacy/updateItemGeneric",
         data: data,
-        method: "DELETE",
+        method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
             swal("Record deleted successfully . .", {
@@ -73,7 +75,7 @@ const showconfirmDialog = ($this, id) => {
 };
 
 const deleteItemGeneric = ($this, row) => {
-  showconfirmDialog($this, row.hims_d_lab_analytes_id);
+  showconfirmDialog($this, row);
 };
 
 const insertItemGeneric = ($this, e) => {
@@ -90,7 +92,7 @@ const insertItemGeneric = ($this, e) => {
     });
 
     algaehApiCall({
-      uri: "/labmasters/insertAnalytes",
+      uri: "/pharmacy/addItemGeneric",
       data: $this.state,
       onSuccess: response => {
         if (response.data.success == true) {

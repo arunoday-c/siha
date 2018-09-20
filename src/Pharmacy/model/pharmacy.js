@@ -1,10 +1,5 @@
 "use strict";
-import {
-  whereCondition,
-  releaseDBConnection,
-  selectStatement,
-  deleteRecord
-} from "../../utils";
+import { whereCondition, releaseDBConnection } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../../utils/logging";
@@ -453,6 +448,201 @@ let getPharmacyLocation = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to updateItemCategory
+let updateItemCategory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_item_category` SET `category_desc`=?, `category_status`=?,\
+        `updated_date`=?, `updated_by`=?, `record_status`=?\
+        WHERE `hims_d_item_category_id`=? and `record_status`='A';",
+        [
+          input.category_desc,
+          input.category_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_item_category_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to updateItemGroup
+let updateItemGroup = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_item_group` SET `group_description`=?, `category_id`=?, `group_status`=?,\
+        `updated_by`=?, `updated_date`=?, `record_status`=? WHERE  `record_status`='A' and `hims_d_item_group_id`=?;",
+        [
+          input.group_description,
+          input.category_id,
+          input.group_status,
+          input.updated_by,
+          new Date(),
+          input.record_status,
+          input.hims_d_item_group_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update ItemGeneric
+let updateItemGeneric = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_item_generic` SET `generic_name`=?, `item_generic_status`=?,\
+        `updated_date`=? , `updated_by`=?, `record_status`=? WHERE  record_status='A' and `hims_d_item_generic_id`=?",
+        [
+          input.generic_name,
+          input.item_generic_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_item_generic_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update PharmacyUom
+let updatePharmacyUom = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_pharmacy_uom` SET `uom_description`=?, `uom_status`=?,\
+        `updated_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and`hims_d_pharmacy_uom_id`=?;",
+        [
+          input.uom_description,
+          input.uom_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_pharmacy_uom_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update Pharmacy Location
+let updatePharmacyLocation = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_pharmacy_location` SET `location_description`=?, `location_status`=?, `location_type`=?, `allow_pos`=?,\
+         `updated_date`=?,`updated_by`=?, `record_status`=? WHERE `record_status`='A' and `hims_d_pharmacy_location_id`=?;",
+        [
+          input.location_description,
+          input.location_status,
+          input.location_type,
+          input.allow_pos,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_pharmacy_location_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addItemMaster,
   addItemCategory,
@@ -460,11 +650,15 @@ module.exports = {
   addItemGroup,
   addPharmacyUom,
   addPharmacyLocation,
-
   getItemMaster,
   getItemCategory,
   getItemGeneric,
   getItemGroup,
   getPharmacyUom,
-  getPharmacyLocation
+  getPharmacyLocation,
+  updateItemCategory,
+  updateItemGroup,
+  updateItemGeneric,
+  updatePharmacyUom,
+  updatePharmacyLocation
 };

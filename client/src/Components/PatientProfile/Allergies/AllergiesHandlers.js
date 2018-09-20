@@ -61,7 +61,8 @@ const updatePatientAllergy = ($this, row) => {
       onset_date: row.allergy_onset_date,
       severity: row.allergy_severity,
       comment: row.allergy_comment,
-      allergy_inactive: row.allergy_inactive
+      allergy_inactive: row.allergy_inactive,
+      record_status: "A"
     },
     onSuccess: response => {
       if (response.data.success) {

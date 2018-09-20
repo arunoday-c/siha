@@ -3,8 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import AppBar from "@material-ui/core/AppBar";
-
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
@@ -16,34 +14,27 @@ import {
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
-  itemchangeText,
-  numberchangeTexts,
-  AddItems,
-  datehandle,
   dateFormater,
-  getCtrlCode
-} from "./PointOfSaleEvents";
-import "./PointOfSale.css";
+  datehandle,
+  ProcessItemMoment
+} from "./ItemMomentEnquiryEvents";
+import "./ItemMomentEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 
-class PointOfSale extends Component {
+class ItemMomentEnquiry extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       ListItems: [],
       location_id: null,
-      category_id: null,
-      group_id: null,
       item_id: null,
-      batch_no: null,
-      expirt_date: null,
-      quantity: 0,
-      unit_cost: 0,
-      quantity: 0,
-      initial_stock_date: new Date()
+      from_date: null,
+      to_date: null,
+      SnackbarOpen: false,
+      MandatoryMsg: ""
     };
   }
 
@@ -65,25 +56,11 @@ class PointOfSale extends Component {
         mappingName: "locations"
       }
     });
-
-    this.props.getItemCategory({
-      uri: "/pharmacy/getItemCategory",
-      method: "GET",
-      redux: {
-        type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "itemcategory"
-      }
-    });
-
-    this.props.getItemGroup({
-      uri: "/pharmacy/getItemGroup",
-      method: "GET",
-      redux: {
-        type: "ANALYTES_GET_DATA",
-        mappingName: "itemgroup"
-      }
-    });
   }
+
+  handleClose = () => {
+    this.setState({ SnackbarOpen: false });
+  };
 
   render() {
     return (
@@ -92,11 +69,10 @@ class PointOfSale extends Component {
           <BreadCrumb
             title={
               <AlgaehLabel
-                label={{ forceLabel: "Initial Stock", align: "ltr" }}
+                label={{ forceLabel: "Item Moment Enquiry", align: "ltr" }}
               />
             }
             breadStyle={this.props.breadStyle}
-            //breadWidth={this.props.breadWidth}
             pageNavPath={[
               {
                 pageName: (
@@ -111,52 +87,14 @@ class PointOfSale extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Initial Stock", align: "ltr" }}
+                    label={{ forceLabel: "Item Moment Enquiry", align: "ltr" }}
                   />
                 )
               }
             ]}
-            soptlightSearch={{
-              label: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Document Number", returnText: true }}
-                />
-              ),
-              value: this.state.patient_code,
-              selectValue: "patient_code",
-              events: {
-                onChange: getCtrlCode.bind(this, this)
-              },
-              jsonFile: {
-                fileName: "spotlightSearch",
-                fieldName: "frontDesk.patients"
-              },
-              searchName: "patients"
-            }}
-            userArea={
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: (
-                    <AlgaehLabel label={{ forceLabel: "Initial Stock Date" }} />
-                  ),
-                  className: "internal-label"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "bread_registration_date"
-                }}
-                disabled={true}
-                events={{
-                  onChange: null
-                }}
-                value={this.state.initial_stock_date}
-              />
-            }
-            selectedLang={this.state.selectedLang}
           />
 
-          <div className="hptl-phase1-pos-form">
+          <div className="hptl-phase1-item-moment-enquiry-form">
             <div className="col-lg-12">
               <div className="row">
                 <AlagehAutoComplete
@@ -178,44 +116,6 @@ class PointOfSale extends Component {
 
                 <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Item Category" }}
-                  selector={{
-                    name: "category_id",
-                    className: "select-fld",
-                    value: this.state.category_id,
-                    dataSource: {
-                      textField: "category_desc",
-                      valueField: "hims_d_item_category_id",
-                      data: this.props.itemcategory
-                    },
-                    others: {
-                      disabled: true
-                    },
-                    onChange: null
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Item Group" }}
-                  selector={{
-                    name: "group_id",
-                    className: "select-fld",
-                    value: this.state.group_id,
-                    dataSource: {
-                      textField: "group_description",
-                      valueField: "hims_d_item_group_id",
-                      data: this.props.itemgroup
-                    },
-                    others: {
-                      disabled: true
-                    },
-                    onChange: null
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
                   label={{ forceLabel: "Item Name" }}
                   selector={{
                     name: "item_id",
@@ -226,76 +126,35 @@ class PointOfSale extends Component {
                       valueField: "hims_d_item_master_id",
                       data: this.props.itemlist
                     },
-                    onChange: itemchangeText.bind(this, this)
-                  }}
-                />
-              </div>
-              <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Batch No."
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "batch_no",
-                    value: this.state.batch_no,
-                    events: {
-                      onChange: changeTexts.bind(this, this)
-                    }
+                    onChange: changeTexts.bind(this, this)
                   }}
                 />
 
                 <AlgaehDateHandler
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Expiry Date" }}
-                  textBox={{ className: "txt-fld", name: "expirt_date" }}
-                  minDate={new Date()}
+                  div={{ className: "col-lg-2" }}
+                  label={{ forceLabel: "From Date" }}
+                  textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
-                  value={this.state.expirt_date}
+                  value={this.state.from_date}
                 />
-
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Quantity"
+                <AlgaehDateHandler
+                  div={{ className: "col-lg-2" }}
+                  label={{ forceLabel: "To Date" }}
+                  textBox={{ className: "txt-fld", name: "to_date" }}
+                  events={{
+                    onChange: datehandle.bind(this, this)
                   }}
-                  textBox={{
-                    number: { allowNegative: false, thousandSeparator: "," },
-                    className: "txt-fld",
-                    name: "quantity",
-                    value: this.state.quantity,
-                    events: {
-                      onChange: numberchangeTexts.bind(this, this)
-                    }
-                  }}
+                  value={this.state.to_date}
                 />
-
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  label={{
-                    forceLabel: "Unit Cost"
-                  }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.unit_cost,
-                    className: "txt-fld",
-                    name: "unit_cost",
-                    events: {
-                      onChange: numberchangeTexts.bind(this, this)
-                    }
-                  }}
-                />
-
-                <div className="col-lg-3">
+                <div className="col-lg-2" style={{ paddingTop: "3vh" }}>
                   <button
-                    className="btn btn-primary"
-                    style={{ marginTop: "24px" }}
-                    onClick={AddItems.bind(this, this)}
+                    className="btn btn-primary btn-sm"
+                    type="button"
+                    onClick={ProcessItemMoment.bind(this, this)}
                   >
-                    Add Item
+                    Process
                   </button>
                 </div>
               </div>
@@ -436,73 +295,12 @@ class PointOfSale extends Component {
                 />
               </div>
             </div>
-
-            <div className="hptl-phase1-footer">
-              <AppBar position="static" className="main">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      // onClick={this.SavePatientDetails.bind(this)}
-                      disabled={this.state.saveEnable}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
-                      />
-                    </button>
-
-                    <AHSnackbar
-                      open={this.state.open}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
-                    />
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      // onClick={this.ClearData.bind(this)}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Clear", returnText: true }}
-                      />
-                    </button>
-
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      // onClick={this.ShowRefundScreen.bind(this)}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Post",
-                          returnText: true
-                        }}
-                      />
-                    </button>
-                  </div>
-                </div>
-              </AppBar>
-            </div>
-            {/* <div
-              className="container-fluid"
-              style={{ marginBottom: "1vh", marginTop: "1vh" }}
-            >
-              <div className="row" position="fixed">
-                <div className="col-lg-12">
-                  <span className="float-right">
-                    <button
-                      style={{ marginRight: "15px" }}
-                      className="htpl1-phase1-btn-primary"
-                      //   onClick={SaveOrdersServices.bind(this, this)}
-                      //   disabled={this.state.saved}
-                    >
-                      <AlgaehLabel label={{ forceLabel: "Save" }} />
-                    </button>
-                  </span>
-                </div>
-              </div>
-            </div> */}
           </div>
+          <AHSnackbar
+            open={this.state.SnackbarOpen}
+            handleClose={this.handleClose}
+            MandatoryMsg={this.state.MandatoryMsg}
+          />
         </div>
       </React.Fragment>
     );
@@ -512,9 +310,7 @@ class PointOfSale extends Component {
 function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
-    locations: state.locations,
-    itemcategory: state.itemcategory,
-    itemgroup: state.itemgroup
+    locations: state.locations
   };
 }
 
@@ -522,9 +318,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getItems: AlgaehActions,
-      getLocation: AlgaehActions,
-      getItemCategory: AlgaehActions,
-      getItemGroup: AlgaehActions
+      getLocation: AlgaehActions
     },
     dispatch
   );
@@ -534,5 +328,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(PointOfSale)
+  )(ItemMomentEnquiry)
 );

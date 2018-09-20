@@ -3,6 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
+import AppBar from "@material-ui/core/AppBar";
+
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
@@ -18,12 +20,13 @@ import {
   numberchangeTexts,
   AddItems,
   datehandle,
-  dateFormater
+  dateFormater,
+  getCtrlCode
 } from "./InitialStockEvents";
 import "./InitialStock.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
-// import { AddItems } from "../../PatientProfile/Plan/OrderMedication/OrderMedicationEvents";
+import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 
 class InitialStock extends Component {
   constructor(props) {
@@ -39,7 +42,9 @@ class InitialStock extends Component {
       expirt_date: null,
       quantity: 0,
       unit_cost: 0,
-      quantity: 0
+      initial_stock_date: new Date(),
+      SnackbarOpen: false,
+      MandatoryMsg: ""
     };
   }
 
@@ -81,6 +86,10 @@ class InitialStock extends Component {
     });
   }
 
+  handleClose = () => {
+    this.setState({ SnackbarOpen: false });
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -92,6 +101,7 @@ class InitialStock extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
+            //breadWidth={this.props.breadWidth}
             pageNavPath={[
               {
                 pageName: (
@@ -111,6 +121,44 @@ class InitialStock extends Component {
                 )
               }
             ]}
+            soptlightSearch={{
+              label: (
+                <AlgaehLabel
+                  label={{ forceLabel: "Document Number", returnText: true }}
+                />
+              ),
+              value: this.state.patient_code,
+              selectValue: "patient_code",
+              events: {
+                onChange: getCtrlCode.bind(this, this)
+              },
+              jsonFile: {
+                fileName: "spotlightSearch",
+                fieldName: "frontDesk.patients"
+              },
+              searchName: "patients"
+            }}
+            userArea={
+              <AlgaehDateHandler
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: (
+                    <AlgaehLabel label={{ forceLabel: "Initial Stock Date" }} />
+                  ),
+                  className: "internal-label"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "bread_registration_date"
+                }}
+                disabled={true}
+                events={{
+                  onChange: null
+                }}
+                value={this.state.initial_stock_date}
+              />
+            }
+            selectedLang={this.state.selectedLang}
           />
 
           <div className="hptl-phase1-initial-stock-form">
@@ -384,7 +432,7 @@ class InitialStock extends Component {
                     data: this.state.ListItems
                   }}
                   // isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 3 }}
+                  paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //   onDelete: deleteServices.bind(this, this),
                     onEdit: row => {}
@@ -393,24 +441,52 @@ class InitialStock extends Component {
                 />
               </div>
             </div>
-            <div
-              className="container-fluid"
-              style={{ marginBottom: "1vh", marginTop: "1vh" }}
-            >
-              <div className="row" position="fixed">
-                <div className="col-lg-12">
-                  <span className="float-right">
+
+            <div className="hptl-phase1-footer">
+              <AppBar position="static" className="main">
+                <div className="row">
+                  <div className="col-lg-12">
                     <button
-                      style={{ marginRight: "15px" }}
-                      className="htpl1-phase1-btn-primary"
-                      //   onClick={SaveOrdersServices.bind(this, this)}
-                      //   disabled={this.state.saved}
+                      type="button"
+                      className="btn btn-primary"
+                      // onClick={this.SavePatientDetails.bind(this)}
+                      disabled={this.state.saveEnable}
                     >
-                      <AlgaehLabel label={{ forceLabel: "Save" }} />
+                      <AlgaehLabel
+                        label={{ forceLabel: "Save", returnText: true }}
+                      />
                     </button>
-                  </span>
+
+                    <AHSnackbar
+                      open={this.state.SnackbarOpen}
+                      handleClose={this.handleClose}
+                      MandatoryMsg={this.state.MandatoryMsg}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      // onClick={this.ClearData.bind(this)}
+                    >
+                      <AlgaehLabel
+                        label={{ forceLabel: "Clear", returnText: true }}
+                      />
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      // onClick={this.ShowRefundScreen.bind(this)}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Post",
+                          returnText: true
+                        }}
+                      />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </AppBar>
             </div>
           </div>
         </div>

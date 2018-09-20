@@ -13,7 +13,12 @@ import {
   getItemCategory,
   getItemGeneric,
   getItemGroup,
-  getPharmacyLocation
+  getPharmacyLocation,
+  updateItemCategory,
+  updateItemGroup,
+  updateItemGeneric,
+  updatePharmacyUom,
+  updatePharmacyLocation
 } from "../model/pharmacy";
 
 export default ({ config, db }) => {
@@ -191,6 +196,81 @@ export default ({ config, db }) => {
       res.status(httpStatus.ok).json({
         success: true,
         records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :update Item Category
+  api.put(
+    "/updateItemCategory",
+    updateItemCategory,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :update Item Group
+  api.put(
+    "/updateItemGroup",
+    updateItemGroup,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :update Item Generic
+  api.put(
+    "/updateItemGeneric",
+    updateItemGeneric,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :update Pharmacy Uom
+  api.put(
+    "/updatePharmacyUom",
+    updatePharmacyUom,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :update Pharmacy Location
+  api.put(
+    "/updatePharmacyLocation",
+    updatePharmacyLocation,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
       });
       next();
     },

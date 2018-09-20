@@ -33,6 +33,9 @@ import InitialStock from "./Components/Pharmacy/InitialStock/InitialStock";
 import PrescriptionList from "./Components/Pharmacy/PrescriptionList/PrescriptionList";
 import Appointment from "./Components/Appointment/Appointment";
 import PharmacySetup from "./Components/PharmacySetup/PharmacySetup";
+import StockEnquiry from "./Components/Pharmacy/StockEnquiry/StockEnquiry";
+import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry";
+
 // function height() {
 //   let height =
 //     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -70,7 +73,9 @@ const componts = (selectedLang, breadStyle) => {
     InitialStock: <InitialStock SelectLanguage={selectedLang} />,
     PrescriptionList: <PrescriptionList SelectLanguage={selectedLang} />,
     Appointment: <Appointment SelectLanguage={selectedLang} />,
-    PharmacySetup: <PharmacySetup SelectLanguage={selectedLang} />
+    PharmacySetup: <PharmacySetup SelectLanguage={selectedLang} />,
+    StockEnquiry: <StockEnquiry SelectLanguage={selectedLang} />,
+    ItemMomentEnquiry: <ItemMomentEnquiry SelectLanguage={selectedLang} />
   };
 };
 

@@ -1279,7 +1279,7 @@ let deletePatientChiefComplaints = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "update hims_f_episode_chief_complaint set record_status='I',updated_date=? where hims_f_episode_chief_complaint_id=?",
+        "update hims_f_episode_chief_complaint set record_status='I',updated_date=? where `record_status`='A' and hims_f_episode_chief_complaint_id=?",
         [new Date(), req.body.hims_f_episode_chief_complaint_id],
         (error, result) => {
           if (error) {
@@ -1591,7 +1591,7 @@ let updatePatientDiagnosis = (req, res, next) => {
         }
         let queryBuilder =
           "update hims_f_patient_diagnosis set diagnosis_type=?,\
-           final_daignosis=?,updated_date=?,updated_by=?, record_status=? where hims_f_patient_diagnosis_id=?;";
+           final_daignosis=?,updated_date=?,updated_by=?, record_status=? where `record_status`='A' and hims_f_patient_diagnosis_id=?;";
         let inputs = [
           input.diagnosis_type,
           input.final_daignosis,
@@ -1672,7 +1672,7 @@ let getReviewOfSystem = (req, res, next) => {
               next(error);
             }
             req.records = result;
-            setTimeout(next(), 10000);
+            next();
           }
         );
       }
@@ -1745,7 +1745,7 @@ let updatePatientROS = (req, res, next) => {
 
         let queryBuilder =
           " update hims_f_encounter_review set patient_id=?, episode_id=?,review_header_id=?,review_details_id=?,`comment`=?,\
-          updated_date=?,updated_by=?, record_status=? where hims_f_encounter_review_id=?;";
+          updated_date=?,updated_by=?, record_status=? where `record_status`='A' and hims_f_encounter_review_id=?;";
         let inputs = [
           input.patient_id,
           input.episode_id,
@@ -1800,8 +1800,9 @@ let addPatientVitals = (req, res, next) => {
       connection.query(
         "INSERT INTO `hims_f_patient_vitals` (`patient_id`, `visit_id`, `visit_date`, `visit_time`,\
          `case_type`, `height`, `weight`, `bmi`, `oxysat`, `temperature_from`, `temperature_farenhiet`, \
-         `temperature_celsisus`, `systolic`, `diastolic`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+         `temperature_celsisus`,  `systolic`, `diastolic`,systolic_stand, diastolic_stand, systolic_supine, diastolic_supine, glucose_fbs, glucose_rbs,\
+          glucose_pbs, head_circumference, bsa, heart_rate, respiratory_rate,`created_date`, `created_by`, `updated_date`, `updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           inputparam.patient_id,
           inputparam.visit_id,
@@ -1817,6 +1818,20 @@ let addPatientVitals = (req, res, next) => {
           inputparam.temperature_celsisus,
           inputparam.systolic,
           inputparam.diastolic,
+
+          inputparam.systolic_stand,
+          inputparam.diastolic_stand,
+          inputparam.systolic_supine,
+          inputparam.diastolic_supine,
+          inputparam.glucose_fbs,
+          inputparam.glucose_rbs,
+          inputparam.glucose_pbs,
+          inputparam.head_circumference,
+          inputparam.bsa,
+          inputparam.heart_rate,
+          inputparam.respiratory_rate,
+
+
           new Date(),
           inputparam.created_by,
           new Date(),
@@ -1906,7 +1921,7 @@ let updatePatientAllergy = (req, res, next) => {
         }
         let queryBuilder =
           "update hims_f_patient_allergy set allergy_inactive=?,\
-          `comment`=?,onset=?,severity=?,onset_date=?, updated_date=?,updated_by=?, record_status=? where hims_f_patient_allergy_id=?;";
+          `comment`=?,onset=?,severity=?,onset_date=?, updated_date=?,updated_by=?, record_status=? where `record_status`='A' and  hims_f_patient_allergy_id=?;";
         let inputs = [
           input.allergy_inactive,
           input.comment,
@@ -2275,7 +2290,7 @@ let updatePatientPhysicalExam = (req, res, next) => {
         let queryBuilder =
           "UPDATE `hims_f_episode_examination` SET  `patient_id`=?,\
           `episode_id`=?, `exam_header_id`=?, `exam_details_id`=?, `exam_subdetails_id`=?, `comments`=?,\
-          `updated_date`=?, `updated_by`=?, `record_status`=? WHERE `hims_f_episode_examination_id`=?;";
+          `updated_date`=?, `updated_by`=?, `record_status`=? WHERE `record_status`='A' and `hims_f_episode_examination_id`=?;";
         let inputs = [
           input.patient_id,
           input.episode_id,
