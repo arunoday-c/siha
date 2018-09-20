@@ -144,6 +144,28 @@ class Allergies extends Component {
     });
   }
 
+  updatePatientAllergy(data) {
+    data.record_status = "A";
+
+    algaehApiCall({
+      uri: "/doctorsWorkbench/updatePatientAllergy",
+      method: "PUT",
+      data: data,
+      onSuccess: response => {
+        if (response.data.success) {
+          console.log("Allergy Update Response:", response.data.records);
+          this.getPatientAllergies();
+          swal("Record updated successfully . .", {
+            icon: "success",
+            buttons: false,
+            timer: 2000
+          });
+        }
+      },
+      onFailure: error => {}
+    });
+  }
+
   deleteAllergy(row) {
     // console.log("delete Allergy row:", row);
 
@@ -460,7 +482,7 @@ class Allergies extends Component {
                               <span>
                                 {data.onset_date !== null
                                   ? moment(data.onset_date).format("DD-MM-YYYY")
-                                  : ""}
+                                  : null}
                               </span>
                             );
                           },
@@ -547,7 +569,7 @@ class Allergies extends Component {
                       events={{
                         onDelete: this.deleteAllergy.bind(this),
                         onEdit: row => {},
-                        onDone: updatePatientAllergy.bind(this, this)
+                        onDone: this.updatePatientAllergy.bind(this)
                       }}
                     />
                   </div>

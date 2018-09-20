@@ -445,7 +445,7 @@ class Vitals extends Component {
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
-                    forceLabel: "."
+                    forceLabel: "&nbsp;"
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -477,10 +477,29 @@ class Vitals extends Component {
                           // onChange: texthandle.bind(this, this)
                         }}
                       /> */}
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Blood Pressure",
+                    fieldName: "sample"
+                  }}
+                  selector={{
+                    name: "bp_position",
+                    className: "select-fld",
+                    value: this.state.bp_position,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.BP_POSITION
+                    },
+                    onChange: this.dropDownHandle.bind(this)
+                  }}
+                />
+
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
-                    forceLabel: "Blood Pressure"
+                    forceLabel: "Systolic"
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -498,7 +517,7 @@ class Vitals extends Component {
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
-                    forceLabel: "."
+                    forceLabel: "Diastolic"
                   }}
                   textBox={{
                     className: "txt-fld",
