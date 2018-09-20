@@ -13,7 +13,8 @@ import {
   getItemCategory,
   getItemGeneric,
   getItemGroup,
-  getPharmacyLocation
+  getPharmacyLocation,
+  updateItemCategory
 } from "../model/pharmacy";
 
 export default ({ config, db }) => {
@@ -191,6 +192,21 @@ export default ({ config, db }) => {
       res.status(httpStatus.ok).json({
         success: true,
         records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :updateItemCategory
+  api.put(
+    "/updateItemCategory",
+    updateItemCategory,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
       });
       next();
     },

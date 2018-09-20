@@ -1,10 +1,5 @@
 "use strict";
-import {
-  whereCondition,
-  releaseDBConnection,
-  selectStatement,
-  deleteRecord
-} from "../../utils";
+import { whereCondition, releaseDBConnection } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../../utils/logging";
@@ -453,6 +448,46 @@ let getPharmacyLocation = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to updateItemCategory
+let updateItemCategory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_item_category` SET `category_desc`=?, `category_status`=?,\
+        `updated_date`=?, `updated_by`=?, `record_status`=?\
+        WHERE `hims_d_item_category_id`=? and `record_status`='A';",
+        [
+          input.category_desc,
+          input.category_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_item_category_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addItemMaster,
   addItemCategory,
@@ -460,11 +495,11 @@ module.exports = {
   addItemGroup,
   addPharmacyUom,
   addPharmacyLocation,
-
   getItemMaster,
   getItemCategory,
   getItemGeneric,
   getItemGroup,
   getPharmacyUom,
-  getPharmacyLocation
+  getPharmacyLocation,
+  updateItemCategory
 };
