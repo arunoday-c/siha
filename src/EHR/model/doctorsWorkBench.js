@@ -987,7 +987,7 @@ let getChiefComplaints = (req, res, next) => {
     debugLog("sub_dp_id:", sub_department_id);
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_hpi_header_id,hpi_description from hims_d_hpi_header where sub_department_id=? and record_status='A';",
+        "select hims_d_hpi_header_id,hpi_description,created_date from hims_d_hpi_header where sub_department_id=? and record_status='A';",
         [sub_department_id],
         (error, result) => {
           if (error) {
@@ -1018,12 +1018,12 @@ let addNewChiefComplaint = (req, res, next) => {
     header = decryption(header);
     input.sub_department_id = header.sub_department_id;
     debugLog("sub_department_id:", header.sub_department_id);
-
     db.getConnection((error, connection) => {
       if (error) {
         releaseDBConnection(db, connection);
         next(error);
       }
+
       const insurtColumns = ["hpi_description", "created_by", "updated_by"];
 
       connection.query(
@@ -1066,7 +1066,7 @@ let getChiefComplaintsElements = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_hpi_details_id,hpi_header_id,element_description,element_type \
+        "select hims_d_hpi_details_id,hpi_header_id,element_description,element_type,created_date \
         from hims_d_hpi_details  where hpi_header_id=? and record_status='A';",
         [inputData.hpi_header_id],
         (error, result) => {
@@ -1149,58 +1149,86 @@ let addPatientChiefComplaints = (req, res, next) => {
         releaseDBConnection(db, connection);
         next(error);
       }
-
       connection.query(
-        "SELECT hims_f_episode_chief_complaint_id, chief_complaint_id FROM hims_f_episode_chief_complaint \
-        where " +
-          input.chief_complaint_id +
-          " in (SELECT chief_complaint_id FROM hims_f_episode_chief_complaint\
-        WHERE episode_id =? and record_status='A')  and episode_id=? and record_status='A' ;",
-        [input.episode_id, input.episode_id],
-        (error, result) => {
+        "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
+severity,score,pain,comment,created_by,updated_by,created_date,updated_date) \
+values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.episode_id,
+          input.chief_complaint_id,
+          input.onset_date,
+          input.interval,
+          input.duration,
+          input.severity,
+          input.score,
+          input.pain,
+          input.comment,
+          input.created_by,
+          input.updated_by,
+          new Date(),
+          new Date()
+        ],
+        (error, results) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
           }
 
-          debugLog("my_result", result[0]);
-
-          if (result[0] == null) {
-            connection.query(
-              "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
-    severity,score,pain,comment,created_by,updated_by,created_date,updated_date) \
-  values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-              [
-                input.episode_id,
-                input.chief_complaint_id,
-                input.onset_date,
-                input.interval,
-                input.duration,
-                input.severity,
-                input.score,
-                input.pain,
-                input.comment,
-                input.created_by,
-                input.updated_by,
-                new Date(),
-                new Date()
-              ],
-              (error, results) => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                }
-                debugLog("Results are recorded...");
-                req.records = results;
-                next();
-              }
-            );
-          } else {
-            req.records = { chief_complaint_id_exist: true };
-            next();
-          }
+          req.records = results;
+          next();
         }
       );
+      //     connection.query(
+      //       "SELECT hims_f_episode_chief_complaint_id, chief_complaint_id FROM hims_f_episode_chief_complaint \
+      //       where " +
+      //         input.chief_complaint_id +
+      //         " in (SELECT chief_complaint_id FROM hims_f_episode_chief_complaint\
+      //       WHERE episode_id =? and record_status='A')  and episode_id=? and record_status='A' ;",
+      //       [input.episode_id, input.episode_id],
+      //       (error, result) => {
+      //         if (error) {
+      //           releaseDBConnection(db, connection);
+      //           next(error);
+      //         }
+
+      //         debugLog("my_result", result[0]);
+
+      //         if (result[0] == null) {
+      //           connection.query(
+      //             "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
+      //   severity,score,pain,comment,created_by,updated_by,created_date,updated_date) \
+      // values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      //             [
+      //               input.episode_id,
+      //               input.chief_complaint_id,
+      //               input.onset_date,
+      //               input.interval,
+      //               input.duration,
+      //               input.severity,
+      //               input.score,
+      //               input.pain,
+      //               input.comment,
+      //               input.created_by,
+      //               input.updated_by,
+      //               new Date(),
+      //               new Date()
+      //             ],
+      //             (error, results) => {
+      //               if (error) {
+      //                 releaseDBConnection(db, connection);
+      //                 next(error);
+      //               }
+      //               debugLog("Results are recorded...");
+      //               req.records = results;
+      //               next();
+      //             }
+      //           );
+      //         } else {
+      //           req.records = { chief_complaint_id_exist: true };
+      //           next();
+      //         }
+      //       }
+      //     );
     });
   } catch (e) {
     next(e);
