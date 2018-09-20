@@ -1772,8 +1772,9 @@ let addPatientVitals = (req, res, next) => {
       connection.query(
         "INSERT INTO `hims_f_patient_vitals` (`patient_id`, `visit_id`, `visit_date`, `visit_time`,\
          `case_type`, `height`, `weight`, `bmi`, `oxysat`, `temperature_from`, `temperature_farenhiet`, \
-         `temperature_celsisus`, `systolic`, `diastolic`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+         `temperature_celsisus`,  `systolic`, `diastolic`,systolic_stand, diastolic_stand, systolic_supine, diastolic_supine, glucose_fbs, glucose_rbs,\
+          glucose_pbs, head_circumference, bsa, heart_rate, respiratory_rate,`created_date`, `created_by`, `updated_date`, `updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           inputparam.patient_id,
           inputparam.visit_id,
@@ -1789,6 +1790,20 @@ let addPatientVitals = (req, res, next) => {
           inputparam.temperature_celsisus,
           inputparam.systolic,
           inputparam.diastolic,
+
+          inputparam.systolic_stand,
+          inputparam.diastolic_stand,
+          inputparam.systolic_supine,
+          inputparam.diastolic_supine,
+          inputparam.glucose_fbs,
+          inputparam.glucose_rbs,
+          inputparam.glucose_pbs,
+          inputparam.head_circumference,
+          inputparam.bsa,
+          inputparam.heart_rate,
+          inputparam.respiratory_rate,
+
+
           new Date(),
           inputparam.created_by,
           new Date(),
