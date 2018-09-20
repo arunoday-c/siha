@@ -526,6 +526,7 @@ let updateItemGroup = (req, res, next) => {
     next(e);
   }
 };
+
 //created by irfan: to update ItemGeneric
 let updateItemGeneric = (req, res, next) => {
   try {
@@ -564,6 +565,84 @@ let updateItemGeneric = (req, res, next) => {
   }
 };
 
+//created by irfan: to update PharmacyUom
+let updatePharmacyUom = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_pharmacy_uom` SET `uom_description`=?, `uom_status`=?,\
+        `updated_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and`hims_d_pharmacy_uom_id`=?;",
+        [
+          input.uom_description,
+          input.uom_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_pharmacy_uom_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update Pharmacy Location
+let updatePharmacyLocation = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_pharmacy_location` SET `location_description`=?, `location_status`=?, `location_type`=?, `allow_pos`=?,\
+         `updated_date`=?,`updated_by`=?, `record_status`=? WHERE `record_status`='A' and `hims_d_pharmacy_location_id`=?;",
+        [
+          input.location_description,
+          input.location_status,
+          input.location_type,
+          input.allow_pos,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_pharmacy_location_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addItemMaster,
   addItemCategory,
@@ -579,5 +658,7 @@ module.exports = {
   getPharmacyLocation,
   updateItemCategory,
   updateItemGroup,
-  updateItemGeneric
+  updateItemGeneric,
+  updatePharmacyUom,
+  updatePharmacyLocation
 };
