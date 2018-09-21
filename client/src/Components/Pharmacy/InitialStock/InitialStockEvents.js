@@ -24,7 +24,8 @@ const itemchangeText = ($this, e) => {
   $this.setState({
     [name]: value,
     category_id: e.selected.category_id,
-    group_id: e.selected.group_id
+    group_id: e.selected.group_id,
+    uom_id: e.selected.stocking_uom_id
   });
 };
 

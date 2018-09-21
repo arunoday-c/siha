@@ -1,0 +1,16 @@
+.hims_item_setup {
+  padding-top: 20px; }
+  .hims_item_setup .toggle-section {
+    margin: 10px;
+    margin-bottom: 0px; }
+  .hims_item_setup .item-footer {
+    height: "60px";
+    background-color: #000; }
+  .hims_item_setup .item-section {
+    border: 1px solid #d3d3d3;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px; }
+  .hims_item_setup th,
+  .hims_item_setup td {
+    border-right: 1px solid #e6e6e6; }
