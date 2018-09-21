@@ -64,6 +64,12 @@
         "label": "Appointment Setup",
         "arlabel": "إعداد موعد",
         "path": "/AppointmentSetup"
+      },
+      {
+        "name": "Item Setup",
+        "label": "Item Setup",
+        "arlabel": "إعداد العنصر",
+        "path": "/ItemSetup"
       }
     ]
   },

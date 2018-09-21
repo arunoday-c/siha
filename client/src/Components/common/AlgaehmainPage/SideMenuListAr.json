@@ -45,6 +45,11 @@
         "name": "Pharmacy Setup",
         "label": "إعداد الصيدلة",
         "path": "/PharmacySetup"
+      },
+      {
+        "name": "Item Setup",
+        "label": "إعداد العنصر",
+        "path": "/ItemSetup"
       }
     ]
   },

@@ -44,7 +44,8 @@ class InitialStock extends Component {
       unit_cost: 0,
       initial_stock_date: new Date(),
       SnackbarOpen: false,
-      MandatoryMsg: ""
+      MandatoryMsg: "",
+      uom_id: null
     };
   }
 
@@ -82,6 +83,15 @@ class InitialStock extends Component {
       redux: {
         type: "ANALYTES_GET_DATA",
         mappingName: "itemgroup"
+      }
+    });
+
+    this.props.getItemUOM({
+      uri: "/pharmacy/getPharmacyUom",
+      method: "GET",
+      redux: {
+        type: "ANALYTES_GET_DATA",
+        mappingName: "itemuom"
       }
     });
   }
@@ -185,9 +195,9 @@ class InitialStock extends Component {
                   div={{ className: "col-lg-3" }}
                   label={{ forceLabel: "Item Category" }}
                   selector={{
-                    name: "category_id",
+                    name: "item_category",
                     className: "select-fld",
-                    value: this.state.category_id,
+                    value: this.state.item_category,
                     dataSource: {
                       textField: "category_desc",
                       valueField: "hims_d_item_category_id",
@@ -204,9 +214,9 @@ class InitialStock extends Component {
                   div={{ className: "col-lg-3" }}
                   label={{ forceLabel: "Item Group" }}
                   selector={{
-                    name: "group_id",
+                    name: "item_group",
                     className: "select-fld",
-                    value: this.state.group_id,
+                    value: this.state.item_group,
                     dataSource: {
                       textField: "group_description",
                       valueField: "hims_d_item_group_id",
@@ -236,6 +246,21 @@ class InitialStock extends Component {
                 />
               </div>
               <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{ forceLabel: "UOM" }}
+                  selector={{
+                    name: "uom_id",
+                    className: "select-fld",
+                    value: this.state.uom_id,
+                    dataSource: {
+                      textField: "uom_description",
+                      valueField: "hims_d_pharmacy_uom_id",
+                      data: this.props.itemuom
+                    },
+                    onChange: itemchangeText.bind(this, this)
+                  }}
+                />
                 <AlagehFormGroup
                   div={{ className: "col-lg-3" }}
                   label={{
@@ -243,8 +268,8 @@ class InitialStock extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "batch_no",
-                    value: this.state.batch_no,
+                    name: "batchno",
+                    value: this.state.batchno,
                     events: {
                       onChange: changeTexts.bind(this, this)
                     }
@@ -254,12 +279,12 @@ class InitialStock extends Component {
                 <AlgaehDateHandler
                   div={{ className: "col-lg-3" }}
                   label={{ forceLabel: "Expiry Date" }}
-                  textBox={{ className: "txt-fld", name: "expirt_date" }}
+                  textBox={{ className: "txt-fld", name: "expiry_date" }}
                   minDate={new Date()}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
-                  value={this.state.expirt_date}
+                  value={this.state.expiry_date}
                 />
 
                 <AlagehFormGroup
@@ -277,9 +302,11 @@ class InitialStock extends Component {
                     }
                   }}
                 />
+              </div>
 
+              <div className="row">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
+                  div={{ className: "col-lg-3" }}
                   label={{
                     forceLabel: "Unit Cost"
                   }}
@@ -500,7 +527,8 @@ function mapStateToProps(state) {
     itemlist: state.itemlist,
     locations: state.locations,
     itemcategory: state.itemcategory,
-    itemgroup: state.itemgroup
+    itemgroup: state.itemgroup,
+    itemuom: state.itemuom
   };
 }
 
@@ -510,7 +538,8 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
       getItemCategory: AlgaehActions,
-      getItemGroup: AlgaehActions
+      getItemGroup: AlgaehActions,
+      getItemUOM: AlgaehActions
     },
     dispatch
   );
