@@ -322,8 +322,8 @@ let selectSubDepartment = (req, res, next) => {
         db: req.db,
         query:
           "SELECT `hims_d_sub_department_id`, `sub_department_code`\
-        , `sub_department_name`, `arabic_sub_department_name`, sub_department_desc`, `department_id`\
-        , `effective_start_date`, `effective_end_date`, `sub_department_status`\
+        , `sub_department_name`, `arabic_sub_department_name`, `sub_department_desc`, `department_id`\
+         , `effective_start_date`, `effective_end_date`, `sub_department_status`\
          FROM `hims_d_sub_department` WHERE record_status ='A' AND " +
           condition.condition,
         values: condition.values
