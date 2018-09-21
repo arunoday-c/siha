@@ -1127,56 +1127,109 @@ let addChiefComplaintsElement = (req, res, next) => {
 // created by : irfan to ADD  patient-chief complaint
 let addPatientChiefComplaints = (req, res, next) => {
   debugFunction("addPatientChiefComplaints");
-  let chiefComplaintModel = {
-    episode: null,
-    chief_complaint_id: null,
-    onset_date: null,
-    severity: null,
-    score: null,
-    pain: null,
-    comment: null
-  };
+  // let chiefComplaintModel = {
+  //   episode: null,
+  //   chief_complaint_id: null,
+  //   onset_date: null,
+  //   severity: null,
+  //   score: null,
+  //   pain: null,
+  //   comment: null
+  // };
 
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let input = extend({}, req.body);
+    //let input = extend({}, req.body);
     db.getConnection((error, connection) => {
       if (error) {
         releaseDBConnection(db, connection);
         next(error);
       }
-      connection.query(
-        "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
-severity,score,pain,comment,created_by,updated_by,created_date,updated_date) \
-values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          input.episode_id,
-          input.chief_complaint_id,
-          input.onset_date,
-          input.interval,
-          input.duration,
-          input.severity,
-          input.score,
-          input.pain,
-          input.comment,
-          input.created_by,
-          input.updated_by,
-          new Date(),
-          new Date()
-        ],
-        (error, results) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
+//       connection.query(
+//         "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
+// severity,score,pain,comment,created_by,updated_by,created_date,updated_date) \
+// values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+//         [
+//           input.episode_id,
+//           input.chief_complaint_id,
+//           input.onset_date,
+//           input.interval,
+//           input.duration,
+//           input.severity,
+//           input.score,
+//           input.pain,
+//           input.comment,
+//           input.created_by,
+//           input.updated_by,
+//           new Date(),
+//           new Date()
+//         ],
+//         (error, results) => {
+//           if (error) {
+//             releaseDBConnection(db, connection);
+//             next(error);
+//           }
 
-          req.records = results;
-          next();
-        }
-      );
+//           req.records = results;
+//           next();
+//         }
+//       );
+
+//--------------------------------
+
+
+  const insurtColumns = [
+    "episode_id",
+    "chief_complaint_id",
+    "onset_date",
+    "`interval`",
+    "duration",
+    "severity",
+    "score",
+    "pain",
+    "comment",
+    "created_by",
+    "updated_by"
+  ];
+
+  connection.query(
+    "INSERT INTO hims_f_episode_chief_complaint(" +
+      insurtColumns.join(",") +
+      ",created_date,updated_date) VALUES ?",
+    [
+      jsonArrayToObject({
+        sampleInputObject: insurtColumns,
+        arrayObj: req.body,
+        newFieldToInsert: [new Date(), new Date()],
+        req: req
+      })
+    ],
+    (error, Result) => {
+      if (error) {     
+          releaseDBConnection(db, connection);
+          next(error);        
+      }    
+        req.records = Result;
+        next();
+      
+    }
+  );
+
+
+
+
+
+
+//--------------------------------
+
+
+
+
+
+
       //     connection.query(
       //       "SELECT hims_f_episode_chief_complaint_id, chief_complaint_id FROM hims_f_episode_chief_complaint \
       //       where " +
