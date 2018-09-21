@@ -707,6 +707,114 @@ let updatePharmacyLocation = (req, res, next) => {
   }
 };
 
+//created by irfan: to pharmacy_stock
+let addPharmacyStock = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        connection.query(
+          "INSERT INTO `hims_f_pharmacy_stock_header` (`document_number`, `docdate`, `year`, `period`, `description`, `posted`, `created_date`, `created_by`, `updated_date`, `updated_by`) \
+        VALUE(?,?,?,?,?,?,?,?,?,?)",
+          [
+            input.item_code,
+            input.item_description,
+            input.structure_id,
+            input.generic_id,
+            input.category_id,
+            input.group_id,
+            input.item_uom_id,
+            input.purchase_uom_id,
+            input.sales_uom_id,
+            input.stocking_uom_id,
+            new Date(),
+            input.created_by,
+            new Date(),
+            input.updated_by
+          ],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+
+            debugLog(" item master id :", result.insertId);
+            // req.records = spResult;
+            // next();
+
+            if (result.insertId != null) {
+              const insurtColumns = [
+                "uom_id",
+                "stocking_uom",
+                "conversion_factor",
+                "uom_status",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_m_item_uom(" +
+                  insurtColumns.join(",") +
+                  ",item_master_id,created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: req.body.detail_item_uom,
+                    newFieldToInsert: [result.insertId, new Date(), new Date()],
+                    req: req
+                  })
+                ],
+                (error, detailResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    req.records = detailResult;
+                    next();
+                  });
+                }
+              );
+            } else {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addItemMaster,
   addItemCategory,

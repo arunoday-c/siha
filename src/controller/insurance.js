@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
-import { LINQ } from "node-linq";
 
 import {
   getPatientInsurance,
