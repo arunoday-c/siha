@@ -112,7 +112,6 @@ class Allergies extends Component {
         patient_id: Window.global["current_patient"]
       },
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           this.setState({ allAllergies: response.data.records });
 

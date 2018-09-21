@@ -1274,12 +1274,15 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                       (patient_resp * records.vat_percent) / 100,
                       2
                     );
+                  }
+
+                  if (records.vat_applicable == "Y") {
                     company_tax = math.round(
                       (comapany_resp * records.vat_percent) / 100,
                       2
                     );
-                    total_tax = patient_tax + company_tax;
                   }
+                  total_tax = patient_tax + company_tax;
 
                   debugLog("Pat VAT APPLY:", patient_tax);
                   debugLog("Company VAT APPLY:", company_tax);
@@ -1468,14 +1471,16 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     patient_tax = math.round(
                       (patient_resp * records.vat_percent) / 100,
                       2
-                    );
+                    );                    
+                  }
+
+                  if (records.vat_applicable == "Y") {                    
                     sec_company_tax = math.round(
                       (sec_company_res * records.vat_percent) / 100,
                       2
                     );
-
-                    total_tax = patient_tax + company_tax + sec_company_res;
                   }
+                  total_tax = patient_tax + company_tax + sec_company_res;
 
                   patient_payable = patient_resp + patient_tax;
                   sec_company_paybale =

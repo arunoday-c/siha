@@ -347,6 +347,39 @@ let getItemMaster = (req, res, next) => {
     next(e);
   }
 };
+//created by irfan: to get ItemMaster And ItemUom
+let getItemMasterAndItemUom = (req, res, next) => {
+  // let selectWhere = {
+  //   hims_d_item_master_id: "ALL"
+  // };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    //  let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id, MIU.stocking_uom, MIU.conversion_factor, MIU.uom_status,\
+        IM.hims_d_item_master_id, IM.item_code, IM.item_description, IM.structure_id, IM.generic_id, IM.category_id,\
+        IM.group_id, IM.form_id, IM.storage_id, IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status\
+        from hims_d_item_master IM,hims_m_item_uom MIU  where IM.hims_d_item_master_id=MIU.item_master_id and MIU.record_status='A'and IM.record_status='A'",
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 
 //created by irfan: to get item category
 let getItemCategory = (req, res, next) => {
@@ -822,15 +855,18 @@ module.exports = {
   addItemGroup,
   addPharmacyUom,
   addPharmacyLocation,
+
   getItemMaster,
   getItemCategory,
   getItemGeneric,
   getItemGroup,
   getPharmacyUom,
   getPharmacyLocation,
+
   updateItemCategory,
   updateItemGroup,
   updateItemGeneric,
   updatePharmacyUom,
-  updatePharmacyLocation
+  updatePharmacyLocation,
+  getItemMasterAndItemUom
 };

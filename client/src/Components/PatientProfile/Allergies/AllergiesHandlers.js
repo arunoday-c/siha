@@ -1,5 +1,7 @@
 import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
+import Enumerable from "linq";
+import { setGlobal } from "../../../utils/GlobalFunctions.js";
 
 const getAllAllergies = ($this, type) => {
   $this.props.getAllAllergies({
@@ -13,6 +15,41 @@ const getAllAllergies = ($this, type) => {
       mappingName: "allallergies"
     },
     afterSuccess: data => {}
+  });
+};
+
+const getPatientAllergies = $this => {
+  $this.props.getPatientAllergies({
+    uri: "/doctorsWorkBench/getPatientAllergies",
+    method: "GET",
+    data: {
+      patient_id: Window.global["current_patient"]
+    },
+    redux: {
+      type: "PATIENT_ALLERGIES",
+      mappingName: "patient_allergies"
+    },
+    afterSuccess: data => {
+      let _allergies = Enumerable.from(data)
+        .groupBy("$.allergy_type", null, (k, g) => {
+          return {
+            allergy_type: k,
+            allergy_type_desc:
+              k === "F"
+                ? "Food"
+                : k === "A"
+                  ? "Airborne"
+                  : k === "AI"
+                    ? "Animal  &  Insect"
+                    : k === "C"
+                      ? "Chemical & Others"
+                      : "",
+            allergyList: g.getSource()
+          };
+        })
+        .toArray();
+      setGlobal({ patientAllergies: _allergies });
+    }
   });
 };
 
@@ -74,4 +111,10 @@ const updatePatientAllergy = ($this, row) => {
   });
 };
 
-export { datehandle, texthandle, updatePatientAllergy, getAllAllergies };
+export {
+  datehandle,
+  texthandle,
+  updatePatientAllergy,
+  getAllAllergies,
+  getPatientAllergies
+};
