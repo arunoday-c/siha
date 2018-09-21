@@ -58,6 +58,12 @@
         "label": "Pharmacy Setup",
         "arlabel": "إعداد الصيدلة",
         "path": "/PharmacySetup"
+      },
+      {
+        "name": "Appointment Setup",
+        "label": "Appointment Setup",
+        "arlabel": "إعداد موعد",
+        "path": "/AppointmentSetup"
       }
     ]
   },

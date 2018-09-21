@@ -35,6 +35,7 @@ import Appointment from "./Components/Appointment/Appointment";
 import PharmacySetup from "./Components/PharmacySetup/PharmacySetup";
 import StockEnquiry from "./Components/Pharmacy/StockEnquiry/StockEnquiry";
 import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry";
+import AppointmentSetup from "./Components/AppointmentSetup/AppointmentSetup";
 
 // function height() {
 //   let height =
@@ -75,7 +76,8 @@ const componts = (selectedLang, breadStyle) => {
     Appointment: <Appointment SelectLanguage={selectedLang} />,
     PharmacySetup: <PharmacySetup SelectLanguage={selectedLang} />,
     StockEnquiry: <StockEnquiry SelectLanguage={selectedLang} />,
-    ItemMomentEnquiry: <ItemMomentEnquiry SelectLanguage={selectedLang} />
+    ItemMomentEnquiry: <ItemMomentEnquiry SelectLanguage={selectedLang} />,
+    AppointmentSetup: <AppointmentSetup SelectLanguage={selectedLang} />
   };
 };
 

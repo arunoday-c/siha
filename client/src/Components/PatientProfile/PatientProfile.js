@@ -248,7 +248,7 @@ class PatientProfile extends Component {
               </b>
             </span>
             <span>
-              Temp(C):{" "}
+              Temp &deg;C:{" "}
               <b>
                 {this.props.patient_vitals !== undefined &&
                 this.props.patient_vitals.length !== 0
