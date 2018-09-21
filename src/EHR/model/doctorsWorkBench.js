@@ -1185,8 +1185,8 @@ let addPatientChiefComplaints = (req, res, next) => {
     "episode_id",
     "chief_complaint_id",
     "onset_date",
-    "`interval`",
     "duration",
+    "interval",
     "severity",
     "score",
     "pain",
@@ -1196,9 +1196,9 @@ let addPatientChiefComplaints = (req, res, next) => {
   ];
 
   connection.query(
-    "INSERT INTO hims_f_episode_chief_complaint(" +
-      insurtColumns.join(",") +
-      ",created_date,updated_date) VALUES ?",
+    "INSERT INTO hims_f_episode_chief_complaint(`" +
+      insurtColumns.join("`,`") +
+      "`,created_date,updated_date) VALUES ?",
     [
       jsonArrayToObject({
         sampleInputObject: insurtColumns,
