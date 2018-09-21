@@ -200,7 +200,7 @@ class AppointmentStatus extends Component {
       <div className="appointment_status">
         <div className="col-lg-12">
           <div className="row">
-            <div className="col-lg-3">
+            {/* <div className="col-lg-3">
               <div className="row">
                 <div
                   className="col"
@@ -219,29 +219,35 @@ class AppointmentStatus extends Component {
                   onChange={this.changeTexts.bind(this)}
                 />
               </div>
+            </div> */}
+            <div className="col-lg-3">
+              <div className="row">
+                <AlagehFormGroup
+                  div={{ className: "col-9" }}
+                  label={{
+                    fieldName: "color_code",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "color_code",
+                    value: this.state.color_code,
+                    events: {
+                      onChange: this.changeTexts.bind(this)
+                    },
+                    others: {
+                      type: "color"
+                    },
+
+                    error: this.state.color_code_error,
+                    helperText: this.state.color_code_error_text
+                  }}
+                />
+                <span className="color-picker-icon">
+                  <i className="fas fa-palette" />
+                </span>
+              </div>
             </div>
-
-            {/* <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "color_code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "color_code",
-                value: this.state.color_code,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                },
-                others: {
-                  type: "color"
-                },
-
-                error: this.state.color_code_error,
-                helperText: this.state.color_code_error_text
-              }}
-            /> */}
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
