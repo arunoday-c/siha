@@ -33,7 +33,7 @@ class ItemUOM extends Component {
     super(props);
 
     this.state = {
-      hims_d_item_uom_id: "",
+      hims_d_pharmacy_uom_id: "",
       uom_description: "",
 
       description_error: false,
@@ -184,7 +184,7 @@ class ItemUOM extends Component {
                     }
                   }
                 ]}
-                keyId="hims_d_item_uom_id"
+                keyId="hims_d_pharmacy_uom_id"
                 dataSource={{
                   data:
                     this.props.itemuom === undefined ? [] : this.props.itemuom
