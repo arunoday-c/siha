@@ -19,7 +19,8 @@ import {
   updateItemGeneric,
   updatePharmacyUom,
   updatePharmacyLocation,
-  getItemMasterAndItemUom
+  getItemMasterAndItemUom,
+  updateItemMasterAndUom
 } from "../model/pharmacy";
 
 export default ({ config, db }) => {
@@ -281,6 +282,21 @@ export default ({ config, db }) => {
   api.put(
     "/updatePharmacyLocation",
     updatePharmacyLocation,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :updateItemMasterAndUom
+  api.put(
+    "/updateItemMasterAndUom",
+    updateItemMasterAndUom,
     (req, res, next) => {
       let results = req.records;
       res.status(httpStatus.ok).json({
