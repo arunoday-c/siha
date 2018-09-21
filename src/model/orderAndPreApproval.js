@@ -66,19 +66,6 @@ let getPreAprovalList = (req, res, next) => {
 
 //created by irfan:UPDATE PREAPPROVAL
 let updatePreApproval = (req, res, next) => {
-  const insurtCols = [
-    "service_id",
-    "insurance_provider_id",
-    "insurance_network_office_id",
-    "icd_code",
-    "insurance_service_name",
-    "doctor_id",
-    "patient_id",
-    "gross_amt",
-    "net_amount",
-    "created_by",
-    "updated_by"
-  ];
   debugFunction("updatePreApproval");
   try {
     if (req.db == null) {

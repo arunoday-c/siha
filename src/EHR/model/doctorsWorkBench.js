@@ -1331,8 +1331,8 @@ let deletePatientChiefComplaints = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "update hims_f_episode_chief_complaint set record_status='I',updated_date=? where `record_status`='A' and hims_f_episode_chief_complaint_id=?",
-        [new Date(), req.body.hims_f_episode_chief_complaint_id],
+        "update hims_f_episode_chief_complaint set record_status='I',updated_date=?,updated_by=? where `record_status`='A' and hims_f_episode_chief_complaint_id=?",
+        [new Date(), req.body.updated_by, req.body.hims_f_episode_chief_complaint_id],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -1465,8 +1465,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
     }
     let db = req.db;
 
-    debugLog("Input Data", req.body);
-    let input = extend({}, req.body);
+    
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -1478,47 +1477,70 @@ let updatePatientChiefComplaints = (req, res, next) => {
             next(error);
           });
         }
-        let queryBuilder =
-          "UPDATE `hims_f_episode_chief_complaint`\
-        SET   episode_id=?,chief_complaint_id=?,onset_date=?,`interval`=?,duration=?,severity=?,score=?,pain=?,chronic=?,\
-        complaint_inactive=?,complaint_inactive_date=?,comment=?,updated_date=?,updated_by=?\
-        WHERE record_status='A' AND `hims_f_episode_chief_complaint_id`=?;";
-        let inputs = [
-          input.episode_id,
-          input.chief_complaint_id,
-          input.onset_date,
-          input.interval,
-          input.duration,
-          input.severity,
-          input.score,
-          input.pain,
-          input.chronic,
-          input.complaint_inactive,
-          input.complaint_inactive_date,
-          input.comment,
-          new Date(),
-          input.updated_by,
-          input.hims_f_episode_chief_complaint_id
-        ];
 
-        connection.query(queryBuilder, inputs, (error, result) => {
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }
-          connection.commit(error => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-            req.records = result;
-            next();
-          });
+
+  let inputParam = extend([], req.body.chief_complaints);
+
+  let qry = "";
+
+  for (let i = 0; i < req.body.chief_complaints.length; i++) {
+    qry +=
+      "UPDATE `hims_f_episode_chief_complaint` SET  episode_id='" +
+      inputParam[i].episode_id +
+      "', chief_complaint_id='" +
+      inputParam[i].chief_complaint_id +
+      "', onset_date='" +
+      inputParam[i].onset_date +
+      "', `interval`='" +
+      inputParam[i].interval +
+      "', duration='" +
+      inputParam[i].duration +
+      "', severity='" +
+      inputParam[i].severity +
+      "', score='" +
+      inputParam[i].score +
+      "', pain='" +
+      inputParam[i].pain +
+      "', chronic='" +
+      inputParam[i].chronic +
+      "', complaint_inactive='" +
+      inputParam[i].complaint_inactive +
+      "', complaint_inactive_date='" +
+      inputParam[i].complaint_inactive_date +
+      "', comment='" +
+      inputParam[i].comment +
+      "', updated_date='" +
+      new Date().toLocaleString() +
+      "',updated_by=\
+'" +
+      req.body.updated_by +
+      "' WHERE hims_f_episode_chief_complaint_id='" +
+      inputParam[i].hims_f_episode_chief_complaint_id +
+      "';";
+  }
+
+  connection.query(qry, (error, updateResult) => {
+    if (error) {
+      connection.rollback(() => {
+        releaseDBConnection(db, connection);
+        next(error);
+      });
+    }
+   
+    connection.commit(error => {
+      if (error) {
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
         });
+      }
+      req.records = updateResult;
+      next();
+    });
+  });
+
+
+
       });
     });
   } catch (e) {
