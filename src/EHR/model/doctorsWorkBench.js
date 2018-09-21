@@ -1538,9 +1538,6 @@ let updatePatientChiefComplaints = (req, res, next) => {
       next();
     });
   });
-
-
-
       });
     });
   } catch (e) {

@@ -343,27 +343,25 @@ let selectSubDepartment = (req, res, next) => {
 };
 
 let addSubDepartment = (req, res, next) => {
-  let subDepartment = {
-    hims_d_sub_department_id: null,
-    sub_department_code: null,
-    sub_department_name: null,
-    sub_department_desc: null,
-    department_id: null,
-    effective_start_date: null,
-    effective_end_date: null,
-    sub_department_status: null,
-
-    created_by: req.userIdentity.algaeh_d_app_user_id,
-
-    updated_by: req.userIdentity.algaeh_d_app_user_id
-  };
+  // let subDepartment = {
+  //   hims_d_sub_department_id: null,
+  //   sub_department_code: null,
+  //   sub_department_name: null,
+  //   sub_department_desc: null,
+  //   department_id: null,
+  //   effective_start_date: null,
+  //   effective_end_date: null,
+  //   sub_department_status: null,
+  //   created_by: req.userIdentity.algaeh_d_app_user_id,
+  //   updated_by: req.userIdentity.algaeh_d_app_user_id
+  // };
 
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let subDepartmentDetails = extend(subDepartment, req.body);
+    let subDepartmentDetails = extend({}, req.body);
     ///1
     db.getConnection((error, connection) => {
       if (error) {
@@ -382,23 +380,26 @@ let addSubDepartment = (req, res, next) => {
             connection.query(
               "INSERT INTO hims_d_sub_department(`sub_department_code`\
         , `sub_department_name`\
-        , `sub_department_desc`\
+        , `sub_department_desc`,arabic_sub_department_name\
         , `department_id`\
         , `effective_start_date`\
         , `effective_end_date`\
         , `sub_department_status`\
         , `created_date`\
-        , `created_by`)VALUE(?,?,?,?,?,?,?,?,?)",
+        , `created_by`,updated_date,updated_by)VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
               [
                 subDepartmentDetails.sub_department_code,
                 subDepartmentDetails.sub_department_name,
                 subDepartmentDetails.sub_department_desc,
+                subDepartmentDetails.arabic_sub_department_name,
                 subDepartmentDetails.department_id,
                 subDepartmentDetails.effective_start_date,
                 subDepartmentDetails.effective_end_date,
                 subDepartmentDetails.sub_department_status,
                 new Date(),
-                subDepartmentDetails.created_by
+                subDepartmentDetails.created_by,
+                new Date(),
+                subDepartmentDetails.updated_by
               ],
               (error, resdata) => {
                 releaseDBConnection(db, connection);
@@ -426,39 +427,40 @@ let addSubDepartment = (req, res, next) => {
   }
 };
 let updateSubDepartment = (req, res, next) => {
-  let subDepartment = {
-    hims_d_sub_department_id: null,
-    sub_department_code: null,
-    sub_department_name: null,
-    sub_department_desc: null,
-    department_id: null,
-    effective_start_date: null,
-    effective_end_date: null,
-    sub_department_status: null,
+  // let subDepartment = {
+  //   hims_d_sub_department_id: null,
+  //   sub_department_code: null,
+  //   sub_department_name: null,
+  //   sub_department_desc: null,
+  //   department_id: null,
+  //   effective_start_date: null,
+  //   effective_end_date: null,
+  //   sub_department_status: null,
 
-    created_by: req.userIdentity.algaeh_d_app_user_id,
+  //   created_by: req.userIdentity.algaeh_d_app_user_id,
 
-    updated_by: req.userIdentity.algaeh_d_app_user_id
-  };
+  //   updated_by: req.userIdentity.algaeh_d_app_user_id
+  // };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let subDepartmentDetails = extend(subDepartment, req.body);
+    let subDepartmentDetails = extend({}, req.body);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
       }
       connection.query(
         "UPDATE `hims_d_sub_department`\
-   SET `sub_department_name`=?, `sub_department_desc`=?\
+   SET `sub_department_name`=?, `sub_department_desc`=?,arabic_sub_department_name=?\
    , `effective_start_date`=?, `effective_end_date`=? \
    , `sub_department_status`=?,`updated_date`=?, `updated_by`=?\
    WHERE `record_status`='A' AND `hims_d_sub_department_id`=? ;",
         [
           subDepartmentDetails.sub_department_name,
           subDepartmentDetails.sub_department_desc,
+          subDepartmentDetails.arabic_sub_department_name,
           subDepartmentDetails.effective_start_date,
           subDepartmentDetails.effective_end_date,
           subDepartmentDetails.sub_department_status,
