@@ -1,4 +1,4 @@
-const getAllChiefComplaints = $this => {
+const getAllChiefComplaints = ($this, callBack) => {
   $this.props.getAllChiefComplaints({
     uri: "/doctorsWorkBench/getChiefComplaints",
     method: "GET",
@@ -6,7 +6,9 @@ const getAllChiefComplaints = $this => {
       type: "ALL_CHIEF_COMPLAINTS",
       mappingName: "allchiefcomplaints"
     },
-    afterSuccess: data => {}
+    afterSuccess: data => {
+      if (typeof callBack === "function") callBack(data);
+    }
   });
 };
 

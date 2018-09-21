@@ -30,7 +30,7 @@ class ReviewofSystems extends Component {
     this.handleClose = this.handleClose.bind(this);
   }
   componentDidMount() {
-    getReviewOfSystems(this);
+    // getReviewOfSystems(this);
     getPatientROS(this);
   }
 
@@ -93,6 +93,7 @@ class ReviewofSystems extends Component {
   }
 
   addROS() {
+    getReviewOfSystems(this);
     this.setState({
       openROSModal: true
     });

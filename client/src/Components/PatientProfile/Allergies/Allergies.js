@@ -39,7 +39,7 @@ class Allergies extends Component {
     this.handleClose = this.handleClose.bind(this);
   }
   componentDidMount() {
-    getAllAllergies(this, this.state.allergy_value);
+    // getAllAllergies(this, this.state.allergy_value);
     this.getPatientAllergies();
   }
 
@@ -98,6 +98,7 @@ class Allergies extends Component {
   }
 
   addAllergies() {
+    getAllAllergies(this, this.state.allergy_value);
     this.setState({
       openAllergyModal: true
     });

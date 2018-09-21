@@ -22,13 +22,16 @@ export const AlgaehActions = options => dispatch => {
   if (settings.redux.data === undefined) {
     settings.onSuccess = response => {
       if (eval(settings.schema.successField)) {
-        dispatch({
-          type: "ALGAEH_" + settings.redux.type,
-          payload: eval(settings.schema.data),
-          mappingName: settings.redux.mappingName
-        });
-        if (typeof settings.afterSuccess === "function")
-          settings.afterSuccess(eval(settings.schema.data));
+        const redux_data = eval(settings.schema.data);
+        if (redux_data.message === undefined) {
+          dispatch({
+            type: "ALGAEH_" + settings.redux.type,
+            payload: eval(settings.schema.data),
+            mappingName: settings.redux.mappingName
+          });
+          if (typeof settings.afterSuccess === "function")
+            settings.afterSuccess(eval(settings.schema.data));
+        }
       } else {
         console.error(
           "Error in redux type :" + settings.redux.type + " : ",
