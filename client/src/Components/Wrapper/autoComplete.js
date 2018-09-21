@@ -104,7 +104,6 @@ const styles = theme => ({
 });
 class AutoComplete extends Component {
   handleChange = value => {
-    debugger;
     if (value !== null) {
       if (
         this.props.selector.multi !== undefined &&
