@@ -71,7 +71,7 @@ let addAppointmentRoom = (req, res, next) => {
 
       connection.query(
         "INSERT INTO `hims_d_appointment_room` (description, created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?)",
         [
           input.description,
           new Date(),
