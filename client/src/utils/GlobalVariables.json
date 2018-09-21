@@ -340,5 +340,9 @@
     { "name": "Sit", "value": "sit" },
     { "name": "Stand", "value": "stand" },
     { "name": "Supine", "value": "supine" }
+  ],
+  "DEPT_TYPE": [
+    { "name": "CLINICAL", "value": "CLINICAL" },
+    { "name": "NON-CLINICAL", "value": "NON-CLINICAL" }
   ]
 }

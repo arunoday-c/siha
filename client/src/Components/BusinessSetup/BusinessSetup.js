@@ -13,7 +13,7 @@ import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 class BusinessSetup extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageDisplay: "DeptMaster", sidBarOpen: true };
+    this.state = { pageDisplay: "DeptMaster" };
   }
 
   openTab(e) {
@@ -25,12 +25,6 @@ class BusinessSetup extends Component {
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
       pageDisplay: specified
-    });
-  }
-
-  SideMenuBarOpen(sidOpen) {
-    this.setState({
-      sidBarOpen: sidOpen
     });
   }
 
@@ -48,8 +42,6 @@ class BusinessSetup extends Component {
               pageName: "Business Setup"
             }
           ]}
-          //screenName="Master Setup"
-          //   HideHalfbread={false}
         />
 
         <div className="tab-container toggle-section spacing-push">

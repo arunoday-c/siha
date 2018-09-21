@@ -27,8 +27,8 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import algaehLoader from "../../Wrapper/fullPageLoader";
 import swal from "sweetalert";
-import { lstat } from "fs";
-let patChiefComplain = [];
+
+// let patChiefComplain = [];
 
 class ChiefComplaints extends Component {
   constructor(props) {
@@ -49,14 +49,13 @@ class ChiefComplaints extends Component {
       interval: "",
       duration: "",
       comment: "",
-      hims_f_episode_chief_complaint_id: "",
       new_chief_complaint: [],
       ifCheckBoxChange: false,
       masterChiefComplaints: []
     };
 
     this.handleClose = this.handleClose.bind(this);
-    this.addChiefComplain = this.addChiefComplain.bind(this);
+    // this.addChiefComplain = this.addChiefComplain.bind(this);
     this.setPainScale = this.setPainScale.bind(this);
   }
 
@@ -77,7 +76,9 @@ class ChiefComplaints extends Component {
               : [];
 
           this.setState({
-            patientChiefComplains: response.data.records,
+            patientChiefComplains: response.data.records.sort((a, b) => {
+              return a.chief_complaint_id - b.chief_complaint_id;
+            }),
             masterChiefComplaints: masterChiefComplaints
           });
         }
@@ -125,6 +126,7 @@ class ChiefComplaints extends Component {
                 timer: 2000
               });
               this.getPatientChiefComplaintsDetails();
+              getAllChiefComplaints(this);
               //getPatientChiefComplaints(this);
             }
           },
@@ -137,8 +139,6 @@ class ChiefComplaints extends Component {
   }
 
   addNewChiefComplaint(callBack) {
-    debugger;
-
     algaehApiCall({
       uri: "/doctorsWorkBench/addNewChiefComplaint",
       data: Enumerable.from(this.state.new_chief_complaint)
@@ -150,10 +150,9 @@ class ChiefComplaints extends Component {
         .toArray(),
       method: "post",
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
-          getAllChiefComplaints(this);
-          callBack();
+          getAllChiefComplaints(this, callBack);
+
           //getPatientChiefComplaints(this);
           //  this.getPatientChiefComplaintsDetails();
         }
@@ -177,10 +176,20 @@ class ChiefComplaints extends Component {
     }
     const liPainTab = document.querySelector("li[paintab='" + pain + "']");
     liPainTab.classList.add("active");
-    this.setState({
-      score: pain,
-      pain: liPainTab.getAttribute("pain-type")
-    });
+    this.setState(
+      {
+        score: pain,
+        pain: liPainTab.getAttribute("pain-type")
+      },
+      () => {
+        this.settingUpdateChiefComplaints({
+          currentTarget: {
+            name: "score",
+            value: pain
+          }
+        });
+      }
+    );
   };
 
   setPainScale(pain_number, e) {
@@ -190,7 +199,20 @@ class ChiefComplaints extends Component {
     }
     e.currentTarget.classList.add("active");
     const pain = e.currentTarget.getAttribute("pain-type");
-    this.setState({ score: pain_number, pain: pain });
+    this.setState({ score: pain_number, pain: pain }, () => {
+      this.settingUpdateChiefComplaints({
+        currentTarget: {
+          name: "score",
+          value: pain_number
+        }
+      });
+      this.settingUpdateChiefComplaints({
+        currentTarget: {
+          name: "pain",
+          value: pain
+        }
+      });
+    });
   }
 
   dropDownHandle(data) {
@@ -205,7 +227,14 @@ class ChiefComplaints extends Component {
         .querySelector("li[paintab='" + data.selected.score + "']")
         .classList.add("active");
     }
-    this.setState({ [data.name]: data.value, ...updateScroe });
+    this.setState({ [data.name]: data.value, ...updateScroe }, () => {
+      this.settingUpdateChiefComplaints({
+        currentTarget: {
+          name: data.name,
+          value: data.value
+        }
+      });
+    });
   }
 
   openChiefComplainModal(data) {
@@ -215,70 +244,104 @@ class ChiefComplaints extends Component {
     });
   }
 
+  deleteChiefComplainFromList(e) {
+    this.showconfirmDialog(e.currentTarget.getAttribute("data-cpln-id"));
+  }
+
   handleClose() {
-    this.setState({
-      openComplain: false,
-      openHpiModal: false
-    });
+    this.addChiefComplain();
+    this.updatePatientChiefComplaints();
   }
   addChiefComplain() {
-    const data = {
-      episode_id: Window.global["episode_id"],
-      chief_complaint_id: this.state.chief_complaint_id,
-      onset_date: this.state.onset_date,
-      severity: this.state.severity,
-      score: this.state.score,
-      pain: this.state.pain,
-      comment: this.state.comment
-    };
-    algaehApiCall({
-      uri: "/doctorsWorkBench/addPatientChiefComplaints",
-      data: data,
-      onSuccess: response => {
-        debugger;
-        if (response.data.success) {
-          //getPatientChiefComplaints(this);
-          this.getPatientChiefComplaintsDetails();
+    const data = Enumerable.from(this.state.patientChiefComplains)
+      .where(w => w.recordState === "insert")
+      .toArray();
+
+    if (data.length !== 0) {
+      algaehApiCall({
+        uri: "/doctorsWorkBench/addPatientChiefComplaints",
+        data: data,
+        onSuccess: response => {
+          if (response.data.success) {
+            this.setState({
+              openComplain: false,
+              openHpiModal: false,
+              hims_f_episode_chief_complaint_id: null
+            });
+            this.getPatientChiefComplaintsDetails();
+          }
+        },
+        onFailure: error => {
+          swal(error.message, {
+            icon: "error",
+            buttons: false,
+            timer: 2000
+          });
         }
-      },
-      onFailure: error => {
-        debugger;
-      }
-    });
+      });
+    } else {
+      this.setState({
+        openComplain: false,
+        openHpiModal: false
+      });
+    }
   }
 
   updatePatientChiefComplaints() {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/updatePatientChiefComplaints",
-      method: "PUT",
-      data: {
-        episode_id: this.state.episode_id,
-        chief_complaint_id: this.state.chief_complaint_id,
-        onset_date: this.state.onset_date,
-        interval: this.state.interval,
-        duration: this.state.duration,
-        severity: this.state.severity,
-        score: this.state.score,
-        pain: this.state.pain,
-        chronic: null,
-        complaint_inactive: null,
-        complaint_inactive_date: null,
-        comment: this.state.comment,
-        hims_f_episode_chief_complaint_id: this.state
-          .hims_f_episode_chief_complaint_id
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          //this.setState({ patientChiefComplains: response.data.records });
+    const data = Enumerable.from(this.state.patientChiefComplains)
+      .where(w => w.recordState === "update")
+      .toArray();
+    // {
+    //   episode_id: this.state.episode_id,
+    //   chief_complaint_id: this.state.chief_complaint_id,
+    //   onset_date: this.state.onset_date,
+    //   interval: this.state.interval,
+    //   duration: this.state.duration,
+    //   severity: this.state.severity,
+    //   score: this.state.score,
+    //   pain: this.state.pain,
+    //   chronic: null,
+    //   complaint_inactive: null,
+    //   complaint_inactive_date: null,
+    //   comment: this.state.comment,
+    //   hims_f_episode_chief_complaint_id: this.state
+    //     .hims_f_episode_chief_complaint_id
+    // }
+    if (data.length !== 0) {
+      algaehApiCall({
+        uri: "/doctorsWorkBench/updatePatientChiefComplaints",
+        method: "PUT",
+        data: { chief_complaints: data },
+        onSuccess: response => {
+          if (response.data.success) {
+            //this.setState({ patientChiefComplains: response.data.records });
+            this.setState({
+              openComplain: false,
+              openHpiModal: false,
+              hims_f_episode_chief_complaint_id: null
+            });
+            this.getPatientChiefComplaintsDetails();
+          }
+        },
+        onFailure: error => {
+          swal(error.message, {
+            icon: "error",
+            buttons: false,
+            timer: 2000
+          });
         }
-      },
-      onFailure: error => {}
-    });
+      });
+    } else {
+      this.setState({
+        openComplain: false,
+        openHpiModal: false
+      });
+    }
   }
 
   fillComplainDetails(data, e) {
-    //TODO concorrent calls -- noor
     this.setState({
+      hims_f_episode_chief_complaint_id: data.chief_complaint_id,
       onset_date: data.onset_date,
       chief_complaint_name: data.chief_complaint_name,
       duration: data.duration,
@@ -335,42 +398,65 @@ class ChiefComplaints extends Component {
       interval
     );
     const ifNointerval = intervalRow === undefined ? { interval: "D" } : {};
-    this.setState({
-      onset_date: selectedDate,
-      duration: e.currentTarget.value,
-      ...ifNointerval
-    });
+    const name = e.currentTarget.name;
+    const cValue = e.currentTarget.value;
+    this.setState(
+      {
+        onset_date: selectedDate,
+        duration: e.currentTarget.value,
+        ...ifNointerval
+      },
+      () => {
+        this.settingUpdateChiefComplaints({
+          currentTarget: {
+            name: name,
+            value: cValue
+          }
+        });
+        if (ifNointerval.interval !== undefined) {
+          this.settingUpdateChiefComplaints({
+            currentTarget: {
+              name: "interval",
+              value: ifNointerval.interval
+            }
+          });
+        }
+      }
+    );
   }
   addChiefComplainToPatient(list) {
-    debugger;
     let patChiefComp = this.state.patientChiefComplains;
     if (Array.isArray(list)) {
       this.setState({ new_chief_complaint: list }, () => {
         const new_chief_complaint = this.state.new_chief_complaint;
 
-        this.addNewChiefComplaint(() => {
-          let newMaster = Enumerable.from(this.props.allchiefcomplaints)
+        this.addNewChiefComplaint(master => {
+          let newMaster = Enumerable.from(master)
             .where(
               w =>
                 moment(w.created_date).format("YYYYMMDD") ===
                 moment(new Date()).format("YYYYMMDD")
             )
             .toArray();
+          newMaster = newMaster.message === undefined ? newMaster : [];
           for (let i = 0; i < new_chief_complaint.length; i++) {
+            let newChiefCompId = Enumerable.from(newMaster)
+              .where(w => w.hpi_description === new_chief_complaint[i])
+              .firstOrDefault();
             patChiefComp.push({
-              Encounter_Date: null,
-              chief_complaint_id: Enumerable(newMaster)
-                .where(w => w.hpi_description === new_chief_complaint[i])
-                .firstOrDefault().hims_d_hpi_header_id,
+              Encounter_Date: new Date(),
+              chief_complaint_id: newChiefCompId.hims_d_hpi_header_id,
               chief_complaint_name: new_chief_complaint[i],
               comment: "",
               duration: 0,
+              episode_id: Window.global["episode_id"],
               interval: "D",
               onset_date: new Date(),
               pain: "NH",
               score: 0,
               severity: "MI",
-              newAdded: true
+              patient_id: Window.global["current_patient"],
+              recordState: "insert"
             });
           }
           this.setState({
@@ -384,20 +470,24 @@ class ChiefComplaints extends Component {
           { chief_complaint_id: list.selected.hims_d_hpi_header_id },
           () => {
             patChiefComp.push({
-              Encounter_Date: null,
               chief_complaint_id: list.selected.hims_d_hpi_header_id,
               chief_complaint_name: list.selected.hpi_description,
+              Encounter_Date: new Date(),
               comment: "",
               duration: 0,
+              episode_id: Window.global["episode_id"],
               interval: "D",
               onset_date: new Date(),
               pain: "NH",
               score: 0,
               severity: "MI",
-              newAdded: true
+              patient_id: Window.global["current_patient"],
+              recordState: "insert"
             });
             this.setState({
-              patientChiefComplains: patChiefComp,
+              patientChiefComplains: patChiefComp.sort((a, b) => {
+                return a.chief_complaint_id - b.chief_complaint_id;
+              }),
               masterChiefComplaints: this.masterChiefComplaintsSortList(
                 patChiefComp
               )
@@ -407,8 +497,34 @@ class ChiefComplaints extends Component {
       }
     }
   }
+
+  settingUpdateChiefComplaints(e) {
+    const name = e.currentTarget.name;
+    const value = e.currentTarget.value;
+    let patientComp = this.state.patientChiefComplains;
+    let newPatientDtl = Enumerable.from(patientComp)
+      .where(
+        w =>
+          w.chief_complaint_id === this.state.hims_f_episode_chief_complaint_id
+      )
+      .firstOrDefault();
+    if (newPatientDtl !== undefined) {
+      let index = patientComp.indexOf(newPatientDtl);
+      patientComp.splice(index, 1);
+      index = index - 1;
+      newPatientDtl[name] = value;
+      newPatientDtl["recordState"] = "update";
+      patientComp.splice(index, 0, newPatientDtl);
+      this.setState({
+        patientChiefComplains: patientComp.sort((a, b) => {
+          return a.chief_complaint_id - b.chief_complaint_id;
+        })
+      });
+    }
+  }
+
   render() {
-    patChiefComplain = this.state.patientChiefComplains;
+    const patChiefComplain = this.state.patientChiefComplains;
 
     return (
       <React.Fragment>
@@ -451,8 +567,7 @@ class ChiefComplaints extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "onset_date",
-
-                            //value: this.state.pain,
+                            value: this.state.onset_date,
                             events: {}
                           }}
                         />
@@ -752,7 +867,6 @@ class ChiefComplaints extends Component {
                           },
                           onChange: this.addChiefComplainToPatient.bind(this),
                           userList: list => {
-                            debugger;
                             this.addChiefComplainToPatient(list);
                           }
                         }}
@@ -772,17 +886,33 @@ class ChiefComplaints extends Component {
                             {/* patientChiefComplains */}
 
                             {patChiefComplain.map((data, index) => (
-                              <li
-                                key={index}
-                                data-cpln-id={
-                                  data.hims_f_episode_chief_complaint_id
-                                }
-                                onClick={this.fillComplainDetails.bind(
-                                  this,
-                                  data
-                                )}
-                              >
-                                <span> {data.chief_complaint_name} </span>
+                              <li key={index}>
+                                <span
+                                  data-cpln-id={
+                                    data.hims_f_episode_chief_complaint_id
+                                  }
+                                  onClick={this.fillComplainDetails.bind(
+                                    this,
+                                    data
+                                  )}
+                                  style={{
+                                    width: "80%"
+                                  }}
+                                >
+                                  {data.chief_complaint_name}
+                                </span>
+                                <i
+                                  data-cpln-id={
+                                    data.hims_f_episode_chief_complaint_id
+                                  }
+                                  className="fas fa-trash fa-1x float-right"
+                                  style={{
+                                    cursor: "pointer"
+                                  }}
+                                  onClick={this.deleteChiefComplainFromList.bind(
+                                    this
+                                  )}
+                                />
                               </li>
                             ))}
                           </ul>
@@ -830,11 +960,21 @@ class ChiefComplaints extends Component {
                               interval = "Y";
                             }
 
-                            this.setState({
-                              onset_date: selectedDate,
-                              duration: duration,
-                              interval: interval
-                            });
+                            this.setState(
+                              {
+                                onset_date: selectedDate,
+                                duration: duration,
+                                interval: interval
+                              },
+                              () => {
+                                this.settingUpdateChiefComplaints({
+                                  currentTarget: {
+                                    name: "onset_date",
+                                    value: selectedDate
+                                  }
+                                });
+                              }
+                            );
                           }
                         }}
                         value={this.state.onset_date}
@@ -1062,9 +1202,13 @@ class ChiefComplaints extends Component {
               <div className="col">
                 <div className="row">
                   <div className="col-lg-12">
-                    <button type="button" className="btn btn-primary">
+                    {/* <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.handleClose}
+                    >
                       Save
-                    </button>
+                    </button> */}
                     <button
                       type="button"
                       className="btn btn-default"
