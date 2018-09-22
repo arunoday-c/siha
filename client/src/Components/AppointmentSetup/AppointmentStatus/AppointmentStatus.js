@@ -55,7 +55,6 @@ class AppointmentStatus extends Component {
   }
 
   deleteAppointmentStatus(data) {
-    debugger;
     swal({
       title: "Are you sure you want to delete this Status?",
       icon: "warning",
