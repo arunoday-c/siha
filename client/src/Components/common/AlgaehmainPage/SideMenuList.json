@@ -102,6 +102,20 @@
       }
     ]
   },
+
+  {
+    "name": "EmployeeManagement",
+    "label": "Employee Mgmt",
+    "icon": "fas fa-users",
+    "subMenu": [
+      {
+        "name": "EmployeeMasterIndex",
+        "label": "Employee Master Index",
+        "arlabel": "مؤشر الموظف الرئيسي",
+        "path": "/EmployeeMasterIndex"
+      }
+    ]
+  },
   {
     "name": "Billing",
     "label": "Billing",
