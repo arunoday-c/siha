@@ -184,7 +184,7 @@ let getAppointmentRoom = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_appointment_room_id, description FROM hims_d_appointment_room where record_status='A' AND" +
+        "select * FROM hims_d_appointment_room where record_status='A' AND" +
           where.condition,
         where.values,
         (error, result) => {
@@ -287,10 +287,11 @@ let updateAppointmentRoom = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "UPDATE `hims_d_appointment_room` SET  description=?,\
+        "UPDATE `hims_d_appointment_room` SET  description=?,room_active=?,\
            updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_room_id`=?;",
         [
           input.description,
+          input.room_active,
           new Date(),
           input.updated_by,
           input.record_status,
