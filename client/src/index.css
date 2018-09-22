@@ -694,3 +694,18 @@
 
 .hptl-phase1-footer {
   margin-top: 50px; }
+
+.divInner {
+  overflow-y: auto;
+  overflow-x: hidden; }
+  .divInner .divInnerLeft {
+    border-right: 1px dashed #e0e0e0;
+    min-height: 30vh;
+    max-height: 70vh;
+    overflow: auto;
+    padding: 15px; }
+  .divInner .divInnerRight {
+    min-height: 30vh;
+    max-height: 70vh;
+    overflow: auto;
+    padding: 15px; }
