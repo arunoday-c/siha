@@ -480,6 +480,8 @@ let addAppointmentSchedule = (req, res, next) => {
                               next(error);
                             });
                           }
+
+                          debugLog("schedule leave",schedule_leave)
                           req.records = schedule_leave;
                           next();
                         });
