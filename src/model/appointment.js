@@ -422,14 +422,14 @@ let addAppointmentSchedule = (req, res, next) => {
               ];
 
               connection.query(
-                "INSERT INTO hims_m_lab_analyte(" +
+                "INSERT INTO hims_d_appointment_schedule_detail(" +
                   insurtColumns.join(",") +
-                  ",`appointment_schedule_header_id`) VALUES ?",
+                  ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
                     arrayObj: req.body.schedule_detail,
-                    newFieldToInsert: [result.insertId],
+                    newFieldToInsert: [result.insertId, new Date(), new Date()],
                     req: req
                   })
                 ],
@@ -441,14 +441,62 @@ let addAppointmentSchedule = (req, res, next) => {
                     });
                   }
 
-                  connection.commit(error => {
-                    if (error) {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    }
-                    req.records = schedule_detailResult;
-                    next();
-                  });
+                  if (req.body.schedule_leave.length != 0) {
+                    const insurtColumns = [
+                      "provider_id",
+                      "sub_dept_id",
+                      "clinic_id",
+                      "to_date",
+                      "from_time",
+                      "to_time",
+                      "created_by",
+                      "updated_by"
+                    ];
+
+                    connection.query(
+                      "INSERT INTO hims_d_appointment_schedule_leave(" +
+                        insurtColumns.join(",") +
+                        ",created_date,updated_date) VALUES ?",
+                      [
+                        jsonArrayToObject({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: req.body.schedule_leave,
+                          newFieldToInsert: [new Date(), new Date()],
+                          req: req
+                        })
+                      ],
+                      (error, schedule_leave) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+
+                        connection.commit(error => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          req.records = schedule_leave;
+                          next();
+                        });
+                      }
+                    );
+                  } else {
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      req.records = schedule_detailResult;
+                      next();
+                    });
+                  }
                 }
               );
             }
@@ -472,5 +520,6 @@ module.exports = {
   getAppointmentClinic,
   updateAppointmentStatus,
   updateAppointmentRoom,
-  updateAppointmentClinic
+  updateAppointmentClinic,
+  addAppointmentSchedule
 };
