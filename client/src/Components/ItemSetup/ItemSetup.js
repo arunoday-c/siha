@@ -299,7 +299,7 @@ class ItemSetup extends Component {
                 ]}
                 keyId="hims_d_item_master_id"
                 dataSource={{
-                  data: this.props.itemlist
+                  data: this.state.ItemList
                 }}
                 paging={{ page: 0, rowsPerPage: 10 }}
               />

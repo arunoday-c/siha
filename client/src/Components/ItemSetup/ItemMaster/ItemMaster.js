@@ -36,6 +36,10 @@ export default class PatientDetails extends Component {
     }
   }
 
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   render() {
     return (
       <div className="hptl-phase1-Display-patient-details">
@@ -65,6 +69,7 @@ export default class PatientDetails extends Component {
                   value={{
                     state: this.state,
                     updateState: obj => {
+                      debugger;
                       this.setState({ ...obj });
                     }
                   }}
