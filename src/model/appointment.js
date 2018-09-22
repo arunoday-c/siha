@@ -12,7 +12,7 @@ import {
 import moment from "moment";
 import httpStatus from "../utils/httpStatus";
 //import { LINQ } from "node-linq";
-//import { logger, debugFunction, debugLog } from "../utils/logging";
+import { logger, debugFunction, debugLog } from "../utils/logging";
 
 //created by irfan: to add appointment_status
 let addAppointmentStatus = (req, res, next) => {
@@ -481,7 +481,7 @@ let addAppointmentSchedule = (req, res, next) => {
                             });
                           }
 
-                          debugLog("schedule leave",schedule_leave)
+                          //  debugLog("schedule leave",schedule_leave)
                           req.records = schedule_leave;
                           next();
                         });
