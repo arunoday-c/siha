@@ -10,7 +10,6 @@ const Validations = $this => {
       open: true,
       MandatoryMsg: "Invalid Input. Test Name Cannot be blank."
     });
-    document.querySelector("[name='description']").focus();
     return isError;
   } else if ($this.state.generic_id === null) {
     isError = true;
@@ -33,21 +32,23 @@ const Validations = $this => {
       MandatoryMsg: "Invalid Input. Please Select Group."
     });
     return isError;
-  } else if ($this.state.form_id === null) {
-    isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Form."
-    });
-    return isError;
-  } else if ($this.state.storage_id === null) {
-    isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Storage."
-    });
-    return isError;
-  } else if ($this.state.stocking_uom_id === null) {
+  }
+  //   else if ($this.state.form_id === null) {
+  //     isError = true;
+  //     $this.setState({
+  //       open: true,
+  //       MandatoryMsg: "Invalid Input. Please Select Form."
+  //     });
+  //     return isError;
+  //   } else if ($this.state.storage_id === null) {
+  //     isError = true;
+  //     $this.setState({
+  //       open: true,
+  //       MandatoryMsg: "Invalid Input. Please Select Storage."
+  //     });
+  //     return isError;
+  //   }
+  else if ($this.state.stocking_uom_id === null) {
     isError = true;
     $this.setState({
       open: true,
@@ -75,9 +76,10 @@ const InsertUpdateItems = $this => {
   const err = Validations($this);
   debugger;
   if (!err) {
+    debugger;
     if ($this.state.hims_d_item_master_id === null) {
       algaehApiCall({
-        uri: "/investigation/addInvestigationTest",
+        uri: "/pharmacy/addItemMaster",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {

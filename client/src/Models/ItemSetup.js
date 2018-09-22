@@ -14,7 +14,8 @@ export default {
       purchase_uom_id: null,
       sales_uom_id: null,
       stocking_uom_id: null,
-      detail_item_uom: []
+      detail_item_uom: [],
+      ItemList: []
     };
     return output;
   }

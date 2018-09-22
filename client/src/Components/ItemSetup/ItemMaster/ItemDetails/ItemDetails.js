@@ -66,7 +66,7 @@ class ItemDetails extends Component {
                         valueField: "hims_d_item_generic_id",
                         data: this.props.itemgeneric
                       },
-                      onChange: null
+                      onChange: texthandle.bind(this, this, context)
                     }}
                   />
                   <AlagehAutoComplete
@@ -83,7 +83,7 @@ class ItemDetails extends Component {
                         valueField: "hims_d_item_category_id",
                         data: this.props.itemcategory
                       },
-                      onChange: null
+                      onChange: texthandle.bind(this, this, context)
                     }}
                   />
                   <AlagehAutoComplete
@@ -100,7 +100,7 @@ class ItemDetails extends Component {
                         valueField: "hims_d_item_group_id",
                         data: this.props.itemgroup
                       },
-                      onChange: null
+                      onChange: texthandle.bind(this, this, context)
                     }}
                   />
                 </div>
@@ -122,7 +122,7 @@ class ItemDetails extends Component {
                         valueField: "hims_d_pharmacy_uom_id",
                         data: this.props.itemuom
                       },
-                      onChange: null
+                      onChange: texthandle.bind(this, this, context)
                     }}
                   />
                   <AlagehAutoComplete
@@ -139,7 +139,7 @@ class ItemDetails extends Component {
                         valueField: "hims_d_pharmacy_uom_id",
                         data: this.props.itemuom
                       },
-                      onChange: null
+                      onChange: texthandle.bind(this, this, context)
                     }}
                   />
                   <AlagehAutoComplete
@@ -156,7 +156,7 @@ class ItemDetails extends Component {
                         valueField: "hims_d_pharmacy_uom_id",
                         data: this.props.itemuom
                       },
-                      onChange: null
+                      onChange: texthandle.bind(this, this, context)
                     }}
                   />
                   <AlagehAutoComplete
@@ -173,7 +173,7 @@ class ItemDetails extends Component {
                         valueField: "hims_d_pharmacy_uom_id",
                         data: this.props.itemuom
                       },
-                      onChange: null
+                      onChange: texthandle.bind(this, this, context)
                     }}
                   />
                 </div>

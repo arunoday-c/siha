@@ -848,6 +848,230 @@ let addPharmacyStock = (req, res, next) => {
   }
 };
 
+//created by Nowshad: to get item category
+let getItemStorage = (req, res, next) => {
+  let selectWhere = {
+    hims_d_item_storage_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select * FROM hims_d_item_storage where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to add ItemCategory
+let addItemStorage = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_item_storage` (`storage_description`,`storage_status`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+        VALUE(?,?,?,?,?,?)",
+        [
+          input.storage_description,
+          "A",
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to updateItemForm
+let updateItemForm = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_item_form` SET `form_description`=?, `item_form_status`=?,\
+        `updated_date`=?, `updated_by`=?, `record_status`=?\
+        WHERE `hims_d_item_form_id`=? and `record_status`='A';",
+        [
+          input.form_description,
+          input.item_form_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_item_form_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to updateItemStorage
+let updateItemStorage = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_item_storage` SET `storage_description`=?, `storage_status`=?,\
+        `updated_date`=?, `updated_by`=?, `record_status`=?\
+        WHERE `hims_d_item_storage_id`=? and `record_status`='A';",
+        [
+          input.storage_description,
+          input.storage_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_item_storage_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to get item category
+let getItemForm = (req, res, next) => {
+  let selectWhere = {
+    hims_d_item_form_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select * FROM hims_d_item_form where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to add ItemCategory
+let addItemForm = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_item_form` (`form_description`, `item_form_status`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+        VALUE(?,?,?,?,?,?)",
+        [
+          input.form_description,
+          "A",
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addItemMaster,
   addItemCategory,
@@ -855,6 +1079,8 @@ module.exports = {
   addItemGroup,
   addPharmacyUom,
   addPharmacyLocation,
+  addItemForm,
+  addItemStorage,
 
   getItemMaster,
   getItemCategory,
@@ -862,11 +1088,15 @@ module.exports = {
   getItemGroup,
   getPharmacyUom,
   getPharmacyLocation,
+  getItemStorage,
+  getItemForm,
 
   updateItemCategory,
   updateItemGroup,
   updateItemGeneric,
   updatePharmacyUom,
   updatePharmacyLocation,
+  updateItemForm,
+  updateItemStorage,
   getItemMasterAndItemUom
 };

@@ -12,19 +12,28 @@ import {
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext.js";
-import { texthandle } from "./UOMAdditionalInfoEvents";
+import { texthandle, AddUom } from "./UOMAdditionalInfoEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import AHSnackbar from "../../../common/Inputs/AHSnackbar";
 
 class UOMAdditionalInfo extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      uom_id: null,
+      stocking_uom: null,
+      conversion_factor: 0
+    };
   }
 
   componentWillMount() {
     let InputOutput = this.props.itemPop;
     this.setState({ ...this.state, ...InputOutput });
   }
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
 
   render() {
     return (
@@ -88,6 +97,18 @@ class UOMAdditionalInfo extends Component {
                         onChange: texthandle.bind(this, this, context)
                       }}
                     />
+
+                    <div className="col-lg-1 actions">
+                      <a
+                        href="javascript:;"
+                        className="btn btn-primary btn-circle active"
+                      >
+                        <i
+                          className="fas fa-plus"
+                          onClick={AddUom.bind(this, this, context)}
+                        />
+                      </a>
+                    </div>
                   </div>
 
                   <div className="row" style={{ marginTop: "10px" }}>
@@ -102,17 +123,17 @@ class UOMAdditionalInfo extends Component {
                             ),
                             displayTemplate: row => {
                               let display =
-                                this.props.servicetype === undefined
+                                this.props.itemuom === undefined
                                   ? []
-                                  : this.props.servicetype.filter(
+                                  : this.props.itemuom.filter(
                                       f =>
-                                        f.hims_d_service_type_id === row.uom_id
+                                        f.hims_d_pharmacy_uom_id === row.uom_id
                                     );
 
                               return (
                                 <span>
                                   {display !== undefined && display.length !== 0
-                                    ? display[0].arabic_service_type
+                                    ? display[0].uom_description
                                     : ""}
                                 </span>
                               );
@@ -130,15 +151,11 @@ class UOMAdditionalInfo extends Component {
                                       valueField: "hims_d_pharmacy_uom_id",
                                       data: this.props.itemuom
                                     },
-                                    others: {
-                                      disabled: true
-                                    },
                                     onChange: null
                                   }}
                                 />
                               );
-                            },
-                            disabled: true
+                            }
                           },
 
                           {
@@ -187,15 +204,11 @@ class UOMAdditionalInfo extends Component {
                                       valueField: "value",
                                       data: GlobalVariables.FORMAT_YESNO
                                     },
-                                    others: {
-                                      disabled: true
-                                    },
                                     onChange: null
                                   }}
                                 />
                               );
-                            },
-                            disabled: true
+                            }
                           }
                         ]}
                         keyId="service_type_id"
@@ -219,6 +232,11 @@ class UOMAdditionalInfo extends Component {
                   <div className="row">Aditional Information</div>
                 </div>
               </div>
+              <AHSnackbar
+                open={this.state.open}
+                handleClose={this.handleClose}
+                MandatoryMsg={this.state.MandatoryMsg}
+              />
             </div>
           )}
         </MyContext.Consumer>

@@ -9,16 +9,22 @@ import {
   addPharmacyUom,
   getPharmacyUom,
   addPharmacyLocation,
+  addItemForm,
+  addItemStorage,
   getItemMaster,
   getItemCategory,
   getItemGeneric,
   getItemGroup,
   getPharmacyLocation,
+  getItemStorage,
+  getItemForm,
   updateItemCategory,
   updateItemGroup,
   updateItemGeneric,
   updatePharmacyUom,
   updatePharmacyLocation,
+  updateItemForm,
+  updateItemStorage,
   getItemMasterAndItemUom
 } from "../model/pharmacy";
 
@@ -102,6 +108,36 @@ export default ({ config, db }) => {
   api.post(
     "/addPharmacyLocation",
     addPharmacyLocation,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad :to  add Item Storage
+  api.post(
+    "/addItemStorage",
+    addItemStorage,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad :to  add Item Form
+  api.post(
+    "/addItemForm",
+    addItemForm,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -217,6 +253,36 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by Nowshad :to getItemStorage
+  api.get(
+    "/getItemStorage",
+    getItemStorage,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad :to getItemForm
+  api.get(
+    "/getItemForm",
+    getItemForm,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   // created by irfan :update Item Category
   api.put(
     "/updateItemCategory",
@@ -281,6 +347,36 @@ export default ({ config, db }) => {
   api.put(
     "/updatePharmacyLocation",
     updatePharmacyLocation,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :update Item Form
+  api.put(
+    "/updateItemForm",
+    updateItemForm,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :update Item Storage
+  api.put(
+    "/updateItemStorage",
+    updateItemStorage,
     (req, res, next) => {
       let results = req.records;
       res.status(httpStatus.ok).json({
