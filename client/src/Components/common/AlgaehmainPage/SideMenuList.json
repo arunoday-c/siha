@@ -98,12 +98,13 @@
       {
         "name": "Patient Recall",
         "label": "Patient Recall",
-        "arlabel": "إعداد جدول الطبيب",
+
         "path": "/PatientRecall"
       },
       {
         "name": "PhysicianScheduleSetup",
         "label": "Physician Schedule Setup",
+        "arlabel": "إعداد جدول الطبيب",
         "path": "/PhysicianScheduleSetup"
       }
     ]
