@@ -29,7 +29,7 @@ class PhysicianScheduleSetup extends Component {
           userArea={
             <div className="row">
               <AlagehAutoComplete
-                div={{ className: "col" }}
+                div={{ className: "col-lg-6" }}
                 label={{
                   fieldName: "department_name"
                 }}
@@ -47,7 +47,7 @@ class PhysicianScheduleSetup extends Component {
               />
 
               <AlagehAutoComplete
-                div={{ className: "col" }}
+                div={{ className: "col-lg-6" }}
                 label={{
                   fieldName: "doctor"
                 }}
@@ -85,6 +85,9 @@ class PhysicianScheduleSetup extends Component {
             ]
           }}
         />
+
+        {/* <PhysicianList/> */}
+
         <div className="hptl-phase1-footer">
           <AppBar position="static" className="main">
             <div className="row">
