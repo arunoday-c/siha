@@ -848,73 +848,185 @@ let addPharmacyStock = (req, res, next) => {
   }
 };
 
-//created by Nowshad: to get item category
-let getItemStorage = (req, res, next) => {
-  let selectWhere = {
-    hims_d_item_storage_id: "ALL"
-  };
+//created by:irfan,to update Item Master And Uom
+let updateItemMasterAndUom = (req, res, next) => {
   try {
+    debugFunction("updateItemMasterAndUom ");
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
 
-    let where = whereCondition(extend(selectWhere, req.query));
-
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select * FROM hims_d_item_storage where record_status='A' AND" +
-          where.condition,
-        where.values,
-        (error, result) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
-//created by Nowshad: to add ItemCategory
-let addItemStorage = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
     let input = extend({}, req.body);
-
+    debugLog("Input body", input);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
       }
-
-      connection.query(
-        "INSERT INTO `hims_d_item_storage` (`storage_description`,`storage_status`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
-        VALUE(?,?,?,?,?,?)",
-        [
-          input.storage_description,
-          "A",
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
-        ],
-        (error, result) => {
-          if (error) {
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
             releaseDBConnection(db, connection);
             next(error);
-          }
-          req.records = result;
-          next();
+          });
         }
-      );
+        let queryBuilder =
+          "UPDATE `hims_d_item_master` SET `item_code`=?, `item_description`=?, `structure_id`=?,\
+          `generic_id`=?, `category_id`=?, `group_id`=?, `form_id`=?, `storage_id`=?, `item_uom_id`=?,\
+           `purchase_uom_id`=?, `sales_uom_id`=?, `stocking_uom_id`=?, `item_status`=?, \
+            `update_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and\
+           `hims_d_item_master_id`=?";
+        let inputs = [
+          input.item_code,
+          input.item_description,
+          input.structure_id,
+          input.generic_id,
+          input.category_id,
+          input.group_id,
+          input.form_id,
+          input.storage_id,
+          input.item_uom_id,
+          input.purchase_uom_id,
+          input.sales_uom_id,
+          input.stocking_uom_id,
+          input.item_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_item_master_id
+        ];
+
+        connection.query(queryBuilder, inputs, (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          if (result != null) {
+            new Promise((resolve, reject) => {
+              try {
+                if (input.insertItemUomMap.length != 0) {
+                  const insurtColumns = [
+                    "uom_id",
+                    "item_master_id",
+                    "stocking_uom",
+                    "conversion_factor",
+                    "uom_status",
+                    "created_by",
+                    "updated_by"
+                  ];
+
+                  connection.query(
+                    "INSERT INTO hims_m_item_uom(" +
+                      insurtColumns.join(",") +
+                      ",created_date,updated_date) VALUES ?",
+                    [
+                      jsonArrayToObject({
+                        sampleInputObject: insurtColumns,
+                        arrayObj: req.body.insertItemUomMap,
+                        newFieldToInsert: [new Date(), new Date()],
+                        req: req
+                      })
+                    ],
+                    (error, insertUomMapResult) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      return resolve(insertUomMapResult);
+                    }
+                  );
+                } else {
+                  return resolve();
+                }
+              } catch (e) {
+                reject(e);
+              }
+            }).then(results => {
+              debugLog("inside uom map then");
+
+              //bulk  update uom maping
+              if (input.updateUomMapResult.length != 0) {
+                debugLog("inside update map uom");
+                let inputParam = extend([], req.body.updateUomMapResult);
+                debugLog("input update UomMapResult", inputParam);
+
+                let qry = "";
+
+                for (let i = 0; i < req.body.updateUomMapResult.length; i++) {
+                  qry +=
+                    "UPDATE `hims_m_item_uom` SET item_master_id='" +
+                    inputParam[i].item_master_id +
+                    "', uom_id='" +
+                    inputParam[i].uom_id +
+                    "', stocking_uom='" +
+                    inputParam[i].stocking_uom +
+                    "', conversion_factor='" +
+                    inputParam[i].conversion_factor +
+                    "', uom_status='" +
+                    inputParam[i].uom_status +
+                    "', record_status='" +
+                    inputParam[i].record_status +
+                    "', updated_date='" +
+                    new Date().toLocaleString() +
+                    "',updated_by=\
+'" +
+                    req.body.updated_by +
+                    "' WHERE record_status='A' and hims_m_item_uom_id='" +
+                    inputParam[i].hims_m_item_uom_id +
+                    "';";
+                }
+
+                connection.query(qry, (error, updateUomMapResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    req.records = updateUomMapResult;
+                    next();
+                  });
+                });
+              } else {
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  req.records = results;
+                  next();
+                });
+              }
+            });
+          } else {
+            connection.commit(error => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+              req.records = result;
+              next();
+            });
+          }
+        });
+      });
     });
   } catch (e) {
     next(e);
@@ -1032,6 +1144,40 @@ let getItemForm = (req, res, next) => {
   }
 };
 
+//created by Nowshad: to get item category
+let getItemStorage = (req, res, next) => {
+  let selectWhere = {
+    hims_d_item_storage_id: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select * FROM hims_d_item_storage where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 //created by Nowshad: to add ItemCategory
 let addItemForm = (req, res, next) => {
   try {
@@ -1051,6 +1197,46 @@ let addItemForm = (req, res, next) => {
         VALUE(?,?,?,?,?,?)",
         [
           input.form_description,
+          "A",
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to add Item Forms
+let addItemStorage = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_item_storage` (`storage_description`, `storage_status`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+        VALUE(?,?,?,?,?,?)",
+        [
+          input.storage_description,
           "A",
           new Date(),
           input.created_by,
@@ -1098,5 +1284,6 @@ module.exports = {
   updatePharmacyLocation,
   updateItemForm,
   updateItemStorage,
-  getItemMasterAndItemUom
+  getItemMasterAndItemUom,
+  updateItemMasterAndUom
 };

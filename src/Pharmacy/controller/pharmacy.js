@@ -25,7 +25,8 @@ import {
   updatePharmacyLocation,
   updateItemForm,
   updateItemStorage,
-  getItemMasterAndItemUom
+  getItemMasterAndItemUom,
+  updateItemMasterAndUom
 } from "../model/pharmacy";
 
 export default ({ config, db }) => {
@@ -253,7 +254,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by Nowshad :to getItemStorage
+  // created by Nowshad :to Item Storage
   api.get(
     "/getItemStorage",
     getItemStorage,
@@ -268,7 +269,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by Nowshad :to getItemForm
+  // created by Nowshad :to Item Form
   api.get(
     "/getItemForm",
     getItemForm,
@@ -358,7 +359,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan :update Item Form
+  // created by Nowshad :update Item Form
   api.put(
     "/updateItemForm",
     updateItemForm,
@@ -373,10 +374,26 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan :update Item Storage
+  // created by Nowshad :update Item Storage
   api.put(
     "/updateItemStorage",
     updateItemStorage,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+  return api;
+
+  // created by irfan :update Item Storage
+  api.put(
+    "/updateItemMasterAndUom",
+    updateItemMasterAndUom,
     (req, res, next) => {
       let results = req.records;
       res.status(httpStatus.ok).json({
