@@ -388,7 +388,6 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
-  return api;
 
   // created by irfan :update Item Storage
   api.put(

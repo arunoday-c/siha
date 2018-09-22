@@ -96,7 +96,7 @@ const InsertUpdateItems = $this => {
       });
     } else {
       algaehApiCall({
-        uri: "/investigation/updateInvestigationTest",
+        uri: "/pharmacy/updateItemMasterAndUom",
         data: $this.state,
         method: "PUT",
         onSuccess: response => {

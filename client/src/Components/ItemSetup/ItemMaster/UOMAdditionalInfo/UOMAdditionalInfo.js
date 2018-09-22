@@ -12,7 +12,12 @@ import {
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext.js";
-import { texthandle, AddUom } from "./UOMAdditionalInfoEvents";
+import {
+  texthandle,
+  AddUom,
+  deleteUOM,
+  updateUOM
+} from "./UOMAdditionalInfoEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import AHSnackbar from "../../../common/Inputs/AHSnackbar";
 
@@ -217,13 +222,11 @@ class UOMAdditionalInfo extends Component {
                         }}
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 5 }}
-                        events={
-                          {
-                            //   onDelete: this.deleteBillDetail.bind(this, context),
-                            //   onEdit: row => {},
-                            //   onDone: this.updateBillDetail.bind(this)
-                          }
-                        }
+                        events={{
+                          onDelete: deleteUOM.bind(this, this, context),
+                          onEdit: row => {},
+                          onDone: updateUOM.bind(this, this, context)
+                        }}
                       />
                     </div>
                   </div>

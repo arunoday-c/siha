@@ -15,7 +15,9 @@ export default {
       sales_uom_id: null,
       stocking_uom_id: null,
       detail_item_uom: [],
-      ItemList: []
+      ItemList: [],
+      updateUomMapResult: [],
+      insertItemUomMap: []
     };
     return output;
   }
