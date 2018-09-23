@@ -4,6 +4,8 @@ import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import { AlgaehLabel, AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import AlgaehReport from "../Wrapper/printReports";
 import AppBar from "@material-ui/core/AppBar";
+import PhysicianList from "./PhysicianList/PhysicianList";
+import Scheduler from "./Scheduler/Scheduler";
 
 class PhysicianScheduleSetup extends Component {
   dropDownHandler(value) {
@@ -85,8 +87,10 @@ class PhysicianScheduleSetup extends Component {
             ]
           }}
         />
-
-        {/* <PhysicianList/> */}
+        <div className="spacing-push">
+          <PhysicianList />
+        </div>
+        <Scheduler />
 
         <div className="hptl-phase1-footer">
           <AppBar position="static" className="main">
