@@ -190,7 +190,7 @@ class Scheduler extends Component {
                           id="weekday-all"
                           className="weekday"
                         />
-                        <label htmlFor="weekday-all">All</label>
+                        <label htmlFor="weekday-all">All Days</label>
                         <input
                           type="checkbox"
                           id="weekday-sun"
@@ -208,7 +208,7 @@ class Scheduler extends Component {
                           id="weekday-tue"
                           className="weekday"
                         />
-                        <label for="weekday-tue">Tuesday</label>
+                        <label htmlFor="weekday-tue">Tuesday</label>
                         <input
                           type="checkbox"
                           id="weekday-wed"
@@ -218,7 +218,7 @@ class Scheduler extends Component {
                         <input
                           type="checkbox"
                           id="weekday-thu"
-                          class="weekday"
+                          className="weekday"
                         />
                         <label htmlFor="weekday-thu">Thursday</label>
                         <input
