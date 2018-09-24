@@ -25,6 +25,9 @@ const getItems = $this => {
             purchase_uom_id: firstRecordSet.purchase_uom_id,
             sales_uom_id: firstRecordSet.sales_uom_id,
             stocking_uom_id: firstRecordSet.stocking_uom_id,
+            item_status: firstRecordSet.item_status,
+            radioActive: firstRecordSet.item_status === "A" ? true : false,
+            radioInactive: firstRecordSet.item_status === "I" ? true : false,
             detail_item_uom: g.getSource()
           };
         })

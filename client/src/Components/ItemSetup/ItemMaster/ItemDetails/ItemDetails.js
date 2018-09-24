@@ -11,7 +11,7 @@ import {
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext.js";
-import { texthandle } from "./ItemDetailsEvents";
+import { texthandle, radioChange } from "./ItemDetailsEvents";
 
 class ItemDetails extends Component {
   constructor(props) {
@@ -41,7 +41,8 @@ class ItemDetails extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "item_description"
+                      fieldName: "item_description",
+                      isImp: true
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -55,7 +56,8 @@ class ItemDetails extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "generic_id"
+                      fieldName: "generic_id",
+                      isImp: true
                     }}
                     selector={{
                       name: "generic_id",
@@ -72,7 +74,8 @@ class ItemDetails extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "category_id"
+                      fieldName: "category_id",
+                      isImp: true
                     }}
                     selector={{
                       name: "category_id",
@@ -89,7 +92,8 @@ class ItemDetails extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "group_id"
+                      fieldName: "group_id",
+                      isImp: true
                     }}
                     selector={{
                       name: "group_id",
@@ -111,7 +115,8 @@ class ItemDetails extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "purchase_uom_id"
+                      fieldName: "purchase_uom_id",
+                      isImp: true
                     }}
                     selector={{
                       name: "purchase_uom_id",
@@ -128,7 +133,8 @@ class ItemDetails extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "sales_uom_id"
+                      fieldName: "sales_uom_id",
+                      isImp: true
                     }}
                     selector={{
                       name: "sales_uom_id",
@@ -145,7 +151,8 @@ class ItemDetails extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "stocking_uom_id"
+                      fieldName: "stocking_uom_id",
+                      isImp: true
                     }}
                     selector={{
                       name: "stocking_uom_id",
@@ -177,6 +184,77 @@ class ItemDetails extends Component {
                     }}
                   />
                 </div>
+                <div className="row card-deck panel-layout">
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "form_id"
+                    }}
+                    selector={{
+                      name: "form_id",
+                      className: "select-fld",
+                      value: this.state.form_id,
+                      dataSource: {
+                        textField: "form_description",
+                        valueField: "hims_d_item_form_id",
+                        data: this.props.itemform
+                      },
+                      onChange: texthandle.bind(this, this, context)
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "storage_id"
+                    }}
+                    selector={{
+                      name: "storage_id",
+                      className: "select-fld",
+                      value: this.state.storage_id,
+                      dataSource: {
+                        textField: "storage_description",
+                        valueField: "hims_d_item_storage_id",
+                        data: this.props.itemstorage
+                      },
+                      onChange: texthandle.bind(this, this, context)
+                    }}
+                  />
+                  <div className="col-lg-3" style={{ marginTop: "23px" }}>
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="Active"
+                          checked={this.state.radioActive}
+                          onChange={radioChange.bind(this, this, context)}
+                        />
+                        <span>
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "active"
+                            }}
+                          />
+                        </span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="Inactive"
+                          checked={this.state.radioInactive}
+                          onChange={radioChange.bind(this, this, context)}
+                        />
+                        <span>
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "inactive"
+                            }}
+                          />
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -192,7 +270,9 @@ function mapStateToProps(state) {
     itemcategory: state.itemcategory,
     itemgroup: state.itemgroup,
     itemuom: state.itemuom,
-    itemgeneric: state.itemgeneric
+    itemgeneric: state.itemgeneric,
+    itemform: state.itemform,
+    itemstorage: state.itemstorage
   };
 }
 
@@ -202,7 +282,9 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
-      getItemGeneric: AlgaehActions
+      getItemGeneric: AlgaehActions,
+      getItemForm: AlgaehActions,
+      getItemStorage: AlgaehActions
     },
     dispatch
   );
