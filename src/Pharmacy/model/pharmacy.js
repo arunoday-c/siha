@@ -8,6 +8,7 @@ import {
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../../utils/logging";
+import moment from "moment";
 
 //created by irfan: to add in itemMaster
 let addItemMaster = (req, res, next) => {
@@ -1159,7 +1160,7 @@ let addPharmacyInitialStock = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    // let input = extend({}, req.body);
+    let input = extend({}, req.body);
 
     debugLog("inside", "add stock");
     db.getConnection((error, connection) => {
@@ -1189,92 +1190,111 @@ let addPharmacyInitialStock = (req, res, next) => {
             }
           });
         }).then(result => {
-          debugLog("stockDocuments:", result[0].completeNumber);
           let documentCode = result[0].completeNumber;
+          debugLog("documentCode:", documentCode);
+
+          let year = moment().format("YYYY");
+          debugLog("onlyyear:", year);
+
+          let today = moment().format("YYYY-MM-DD");
+          debugLog("today:", today);
+
+          let month = moment().format("MM");
+          debugLog("month:", month);
+          let period = month;
+
+          debugLog("period:", period);
+          connection.query(
+            "INSERT INTO `hims_f_pharmacy_stock_header` (document_number,docdate,`year`,period,description,posted,created_date,created_by,updated_date,updated_by) \
+          VALUE(?,?,?,?,?,?,?,?,?,?)",
+            [
+              documentCode,
+              today,
+              year,
+              period,
+              input.description,
+              input.posted,
+              new Date(),
+              input.created_by,
+              new Date(),
+              input.updated_by
+            ],
+            (error, headerResult) => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+
+              debugLog(" stock header id :", headerResult.insertId);
+
+              if (headerResult.insertId != null) {
+                const insurtColumns = [
+                  "item_id",
+                  "location_type",
+                  "location_id",
+                  "item_category_id",
+                  "item_group_id",
+                  "uom_id",
+                  "barcode",
+                  "batchno",
+                  "expiry_date",
+                  "grn_number",
+                  "quantity",
+                  "conversion_fact",
+                  "unit_cost",
+                  "extended_cost",
+                  "comment",
+                  "created_by",
+                  "updated_by"
+                ];
+
+                connection.query(
+                  "INSERT INTO hims_f_pharmacy_stock_detail(" +
+                    insurtColumns.join(",") +
+                    ",pharmacy_stock_header_id,created_date,updated_date) VALUES ?",
+                  [
+                    jsonArrayToObject({
+                      sampleInputObject: insurtColumns,
+                      arrayObj: req.body.pharmacy_stock_detail,
+                      newFieldToInsert: [
+                        headerResult.insertId,
+                        new Date(),
+                        new Date()
+                      ],
+                      req: req
+                    })
+                  ],
+                  (error, detailResult) => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      req.records = detailResult;
+                      next();
+                    });
+                  }
+                );
+              } else {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+            }
+          );
         });
-
-        //-------------------------------------------------
-        // connection.query(
-        //   "INSERT INTO `hims_f_pharmacy_stock_header` (`document_number`, `docdate`, `year`, `period`, `description`, `posted`, `created_date`, `created_by`, `updated_date`, `updated_by`) \
-        // VALUE(?,?,?,?,?,?,?,?,?,?)",
-        //   [
-        //     input.item_code,
-        //     input.item_description,
-        //     input.structure_id,
-        //     input.generic_id,
-        //     input.category_id,
-        //     input.group_id,
-        //     input.item_uom_id,
-        //     input.purchase_uom_id,
-        //     input.sales_uom_id,
-        //     input.stocking_uom_id,
-        //     new Date(),
-        //     input.created_by,
-        //     new Date(),
-        //     input.updated_by
-        //   ],
-        //   (error, result) => {
-        //     if (error) {
-        //       connection.rollback(() => {
-        //         releaseDBConnection(db, connection);
-        //         next(error);
-        //       });
-        //     }
-
-        //     debugLog(" item master id :", result.insertId);
-        //     // req.records = spResult;
-        //     // next();
-
-        //     if (result.insertId != null) {
-        //       const insurtColumns = [
-        //         "uom_id",
-        //         "stocking_uom",
-        //         "conversion_factor",
-        //         "uom_status",
-        //         "created_by",
-        //         "updated_by"
-        //       ];
-
-        //       connection.query(
-        //         "INSERT INTO hims_m_item_uom(" +
-        //           insurtColumns.join(",") +
-        //           ",item_master_id,created_date,updated_date) VALUES ?",
-        //         [
-        //           jsonArrayToObject({
-        //             sampleInputObject: insurtColumns,
-        //             arrayObj: req.body.detail_item_uom,
-        //             newFieldToInsert: [result.insertId, new Date(), new Date()],
-        //             req: req
-        //           })
-        //         ],
-        //         (error, detailResult) => {
-        //           if (error) {
-        //             connection.rollback(() => {
-        //               releaseDBConnection(db, connection);
-        //               next(error);
-        //             });
-        //           }
-
-        //           connection.commit(error => {
-        //             if (error) {
-        //               connection.rollback(() => {
-        //                 releaseDBConnection(db, connection);
-        //                 next(error);
-        //               });
-        //             }
-        //             req.records = detailResult;
-        //             next();
-        //           });
-        //         }
-        //       );
-        //     } else {
-        //       connection.rollback(() => {
-        //         releaseDBConnection(db, connection);
-        //         next(error);
-        //       });
-        //     }
-        //   }
-        // );
       });
     });
   } catch (e) {
