@@ -25,6 +25,14 @@ class ItemDetails extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
 
+  componentWillReceiveProps(newProps) {
+    debugger;
+    let InputOutput = newProps.itemPop;
+    this.setState({ ...this.state, ...InputOutput }, () => {
+      debugger;
+    });
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -124,8 +132,8 @@ class ItemDetails extends Component {
                       value: this.state.purchase_uom_id,
                       dataSource: {
                         textField: "uom_description",
-                        valueField: "hims_d_pharmacy_uom_id",
-                        data: this.props.itemuom
+                        valueField: "uom_id",
+                        data: this.state.detail_item_uom
                       },
                       onChange: texthandle.bind(this, this, context)
                     }}
@@ -142,8 +150,8 @@ class ItemDetails extends Component {
                       value: this.state.sales_uom_id,
                       dataSource: {
                         textField: "uom_description",
-                        valueField: "hims_d_pharmacy_uom_id",
-                        data: this.props.itemuom
+                        valueField: "uom_id",
+                        data: this.state.detail_item_uom
                       },
                       onChange: texthandle.bind(this, this, context)
                     }}
@@ -163,6 +171,9 @@ class ItemDetails extends Component {
                         valueField: "hims_d_pharmacy_uom_id",
                         data: this.props.itemuom
                       },
+                      others: {
+                        disabled: true
+                      },
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
@@ -177,8 +188,8 @@ class ItemDetails extends Component {
                       value: this.state.item_uom_id,
                       dataSource: {
                         textField: "uom_description",
-                        valueField: "hims_d_pharmacy_uom_id",
-                        data: this.props.itemuom
+                        valueField: "uom_id",
+                        data: this.state.detail_item_uom
                       },
                       onChange: texthandle.bind(this, this, context)
                     }}
@@ -269,9 +280,9 @@ function mapStateToProps(state) {
     patienttype: state.patienttype,
     itemcategory: state.itemcategory,
     itemgroup: state.itemgroup,
-    itemuom: state.itemuom,
     itemgeneric: state.itemgeneric,
     itemform: state.itemform,
+    itemuom: state.itemuom,
     itemstorage: state.itemstorage
   };
 }
@@ -281,7 +292,6 @@ function mapDispatchToProps(dispatch) {
     {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions,
       getItemGeneric: AlgaehActions,
       getItemForm: AlgaehActions,
       getItemStorage: AlgaehActions
