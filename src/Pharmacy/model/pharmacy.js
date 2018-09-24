@@ -1318,31 +1318,34 @@ let getPharmacyInitialStock = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "SELECT hims_f_pharmacy_stock_header_id, document_number, docdate, year,\
-        period, description, posted hims_f_pharmacy_stock_header from  hims_f_pharmacy_stock_header\
+        period, description, posted  from  hims_f_pharmacy_stock_header\
         where record_status='A' AND " +
           where.condition,
         where.values,
-        (error, result) => {
+        (error, headerResult) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
           }
 
-          debugLog("result: ", result);
-          if (result.length != 0) {
+          debugLog("result: ", headerResult);
+          if (headerResult.length != 0) {
             debugLog(
               "hims_f_pharmacy_stock_header_id: ",
-              result[0].hims_f_pharmacy_stock_header_id
+              headerResult[0].hims_f_pharmacy_stock_header_id
             );
             connection.query(
               "select * from hims_f_pharmacy_stock_detail where pharmacy_stock_header_id=? and record_status='A'",
-              result[0].hims_f_pharmacy_stock_header_id,
+              headerResult[0].hims_f_pharmacy_stock_header_id,
               (error, detailResult) => {
                 if (error) {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
-                req.records = detailResult;
+                req.records = {
+                  ...{ headerResult },
+                  ...{ detailResult }
+                };
                 next();
               }
             );
