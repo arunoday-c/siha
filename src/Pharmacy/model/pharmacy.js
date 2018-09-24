@@ -1281,7 +1281,7 @@ let addPharmacyInitialStock = (req, res, next) => {
                           next(error);
                         });
                       }
-                      req.records = detailResult;
+                      req.records ={document_number:documentCode};
                       next();
                     });
                   }
