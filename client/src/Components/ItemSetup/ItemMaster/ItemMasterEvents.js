@@ -95,6 +95,7 @@ const InsertUpdateItems = $this => {
         }
       });
     } else {
+      $this.state.record_status = "A";
       algaehApiCall({
         uri: "/pharmacy/updateItemMasterAndUom",
         data: $this.state,
