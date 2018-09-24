@@ -1281,7 +1281,7 @@ let addPharmacyInitialStock = (req, res, next) => {
                           next(error);
                         });
                       }
-                      req.records ={document_number:documentCode};
+                      req.records = { document_number: documentCode };
                       next();
                     });
                   }
@@ -1301,6 +1301,63 @@ let addPharmacyInitialStock = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to get PharmacyInitialStock
+let getPharmacyInitialStock = (req, res, next) => {
+  let selectWhere = {
+    document_number: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT hims_f_pharmacy_stock_header_id, document_number, docdate, year,\
+        period, description, posted hims_f_pharmacy_stock_header from  hims_f_pharmacy_stock_header\
+        where record_status='A' AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          debugLog("result: ", result);
+          if (result.length != 0) {
+            debugLog(
+              "hims_f_pharmacy_stock_header_id: ",
+              result[0].hims_f_pharmacy_stock_header_id
+            );
+            connection.query(
+              "select * from hims_f_pharmacy_stock_detail where pharmacy_stock_header_id=? and record_status='A'",
+              result[0].hims_f_pharmacy_stock_header_id,
+              (error, detailResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+                req.records = detailResult;
+                next();
+              }
+            );
+          } else {
+            req.records = { result: "no such record exist" };
+            next();
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addItemMaster,
   addItemCategory,
@@ -1329,5 +1386,6 @@ module.exports = {
   updateItemStorage,
   getItemMasterAndItemUom,
   updateItemMasterAndUom,
-  addPharmacyInitialStock
+  addPharmacyInitialStock,
+  getPharmacyInitialStock
 };

@@ -372,14 +372,18 @@ let addAppointmentSchedule = (req, res, next) => {
             next(error);
           });
         }
+
+        for(let i=0; i<input.length;i++){
         connection.query(
-          "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id, schedule_status, schedule_description, default_slot, created_by, created_date, updated_by, updated_date)\
-          VALUE(?,?,?,?,?,?,?,?)",
+          "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id, schedule_status, schedule_description, default_slot,`month`,`year`, created_by, created_date, updated_by, updated_date)\
+          VALUE(?,?,?,?,?,?,?,?,?,?)",
           [
             input.sub_dept_id,
             input.schedule_status,
             input.schedule_description,
             input.default_slot,
+            input.month,
+            input.year,
             input.created_by,
             new Date(),
             input.updated_by,
@@ -474,6 +478,8 @@ let addAppointmentSchedule = (req, res, next) => {
                           });
                         }
 
+
+                        if(i==input.length-1){
                         connection.commit(error => {
                           if (error) {
                             connection.rollback(() => {
@@ -486,6 +492,7 @@ let addAppointmentSchedule = (req, res, next) => {
                           req.records = schedule_leave;
                           next();
                         });
+                      }
                       }
                     );
                   } else {
@@ -507,6 +514,10 @@ let addAppointmentSchedule = (req, res, next) => {
             // next();
           }
         );
+      }
+
+
+
       });
     });
   } catch (e) {
