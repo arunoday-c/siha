@@ -14,7 +14,14 @@ export default {
       purchase_uom_id: null,
       sales_uom_id: null,
       stocking_uom_id: null,
-      detail_item_uom: []
+      item_status: "A",
+      radioActive: true,
+      radioInactive: false,
+      detail_item_uom: [],
+      uom_description: null,
+      ItemList: [],
+      updateUomMapResult: [],
+      insertItemUomMap: []
     };
     return output;
   }

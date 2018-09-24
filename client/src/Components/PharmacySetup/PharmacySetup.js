@@ -10,6 +10,8 @@ import ItemGeneric from "./ItemGeneric/ItemGeneric";
 import ItemGroup from "./ItemGroup/ItemGroup";
 import ItemUOM from "./ItemUOM/ItemUOM";
 import Location from "./Location/Location";
+import ItemForm from "./ItemForm/ItemForm";
+import ItemStorage from "./ItemStorage/ItemStorage";
 
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -156,6 +158,36 @@ class PharmacySetup extends Component {
                 />
               }
             </li>
+
+            <li
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              algaehtabs={"Form"}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "item_form"
+                  }}
+                />
+              }
+            </li>
+
+            <li
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              algaehtabs={"Storage"}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "item_storage"
+                  }}
+                />
+              }
+            </li>
           </ul>
         </div>
 
@@ -172,6 +204,10 @@ class PharmacySetup extends Component {
             <ItemUOM />
           ) : this.state.pageDisplay === "Location" ? (
             <Location />
+          ) : this.state.pageDisplay === "Form" ? (
+            <ItemForm />
+          ) : this.state.pageDisplay === "Storage" ? (
+            <ItemStorage />
           ) : null}
         </div>
       </div>

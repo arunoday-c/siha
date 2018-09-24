@@ -68,6 +68,24 @@ class ItemSetup extends Component {
       }
     });
 
+    this.props.getItemForm({
+      uri: "/pharmacy/getItemForm",
+      method: "GET",
+      redux: {
+        type: "ANALYTES_GET_DATA",
+        mappingName: "itemform"
+      }
+    });
+
+    this.props.getItemStorage({
+      uri: "/pharmacy/getItemStorage",
+      method: "GET",
+      redux: {
+        type: "ANALYTES_GET_DATA",
+        mappingName: "itemstorage"
+      }
+    });
+
     getItems(this, this);
   }
 
@@ -299,7 +317,7 @@ class ItemSetup extends Component {
                 ]}
                 keyId="hims_d_item_master_id"
                 dataSource={{
-                  data: this.props.itemlist
+                  data: this.state.ItemList
                 }}
                 paging={{ page: 0, rowsPerPage: 10 }}
               />
@@ -354,7 +372,9 @@ function mapStateToProps(state) {
     itemcategory: state.itemcategory,
     itemgroup: state.itemgroup,
     itemuom: state.itemuom,
-    itemgeneric: state.itemgeneric
+    itemgeneric: state.itemgeneric,
+    itemform: state.itemform,
+    itemstorage: state.itemstorage
   };
 }
 
@@ -365,7 +385,9 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
-      getItemGeneric: AlgaehActions
+      getItemGeneric: AlgaehActions,
+      getItemForm: AlgaehActions,
+      getItemStorage: AlgaehActions
     },
     dispatch
   );

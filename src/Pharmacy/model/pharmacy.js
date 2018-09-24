@@ -2,11 +2,13 @@
 import {
   whereCondition,
   releaseDBConnection,
-  jsonArrayToObject
+  jsonArrayToObject,
+  runningNumberGen
 } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../../utils/logging";
+import moment from "moment";
 
 //created by irfan: to add in itemMaster
 let addItemMaster = (req, res, next) => {
@@ -362,10 +364,11 @@ let getItemMasterAndItemUom = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id, MIU.stocking_uom, MIU.conversion_factor, MIU.uom_status,\
+        "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description, MIU.stocking_uom, MIU.conversion_factor, MIU.uom_status,\
         IM.hims_d_item_master_id, IM.item_code, IM.item_description, IM.structure_id, IM.generic_id, IM.category_id,\
         IM.group_id, IM.form_id, IM.storage_id, IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status\
-        from hims_d_item_master IM,hims_m_item_uom MIU  where IM.hims_d_item_master_id=MIU.item_master_id and MIU.record_status='A'and IM.record_status='A'",
+        from hims_d_item_master IM,hims_m_item_uom MIU,hims_d_pharmacy_uom PH  where IM.hims_d_item_master_id=MIU.item_master_id  and\
+         MIU.uom_id=PH.hims_d_pharmacy_uom_id and MIU.record_status='A'and IM.record_status='A'",
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -740,15 +743,17 @@ let updatePharmacyLocation = (req, res, next) => {
   }
 };
 
-//created by irfan: to pharmacy_stock
-let addPharmacyStock = (req, res, next) => {
+//created by:irfan,to update Item Master And Uom
+let updateItemMasterAndUom = (req, res, next) => {
   try {
+    debugFunction("updateItemMasterAndUom ");
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let input = extend({}, req.body);
 
+    let input = extend({}, req.body);
+    debugLog("Input body", input);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -760,60 +765,118 @@ let addPharmacyStock = (req, res, next) => {
             next(error);
           });
         }
-        connection.query(
-          "INSERT INTO `hims_f_pharmacy_stock_header` (`document_number`, `docdate`, `year`, `period`, `description`, `posted`, `created_date`, `created_by`, `updated_date`, `updated_by`) \
-        VALUE(?,?,?,?,?,?,?,?,?,?)",
-          [
-            input.item_code,
-            input.item_description,
-            input.structure_id,
-            input.generic_id,
-            input.category_id,
-            input.group_id,
-            input.item_uom_id,
-            input.purchase_uom_id,
-            input.sales_uom_id,
-            input.stocking_uom_id,
-            new Date(),
-            input.created_by,
-            new Date(),
-            input.updated_by
-          ],
-          (error, result) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
+        let queryBuilder =
+          "UPDATE `hims_d_item_master` SET `item_code`=?, `item_description`=?, `structure_id`=?,\
+          `generic_id`=?, `category_id`=?, `group_id`=?, `form_id`=?, `storage_id`=?, `item_uom_id`=?,\
+           `purchase_uom_id`=?, `sales_uom_id`=?, `stocking_uom_id`=?, `item_status`=?, \
+            `update_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and\
+           `hims_d_item_master_id`=?";
+        let inputs = [
+          input.item_code,
+          input.item_description,
+          input.structure_id,
+          input.generic_id,
+          input.category_id,
+          input.group_id,
+          input.form_id,
+          input.storage_id,
+          input.item_uom_id,
+          input.purchase_uom_id,
+          input.sales_uom_id,
+          input.stocking_uom_id,
+          input.item_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_item_master_id
+        ];
 
-            debugLog(" item master id :", result.insertId);
-            // req.records = spResult;
-            // next();
+        connection.query(queryBuilder, inputs, (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
 
-            if (result.insertId != null) {
-              const insurtColumns = [
-                "uom_id",
-                "stocking_uom",
-                "conversion_factor",
-                "uom_status",
-                "created_by",
-                "updated_by"
-              ];
+          if (result != null) {
+            new Promise((resolve, reject) => {
+              try {
+                if (input.insertItemUomMap.length != 0) {
+                  const insurtColumns = [
+                    "uom_id",
+                    "item_master_id",
+                    "stocking_uom",
+                    "conversion_factor",
+                    "uom_status",
+                    "created_by",
+                    "updated_by"
+                  ];
 
-              connection.query(
-                "INSERT INTO hims_m_item_uom(" +
-                  insurtColumns.join(",") +
-                  ",item_master_id,created_date,updated_date) VALUES ?",
-                [
-                  jsonArrayToObject({
-                    sampleInputObject: insurtColumns,
-                    arrayObj: req.body.detail_item_uom,
-                    newFieldToInsert: [result.insertId, new Date(), new Date()],
-                    req: req
-                  })
-                ],
-                (error, detailResult) => {
+                  connection.query(
+                    "INSERT INTO hims_m_item_uom(" +
+                      insurtColumns.join(",") +
+                      ",created_date,updated_date) VALUES ?",
+                    [
+                      jsonArrayToObject({
+                        sampleInputObject: insurtColumns,
+                        arrayObj: req.body.insertItemUomMap,
+                        newFieldToInsert: [new Date(), new Date()],
+                        req: req
+                      })
+                    ],
+                    (error, insertUomMapResult) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      return resolve(insertUomMapResult);
+                    }
+                  );
+                } else {
+                  return resolve();
+                }
+              } catch (e) {
+                reject(e);
+              }
+            }).then(results => {
+              debugLog("inside uom map then");
+
+              //bulk  update uom maping
+              if (input.updateUomMapResult.length != 0) {
+                debugLog("inside update map uom");
+                let inputParam = extend([], req.body.updateUomMapResult);
+                debugLog("input update UomMapResult", inputParam);
+
+                let qry = "";
+
+                for (let i = 0; i < req.body.updateUomMapResult.length; i++) {
+                  qry +=
+                    "UPDATE `hims_m_item_uom` SET item_master_id='" +
+                    inputParam[i].item_master_id +
+                    "', uom_id='" +
+                    inputParam[i].uom_id +
+                    "', stocking_uom='" +
+                    inputParam[i].stocking_uom +
+                    "', conversion_factor='" +
+                    inputParam[i].conversion_factor +
+                    "', uom_status='" +
+                    inputParam[i].uom_status +
+                    "', record_status='" +
+                    inputParam[i].record_status +
+                    "', updated_date='" +
+                    new Date().toLocaleString() +
+                    "',updated_by=\
+'" +
+                    req.body.updated_by +
+                    "' WHERE record_status='A' and hims_m_item_uom_id='" +
+                    inputParam[i].hims_m_item_uom_id +
+                    "';";
+                }
+
+                connection.query(qry, (error, updateUomMapResult) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -828,19 +891,36 @@ let addPharmacyStock = (req, res, next) => {
                         next(error);
                       });
                     }
-                    req.records = detailResult;
+                    req.records = updateUomMapResult;
                     next();
                   });
-                }
-              );
-            } else {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
+                });
+              } else {
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  req.records = results;
+                  next();
+                });
+              }
+            });
+          } else {
+            connection.commit(error => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+              req.records = result;
+              next();
+            });
           }
-        );
+        });
       });
     });
   } catch (e) {
@@ -848,6 +928,379 @@ let addPharmacyStock = (req, res, next) => {
   }
 };
 
+//created by Nowshad: to updateItemForm
+let updateItemForm = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_item_form` SET `form_description`=?, `item_form_status`=?,\
+        `updated_date`=?, `updated_by`=?, `record_status`=?\
+        WHERE `hims_d_item_form_id`=? and `record_status`='A';",
+        [
+          input.form_description,
+          input.item_form_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_item_form_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to updateItemStorage
+let updateItemStorage = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_item_storage` SET `storage_description`=?, `storage_status`=?,\
+        `updated_date`=?, `updated_by`=?, `record_status`=?\
+        WHERE `hims_d_item_storage_id`=? and `record_status`='A';",
+        [
+          input.storage_description,
+          input.storage_status,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_d_item_storage_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to get item category
+let getItemForm = (req, res, next) => {
+  let selectWhere = {
+    hims_d_item_form_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select * FROM hims_d_item_form where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to get item category
+let getItemStorage = (req, res, next) => {
+  let selectWhere = {
+    hims_d_item_storage_id: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select * FROM hims_d_item_storage where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to add ItemCategory
+let addItemForm = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_item_form` (`form_description`, `item_form_status`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+        VALUE(?,?,?,?,?,?)",
+        [
+          input.form_description,
+          "A",
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to add Item Forms
+let addItemStorage = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_item_storage` (`storage_description`, `storage_status`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+        VALUE(?,?,?,?,?,?)",
+        [
+          input.storage_description,
+          "A",
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to pharmacy_intial_stock
+let addPharmacyInitialStock = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    debugLog("inside", "add stock");
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        let requestCounter = 1;
+
+        new Promise((resolve, reject) => {
+          runningNumberGen({
+            db: connection,
+            counter: requestCounter,
+            module_desc: ["STK_DOC"],
+            onFailure: error => {
+              reject(error);
+            },
+            onSuccess: result => {
+              resolve(result);
+            }
+          });
+        }).then(result => {
+          let documentCode = result[0].completeNumber;
+          debugLog("documentCode:", documentCode);
+
+          let year = moment().format("YYYY");
+          debugLog("onlyyear:", year);
+
+          let today = moment().format("YYYY-MM-DD");
+          debugLog("today:", today);
+
+          let month = moment().format("MM");
+          debugLog("month:", month);
+          let period = month;
+
+          debugLog("period:", period);
+          connection.query(
+            "INSERT INTO `hims_f_pharmacy_stock_header` (document_number,docdate,`year`,period,description,posted,created_date,created_by,updated_date,updated_by) \
+          VALUE(?,?,?,?,?,?,?,?,?,?)",
+            [
+              documentCode,
+              today,
+              year,
+              period,
+              input.description,
+              input.posted,
+              new Date(),
+              input.created_by,
+              new Date(),
+              input.updated_by
+            ],
+            (error, headerResult) => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+
+              debugLog(" stock header id :", headerResult.insertId);
+
+              if (headerResult.insertId != null) {
+                const insurtColumns = [
+                  "item_id",
+                  "location_type",
+                  "location_id",
+                  "item_category_id",
+                  "item_group_id",
+                  "uom_id",
+                  "barcode",
+                  "batchno",
+                  "expiry_date",
+                  "grn_number",
+                  "quantity",
+                  "conversion_fact",
+                  "unit_cost",
+                  "extended_cost",
+                  "comment",
+                  "created_by",
+                  "updated_by"
+                ];
+
+                connection.query(
+                  "INSERT INTO hims_f_pharmacy_stock_detail(" +
+                    insurtColumns.join(",") +
+                    ",pharmacy_stock_header_id,created_date,updated_date) VALUES ?",
+                  [
+                    jsonArrayToObject({
+                      sampleInputObject: insurtColumns,
+                      arrayObj: req.body.pharmacy_stock_detail,
+                      newFieldToInsert: [
+                        headerResult.insertId,
+                        new Date(),
+                        new Date()
+                      ],
+                      req: req
+                    })
+                  ],
+                  (error, detailResult) => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      req.records = detailResult;
+                      next();
+                    });
+                  }
+                );
+              } else {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+            }
+          );
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   addItemMaster,
   addItemCategory,
@@ -855,6 +1308,8 @@ module.exports = {
   addItemGroup,
   addPharmacyUom,
   addPharmacyLocation,
+  addItemForm,
+  addItemStorage,
 
   getItemMaster,
   getItemCategory,
@@ -862,11 +1317,17 @@ module.exports = {
   getItemGroup,
   getPharmacyUom,
   getPharmacyLocation,
+  getItemStorage,
+  getItemForm,
 
   updateItemCategory,
   updateItemGroup,
   updateItemGeneric,
   updatePharmacyUom,
   updatePharmacyLocation,
-  getItemMasterAndItemUom
+  updateItemForm,
+  updateItemStorage,
+  getItemMasterAndItemUom,
+  updateItemMasterAndUom,
+  addPharmacyInitialStock
 };

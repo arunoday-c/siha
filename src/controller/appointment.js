@@ -11,7 +11,8 @@ import {
   getAppointmentClinic,
   updateAppointmentStatus,
   updateAppointmentRoom,
-  updateAppointmentClinic
+  updateAppointmentClinic,
+  addAppointmentSchedule
 } from "../model/appointment";
 
 export default ({ config, db }) => {
@@ -151,5 +152,21 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by irfan :to add Appointment schedule
+  api.post(
+    "/addAppointmentSchedule",
+    addAppointmentSchedule,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };

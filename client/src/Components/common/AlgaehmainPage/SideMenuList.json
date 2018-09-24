@@ -98,7 +98,28 @@
       {
         "name": "Patient Recall",
         "label": "Patient Recall",
+
         "path": "/PatientRecall"
+      },
+      {
+        "name": "PhysicianScheduleSetup",
+        "label": "Physician Schedule Setup",
+        "arlabel": "إعداد جدول الطبيب",
+        "path": "/PhysicianScheduleSetup"
+      }
+    ]
+  },
+
+  {
+    "name": "EmployeeManagement",
+    "label": "Employee Mgmt",
+    "icon": "fas fa-users",
+    "subMenu": [
+      {
+        "name": "EmployeeMasterIndex",
+        "label": "Employee Master Index",
+        "arlabel": "مؤشر الموظف الرئيسي",
+        "path": "/EmployeeMasterIndex"
       }
     ]
   },

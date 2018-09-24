@@ -3,6 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
+import IconButton from "@material-ui/core/IconButton";
+
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./UOMAdditionalInfo.css";
 import {
@@ -12,19 +14,38 @@ import {
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext.js";
-import { texthandle } from "./UOMAdditionalInfoEvents";
+import {
+  texthandle,
+  AddUom,
+  deleteUOM,
+  updateUOM,
+  onchangegridcol,
+  uomtexthandle,
+  stockingtexthandle,
+  stockonchangegridcol
+} from "./UOMAdditionalInfoEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import AHSnackbar from "../../../common/Inputs/AHSnackbar";
 
 class UOMAdditionalInfo extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      uom_id: null,
+      stocking_uom: null,
+      conversion_factor: 0,
+      convertEnable: false
+    };
   }
 
   componentWillMount() {
     let InputOutput = this.props.itemPop;
     this.setState({ ...this.state, ...InputOutput });
   }
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
 
   render() {
     return (
@@ -50,7 +71,7 @@ class UOMAdditionalInfo extends Component {
                           valueField: "hims_d_pharmacy_uom_id",
                           data: this.props.itemuom
                         },
-                        onChange: texthandle.bind(this, this, context)
+                        onChange: uomtexthandle.bind(this, this, context)
                       }}
                     />
 
@@ -64,10 +85,11 @@ class UOMAdditionalInfo extends Component {
                         name: "conversion_factor",
                         value: this.state.conversion_factor,
                         events: {
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: texthandle.bind(this, this)
                         },
-                        error: this.state.open,
-                        helperText: this.state.userErrorText
+                        others: {
+                          disabled: this.state.convertEnable
+                        }
                       }}
                     />
 
@@ -85,9 +107,21 @@ class UOMAdditionalInfo extends Component {
                           valueField: "value",
                           data: GlobalVariables.FORMAT_YESNO
                         },
-                        onChange: texthandle.bind(this, this, context)
+                        onChange: stockingtexthandle.bind(this, this)
                       }}
                     />
+
+                    <div className="col-lg-1 actions">
+                      <a
+                        href="javascript:;"
+                        className="btn btn-primary btn-circle active"
+                      >
+                        <i
+                          className="fas fa-plus"
+                          onClick={AddUom.bind(this, this, context)}
+                        />
+                      </a>
+                    </div>
                   </div>
 
                   <div className="row" style={{ marginTop: "10px" }}>
@@ -96,23 +130,51 @@ class UOMAdditionalInfo extends Component {
                         id="UOM_stck"
                         columns={[
                           {
+                            fieldName: "action",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "action" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  <IconButton
+                                    color="primary"
+                                    title="Add Template"
+                                    style={{ maxHeight: "4vh" }}
+                                  >
+                                    <i
+                                      className="fa fa-trash"
+                                      aria-hidden="true"
+                                      onClick={deleteUOM.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      )}
+                                    />
+                                  </IconButton>
+                                </span>
+                              );
+                            }
+                          },
+                          {
                             fieldName: "uom_id",
                             label: (
                               <AlgaehLabel label={{ fieldName: "uom_id" }} />
                             ),
                             displayTemplate: row => {
                               let display =
-                                this.props.servicetype === undefined
+                                this.props.itemuom === undefined
                                   ? []
-                                  : this.props.servicetype.filter(
+                                  : this.props.itemuom.filter(
                                       f =>
-                                        f.hims_d_service_type_id === row.uom_id
+                                        f.hims_d_pharmacy_uom_id === row.uom_id
                                     );
 
                               return (
                                 <span>
                                   {display !== undefined && display.length !== 0
-                                    ? display[0].arabic_service_type
+                                    ? display[0].uom_description
                                     : ""}
                                 </span>
                               );
@@ -133,12 +195,16 @@ class UOMAdditionalInfo extends Component {
                                     others: {
                                       disabled: true
                                     },
-                                    onChange: null
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      context,
+                                      row
+                                    )
                                   }}
                                 />
                               );
-                            },
-                            disabled: true
+                            }
                           },
 
                           {
@@ -156,8 +222,16 @@ class UOMAdditionalInfo extends Component {
                                     value: row.conversion_factor,
                                     className: "txt-fld",
                                     name: "conversion_factor",
+                                    others: {
+                                      disabled: true
+                                    },
                                     events: {
-                                      onChange: null
+                                      onChange: onchangegridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      )
                                     }
                                   }}
                                 />
@@ -190,27 +264,28 @@ class UOMAdditionalInfo extends Component {
                                     others: {
                                       disabled: true
                                     },
-                                    onChange: null
+                                    onChange: stockonchangegridcol.bind(
+                                      this,
+                                      this,
+                                      context,
+                                      row
+                                    )
                                   }}
                                 />
                               );
-                            },
-                            disabled: true
+                            }
                           }
                         ]}
                         keyId="service_type_id"
                         dataSource={{
                           data: this.state.detail_item_uom
                         }}
-                        isEditable={true}
                         paging={{ page: 0, rowsPerPage: 5 }}
-                        events={
-                          {
-                            //   onDelete: this.deleteBillDetail.bind(this, context),
-                            //   onEdit: row => {},
-                            //   onDone: this.updateBillDetail.bind(this)
-                          }
-                        }
+                        events={{
+                          onDelete: deleteUOM.bind(this, this, context),
+                          onEdit: row => {},
+                          onDone: updateUOM.bind(this, this, context)
+                        }}
                       />
                     </div>
                   </div>
@@ -219,6 +294,11 @@ class UOMAdditionalInfo extends Component {
                   <div className="row">Aditional Information</div>
                 </div>
               </div>
+              <AHSnackbar
+                open={this.state.open}
+                handleClose={this.handleClose}
+                MandatoryMsg={this.state.MandatoryMsg}
+              />
             </div>
           )}
         </MyContext.Consumer>

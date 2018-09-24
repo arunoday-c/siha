@@ -15,7 +15,7 @@ class AppointmentStatus extends Component {
     super(props);
     this.state = {
       appointmentStatus: [],
-      color_code: "",
+      color_code: "#FFFFFF",
       color_code_error: false,
       color_code_error_text: "",
 
@@ -55,7 +55,6 @@ class AppointmentStatus extends Component {
   }
 
   deleteAppointmentStatus(data) {
-    debugger;
     swal({
       title: "Are you sure you want to delete this Status?",
       icon: "warning",
@@ -155,7 +154,7 @@ class AppointmentStatus extends Component {
   addAppointmentStatus(e) {
     e.preventDefault();
 
-    if (this.state.color_code.length === 0) {
+    if (this.state.color_code === "#FFFFFF") {
       this.setState({
         color_code_error: true,
         color_code_error_text: "Color Code cannot be empty"
@@ -223,7 +222,7 @@ class AppointmentStatus extends Component {
             <div className="col-lg-3">
               <div className="row">
                 <AlagehFormGroup
-                  div={{ className: "col-9" }}
+                  div={{ className: "col-lg-11" }}
                   label={{
                     fieldName: "color_code",
                     isImp: true
@@ -243,7 +242,7 @@ class AppointmentStatus extends Component {
                     helperText: this.state.color_code_error_text
                   }}
                 />
-                <span className="color-picker-icon">
+                <span className="color-picker-icon col-lg-1">
                   <i className="fas fa-palette" />
                 </span>
               </div>
@@ -320,33 +319,12 @@ class AppointmentStatus extends Component {
                 {
                   fieldName: "color_code",
                   label: <AlgaehLabel label={{ fieldName: "color_code" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "color_code",
-                          value: row.color_code,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-
-                {
-                  fieldName: "color_code",
-                  label: <AlgaehLabel label={{ forceLabel: "Color" }} />,
                   displayTemplate: row => {
                     return (
                       <div
                         className="col"
                         style={{
                           backgroundColor: "" + row.color_code,
-                          width: "100px",
                           height: "20px",
                           margin: "auto"
                         }}
@@ -355,15 +333,28 @@ class AppointmentStatus extends Component {
                   },
                   editorTemplate: row => {
                     return (
-                      <div
-                        className="col"
-                        style={{
-                          backgroundColor: "" + row.color_code,
-                          width: "100px",
-                          height: "20px",
-                          margin: "auto"
-                        }}
-                      />
+                      <div className="row">
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-11" }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "color_code",
+                            value: row.color_code,
+                            events: {
+                              onChange: this.changeGridEditors.bind(this, row)
+                            },
+                            others: {
+                              type: "color"
+                            },
+
+                            error: row.color_code_error,
+                            helperText: row.color_code_error_text
+                          }}
+                        />
+                        <span className="color-picker-icon col-lg-1">
+                          <i className="fas fa-palette" />
+                        </span>
+                      </div>
                     );
                   }
                 },

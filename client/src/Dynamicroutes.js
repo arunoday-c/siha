@@ -37,6 +37,8 @@ import StockEnquiry from "./Components/Pharmacy/StockEnquiry/StockEnquiry";
 import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry";
 import AppointmentSetup from "./Components/AppointmentSetup/AppointmentSetup";
 import ItemSetup from "./Components/ItemSetup/ItemSetup";
+import EmployeeMasterIndex from "./Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMasterIndex";
+import PhysicianScheduleSetup from "./Components/PhysicianScheduleSetup/PhysicianScheduleSetup";
 
 // function height() {
 //   let height =
@@ -79,7 +81,11 @@ const componts = (selectedLang, breadStyle) => {
     StockEnquiry: <StockEnquiry SelectLanguage={selectedLang} />,
     ItemMomentEnquiry: <ItemMomentEnquiry SelectLanguage={selectedLang} />,
     AppointmentSetup: <AppointmentSetup SelectLanguage={selectedLang} />,
-    ItemSetup: <ItemSetup SelectLanguage={selectedLang} />
+    ItemSetup: <ItemSetup SelectLanguage={selectedLang} />,
+    EmployeeMasterIndex: <EmployeeMasterIndex SelectLanguage={selectedLang} />,
+    PhysicianScheduleSetup: (
+      <PhysicianScheduleSetup SelectLanguage={selectedLang} />
+    )
   };
 };
 
