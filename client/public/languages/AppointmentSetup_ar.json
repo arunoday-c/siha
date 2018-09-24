@@ -4,5 +4,11 @@
   "appointment_clinics": "عيادات المواعيد",
   "color_code": "رمز اللون",
   "description": "وصف,",
-  "default_status": "الحالة الافتراضية"
+  "default_status": "الحالة الافتراضية",
+  "department_name": "اسم القسم",
+  "doctor": "طبيب",
+  "room": "مجال",
+  "room_status": "حالة الغرفة",
+  "created_by": "صنع من قبل",
+  "created_date": "تاريخ الإنشاء"
 }

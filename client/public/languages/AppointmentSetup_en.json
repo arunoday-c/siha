@@ -4,5 +4,11 @@
   "appointment_clinics": "Appointment Clinics",
   "color_code": "Color Code",
   "description": "Description",
-  "default_status": "Default Status"
+  "default_status": "Default Status",
+  "department_name": "Department Name",
+  "doctor": "Doctor",
+  "room": "Room",
+  "room_status": "Room Status",
+  "created_by": "Created By",
+  "created_date": "Created Date"
 }

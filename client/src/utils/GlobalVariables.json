@@ -50,6 +50,11 @@
     { "name": "Inactive", "arabic_name": "غير نشط", "value": "I" }
   ],
 
+  "FORMAT_ACT_INACT": [
+    { "name": "Active", "arabic_name": "نشيط", "value": "Y" },
+    { "name": "Inactive", "arabic_name": "غير نشط", "value": "N" }
+  ],
+
   "FORMAT_SERVICE_PRICE": [
     { "name": "Gross Amount", "arabic_name": "المبلغ الإجمالي", "value": "G" },
     { "name": "Net Amount", "arabic_name": "كمية الشبكة", "value": "N" }

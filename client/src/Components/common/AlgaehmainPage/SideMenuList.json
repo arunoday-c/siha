@@ -98,7 +98,14 @@
       {
         "name": "Patient Recall",
         "label": "Patient Recall",
+
         "path": "/PatientRecall"
+      },
+      {
+        "name": "PhysicianScheduleSetup",
+        "label": "Physician Schedule Setup",
+        "arlabel": "إعداد جدول الطبيب",
+        "path": "/PhysicianScheduleSetup"
       }
     ]
   },
