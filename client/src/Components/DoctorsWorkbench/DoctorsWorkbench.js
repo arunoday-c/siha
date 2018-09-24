@@ -12,12 +12,8 @@ import IconButton from "@material-ui/core/IconButton";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import Search from "@material-ui/icons/Search";
 import GlobalVariables from "../../utils/GlobalVariables.json";
-import { algaehApiCall } from "../../utils/algaehApiCall";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { AlgaehActions } from "../../actions/algaehActions";
-import { getCookie } from "../../utils/algaehApiCall";
+import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
+import swal from "sweetalert";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
@@ -66,7 +62,6 @@ class DoctorsWorkbench extends Component {
       },
       method: "PUT",
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           this.loadListofData();
 
@@ -86,35 +81,53 @@ class DoctorsWorkbench extends Component {
     });
   }
 
-  moveToPatientProfile() {}
-
   loadListofData() {
     algaehLoader({ show: true });
-    this.props.getMyDay({
+    const dateRange =
+      localStorage.getItem("workbenchDateRange") !== null
+        ? JSON.parse(localStorage.getItem("workbenchDateRange"))
+        : {
+            fromDate: this.state.fromDate,
+            toDate: this.state.toDate,
+            activeDateHeader: this.state.fromDate
+          };
+
+    algaehApiCall({
       uri: "/doctorsWorkBench/getMyDay",
       data: {
-        fromDate: this.state.fromDate,
-        toDate: this.state.toDate
+        fromDate: dateRange.fromDate,
+        toDate: dateRange.toDate
       },
       method: "GET",
-      redux: {
-        type: "MYDAY_LIST_GET_DATA",
-        mappingName: "myday_list"
+      cancelRequestId: "getMyDay",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState(
+            {
+              data: response.data.records,
+              activeDateHeader: dateRange.activeDateHeader
+            },
+            () => {
+              algaehLoader({ show: false });
+            }
+          );
+        }
       },
-      afterSuccess: data => {
-        this.setState({ data: data }, () => {
-          algaehLoader({ show: false });
+      onFailure: error => {
+        algaehLoader({ show: false });
+        swal(error.message, {
+          icon: "error",
+          buttons: false,
+          timer: 2000
         });
       }
     });
   }
+  componentWillUnmount() {
+    cancelRequest("getMyDay");
+  }
 
-  componentWillMount() {
-    let prevLang = getCookie("Language");
-    setGlobal({ selectedLang: prevLang });
-    this.setState({
-      selectedLang: prevLang
-    });
+  componentDidMount() {
     this.loadListofData();
   }
 
@@ -141,6 +154,8 @@ class DoctorsWorkbench extends Component {
     return generatedLi;
   }
   onSelectedDateHandler(e) {
+    debugger;
+    const fromDate = e.target.getAttribute("date");
     this.setState(
       {
         activeDateHeader: e.target.getAttribute("date"),
@@ -148,6 +163,14 @@ class DoctorsWorkbench extends Component {
         toDate: e.target.getAttribute("date")
       },
       () => {
+        localStorage.setItem(
+          "workbenchDateRange",
+          JSON.stringify({
+            fromDate: fromDate,
+            toDate: fromDate,
+            activeDateHeader: fromDate
+          })
+        );
         this.loadListofData();
       }
     );
@@ -502,24 +525,4 @@ class DoctorsWorkbench extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    myday_list: state.myday_list
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getMyDay: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(DoctorsWorkbench)
-);
+export default DoctorsWorkbench;

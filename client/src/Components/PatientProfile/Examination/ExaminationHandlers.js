@@ -8,6 +8,7 @@ const getPhysicalExaminations = $this => {
       hims_d_physical_examination_header_id: null,
       hims_d_physical_examination_details_id: null
     },
+    cancelRequestId: "getPhysicalExamination",
     redux: {
       type: "ALL_EXAMINATIONS",
       mappingName: "allexaminations"
@@ -17,10 +18,10 @@ const getPhysicalExaminations = $this => {
 };
 
 const getPhysicalExaminationsDetails = ($this, header_id) => {
-  debugger;
   $this.props.getPhysicalExaminationsDetails({
     uri: "/doctorsWorkBench/getPhysicalExamination/get",
     method: "GET",
+    cancelRequestId: "getPhysicalExaminationsDetails",
     data: {
       hims_d_physical_examination_header_id: header_id,
       hims_d_physical_examination_details_id: null
@@ -29,9 +30,7 @@ const getPhysicalExaminationsDetails = ($this, header_id) => {
       type: "ALL_EXAMINATIONS_DETAILS",
       mappingName: "allexaminationsdetails"
     },
-    afterSuccess: data => {
-      debugger;
-    }
+    afterSuccess: data => {}
   });
 };
 
@@ -39,6 +38,7 @@ const getPhysicalExaminationsSubDetails = ($this, detail_id) => {
   $this.props.getPhysicalExaminationsSubDetails({
     uri: "/doctorsWorkBench/getPhysicalExamination/get",
     method: "GET",
+    cancelRequestId: "getPhysicalExaminationsSubDetails",
     data: {
       hims_d_physical_examination_header_id: null,
       hims_d_physical_examination_details_id: detail_id
@@ -55,6 +55,7 @@ const getPatientPhysicalExamination = $this => {
   $this.props.getPatientPhysicalExamination({
     uri: "/doctorsWorkBench/getPatientPhysicalExamination",
     method: "GET",
+    cancelRequestId: "getPatientPhysicalExamination",
     data: {
       patient_id: Window.global["current_patient"],
       episode_id: Window.global["episode_id"]

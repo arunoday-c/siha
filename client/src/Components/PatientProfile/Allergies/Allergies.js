@@ -14,7 +14,8 @@ import {
   texthandle,
   datehandle,
   updatePatientAllergy,
-  getAllAllergies
+  getAllAllergies,
+  getPatientAllergies
 } from "./AllergiesHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -24,7 +25,6 @@ import swal from "sweetalert";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import algaehLoader from "../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
-import { setGlobal } from "../../../utils/GlobalFunctions.js";
 
 class Allergies extends Component {
   constructor(props) {
@@ -39,8 +39,33 @@ class Allergies extends Component {
     this.handleClose = this.handleClose.bind(this);
   }
   componentDidMount() {
-    // getAllAllergies(this, this.state.allergy_value);
-    this.getPatientAllergies();
+    if (
+      this.props.patient_allergies === undefined ||
+      this.props.patient_allergies.length === 0
+    )
+      getPatientAllergies(this);
+    else {
+      let _allergies = Enumerable.from(this.props.patient_allergies)
+        .groupBy("$.allergy_type", null, (k, g) => {
+          return {
+            allergy_type: k,
+            allergy_type_desc:
+              k === "F"
+                ? "Food"
+                : k === "A"
+                  ? "Airborne"
+                  : k === "AI"
+                    ? "Animal  &  Insect"
+                    : k === "C"
+                      ? "Chemical & Others"
+                      : "",
+            allergyList: g.getSource()
+          };
+        })
+        .toArray();
+
+      this.setState({ patientAllergies: _allergies });
+    }
   }
 
   handleClose() {
@@ -81,16 +106,13 @@ class Allergies extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          this.getPatientAllergies();
+          getPatientAllergies(this);
           this.resetAllergies();
           swal("Allergy added successfully . .", {
             icon: "success",
             buttons: false,
             timer: 2000
           });
-
-          //this.setState({ patientChiefComplains: response.data.records });
-          //console.log("Add Allergy Success:", response.data.records);
         }
       },
       onFailure: error => {}
@@ -104,46 +126,6 @@ class Allergies extends Component {
     });
   }
 
-  getPatientAllergies() {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getPatientAllergy",
-      method: "GET",
-      data: {
-        patient_id: Window.global["current_patient"]
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({ allAllergies: response.data.records });
-
-          let _allergies = Enumerable.from(response.data.records)
-            .groupBy("$.allergy_type", null, (k, g) => {
-              return {
-                allergy_type: k,
-                allergy_type_desc:
-                  k === "F"
-                    ? "Food"
-                    : k === "A"
-                      ? "Airborne"
-                      : k === "AI"
-                        ? "Animal  &  Insect"
-                        : k === "C"
-                          ? "Chemical & Others"
-                          : "",
-                allergyList: g.getSource()
-              };
-            })
-            .toArray();
-          setGlobal({ patientAllergies: _allergies });
-          this.setState({ patientAllergies: _allergies }, () => {
-            algaehLoader({ show: false });
-            document.getElementById("btn-outer-component-load").click();
-          });
-        }
-      },
-      onFailure: error => {}
-    });
-  }
-
   updatePatientAllergy(data) {
     data.record_status = "A";
 
@@ -153,8 +135,7 @@ class Allergies extends Component {
       data: data,
       onSuccess: response => {
         if (response.data.success) {
-          console.log("Allergy Update Response:", response.data.records);
-          this.getPatientAllergies();
+          getPatientAllergies(this);
           swal("Record updated successfully . .", {
             icon: "success",
             buttons: false,
@@ -196,7 +177,7 @@ class Allergies extends Component {
                 buttons: false,
                 timer: 2000
               });
-              this.getPatientAllergies();
+              getPatientAllergies(this);
             }
           },
           onFailure: error => {}
@@ -663,14 +644,16 @@ class Allergies extends Component {
 
 function mapStateToProps(state) {
   return {
-    allallergies: state.allallergies
+    allallergies: state.allallergies,
+    patient_allergies: state.patient_allergies
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getAllAllergies: AlgaehActions
+      getAllAllergies: AlgaehActions,
+      getPatientAllergies: AlgaehActions
     },
     dispatch
   );
