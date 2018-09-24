@@ -30,12 +30,18 @@ class ReviewofSystems extends Component {
     this.handleClose = this.handleClose.bind(this);
   }
   componentDidMount() {
-    // getReviewOfSystems(this);
-    getPatientROS(this);
+    if (
+      this.props.patientros === undefined ||
+      this.props.patientros.length === 0
+    )
+      getPatientROS(this);
   }
 
   componentWillUnmount() {
     cancelRequest("ros-cancel");
+    cancelRequest("getReviewOfSystem");
+    cancelRequest("getReviewOfSystemsDetails");
+    cancelRequest("getPatientROS");
   }
 
   updatePatientROS(data) {
@@ -429,8 +435,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getReviewOfSystems: AlgaehActions,
-      getReviewOfSystemsDetails: AlgaehActions,
-      getPatientROS: AlgaehActions
+      getPatientROS: AlgaehActions,
+      getReviewOfSystemsDetails: AlgaehActions
     },
     dispatch
   );

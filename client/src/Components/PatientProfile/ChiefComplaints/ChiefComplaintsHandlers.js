@@ -2,6 +2,7 @@ const getAllChiefComplaints = ($this, callBack) => {
   $this.props.getAllChiefComplaints({
     uri: "/doctorsWorkBench/getChiefComplaints",
     method: "GET",
+    cancelRequestId: "getChiefComplaints",
     redux: {
       type: "ALL_CHIEF_COMPLAINTS",
       mappingName: "allchiefcomplaints"
@@ -13,6 +14,11 @@ const getAllChiefComplaints = ($this, callBack) => {
 };
 
 const getPatientChiefComplaints = $this => {
+  // if ($this.props.patient_chief_complaints !== undefined) {
+  //   $this.setState({
+  //     patientChiefComplains: $this.props.patient_chief_complaints
+  //   });
+  // } else {
   $this.props.getPatientChiefComplaints({
     uri: "/doctorsWorkBench/getPatientChiefComplaints",
     data: {
@@ -20,19 +26,15 @@ const getPatientChiefComplaints = $this => {
       episode_id: Window.global["episode_id"]
     },
     method: "GET",
+    cancelRequestId: "getPatientChiefComplaints",
     redux: {
       type: "PATIENT_CHIEF_COMPLAINTS",
       mappingName: "patient_chief_complaints"
     },
     afterSuccess: data => {
-      const masterChiefComplaints =
-        $this.props.allchiefcomplaints !== undefined &&
-        $this.props.allchiefcomplaints.length !== 0
-          ? $this.masterChiefComplaintsSortList(
-              $this.props.patient_chief_complaints
-            )
-          : [];
-      $this.setState({ masterChiefComplaints: masterChiefComplaints });
+      $this.setState({
+        patientChiefComplains: data
+      });
     }
   });
 };

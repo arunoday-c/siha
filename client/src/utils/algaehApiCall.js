@@ -7,6 +7,7 @@ import Slide from "@material-ui/core/Slide";
 import config from "../utils/config.json";
 import { setGlobal, removeGlobal } from "./GlobalFunctions";
 import Enumerable from "linq";
+import axiosCancel from "axios-cancel";
 export function algaehApiCall(options) {
   // "baseUrl": "http://192.168.0.149:3000/api/v1",
   if (!window.navigator.onLine) {
@@ -73,6 +74,37 @@ export function algaehApiCall(options) {
   if (settings.printInput) {
     console.log("Input data :", settings.data);
   }
+  let cancelRequest = {};
+
+  if (settings.cancelRequestId !== null) {
+    axiosCancel(axios, {
+      debug: false
+    });
+
+    cancelRequest = {
+      requestId: settings.cancelRequestId
+    };
+
+    // let CancelToken = axios.CancelToken;
+    // const source = CancelToken.source();
+    // cancelRequest = {
+    //   cancelToken: source.token
+    // };
+
+    // let previousRequestId =
+    //   Window.global === undefined
+    //     ? []
+    //     : Window.global["req_cancel"] === undefined
+    //       ? []
+    //       : Window.global["req_cancel"];
+    // previousRequestId.push({ id: settings.cancelRequestId, source: source });
+    // const removeAdd = Enumerable.from(previousRequestId)
+    //   .where(w => w.id !== settings.cancelRequestId)
+    //   .toArray();
+    // removeGlobal("req_cancel");
+    // setGlobal({ req_cancel: removeAdd });
+    //console.log("req_cancel", Window.global["req_cancel"]);
+  }
 
   const headerToken = getToken();
   const x_app_user_identity = getCookie("keyResources");
@@ -85,7 +117,8 @@ export function algaehApiCall(options) {
           "x-api-key": headerToken,
           "x-app-user-identity": x_app_user_identity
         },
-        body: JSON.stringify(settings.data)
+        body: JSON.stringify(settings.data),
+        ...cancelRequest
       })
         .then(response => {
           if (response.status >= 200 && response.status < 300) {
@@ -104,32 +137,6 @@ export function algaehApiCall(options) {
         });
     }
 
-    let cancelRequest = {};
-    if (
-      settings.cancelRequestId !== undefined ||
-      settings.cancelRequestId !== null ||
-      settings.cancelRequestId !== ""
-    ) {
-      let CancelToken = axios.CancelToken;
-      let source = CancelToken.source();
-      cancelRequest = {
-        cancelToken: source.token
-      };
-
-      let previousRequestId =
-        Window.global === undefined
-          ? []
-          : Window.global["req_cancel"] === undefined
-            ? []
-            : Window.global["req_cancel"];
-      previousRequestId.push({ id: settings.cancelRequestId, source: source });
-      const removeAdd = Enumerable.from(previousRequestId)
-        .where(w => w.id !== settings.cancelRequestId)
-        .toArray();
-      removeGlobal("req_cancel");
-      setGlobal({ req_cancel: removeAdd });
-    }
-
     axios({
       method: settings.method,
       url: settings.baseUrl + settings.uri + queryParametres,
@@ -142,23 +149,21 @@ export function algaehApiCall(options) {
       ...cancelRequest
     })
       .then(response => {
-        if (
-          settings.cancelRequestId !== undefined ||
-          settings.cancelRequestId !== null ||
-          settings.cancelRequestId !== ""
-        ) {
-          let previousRequestId =
-            Window.global === undefined
-              ? []
-              : Window.global["req_cancel"] === undefined
-                ? []
-                : Window.global["req_cancel"];
-          const removeAdd = Enumerable.from(previousRequestId)
-            .where(w => w.id !== settings.cancelRequestId)
-            .toArray();
-          removeGlobal("req_cancel");
-          setGlobal({ req_cancel: removeAdd });
-        }
+        // if (
+        //   settings.cancelRequestId !== undefined ||
+        //   settings.cancelRequestId !== null ||
+        //   settings.cancelRequestId !== ""
+        // ) {
+        //   const removeAdd = Enumerable.from(
+        //     Window.global["req_cancel"] === undefined
+        //       ? []
+        //       : Window.global["req_cancel"]
+        //   )
+        //     .where(w => w.id !== settings.cancelRequestId)
+        //     .toArray();
+        //   removeGlobal("req_cancel");
+        //   setGlobal({ req_cancel: removeAdd });
+        // }
 
         if (typeof settings.onSuccess == "function")
           settings.onSuccess(response);
@@ -169,17 +174,16 @@ export function algaehApiCall(options) {
           settings.cancelRequestId !== null ||
           settings.cancelRequestId !== ""
         ) {
-          let previousRequestId =
-            Window.global === undefined
-              ? []
-              : Window.global["req_cancel"] === undefined
-                ? []
-                : Window.global["req_cancel"];
-          const removeAdd = Enumerable.from(previousRequestId)
-            .where(w => w.id !== settings.cancelRequestId)
-            .toArray();
-          removeGlobal("req_cancel");
-          setGlobal({ req_cancel: removeAdd });
+          // let previousRequestId =
+          //   Window.global["req_cancel"] === undefined
+          //     ? []
+          //     : Window.global["req_cancel"];
+
+          // const removeAdd = Enumerable.from(previousRequestId)
+          //   .where(w => w.id !== settings.cancelRequestId)
+          //   .toArray();
+          // removeGlobal("req_cancel");
+          // setGlobal({ req_cancel: removeAdd });
           if (axios.isCancel(err)) {
             console.log("Request canceled :", err.message);
           }
@@ -191,22 +195,23 @@ export function algaehApiCall(options) {
 }
 
 export function cancelRequest(requestId) {
-  let getRequest =
-    Window.global["req_cancel"] === undefined
-      ? []
-      : Window.global["req_cancel"];
+  axios.cancel(requestId);
+  // let getRequest =
+  //   Window.global["req_cancel"] === undefined
+  //     ? []
+  //     : Window.global["req_cancel"];
 
-  const exactRequet = Enumerable.from(getRequest)
-    .where(w => w.id === requestId)
-    .firstOrDefault();
-  if (exactRequet !== undefined) {
-    exactRequet.source.cancel("Operation Cancelled");
-    const removeAdd = Enumerable.from(getRequest)
-      .where(w => w.id !== requestId)
-      .toArray();
-    removeGlobal("req_cancel");
-    setGlobal({ req_cancel: removeAdd });
-  }
+  // const exactRequet = Enumerable.from(getRequest)
+  //   .where(w => w.id === requestId)
+  //   .firstOrDefault();
+  // if (exactRequet !== undefined) {
+  //   exactRequet.source.cancel("Operation Cancelled");
+  //   const removeAdd = Enumerable.from(getRequest)
+  //     .where(w => w.id !== requestId)
+  //     .toArray();
+  //   removeGlobal("req_cancel");
+  //   setGlobal({ req_cancel: removeAdd });
+  // }
 }
 
 export function SelectFiledData(options) {

@@ -16,7 +16,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, cancelRequest } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 
 class Examination extends Component {
@@ -61,10 +61,20 @@ class Examination extends Component {
       onFailure: error => {}
     });
   }
+  componentWillUnmount() {
+    cancelRequest("getPhysicalExamination");
+    cancelRequest("getPhysicalExaminationsDetails");
+    cancelRequest("getPhysicalExaminationsSubDetails");
+    cancelRequest("getPatientPhysicalExamination");
+  }
 
   componentDidMount() {
-    getPhysicalExaminations(this);
-    getPatientPhysicalExamination(this);
+    // getPhysicalExaminations(this);
+    if (
+      this.props.all_patient_examinations === undefined ||
+      this.props.all_patient_examinations.length === 0
+    )
+      getPatientPhysicalExamination(this);
   }
 
   refreshState() {
@@ -118,7 +128,6 @@ class Examination extends Component {
   }
 
   resetExmnState() {
-    debugger;
     this.setState({
       hims_d_physical_examination_header_id: "",
       hims_d_physical_examination_details_id: "",
@@ -156,6 +165,7 @@ class Examination extends Component {
   }
 
   openExaminationModal() {
+    getPhysicalExaminations(this);
     this.setState({ openExamnModal: true });
   }
 

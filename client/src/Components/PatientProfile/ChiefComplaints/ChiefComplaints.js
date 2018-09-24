@@ -11,7 +11,10 @@ import {
   AlagehFormGroup,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-import { getAllChiefComplaints } from "./ChiefComplaintsHandlers";
+import {
+  getAllChiefComplaints,
+  getPatientChiefComplaints
+} from "./ChiefComplaintsHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -23,7 +26,7 @@ import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
 import HPI from "@material-ui/icons/AssignmentInd";
 import moment from "moment";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, cancelRequest } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import algaehLoader from "../../Wrapper/fullPageLoader";
 import swal from "sweetalert";
@@ -55,48 +58,24 @@ class ChiefComplaints extends Component {
     };
 
     this.handleClose = this.handleClose.bind(this);
-    // this.addChiefComplain = this.addChiefComplain.bind(this);
     this.setPainScale = this.setPainScale.bind(this);
   }
 
-  getPatientChiefComplaintsDetails() {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getPatientChiefComplaints",
-      data: {
-        patient_id: Window.global["current_patient"],
-        episode_id: Window.global["episode_id"]
-      },
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success) {
-          const masterChiefComplaints =
-            this.props.allchiefcomplaints !== undefined &&
-            this.props.allchiefcomplaints.length !== 0
-              ? this.masterChiefComplaintsSortList(response.data.records)
-              : [];
-
-          this.setState({
-            patientChiefComplains: response.data.records.sort((a, b) => {
-              return a.chief_complaint_id - b.chief_complaint_id;
-            }),
-            masterChiefComplaints: masterChiefComplaints
-          });
-        }
-      },
-      onFailure: error => {
-        swal(error.message, {
-          icon: "error",
-          buttons: false,
-          timer: 2000
-        });
-      }
-    });
+  componentWillUnmount() {
+    this.mounted = false;
+    cancelRequest("getChiefComplaints");
+    cancelRequest("getPatientChiefComplaints");
   }
-
   componentDidMount() {
-    getAllChiefComplaints(this);
-    this.getPatientChiefComplaintsDetails();
-    // getPatientChiefComplaints(this);
+    this.mounted = true;
+    //getAllChiefComplaints(this);
+    //this.getPatientChiefComplaintsDetails();
+    if (
+      this.props.patient_chief_complaints === undefined ||
+      this.props.patient_chief_complaints.length === 0
+    ) {
+      getPatientChiefComplaints(this);
+    }
   }
 
   texthandle(e) {
@@ -125,9 +104,9 @@ class ChiefComplaints extends Component {
                 buttons: false,
                 timer: 2000
               });
-              this.getPatientChiefComplaintsDetails();
+              //  this.getPatientChiefComplaintsDetails();
               getAllChiefComplaints(this);
-              //getPatientChiefComplaints(this);
+              getPatientChiefComplaints(this);
             }
           },
           onFailure: error => {}
@@ -238,6 +217,7 @@ class ChiefComplaints extends Component {
   }
 
   openChiefComplainModal(data) {
+    getAllChiefComplaints(this);
     this.setState({
       openComplain: true,
       hims_f_episode_chief_complaint_id: data.chief_complaint_id
@@ -268,6 +248,7 @@ class ChiefComplaints extends Component {
               openHpiModal: false,
               hims_f_episode_chief_complaint_id: null
             });
+            getPatientChiefComplaints();
             this.getPatientChiefComplaintsDetails();
           }
         },
@@ -524,7 +505,10 @@ class ChiefComplaints extends Component {
   }
 
   render() {
-    const patChiefComplain = this.state.patientChiefComplains;
+    const patChiefComplain =
+      this.state.patientChiefComplains !== undefined
+        ? this.state.patientChiefComplains
+        : [];
 
     return (
       <React.Fragment>
@@ -1355,7 +1339,7 @@ class ChiefComplaints extends Component {
               ]}
               keyId="patient_id"
               dataSource={{
-                data: this.state.patientChiefComplains
+                data: this.props.patient_chief_complaints
               }}
               isEditable={false}
               paging={{ page: 0, rowsPerPage: 5 }}
@@ -1375,14 +1359,16 @@ class ChiefComplaints extends Component {
 
 function mapStateToProps(state) {
   return {
-    allchiefcomplaints: state.allchiefcomplaints
+    allchiefcomplaints: state.allchiefcomplaints,
+    patient_chief_complaints: state.patient_chief_complaints
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getAllChiefComplaints: AlgaehActions
+      getAllChiefComplaints: AlgaehActions,
+      getPatientChiefComplaints: AlgaehActions
     },
     dispatch
   );

@@ -5,11 +5,10 @@ import Subjective from "./Subjective/Subjective";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import Assesment from "./Assessment/Assessment";
 import Plan from "./Plan/Plan";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
 import moment from "moment";
 import { setGlobal, removeGlobal } from "../../utils/GlobalFunctions";
 import algaehLoader from "../Wrapper/fullPageLoader";
-import Enumerable from "linq";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -17,10 +16,11 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import {
   getPatientProfile,
   getPatientVitals,
-  getPatientAllergies,
   getPatientDiet,
   getPatientDiagnosis
+  // getPatientChiefComplaints
 } from "./PatientProfileHandlers";
+import Enumerable from "linq";
 
 class PatientProfile extends Component {
   constructor(props) {
@@ -50,81 +50,56 @@ class PatientProfile extends Component {
   }
 
   componentWillUnmount() {
-    removeGlobal("current_patient");
-    removeGlobal("episode_id");
+    cancelRequest("getPatientProfile");
+    cancelRequest("getPatientVitals");
+    cancelRequest("getPatientDiet");
+    cancelRequest("getPatientDiagnosis");
+    // removeGlobal("current_patient");
+    // removeGlobal("episode_id");
   }
 
   componentDidMount() {
-    // algaehLoader({ show: true });
-    // algaehApiCall({
-    //   uri: "/doctorsWorkBench/getPatientProfile",
-    //   data: {
-    //     patient_id: Window.global["current_patient"],
-    //     episode_id: Window.global["episode_id"],
-    //     visit_id: Window.global["visit_id"]
-    //   },
-    //   method: "GET",
-    //   onSuccess: response => {
-    //     if (response.data.success) {
-    //       console.log("Patient data:", response.data.records);
-    //       let _allergies = Enumerable.from(
-    //         response.data.records.patient_allergies
-    //       )
-    //         .groupBy("$.allergy_type", null, (k, g) => {
-    //           return {
-    //             allergy_type: k,
-    //             allergy_type_desc:
-    //               k === "F"
-    //                 ? "Food"
-    //                 : k === "A"
-    //                   ? "Airborne"
-    //                   : k === "AI"
-    //                     ? "Animal  &  Insect"
-    //                     : k === "C"
-    //                       ? "Chemical & Others"
-    //                       : "",
-    //             allergyList: g.getSource()
-    //           };
-    //         })
-    //         .toArray();
-
-    //       this.setState(
-    //         {
-    //           patientData: response.data.records.patient_profile[0],
-    //           patientVitals: response.data.records.vitals[0],
-    //           patientAllergies: _allergies,
-    //           patientDiagnosis: response.data.records.patientDiagnosis,
-    //           patientDiet: response.data.records.patient_diet
-    //         },
-    //         () => {
-    //           algaehLoader({ show: false });
-    //         }
-    //       );
-    //     }
-    //   },
-    //   onFailure: error => {}
-    // });
-
     getPatientProfile(this);
-    getPatientAllergies(this);
-    getPatientVitals(this);
-    getPatientDiagnosis(this);
-    getPatientDiet(this);
-  }
-  setPatientGlobalParameters() {
-    if (Window.global["patientAllergies"] !== undefined) {
-      this.setState(
-        {
-          patientAllergies: Window.global["patientAllergies"]
-        },
-        () => {
-          removeGlobal("patientAllergies");
-        }
-      );
+    // if (
+    //   this.props.patient_allergies === undefined ||
+    //   this.props.patient_allergies.length === 0
+    // ) {
+    //   getPatientAllergies(this);
+    // } else {
+    //   this.setState({
+    //     patientAllergies: this.props.patient_allergies
+    //   });
+    // }
+    if (
+      this.props.patient_vitals === undefined ||
+      this.props.patient_vitals.length === 0
+    ) {
+      getPatientVitals(this);
     }
   }
 
   render() {
+    const _patient_allergies =
+      this.props.patient_allergies === undefined
+        ? []
+        : Enumerable.from(this.props.patient_allergies)
+            .groupBy("$.allergy_type", null, (k, g) => {
+              return {
+                allergy_type: k,
+                allergy_type_desc:
+                  k === "F"
+                    ? "Food"
+                    : k === "A"
+                      ? "Airborne"
+                      : k === "AI"
+                        ? "Animal  &  Insect"
+                        : k === "C"
+                          ? "Chemical & Others"
+                          : "",
+                allergyList: g.getSource()
+              };
+            })
+            .toArray();
     return (
       <div className="row patientProfile">
         <div className="patientInfo-Top box-shadow-normal">
@@ -132,7 +107,7 @@ class PatientProfile extends Component {
             <button
               id="btn-outer-component-load"
               className="d-none"
-              onClick={this.setPatientGlobalParameters.bind(this)}
+              //  onClick={this.setPatientGlobalParameters.bind(this)}
             />
             <button
               onClick={() => {
@@ -282,12 +257,7 @@ class PatientProfile extends Component {
                 KG
               </b>
             </span>
-            {/* <span>
-              HR: <b>85</b>
-            </span>
-            <span>
-              RR: <b>45</b>
-            </span> */}
+
             <span>
               BMI :{" "}
               <b>
@@ -308,15 +278,6 @@ class PatientProfile extends Component {
         </div>
         <div className="patientTopNav box-shadow-normal">
           <ul className="nav">
-            {/* <li className="nav-item">
-              <span
-                onClick={this.changeTabs}
-                algaehsoap="overview"
-                className="nav-link active"
-              >
-                Overview
-              </span>
-            </li> */}
             <li className="nav-item">
               <span
                 onClick={this.changeTabs}
@@ -358,13 +319,8 @@ class PatientProfile extends Component {
                 <i className="fas fa-allergies" />
                 <p>
                   <b>Allergies:</b>
-                  {/* {this.state.patientAllergies.map((data, index) => (
 
-                    <span key={index} className="listofA-D-D">
-                      {data.allergy_name}
-                    </span>
-                  ))} */}
-                  {this.state.patientAllergies.map((data, index) => (
+                  {_patient_allergies.map((data, index) => (
                     <React.Fragment key={index}>
                       <b>{data.allergy_type_desc}</b>
                       {data.allergyList.map((allergy, aIndex) => (
@@ -450,9 +406,11 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientProfile: AlgaehActions,
       getPatientAllergies: AlgaehActions,
+      getPatientVitals: AlgaehActions,
       getPatientDiet: AlgaehActions,
-      getPatientDiagnosis: AlgaehActions,
-      getPatientVitals: AlgaehActions
+      getPatientDiagnosis: AlgaehActions
+
+      // getPatientChiefComplaints: AlgaehActions
     },
     dispatch
   );
