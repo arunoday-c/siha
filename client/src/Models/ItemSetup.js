@@ -16,8 +16,9 @@ export default {
       stocking_uom_id: null,
       item_status: "A",
       radioActive: true,
-      radioInactive: true,
+      radioInactive: false,
       detail_item_uom: [],
+      uom_description: null,
       ItemList: [],
       updateUomMapResult: [],
       insertItemUomMap: []
