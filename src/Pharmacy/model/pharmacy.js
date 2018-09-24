@@ -2,7 +2,8 @@
 import {
   whereCondition,
   releaseDBConnection,
-  jsonArrayToObject
+  jsonArrayToObject,
+  runningNumberGen
 } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
@@ -362,10 +363,11 @@ let getItemMasterAndItemUom = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id, MIU.stocking_uom, MIU.conversion_factor, MIU.uom_status,\
+        "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description, MIU.stocking_uom, MIU.conversion_factor, MIU.uom_status,\
         IM.hims_d_item_master_id, IM.item_code, IM.item_description, IM.structure_id, IM.generic_id, IM.category_id,\
         IM.group_id, IM.form_id, IM.storage_id, IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status\
-        from hims_d_item_master IM,hims_m_item_uom MIU  where IM.hims_d_item_master_id=MIU.item_master_id and MIU.record_status='A'and IM.record_status='A'",
+        from hims_d_item_master IM,hims_m_item_uom MIU,hims_d_pharmacy_uom PH  where IM.hims_d_item_master_id=MIU.item_master_id  and\
+         MIU.uom_id=PH.hims_d_pharmacy_uom_id and MIU.record_status='A'and IM.record_status='A'",
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -734,114 +736,6 @@ let updatePharmacyLocation = (req, res, next) => {
           next();
         }
       );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
-//created by irfan: to pharmacy_stock
-let addPharmacyStock = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend({}, req.body);
-
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.beginTransaction(error => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-        connection.query(
-          "INSERT INTO `hims_f_pharmacy_stock_header` (`document_number`, `docdate`, `year`, `period`, `description`, `posted`, `created_date`, `created_by`, `updated_date`, `updated_by`) \
-        VALUE(?,?,?,?,?,?,?,?,?,?)",
-          [
-            input.item_code,
-            input.item_description,
-            input.structure_id,
-            input.generic_id,
-            input.category_id,
-            input.group_id,
-            input.item_uom_id,
-            input.purchase_uom_id,
-            input.sales_uom_id,
-            input.stocking_uom_id,
-            new Date(),
-            input.created_by,
-            new Date(),
-            input.updated_by
-          ],
-          (error, result) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-
-            debugLog(" item master id :", result.insertId);
-            // req.records = spResult;
-            // next();
-
-            if (result.insertId != null) {
-              const insurtColumns = [
-                "uom_id",
-                "stocking_uom",
-                "conversion_factor",
-                "uom_status",
-                "created_by",
-                "updated_by"
-              ];
-
-              connection.query(
-                "INSERT INTO hims_m_item_uom(" +
-                  insurtColumns.join(",") +
-                  ",item_master_id,created_date,updated_date) VALUES ?",
-                [
-                  jsonArrayToObject({
-                    sampleInputObject: insurtColumns,
-                    arrayObj: req.body.detail_item_uom,
-                    newFieldToInsert: [result.insertId, new Date(), new Date()],
-                    req: req
-                  })
-                ],
-                (error, detailResult) => {
-                  if (error) {
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-
-                  connection.commit(error => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
-                    }
-                    req.records = detailResult;
-                    next();
-                  });
-                }
-              );
-            } else {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-          }
-        );
-      });
     });
   } catch (e) {
     next(e);
@@ -1258,6 +1152,135 @@ let addItemStorage = (req, res, next) => {
   }
 };
 
+//created by irfan: to pharmacy_intial_stock
+let addPharmacyInitialStock = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    // let input = extend({}, req.body);
+
+    debugLog("inside", "add stock");
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        let requestCounter = 1;
+
+        new Promise((resolve, reject) => {
+          runningNumberGen({
+            db: connection,
+            counter: requestCounter,
+            module_desc: ["STK_DOC"],
+            onFailure: error => {
+              reject(error);
+            },
+            onSuccess: result => {
+              resolve(result);
+            }
+          });
+        }).then(result => {
+          debugLog("stockDocuments:", result[0].completeNumber);
+          let documentCode = result[0].completeNumber;
+        });
+
+        //-------------------------------------------------
+        // connection.query(
+        //   "INSERT INTO `hims_f_pharmacy_stock_header` (`document_number`, `docdate`, `year`, `period`, `description`, `posted`, `created_date`, `created_by`, `updated_date`, `updated_by`) \
+        // VALUE(?,?,?,?,?,?,?,?,?,?)",
+        //   [
+        //     input.item_code,
+        //     input.item_description,
+        //     input.structure_id,
+        //     input.generic_id,
+        //     input.category_id,
+        //     input.group_id,
+        //     input.item_uom_id,
+        //     input.purchase_uom_id,
+        //     input.sales_uom_id,
+        //     input.stocking_uom_id,
+        //     new Date(),
+        //     input.created_by,
+        //     new Date(),
+        //     input.updated_by
+        //   ],
+        //   (error, result) => {
+        //     if (error) {
+        //       connection.rollback(() => {
+        //         releaseDBConnection(db, connection);
+        //         next(error);
+        //       });
+        //     }
+
+        //     debugLog(" item master id :", result.insertId);
+        //     // req.records = spResult;
+        //     // next();
+
+        //     if (result.insertId != null) {
+        //       const insurtColumns = [
+        //         "uom_id",
+        //         "stocking_uom",
+        //         "conversion_factor",
+        //         "uom_status",
+        //         "created_by",
+        //         "updated_by"
+        //       ];
+
+        //       connection.query(
+        //         "INSERT INTO hims_m_item_uom(" +
+        //           insurtColumns.join(",") +
+        //           ",item_master_id,created_date,updated_date) VALUES ?",
+        //         [
+        //           jsonArrayToObject({
+        //             sampleInputObject: insurtColumns,
+        //             arrayObj: req.body.detail_item_uom,
+        //             newFieldToInsert: [result.insertId, new Date(), new Date()],
+        //             req: req
+        //           })
+        //         ],
+        //         (error, detailResult) => {
+        //           if (error) {
+        //             connection.rollback(() => {
+        //               releaseDBConnection(db, connection);
+        //               next(error);
+        //             });
+        //           }
+
+        //           connection.commit(error => {
+        //             if (error) {
+        //               connection.rollback(() => {
+        //                 releaseDBConnection(db, connection);
+        //                 next(error);
+        //               });
+        //             }
+        //             req.records = detailResult;
+        //             next();
+        //           });
+        //         }
+        //       );
+        //     } else {
+        //       connection.rollback(() => {
+        //         releaseDBConnection(db, connection);
+        //         next(error);
+        //       });
+        //     }
+        //   }
+        // );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   addItemMaster,
   addItemCategory,
@@ -1285,5 +1308,6 @@ module.exports = {
   updateItemForm,
   updateItemStorage,
   getItemMasterAndItemUom,
-  updateItemMasterAndUom
+  updateItemMasterAndUom,
+  addPharmacyInitialStock
 };

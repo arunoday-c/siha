@@ -26,7 +26,8 @@ import {
   updateItemForm,
   updateItemStorage,
   getItemMasterAndItemUom,
-  updateItemMasterAndUom
+  updateItemMasterAndUom,
+  addPharmacyInitialStock
 } from "../model/pharmacy";
 
 export default ({ config, db }) => {
@@ -403,5 +404,21 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by Nowshad :to add Pharmacy Initial Stock
+  api.post(
+    "/addPharmacyInitialStock",
+    addPharmacyInitialStock,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };
