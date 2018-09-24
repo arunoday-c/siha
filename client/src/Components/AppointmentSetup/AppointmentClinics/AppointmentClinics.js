@@ -10,6 +10,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 import Enumerable from "linq";
+import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from "constants";
 
 class AppointmentClinics extends Component {
   constructor(props) {
@@ -44,8 +45,22 @@ class AppointmentClinics extends Component {
     this.setState({ [value.name]: value.value });
   }
 
-  sample(data) {
-    return data.sub_department_id === this.state.sub_department_id;
+  // doctorDropDownHandler(value) {
+  //   this.setState({ [value.name]: value.value }, () => {
+  //     let doc = Enumerable.from(this.state.doctors)
+  //       .where(w => w.employee_id === this.state.provider_id)
+  //       .firstOrDefault();
+  //     this.setState({ departments: doc.departments });
+  //   });
+  // }
+
+  deptDropDownHandler(value) {
+    this.setState({ [value.name]: value.value }, () => {
+      let dept = Enumerable.from(this.state.departments)
+        .where(w => w.sub_department_id === this.state.sub_department_id)
+        .firstOrDefault();
+      this.setState({ doctors: dept.doctors });
+    });
   }
 
   getApptRooms() {
@@ -96,14 +111,10 @@ class AppointmentClinics extends Component {
       onSuccess: response => {
         if (response.data.success) {
           console.log("DocsDepts:", response.data.records);
-          this.setState(
-            {
-              departments: response.data.records.departmets
-            },
-            () => {
-              this.sortStuff();
-            }
-          );
+          this.setState({
+            departments: response.data.records.departmets,
+            doctors: response.data.records.doctors
+          });
         }
       },
       onFailure: error => {
@@ -116,22 +127,127 @@ class AppointmentClinics extends Component {
     });
   }
 
-  sortStuff() {
-    const doctors = Enumerable.from(this.state.doctorsDepts)
-      .where(data => data.sub_department_id === this.state.sub_department_id)
-      .toArray();
-  }
-
   componentDidMount() {
     this.getAppointmentClinics();
     this.getDoctorsAndDepts();
     this.getApptRooms();
   }
 
-  deleteAppointmentClinics(data) {}
-  updateAppointmentClinics(data) {}
+  deleteAppointmentClinics(data) {
+    swal({
+      title: "Are you sure you want to delete this Clinic?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        algaehApiCall({
+          uri: "/appointment/updateAppointmentClinic",
+          data: {
+            record_status: "I",
+            description: data.description,
+            sub_department_id: data.sub_department_id,
+            provider_id: data.provider_id,
+            room_id: data.room_id,
+            hims_d_appointment_clinic_id: data.hims_d_appointment_clinic_id
+          },
+          method: "PUT",
+          onSuccess: response => {
+            if (response.data.success) {
+              swal("Record deleted successfully . .", {
+                icon: "success",
+                buttons: false,
+                timer: 2000
+              });
+              this.getAppointmentClinics();
+            }
+          },
+          onFailure: error => {
+            swal(error.message, {
+              buttons: false,
+              icon: "danger",
+              timer: 2000
+            });
+          }
+        });
+      } else {
+        swal("Delete request cancelled");
+      }
+    });
+  }
 
-  addAppointmentClinics(e) {}
+  updateAppointmentClinics(data) {
+    algaehApiCall({
+      uri: "/appointment/updateAppointmentClinic",
+      method: "PUT",
+      data: {
+        record_status: "A",
+        description: data.description,
+        sub_department_id: data.sub_department_id,
+        provider_id: data.provider_id,
+        room_id: data.room_id,
+        hims_d_appointment_clinic_id: data.hims_d_appointment_clinic_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swal("Record updated successfully", {
+            buttons: false,
+            icon: "success",
+            timer: 2000
+          });
+          this.getAppointmentClinics();
+        }
+      },
+      onFailure: error => {
+        swal(error.message, {
+          buttons: false,
+          icon: "error",
+          timer: 2000
+        });
+      }
+    });
+  }
+
+  addAppointmentClinics(e) {
+    e.preventDefault();
+
+    algaehApiCall({
+      uri: "/appointment/addAppointmentClinic",
+      method: "POST",
+      data: {
+        description: this.state.description,
+        sub_department_id: this.state.sub_department_id,
+        provider_id: this.state.provider_id,
+        room_id: this.state.room_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          this.getAppointmentClinics();
+          swal("Record Added Successfully", {
+            buttons: false,
+            icon: "success",
+            timer: 2000
+          });
+        }
+      },
+      onFailure: error => {
+        swal(error.message, {
+          buttons: false,
+          icon: "error",
+          timer: 2000
+        });
+      }
+    });
+  }
+
+  getDeptName(id) {
+    let dept = Enumerable.from(
+      this.state.departments !== undefined ? this.state.departments : []
+    )
+      .where(w => w.sub_department_id === id)
+      .firstOrDefault();
+    return dept.sub_department_name;
+  }
 
   render() {
     return (
@@ -171,7 +287,7 @@ class AppointmentClinics extends Component {
                   valueField: "sub_department_id",
                   data: this.state.departments
                 },
-                onChange: this.dropDownHandler.bind(this)
+                onChange: this.deptDropDownHandler.bind(this)
               }}
             />
 
@@ -250,7 +366,6 @@ class AppointmentClinics extends Component {
                   label: (
                     <AlgaehLabel label={{ fieldName: "department_name" }} />
                   ),
-
                   editorTemplate: row => {
                     return (
                       <AlagehFormGroup
