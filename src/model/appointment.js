@@ -531,7 +531,7 @@ let getAppointmentSchedule = (req, res, next) => {
               }
             );
           } else {
-            req.records = { result: "no record exist", isEmpty: true };
+            req.records = result;
             next();
           }
         }
