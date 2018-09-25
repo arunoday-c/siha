@@ -109,7 +109,7 @@ class BreadCrumb extends PureComponent {
   showPrintArea() {
     if (this.props.printArea !== undefined) {
       return (
-        <div className="col-lg-2 print-area">
+        <div className="col-lg-2 printAr-area">
           <div>
             <ul>
               <li className="printMenuDisplay">
@@ -149,10 +149,10 @@ class BreadCrumb extends PureComponent {
     return (
       <React.Fragment>
         <div
-          className="fixed-top breadcrumb-fixed "
+          className="fixed-top breadcrumbAr-fixed "
           // style={{ ...this.props.breadStyle }}
         >
-          <div className="breadCrumb-Data row">
+          <div className="breadCrumbAr-Data row">
             {this.showPrintArea()}
 
             <div className="col-lg-2 third-position">{this.showUserArea()}</div>
