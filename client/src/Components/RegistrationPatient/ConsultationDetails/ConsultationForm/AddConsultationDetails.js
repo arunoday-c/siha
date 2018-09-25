@@ -4,9 +4,15 @@ import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 
 const DeptselectedHandeler = ($this, context, e) => {
+  debugger;
+  let dept = Enumerable.from($this.state.departments)
+    .where(w => w.sub_department_id === e.value)
+    .firstOrDefault();
+
   $this.setState({
     [e.name]: e.value,
-    department_id: e.selected.department_id
+    department_id: e.selected.department_id,
+    doctors: dept.doctors
   });
   if (context != null) {
     context.updateState({
@@ -17,16 +23,32 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  $this.setState({
-    [e.name]: e.value,
-    visittypeselect: false
+  debugger;
+  $this.props.getDepartmentsandDoctors({
+    uri: "/department/get/get_All_Doctors_DepartmentWise",
+    method: "GET",
+    redux: {
+      type: "DEPT_DOCTOR_GET_DATA",
+      mappingName: "deptanddoctors"
+    },
+    afterSuccess: data => {
+      debugger;
+      $this.setState({
+        departments: data.departmets,
+        doctors: data.doctors,
+        [e.name]: e.value,
+        visittypeselect: false
+      });
+
+      if (context != null) {
+        context.updateState({
+          [e.name]: e.value,
+          consultation: e.selected.consultation,
+          visittypeselect: false
+        });
+      }
+    }
   });
-  if (context != null) {
-    context.updateState({
-      [e.name]: e.value,
-      consultation: e.selected.consultation
-    });
-  }
 };
 
 const unsuccessfulSignIn = (message, title) => {

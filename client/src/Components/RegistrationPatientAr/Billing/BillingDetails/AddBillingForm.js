@@ -41,13 +41,13 @@ class AddBillingForm extends Component {
     this.state = {
       isOpen: false,
       bill_number: "",
-      enableCash: false,
-      enableCard: true,
-      enableCheck: true,
+
       Cashchecked: true,
       Cardchecked: false,
       Checkchecked: false,
-      errorInCash: false
+      errorInCash: false,
+      errorInCard: false,
+      errorInCheck: false
     };
   }
 
@@ -166,7 +166,11 @@ class AddBillingForm extends Component {
                               type="checkbox"
                               name="Pay by Cash"
                               checked={this.state.Cashchecked}
-                              onChange={checkcashhandaler.bind(this, this)}
+                              onChange={checkcashhandaler.bind(
+                                this,
+                                this,
+                                context
+                              )}
                             />
 
                             <span style={{ fontSize: "0.8rem" }}>
@@ -211,7 +215,11 @@ class AddBillingForm extends Component {
                               type="checkbox"
                               name="Pay by Card"
                               checked={this.state.Cardchecked}
-                              onChange={checkcardhandaler.bind(this, this)}
+                              onChange={checkcardhandaler.bind(
+                                this,
+                                this,
+                                context
+                              )}
                             />
                             <span style={{ fontSize: "0.8rem" }}>
                               Pay by Card
@@ -230,6 +238,7 @@ class AddBillingForm extends Component {
                             decimal: { allowNegative: false },
                             className: "txt-fld",
                             name: "card_amount",
+                            error: this.state.errorInCard,
                             value: this.state.card_amount,
                             events: {
                               onChange: cardtexthandle.bind(this, this, context)
@@ -286,7 +295,11 @@ class AddBillingForm extends Component {
                               type="checkbox"
                               name="Pay by Cheque"
                               checked={this.state.Checkchecked}
-                              onChange={checkcheckhandaler.bind(this, this)}
+                              onChange={checkcheckhandaler.bind(
+                                this,
+                                this,
+                                context
+                              )}
                             />
                             <span style={{ fontSize: "0.8rem" }}>
                               Pay by Cheque
@@ -304,6 +317,7 @@ class AddBillingForm extends Component {
                             decimal: { allowNegative: false },
                             className: "txt-fld",
                             name: "cheque_amount",
+                            error: this.state.errorInCheck,
                             value: this.state.cheque_amount,
                             events: {
                               onChange: chequetexthandle.bind(

@@ -8,7 +8,10 @@ import {
   datehandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle
+  chequetexthandle,
+  checkcashhandaler,
+  checkcardhandaler,
+  checkcheckhandaler
 } from "./AddReciptFormHandaler";
 import {
   AlgaehDateHandler,
@@ -29,7 +32,14 @@ const locations = [
 class AddReciptForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      Cashchecked: true,
+      Cardchecked: false,
+      Checkchecked: false,
+      errorInCash: false,
+      errorInCard: false,
+      errorInCheck: false
+    };
   }
 
   componentWillMount() {
@@ -131,8 +141,7 @@ class AddReciptForm extends Component {
                         type="checkbox"
                         name="Pay by Cash"
                         checked={this.state.Cashchecked}
-                        checked={true}
-                        // onChange={checkcashhandaler.bind(this, this)}
+                        onChange={checkcashhandaler.bind(this, this, context)}
                       />
 
                       <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
@@ -146,8 +155,10 @@ class AddReciptForm extends Component {
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
+                      disabled: !this.state.Cashchecked,
                       className: "txt-fld",
                       name: "cash_amount",
+                      error: this.state.errorInCash,
                       value: this.state.cash_amount,
                       events: {
                         onChange: cashtexthandle.bind(this, this, context)
@@ -166,7 +177,7 @@ class AddReciptForm extends Component {
                         type="checkbox"
                         name="Pay by Card"
                         checked={this.state.Cardchecked}
-                        // onChange={checkcardhandaler.bind(this, this)}
+                        onChange={checkcardhandaler.bind(this, this, context)}
                       />
                       <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
                     </label>
@@ -180,14 +191,13 @@ class AddReciptForm extends Component {
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
+                      disabled: !this.state.Cardchecked,
                       className: "txt-fld",
                       name: "card_amount",
+                      error: this.state.errorInCard,
                       value: this.state.card_amount,
                       events: {
                         onChange: cardtexthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: true
                       }
                     }}
                   />
@@ -197,14 +207,12 @@ class AddReciptForm extends Component {
                       fieldName: "card_check_number"
                     }}
                     textBox={{
+                      disabled: !this.state.Cardchecked,
                       className: "txt-fld",
                       name: "card_check_number",
                       value: this.state.card_check_number,
                       events: {
                         onChange: texthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: this.state.enableCard
                       }
                     }}
                   />
@@ -218,7 +226,8 @@ class AddReciptForm extends Component {
                       className: "txt-fld",
                       name: "card_date"
                     }}
-                    maxDate={new Date()}
+                    disabled={!this.state.Cardchecked}
+                    minDate={new Date()}
                     events={{
                       onChange: datehandle.bind(this, this, context)
                     }}
@@ -236,7 +245,7 @@ class AddReciptForm extends Component {
                         type="checkbox"
                         name="Pay by Cheque"
                         checked={this.state.Checkchecked}
-                        // onChange={checkcheckhandaler.bind(this, this)}
+                        onChange={checkcheckhandaler.bind(this, this, context)}
                       />
                       <span style={{ fontSize: "0.8rem" }}>Pay by Cheque</span>
                     </label>
@@ -248,9 +257,11 @@ class AddReciptForm extends Component {
                       isImp: true
                     }}
                     textBox={{
+                      disabled: !this.state.Checkchecked,
                       decimal: { allowNegative: false },
                       className: "txt-fld",
                       name: "cheque_amount",
+                      error: this.state.errorInCheck,
                       value: this.state.cheque_amount,
                       events: {
                         onChange: chequetexthandle.bind(this, this, context)
@@ -267,6 +278,7 @@ class AddReciptForm extends Component {
                       fieldName: "card_check_number"
                     }}
                     textBox={{
+                      disabled: !this.state.Checkchecked,
                       className: "txt-fld",
                       name: "cheque_number",
                       value: this.state.cheque_number,
@@ -281,11 +293,12 @@ class AddReciptForm extends Component {
                     label={{
                       fieldName: "expiry_date"
                     }}
+                    disabled={!this.state.Checkchecked}
                     textBox={{
                       className: "txt-fld",
                       name: "cheque_date"
                     }}
-                    maxDate={new Date()}
+                    minDate={new Date()}
                     events={{
                       onChange: datehandle.bind(this, this, context)
                     }}
