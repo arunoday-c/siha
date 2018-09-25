@@ -20,7 +20,6 @@ class Workbench extends Component {
         EHR_Screen: Window.global["EHR-STD"]
       },
       () => {
-        debugger;
         this.changeDisplays(Window.global["EHR-STD"]);
       }
     );
@@ -28,10 +27,6 @@ class Workbench extends Component {
 
   componentWillUnmount() {
     removeGlobal("EHR-STD");
-  }
-
-  componentWillReceiveProps(props) {
-    debugger;
   }
 
   componentList() {
@@ -47,7 +42,6 @@ class Workbench extends Component {
   }
 
   render() {
-    debugger;
     return (
       <div>
         <button

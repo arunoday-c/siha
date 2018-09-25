@@ -7,7 +7,7 @@
     "server": "cross-env NODE_ENV=development nodemon -w src --exec \"babel-node src/server.js --presets es2015,stage-0\"",
     "build": "babel src -s -D -d dist --presets es2015,stage-0",
     "client": "npm run start --prefix client",
-    "runapi": "npm run server",
+    "api": "npm run server",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "start": "cross-env NODE_ENV=production pm2 start dist/server.js",
     "npminstall": "npm install && npm install --prefix client",

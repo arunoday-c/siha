@@ -17,6 +17,10 @@
   "uom_id": "UOM",
   "conversion_factor": "Conversion Factor",
   "stocking_uom": "Stocking UOM",
+  "form_id": "Form",
+  "storage_id": "Storage",
+  "active": "Active",
+  "inactive": "Inactive",
 
   "btnSave": "Save",
   "btnUpdate": "Update"

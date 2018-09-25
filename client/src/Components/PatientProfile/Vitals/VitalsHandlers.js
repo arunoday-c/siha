@@ -6,6 +6,7 @@ const getVitalHistory = $this => {
       patient_id: Window.global["current_patient"],
       visit_id: Window.global["visit_id"]
     },
+    cancelRequestId: "getPatientVitals",
     redux: {
       type: "PATIENT_VITALS",
       mappingName: "patient_vitals"

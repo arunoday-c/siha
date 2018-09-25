@@ -7,10 +7,8 @@ const getReviewOfSystems = $this => {
       type: "ALL_ROS",
       mappingName: "allros"
     },
-    cancelRequestId: "ros-cancel",
-    afterSuccess: data => {
-      console.log("ROS data from redux:", data);
-    }
+    cancelRequestId: "getReviewOfSystem",
+    afterSuccess: data => {}
   });
 };
 
@@ -21,13 +19,12 @@ const getReviewOfSystemsDetails = ($this, type) => {
     data: {
       hims_d_review_of_system_header_id: type
     },
+    cancelRequestId: "getReviewOfSystemsDetails",
     redux: {
       type: "ALL_ROS_DETAILS",
       mappingName: "allrosdetails"
     },
-    afterSuccess: data => {
-      console.log("ROS data from redux:", data);
-    }
+    afterSuccess: data => {}
   });
 };
 
@@ -39,13 +36,12 @@ const getPatientROS = $this => {
       patient_id: Window.global["current_patient"],
       episode_id: Window.global["episode_id"]
     },
+    cancelRequestId: "getPatientROS",
     redux: {
       type: "PATIENT_ROS",
       mappingName: "patientros"
     },
-    afterSuccess: data => {
-      console.log("ROS data from redux:", data);
-    }
+    afterSuccess: data => {}
   });
 };
 

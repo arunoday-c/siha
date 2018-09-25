@@ -8,13 +8,12 @@ const getPatientProfile = $this => {
       patient_id: Window.global["current_patient"],
       episode_id: Window.global["episode_id"]
     },
+    cancelRequestId: "getPatientProfile",
     redux: {
       type: "PATIENT_PROFILE",
       mappingName: "patient_profile"
     },
-    afterSuccess: data => {
-      debugger;
-    }
+    afterSuccess: data => {}
   });
 };
 
@@ -22,6 +21,7 @@ const getPatientVitals = $this => {
   $this.props.getPatientVitals({
     uri: "/doctorsWorkBench/getPatientVitals",
     method: "GET",
+    cancelRequestId: "getPatientVitals",
     data: {
       patient_id: Window.global["current_patient"],
       visit_id: Window.global["visit_id"]
@@ -41,6 +41,7 @@ const getPatientAllergies = $this => {
     data: {
       patient_id: Window.global["current_patient"]
     },
+    cancelRequestId: "getPatientVitals",
     redux: {
       type: "PATIENT_ALLERGIES",
       mappingName: "patient_allergies"
@@ -64,7 +65,8 @@ const getPatientAllergies = $this => {
           };
         })
         .toArray();
-      setGlobal({ patientAllergies: _allergies });
+      $this.setState({ patientAllergies: _allergies });
+      // setGlobal({ patientAllergies: _allergies });
     }
   });
 };
@@ -77,6 +79,7 @@ const getPatientDiet = $this => {
       patient_id: Window.global["current_patient"],
       episode_id: Window.global["episode_id"]
     },
+    cancelRequestId: "getPatientDiet",
     redux: {
       type: "PATIENT_DIET",
       mappingName: "patient_diet"
@@ -88,6 +91,7 @@ const getPatientDiagnosis = $this => {
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",
     method: "GET",
+    cancelRequestId: "getPatientDiagnosis",
     data: {
       patient_id: Window.global["current_patient"],
       episode_id: Window.global["episode_id"]
@@ -106,4 +110,5 @@ export {
   getPatientAllergies,
   getPatientDiet,
   getPatientDiagnosis
+  // getPatientChiefComplaints
 };

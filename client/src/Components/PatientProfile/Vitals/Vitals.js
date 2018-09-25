@@ -85,7 +85,11 @@ class Vitals extends Component {
   }
 
   componentDidMount() {
-    getVitalHistory(this);
+    if (
+      this.props.patient_vitals === undefined ||
+      this.props.patient_vitals.length === 0
+    )
+      getVitalHistory(this);
   }
 
   calculatebmi() {

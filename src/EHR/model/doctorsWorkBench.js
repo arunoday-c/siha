@@ -3,7 +3,7 @@ import extend from "extend";
 import {
   selectStatement,
   paging,
-  whereCondition, 
+  whereCondition,
   releaseDBConnection,
   jsonArrayToObject
 } from "../../utils";
@@ -1148,87 +1148,75 @@ let addPatientChiefComplaints = (req, res, next) => {
         releaseDBConnection(db, connection);
         next(error);
       }
-//       connection.query(
-//         "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
-// severity,score,pain,comment,created_by,updated_by,created_date,updated_date) \
-// values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-//         [
-//           input.episode_id,
-//           input.chief_complaint_id,
-//           input.onset_date,
-//           input.interval,
-//           input.duration,
-//           input.severity,
-//           input.score,
-//           input.pain,
-//           input.comment,
-//           input.created_by,
-//           input.updated_by,
-//           new Date(),
-//           new Date()
-//         ],
-//         (error, results) => {
-//           if (error) {
-//             releaseDBConnection(db, connection);
-//             next(error);
-//           }
+      //       connection.query(
+      //         "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
+      // severity,score,pain,comment,created_by,updated_by,created_date,updated_date) \
+      // values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      //         [
+      //           input.episode_id,
+      //           input.chief_complaint_id,
+      //           input.onset_date,
+      //           input.interval,
+      //           input.duration,
+      //           input.severity,
+      //           input.score,
+      //           input.pain,
+      //           input.comment,
+      //           input.created_by,
+      //           input.updated_by,
+      //           new Date(),
+      //           new Date()
+      //         ],
+      //         (error, results) => {
+      //           if (error) {
+      //             releaseDBConnection(db, connection);
+      //             next(error);
+      //           }
 
-//           req.records = results;
-//           next();
-//         }
-//       );
+      //           req.records = results;
+      //           next();
+      //         }
+      //       );
 
-//--------------------------------
+      //--------------------------------
 
+      const insurtColumns = [
+        "episode_id",
+        "chief_complaint_id",
+        "onset_date",
+        "duration",
+        "interval",
+        "severity",
+        "score",
+        "pain",
+        "comment",
+        "created_by",
+        "updated_by"
+      ];
 
-  const insurtColumns = [
-    "episode_id",
-    "chief_complaint_id",
-    "onset_date",
-    "duration",
-    "interval",
-    "severity",
-    "score",
-    "pain",
-    "comment",
-    "created_by",
-    "updated_by"
-  ];
+      connection.query(
+        "INSERT INTO hims_f_episode_chief_complaint(`" +
+          insurtColumns.join("`,`") +
+          "`,created_date,updated_date) VALUES ?",
+        [
+          jsonArrayToObject({
+            sampleInputObject: insurtColumns,
+            arrayObj: req.body,
+            newFieldToInsert: [new Date(), new Date()],
+            req: req
+          })
+        ],
+        (error, Result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = Result;
+          next();
+        }
+      );
 
-  connection.query(
-    "INSERT INTO hims_f_episode_chief_complaint(`" +
-      insurtColumns.join("`,`") +
-      "`,created_date,updated_date) VALUES ?",
-    [
-      jsonArrayToObject({
-        sampleInputObject: insurtColumns,
-        arrayObj: req.body,
-        newFieldToInsert: [new Date(), new Date()],
-        req: req
-      })
-    ],
-    (error, Result) => {
-      if (error) {     
-          releaseDBConnection(db, connection);
-          next(error);        
-      }    
-        req.records = Result;
-        next();
-      
-    }
-  );
-
-
-
-
-
-
-//--------------------------------
-
-
-
-
-
+      //--------------------------------
 
       //     connection.query(
       //       "SELECT hims_f_episode_chief_complaint_id, chief_complaint_id FROM hims_f_episode_chief_complaint \
@@ -1332,7 +1320,11 @@ let deletePatientChiefComplaints = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "update hims_f_episode_chief_complaint set record_status='I',updated_date=?,updated_by=? where `record_status`='A' and hims_f_episode_chief_complaint_id=?",
-        [new Date(), req.body.updated_by, req.body.hims_f_episode_chief_complaint_id],
+        [
+          new Date(),
+          req.body.updated_by,
+          req.body.hims_f_episode_chief_complaint_id
+        ],
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -1465,7 +1457,6 @@ let updatePatientChiefComplaints = (req, res, next) => {
     }
     let db = req.db;
 
-    
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -1478,66 +1469,65 @@ let updatePatientChiefComplaints = (req, res, next) => {
           });
         }
 
+        let inputParam = extend([], req.body.chief_complaints);
 
-  let inputParam = extend([], req.body.chief_complaints);
+        let qry = "";
 
-  let qry = "";
-
-  for (let i = 0; i < req.body.chief_complaints.length; i++) {
-    qry +=
-      "UPDATE `hims_f_episode_chief_complaint` SET  episode_id='" +
-      inputParam[i].episode_id +
-      "', chief_complaint_id='" +
-      inputParam[i].chief_complaint_id +
-      "', onset_date='" +
-      inputParam[i].onset_date +
-      "', `interval`='" +
-      inputParam[i].interval +
-      "', duration='" +
-      inputParam[i].duration +
-      "', severity='" +
-      inputParam[i].severity +
-      "', score='" +
-      inputParam[i].score +
-      "', pain='" +
-      inputParam[i].pain +
-      "', chronic='" +
-      inputParam[i].chronic +
-      "', complaint_inactive='" +
-      inputParam[i].complaint_inactive +
-      "', complaint_inactive_date='" +
-      inputParam[i].complaint_inactive_date +
-      "', comment='" +
-      inputParam[i].comment +
-      "', updated_date='" +
-      new Date().toLocaleString() +
-      "',updated_by=\
+        for (let i = 0; i < req.body.chief_complaints.length; i++) {
+          qry +=
+            "UPDATE `hims_f_episode_chief_complaint` SET  episode_id='" +
+            inputParam[i].episode_id +
+            "', chief_complaint_id='" +
+            inputParam[i].chief_complaint_id +
+            "', onset_date='" +
+            inputParam[i].onset_date +
+            "', `interval`='" +
+            inputParam[i].interval +
+            "', duration='" +
+            inputParam[i].duration +
+            "', severity='" +
+            inputParam[i].severity +
+            "', score='" +
+            inputParam[i].score +
+            "', pain='" +
+            inputParam[i].pain +
+            "', chronic='" +
+            inputParam[i].chronic +
+            "', complaint_inactive='" +
+            inputParam[i].complaint_inactive +
+            "', complaint_inactive_date='" +
+            inputParam[i].complaint_inactive_date +
+            "', comment='" +
+            inputParam[i].comment +
+            "', updated_date='" +
+            new Date().toLocaleString() +
+            "',updated_by=\
 '" +
-      req.body.updated_by +
-      "' WHERE hims_f_episode_chief_complaint_id='" +
-      inputParam[i].hims_f_episode_chief_complaint_id +
-      "';";
-  }
+            req.body.updated_by +
+            "' WHERE hims_f_episode_chief_complaint_id='" +
+            inputParam[i].hims_f_episode_chief_complaint_id +
+            "';";
+        }
 
-  connection.query(qry, (error, updateResult) => {
-    if (error) {
-      connection.rollback(() => {
-        releaseDBConnection(db, connection);
-        next(error);
-      });
-    }
-   
-    connection.commit(error => {
-      if (error) {
-        connection.rollback(() => {
-          releaseDBConnection(db, connection);
-          next(error);
+        connection.query(qry, (error, updateResult) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          connection.commit(error => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.records = updateResult;
+            next();
+          });
         });
-      }
-      req.records = updateResult;
-      next();
-    });
-  });
       });
     });
   } catch (e) {
@@ -1902,7 +1892,6 @@ let addPatientVitals = (req, res, next) => {
           inputparam.heart_rate,
           inputparam.respiratory_rate,
 
-
           new Date(),
           inputparam.created_by,
           new Date(),
@@ -2085,6 +2074,7 @@ let getPhysicalExamination = (req, res, next) => {
           "'";
         debugLog("only sub -detail ");
       }
+      debugLog("Query Physical Exam", queryBuilder);
       connection.query(queryBuilder, (error, result) => {
         if (error) {
           connection.rollback(() => {

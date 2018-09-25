@@ -1,12 +1,12 @@
 import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
-import { setGlobal } from "../../../utils/GlobalFunctions.js";
 
 const getAllAllergies = ($this, type) => {
   $this.props.getAllAllergies({
     uri: "/doctorsWorkBench/getAllAllergies",
     method: "GET",
+    cancelRequestId: "getAllAllergies",
     data: {
       allergy_type: type
     },
@@ -25,6 +25,7 @@ const getPatientAllergies = $this => {
     data: {
       patient_id: Window.global["current_patient"]
     },
+    cancelRequestId: "getPatientAllergies",
     redux: {
       type: "PATIENT_ALLERGIES",
       mappingName: "patient_allergies"
@@ -48,7 +49,7 @@ const getPatientAllergies = $this => {
           };
         })
         .toArray();
-      setGlobal({ patientAllergies: _allergies });
+      $this.setState({ patientAllergies: _allergies });
     }
   });
 };
@@ -86,7 +87,6 @@ const texthandle = ($this, data, ctrl, e) => {
 };
 
 const updatePatientAllergy = ($this, row) => {
-  debugger;
   algaehApiCall({
     uri: "/doctorsWorkbench/updatePatientAllergy",
     method: "PUT",
@@ -103,8 +103,7 @@ const updatePatientAllergy = ($this, row) => {
     },
     onSuccess: response => {
       if (response.data.success) {
-        console.log("Allergy Update Response:", response.data.records);
-        $this.getPatientAllergies();
+        getPatientAllergies($this);
       }
     },
     onFailure: error => {}
