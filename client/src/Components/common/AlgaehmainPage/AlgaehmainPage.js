@@ -127,6 +127,12 @@ class PersistentDrawer extends React.Component {
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
     // let titlectrl = this.title;
+    debugger;
+    let renderComp = this.state.renderComponent;
+    var last2 = renderComp.slice(-2);
+    if (last2 === "Ar") {
+      renderComp = renderComp.substring(0, renderComp.length - 2);
+    }
     if (secLang === "en") {
       this.setState({
         languageName: "English",
@@ -139,9 +145,12 @@ class PersistentDrawer extends React.Component {
         Language: "ar",
         title: this.state.arlabl
       });
+
+      if (renderComp === "FrontDesk") {
+        renderComp = renderComp + "Ar";
+      }
     }
-    debugger;
-    let renderComp = this.state.renderComponent;
+
     this.setState(
       {
         renderComponent: ""

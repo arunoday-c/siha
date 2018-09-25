@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import IconButton from "@material-ui/core/IconButton";
 import AppBar from "@material-ui/core/AppBar";
 
 import {
@@ -21,7 +21,12 @@ import {
   AddItems,
   datehandle,
   dateFormater,
-  getCtrlCode
+  getCtrlCode,
+  SaveInitialStock,
+  LocationchangeTexts,
+  deleteInitialStock,
+  ClearData,
+  PostInitialStock
 } from "./InitialStockEvents";
 import "./InitialStock.css";
 import "../../../styles/site.css";
@@ -33,19 +38,25 @@ class InitialStock extends Component {
     super(props);
 
     this.state = {
-      ListItems: [],
+      pharmacy_stock_detail: [],
       location_id: null,
-      category_id: null,
-      group_id: null,
+      item_category_id: null,
+      item_group_id: null,
       item_id: null,
-      batch_no: null,
-      expirt_date: null,
+      batchno: null,
+      expiry_date: null,
       quantity: 0,
       unit_cost: 0,
       initial_stock_date: new Date(),
       SnackbarOpen: false,
       MandatoryMsg: "",
-      uom_id: null
+      uom_id: null,
+      conversion_fact: null,
+      extended_cost: 0,
+      saveEnable: true,
+      posted: "N",
+      grn_number: null,
+      postEnable: true
     };
   }
 
@@ -137,16 +148,16 @@ class InitialStock extends Component {
                   label={{ forceLabel: "Document Number", returnText: true }}
                 />
               ),
-              value: this.state.patient_code,
-              selectValue: "patient_code",
+              value: this.state.document_number,
+              selectValue: "document_number",
               events: {
                 onChange: getCtrlCode.bind(this, this)
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "frontDesk.patients"
+                fieldName: "initialStock.intstock"
               },
-              searchName: "patients"
+              searchName: "initialstock"
             }}
             userArea={
               <AlgaehDateHandler
@@ -172,11 +183,28 @@ class InitialStock extends Component {
           />
 
           <div className="hptl-phase1-initial-stock-form">
+            {/* description */}
             <div className="col-lg-12">
+              <div className="row inline">
+                <AlagehFormGroup
+                  div={{ className: "col-lg-12" }}
+                  label={{
+                    forceLabel: "Description"
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "description",
+                    value: this.state.description,
+                    events: {
+                      onChange: changeTexts.bind(this, this)
+                    }
+                  }}
+                />
+              </div>
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Location" }}
+                  label={{ forceLabel: "Location", isImp: true }}
                   selector={{
                     name: "location_id",
                     className: "select-fld",
@@ -187,17 +215,17 @@ class InitialStock extends Component {
                       data: this.props.locations
                     },
 
-                    onChange: changeTexts.bind(this, this)
+                    onChange: LocationchangeTexts.bind(this, this)
                   }}
                 />
 
                 <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Item Category" }}
+                  label={{ forceLabel: "Item Category", isImp: true }}
                   selector={{
-                    name: "item_category",
+                    name: "item_category_id",
                     className: "select-fld",
-                    value: this.state.item_category,
+                    value: this.state.item_category_id,
                     dataSource: {
                       textField: "category_desc",
                       valueField: "hims_d_item_category_id",
@@ -212,11 +240,11 @@ class InitialStock extends Component {
 
                 <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Item Group" }}
+                  label={{ forceLabel: "Item Group", isImp: true }}
                   selector={{
-                    name: "item_group",
+                    name: "item_group_id",
                     className: "select-fld",
-                    value: this.state.item_group,
+                    value: this.state.item_group_id,
                     dataSource: {
                       textField: "group_description",
                       valueField: "hims_d_item_group_id",
@@ -231,7 +259,7 @@ class InitialStock extends Component {
 
                 <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Item Name" }}
+                  label={{ forceLabel: "Item Name", isImp: true }}
                   selector={{
                     name: "item_id",
                     className: "select-fld",
@@ -248,7 +276,7 @@ class InitialStock extends Component {
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "UOM" }}
+                  label={{ forceLabel: "UOM", isImp: true }}
                   selector={{
                     name: "uom_id",
                     className: "select-fld",
@@ -258,13 +286,17 @@ class InitialStock extends Component {
                       valueField: "hims_d_pharmacy_uom_id",
                       data: this.props.itemuom
                     },
+                    others: {
+                      disabled: true
+                    },
                     onChange: itemchangeText.bind(this, this)
                   }}
                 />
                 <AlagehFormGroup
                   div={{ className: "col-lg-3" }}
                   label={{
-                    forceLabel: "Batch No."
+                    forceLabel: "Batch No.",
+                    isImp: true
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -278,7 +310,7 @@ class InitialStock extends Component {
 
                 <AlgaehDateHandler
                   div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Expiry Date" }}
+                  label={{ forceLabel: "Expiry Date", isImp: true }}
                   textBox={{ className: "txt-fld", name: "expiry_date" }}
                   minDate={new Date()}
                   events={{
@@ -290,7 +322,8 @@ class InitialStock extends Component {
                 <AlagehFormGroup
                   div={{ className: "col-lg-3" }}
                   label={{
-                    forceLabel: "Quantity"
+                    forceLabel: "Quantity",
+                    isImp: true
                   }}
                   textBox={{
                     number: { allowNegative: false, thousandSeparator: "," },
@@ -308,7 +341,8 @@ class InitialStock extends Component {
                 <AlagehFormGroup
                   div={{ className: "col-lg-3" }}
                   label={{
-                    forceLabel: "Unit Cost"
+                    forceLabel: "Unit Cost",
+                    isImp: true
                   }}
                   textBox={{
                     decimal: { allowNegative: false },
@@ -317,6 +351,22 @@ class InitialStock extends Component {
                     name: "unit_cost",
                     events: {
                       onChange: numberchangeTexts.bind(this, this)
+                    }
+                  }}
+                />
+
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    forceLabel: "Recipt Number(GRN)",
+                    isImp: true
+                  }}
+                  textBox={{
+                    value: this.state.grn_number,
+                    className: "txt-fld",
+                    name: "grn_number",
+                    events: {
+                      onChange: changeTexts.bind(this, this)
                     }
                   }}
                 />
@@ -336,6 +386,32 @@ class InitialStock extends Component {
                 <AlgaehDataGrid
                   id="initial_stock"
                   columns={[
+                    {
+                      fieldName: "action",
+                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            <IconButton
+                              color="primary"
+                              title="Add Template"
+                              style={{ maxHeight: "4vh" }}
+                            >
+                              <i
+                                disabled={!this.state.saveEnable}
+                                className="fa fa-trash"
+                                aria-hidden="true"
+                                onClick={deleteInitialStock.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
+                              />
+                            </IconButton>
+                          </span>
+                        );
+                      }
+                    },
                     {
                       fieldName: "location_id",
                       label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
@@ -361,7 +437,7 @@ class InitialStock extends Component {
                     },
 
                     {
-                      fieldName: "category_id",
+                      fieldName: "item_category_id",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Category" }} />
                       ),
@@ -371,7 +447,8 @@ class InitialStock extends Component {
                             ? []
                             : this.props.itemcategory.filter(
                                 f =>
-                                  f.hims_d_item_category_id === row.category_id
+                                  f.hims_d_item_category_id ===
+                                  row.item_category_id
                               );
 
                         return (
@@ -386,7 +463,7 @@ class InitialStock extends Component {
                     },
 
                     {
-                      fieldName: "group_id",
+                      fieldName: "item_group_id",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Group" }} />
                       ),
@@ -395,7 +472,8 @@ class InitialStock extends Component {
                           this.props.itemgroup === undefined
                             ? []
                             : this.props.itemgroup.filter(
-                                f => f.hims_d_item_group_id === row.group_id
+                                f =>
+                                  f.hims_d_item_group_id === row.item_group_id
                               );
 
                         return (
@@ -433,16 +511,16 @@ class InitialStock extends Component {
                       disabled: true
                     },
                     {
-                      fieldName: "batch_no",
+                      fieldName: "batchno",
                       label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                     },
                     {
-                      fieldName: "expirt_date",
+                      fieldName: "expiry_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
                       ),
                       displayTemplate: row => {
-                        return <span>{dateFormater(row.expirt_date)}</span>;
+                        return <span>{dateFormater(row.expiry_date)}</span>;
                       }
                     },
                     {
@@ -452,11 +530,25 @@ class InitialStock extends Component {
                     {
                       fieldName: "unit_cost",
                       label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                    },
+                    {
+                      fieldName: "extended_cost",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Extended Cost" }} />
+                      )
+                    },
+                    {
+                      fieldName: "grn_number",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Recipt Number(GRN)" }}
+                        />
+                      )
                     }
                   ]}
                   keyId="item_id"
                   dataSource={{
-                    data: this.state.ListItems
+                    data: this.state.pharmacy_stock_detail
                   }}
                   // isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -476,7 +568,7 @@ class InitialStock extends Component {
                     <button
                       type="button"
                       className="btn btn-primary"
-                      // onClick={this.SavePatientDetails.bind(this)}
+                      onClick={SaveInitialStock.bind(this, this)}
                       disabled={this.state.saveEnable}
                     >
                       <AlgaehLabel
@@ -492,7 +584,7 @@ class InitialStock extends Component {
                     <button
                       type="button"
                       className="btn btn-default"
-                      // onClick={this.ClearData.bind(this)}
+                      onClick={ClearData.bind(this, this)}
                     >
                       <AlgaehLabel
                         label={{ forceLabel: "Clear", returnText: true }}
@@ -502,7 +594,8 @@ class InitialStock extends Component {
                     <button
                       type="button"
                       className="btn btn-other"
-                      // onClick={this.ShowRefundScreen.bind(this)}
+                      onClick={PostInitialStock.bind(this, this)}
+                      disabled={this.state.postEnable}
                     >
                       <AlgaehLabel
                         label={{
@@ -528,7 +621,9 @@ function mapStateToProps(state) {
     locations: state.locations,
     itemcategory: state.itemcategory,
     itemgroup: state.itemgroup,
-    itemuom: state.itemuom
+    itemuom: state.itemuom,
+    itemuomlist: state.itemuomlist,
+    initialstock: state.initialstock
   };
 }
 
@@ -539,7 +634,9 @@ function mapDispatchToProps(dispatch) {
       getLocation: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
+      getItemMasterAndItemUom: AlgaehActions,
+      getInitialStock: AlgaehActions
     },
     dispatch
   );

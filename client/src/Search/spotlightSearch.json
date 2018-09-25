@@ -42,5 +42,21 @@
         "label": "Bill Date"
       }
     ]
+  },
+  "initialStock": {
+    "intstock": [
+      {
+        "fieldName": "document_number",
+        "label": "Document Number"
+      },
+      {
+        "fieldName": "description",
+        "label": "Description"
+      },
+      {
+        "fieldName": "posted",
+        "label": "Posted"
+      }
+    ]
   }
 }

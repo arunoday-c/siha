@@ -1337,14 +1337,14 @@ let getPharmacyInitialStock = (req, res, next) => {
             connection.query(
               "select * from hims_f_pharmacy_stock_detail where pharmacy_stock_header_id=? and record_status='A'",
               headerResult[0].hims_f_pharmacy_stock_header_id,
-              (error, detailResult) => {
+              (error, pharmacy_stock_detail) => {
                 if (error) {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
                 req.records = {
-                  ...{ headerResult },
-                  ...{ detailResult }
+                  ...headerResult[0],
+                  ...{ pharmacy_stock_detail }
                 };
                 next();
               }
