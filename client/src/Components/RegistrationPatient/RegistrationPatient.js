@@ -48,7 +48,11 @@ var intervalId;
 class RegistrationPatient extends Component {
   constructor(props) {
     super(props);
-    this.state = { AdvanceOpen: false, RefundOpen: false };
+    this.state = {
+      AdvanceOpen: false,
+      RefundOpen: false,
+      visittypeselect: true
+    };
   }
 
   componentWillMount() {
@@ -105,7 +109,7 @@ class RegistrationPatient extends Component {
     // });
 
     let IOputs = emptyObject;
-
+    IOputs.visittypeselect = true;
     this.setState(IOputs, () => {
       debugger;
     });
@@ -122,10 +126,6 @@ class RegistrationPatient extends Component {
           expiry_date: null,
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
-          // created_by: getCookie("UserID"),
-          // created_date: new Date(),
-          //updated_by: null,
-          updated_date: null,
           card_type: null
         });
       }
@@ -136,10 +136,6 @@ class RegistrationPatient extends Component {
           expiry_date: this.state.card_date,
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
-          // created_by: getCookie("UserID"),
-          // created_date: new Date(),
-          // updated_by: null,
-          updated_date: null,
           card_type: null
         });
       }
@@ -150,10 +146,6 @@ class RegistrationPatient extends Component {
           expiry_date: this.state.cheque_date,
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
-          // created_by: getCookie("UserID"),
-          //created_date: new Date(),
-          //updated_by: null,
-          updated_date: null,
           card_type: null
         });
       }

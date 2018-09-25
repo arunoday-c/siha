@@ -11,9 +11,13 @@ const texthandle = ($this, context, ctrl, e) => {
     [name]: value
   });
 
-  if (context != null) {
-    context.updateState({ [name]: value });
-  }
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({ [name]: value });
+    }
+    clearInterval(texthandlerInterval);
+  }, 1000);
 };
 
 const calculateRecipt = ($this, context) => {
@@ -92,18 +96,20 @@ const cardtexthandle = ($this, context, ctrl, e) => {
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
   debugger;
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    $this.setState({
-      [e.target.name]: $this.state.card_amount
-    });
-    if (context != null) {
-      context.updateState({ [e.target.name]: $this.state.card_amount });
-    }
-
     successfulMessage({
       message: "Invalid Input. Sum of all amount to be equal to Receivable.",
       title: "Warning",
       icon: "warning"
     });
+    $this.setState(
+      {
+        [e.target.name]: 0,
+        errorInCard: true
+      },
+      () => {
+        $this.setState({ errorInCard: false });
+      }
+    );
   } else {
     $this.setState(
       {
@@ -134,9 +140,15 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       title: "Warning",
       icon: "warning"
     });
-    $this.setState({
-      [e.target.name]: 0
-    });
+    $this.setState(
+      {
+        [e.target.name]: 0,
+        errorInCheck: true
+      },
+      () => {
+        $this.setState({ errorInCheck: false });
+      }
+    );
   } else {
     $this.setState(
       {
@@ -330,36 +342,84 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
   }
 };
 
-const checkcashhandaler = ($this, e) => {
+const checkcashhandaler = ($this, context, e) => {
   debugger;
+
   $this.setState(
     {
       Cashchecked: e.target.checked,
-      enableCash: !$this.state.enableCash,
-      cash_amount: $this.state.cash_amount
+      cash_amount: 0
     },
     () => {
-      debugger;
+      calculateRecipt($this, context);
     }
   );
+
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({
+        cash_amount: 0
+      });
+    }
+    clearInterval(texthandlerInterval);
+  }, 1000);
 };
 
-const checkcardhandaler = ($this, e) => {
+const checkcardhandaler = ($this, context, e) => {
   debugger;
 
-  $this.setState({
-    Cardchecked: e.target.checked,
-    enableCard: !$this.state.enableCard
-  });
+  $this.setState(
+    {
+      Cardchecked: e.target.checked,
+      card_amount: 0,
+      card_number: null,
+      expiry_date: null
+    },
+    () => {
+      calculateRecipt($this, context);
+    }
+  );
+
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({
+        card_amount: 0,
+        card_number: null,
+        expiry_date: null
+      });
+    }
+    clearInterval(texthandlerInterval);
+  }, 1000);
 };
 
-const checkcheckhandaler = ($this, e) => {
+const checkcheckhandaler = ($this, context, e) => {
   debugger;
 
-  $this.setState({
-    Checkchecked: e.target.checked,
-    enableCheck: !$this.state.enableCheck
-  });
+  $this.setState(
+    {
+      Checkchecked: e.target.checked,
+      cheque_amount: 0,
+      cheque_number: null,
+      cheque_date: null
+    },
+    () => {
+      calculateRecipt($this, context);
+    }
+  );
+
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({
+        cheque_amount: 0,
+        cheque_number: null,
+        cheque_date: null
+      });
+    }
+    clearInterval(texthandlerInterval);
+  }, 1000);
 };
 
 const credittexthandle = ($this, context, ctrl, e) => {

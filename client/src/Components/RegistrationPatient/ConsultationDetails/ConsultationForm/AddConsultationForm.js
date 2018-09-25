@@ -34,7 +34,8 @@ class AddConsultationForm extends Component {
 
     this.state = {
       value: "",
-      visittypeselect: true
+      departments: [],
+      doctors: []
     };
   }
 
@@ -84,6 +85,13 @@ class AddConsultationForm extends Component {
         redux: {
           type: "DEPT_DOCTOR_GET_DATA",
           mappingName: "deptanddoctors"
+        },
+        afterSuccess: data => {
+          debugger;
+          this.setState({
+            departments: data.departmets,
+            doctors: data.doctors
+          });
         }
       });
     }
@@ -148,10 +156,7 @@ class AddConsultationForm extends Component {
                               ? "sub_department_name"
                               : "arabic_sub_department_name",
                           valueField: "sub_department_id",
-                          data:
-                            this.props.deptanddoctors === undefined
-                              ? []
-                              : this.props.deptanddoctors.departmets
+                          data: this.state.departments
                         },
                         others: {
                           disabled: this.state.visittypeselect
@@ -177,10 +182,7 @@ class AddConsultationForm extends Component {
                               ? "full_name"
                               : "arabic_name",
                           valueField: "employee_id",
-                          data:
-                            this.props.deptanddoctors === undefined
-                              ? []
-                              : this.props.deptanddoctors.doctors
+                          data: this.state.doctors
                         },
                         others: {
                           disabled: this.state.visittypeselect
