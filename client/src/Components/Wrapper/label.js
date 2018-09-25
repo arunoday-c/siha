@@ -74,9 +74,9 @@ class Label extends PureComponent {
             className={
               this.props.label.align === undefined
                 ? this.state.Language === "ar"
-                  ? "float-right style_Label " + lClassName
+                  ? "text-arabic style_Label " + lClassName
                   : this.props.label.align === "rtl"
-                    ? "float-right style_Label " + lClassName
+                    ? "text-arabic style_Label " + lClassName
                     : this.props.label.align === "ltl"
                       ? "float-left style_Label " + lClassName
                       : "style_Label " + lClassName

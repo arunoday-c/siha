@@ -1,0 +1,61 @@
+.hptl-phase1-patientreg-details {
+  background: #ffff;
+  .patient-section {
+    border: 1px solid #d3d3d3;
+    margin: 10px;
+    margin-top: 0px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  .toggle-section {
+    margin: 10px;
+    margin-bottom: 0px;
+    background-color: #ffff;
+  }
+
+  .text_field {
+    width: 100% !important;
+    background-color: #fbfbfb;
+    //font-size: $fontSize;
+    margin-right: "5px";
+  }
+
+  .paper {
+    background-color: #292929 !important;
+    left: 0px;
+    width: 250px;
+  }
+}
+.hptl-phase1-footer {
+  button {
+    float: right;
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    min-width: 70px;
+  }
+  .btn-primary {
+    background: #34b8bc;
+    color: #fff;
+    border: 1px solid #34b8bc;
+  }
+  .btn-default {
+    background: #efefef;
+    color: #797979;
+    border: 1px solid #efefef;
+  }
+  .btn-other {
+    background: none;
+    color: #fff;
+    border: 1px solid #efefef;
+  }
+  .btn-primary:hover,
+  .btn-default:hover,
+  .btn-other:hover {
+    background: #239296;
+    color: #fff;
+    border: 1px solid #239296;
+  }
+}

@@ -64,9 +64,9 @@
         "path": "/Appointment"
       },
       {
-        "name": "Front Desk",
+        "name": "Front Desk Ar",
         "label": "المقعدالامامي",
-        "path": "/FrontDesk"
+        "path": "/FrontDeskAr"
       },
       {
         "name": "Patient List",

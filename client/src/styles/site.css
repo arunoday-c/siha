@@ -504,6 +504,12 @@ textarea {
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px; }
 
+.arabic-checkbox-label label {
+  margin-top: 14px; }
+
+.arabic-checkbox-input {
+  float: right; }
+
 /*
    React date picker customizing style
 */
@@ -678,3 +684,247 @@ th {
       font-weight: 500;
       font-size: 2rem;
       padding-left: 10px; }
+
+.algaeh_Arabic_Version {
+  /*
+     React date picker customizing style
+  */
+  /*
+   for dropdown list
+  */ }
+  .algaeh_Arabic_Version .tab-container ul.nav {
+    direction: rtl;
+    padding-right: 5px; }
+  .algaeh_Arabic_Version h6 {
+    text-align: right; }
+  .algaeh_Arabic_Version .Select-menu-outer {
+    text-align: right; }
+  .algaeh_Arabic_Version .Select-control {
+    direction: rtl; }
+  .algaeh_Arabic_Version .Select-control > *:last-child {
+    padding-right: 0px;
+    padding-left: 12px; }
+  .algaeh_Arabic_Version .Select-value-label {
+    padding: 0 4px; }
+  .algaeh_Arabic_Version div[numberbox="true"] input[type="text"] {
+    text-align: right !important; }
+  .algaeh_Arabic_Version .DayPickerInput input {
+    font: inherit;
+    color: currentColor;
+    border: 0;
+    margin: 0;
+    padding: 6px 0 7px;
+    box-sizing: content-box;
+    background: none;
+    vertical-align: middle;
+    -webkit-tap-highlight-color: transparent;
+    background-color: #fbfbfb;
+    min-width: 100%;
+    text-align: right; }
+  .algaeh_Arabic_Version label {
+    margin-bottom: 0px;
+    font-size: 0.75rem;
+    font-family: "Open Sans", sans-serif;
+    text-transform: uppercase;
+    font-weight: 100;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased !important;
+    text-align: right; }
+  .algaeh_Arabic_Version input[type="text"] {
+    font-size: 0.85rem;
+    padding: 4px 6px 4px;
+    border: 1px solid #d3d3d3;
+    border-radius: 4px;
+    background: #fff;
+    text-align: right; }
+  .algaeh_Arabic_Version input[type="color"] {
+    font-size: 0.85rem;
+    -webkit-appearance: none;
+    width: 32px;
+    height: 29px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #d3d3d3;
+    border-radius: 4px;
+    overflow: hidden;
+    text-align: right; }
+  .algaeh_Arabic_Version input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0; }
+  .algaeh_Arabic_Version input[type="color"]::-webkit-color-swatch {
+    border: none; }
+  .algaeh_Arabic_Version .color-picker-icon {
+    position: absolute;
+    top: 24px;
+    left: 16px;
+    background: #fff;
+    padding: 3px 6px;
+    color: #616161; }
+  .algaeh_Arabic_Version textarea {
+    font-size: 0.85rem !important;
+    padding: 8px 6px 7px !important;
+    border: 1px solid #d3d3d3 !important;
+    border-radius: 4px !important; }
+  .algaeh_Arabic_Version .report-section {
+    border: 1px solid #d3d3d3;
+    margin: 10px;
+    margin-top: 0px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px; }
+  .algaeh_Arabic_Version .text-arabic {
+    text-align: right;
+    display: block;
+    font-size: 0.9rem; }
+  .algaeh_Arabic_Version .algaeh-datePicker {
+    border: 1px solid #d3d3d3;
+    max-width: 100%;
+    border-radius: 4px;
+    text-align: right; }
+    .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker__button {
+      border: none;
+      padding-top: 3px;
+      padding-bottom: 2px; }
+    .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker {
+      width: 100%;
+      padding-left: 6px; }
+    .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker__button {
+      width: 100%; }
+    .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker__button__input {
+      margin-left: 0px;
+      min-width: inherit;
+      font-size: 0.85rem; }
+    .algaeh_Arabic_Version .algaeh-datePicker button {
+      margin-left: 0px;
+      padding: 3px 6px !important; }
+      .algaeh_Arabic_Version .algaeh-datePicker button svg {
+        height: 16px; }
+  .algaeh_Arabic_Version .mandatory .algaeh-datePicker {
+    background-color: none;
+    border: 1px solid #d9ae58; }
+  .algaeh_Arabic_Version .mandatory .Select-placeholder {
+    background-color: none;
+    border: none; }
+  .algaeh_Arabic_Version .mandatory .Select-control {
+    border: 1px solid #d9ae58;
+    direction: rtl; }
+  .algaeh_Arabic_Version .mandatory input[type="text"] {
+    background-color: none;
+    border: 1px solid #d9ae58;
+    text-align: right; }
+  .algaeh_Arabic_Version .MuiInput-underline-90:before {
+    border: none !important; }
+  .algaeh_Arabic_Version input[type="text"]:disabled {
+    background: #f0f0f0;
+    border: 1px solid #d3d3d3;
+    color: #000;
+    font-weight: bold; }
+  .algaeh_Arabic_Version .is-disabled .Select-control {
+    border: 1px solid #d3d3d3;
+    padding: 0px 10px;
+    direction: rtl; }
+  .algaeh_Arabic_Version .is-disabled .Select-control > *:last-child {
+    padding-right: 0px;
+    padding-left: 12px; }
+  .algaeh_Arabic_Version .is-disabled .Select-value {
+    background: #f0f0f0;
+    color: #000;
+    font-weight: bold; }
+    .algaeh_Arabic_Version .is-disabled .Select-value .Select-value-label {
+      padding: 0 4px; }
+  .algaeh_Arabic_Version .is-disabled .Select-arrow-zone {
+    display: none; }
+  .algaeh_Arabic_Version .is-disabled .Select-placeholder {
+    background: #f0f0f0; }
+  .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker--disabled .react-date-picker__button {
+    padding-top: 3px;
+    padding-bottom: 3px; }
+    .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker--disabled .react-date-picker__button button {
+      display: none; }
+  .algaeh_Arabic_Version .table-responsive {
+    border: 1px solid #e2e2e2;
+    border-radius: 4px; }
+    .algaeh_Arabic_Version .table-responsive .table {
+      width: 100%;
+      border-bottom: 1.5px solid #f2f2f2;
+      margin: 0; }
+      .algaeh_Arabic_Version .table-responsive .table thead tr th {
+        border-bottom: 2px solid #34b8bc !important;
+        vertical-align: middle !important;
+        background: #e8feff !important;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        text-align: center; }
+        .algaeh_Arabic_Version .table-responsive .table thead tr th label.style_Label {
+          font-weight: bold; }
+      .algaeh_Arabic_Version .table-responsive .table tbody {
+        height: 200px;
+        overflow: auto;
+        width: 100%; }
+        .algaeh_Arabic_Version .table-responsive .table tbody tr {
+          cursor: pointer; }
+        .algaeh_Arabic_Version .table-responsive .table tbody td {
+          vertical-align: middle;
+          white-space: nowrap;
+          font-size: 0.75rem;
+          text-align: center; }
+      .algaeh_Arabic_Version .table-responsive .table div div {
+        height: auto !important;
+        min-height: auto !important; }
+  .algaeh_Arabic_Version .scrolling table {
+    table-layout: inherit;
+    *margin-left: -100px;
+    /*ie7*/ }
+  .algaeh_Arabic_Version .scrolling td,
+  .algaeh_Arabic_Version th {
+    vertical-align: top;
+    padding: 10px;
+    min-width: 100px; }
+  .algaeh_Arabic_Version .scrolling th {
+    position: absolute;
+    *position: relative;
+    /*ie7*/
+    left: 0;
+    width: 120px; }
+  .algaeh_Arabic_Version .outer {
+    position: relative; }
+  .algaeh_Arabic_Version .inner {
+    overflow-x: auto;
+    overflow-y: visible;
+    margin-left: 120px; }
+  .algaeh_Arabic_Version .tab-container nav li label {
+    padding-top: "2px"; }
+  .algaeh_Arabic_Version .DayPickerInput {
+    border-bottom: 1px dashed #000; }
+  .algaeh_Arabic_Version .primary-details {
+    padding-bottom: 10px; }
+  .algaeh_Arabic_Version .Select-menu-outer {
+    font-size: 0.85rem; }
+  .algaeh_Arabic_Version .Select-multi-value-wrapper {
+    font-size: 0.85rem; }
+  .algaeh_Arabic_Version .Select-placeholder,
+  .algaeh_Arabic_Version .Select--single > .Select-control .Select-value {
+    padding-left: 0px; }
+  .algaeh_Arabic_Version .Select-input {
+    height: 27px;
+    padding-left: 10px;
+    padding-right: 10px;
+    vertical-align: middle; }
+    .algaeh_Arabic_Version .Select-input input {
+      padding: 4px 0 4px; }
+  .algaeh_Arabic_Version .moveRadioButtons {
+    padding-left: 3px;
+    text-align: right; }
+    .algaeh_Arabic_Version .moveRadioButtons label {
+      cursor: pointer;
+      margin-right: 7px; }
+    .algaeh_Arabic_Version .moveRadioButtons input[type="radio"] {
+      cursor: pointer; }
+  .algaeh_Arabic_Version .colorPrimary {
+    background-color: #dbad64; }
+    .algaeh_Arabic_Version .colorPrimary h2 {
+      color: #fff;
+      font-size: 3rem; }
+      .algaeh_Arabic_Version .colorPrimary h2 label {
+        font-weight: 500;
+        font-size: 2rem;
+        padding-left: 10px; }

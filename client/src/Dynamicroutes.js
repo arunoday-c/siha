@@ -39,6 +39,7 @@ import AppointmentSetup from "./Components/AppointmentSetup/AppointmentSetup";
 import ItemSetup from "./Components/ItemSetup/ItemSetup";
 import EmployeeMasterIndex from "./Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMasterIndex";
 import PhysicianScheduleSetup from "./Components/PhysicianScheduleSetup/PhysicianScheduleSetup";
+import FrontDeskAr from "./Components/RegistrationPatientAr/RegistrationPatientAr";
 
 // function height() {
 //   let height =
@@ -85,7 +86,8 @@ const componts = (selectedLang, breadStyle) => {
     EmployeeMasterIndex: <EmployeeMasterIndex SelectLanguage={selectedLang} />,
     PhysicianScheduleSetup: (
       <PhysicianScheduleSetup SelectLanguage={selectedLang} />
-    )
+    ),
+    FrontDeskAr: <FrontDeskAr SelectLanguage={selectedLang} />
   };
 };
 

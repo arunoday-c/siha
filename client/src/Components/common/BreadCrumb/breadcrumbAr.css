@@ -1,0 +1,108 @@
+.breadcrumb-fixed {
+  height: "75px";
+  background-color: "#ffffff";
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid #ced4da; }
+
+.breadCrumb-Data {
+  margin: 0;
+  margin-top: 50px;
+  background-color: #f8f8f8;
+  height: 75px; }
+  .breadCrumb-Data .hdg_bredcrump {
+    background: url(images/breadcrump_border_Ar.png) no-repeat top left #fff; }
+  .breadCrumb-Data .header {
+    margin-top: 10px;
+    text-align: right; }
+    .breadCrumb-Data .header label {
+      font-size: 1.4rem;
+      font-weight: 300;
+      text-transform: capitalize;
+      text-align: right; }
+  .breadCrumb-Data ul {
+    list-style: none;
+    display: flex;
+    padding: 0;
+    margin: 0;
+    float: right; }
+    .breadCrumb-Data ul li {
+      color: #d3d3d3;
+      font-size: 0.75rem; }
+      .breadCrumb-Data ul li a label {
+        text-transform: capitalize; }
+  .breadCrumb-Data .actions-area {
+    padding-top: 1.5%;
+    padding-right: 3%; }
+    .breadCrumb-Data .actions-area li span {
+      padding-top: 24px;
+      width: 50px;
+      display: inline-block; }
+      .breadCrumb-Data .actions-area li span i {
+        padding-right: 10px;
+        display: inline; }
+    .breadCrumb-Data .actions-area .finderImg {
+      height: 27px;
+      margin-top: 20px;
+      margin-right: 15px;
+      cursor: pointer; }
+
+.text {
+  background-color: #ffffff;
+  color: #000000;
+  display: inline-block;
+  height: 75px;
+  padding-left: 16px; }
+
+.internal-label {
+  font-size: 0.9rem;
+  color: #979292;
+  text-transform: uppercase; }
+
+.print-area div {
+  float: left;
+  padding-right: 16px;
+  height: 75px;
+  border-right: 1px solid #adaaaa;
+  border-left: none; }
+  .print-area div ul {
+    margin-left: 50%; }
+  .print-area div i {
+    color: #000000;
+    padding-top: 25px; }
+
+.print-area .printImg {
+  height: 36px;
+  cursor: pointer; }
+
+.print-area .printMenuDisplay {
+  padding: 19px 9px; }
+
+.print-area .printMenuDisplay:hover .printActionMenu,
+.print-area .printImg:hover .printActionMenu {
+  display: block; }
+
+.print-area .printActionMenu {
+  cursor: pointer;
+  display: none;
+  box-shadow: -2px 3px 2px rgba(0, 0, 0, 0.3);
+  border-radius: 0 0 0 5px;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  left: 0;
+  top: 75px;
+  position: absolute;
+  overflow: hidden; }
+  .print-area .printActionMenu li {
+    list-style: none;
+    border-bottom: 1px solid #000;
+    padding: 15px; }
+
+.print-area .printActionMenu:hover {
+  display: block; }
+
+.third-position {
+  padding-top: 0.4%; }
+  .third-position .internal-label label {
+    font-family: "Trebuchet MS", " Helvetica, sans-serif";
+    font-size: 0.9rem; }

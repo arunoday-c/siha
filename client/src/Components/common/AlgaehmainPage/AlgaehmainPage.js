@@ -140,7 +140,7 @@ class PersistentDrawer extends React.Component {
         title: this.state.arlabl
       });
     }
-
+    debugger;
     let renderComp = this.state.renderComponent;
     this.setState(
       {
@@ -207,6 +207,7 @@ class PersistentDrawer extends React.Component {
     let screenName = name.replace(/\s/g, "");
     setCookie("ScreenName", path, 30);
     AlgaehLoader({ show: true });
+    debugger;
     this.setState({
       sideopen: false,
       toggleSubMenu: true,
