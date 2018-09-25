@@ -10,12 +10,37 @@ class Scheduler extends Component {
 
     this.state = {
       from_date: new Date(),
-      to_date: new Date()
+      to_date: new Date(),
+      all: false,
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+      sunday: false
     };
   }
 
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
+  }
+  changeChecks(e) {
+    debugger;
+    if (e.target.name === "All") {
+      this.setState({
+        all: !this.state.all,
+        monday: !this.state.monday,
+        tuesday: !this.state.tuesday,
+        wednesday: !this.state.wednesday,
+        thursday: !this.state.thursday,
+        friday: !this.state.friday,
+        saturday: !this.state.saturday,
+        sunday: !this.state.sunday
+      });
+    } else {
+      this.setState({ [e.target.name]: e.target.checked });
+    }
   }
 
   render() {
@@ -70,35 +95,46 @@ class Scheduler extends Component {
                       </div>
                       <label className="margin-top-15">Day Break 1</label>
                       <div className="row">
-                        <AlgaehDateHandler
+                        <AlagehFormGroup
                           div={{ className: "col" }}
-                          label={{ forceLabel: "From Date", isImp: true }}
+                          label={{
+                            forceLabel: "From Time",
+                            isImp: true
+                          }}
                           textBox={{
                             className: "txt-fld",
-                            name: "from_date"
-                          }}
-                          maxDate={new Date()}
-                          events={{
-                            onChange: selectedDate => {
-                              this.setState({ from_date: selectedDate });
+                            name: "from_break_hr1",
+                            value: this.state.from_break_hr1,
+                            events: {
+                              onChange: this.changeTexts.bind(this)
+                            },
+                            others: {
+                              type: "time"
                             }
+                            // error: this.state.description_error,
+                            // helperText: this.state.description_error_text
                           }}
-                          value={this.state.from_date}
                         />
-                        <AlgaehDateHandler
+                        <AlagehFormGroup
                           div={{ className: "col" }}
-                          label={{ forceLabel: "To Date", isImp: true }}
+                          label={{
+                            forceLabel: "To Time",
+                            isImp: true
+                          }}
                           textBox={{
                             className: "txt-fld",
-                            name: "to_date"
-                          }}
-                          maxDate={new Date()}
-                          events={{
-                            onChange: selectedDate => {
-                              this.setState({ to_date: selectedDate });
+                            name: "to_break_hr1",
+                            value: this.state.to_break_hr1,
+                            events: {
+                              onChange: this.changeTexts.bind(this)
+                            },
+                            others: {
+                              type: "time"
                             }
+
+                            // error: this.state.description_error,
+                            // helperText: this.state.description_error_text
                           }}
-                          value={this.state.to_date}
                         />
                       </div>
                     </div>
@@ -151,88 +187,125 @@ class Scheduler extends Component {
 
                       <label className="margin-top-15">Day Break 2</label>
                       <div className="row">
-                        <AlgaehDateHandler
+                        <AlagehFormGroup
                           div={{ className: "col" }}
-                          label={{ forceLabel: "From Date", isImp: true }}
+                          label={{
+                            forceLabel: "From Time",
+                            isImp: true
+                          }}
                           textBox={{
                             className: "txt-fld",
-                            name: "from_date"
-                          }}
-                          maxDate={new Date()}
-                          events={{
-                            onChange: selectedDate => {
-                              this.setState({ from_date: selectedDate });
+                            name: "from_break_hr2",
+                            value: this.state.from_break_hr2,
+                            events: {
+                              onChange: this.changeTexts.bind(this)
+                            },
+                            others: {
+                              type: "time"
                             }
+                            // error: this.state.description_error,
+                            // helperText: this.state.description_error_text
                           }}
-                          value={this.state.from_date}
                         />
-                        <AlgaehDateHandler
+                        <AlagehFormGroup
                           div={{ className: "col" }}
-                          label={{ forceLabel: "To Date", isImp: true }}
+                          label={{
+                            forceLabel: "To Time",
+                            isImp: true
+                          }}
                           textBox={{
                             className: "txt-fld",
-                            name: "to_date"
-                          }}
-                          maxDate={new Date()}
-                          events={{
-                            onChange: selectedDate => {
-                              this.setState({ to_date: selectedDate });
+                            name: "to_break_hr2",
+                            value: this.state.to_break_hr2,
+                            events: {
+                              onChange: this.changeTexts.bind(this)
+                            },
+                            others: {
+                              type: "time"
                             }
+                            // error: this.state.description_error,
+                            // helperText: this.state.description_error_text
                           }}
-                          value={this.state.to_date}
                         />
                       </div>
                     </div>
                     <div className="col-lg-4">
-                      <div className="weekDays-selector">
-                        <input
-                          type="checkbox"
-                          id="weekday-all"
-                          className="weekday"
-                        />
-                        <label htmlFor="weekday-all">All Days</label>
-                        <input
-                          type="checkbox"
-                          id="weekday-sun"
-                          className="weekday"
-                        />
-                        <label htmlFor="weekday-sun">Sunday</label>
-                        <input
-                          type="checkbox"
-                          id="weekday-mon"
-                          className="weekday"
-                        />
-                        <label htmlFor="weekday-mon">Monday</label>
-                        <input
-                          type="checkbox"
-                          id="weekday-tue"
-                          className="weekday"
-                        />
-                        <label htmlFor="weekday-tue">Tuesday</label>
-                        <input
-                          type="checkbox"
-                          id="weekday-wed"
-                          className="weekday"
-                        />
-                        <label htmlFor="weekday-wed">Wednesday</label>
-                        <input
-                          type="checkbox"
-                          id="weekday-thu"
-                          className="weekday"
-                        />
-                        <label htmlFor="weekday-thu">Thursday</label>
-                        <input
-                          type="checkbox"
-                          id="weekday-fri"
-                          className="weekday"
-                        />
-                        <label htmlFor="weekday-fri">Friday</label>
-                        <input
-                          type="checkbox"
-                          id="weekday-sat"
-                          className="weekday"
-                        />
-                        <label htmlFor="weekday-sat">Saturday</label>
+                      <label>Working Days</label>
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.all}
+                            onClick={this.changeChecks.bind(this)}
+                          />
+                          <span>All</span>
+                        </label>
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="sunday"
+                            checked={this.state.sunday}
+                            onClick={this.changeChecks.bind(this)}
+                          />
+                          <span>Sunday</span>
+                        </label>
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="monday"
+                            checked={this.state.monday}
+                            onClick={this.changeChecks.bind(this)}
+                          />
+                          <span>Monday</span>
+                        </label>
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="tuesday"
+                            checked={this.state.tuesday}
+                            onClick={this.changeChecks.bind(this)}
+                          />
+                          <span>Tuesday</span>
+                        </label>
+                      </div>
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="wednesday"
+                            checked={this.state.wednesday}
+                            onClick={this.changeChecks.bind(this)}
+                          />
+                          <span>Wednesday</span>
+                        </label>
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="thursday"
+                            checked={this.state.thursday}
+                            onClick={this.changeChecks.bind(this)}
+                          />
+                          <span>Thursday</span>
+                        </label>
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="friday"
+                            checked={this.state.friday}
+                            onClick={this.changeChecks.bind(this)}
+                          />
+                          <span>Friday</span>
+                        </label>
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="saturday"
+                            checked={this.state.saturday}
+                            onClick={this.changeChecks.bind(this)}
+                          />
+                          <span>Saturday</span>
+                        </label>
                       </div>
                     </div>
                   </div>

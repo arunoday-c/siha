@@ -220,6 +220,8 @@ class AutoComplete extends Component {
             );
           }
         }}
+        error={this.props.error}
+        helperText={this.props.helperText}
       />
     );
   };
