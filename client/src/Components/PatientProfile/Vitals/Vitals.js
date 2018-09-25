@@ -137,7 +137,12 @@ class Vitals extends Component {
     e.preventDefault();
 
     if (this.state.weight.length === 0) {
-      alert("Please Capture at least one field");
+      swal({
+        title: "Please Capture at least one field",
+        icon: "warning",
+        buttons: false,
+        timer: 2000
+      });
     } else {
       algaehApiCall({
         uri: "/doctorsWorkBench/addPatientVitals",
@@ -165,7 +170,6 @@ class Vitals extends Component {
               timer: 2000
             });
             getVitalHistory(this);
-            //this.setPatientVitals();
             this.resetVitals();
           }
         },
@@ -353,6 +357,7 @@ class Vitals extends Component {
                     }
                   }}
                 />
+
                 <AlagehFormGroup
                   div={{ className: "col-lg-2 vitalTopFld15" }}
                   label={{

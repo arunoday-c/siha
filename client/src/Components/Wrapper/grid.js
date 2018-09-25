@@ -139,8 +139,18 @@ class DataGrid extends PureComponent {
   }
   handleDeleteRow = event => {
     sessionStorage.removeItem(this.state.id);
-    let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
-    let row = this.state.data[rowId];
+    let rowId = 0;
+    let row = 0;
+    if (this.props.dataSource.uri !== undefined) {
+      rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
+    } else {
+      rowId =
+        this.state.rowsPerPage * this.state.page +
+        event.currentTarget.parentElement.parentElement.rowIndex -
+        1;
+    }
+    row = this.state.data[rowId];
+    return;
     if (this.props.events != null) {
       if (this.props.events.onDelete) {
         row["onDeleteFinish"] = () => {
