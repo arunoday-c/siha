@@ -268,13 +268,3 @@ export {
   ClearData,
   PostDoctorCommission
 };
-
-//   changeTexts,
-//   datehandle,
-//   LoadBills,
-//   dateFormater,
-//   getCtrlCode,
-//   SaveDoctorCommission,
-//   deleteDoctorCommission,
-//   ClearData,
-//   PostDoctorCommission

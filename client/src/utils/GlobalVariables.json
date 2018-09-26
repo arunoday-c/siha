@@ -367,5 +367,9 @@
     { "name": "October", "value": "10" },
     { "name": "November", "value": "11" },
     { "name": "December", "value": "12" }
+  ],
+  "CASE_TYPE": [
+    { "name": "OP", "value": "OP" },
+    { "name": "IP", "value": "IP" }
   ]
 }
