@@ -14,11 +14,6 @@ const getAllChiefComplaints = ($this, callBack) => {
 };
 
 const getPatientChiefComplaints = $this => {
-  // if ($this.props.patient_chief_complaints !== undefined) {
-  //   $this.setState({
-  //     patientChiefComplains: $this.props.patient_chief_complaints
-  //   });
-  // } else {
   $this.props.getPatientChiefComplaints({
     uri: "/doctorsWorkBench/getPatientChiefComplaints",
     data: {

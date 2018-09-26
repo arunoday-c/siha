@@ -99,7 +99,8 @@ class ReviewofSystems extends Component {
   }
 
   addROS() {
-    getReviewOfSystems(this);
+    if (this.props.allros === undefined || this.props.allros.length === 0)
+      getReviewOfSystems(this);
     this.setState({
       openROSModal: true
     });
