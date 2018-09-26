@@ -541,6 +541,51 @@ let getAppointmentSchedule = (req, res, next) => {
   }
 };
 
+//created by irfan: to add appointment leave
+let addLeaveOrModifySchedule = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_appointment_schedule_leave` ( provider_id, sub_dept_id, clinic_id, to_date,\
+           from_time, to_time, modified, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.provider_id,
+          input.sub_dept_id,
+          input.clinic_id,
+          input.to_date,
+          input.from_time,
+          input.to_time,
+          input.modified,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   addAppointmentStatus,
   addAppointmentRoom,
@@ -552,5 +597,6 @@ module.exports = {
   updateAppointmentRoom,
   updateAppointmentClinic,
   addAppointmentSchedule,
-  getAppointmentSchedule
+  getAppointmentSchedule,
+  addLeaveOrModifySchedule
 };
