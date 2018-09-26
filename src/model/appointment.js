@@ -511,13 +511,15 @@ let getAppointmentSchedule = (req, res, next) => {
           // next();
           if (result.length != 0) {
             connection.query(
-              "SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,ASD.provider_id,E.first_name,E.last_name,\
-              sub_dept_id,clinic_id,AC.description as clinic_description, schedule_status,default_slot,from_date,to_date,from_work_hr,\
+              "SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,SH.schedule_description,SH.monday,SH.tuesday,\
+              SH.wednesday,SH.thursday,SH.friday,SH.saturday,SH.sunday ,ASD.provider_id,E.first_name,E.last_name,\
+              ASD.sub_dept_id,clinic_id,AC.description as clinic_description,ASD.schedule_status,default_slot,schedule_date,from_work_hr,\
               to_work_hr,work_break1,work_break2,\
-              from_break_hr1,to_break_hr1,from_break_hr2,to_break_hr2,monday,tuesday,wednesday,thursday,friday,saturday,sunday\
-              from hims_d_appointment_schedule_detail ASD ,hims_d_employee E, hims_d_appointment_clinic AC\
-               where ASD.record_status='A' and E.record_status='A' and AC.record_status='A' and ASD.provider_id=E.hims_d_employee_id\
-               and ASD.clinic_id=AC.hims_d_appointment_clinic_id and appointment_schedule_header_id in (" +
+              from_break_hr1,to_break_hr1,from_break_hr2,to_break_hr2\
+              from hims_d_appointment_schedule_detail ASD ,hims_d_employee E, hims_d_appointment_clinic AC,hims_d_appointment_schedule_header SH\
+               where ASD.record_status='A' and E.record_status='A' and AC.record_status='A'and SH.record_status='A' and ASD.provider_id=E.hims_d_employee_id\
+               and ASD.clinic_id=AC.hims_d_appointment_clinic_id and ASD.appointment_schedule_header_id=SH.hims_d_appointment_schedule_header_id and\
+               appointment_schedule_header_id in (" +
                 schedule_header_id_all +
                 ");",
               (error, results) => {
