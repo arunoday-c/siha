@@ -11,7 +11,7 @@ import {
 } from "../utils";
 import moment from "moment";
 import httpStatus from "../utils/httpStatus";
-//import { LINQ } from "node-linq";
+import { LINQ } from "node-linq";
 import { logger, debugFunction, debugLog } from "../utils/logging";
 
 //created by irfan: to add appointment_status
@@ -476,6 +476,72 @@ let addAppointmentSchedule = (req, res, next) => {
   }
 };
 
+//created by irfan: to get Appointment Schedule
+let getAppointmentSchedule = (req, res, next) => {
+  let selectWhere = {
+    sub_dept_id: "ALL",
+    month: "ALL",
+    year: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_appointment_schedule_header_id from hims_d_appointment_schedule_header where record_status='A' AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          let schedule_header_id_all = new LINQ(result)
+            .Where(w => w.hims_d_appointment_schedule_header_id != null)
+            .Select(s => s.hims_d_appointment_schedule_header_id)
+            .ToArray();
+
+          debugLog("schedule_header_id_all:", schedule_header_id_all);
+
+          // req.records = result;
+          // next();
+          if (result.length != 0) {
+            connection.query(
+              "SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,ASD.provider_id,E.first_name,E.last_name,\
+              sub_dept_id,clinic_id,AC.description as clinic_description, schedule_status,default_slot,from_date,to_date,from_work_hr,\
+              to_work_hr,work_break1,work_break2,\
+              from_break_hr1,to_break_hr1,from_break_hr2,to_break_hr2,monday,tuesday,wednesday,thursday,friday,saturday,sunday\
+              from hims_d_appointment_schedule_detail ASD ,hims_d_employee E, hims_d_appointment_clinic AC\
+               where ASD.record_status='A' and E.record_status='A' and AC.record_status='A' and ASD.provider_id=E.hims_d_employee_id\
+               and ASD.clinic_id=AC.hims_d_appointment_clinic_id and appointment_schedule_header_id in (" +
+                schedule_header_id_all +
+                ");",
+              (error, results) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+                req.records = results;
+                next();
+              }
+            );
+          } else {
+            req.records = result;
+            next();
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addAppointmentStatus,
   addAppointmentRoom,
@@ -486,5 +552,6 @@ module.exports = {
   updateAppointmentStatus,
   updateAppointmentRoom,
   updateAppointmentClinic,
-  addAppointmentSchedule
+  addAppointmentSchedule,
+  getAppointmentSchedule
 };
