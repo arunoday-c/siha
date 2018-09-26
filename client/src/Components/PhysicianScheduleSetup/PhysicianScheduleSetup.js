@@ -7,6 +7,7 @@ import AppBar from "@material-ui/core/AppBar";
 import PhysicianList from "./PhysicianList/PhysicianList";
 import Scheduler from "./Scheduler/Scheduler";
 import MyContext from "../../utils/MyContext.js";
+import PhySchSetup from "./PhySchSetup";
 
 class PhysicianScheduleSetup extends Component {
   constructor(props) {
@@ -96,7 +97,7 @@ class PhysicianScheduleSetup extends Component {
             ]
           }}
         />
-        <MyContext.Provider
+        {/* <MyContext.Provider
           value={{
             state: this.state,
             updateState: obj => {
@@ -126,6 +127,10 @@ class PhysicianScheduleSetup extends Component {
               </div>
             </div>
           </AppBar>
+        </div> */}
+        <div className="spacing-push">
+          {" "}
+          <PhySchSetup />
         </div>
       </div>
     );

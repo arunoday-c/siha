@@ -12,6 +12,28 @@
   /* Btn Grey Salsa */
   /* Btn Red */
   /* Btn Red */ }
+  :global .bordered-layout {
+    border: 1px solid #c1c1c1;
+    min-height: 70px;
+    max-height: 150px;
+    overflow: auto;
+    border-radius: 0 0 5px 5px; }
+    :global .bordered-layout ul {
+      margin: 0px;
+      padding: 0px; }
+      :global .bordered-layout ul li {
+        cursor: pointer;
+        list-style: none;
+        margin: 0px;
+        padding: 5px;
+        font-size: 0.85rem; }
+      :global .bordered-layout ul li:nth-child(odd) {
+        background: #f2f2f2; }
+      :global .bordered-layout ul li:nth-child(even) {
+        background: #ffffff; }
+      :global .bordered-layout ul li:nth-child(odd):hover,
+      :global .bordered-layout ul li:nth-child(even):hover {
+        background: #eafffd; }
   :global ::-webkit-scrollbar {
     width: 3px; }
   :global ::-webkit-scrollbar-track {
