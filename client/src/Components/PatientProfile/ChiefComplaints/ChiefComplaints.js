@@ -217,11 +217,30 @@ class ChiefComplaints extends Component {
   }
 
   openChiefComplainModal(data) {
-    getAllChiefComplaints(this);
-    this.setState({
-      openComplain: true,
-      hims_f_episode_chief_complaint_id: data.chief_complaint_id
-    });
+    if (
+      this.props.allchiefcomplaints === undefined ||
+      this.props.allchiefcomplaints.length === 0
+    ) {
+      getAllChiefComplaints(this, master => {
+        this.setState({
+          openComplain: true,
+          hims_f_episode_chief_complaint_id: data.chief_complaint_id,
+          masterChiefComplaints: this.masterChiefComplaintsSortList(
+            this.state.patientChiefComplains,
+            master
+          )
+        });
+      });
+    } else {
+      this.setState({
+        openComplain: true,
+        hims_f_episode_chief_complaint_id: data.chief_complaint_id,
+        masterChiefComplaints: this.masterChiefComplaintsSortList(
+          this.state.patientChiefComplains,
+          this.props.allchiefcomplaints
+        )
+      });
+    }
   }
 
   deleteChiefComplainFromList(e) {
@@ -340,8 +359,12 @@ class ChiefComplaints extends Component {
     });
   }
 
-  masterChiefComplaintsSortList(patChiefComplain) {
-    let allChiefComp = this.props.allchiefcomplaints;
+  masterChiefComplaintsSortList(patChiefComplain, allmastercomplaints) {
+    allmastercomplaints = allmastercomplaints || null;
+    let allChiefComp =
+      allmastercomplaints === null
+        ? this.props.allchiefcomplaints
+        : allmastercomplaints;
     for (let i = 0; i < patChiefComplain.length; i++) {
       let idex = Enumerable.from(allChiefComp)
         .where(
