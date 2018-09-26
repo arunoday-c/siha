@@ -350,6 +350,10 @@
     { "name": "CLINICAL", "value": "CLINICAL" },
     { "name": "NON-CLINICAL", "value": "NON-CLINICAL" }
   ],
+  "SERVICE_COMMISSION": [
+    { "name": "All Service Type", "value": "AS" },
+    { "name": "Selected Service Type", "value": "SS" }
+  ],
   "MONTHS": [
     { "name": "January", "value": "1" },
     { "name": "February", "value": "2" },
