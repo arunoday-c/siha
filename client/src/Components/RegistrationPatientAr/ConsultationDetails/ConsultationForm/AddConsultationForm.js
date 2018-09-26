@@ -105,7 +105,7 @@ class AddConsultationForm extends Component {
     return (
       <MyContext.Consumer>
         {context => (
-          <div className="hptl-phase1-add-consultation-form">
+          <div className="hptl-phase1-add-consultation-ar-form">
             <div className="col-lg-12">
               <div className="row">
                 <div className="col-lg-8 secondary-details">

@@ -44,8 +44,8 @@ class DoctorCommission extends Component {
       doctor_id: null,
       from_date: null,
       to_date: null,
-      select_type: null,
-      select_service: null
+      select_service: null,
+      case_type: "OP"
     };
   }
 
@@ -156,7 +156,7 @@ class DoctorCommission extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-lg-2" }}
                   label={{
                     forceLabel: "Doctor"
                   }}
@@ -215,6 +215,27 @@ class DoctorCommission extends Component {
                   }}
                 />
 
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-1" }}
+                  label={{
+                    forceLabel: "Case Type"
+                  }}
+                  selector={{
+                    name: "case_type",
+                    className: "select-fld",
+                    value: this.state.case_type,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.CASE_TYPE
+                    },
+                    others: {
+                      disabled: true
+                    },
+                    onChange: changeTexts.bind(this, this)
+                  }}
+                />
+
                 <div className="col-lg-2">
                   <button
                     className="btn btn-primary"
@@ -257,46 +278,34 @@ class DoctorCommission extends Component {
                   </button>
                 </div>
               </div>
-
+            </div>
+            <div className="col-lg-12" style={{ maxWidth: "75%" }}>
               <div className="row form-group">
                 <AlgaehDataGrid
                   id="initial_stock"
                   columns={[
                     {
-                      fieldName: "location_id",
+                      fieldName: "bill_number",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Bill Number" }} />
                       )
                     },
-
                     {
-                      fieldName: "item_category_id",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
-                      )
-                    },
-
-                    {
-                      fieldName: "item_group_id",
-                      label: <AlgaehLabel label={{ forceLabel: "Service" }} />
-                    },
-
-                    {
-                      fieldName: "item_id",
-                      label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                    },
-                    {
-                      fieldName: "batchno",
-                      label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
-                    },
-                    {
-                      fieldName: "expiry_date",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
-                      )
+                      fieldName: "bill_date",
+                      label: <AlgaehLabel label={{ forceLabel: "Bill Date" }} />
                       //   displayTemplate: row => {
-                      //     return <span>{dateFormater(row.expiry_date)}</span>;
+                      //     return <span>{dateFormater(row.bill_date)}</span>;
                       //   }
+                    },
+                    {
+                      fieldName: "servtype_id",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Service Type" }} />
+                      )
+                    },
+                    {
+                      fieldName: "service_id",
+                      label: <AlgaehLabel label={{ forceLabel: "Service" }} />
                     },
                     {
                       fieldName: "quantity",
@@ -313,10 +322,92 @@ class DoctorCommission extends Component {
                       )
                     },
                     {
-                      fieldName: "grn_number",
+                      fieldName: "discount_amount",
                       label: (
                         <AlgaehLabel
-                          label={{ forceLabel: "Recipt Number(GRN)" }}
+                          label={{ forceLabel: "Discount Amount" }}
+                        />
+                      )
+                    },
+
+                    {
+                      fieldName: "patient_share",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Patient Share" }} />
+                      )
+                    },
+                    {
+                      fieldName: "company_share",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Company Share" }} />
+                      )
+                    },
+                    {
+                      fieldName: "net_amount",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Net Amount" }} />
+                      )
+                    },
+                    {
+                      fieldName: "op_cash_comission_type",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "OP Cash Comm. Type" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "op_cash_comission_percentage",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "OP Cash Comm. %" }}
+                        />
+                      )
+                    },
+
+                    {
+                      fieldName: "op_cash_comission_amount",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "OP Cash Comm. Amount" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "op_cash_comission",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "OP Cash Comm." }} />
+                      )
+                    },
+                    {
+                      fieldName: "op_crd_comission_type",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "OP Criedt Comm. Type" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "op_crd_comission_percentage",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "OP Criedt Comm. %" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "op_crd_comission_amount",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "OP Criedt Comm. Amount" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "op_crd_comission",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "OP Criedt Comm." }}
                         />
                       )
                     }

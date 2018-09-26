@@ -198,12 +198,11 @@ class AddPatientForm extends PureComponent {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-add-patient-form">
+            <div className="hptl-phase1-add-patient-ar-form">
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-4 secondary-details">
                     <div className="row secondary-box-container">
-
                       <AlagehFormGroup
                         div={{ className: "col-lg-6 mandatory" }}
                         label={{
@@ -588,7 +587,6 @@ class AddPatientForm extends PureComponent {
                       />
                     </div>
                     <div className="row paddin-bottom-5">
-
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{

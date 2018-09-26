@@ -10,7 +10,7 @@ export default class PatientForm extends Component {
   }
   render() {
     return (
-      <div className="hptl-phase1-patient-form">
+      <div className="hptl-phase1-patient-ar-form">
         <AddPatientForm
           PatRegIOputs={this.props.PatRegIOputs}
           clearData={this.props.clearData}
