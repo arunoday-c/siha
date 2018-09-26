@@ -349,5 +349,10 @@
   "DEPT_TYPE": [
     { "name": "CLINICAL", "value": "CLINICAL" },
     { "name": "NON-CLINICAL", "value": "NON-CLINICAL" }
+  ],
+
+  "SERVICE_COMMISSION": [
+    { "name": "All Service Type", "value": "AS" },
+    { "name": "Selected Service Type", "value": "SS" }
   ]
 }

@@ -1,0 +1,16 @@
+.hptl-phase1-doctor-commission-form {
+  background: #ffff;
+  border-radius: 5px;
+  margin-top: 12vh;
+  min-height: 80vh; }
+  .hptl-phase1-doctor-commission-form .form-details {
+    padding: 5px;
+    padding-bottom: 0px; }
+  .hptl-phase1-doctor-commission-form mark {
+    background: none;
+    color: red; }
+  .hptl-phase1-doctor-commission-form .form-group {
+    padding: 2vh; }
+  .hptl-phase1-doctor-commission-form .go-button {
+    cursor: pointer;
+    margin-top: 2.5vh; }

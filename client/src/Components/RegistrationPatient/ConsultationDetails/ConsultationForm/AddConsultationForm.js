@@ -74,27 +74,6 @@ class AddConsultationForm extends Component {
         }
       });
     }
-
-    if (
-      this.props.deptanddoctors === undefined ||
-      this.props.deptanddoctors.length === 0
-    ) {
-      this.props.getDepartmentsandDoctors({
-        uri: "/department/get/get_All_Doctors_DepartmentWise",
-        method: "GET",
-        redux: {
-          type: "DEPT_DOCTOR_GET_DATA",
-          mappingName: "deptanddoctors"
-        },
-        afterSuccess: data => {
-          debugger;
-          this.setState({
-            departments: data.departmets,
-            doctors: data.doctors
-          });
-        }
-      });
-    }
   }
 
   componentWillReceiveProps(nextProps) {
