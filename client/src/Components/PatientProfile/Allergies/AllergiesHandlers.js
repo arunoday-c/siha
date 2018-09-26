@@ -2,19 +2,21 @@ import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 
-const getAllAllergies = ($this, type) => {
+const getAllAllergies = ($this, callBack) => {
   $this.props.getAllAllergies({
     uri: "/doctorsWorkBench/getAllAllergies",
     method: "GET",
     cancelRequestId: "getAllAllergies",
     data: {
-      allergy_type: type
+      allergy_type: "ALL"
     },
     redux: {
       type: "ALL_ALLERGIES",
       mappingName: "allallergies"
     },
-    afterSuccess: data => {}
+    afterSuccess: data => {
+      if (typeof callBack === "function") callBack(data);
+    }
   });
 };
 
@@ -49,7 +51,10 @@ const getPatientAllergies = $this => {
           };
         })
         .toArray();
-      $this.setState({ patientAllergies: _allergies });
+      $this.setState({
+        patientAllergies: _allergies,
+        allPatientAllergies: data
+      });
     }
   });
 };

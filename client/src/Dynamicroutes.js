@@ -40,7 +40,7 @@ import ItemSetup from "./Components/ItemSetup/ItemSetup";
 import EmployeeMasterIndex from "./Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMasterIndex";
 import PhysicianScheduleSetup from "./Components/PhysicianScheduleSetup/PhysicianScheduleSetup";
 import FrontDeskAr from "./Components/RegistrationPatientAr/RegistrationPatientAr";
-
+import DoctorCommission from "./Components/DoctorCommission/DoctorCommission";
 // function height() {
 //   let height =
 //     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -87,7 +87,8 @@ const componts = (selectedLang, breadStyle) => {
     PhysicianScheduleSetup: (
       <PhysicianScheduleSetup SelectLanguage={selectedLang} />
     ),
-    FrontDeskAr: <FrontDeskAr SelectLanguage={selectedLang} />
+    FrontDeskAr: <FrontDeskAr SelectLanguage={selectedLang} />,
+    DoctorCommission: <DoctorCommission SelectLanguage={selectedLang} />
   };
 };
 

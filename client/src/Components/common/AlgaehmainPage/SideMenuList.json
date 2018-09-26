@@ -9,6 +9,12 @@
         "label": "Dashboard",
         "arlabel": "لوحة القيادة",
         "path": "/Dashboard"
+      },
+      {
+        "name": "Doctor Commission",
+        "label": "Doctor Commission",
+        "arlabel": "عمولة طبيب",
+        "path": "/DoctorCommission"
       }
     ]
   },

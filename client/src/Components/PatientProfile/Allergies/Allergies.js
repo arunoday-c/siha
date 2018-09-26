@@ -33,7 +33,9 @@ class Allergies extends Component {
       openAllergyModal: false,
       allergy_value: "F",
       allAllergies: [],
-      patientAllergies: []
+      patientAllergies: [],
+      allSpecificAllergies: [],
+      allPatientAllergies: []
     };
     this.addAllergies = this.addAllergies.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -120,10 +122,30 @@ class Allergies extends Component {
   }
 
   addAllergies() {
-    getAllAllergies(this, this.state.allergy_value);
-    this.setState({
-      openAllergyModal: true
-    });
+    if (
+      this.props.allallergies === undefined ||
+      this.props.allallergies.length === 0
+    ) {
+      getAllAllergies(this, data => {
+        this.setState({
+          openAllergyModal: true,
+          allSpecificAllergies: this.getPerticularAllergyList(data)
+        });
+      });
+    } else {
+      this.setState({
+        openAllergyModal: true,
+        allSpecificAllergies: this.getPerticularAllergyList(
+          this.props.allallergies
+        )
+      });
+    }
+  }
+  getPerticularAllergyList(allergies, allergy_type) {
+    allergy_type = allergy_type || this.state.allergy_value;
+    return Enumerable.from(allergies)
+      .where(w => w.allergy_type === allergy_type)
+      .toArray();
   }
 
   updatePatientAllergy(data) {
@@ -189,9 +211,16 @@ class Allergies extends Component {
   }
 
   allergyDropdownHandler(value) {
-    this.setState({ [value.name]: value.value }, () => {
-      getAllAllergies(this, this.state.allergy_value);
-    });
+    let _filter_allergies = {};
+    if (value.name === "allergy_value") {
+      _filter_allergies = {
+        allSpecificAllergies: this.getPerticularAllergyList(
+          this.props.allallergies,
+          value.value
+        )
+      };
+    }
+    this.setState({ [value.name]: value.value, ..._filter_allergies });
   }
   dropDownHandle(value) {
     this.setState({ [value.name]: value.value });
@@ -259,7 +288,7 @@ class Allergies extends Component {
                           dataSource: {
                             textField: "allergy_name",
                             valueField: "hims_d_allergy_id",
-                            data: this.props.allallergies
+                            data: this.state.allSpecificAllergies
                           },
                           onChange: this.dropDownHandle.bind(this)
                         }}
@@ -543,7 +572,7 @@ class Allergies extends Component {
                       ]}
                       keyId="hims_f_patient_allergy_id"
                       dataSource={{
-                        data: this.state.allAllergies
+                        data: this.state.allPatientAllergies
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
