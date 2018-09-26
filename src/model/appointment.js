@@ -375,15 +375,22 @@ let addAppointmentSchedule = (req, res, next) => {
 
         for (let i = 0; i < input.length; i++) {
           connection.query(
-            "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id, schedule_status, schedule_description, default_slot,`month`,`year`, created_by, created_date, updated_by, updated_date)\
-          VALUE(?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id, schedule_status, schedule_description,\
+              `month`,`year`,monday, tuesday, wednesday, thursday, friday, saturday, sunday, created_by, created_date, updated_by, updated_date)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               input[i].sub_dept_id,
               input[i].schedule_status,
               input[i].schedule_description,
-              input[i].default_slot,
               input[i].month,
               input[i].year,
+              input[i].monday,
+              input[i].tuesday,
+              input[i].wednesday,
+              input[i].thursday,
+              input[i].friday,
+              input[i].saturday,
+              input[i].sunday,
               req.body.created_by,
               new Date(),
               req.body.updated_by,
@@ -404,8 +411,7 @@ let addAppointmentSchedule = (req, res, next) => {
                   "clinic_id",
                   "schedule_status",
                   "default_slot",
-                  "from_date",
-                  "to_date",
+                  "schedule_date",
                   "from_work_hr",
                   "to_work_hr",
                   "work_break1",
@@ -414,13 +420,6 @@ let addAppointmentSchedule = (req, res, next) => {
                   "to_break_hr1",
                   "from_break_hr2",
                   "to_break_hr2",
-                  "monday",
-                  "tuesday",
-                  "wednesday",
-                  "thursday",
-                  "friday",
-                  "saturday",
-                  "sunday",
                   "created_by",
                   "updated_by"
                 ];

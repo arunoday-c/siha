@@ -1350,7 +1350,7 @@ let getPharmacyInitialStock = (req, res, next) => {
               }
             );
           } else {
-            req.records = { result: "no such record exist" };
+            req.records =headerResult;
             next();
           }
         }
