@@ -375,15 +375,22 @@ let addAppointmentSchedule = (req, res, next) => {
 
         for (let i = 0; i < input.length; i++) {
           connection.query(
-            "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id, schedule_status, schedule_description, default_slot,`month`,`year`, created_by, created_date, updated_by, updated_date)\
-          VALUE(?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id, schedule_status, schedule_description,\
+              `month`,`year`,monday, tuesday, wednesday, thursday, friday, saturday, sunday, created_by, created_date, updated_by, updated_date)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               input[i].sub_dept_id,
               input[i].schedule_status,
               input[i].schedule_description,
-              input[i].default_slot,
               input[i].month,
               input[i].year,
+              input[i].monday,
+              input[i].tuesday,
+              input[i].wednesday,
+              input[i].thursday,
+              input[i].friday,
+              input[i].saturday,
+              input[i].sunday,
               req.body.created_by,
               new Date(),
               req.body.updated_by,
@@ -404,8 +411,7 @@ let addAppointmentSchedule = (req, res, next) => {
                   "clinic_id",
                   "schedule_status",
                   "default_slot",
-                  "from_date",
-                  "to_date",
+                  "schedule_date",
                   "from_work_hr",
                   "to_work_hr",
                   "work_break1",
@@ -414,13 +420,6 @@ let addAppointmentSchedule = (req, res, next) => {
                   "to_break_hr1",
                   "from_break_hr2",
                   "to_break_hr2",
-                  "monday",
-                  "tuesday",
-                  "wednesday",
-                  "thursday",
-                  "friday",
-                  "saturday",
-                  "sunday",
                   "created_by",
                   "updated_by"
                 ];
@@ -512,13 +511,15 @@ let getAppointmentSchedule = (req, res, next) => {
           // next();
           if (result.length != 0) {
             connection.query(
-              "SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,ASD.provider_id,E.first_name,E.last_name,\
-              sub_dept_id,clinic_id,AC.description as clinic_description, schedule_status,default_slot,from_date,to_date,from_work_hr,\
+              "SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,SH.schedule_description,SH.monday,SH.tuesday,\
+              SH.wednesday,SH.thursday,SH.friday,SH.saturday,SH.sunday ,ASD.provider_id,E.first_name,E.last_name,\
+              ASD.sub_dept_id,clinic_id,AC.description as clinic_description,ASD.schedule_status,default_slot,schedule_date,from_work_hr,\
               to_work_hr,work_break1,work_break2,\
-              from_break_hr1,to_break_hr1,from_break_hr2,to_break_hr2,monday,tuesday,wednesday,thursday,friday,saturday,sunday\
-              from hims_d_appointment_schedule_detail ASD ,hims_d_employee E, hims_d_appointment_clinic AC\
-               where ASD.record_status='A' and E.record_status='A' and AC.record_status='A' and ASD.provider_id=E.hims_d_employee_id\
-               and ASD.clinic_id=AC.hims_d_appointment_clinic_id and appointment_schedule_header_id in (" +
+              from_break_hr1,to_break_hr1,from_break_hr2,to_break_hr2\
+              from hims_d_appointment_schedule_detail ASD ,hims_d_employee E, hims_d_appointment_clinic AC,hims_d_appointment_schedule_header SH\
+               where ASD.record_status='A' and E.record_status='A' and AC.record_status='A'and SH.record_status='A' and ASD.provider_id=E.hims_d_employee_id\
+               and ASD.clinic_id=AC.hims_d_appointment_clinic_id and ASD.appointment_schedule_header_id=SH.hims_d_appointment_schedule_header_id and\
+               appointment_schedule_header_id in (" +
                 schedule_header_id_all +
                 ");",
               (error, results) => {
@@ -542,6 +543,51 @@ let getAppointmentSchedule = (req, res, next) => {
   }
 };
 
+//created by irfan: to add appointment leave
+let addLeaveOrModifySchedule = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_appointment_schedule_leave` ( provider_id, sub_dept_id, clinic_id, to_date,\
+           from_time, to_time, modified, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.provider_id,
+          input.sub_dept_id,
+          input.clinic_id,
+          input.to_date,
+          input.from_time,
+          input.to_time,
+          input.modified,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   addAppointmentStatus,
   addAppointmentRoom,
@@ -553,5 +599,6 @@ module.exports = {
   updateAppointmentRoom,
   updateAppointmentClinic,
   addAppointmentSchedule,
-  getAppointmentSchedule
+  getAppointmentSchedule,
+  addLeaveOrModifySchedule
 };
