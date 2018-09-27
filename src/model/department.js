@@ -612,8 +612,8 @@ let selectDoctorsAndClinic = (req, res, next) => {
       }
 
       connection.query(
-        "select hims_m_employee_department_mappings.employee_id,\
-         hims_m_employee_department_mappings.sub_department_id,\
+        "select hims_m_employee_department_mappings.employee_id as provider_id,\
+         hims_m_employee_department_mappings.sub_department_id as sub_dept_id,\
       concat( hims_d_employee.first_name,' ',\
       hims_d_employee.middle_name,' ',\
       hims_d_employee.last_name) full_name,\
@@ -645,8 +645,8 @@ let selectDoctorsAndClinic = (req, res, next) => {
             next(error);
           }
 
-          let departments = new LINQ(results).GroupBy(g => g.sub_department_id);
-          let doctors = new LINQ(results).GroupBy(g => g.employee_id);
+          let departments = new LINQ(results).GroupBy(g => g.sub_dept_id);
+          let doctors = new LINQ(results).GroupBy(g => g.provider_id);
           // .SelectMany(s => {
           //   return s;
           // })

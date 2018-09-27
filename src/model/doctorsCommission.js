@@ -78,4 +78,5 @@ let getDoctorsCommission = (req, res, next) => {
     next(e);
   }
 };
+
 module.exports = { getDoctorsCommission };
