@@ -7,7 +7,8 @@ import {
   addSubDepartment,
   updateSubDepartment,
   deleteDepartment,
-  selectdoctors
+  selectdoctors,
+  selectDoctorsAndClinic
 } from "../model/department";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
@@ -115,6 +116,53 @@ export default ({ config, db }) => {
   api.get(
     "/get/get_All_Doctors_DepartmentWise",
     selectdoctors,
+    (req, res, next) => {
+      let result = req.records;
+      let departmets = result.departments;
+      let doctors = result.doctors;
+      let dept_Obj = new Array();
+      let doc_Obj = new Array();
+      let d_keys = Object.keys(departmets);
+      d_keys.forEach((item, index) => {
+        let firstItem = new LINQ(departmets[item]).FirstOrDefault();
+        let subDept = new Object();
+        subDept["department_id"] = firstItem.department_id;
+        subDept["sub_department_id"] = firstItem.sub_department_id;
+        subDept["sub_department_name"] = firstItem.sub_department_name;
+        subDept["arabic_sub_department_name"] =
+          firstItem.arabic_sub_department_name;
+        subDept["doctors"] = departmets[item];
+        dept_Obj.push(subDept);
+      });
+
+      let doc_keys = Object.keys(doctors);
+      doc_keys.forEach((item, index) => {
+        let firstItem = new LINQ(doctors[item]).FirstOrDefault();
+        let doc = new Object();
+        doc["employee_id"] = firstItem.employee_id;
+        doc["full_name"] = firstItem.full_name;
+        doc["arabic_name"] = firstItem.arabic_name;
+        doc["services_id"] = firstItem.services_id;
+        doc["departments"] = doctors[item];
+        doc_Obj.push(doc);
+      });
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: {
+          departmets: dept_Obj,
+          doctors: doc_Obj
+        }
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by:irfan to get sub departments doctors and clinic
+  api.get(
+    "/selectDoctorsAndClinic",
+    selectDoctorsAndClinic,
     (req, res, next) => {
       let result = req.records;
       let departmets = result.departments;
