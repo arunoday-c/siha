@@ -621,7 +621,7 @@ let selectDoctorsAndClinic = (req, res, next) => {
       hims_d_employee.services_id,\
       hims_d_sub_department.department_id,\
       hims_d_sub_department.sub_department_name,\
-      hims_d_sub_department.arabic_sub_department_name,hims_d_appointment_clinic_id,AP.description as clinic_description\
+      hims_d_sub_department.arabic_sub_department_name,hims_d_appointment_clinic_id as clinic_id,AP.description as clinic_description\
       from hims_m_employee_department_mappings,\
       hims_d_employee,hims_d_sub_department,hims_d_department,\
       hims_d_employee_category,hims_m_category_speciality_mappings,hims_d_appointment_clinic AP\
