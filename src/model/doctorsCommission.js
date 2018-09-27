@@ -62,8 +62,8 @@ let getDoctorsCommission = (req, res, next) => {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
-                // req.records = results;
-                // next();
+                req.records = results;
+                next();
               }
             );
           } else {
