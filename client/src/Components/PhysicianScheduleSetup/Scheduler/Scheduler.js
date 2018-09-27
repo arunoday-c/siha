@@ -25,19 +25,35 @@ class Scheduler extends Component {
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
+
   changeChecks(e) {
-    debugger;
     if (e.target.name === "All") {
-      this.setState({
-        all: !this.state.all,
-        monday: !this.state.monday,
-        tuesday: !this.state.tuesday,
-        wednesday: !this.state.wednesday,
-        thursday: !this.state.thursday,
-        friday: !this.state.friday,
-        saturday: !this.state.saturday,
-        sunday: !this.state.sunday
-      });
+      this.setState(
+        {
+          all: !this.state.all
+        },
+        () => {
+          this.state.all
+            ? this.setState({
+                monday: true,
+                tuesday: true,
+                wednesday: true,
+                thursday: true,
+                friday: true,
+                saturday: true,
+                sunday: true
+              })
+            : this.setState({
+                monday: false,
+                tuesday: false,
+                wednesday: false,
+                thursday: false,
+                friday: false,
+                saturday: false,
+                sunday: false
+              });
+        }
+      );
     } else {
       this.setState({ [e.target.name]: e.target.checked });
     }
@@ -69,7 +85,6 @@ class Scheduler extends Component {
                             className: "txt-fld",
                             name: "from_date"
                           }}
-                          maxDate={new Date()}
                           events={{
                             onChange: selectedDate => {
                               this.setState({ from_date: selectedDate });
@@ -84,7 +99,6 @@ class Scheduler extends Component {
                             className: "txt-fld",
                             name: "to_date"
                           }}
-                          maxDate={new Date()}
                           events={{
                             onChange: selectedDate => {
                               this.setState({ to_date: selectedDate });

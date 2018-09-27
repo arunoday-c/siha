@@ -127,6 +127,7 @@ class PhysicianList extends Component {
           }
         },
         onFailure: error => {
+          AlgaehLoader({ show: false });
           swal(error.message, {
             buttons: false,
             icon: "error",
