@@ -175,25 +175,6 @@ const deleteDoctorCommission = ($this, row) => {
     pharmacy_stock_detail: pharmacy_stock_detail
   });
 };
-const ClearData = $this => {
-  $this.setState({
-    pharmacy_stock_detail: [],
-    document_number: null,
-    location_id: null,
-    item_category_id: null,
-    item_group_id: null,
-    item_id: null,
-    batchno: null,
-    expiry_date: null,
-    quantity: 0,
-    unit_cost: 0,
-    uom_id: null,
-    conversion_fact: null,
-    extended_cost: 0,
-    saveEnable: true,
-    postEnable: true
-  });
-};
 
 const PostDoctorCommission = $this => {
   debugger;
@@ -275,10 +256,23 @@ const LoadBills = $this => {
         // let providers = Enumerable.from(data)
         //   .where(w => w.isdoctor === "Y")
         //   .toArray();
-        // $this.setState({ providers: providers });
+        $this.setState({ billscommission: data });
       }
     });
   }
+};
+
+const ClearData = $this => {
+  $this.setState({
+    providers: [],
+    select_type: "AS",
+    doctor_id: null,
+    from_date: null,
+    to_date: null,
+    select_service: null,
+    case_type: "OP",
+    billscommission: []
+  });
 };
 
 export {
