@@ -287,7 +287,7 @@ class DoctorCommission extends Component {
                   </button>
                 </div>
 
-                <div className="col-lg-2">
+                {/* <div className="col-lg-2">
                   <button
                     className="btn btn-primary"
                     style={{ marginTop: "24px" }}
@@ -295,7 +295,7 @@ class DoctorCommission extends Component {
                   >
                     Load Bills
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="col-lg-12" style={{ maxWidth: "75%" }}>
@@ -402,14 +402,14 @@ class DoctorCommission extends Component {
                         <AlgaehLabel label={{ forceLabel: "Net Amount" }} />
                       )
                     },
-                    {
-                      fieldName: "op_cash_comission_type",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "OP Cash Comm. Type" }}
-                        />
-                      )
-                    },
+                    // {
+                    //   fieldName: "op_cash_comission_type",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ forceLabel: "OP Cash Comm. Type" }}
+                    //     />
+                    //   )
+                    // },
                     {
                       fieldName: "op_cash_comission_percentage",
                       label: (
@@ -433,14 +433,14 @@ class DoctorCommission extends Component {
                         <AlgaehLabel label={{ forceLabel: "OP Cash Comm." }} />
                       )
                     },
-                    {
-                      fieldName: "op_crd_comission_type",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "OP Criedt Comm. Type" }}
-                        />
-                      )
-                    },
+                    // {
+                    //   fieldName: "op_crd_comission_type",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ forceLabel: "OP Criedt Comm. Type" }}
+                    //     />
+                    //   )
+                    // },
                     {
                       fieldName: "op_crd_comission_percentage",
                       label: (
