@@ -80,7 +80,7 @@ class HospitalServices extends PureComponent {
   render() {
     return (
       <React.Fragment>
-        <div className="hptl-phase1-add-investigation-form">
+        <div className="hptl-phase1-add-hospitalservies-form">
           <Modal open={this.props.open}>
             <div className="algaeh-modal">
               <div className="popupHeader">
