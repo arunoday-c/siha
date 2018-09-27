@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import "./PersonalDetails.css";
 import Dropzone from "react-dropzone";
 
-import { AlgaehActions } from "../../../../actions/algaehActions";
+import { AlgaehActions } from "../../../../../actions/algaehActions";
 
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -10,28 +10,28 @@ import { bindActionCreators } from "redux";
 import {
   texthandle,
   titlehandle,
-  calculateAge,
-  setAge,
   onDrop,
   countryStatehandle,
-  nationalityhandle
-} from "./AddPatientDetails.js";
-import MyContext from "../../../../utils/MyContext.js";
-import AHSnackbar from "../../../common/Inputs/AHSnackbar.js";
+  datehandle
+} from "./PersonalDetailsEvents.js";
+import MyContext from "../../../../../utils/MyContext.js";
+import AHSnackbar from "../../../../common/Inputs/AHSnackbar.js";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete
-} from "../../../Wrapper/algaehWrapper";
-import variableJson from "../../../../utils/GlobalVariables.json";
+} from "../../../../Wrapper/algaehWrapper";
+import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 
 class PersonalDetails extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      selectedLang: "en"
+    };
   }
 
   //   componentWillMount() {
@@ -39,95 +39,43 @@ class PersonalDetails extends PureComponent {
   //     this.setState({ ...this.state, ...InputOutput });
   //   }
 
-  //   componentDidMount() {
-  //     if (this.props.titles === undefined || this.props.titles.length === 0) {
-  //       this.props.getTitles({
-  //         uri: "/masters/get/title",
-  //         method: "GET",
-  //         redux: {
-  //           type: "TITLE_GET_DATA",
-  //           mappingName: "titles"
-  //         }
-  //       });
-  //     }
-  //     if (
-  //       this.props.nationalities === undefined ||
-  //       this.props.nationalities.length === 0
-  //     ) {
-  //       this.props.getNationalities({
-  //         uri: "/masters/get/nationality",
-  //         method: "GET",
-  //         redux: {
-  //           type: "NAT_GET_DATA",
-  //           mappingName: "nationalities"
-  //         }
-  //       });
-  //     }
-  //     if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
-  //       this.props.getIDTypes({
-  //         uri: "/identity/get",
-  //         method: "GET",
-  //         redux: {
-  //           type: "IDTYPE_GET_DATA",
-  //           mappingName: "idtypes"
-  //         }
-  //       });
-  //     }
-  //     if (
-  //       this.props.relegions === undefined ||
-  //       this.props.relegions.length === 0
-  //     ) {
-  //       this.props.getRelegion({
-  //         uri: "/masters/get/relegion",
-  //         method: "GET",
-  //         redux: {
-  //           type: "RELGE_GET_DATA",
-  //           mappingName: "relegions"
-  //         }
-  //       });
-  //     }
+  componentDidMount() {
+    if (this.props.titles === undefined || this.props.titles.length === 0) {
+      this.props.getTitles({
+        uri: "/masters/get/title",
+        method: "GET",
+        redux: {
+          type: "TITLE_GET_DATA",
+          mappingName: "titles"
+        }
+      });
+    }
 
-  //     if (
-  //       this.props.countries === undefined ||
-  //       this.props.countries.length === 0
-  //     ) {
-  //       this.props.getCountries({
-  //         uri: "/masters/get/countryStateCity",
-  //         method: "GET",
-  //         redux: {
-  //           type: "CTRY_GET_DATA",
-  //           mappingName: "countries"
-  //         }
-  //       });
-  //     }
-  //     if (
-  //       this.props.visatypes === undefined ||
-  //       this.props.visatypes.length === 0
-  //     ) {
-  //       this.props.getVisatypes({
-  //         uri: "/masters/get/visa",
-  //         method: "GET",
-  //         redux: {
-  //           type: "VISA_GET_DATA",
-  //           mappingName: "visatypes"
-  //         }
-  //       });
-  //     }
+    if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
+      this.props.getIDTypes({
+        uri: "/identity/get",
+        method: "GET",
+        redux: {
+          type: "IDTYPE_GET_DATA",
+          mappingName: "idtypes"
+        }
+      });
+    }
 
-  //     if (
-  //       this.props.patienttype === undefined ||
-  //       this.props.patienttype.length === 0
-  //     ) {
-  //       this.props.getPatientType({
-  //         uri: "/patientType/getPatientType",
-  //         method: "GET",
-  //         redux: {
-  //           type: "PATIENT_TYPE_GET_DATA",
-  //           mappingName: "patienttype"
-  //         }
-  //       });
-  //     }
-  //   }
+    if (
+      this.props.countries === undefined ||
+      this.props.countries.length === 0
+    ) {
+      this.props.getCountries({
+        uri: "/masters/get/countryStateCity",
+        method: "GET",
+        redux: {
+          type: "CTRY_GET_DATA",
+          mappingName: "countries"
+        }
+      });
+    }
+  }
 
   //   componentWillReceiveProps(nextProps) {
   //     this.setState(nextProps.PatRegIOputs, () => {
@@ -168,17 +116,6 @@ class PersonalDetails extends PureComponent {
   //     });
   //   }
 
-  //   numInput(e) {
-  //     var inputKeyCode = e.keyCode ? e.keyCode : e.which;
-
-  //     if (inputKeyCode !== undefined) {
-  //       if (inputKeyCode >= 48 && inputKeyCode <= 57) {
-  //       } else {
-  //         e.preventDefault();
-  //       }
-  //     }
-  //   }
-
   render() {
     return (
       <React.Fragment>
@@ -189,6 +126,24 @@ class PersonalDetails extends PureComponent {
                 <div className="row">
                   <div className="col-lg-8 primary-details">
                     <div className="row paddin-bottom-5">
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
+                          fieldName: "employee_code",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "employee_code",
+                          value: this.state.employee_code,
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            tabIndex: "2"
+                          }
+                        }}
+                      />
                       <AlagehAutoComplete
                         div={{ className: "col-lg-2 mandatory" }}
                         label={{
@@ -234,7 +189,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4 mandatory arabic-txt-fld" }}
+                        div={{ className: "col-lg-3 mandatory arabic-txt-fld" }}
                         label={{
                           fieldName: "arabic_name",
                           isImp: true
@@ -251,7 +206,18 @@ class PersonalDetails extends PureComponent {
                           }
                         }}
                       />
-
+                    </div>
+                    <div className="row paddin-bottom-5">
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-3 mandatory", tabIndex: "5" }}
+                        label={{ fieldName: "date_of_birth", isImp: true }}
+                        textBox={{ className: "txt-fld" }}
+                        maxDate={new Date()}
+                        events={{
+                          onChange: datehandle.bind(this, this, context)
+                        }}
+                        value={this.state.date_of_birth}
+                      />
                       <AlagehAutoComplete
                         div={{ className: "col-lg-2 mandatory" }}
                         label={{
@@ -275,18 +241,6 @@ class PersonalDetails extends PureComponent {
                             tabIndex: "4"
                           }
                         }}
-                      />
-                    </div>
-                    <div className="row paddin-bottom-5">
-                      <AlgaehDateHandler
-                        div={{ className: "col-lg-3 mandatory", tabIndex: "5" }}
-                        label={{ fieldName: "date_of_birth", isImp: true }}
-                        textBox={{ className: "txt-fld" }}
-                        maxDate={new Date()}
-                        events={{
-                          onChange: calculateAge.bind(this, this, context)
-                        }}
-                        value={this.state.date_of_birth}
                       />
 
                       <AlagehFormGroup
@@ -397,12 +351,12 @@ class PersonalDetails extends PureComponent {
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
-                          fieldName: "address1"
+                          fieldName: "address"
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "address1",
-                          value: this.state.address1,
+                          name: "address",
+                          value: this.state.address,
                           events: {
                             onChange: texthandle.bind(this, this, context)
                           },

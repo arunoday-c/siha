@@ -10,7 +10,7 @@ import "./employee_master_index.css";
 import "../../../styles/site.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
-// import HospitalServices from "./HospitalServices/HospitalServices";
+import EmployeeMaster from "./EmployeeMaster/EmployeeMaster";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import moment from "moment";
 import Options from "../../../Options.json";
@@ -117,6 +117,10 @@ class EmployeeMasterIndex extends Component {
   }
 
   CloseModel(e) {
+    this.setState({
+      ...this.state,
+      isOpen: !this.state.isOpen
+    });
     // this.props.getServices({
     //   uri: "/serviceType/getService",
     //   method: "GET",
@@ -312,11 +316,11 @@ class EmployeeMasterIndex extends Component {
                   Add New
                 </button>
 
-                {/* <HospitalServices
+                <EmployeeMaster
                   HeaderCaption={
                     <AlgaehLabel
                       label={{
-                        fieldName: "hospital_services",
+                        fieldName: "employee_master",
                         align: "ltr"
                       }}
                     />
@@ -324,7 +328,7 @@ class EmployeeMasterIndex extends Component {
                   open={this.state.isOpen}
                   onClose={this.CloseModel.bind(this)}
                   servicePop={this.state.servicePop}
-                /> */}
+                />
               </div>
             </div>
           </AppBar>

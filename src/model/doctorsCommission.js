@@ -65,7 +65,7 @@ let getDoctorsCommission = (req, res, next) => {
                 if (results.length != 0) {
                   for (let i = 0; i < results.length; i++) {
                     connection.query(
-                      " select hims_m_doctor_service_commission_id,op_cash_commission_percent, op_credit_commission_percent,\
+                      " select hims_m_doctor_service_commission_id,op_cash_commission_percent as op_cash_comission_percentage, op_credit_commission_percent as op_crd_comission_percentage,\
                      ip_cash_commission_percent, ip_credit_commission_percent from\
                      hims_m_doctor_service_commission where record_status='A' and provider_id=?  and services_id=? and service_type_id=?",
                       [
@@ -89,8 +89,8 @@ let getDoctorsCommission = (req, res, next) => {
                               return resolve(results);
                             } else {
                               connection.query(
-                                " SELECT hims_m_doctor_service_type_commission_id, op_cash_comission_percent, op_credit_comission_percent, ip_cash_commission_percent, ip_credit_commission_percent from\
-                              hims_m_doctor_service_type_commission where record_status='A'  and provider_id=?\
+                                " SELECT hims_m_doctor_service_type_commission_id, op_cash_comission_percent as op_cash_comission_percentage, op_credit_comission_percent as op_crd_comission_percentage, \
+                                 ip_cash_commission_percent, ip_credit_commission_percent from hims_m_doctor_service_type_commission where record_status='A'  and provider_id=?\
                                and service_type_id=?",
                                 [
                                   results[i].provider_id,
