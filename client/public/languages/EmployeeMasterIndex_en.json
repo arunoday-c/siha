@@ -1,0 +1,22 @@
+{
+  "employee_master": "Employee Master",
+  "employee_master_settings": "Settings",
+
+  "employee_code": "Employee Code",
+  "full_name": "Name",
+  "employee_designation_id": "Designation",
+  "license_number": "License Number",
+  "category_id": "Category",
+
+  "personal_details": "Personal Details",
+  "commission_setup": "Commission Setup",
+
+  "btn_addnew": "Add New",
+  "btn_clear": "Clear",
+
+  "btnSave": "Save",
+  "btnUpdate": "Update",
+  "btnCancel": "Cancel",
+
+  "action": "Action"
+}
