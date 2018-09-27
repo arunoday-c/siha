@@ -55,7 +55,7 @@ let getDoctorsCommission = (req, res, next) => {
               from hims_f_billing_details BD,hims_f_billing_header BH where BH.record_status='A' and BD.record_status='A' and \
                BD.hims_f_billing_header_id=BH.hims_f_billing_header_id and " +
                 service_type_id +
-                "BD.hims_f_billing_header_id in (" +
+                " BD.hims_f_billing_header_id in (" +
                 bill_header_id_all +
                 ");",
               (error, results) => {
