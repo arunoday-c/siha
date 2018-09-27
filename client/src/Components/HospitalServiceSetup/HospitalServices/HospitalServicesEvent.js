@@ -1,0 +1,118 @@
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert";
+
+const texthandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
+  });
+};
+
+const VatAppilicable = ($this, e) => {
+  debugger;
+  let Applicable = false;
+  let Value = "N";
+
+  if ($this.state.Applicable === true) {
+    Applicable = false;
+    Value = "N";
+  } else if ($this.state.Applicable === false) {
+    Applicable = true;
+    Value = "Y";
+  }
+  $this.setState({
+    [e.target.name]: Value,
+    Applicable: Applicable,
+    vat_percent: 0
+  });
+};
+
+const Validations = $this => {
+  let isError = false;
+
+  if ($this.state.description === null) {
+    isError = true;
+    $this.setState({
+      open: true,
+      MandatoryMsg: "Invalid Input. Test Name Cannot be blank."
+    });
+    document.querySelector("[name='description']").focus();
+    return isError;
+  }
+
+  if ($this.state.services_id === null) {
+    isError = true;
+    $this.setState({
+      open: true,
+      MandatoryMsg: "Invalid Input. Service Cannot be blank."
+    });
+    return isError;
+  }
+};
+
+const InsertServices = $this => {
+  const err = Validations($this);
+  debugger;
+  if (!err) {
+    if ($this.state.hims_d_services_id === null) {
+      algaehApiCall({
+        uri: "/serviceType/addServices",
+        data: $this.state,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Saved successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
+    } else {
+      algaehApiCall({
+        uri: "/serviceType/updateServices",
+        data: $this.state,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Updated successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
+    }
+  }
+};
+
+const clearData = $this => {
+  $this.setState({
+    open: false,
+    MandatoryMsg: "",
+    selectedLang: "en",
+    Applicable: false,
+
+    hims_d_services_id: null,
+    service_code: null,
+    cpt_code: null,
+    service_name: null,
+    hospital_id: null,
+    service_type_id: null,
+
+    standard_fee: 0,
+    vat_applicable: null,
+    vat_percent: 0
+  });
+};
+export { texthandle, VatAppilicable, InsertServices, clearData };
