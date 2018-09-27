@@ -253,6 +253,31 @@ const LoadBills = $this => {
     });
   } else {
     debugger;
+
+    let inpObj = {
+      incharge_or_provider: $this.state.doctor_id,
+      from_date: moment($this.state.from_date).format(Options.dateFormatYear),
+      to_date: moment($this.state.to_date).format(Options.dateFormatYear),
+      select_type: $this.state.select_type,
+      service_type_id: $this.state.select_service
+    };
+
+    $this.props.getDoctorsCommission({
+      uri: "/doctorsCommission/getDoctorsCommission",
+      method: "GET",
+      data: inpObj,
+      redux: {
+        type: "BILL_DOC_COMMISSION_DATA",
+        mappingName: "billscommission"
+      },
+      afterSuccess: data => {
+        debugger;
+        // let providers = Enumerable.from(data)
+        //   .where(w => w.isdoctor === "Y")
+        //   .toArray();
+        // $this.setState({ providers: providers });
+      }
+    });
   }
 };
 

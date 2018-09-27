@@ -276,6 +276,16 @@ class DoctorCommission extends Component {
                     Calculate Commission
                   </button>
                 </div>
+
+                <div className="col-lg-2">
+                  <button
+                    className="btn btn-primary"
+                    style={{ marginTop: "24px" }}
+                    onClick={LoadBills.bind(this, this)}
+                  >
+                    Load Bills
+                  </button>
+                </div>
               </div>
             </div>
             <div className="col-lg-12" style={{ maxWidth: "75%" }}>
@@ -413,7 +423,7 @@ class DoctorCommission extends Component {
                   ]}
                   keyId="item_id"
                   dataSource={{
-                    data: this.state.pharmacy_stock_detail
+                    data: this.props.billscommission
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
@@ -483,7 +493,8 @@ function mapStateToProps(state) {
   return {
     providers: state.providers,
     servicetype: state.servicetype,
-    doctorcommission: state.doctorcommission
+    doctorcommission: state.doctorcommission,
+    billscommission: state.billscommission
   };
 }
 
@@ -492,7 +503,8 @@ function mapDispatchToProps(dispatch) {
     {
       getProviderDetails: AlgaehActions,
       getServiceTypes: AlgaehActions,
-      getDoctorCommission: AlgaehActions
+      getDoctorCommission: AlgaehActions,
+      getDoctorsCommission: AlgaehActions
     },
     dispatch
   );
