@@ -1,0 +1,10 @@
+.hptl-phase1-add-hospitalservies-form {
+  background: #fff;
+  padding: 0px; }
+  .hptl-phase1-add-hospitalservies-form mark {
+    background: none;
+    color: red; }
+  .hptl-phase1-add-hospitalservies-form .form-details {
+    padding-bottom: 0px; }
+  .hptl-phase1-add-hospitalservies-form .button {
+    padding: 10px; }
