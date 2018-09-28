@@ -445,7 +445,10 @@ class Appointment extends Component {
             </tr>
             <tr>
               <th className="tg-amwm">09:00 AM</th>
-              <td className="tg-baqh">John Doe </td>
+              <td className="tg-baqh">
+                <span className="dynSlot">09:00 AM</span>
+                <span className="dynPatient">John Doe</span>
+              </td>
               <td className="tg-baqh" />
               <td className="tg-baqh" />
               <td className="tg-baqh" />
