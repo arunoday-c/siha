@@ -6,11 +6,9 @@ import {
   AlgaehLabel,
   AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 import Enumerable from "linq";
-import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from "constants";
 
 class AppointmentClinics extends Component {
   constructor(props) {
@@ -110,6 +108,7 @@ class AppointmentClinics extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
+          debugger;
           console.log("DocsDepts:", response.data.records);
           this.setState({
             departments: response.data.records.departmets,
@@ -242,11 +241,31 @@ class AppointmentClinics extends Component {
 
   getDeptName(id) {
     let dept = Enumerable.from(
-      this.state.departments !== undefined ? this.state.departments : []
+      this.state.departments.length !== 0 ? this.state.departments : null
     )
       .where(w => w.sub_department_id === id)
       .firstOrDefault();
-    return dept.sub_department_name;
+    return dept !== undefined ? dept.sub_department_name : "";
+  }
+
+  getDoctorName(id) {
+    let doc = Enumerable.from(
+      this.state.doctors.length !== 0 ? this.state.doctors : null
+    )
+      .where(w => w.employee_id === id)
+      .firstOrDefault();
+    return doc !== undefined ? doc.full_name : "";
+  }
+
+  getRoomName(id) {
+    let room = Enumerable.from(
+      this.state.appointmentRooms.length !== 0
+        ? this.state.appointmentRooms
+        : null
+    )
+      .where(w => w.employee_id === id)
+      .firstOrDefault();
+    return doc !== undefined ? room.room_name : "";
   }
 
   render() {
@@ -366,6 +385,9 @@ class AppointmentClinics extends Component {
                   label: (
                     <AlgaehLabel label={{ fieldName: "department_name" }} />
                   ),
+                  displayTemplate: row => {
+                    return this.getDeptName(row.sub_department_id);
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehFormGroup
@@ -385,6 +407,9 @@ class AppointmentClinics extends Component {
                 {
                   fieldName: "provider_id",
                   label: <AlgaehLabel label={{ fieldName: "doctor" }} />,
+                  displayTemplate: row => {
+                    return this.getDoctorName(row.provider_id);
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehFormGroup

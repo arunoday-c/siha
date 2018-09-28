@@ -3,7 +3,9 @@ import "./phy_sch_setup.css";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlgaehDataGrid,
+  AlgaehLabel
 } from "../Wrapper/algaehWrapper";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import GlobalVariables from "../../utils/GlobalVariables.json";
@@ -325,7 +327,7 @@ class PhySchSetup extends Component {
         <Modal open={this.state.openModifier}>
           <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Cancel Working Hours</h4>
+              <h4>Modify Working Hours</h4>
             </div>
             <div className="popupInner">
               <div className="col-lg-12 margin-top-15">
@@ -388,59 +390,66 @@ class PhySchSetup extends Component {
             <div className="col portlet portlet-bordered box-shadow-normal">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Appointment Date</h3>
+                  <h3 className="caption-subject">Appointment Dates</h3>
                 </div>
               </div>
 
               <div className="portlet-body">
-                <table className="table table-striped table-bordered table-hover table-sm">
-                  <thead>
-                    <tr>
-                      <th scope="col" />
-                      <th scope="col">Appointment Date</th>
-                      <th scope="col">From Work Hour</th>
-                      <th scope="col">To Work Hour</th>
-                      <th scope="col">Working Break 1</th>
-                      <th scope="col">Working Break 2</th>
-                      <th scope="col">Working Days</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">
-                        <input type="checkbox" />
-                      </th>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <input type="checkbox" />
-                      </th>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <input type="checkbox" />
-                      </th>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <AlgaehDataGrid
+                  id="sch-modify-grid"
+                  columns={[
+                    {
+                      fieldName: "appt_date",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Appointment Date" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "from_work_hr",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "From Work Hour" }} />
+                      )
+                    },
+                    {
+                      fieldName: "to_work_hr",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "To Work Hour" }} />
+                      )
+                    },
+                    {
+                      fieldName: "from_break_hr1",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Work Break 1" }} />
+                      )
+                    },
+                    {
+                      fieldName: "to_break_hr1",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Work Break 2" }} />
+                      )
+                    },
+                    {
+                      fieldName: "days",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Working Days" }} />
+                      )
+                    }
+                  ]}
+                  keyId="hims_d_appointment_status_id"
+                  dataSource={{
+                    data: []
+                  }}
+                  isEditable={true}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{
+                    onDelete: () => {},
+                    onDone: () => {}
+                    // onDelete: this.deleteAppointmentStatus.bind(this),
+                    // onDone: this.updateAppointmentStatus.bind(this)
+                  }}
+                />
               </div>
             </div>
             <div className="popupFooter">
