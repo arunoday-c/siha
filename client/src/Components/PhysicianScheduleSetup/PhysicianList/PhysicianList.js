@@ -13,8 +13,8 @@ import swal from "sweetalert";
 import moment from "moment";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import MyContext from "../../../utils/MyContext.js";
-
 const provider_array = [];
+const send_array = [];
 
 class PhysicianList extends Component {
   constructor(props) {
@@ -28,7 +28,8 @@ class PhysicianList extends Component {
       month: moment(new Date()).format("M"),
       sub_department_id: null,
       department_error: false,
-      department_error_text: ""
+      department_error_text: "",
+      description: ""
     };
   }
 
@@ -121,6 +122,7 @@ class PhysicianList extends Component {
             console.log("RRRRR Data:", response.data.records);
             this.setState({
               scheduleList: response.data.records,
+
               department_error_text: "",
               department_error: false
             });
