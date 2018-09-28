@@ -159,6 +159,35 @@ let doctorsCommissionCal = (req, res, next) => {
 
     for (let i = 0; i < input.length; i++) {
       debugLog(`input:${i}:`, input[i]);
+
+      let op_cash_comission_amount = 0;
+      let op_cash_comission = 0;
+      let op_crd_comission_amount = 0;
+      let op_crd_comission = 0;
+
+      let inputData = input[i];
+      if (
+        inputData.patient_share != 0 &&
+        inputData.op_cash_comission_percentage != 0
+      ) {
+        op_cash_comission_amount =
+          (inputData.patient_share * inputData.op_cash_comission_percentage) /
+          100;
+        op_cash_comission = op_cash_comission_amount;
+      }
+
+      if (
+        inputData.company_share != 0 &&
+        inputData.op_crd_comission_percentage != 0
+      ) {
+        op_cash_comission_amount =
+          (inputData.company_share * inputData.op_crd_comission_percentage) /
+          100;
+
+        op_crd_comission = op_crd_comission_amount;
+      }
+      debugLog("op_cash_comission_amount", op_cash_comission_amount);
+      debugLog("op_cash_comission", op_cash_comission);
     }
     req.records = "result";
     next();
