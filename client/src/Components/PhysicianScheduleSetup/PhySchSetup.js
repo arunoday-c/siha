@@ -41,7 +41,7 @@ class PhySchSetup extends Component {
       department_error_text: "",
       openScheduler: false,
       openModifier: true,
-      send_array: [],
+      send_obj: {},
       slot: "",
       schedule_status: "Y",
       from_work_hr: "",
@@ -55,7 +55,8 @@ class PhySchSetup extends Component {
       disable: true,
       description_error: false,
       description_error_text: "",
-      description: ""
+      description: "",
+      days: []
     };
   }
 
@@ -119,7 +120,6 @@ class PhySchSetup extends Component {
 
   saveApptSchedule(e) {
     e.preventDefault();
-    debugger;
     if (this.state.description.length === 0) {
       this.setState({
         description_error: true,
@@ -127,9 +127,7 @@ class PhySchSetup extends Component {
       });
     } else {
       const myObj = {};
-      let abc = this.state.send_array;
       myObj.sub_dept_id = this.state.sub_department_id;
-      myObj.schedule_status = "Y";
       myObj.schedule_description = this.state.description;
       myObj.month = this.state.month;
       myObj.year = this.state.year;
@@ -140,30 +138,30 @@ class PhySchSetup extends Component {
       myObj.friday = this.state.friday ? "Y" : "N";
       myObj.saturday = this.state.saturday ? "Y" : "N";
       myObj.sunday = this.state.sunday ? "Y" : "N";
+      myObj.from_work_hr = this.state.from_work_hr;
+      myObj.to_work_hr = this.state.to_work_hr;
+      myObj.work_break1 = this.state.from_break_hr1 ? "Y" : "N";
+      myObj.from_break_hr1 = this.state.from_break_hr1;
+      myObj.to_break_hr1 = this.state.to_break_hr1;
+      myObj.work_break2 = this.state.from_break_hr2 ? "Y" : "N";
+      myObj.from_break_hr2 = this.state.from_break_hr2;
+      myObj.to_break_hr2 = this.state.to_break_hr2;
+      myObj.from_date = this.state.from_date;
+      myObj.to_date = this.state.to_date;
 
       for (let i = 0; i < provider_array.length; i++) {
-        provider_array[i].schedule_status = this.state.schedule_status;
-        provider_array[i].default_slot = this.state.slot;
-        provider_array[i].from_work_hr = this.state.from_work_hr;
-        provider_array[i].to_work_hr = this.state.to_work_hr;
-        provider_array[i].work_break1 = this.state.work_break1;
-        provider_array[i].work_break2 = this.state.work_break2;
-        provider_array[i].from_break_hr1 = this.state.from_break_hr1;
-        provider_array[i].to_break_hr1 = this.state.to_break_hr1;
-        provider_array[i].from_break_hr2 = this.state.from_break_hr2;
-        provider_array[i].to_break_hr2 = this.state.to_break_hr2;
+        provider_array[i].slot = this.state.slot;
       }
 
       myObj.schedule_detail = provider_array;
-      abc.push(myObj);
 
-      this.setState({ send_array: abc }, () => {
-        console.log("ABC:", this.state.send_array);
+      this.setState({ send_obj: myObj }, () => {
+        console.log("ABC:", this.state.send_obj);
 
         algaehApiCall({
           uri: "/appointment/addAppointmentSchedule",
           methid: "POST",
-          data: this.state.send_array,
+          data: this.state.send_obj,
           onSuccess: response => {
             if (response.data.success) {
               this.resetSaveState();
@@ -196,7 +194,8 @@ class PhySchSetup extends Component {
                 thursday: true,
                 friday: true,
                 saturday: true,
-                sunday: true
+                sunday: true,
+                days: [0, 1, 2, 3, 4, 5, 6]
               })
             : this.setState({
                 monday: false,
@@ -210,7 +209,9 @@ class PhySchSetup extends Component {
         }
       );
     } else {
-      this.setState({ [e.target.name]: e.target.checked });
+      this.setState({
+        [e.target.name]: e.target.checked
+      });
     }
   }
 

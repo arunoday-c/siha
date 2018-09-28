@@ -392,15 +392,21 @@ class AppointmentClinics extends Component {
                   },
                   editorTemplate: row => {
                     return (
-                      <AlagehFormGroup
+                      <AlagehAutoComplete
                         div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
+                        label={{
+                          fieldName: "department_name"
+                        }}
+                        selector={{
                           name: "sub_department_id",
+                          className: "select-fld",
                           value: row.sub_department_id,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
+                          dataSource: {
+                            textField: "sub_department_name",
+                            valueField: "sub_department_id",
+                            data: this.state.departments
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
                         }}
                       />
                     );
@@ -414,15 +420,21 @@ class AppointmentClinics extends Component {
                   },
                   editorTemplate: row => {
                     return (
-                      <AlagehFormGroup
+                      <AlagehAutoComplete
                         div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
+                        label={{
+                          fieldName: "doctor"
+                        }}
+                        selector={{
                           name: "provider_id",
+                          className: "select-fld",
                           value: row.provider_id,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
+                          dataSource: {
+                            textField: "full_name",
+                            valueField: "employee_id",
+                            data: this.state.doctors
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
                         }}
                       />
                     );
@@ -436,15 +448,21 @@ class AppointmentClinics extends Component {
                   },
                   editorTemplate: row => {
                     return (
-                      <AlagehFormGroup
+                      <AlagehAutoComplete
                         div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
+                        label={{
+                          fieldName: "room"
+                        }}
+                        selector={{
                           name: "room_id",
+                          className: "select-fld",
                           value: row.room_id,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
+                          dataSource: {
+                            textField: "description",
+                            valueField: "hims_d_appointment_room_id",
+                            data: this.state.appointmentRooms
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
                         }}
                       />
                     );
