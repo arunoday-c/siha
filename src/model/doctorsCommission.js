@@ -156,10 +156,8 @@ let doctorsCommissionCal = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let input = extend([], req.body);
-
+    let outputArray = [];
     for (let i = 0; i < input.length; i++) {
-      debugLog(`input:${i}:`, input[i]);
-
       let op_cash_comission_amount = 0;
       let op_cash_comission = 0;
       let op_crd_comission_amount = 0;
@@ -186,10 +184,18 @@ let doctorsCommissionCal = (req, res, next) => {
 
         op_crd_comission = op_crd_comission_amount;
       }
-      debugLog("op_cash_comission_amount", op_cash_comission_amount);
-      debugLog("op_cash_comission", op_cash_comission);
+
+      inputData.op_cash_comission_amount = op_cash_comission_amount;
+      inputData.op_cash_comission = op_cash_comission;
+      inputData.op_crd_comission_amount = op_crd_comission_amount;
+      inputData.op_crd_comission = op_crd_comission;
+      outputArray.push(inputData);
+
+      // debugLog("op_cash_comission_amount:", op_cash_comission_amount);
+      // debugLog("op_cash_comission:", op_cash_comission);
     }
-    req.records = "result";
+
+    req.records = outputArray;
     next();
   } catch (e) {
     next(e);

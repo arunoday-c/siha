@@ -39,52 +39,6 @@ const calculateTotalAmount = ($this, e) => {
   $this.setState({ total_amount: totalamount });
 };
 
-const checkcashhandaler = ($this, e) => {
-  debugger;
-
-  $this.setState(
-    {
-      Cashchecked: e.target.checked,
-      cash_amount: 0
-    },
-    () => {
-      calculateTotalAmount($this);
-    }
-  );
-};
-
-const checkcardhandaler = ($this, e) => {
-  debugger;
-
-  $this.setState(
-    {
-      Cardchecked: e.target.checked,
-      card_amount: 0,
-      card_number: null,
-      expiry_date: null
-    },
-    () => {
-      calculateTotalAmount($this);
-    }
-  );
-};
-
-const checkcheckhandaler = ($this, e) => {
-  debugger;
-
-  $this.setState(
-    {
-      Checkchecked: e.target.checked,
-      cheque_amount: 0,
-      cheque_number: null,
-      cheque_date: null
-    },
-    () => {
-      calculateTotalAmount($this);
-    }
-  );
-};
-
 const cardtexthandle = ($this, ctrl, e) => {
   e = e || ctrl;
 
@@ -226,8 +180,5 @@ export {
   cashtexthandle,
   cardtexthandle,
   chequetexthandle,
-  checkcashhandaler,
-  checkcardhandaler,
-  checkcheckhandaler,
   Validations
 };

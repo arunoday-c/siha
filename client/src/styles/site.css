@@ -764,10 +764,7 @@ th {
     display: block;
     font-size: 0.9rem; }
   .algaeh_Arabic_Version .algaeh-datePicker {
-    border: 1px solid #d3d3d3;
-    max-width: 100%;
-    border-radius: 4px;
-    text-align: right; }
+    position: relative; }
     .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker__button {
       border: none;
       padding-top: 3px;
