@@ -476,7 +476,7 @@ let addAppointmentScheduleDUMMY = (req, res, next) => {
 };
 
 //created by irfan: to add appointment schedule
-let addAppointmentSchedule = (req, res, next) => {
+let addDoctorsSchedule = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -503,7 +503,6 @@ let addAppointmentSchedule = (req, res, next) => {
           VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.sub_dept_id,
-
             input.schedule_description,
             input.month,
             input.year,
@@ -553,8 +552,6 @@ let addAppointmentSchedule = (req, res, next) => {
               }
             }
 
-            debugLog("working_days:", working_days);
-
             let daylist = getDaysArray(
               new Date(input.from_date),
               new Date(input.to_date),
@@ -564,64 +561,68 @@ let addAppointmentSchedule = (req, res, next) => {
             //.slice(0, 10)).join("");
 
             debugLog("daylist:", daylist.length);
+            if (input.schedule_detail.length != 0) {
+              if (result.insertId != null) {
+                for (let doc = 0; doc < input.schedule_detail.length; doc++) {
+                  let doctorSchedule = [];
 
-            if (result.insertId != null) {
-              for (let doc = 0; doc < input.schedule_detail.length; doc++) {
-                let doctorSchedule = [];
-                for (let i = 0; i < daylist.length; i++) {
-                  doctorSchedule.push({
-                    ...input.schedule_detail[doc],
-                    ...{ schedule_date: daylist[i] }
-                  });
-                }
+                  for (let i = 0; i < daylist.length; i++) {
+                    doctorSchedule.push({
+                      ...input.schedule_detail[doc],
+                      ...{ schedule_date: daylist[i] }
+                    });
+                  }
 
-                debugLog("doctorSchedule month:", doctorSchedule);
-                const insurtColumns = [
-                  "provider_id",
-                  "clinic_id",
-                  "slot",
-                  "schedule_date",
-                  "created_by",
-                  "updated_by"
-                ];
+                  const insurtColumns = [
+                    "provider_id",
+                    "clinic_id",
+                    "slot",
+                    "schedule_date",
+                    "created_by",
+                    "updated_by"
+                  ];
 
-                connection.query(
-                  "INSERT INTO hims_d_appointment_schedule_detail(" +
-                    insurtColumns.join(",") +
-                    ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?",
-                  [
-                    jsonArrayToObject({
-                      sampleInputObject: insurtColumns,
-                      arrayObj: doctorSchedule,
-                      newFieldToInsert: [
-                        result.insertId,
-                        new Date(),
-                        new Date()
-                      ],
-                      req: req
-                    })
-                  ],
-                  (error, schedule_detailResult) => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
-                    }
-
-                    connection.commit(error => {
+                  connection.query(
+                    "INSERT INTO hims_d_appointment_schedule_detail(" +
+                      insurtColumns.join(",") +
+                      ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?",
+                    [
+                      jsonArrayToObject({
+                        sampleInputObject: insurtColumns,
+                        arrayObj: doctorSchedule,
+                        newFieldToInsert: [
+                          result.insertId,
+                          new Date(),
+                          new Date()
+                        ],
+                        req: req
+                      })
+                    ],
+                    (error, schedule_detailResult) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
                           next(error);
                         });
                       }
-                      req.records = schedule_detailResult;
-                      next();
-                    });
-                  }
-                );
+
+                      connection.commit(error => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        req.records = schedule_detailResult;
+                        next();
+                      });
+                    }
+                  );
+                }
               }
+            } else {
+              req.records = { message: "please select doctors" };
+              next();
             }
           }
         );
@@ -777,7 +778,7 @@ module.exports = {
   updateAppointmentStatus,
   updateAppointmentRoom,
   updateAppointmentClinic,
-  addAppointmentSchedule,
+  addDoctorsSchedule,
   getAppointmentSchedule,
   addLeaveOrModifySchedule
 };
