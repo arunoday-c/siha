@@ -68,6 +68,7 @@ class AppointmentClinics extends Component {
       data: {},
       onSuccess: response => {
         if (response.data.success) {
+          console.log("Rooms:", response.data.records);
           this.setState({ appointmentRooms: response.data.records });
         }
       },
@@ -258,14 +259,15 @@ class AppointmentClinics extends Component {
   }
 
   getRoomName(id) {
+    debugger;
     let room = Enumerable.from(
       this.state.appointmentRooms.length !== 0
         ? this.state.appointmentRooms
         : null
     )
-      .where(w => w.employee_id === id)
+      .where(w => w.hims_d_appointment_room_id === id)
       .firstOrDefault();
-    return doc !== undefined ? room.room_name : "";
+    return room !== undefined ? room.description : "";
   }
 
   render() {
@@ -429,6 +431,9 @@ class AppointmentClinics extends Component {
                 {
                   fieldName: "room_id",
                   label: <AlgaehLabel label={{ fieldName: "room" }} />,
+                  displayTemplate: row => {
+                    return this.getRoomName(row.room_id);
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehFormGroup
