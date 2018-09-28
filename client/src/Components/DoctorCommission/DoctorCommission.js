@@ -24,7 +24,8 @@ import {
   SaveDoctorCommission,
   deleteDoctorCommission,
   ClearData,
-  PostDoctorCommission
+  PostDoctorCommission,
+  CalculateCommission
 } from "./DoctorCommissionEvents";
 import "./DoctorCommission.css";
 import "../../styles/site.css";
@@ -281,7 +282,7 @@ class DoctorCommission extends Component {
                   <button
                     className="btn btn-primary"
                     style={{ marginTop: "24px" }}
-                    // onClick={AddItems.bind(this, this)}
+                    onClick={CalculateCommission.bind(this, this)}
                   >
                     Calculate Commission
                   </button>
