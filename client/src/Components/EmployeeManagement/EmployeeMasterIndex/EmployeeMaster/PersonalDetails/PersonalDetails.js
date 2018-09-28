@@ -31,15 +31,14 @@ class PersonalDetails extends PureComponent {
     super(props);
 
     this.state = {
-      selectedLang: "en",
       Applicable: false
     };
   }
 
-  //   componentWillMount() {
-  //     let InputOutput = this.props.PatRegIOputs;
-  //     this.setState({ ...this.state, ...InputOutput });
-  //   }
+  componentWillMount() {
+    let InputOutput = this.props.EmpMasterIOputs;
+    this.setState({ ...this.state, ...InputOutput });
+  }
 
   componentDidMount() {
     if (this.props.titles === undefined || this.props.titles.length === 0) {
@@ -131,7 +130,7 @@ class PersonalDetails extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            tabIndex: "2"
+                            tabIndex: "1"
                           }
                         }}
                       />
@@ -155,7 +154,7 @@ class PersonalDetails extends PureComponent {
                           },
                           onChange: titlehandle.bind(this, this, context),
                           others: {
-                            tabIndex: "1"
+                            tabIndex: "2"
                           }
                         }}
                       />
@@ -174,7 +173,7 @@ class PersonalDetails extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            tabIndex: "2"
+                            tabIndex: "3"
                           }
                         }}
                       />
@@ -193,7 +192,7 @@ class PersonalDetails extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            tabIndex: "3"
+                            tabIndex: "4"
                           }
                         }}
                       />
@@ -232,7 +231,7 @@ class PersonalDetails extends PureComponent {
                           },
                           onChange: texthandle.bind(this, this, context),
                           others: {
-                            tabIndex: "4"
+                            tabIndex: "5"
                           }
                         }}
                       />
@@ -252,7 +251,7 @@ class PersonalDetails extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            tabIndex: "10"
+                            tabIndex: "6"
                           }
                         }}
                       />
@@ -271,7 +270,7 @@ class PersonalDetails extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            tabIndex: "10"
+                            tabIndex: "7"
                           }
                         }}
                       />
@@ -302,7 +301,67 @@ class PersonalDetails extends PureComponent {
                           ),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "13"
+                            tabIndex: "8"
+                          }
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
+                          fieldName: "category_id",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "category_id",
+                          className: "select-fld",
+                          value: this.state.category_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "country_name"
+                                : "arabic_country_name",
+                            valueField: "hims_d_country_id",
+                            data: this.props.countries
+                          },
+                          onChange: countryStatehandle.bind(
+                            this,
+                            this,
+                            context
+                          ),
+                          others: {
+                            disabled: this.state.existingPatient,
+                            tabIndex: "8"
+                          }
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
+                          fieldName: "speciality_id",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "speciality_id",
+                          className: "select-fld",
+                          value: this.state.speciality_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "country_name"
+                                : "arabic_country_name",
+                            valueField: "hims_d_country_id",
+                            data: this.props.countries
+                          },
+                          onChange: countryStatehandle.bind(
+                            this,
+                            this,
+                            context
+                          ),
+                          others: {
+                            disabled: this.state.existingPatient,
+                            tabIndex: "8"
                           }
                         }}
                       />
@@ -331,11 +390,13 @@ class PersonalDetails extends PureComponent {
                             context
                           ),
                           others: {
-                            disabled: this.state.existingPatient,
-                            tabIndex: "13"
+                            tabIndex: "9"
                           }
                         }}
                       />
+                    </div>
+
+                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -388,9 +449,6 @@ class PersonalDetails extends PureComponent {
                           }
                         }}
                       />
-                    </div>
-
-                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -430,8 +488,11 @@ class PersonalDetails extends PureComponent {
                           onChange: texthandle.bind(this, this, context)
                         }}
                       />
+                    </div>
+
+                    <div className="row paddin-bottom-5">
                       <AlagehFormGroup
-                        div={{ className: "col-lg-6" }}
+                        div={{ className: "col-lg-12" }}
                         label={{
                           fieldName: "address"
                         }}

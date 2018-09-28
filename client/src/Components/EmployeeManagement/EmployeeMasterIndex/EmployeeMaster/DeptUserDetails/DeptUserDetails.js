@@ -1,0 +1,223 @@
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+import IconButton from "@material-ui/core/IconButton";
+
+import { AlgaehActions } from "../../../../../actions/algaehActions";
+import "./DeptUserDetails.css";
+import {
+  AlagehFormGroup,
+  AlagehAutoComplete,
+  AlgaehDataGrid,
+  AlgaehLabel
+} from "../../../../Wrapper/algaehWrapper";
+import MyContext from "../../../../../utils/MyContext.js";
+import {
+  texthandle,
+  AddDeptUser,
+  deleteDeptUser
+} from "./DeptUserDetailsEvents";
+// import GlobalVariables from "../../../../../utils/GlobalVariables.json";
+import AHSnackbar from "../../../../common/Inputs/AHSnackbar";
+
+class DeptUserDetails extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sub_department_id: null,
+      user_id: null
+    };
+  }
+
+  componentWillMount() {
+    let InputOutput = this.props.EmpMasterIOputs;
+    this.setState({ ...this.state, ...InputOutput });
+  }
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+  render() {
+    return (
+      <React.Fragment>
+        <MyContext.Consumer>
+          {context => (
+            <div className="hptl-phase1-dept-user-form">
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "sub_department_id",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "sub_department_id",
+                    className: "select-fld",
+                    value: this.state.sub_department_id,
+
+                    dataSource: {
+                      textField:
+                        this.state.selectedLang === "en"
+                          ? "sub_department_name"
+                          : "arabic_sub_department_name",
+                      valueField: "hims_d_sub_department_id",
+                      data: this.props.subdepartment
+                    },
+
+                    onChange: texthandle.bind(this, this, context)
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "user_id"
+                  }}
+                  selector={{
+                    name: "user_id",
+                    className: "select-fld",
+                    value: this.state.user_id,
+                    dataSource: {
+                      textField: "user_displayname",
+                      valueField: "algaeh_d_app_user_id",
+                      data: this.props.userdrtails
+                    },
+                    onChange: texthandle.bind(this, this, context)
+                  }}
+                />
+
+                <div className="col-lg-1 actions" style={{ paddingTop: "2%" }}>
+                  <a
+                    href="javascript:;"
+                    className="btn btn-primary btn-circle active"
+                  >
+                    <i
+                      className="fas fa-plus"
+                      onClick={AddDeptUser.bind(this, this, context)}
+                    />
+                  </a>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-12 ">
+                  <AlgaehDataGrid
+                    id="dpet_user_grid"
+                    columns={[
+                      {
+                        fieldName: "action",
+                        label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <IconButton
+                                color="primary"
+                                title="Add Template"
+                                style={{ maxHeight: "4vh" }}
+                              >
+                                <i
+                                  className="fa fa-trash"
+                                  aria-hidden="true"
+                                  onClick={deleteDeptUser.bind(
+                                    this,
+                                    this,
+                                    context,
+                                    row
+                                  )}
+                                />
+                              </IconButton>
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "sub_department_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "sub_department_id" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.subdepartment === undefined
+                              ? []
+                              : this.props.subdepartment.filter(
+                                  f =>
+                                    f.hims_d_sub_department_id ===
+                                    row.sub_department_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].sub_department_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "user_id",
+                        label: <AlgaehLabel label={{ fieldName: "user_id" }} />,
+                        displayTemplate: row => {
+                          let display =
+                            this.props.userdrtails === undefined
+                              ? []
+                              : this.props.userdrtails.filter(
+                                  f => f.algaeh_d_app_user_id === row.user_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].user_displayname
+                                  : display[0].arabic_service_type
+                                : ""}
+                            </span>
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="analyte_id"
+                    dataSource={{
+                      data: this.state.deptDetails
+                    }}
+                    paging={{ page: 0, rowsPerPage: 5 }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </MyContext.Consumer>
+      </React.Fragment>
+    );
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    subdepartment: state.subdepartment,
+    userdrtails: state.userdrtails
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getUserDetails: AlgaehActions,
+      getSubDepartment: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(DeptUserDetails)
+);

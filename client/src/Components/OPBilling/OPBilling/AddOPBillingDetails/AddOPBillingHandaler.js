@@ -6,8 +6,6 @@ const serviceTypeHandeler = ($this, context, e) => {
       [e.name]: e.value
     },
     () => {
-      // $this.props.getServices($this.state.s_service_type);
-
       $this.props.getServices({
         uri: "/serviceType/getService",
         method: "GET",
@@ -15,6 +13,11 @@ const serviceTypeHandeler = ($this, context, e) => {
         redux: {
           type: "SERVICES_GET_DATA",
           mappingName: "services"
+        },
+        afterSuccess: data => {
+          $this.setState({
+            services: data
+          });
         }
       });
     }

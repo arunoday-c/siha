@@ -1,4 +1,4 @@
-const texthandle = ($this, ctrl, e) => {
+const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -8,153 +8,190 @@ const texthandle = ($this, ctrl, e) => {
   });
 };
 
-const uomtexthandle = ($this, context, ctrl, e) => {
-  e = e || ctrl;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-
+const numberSet = ($this, context, e) => {
+  debugger;
   $this.setState({
-    [name]: value,
-    uom_description: e.selected.uom_description
+    [e.target.name]: e.target.value
   });
-
   if (context !== undefined) {
-    context.updateState({
-      uom_description: e.selected.uom_description
-    });
+    context.updateState({ [e.target.name]: e.target.value });
   }
 };
 
 const AddSeviceTypeComm = ($this, context) => {
   debugger;
-  //   let isError = false;
-  //   let StockingExit = false;
-  //   let stocking_uom_id = null;
-  //   if ($this.state.uom_id === null) {
-  //     isError = true;
-  //     $this.setState({
-  //       open: true,
-  //       MandatoryMsg: "Invalid Input. Select Sales UOM."
-  //     });
-  //     return isError;
-  //   } else if ($this.state.conversion_factor === 0) {
-  //     isError = true;
-  //     $this.setState({
-  //       open: true,
-  //       MandatoryMsg: "Invalid Input. Select Sales UOM."
-  //     });
-  //     return isError;
-  //   } else if ($this.state.stocking_uom === null) {
-  //     isError = true;
-  //     $this.setState({
-  //       open: true,
-  //       MandatoryMsg: "Invalid Input. Select Sales UOM."
-  //     });
-  //     return isError;
-  //   } else {
-  //     let detail_item_uom = $this.state.detail_item_uom;
-  //     let insertItemUomMap = $this.state.insertItemUomMap;
+  let servTypeCommission = $this.state.servTypeCommission;
+  let inpObj = {
+    service_type_id: $this.state.service_type_typ_id,
+    op_cash_comission_percent: $this.state.op_cash_servtyp_percent,
+    op_credit_comission_percent: $this.state.op_credit_servtyp_percent,
+    ip_cash_commission_percent: $this.state.ip_cash_servtyp_percent,
+    ip_credit_commission_percent: $this.state.ip_credit_servtyp_percent
+  };
 
-  //     for (let x = 0; x < detail_item_uom.length; x++) {
-  //       if (detail_item_uom[x].stocking_uom === $this.state.stocking_uom) {
-  //         StockingExit = true;
-  //       }
-  //     }
-  //     if (StockingExit === false) {
-  //       if ($this.state.stocking_uom === "Y") {
-  //         stocking_uom_id = $this.state.uom_id;
-  //       }
-  //       if ($this.state.hims_d_item_master_id !== null) {
-  //         let Insertobj = {
-  //           item_master_id: $this.state.hims_d_item_master_id,
-  //           uom_id: $this.state.uom_id,
-  //           stocking_uom: $this.state.stocking_uom,
-  //           conversion_factor: $this.state.conversion_factor,
-  //           uom_description: $this.state.uom_description,
-  //           uom_status: "A"
-  //         };
-  //         insertItemUomMap.push(Insertobj);
-  //       }
+  servTypeCommission.push(inpObj);
+  $this.setState({
+    servTypeCommission: servTypeCommission,
+    service_type_typ_id: null,
+    op_cash_servtyp_percent: 0,
+    op_credit_servtyp_percent: 0,
+    ip_cash_servtyp_percent: 0,
+    ip_credit_servtyp_percent: 0
+  });
 
-  //       let uomObj = {
-  //         uom_id: $this.state.uom_id,
-  //         conversion_factor: $this.state.conversion_factor,
-  //         stocking_uom: $this.state.stocking_uom,
-  //         uom_description: $this.state.uom_description
-  //       };
-  //       detail_item_uom.push(uomObj);
-  //       $this.setState({
-  //         detail_item_uom: detail_item_uom,
-  //         insertItemUomMap: insertItemUomMap,
-  //         uom_id: null,
-  //         stocking_uom: null,
-  //         conversion_factor: null,
-  //         stocking_uom_id: stocking_uom_id
-  //       });
-  //       debugger;
-  //       if (context !== undefined) {
-  //         context.updateState({
-  //           detail_item_uom: detail_item_uom,
-  //           insertItemUomMap: insertItemUomMap,
-  //           stocking_uom_id: stocking_uom_id,
-  //           uom_id: null,
-  //           stocking_uom: null,
-  //           conversion_factor: null
-  //         });
-  //       }
-  //     } else {
-  //       isError = true;
-  //       $this.setState({
-  //         open: true,
-  //         MandatoryMsg: "Invalid Input. Only one should be stocking UOM"
-  //       });
-  //       return isError;
-  //     }
-  //   }
+  if (context !== undefined) {
+    context.updateState({ servTypeCommission: servTypeCommission });
+  }
 };
 
-const deleteSeviceTypeComm = ($this, context, row, rowId) => {
-  //   if (row.hims_m_item_uom_id === undefined) {
-  //     let detail_item_uom = $this.state.detail_item_uom;
-  //     let updateUomMapResult = $this.state.updateUomMapResult;
-  //     let insertItemUomMap = $this.state.insertItemUomMap;
-  //     if ($this.state.hims_d_item_master_id !== null) {
-  //       if (row.hims_m_item_uom_id !== undefined) {
-  //         let Updateobj = {
-  //           hims_m_item_uom_id: row.hims_m_item_uom_id,
-  //           item_master_id: row.hims_d_item_master_id,
-  //           uom_id: row.uom_id,
-  //           stocking_uom: row.stocking_uom,
-  //           conversion_factor: row.conversion_factor,
-  //           record_status: "I"
-  //         };
-  //         updateUomMapResult.push(Updateobj);
-  //       } else {
-  //         for (let k = 0; k < insertItemUomMap.length; k++) {
-  //           if (insertItemUomMap[k].uom_id === row.uom_id) {
-  //             insertItemUomMap.splice(k, 1);
-  //           }
-  //         }
-  //       }
-  //     }
-  //     for (let x = 0; x < detail_item_uom.length; x++) {
-  //       if (detail_item_uom[x].uom_id === row.uom_id) {
-  //         detail_item_uom.splice(x, 1);
-  //       }
-  //     }
-  //     $this.setState({
-  //       detail_item_uom: detail_item_uom,
-  //       updateUomMapResult: updateUomMapResult,
-  //       insertItemUomMap: insertItemUomMap
-  //     });
-  //     if (context !== undefined) {
-  //       context.updateState({
-  //         detail_item_uom: detail_item_uom,
-  //         updateUomMapResult: updateUomMapResult,
-  //         insertItemUomMap: insertItemUomMap
-  //       });
-  //     }
-  //   }
+const AddSeviceComm = ($this, context) => {
+  let seviceComm = $this.state.seviceComm;
+  let inpObj = {
+    service_type_id: $this.state.service_type_id,
+    services_id: $this.state.services_id,
+    op_cash_commission_percent: $this.state.op_cash_commission_percent,
+    op_credit_commission_percent: $this.state.op_credit_commission_percent,
+    ip_cash_commission_percent: $this.state.ip_cash_commission_percent,
+    ip_credit_commission_percent: $this.state.ip_credit_commission_percent
+  };
+
+  seviceComm.push(inpObj);
+  $this.setState({
+    seviceComm: seviceComm,
+    services_id: null,
+    service_type_id: null,
+    op_cash_commission_percent: 0,
+    op_credit_commission_percent: 0,
+    ip_cash_commission_percent: 0,
+    ip_credit_commission_percent: 0
+  });
+
+  if (context !== undefined) {
+    context.updateState({ seviceComm: seviceComm });
+  }
 };
 
-export { texthandle, AddSeviceTypeComm, deleteSeviceTypeComm };
+const deleteSeviceComm = ($this, context, row) => {
+  if (row.hims_m_doctor_service_commission_id === undefined) {
+    let seviceComm = $this.state.seviceComm;
+    let updateseviceComm = $this.state.updateseviceComm;
+    let insertseviceComm = $this.state.insertseviceComm;
+    if ($this.state.hims_d_item_master_id !== null) {
+      if (row.hims_m_doctor_service_commission_id !== undefined) {
+        let Updateobj = {
+          hims_m_doctor_service_commission_id:
+            row.hims_m_doctor_service_commission_id,
+          record_status: "I"
+        };
+        updateseviceComm.push(Updateobj);
+      } else {
+        for (let k = 0; k < insertseviceComm.length; k++) {
+          if (insertseviceComm[k].uom_id === row.uom_id) {
+            insertseviceComm.splice(k, 1);
+          }
+        }
+      }
+    }
+    for (let x = 0; x < seviceComm.length; x++) {
+      if (seviceComm[x].uom_id === row.uom_id) {
+        seviceComm.splice(x, 1);
+      }
+    }
+    $this.setState({
+      seviceComm: seviceComm,
+      updateseviceComm: updateseviceComm,
+      insertseviceComm: insertseviceComm
+    });
+    if (context !== undefined) {
+      context.updateState({
+        seviceComm: seviceComm,
+        updateseviceComm: updateseviceComm,
+        insertseviceComm: insertseviceComm
+      });
+    }
+  }
+};
+
+const deleteSeviceTypeComm = ($this, context, row) => {
+  if (row.hims_m_doctor_service_type_commission_id === undefined) {
+    let servTypeCommission = $this.state.servTypeCommission;
+    let updateservTypeCommission = $this.state.updateservTypeCommission;
+    let insertservTypeCommission = $this.state.insertservTypeCommission;
+    if ($this.state.hims_d_item_master_id !== null) {
+      if (row.hims_m_doctor_service_type_commission_id !== undefined) {
+        let Updateobj = {
+          hims_m_doctor_service_type_commission_id:
+            row.hims_m_doctor_service_type_commission_id,
+          record_status: "I"
+        };
+        updateservTypeCommission.push(Updateobj);
+      } else {
+        for (let k = 0; k < insertservTypeCommission.length; k++) {
+          if (insertservTypeCommission[k].uom_id === row.uom_id) {
+            insertservTypeCommission.splice(k, 1);
+          }
+        }
+      }
+    }
+    for (let x = 0; x < servTypeCommission.length; x++) {
+      if (servTypeCommission[x].uom_id === row.uom_id) {
+        servTypeCommission.splice(x, 1);
+      }
+    }
+    $this.setState({
+      servTypeCommission: servTypeCommission,
+      updateservTypeCommission: updateservTypeCommission,
+      insertservTypeCommission: insertservTypeCommission
+    });
+    if (context !== undefined) {
+      context.updateState({
+        servTypeCommission: servTypeCommission,
+        updateservTypeCommission: updateservTypeCommission,
+        insertservTypeCommission: insertservTypeCommission
+      });
+    }
+  }
+};
+
+const serviceTypeHandeler = ($this, context, e) => {
+  $this.setState({
+    [e.name]: e.value
+  });
+  if (context != null) {
+    context.updateState({ [e.name]: e.value });
+  }
+};
+
+const serviceServTypeHandeler = ($this, context, e) => {
+  $this.setState(
+    {
+      [e.name]: e.value,
+      services_id: null
+    },
+    () => {
+      $this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        data: { service_type_id: $this.state.service_type_id },
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "services"
+        }
+      });
+    }
+  );
+  if (context != null) {
+    context.updateState({ [e.name]: e.value });
+  }
+};
+
+export {
+  texthandle,
+  AddSeviceTypeComm,
+  deleteSeviceTypeComm,
+  serviceTypeHandeler,
+  serviceServTypeHandeler,
+  numberSet,
+  AddSeviceComm,
+  deleteSeviceComm
+};
