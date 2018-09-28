@@ -2093,6 +2093,50 @@ let getPhysicalExamination = (req, res, next) => {
   }
 };
 
+//created by Noor: to get all physical examination
+let getAllPhysicalExamination = (req, res, next) => {
+  try {
+    debugFunction("getPhysicalExamination");
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      let queryBuilder =
+        "SELECT hims_d_physical_examination_header_id,\
+      examination_type,hims_d_physical_examination_header.description,assesment_type,\
+      hims_d_physical_examination_header.mandatory,hims_d_physical_examination_details_id,\
+      hims_d_physical_examination_details.description as dtl_description,\
+      hims_d_physical_examination_subdetails_id,hims_d_physical_examination_subdetails.description as sub_dtl_description,\
+      hims_d_physical_examination_subdetails.mandatory \
+      FROM hims_d_physical_examination_header,\
+      hims_d_physical_examination_details,hims_d_physical_examination_subdetails\
+      where hims_d_physical_examination_header.record_status='A'\
+      and hims_d_physical_examination_details.physical_examination_header_id=hims_d_physical_examination_header_id\
+      and hims_d_physical_examination_subdetails.physical_examination_details_id =\
+      hims_d_physical_examination_details.hims_d_physical_examination_details_id and sub_department_id=?";
+      connection.query(
+        queryBuilder,
+        [req.userIdentity.sub_department_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 let addDietAdvice = (req, res, next) => {
   let dietadvice = {
     hims_f_patient_diet_id: null,
@@ -2439,5 +2483,6 @@ module.exports = {
   getPatientVitals,
   getPatientAllergies,
   getPatientDiagnosis,
-  getPatientDiet
+  getPatientDiet,
+  getAllPhysicalExamination
 };

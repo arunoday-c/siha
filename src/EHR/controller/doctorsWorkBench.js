@@ -49,7 +49,8 @@ import {
   getPatientPhysicalExamination,
   updatePatientPhysicalExam,
   getPatientAllergies,
-  getPatientDiet
+  getPatientDiet,
+  getAllPhysicalExamination
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -114,6 +115,19 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  api.get(
+    "/getPhysicalExamination/getAllDepartmentBased",
+    getAllPhysicalExamination,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
   // created by irfan : add order
   api.post(
     "/addOrder",
