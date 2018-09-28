@@ -15,43 +15,54 @@ class AutoComplete extends Component {
 
   componentWillReceiveProps(props) {
     if (props.selector.dataSource.data !== undefined) {
-      const item = new Enumerable.from(props.selector.dataSource.data)
-        .where(
-          w =>
-            String(w[this.props.selector.dataSource.textField])
-              .toUpperCase()
-              .trim() ===
-            String(props.selector.value)
-              .toUpperCase()
-              .trim()
-        )
-        .lastOrDefault();
+      if (props.selector.value === null || props.selector.value === undefined) {
+        this.setState({ single: "" });
+      } else {
+        const item = new Enumerable.from(props.selector.dataSource.data)
+          .where(
+            w =>
+              String(w[this.props.selector.dataSource.valueField])
+                .toUpperCase()
+                .trim() ===
+              String(props.selector.value)
+                .toUpperCase()
+                .trim()
+          )
+          .lastOrDefault();
 
-      if (item !== undefined) {
-        this.setState({
-          single: item[this.props.selector.dataSource.textField]
-        });
+        if (item !== undefined) {
+          this.setState({
+            single: item[this.props.selector.dataSource.textField]
+          });
+        }
       }
     }
   }
 
   componentDidMount() {
     if (this.props.selector.dataSource.data !== undefined) {
-      const item = new Enumerable.from(this.props.selector.dataSource.data)
-        .where(
-          w =>
-            String(w[this.props.selector.dataSource.textField])
-              .toUpperCase()
-              .trim() ===
-            String(this.props.selector.value)
-              .toUpperCase()
-              .trim()
-        )
-        .lastOrDefault();
-      if (item !== undefined) {
-        this.setState({
-          single: item[this.props.selector.dataSource.textField]
-        });
+      if (
+        this.props.selector.value === null ||
+        this.props.selector.value === undefined
+      ) {
+        this.setState({ single: "" });
+      } else {
+        const item = new Enumerable.from(this.props.selector.dataSource.data)
+          .where(
+            w =>
+              String(w[this.props.selector.dataSource.valueField])
+                .toUpperCase()
+                .trim() ===
+              String(this.props.selector.value)
+                .toUpperCase()
+                .trim()
+          )
+          .lastOrDefault();
+        if (item !== undefined) {
+          this.setState({
+            single: item[this.props.selector.dataSource.textField]
+          });
+        }
       }
     }
   }
@@ -117,6 +128,11 @@ class AutoComplete extends Component {
       this.props.selector.dataSource.data === undefined
         ? []
         : this.props.selector.dataSource.data;
+    const isDisable =
+      this.props.selector.others !== undefined &&
+      this.props.selector.others.disabled !== undefined
+        ? this.props.selector.others.disabled
+        : flase;
     return (
       <div className="autoselect-Div">
         <input
