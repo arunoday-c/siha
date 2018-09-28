@@ -202,4 +202,55 @@ let doctorsCommissionCal = (req, res, next) => {
   }
 };
 
-module.exports = { getDoctorsCommission, doctorsCommissionCal };
+//created by irfan: performing only calculation
+let commissionCalculations = (req, res, next) => {
+  try {
+    let inputParam = req.body;
+    // req.body.intCalculateall === undefined
+    //   ? req.body.billscommission
+    //   : req.body;
+
+    // let hasCalculateall =
+    //   req.body.intCalculateall === undefined ? true : req.body.intCalculateall;
+
+    let sendingObject = {};
+
+    let adjust_amount =
+      inputParam.adjust_amount === undefined ? 0 : inputParam.adjust_amount;
+
+    debugLog("Input", req.body);
+    debugLog("adjust_amount", adjust_amount);
+
+    if (adjust_amount == 0) {
+      sendingObject.op_commision = new LINQ(inputParam).Sum(
+        d => d.op_cash_comission
+      );
+      sendingObject.op_credit_comission = new LINQ(inputParam).Sum(
+        d => d.op_crd_comission
+      );
+
+      sendingObject.gross_comission =
+        sendingObject.op_commision + sendingObject.op_credit_comission;
+
+      sendingObject.net_comission = sendingObject.gross_comission;
+    } else {
+      sendingObject.net_comission =
+        inputParam.gross_comission - inputParam.adjust_amount;
+    }
+
+    sendingObject.comission_payable = sendingObject.net_comission;
+
+    debugLog("sendingObject", sendingObject);
+
+    req.records = sendingObject;
+    next();
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  getDoctorsCommission,
+  doctorsCommissionCal,
+  commissionCalculations
+};
