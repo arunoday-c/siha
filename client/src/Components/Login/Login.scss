@@ -4,7 +4,6 @@
   min-height: 100%;
 
   input[type="text"] {
-    height: 25px;
     padding: 8px 10px;
     border-radius: 5px;
     overflow: hidden;
@@ -12,12 +11,12 @@
     border: 1px solid #3a95aa;
   }
   input[type="password"] {
-    height: 25px;
     padding: 8px 10px;
     border-radius: 5px;
     overflow: hidden;
     background: #fff;
     border: 1px solid #3a95aa;
+    width: 100%;
   }
   .margintop15 {
     margin-top: 8%;

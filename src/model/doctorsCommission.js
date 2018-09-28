@@ -40,8 +40,6 @@ let getDoctorsCommission = (req, res, next) => {
             .Select(s => s.hims_f_billing_header_id)
             .ToArray();
 
-          debugLog("bill_header_id_all:", bill_header_id_all);
-
           if (result.length != 0) {
             let service_type_id = "";
             if (input.select_type == "SS" && input.service_type_id != "null") {
@@ -50,11 +48,12 @@ let getDoctorsCommission = (req, res, next) => {
             }
 
             connection.query(
-              "select hims_f_billing_header_id,hims_f_billing_details_id,service_type_id,services_id,quantity,\
-                unit_cost,gross_amount,discount_amout,net_amout,patient_payable,company_payble,sec_company_paybale\
-                from hims_f_billing_details where record_status='A' and " +
+              "select BD.hims_f_billing_header_id,incharge_or_provider as provider_id,hims_f_billing_details_id,BH.bill_number,BH.bill_date,service_type_id as servtype_id,services_id as service_id,quantity,\
+              unit_cost,gross_amount as extended_cost,discount_amout as discount_amount,net_amout as net_amount,BD.patient_payable as patient_share,company_payble as company_share,sec_company_paybale\
+              from hims_f_billing_details BD,hims_f_billing_header BH where BH.record_status='A' and BD.record_status='A' and \
+               BD.hims_f_billing_header_id=BH.hims_f_billing_header_id and " +
                 service_type_id +
-                " hims_f_billing_header_id in (" +
+                " BD.hims_f_billing_header_id in (" +
                 bill_header_id_all +
                 ");",
               (error, results) => {
@@ -62,8 +61,80 @@ let getDoctorsCommission = (req, res, next) => {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
-                // req.records = results;
-                // next();
+
+                if (results.length != 0) {
+                  for (let i = 0; i < results.length; i++) {
+                    connection.query(
+                      " select hims_m_doctor_service_commission_id,op_cash_commission_percent as op_cash_comission_percentage, op_credit_commission_percent as op_crd_comission_percentage,\
+                     ip_cash_commission_percent, ip_credit_commission_percent from\
+                     hims_m_doctor_service_commission where record_status='A' and provider_id=?  and services_id=? and service_type_id=?",
+                      [
+                        results[i].provider_id,
+                        results[i].service_id,
+                        results[i].servtype_id
+                      ],
+                      (error, service_commission) => {
+                        if (error) {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        }
+
+                        new Promise((resolve, reject) => {
+                          try {
+                            if (service_commission.length != 0) {
+                              results[i] = {
+                                ...results[i],
+                                ...service_commission[0]
+                              };
+                              return resolve(results);
+                            } else {
+                              connection.query(
+                                " SELECT hims_m_doctor_service_type_commission_id, op_cash_comission_percent as op_cash_comission_percentage, op_credit_comission_percent as op_crd_comission_percentage, \
+                                 ip_cash_commission_percent, ip_credit_commission_percent from hims_m_doctor_service_type_commission where record_status='A'  and provider_id=?\
+                               and service_type_id=?",
+                                [
+                                  results[i].provider_id,
+                                  results[i].servtype_id
+                                ],
+                                (error, sType_comm) => {
+                                  if (error) {
+                                    releaseDBConnection(db, connection);
+                                    next(error);
+                                  }
+
+                                  if (sType_comm.length != 0) {
+                                    results[i] = {
+                                      ...results[i],
+                                      ...sType_comm[0]
+                                    };
+
+                                    return resolve(results);
+                                  } else {
+                                    results[i] = {
+                                      ...results[i],
+                                      ...{ commission_not_exist: true }
+                                    };
+                                    return resolve();
+                                  }
+                                }
+                              );
+                            }
+                          } catch (e) {
+                            reject(e);
+                          }
+                        }).then(result => {
+                          if (i == results.length - 1) {
+                            req.records = result;
+                            next();
+                          }
+                        });
+                      }
+                    );
+                  }
+                } else {
+                  req.records = results;
+                  next();
+                }
               }
             );
           } else {
@@ -77,4 +148,23 @@ let getDoctorsCommission = (req, res, next) => {
     next(e);
   }
 };
-module.exports = { getDoctorsCommission };
+
+//created by irfan: to doctorsCommissionCal
+let doctorsCommissionCal = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend([], req.body);
+
+    for (let i = 0; i < input.length; i++) {
+      debugLog(`input:${i}:`, input[i]);
+    }
+    req.records = "result";
+    next();
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { getDoctorsCommission, doctorsCommissionCal };

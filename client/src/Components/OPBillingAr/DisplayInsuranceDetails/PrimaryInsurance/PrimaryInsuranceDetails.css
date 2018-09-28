@@ -1,0 +1,38 @@
+.hptl-primary-insurance-form {
+  background: #ffff;
+  border-radius: 5px; }
+
+.htpl-primary-display-insurance-form-Ar .primary-details {
+  border-right: 1px solid #000; }
+
+.htpl-primary-display-insurance-form-Ar mark {
+  background: none;
+  color: red; }
+
+.htpl-primary-display-insurance-form-Ar label {
+  font-weight: 400;
+  font-size: 11px; }
+
+.htpl-primary-display-insurance-form-Ar .centerAlign {
+  text-align: center;
+  font-weight: 700; }
+
+.htpl-primary-display-insurance-form-Ar .text_field {
+  width: 100% !important;
+  background-color: #fbfbfb;
+  font-size: "12px";
+  margin-right: "5px"; }
+
+.htpl-primary-display-insurance-form-Ar .radio-design {
+  position: absolute;
+  top: 5px;
+  left: 36px; }
+
+.htpl-primary-display-insurance-form-Ar .refactor-design {
+  min-height: 28px;
+  background-color: #fbfbfb;
+  border: 0px; }
+
+.htpl-primary-display-insurance-form-Ar .file-name-upload {
+  margin-left: 4%;
+  margin-top: 2%; }

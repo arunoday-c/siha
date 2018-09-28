@@ -17,7 +17,6 @@ import {
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
-  itemchangeText,
   LoadBills,
   datehandle,
   dateFormater,
@@ -45,7 +44,8 @@ class DoctorCommission extends Component {
       from_date: null,
       to_date: null,
       select_service: null,
-      case_type: "OP"
+      case_type: "OP",
+      billscommission: []
     };
   }
 
@@ -72,6 +72,15 @@ class DoctorCommission extends Component {
       redux: {
         type: "SERVIES_TYPES_GET_DATA",
         mappingName: "servicetype"
+      }
+    });
+
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "services"
       }
     });
   }
@@ -277,6 +286,16 @@ class DoctorCommission extends Component {
                     Calculate Commission
                   </button>
                 </div>
+
+                {/* <div className="col-lg-2">
+                  <button
+                    className="btn btn-primary"
+                    style={{ marginTop: "24px" }}
+                    onClick={LoadBills.bind(this, this)}
+                  >
+                    Load Bills
+                  </button>
+                </div> */}
               </div>
             </div>
             <div className="col-lg-12" style={{ maxWidth: "75%" }}>
@@ -292,20 +311,55 @@ class DoctorCommission extends Component {
                     },
                     {
                       fieldName: "bill_date",
-                      label: <AlgaehLabel label={{ forceLabel: "Bill Date" }} />
-                      //   displayTemplate: row => {
-                      //     return <span>{dateFormater(row.bill_date)}</span>;
-                      //   }
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Bill Date" }} />
+                      ),
+                      displayTemplate: row => {
+                        return <span>{dateFormater(row.bill_date)}</span>;
+                      }
                     },
                     {
                       fieldName: "servtype_id",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Service Type" }} />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.servicetype === undefined
+                            ? []
+                            : this.props.servicetype.filter(
+                                f =>
+                                  f.hims_d_service_type_id === row.servtype_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].service_type
+                              : ""}
+                          </span>
+                        );
+                      }
                     },
                     {
                       fieldName: "service_id",
-                      label: <AlgaehLabel label={{ forceLabel: "Service" }} />
+                      label: <AlgaehLabel label={{ forceLabel: "Service" }} />,
+                      displayTemplate: row => {
+                        let display =
+                          this.props.services === undefined
+                            ? []
+                            : this.props.services.filter(
+                                f => f.hims_d_services_id === row.service_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].service_name
+                              : ""}
+                          </span>
+                        );
+                      }
                     },
                     {
                       fieldName: "quantity",
@@ -348,14 +402,14 @@ class DoctorCommission extends Component {
                         <AlgaehLabel label={{ forceLabel: "Net Amount" }} />
                       )
                     },
-                    {
-                      fieldName: "op_cash_comission_type",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "OP Cash Comm. Type" }}
-                        />
-                      )
-                    },
+                    // {
+                    //   fieldName: "op_cash_comission_type",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ forceLabel: "OP Cash Comm. Type" }}
+                    //     />
+                    //   )
+                    // },
                     {
                       fieldName: "op_cash_comission_percentage",
                       label: (
@@ -379,14 +433,14 @@ class DoctorCommission extends Component {
                         <AlgaehLabel label={{ forceLabel: "OP Cash Comm." }} />
                       )
                     },
-                    {
-                      fieldName: "op_crd_comission_type",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "OP Criedt Comm. Type" }}
-                        />
-                      )
-                    },
+                    // {
+                    //   fieldName: "op_crd_comission_type",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ forceLabel: "OP Criedt Comm. Type" }}
+                    //     />
+                    //   )
+                    // },
                     {
                       fieldName: "op_crd_comission_percentage",
                       label: (
@@ -414,7 +468,7 @@ class DoctorCommission extends Component {
                   ]}
                   keyId="item_id"
                   dataSource={{
-                    data: this.state.pharmacy_stock_detail
+                    data: this.state.billscommission
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
@@ -449,7 +503,7 @@ class DoctorCommission extends Component {
                     <button
                       type="button"
                       className="btn btn-default"
-                      //   onClick={ClearData.bind(this, this)}
+                      onClick={ClearData.bind(this, this)}
                     >
                       <AlgaehLabel
                         label={{ forceLabel: "Clear", returnText: true }}
@@ -484,7 +538,9 @@ function mapStateToProps(state) {
   return {
     providers: state.providers,
     servicetype: state.servicetype,
-    doctorcommission: state.doctorcommission
+    doctorcommission: state.doctorcommission,
+    billscommission: state.billscommission,
+    services: state.services
   };
 }
 
@@ -493,7 +549,9 @@ function mapDispatchToProps(dispatch) {
     {
       getProviderDetails: AlgaehActions,
       getServiceTypes: AlgaehActions,
-      getDoctorCommission: AlgaehActions
+      getDoctorCommission: AlgaehActions,
+      getDoctorsCommission: AlgaehActions,
+      getServices: AlgaehActions
     },
     dispatch
   );
