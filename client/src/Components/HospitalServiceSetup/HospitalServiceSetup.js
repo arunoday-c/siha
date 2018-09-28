@@ -33,7 +33,9 @@ class HospitalServiceSetup extends Component {
       sub_department_id: null,
       hospital_id: null,
       service_type_id: null,
-      dummy: true
+      dummy: true,
+      service_name: null,
+      ServiceNames: []
     };
   }
 
@@ -54,6 +56,19 @@ class HospitalServiceSetup extends Component {
         redux: {
           type: "SERVICES_GET_DATA",
           mappingName: "hospitalservices"
+        },
+        afterSuccess: data => {
+          let ServiceNames = Enumerable.from(data)
+            .groupBy("$.hims_d_services_id", null, (k, g) => {
+              let firstRecordSet = Enumerable.from(g).firstOrDefault();
+              return {
+                service_name: firstRecordSet.service_name,
+                hims_d_services_id: firstRecordSet.hims_d_services_id
+              };
+            })
+            .toArray();
+
+          this.setState({ ServiceNames: ServiceNames });
         }
       });
     }
@@ -193,6 +208,24 @@ class HospitalServiceSetup extends Component {
         <div className="row">
           <div className="col-lg-12" style={{ marginTop: "75px" }}>
             <div className="row">
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "service_name"
+                }}
+                selector={{
+                  name: "service_name",
+                  className: "select-fld",
+                  value: this.state.service_name,
+                  dataSource: {
+                    textField: "service_name",
+                    valueField: "hims_d_services_id",
+                    data: this.state.ServiceNames
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{

@@ -16,6 +16,9 @@ const getHospotalServices = $this => {
   debugger;
   let inputObj = {};
 
+  if ($this.state.service_name !== null) {
+    inputObj = { hims_d_services_id: $this.state.service_name };
+  }
   if ($this.state.sub_department_id !== null) {
     inputObj = { sub_department_id: $this.state.sub_department_id };
   }
