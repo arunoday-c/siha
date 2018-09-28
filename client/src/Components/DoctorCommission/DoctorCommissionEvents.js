@@ -17,19 +17,7 @@ const changeTexts = ($this, ctrl, e) => {
 
 const CalculateCommission = $this => {
   debugger;
-  // algaehApiCall({
-  //   uri: "/doctorsCommission/doctorsCommissionCal",
-  //   data: $this.state.billscommission,
-  //   method: "POST",
-  //   onSuccess: response => {
-  //     debugger;
-  //     $this.setState({ billscommission: response.data });
-  //   },
-  //   onFailure: error => {
-  //     console.log(error);
-  //   }
-  // });
-
+  AlgaehLoader({ show: true });
   $this.props.CalculateCommission({
     uri: "/doctorsCommission/doctorsCommissionCal",
     method: "POST",
@@ -39,8 +27,46 @@ const CalculateCommission = $this => {
       mappingName: "billscommission"
     },
     afterSuccess: data => {
-      $this.setState({ billscommission: data });
+      $this.setState({ billscommission: data }, () => {
+        debugger;
+        $this.props.calculateCommission({
+          uri: "/doctorsCommission/commissionCalculations",
+          method: "POST",
+          data: $this.state.billscommission,
+          redux: {
+            type: "COMMISSION_HEADER_GEN_GET_DATA",
+            mappingName: "headercommission"
+          },
+          afterSuccess: data => {
+            $this.setState({ ...data }, () => {
+              AlgaehLoader({ show: false });
+            });
+          }
+        });
+      });
     }
+  });
+};
+
+const AdjustAmountCalculate = ($this, e) => {
+  debugger;
+
+  $this.setState({ [e.target.name]: e.target.value }, () => {
+    $this.props.calculateCommission({
+      uri: "/doctorsCommission/commissionCalculations",
+      method: "POST",
+      data: {
+        adjust_amount: $this.state.adjust_amount,
+        gross_comission: $this.state.gross_comission
+      },
+      redux: {
+        type: "COMMISSION_HEADER_GEN_GET_DATA",
+        mappingName: "headercommission"
+      },
+      afterSuccess: data => {
+        $this.setState({ ...data });
+      }
+    });
   });
 };
 
@@ -186,7 +212,7 @@ const LoadBills = $this => {
     });
   } else {
     debugger;
-
+    AlgaehLoader({ show: true });
     let inpObj = {
       incharge_or_provider: $this.state.doctor_id,
       from_date: moment($this.state.from_date).format(Options.dateFormatYear),
@@ -208,7 +234,9 @@ const LoadBills = $this => {
         // let providers = Enumerable.from(data)
         //   .where(w => w.isdoctor === "Y")
         //   .toArray();
-        $this.setState({ billscommission: data });
+        $this.setState({ billscommission: data }, () => {
+          AlgaehLoader({ show: false });
+        });
       }
     });
   }
@@ -216,14 +244,17 @@ const LoadBills = $this => {
 
 const ClearData = $this => {
   $this.setState({
-    providers: [],
     select_type: "AS",
     doctor_id: null,
     from_date: null,
     to_date: null,
     select_service: null,
     case_type: "OP",
-    billscommission: []
+    billscommission: [],
+    op_commision: 0,
+    op_credit_comission: 0,
+    gross_comission: 0,
+    comission_payable: 0
   });
 };
 
@@ -237,5 +268,6 @@ export {
   SaveDoctorCommission,
   deleteDoctorCommission,
   ClearData,
-  PostDoctorCommission
+  PostDoctorCommission,
+  AdjustAmountCalculate
 };
