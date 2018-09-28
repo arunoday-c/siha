@@ -371,5 +371,15 @@
   "CASE_TYPE": [
     { "name": "OP", "value": "OP" },
     { "name": "IP", "value": "IP" }
+  ],
+  "FORMAT_BLOOD_GROUP": [
+    { "name": "O+", "value": "O+" },
+    { "name": "O-", "value": "O-" },
+    { "name": "B+", "value": "B+" },
+    { "name": "B-", "value": "B-" },
+    { "name": "AB+", "value": "AB+" },
+    { "name": "AB-", "value": "AB-" },
+    { "name": "A+", "value": "A+" },
+    { "name": "A-", "value": "A-" }
   ]
 }

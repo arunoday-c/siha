@@ -120,11 +120,31 @@ const datehandle = ($this, context, ctrl, e) => {
   }, 500);
 };
 
+const isDoctorChange = ($this, context, e) => {
+  debugger;
+  let Applicable = false;
+  let Value = "N";
+
+  if ($this.state.Applicable === true) {
+    Applicable = false;
+    Value = "N";
+  } else if ($this.state.Applicable === false) {
+    Applicable = true;
+    Value = "Y";
+  }
+  $this.setState({
+    [e.target.name]: Value,
+    Applicable: Applicable,
+    vat_percent: 0
+  });
+};
+
 export {
   texthandle,
   titlehandle,
   numberSet,
   onDrop,
   countryStatehandle,
-  datehandle
+  datehandle,
+  isDoctorChange
 };
