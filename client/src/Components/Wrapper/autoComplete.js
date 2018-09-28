@@ -132,7 +132,7 @@ class AutoComplete extends Component {
       this.props.selector.others !== undefined &&
       this.props.selector.others.disabled !== undefined
         ? this.props.selector.others.disabled
-        : flase;
+        : false;
     return (
       <div className="autoselect-Div">
         <input
@@ -144,10 +144,13 @@ class AutoComplete extends Component {
           name={this.props.selector.name}
           {...this.props.selector.others}
         />
-        <i
-          className="fas fa-times-circle"
-          onClick={this.clearInput.bind(this)}
-        />
+        {isDisable ? null : (
+          <i
+            className="fas fa-times-circle"
+            onClick={this.clearInput.bind(this)}
+          />
+        )}
+
         <datalist id={this.props.selector.name}>
           {data.map((item, index) => (
             <option
