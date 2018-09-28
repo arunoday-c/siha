@@ -17,7 +17,10 @@ class EmployeeMaster extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "PersonalDetails", sidBarOpen: true };
+    this.state = {
+      pageDisplay: "PersonalDetails",
+      sidBarOpen: true
+    };
   }
 
   openTab(e) {
@@ -39,12 +42,14 @@ class EmployeeMaster extends Component {
   }
 
   onClose = e => {
-    // let IOputs = ItemSetup.inputParam();
-    // this.setState({ ...this.state, ...IOputs }, () => {
-    //   debugger;
-
-    // });
-    this.props.onClose && this.props.onClose(e);
+    this.setState(
+      {
+        pageDisplay: "PersonalDetails"
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
 
   componentDidMount() {
@@ -56,6 +61,31 @@ class EmployeeMaster extends Component {
         mappingName: "userdrtails"
       }
     });
+
+    if (
+      this.props.servicetype === undefined ||
+      this.props.servicetype.length === 0
+    ) {
+      this.props.getServiceTypes({
+        uri: "/serviceType",
+        method: "GET",
+        redux: {
+          type: "SERVIES_TYPES_GET_DATA",
+          mappingName: "servicetype"
+        }
+      });
+    }
+
+    if (this.props.services === undefined || this.props.services.length === 0) {
+      this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "services"
+        }
+      });
+    }
   }
 
   render() {
@@ -63,7 +93,7 @@ class EmployeeMaster extends Component {
       <div className="hims_employee_master">
         <Modal className="model-set" open={this.props.open}>
           <div className="hims_employee_master">
-            <div className="algaeh-modal">
+            <div className="algaeh-modal" style={{ width: "100%" }}>
               <div className="popupHeader">
                 <div className="row">
                   <div className="col-lg-8">
@@ -179,14 +209,18 @@ class EmployeeMaster extends Component {
 
 function mapStateToProps(state) {
   return {
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
+    servicetype: state.servicetype,
+    services: state.services
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getUserDetails: AlgaehActions
+      getUserDetails: AlgaehActions,
+      getServiceTypes: AlgaehActions,
+      getServices: AlgaehActions
     },
     dispatch
   );
