@@ -294,13 +294,8 @@ class PersonalDetails extends PureComponent {
                             valueField: "hims_d_country_id",
                             data: this.props.countries
                           },
-                          onChange: countryStatehandle.bind(
-                            this,
-                            this,
-                            context
-                          ),
+                          onChange: texthandle.bind(this, this, context),
                           others: {
-                            disabled: this.state.existingPatient,
                             tabIndex: "8"
                           }
                         }}
@@ -324,13 +319,8 @@ class PersonalDetails extends PureComponent {
                             valueField: "hims_d_country_id",
                             data: this.props.countries
                           },
-                          onChange: countryStatehandle.bind(
-                            this,
-                            this,
-                            context
-                          ),
+                          onChange: texthandle.bind(this, this, context),
                           others: {
-                            disabled: this.state.existingPatient,
                             tabIndex: "8"
                           }
                         }}
@@ -354,13 +344,8 @@ class PersonalDetails extends PureComponent {
                             valueField: "hims_d_country_id",
                             data: this.props.countries
                           },
-                          onChange: countryStatehandle.bind(
-                            this,
-                            this,
-                            context
-                          ),
+                          onChange: texthandle.bind(this, this, context),
                           others: {
-                            disabled: this.state.existingPatient,
                             tabIndex: "8"
                           }
                         }}

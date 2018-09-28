@@ -15,6 +15,7 @@ import MyContext from "../../../../utils/MyContext";
 import AHSnackbar from "../../../common/Inputs/AHSnackbar";
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
+import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 
 class EmployeeMaster extends Component {
   constructor(props) {
@@ -124,6 +125,10 @@ class EmployeeMaster extends Component {
     });
   }
 
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   render() {
     return (
       <div className="hims_employee_master">
@@ -224,7 +229,7 @@ class EmployeeMaster extends Component {
 
                     <div className="col-lg-8">
                       <button
-                        // onClick={InsertUpdateItems.bind(this, this)}
+                        onClick={InsertUpdateEmployee.bind(this, this)}
                         type="button"
                         className="btn btn-primary"
                       >

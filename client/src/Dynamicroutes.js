@@ -40,6 +40,7 @@ import ItemSetup from "./Components/ItemSetup/ItemSetup";
 import EmployeeMasterIndex from "./Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMasterIndex";
 import PhysicianScheduleSetup from "./Components/PhysicianScheduleSetup/PhysicianScheduleSetup";
 import FrontDeskAr from "./Components/RegistrationPatientAr/RegistrationPatientAr";
+import OPBillingAr from "./Components/OPBillingAr/OPBillingAr";
 import DoctorCommission from "./Components/DoctorCommission/DoctorCommission";
 import HospitalServiceSetup from "./Components/HospitalServiceSetup/HospitalServiceSetup";
 // function height() {
@@ -89,6 +90,7 @@ const componts = (selectedLang, breadStyle) => {
       <PhysicianScheduleSetup SelectLanguage={selectedLang} />
     ),
     FrontDeskAr: <FrontDeskAr SelectLanguage={selectedLang} />,
+    OPBillingAr: <OPBillingAr SelectLanguage={selectedLang} />,
     DoctorCommission: <DoctorCommission SelectLanguage={selectedLang} />,
     HospitalServiceSetup: <HospitalServiceSetup SelectLanguage={selectedLang} />
   };
