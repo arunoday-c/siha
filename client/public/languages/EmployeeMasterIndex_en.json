@@ -7,9 +7,11 @@
   "employee_designation_id": "Designation",
   "license_number": "License Number",
   "category_id": "Category",
+  "speciality_id": "Speciality",
 
   "personal_details": "Personal Details",
   "commission_setup": "Commission Setup",
+  "deptuser_details": "Depaetment/User",
 
   "title_id": "Title",
   "arabic_name": "Name in Arabic",
@@ -34,6 +36,9 @@
   "ip_credit_commission_percent": "IP Credit %",
   "services_id": "Service",
   "isdoctor": "Is Doctor",
+  "sub_department_id": "Department",
+  "user_id": "Login User",
+
   "btn_addnew": "Add New",
   "btn_clear": "Clear",
 
