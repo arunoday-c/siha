@@ -97,9 +97,9 @@
     "icon": "fas fa-clipboard-list",
     "subMenu": [
       {
-        "name": "OP Billing",
+        "name": "OP Billing Ar",
         "label": "الفواتير OP",
-        "path": "/OPBilling"
+        "path": "/OPBillingAr"
       },
       {
         "name": "Advance List",

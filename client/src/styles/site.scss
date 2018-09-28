@@ -551,29 +551,6 @@ body {
   }
 }
 
-div[numberbox="true"] {
-  input[type="text"] {
-    text-align: right !important;
-  }
-}
-.DayPickerInput {
-  // z-index: 2 !important;
-
-  input {
-    font: inherit;
-    color: currentColor;
-    border: 0;
-    margin: 0;
-    padding: 6px 0 7px;
-    box-sizing: content-box;
-    background: none;
-    vertical-align: middle;
-    -webkit-tap-highlight-color: transparent;
-    background-color: #fbfbfb;
-    min-width: 100%;
-  }
-}
-
 label {
   margin-bottom: 0px;
   font-size: $fontSize;
@@ -584,12 +561,14 @@ label {
   -webkit-font-smoothing: $webkit-font-smoothing;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="number"] {
   font-size: $textFontSize;
   padding: 4px 6px 4px;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
   background: #fff;
+  width: 100%;
 }
 input[type="color"] {
   font-size: $textFontSize;
@@ -608,6 +587,15 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 input[type="color"]::-webkit-color-swatch {
   border: none;
 }
+
+input.autoselect-input {
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #d3d3d3;
+  font-size: 0.8rem;
+  padding: 5px 5px 4px;
+}
+
 .color-picker-icon {
   position: absolute;
   top: 24px;
@@ -646,88 +634,76 @@ textarea {
    React date picker customizing style
 */
 .algaeh-datePicker {
-  border: 1px solid #d3d3d3;
-  max-width: 100%;
-  border-radius: 4px;
-  .react-date-picker__button {
-    border: none;
-    padding-top: 3px;
-    padding-bottom: 2px;
-  }
-  .react-date-picker {
-    width: 100%;
-    padding-left: 6px;
-  }
-  .react-date-picker__button {
-    width: 100%;
-  }
-  .react-date-picker__button__input {
-    margin-left: 0px;
-    min-width: inherit; //calc(4px + (4px * 3) + 6em + 0.434em);
-    font-size: 0.85rem;
-  }
-  button {
-    margin-left: 0px;
-    padding: 3px 6px !important;
-    svg {
-      height: 16px;
-    }
-  }
-}
+  position: relative;
 
-.mandatory {
-  .algaeh-datePicker {
-    background-color: none;
-    border: 1px solid #d9ae58;
-  }
-  .Select-placeholder {
-    background-color: none;
-    border: none;
-  }
-  .Select-control {
-    border: 1px solid #d9ae58;
-  }
-  input[type="text"] {
-    background-color: none;
-    border: 1px solid #d9ae58;
-  }
-}
-
-.MuiInput-underline-90:before {
-  border: none !important;
-}
-
-input[type="text"]:disabled {
-  background: #f0f0f0;
-  border: 1px solid #d3d3d3;
-  color: #000;
-  font-weight: bold;
-}
-.is-disabled {
-  .Select-control {
+  input[type="date"] {
+    margin: 1px;
+    font-size: 0.8rem;
+    padding: 3px 3px 2px;
+    width: 99%;
+    text-transform: uppercase;
     border: 1px solid #d3d3d3;
-    padding: 0px 10px;
+    border-radius: 4px;
   }
-  .Select-value {
-    background: #f0f0f0;
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    color: rgba(0, 0, 0, 0);
+    opacity: 1;
+    display: block;
+    background: url(../assets/svg/calendar-alt-regular.svg) no-repeat center;
+    width: 18px;
+    height: 15px;
+    border-width: thin;
+    background-size: 60%;
+  }
+
+  input[type="date"]:disabled {
+    background: #fffdfa;
+    border: 1px dashed #d3d3d3;
     color: #000;
     font-weight: bold;
   }
-  .Select-arrow-zone {
-    display: none;
-  }
-  .Select-placeholder {
-    background: #f0f0f0;
+}
+//mandatort fields styles
+.mandatory {
+  input[type="text"],
+  input[type="number"],
+  input.autoselect-input,
+  .algaeh-datePicker input[type="date"] {
+    background-color: none;
+    border: 1px solid #d9ae58;
   }
 }
-.algaeh-datePicker .react-date-picker--disabled {
-  .react-date-picker__button {
-    padding-top: 3px;
-    padding-bottom: 3px;
-    button {
-      display: none;
-    }
+
+.autoselect-Div {
+  position: relative;
+  i {
+    display: none;
   }
+}
+.autoselect-Div:hover {
+  i {
+    display: block;
+    color: #7f8284;
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+}
+//input field disabled style
+input[type="text"]:disabled {
+  background: #fffdfa;
+  border: 1px dashed #d3d3d3;
+  color: #000;
+  font-weight: bold;
+}
+
+input.autoselect-input:disabled {
+  background: #fffdfa;
+  border: 1px dashed #d3d3d3;
+  color: #000;
+  font-weight: bold;
 }
 
 .table-responsive {
@@ -876,13 +852,12 @@ th {
 }
 //Arabic Version
 .algaeh_Arabic_Version {
-
-.tab-container{
-  ul.nav{
-    direction: rtl;
-    padding-right:5px; 
+  .tab-container {
+    ul.nav {
+      direction: rtl;
+      padding-right: 5px;
+    }
   }
-}
 
   h6 {
     text-align: right;
@@ -936,6 +911,12 @@ th {
     text-align: right;
   }
 
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus {
+    outline: none;
+  }
   input[type="text"] {
     font-size: $textFontSize;
     padding: 4px 6px 4px;
@@ -1028,18 +1009,6 @@ th {
   }
 
   .mandatory {
-    .algaeh-datePicker {
-      background-color: none;
-      border: 1px solid #d9ae58;
-    }
-    .Select-placeholder {
-      background-color: none;
-      border: none;
-    }
-    .Select-control {
-      border: 1px solid #d9ae58;
-      direction: rtl;
-    }
     input[type="text"] {
       background-color: none;
       border: 1px solid #d9ae58;
@@ -1056,6 +1025,7 @@ th {
     border: 1px solid #d3d3d3;
     color: #000;
     font-weight: bold;
+    width: 100%;
   }
   .is-disabled {
     .Select-control {
@@ -1081,15 +1051,6 @@ th {
     }
     .Select-placeholder {
       background: #f0f0f0;
-    }
-  }
-  .algaeh-datePicker .react-date-picker--disabled {
-    .react-date-picker__button {
-      padding-top: 3px;
-      padding-bottom: 3px;
-      button {
-        display: none;
-      }
     }
   }
 

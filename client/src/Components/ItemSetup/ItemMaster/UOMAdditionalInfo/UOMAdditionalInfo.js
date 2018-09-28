@@ -52,7 +52,7 @@ class UOMAdditionalInfo extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-display-patient-form">
+            <div className="hptl-phase1-uom-Add-form">
               <div className="row card-deck panel-layout">
                 {/* Patient code */}
                 <div className="col-lg-6 card box-shadow-normal">

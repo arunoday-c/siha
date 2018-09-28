@@ -149,4 +149,22 @@ let getDoctorsCommission = (req, res, next) => {
   }
 };
 
-module.exports = { getDoctorsCommission };
+//created by irfan: to doctorsCommissionCal
+let doctorsCommissionCal = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend([], req.body);
+
+    for (let i = 0; i < input.length; i++) {
+      debugLog(`input:${i}:`, input[i]);
+    }
+    req.records = "result";
+    next();
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { getDoctorsCommission, doctorsCommissionCal };

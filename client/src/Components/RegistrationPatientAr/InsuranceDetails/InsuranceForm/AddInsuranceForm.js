@@ -89,7 +89,7 @@ class AddInsuranceForm extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="htpl-phase1-primary-insurance-form">
+            <div className="htpl-phase1-primary-insurance-form-Ar">
               <div className="col-lg-12">
                 <div className="row">
                   {/* //effective_end_date// */}

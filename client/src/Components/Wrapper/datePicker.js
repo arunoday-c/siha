@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import Label from "../Wrapper/label";
-import DayPickerInput from "react-date-picker";
+//import DayPickerInput from "react-date-picker";
 import "../Wrapper/wrapper.css";
 import { getCookie } from "../../utils/algaehApiCall.js";
 import moment from "moment";
+import config from "../../utils/config.json";
 export default class DateHandler extends Component {
   generateLabel = () => {
     if (this.props.label != null) {
@@ -38,24 +39,55 @@ export default class DateHandler extends Component {
       return true;
     return false;
   }
-  onDayChange = (selected, modifiers) => {
+  onDayChange = e => {
     this.props.events !== undefined &&
     typeof this.props.events.onChange === "function"
-      ? this.props.events.onChange(selected, this.props.textBox.name)
+      ? this.props.events.onChange(
+          moment(e.target.value, config.formators.date)._d,
+          e.target.name
+        )
       : null;
   };
 
   renderDatePicker = () => {
+    const minDate =
+      this.props.minDate !== undefined
+        ? { min: moment(this.props.minDate).format(config.formators.date) }
+        : {};
+    const maxDate =
+      this.props.maxDate !== undefined
+        ? { max: moment(this.props.maxDate).format(config.formators.date) }
+        : {};
+    const value =
+      this.state.value !== undefined ||
+      this.state.value !== null ||
+      this.state.value !== ""
+        ? moment(this.state.value).format(config.formators.date)
+        : this.state.value;
+    const name =
+      this.props.textBox.name !== undefined
+        ? { name: this.props.textBox.name }
+        : {};
     return (
       <div className="algaeh-datePicker">
-        <DayPickerInput
+        <input
+          type="date"
+          value={value}
+          {...name}
+          {...maxDate}
+          {...minDate}
+          disabled={this.props.disabled}
+          onChange={this.onDayChange.bind(this)}
+          {...this.props.textBox.others}
+        />
+        {/* <DayPickerInput
           value={this.state.value}
           onChange={this.onDayChange.bind(this)}
           disabled={this.props.disabled}
           maxDate={this.props.maxDate}
           minDate={this.props.minDate}
           {...this.props.textBox.others}
-        />
+        /> */}
       </div>
     );
   };

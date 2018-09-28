@@ -120,55 +120,6 @@ class DisPatientForm extends Component {
                           : "Mode of Payment"}
                       </h6>
                     </div>
-                    {/* <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
-                      label={{
-                        fieldName: "patient_type"
-                      }}
-                      selector={{
-                        name: "patient_type",
-                        className: "select-fld",
-                        value: this.state.patient_type,
-
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "patitent_type_desc"
-                              : "arabic_patitent_type_desc",
-                          valueField: "hims_d_patient_type_id",
-                          data: this.props.patienttype
-                        },
-                        onChange: texthandle.bind(this, this, context),
-                        others: {
-                          disabled: true
-                        }
-                      }}
-                    /> */}
-                    {/* Mode of payment */}
-                    {/* <AlagehAutoComplete
-                      div={{ className: "col-lg-5" }}
-                      label={{
-                        fieldName: "mode_of_pay",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "mode_of_pay",
-                        className: "select-fld",
-                        value: this.state.mode_of_pay,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "name"
-                              : "arabic_name",
-                          valueField: "value",
-                          data: variableJson.MODE_OF_PAY
-                        },
-                        others: {
-                          disabled: true
-                        },
-                        onChange: null
-                      }}
-                    /> */}
                   </div>
                 </div>
               </div>

@@ -7,9 +7,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import Modal from "@material-ui/core/Modal";
 import {
-  getPhysicalExaminations,
-  getPhysicalExaminationsDetails,
-  getPhysicalExaminationsSubDetails,
+  getAllDepartmentBased,
   getPatientPhysicalExamination
 } from "./ExaminationHandlers";
 import { withRouter } from "react-router-dom";
@@ -27,7 +25,10 @@ class Examination extends Component {
       hims_d_physical_examination_header_id: "",
       hims_d_physical_examination_details_id: "",
       hims_d_physical_examination_subdetails_id: "",
-      examination_comment: ""
+      examination_comment: "",
+      depaertmentBasedSpecility: [],
+      patientPhysicalExamination: [],
+      examType: "G"
     };
     this.handleClose = this.handleClose.bind(this);
   }
@@ -62,9 +63,7 @@ class Examination extends Component {
     });
   }
   componentWillUnmount() {
-    cancelRequest("getPhysicalExamination");
-    cancelRequest("getPhysicalExaminationsDetails");
-    cancelRequest("getPhysicalExaminationsSubDetails");
+    cancelRequest("getAllDepartmentBased");
     cancelRequest("getPatientPhysicalExamination");
   }
 
@@ -75,6 +74,11 @@ class Examination extends Component {
       this.props.all_patient_examinations.length === 0
     )
       getPatientPhysicalExamination(this);
+    else {
+      this.setState({
+        patientPhysicalExamination: this.props.all_patient_examinations
+      });
+    }
   }
 
   refreshState() {
@@ -165,28 +169,47 @@ class Examination extends Component {
   }
 
   openExaminationModal() {
-    getPhysicalExaminations(this);
-    this.setState({ openExamnModal: true });
+    // getPhysicalExaminations(this);
+    if (
+      this.props.allexaminations === undefined ||
+      this.props.allexaminations.length == 0
+    )
+      getAllDepartmentBased(this, detl => {
+        this.setState({
+          depaertmentBasedSpecility: detl,
+          openExamnModal: true
+        });
+      });
+    else {
+      this.setState({
+        depaertmentBasedSpecility: this.props.allexaminations,
+        openExamnModal: true
+      });
+    }
   }
 
   headerDropDownHandle(value) {
     this.setState(
-      { [value.name]: value.value },
-      getPhysicalExaminationsDetails(this, value.value)
+      { [value.name]: value.value }
+      //   getPhysicalExaminationsDetails(this, value.value)
     );
   }
 
   detailDropDownHandle(value) {
     this.setState({ [value.name]: value.value }, () => {
-      getPhysicalExaminationsSubDetails(
-        this,
-        this.state.hims_d_physical_examination_details_id
-      );
+      // getPhysicalExaminationsSubDetails(
+      //   this,
+      //   this.state.hims_d_physical_examination_details_id
+      // );
     });
   }
 
   dropDownHandle(value) {
     this.setState({ [value.name]: value.value });
+  }
+
+  changeGeneralOrSpecific(e) {
+    debugger;
   }
 
   render() {
@@ -203,6 +226,19 @@ class Examination extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-4 popLeftDiv">
+                    <label className="switch">
+                      <input
+                        className="switch-input"
+                        type="checkbox"
+                        onChange={this.changeGeneralOrSpecific.bind(this)}
+                      />
+                      <span
+                        className="switch-label"
+                        data-off="General"
+                        data-on="Specific"
+                      />
+                      <span className="switch-handle" />
+                    </label>
                     <div className="complain-box">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12" }}
@@ -217,10 +253,7 @@ class Examination extends Component {
                           dataSource: {
                             textField: "header_description",
                             valueField: "hims_d_physical_examination_header_id",
-                            data:
-                              this.props.allexaminations !== undefined
-                                ? this.props.allexaminations[0]
-                                : []
+                            data: this.state.depaertmentBasedSpecility
                           },
                           onChange: this.headerDropDownHandle.bind(this)
                         }}
@@ -332,7 +365,7 @@ class Examination extends Component {
                       ]}
                       keyId="hims_f_episode_examination_id"
                       dataSource={{
-                        data: this.props.all_patient_examinations
+                        data: this.state.patientPhysicalExamination
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 5 }}
@@ -459,8 +492,6 @@ class Examination extends Component {
 function mapStateToProps(state) {
   return {
     allexaminations: state.allexaminations,
-    allexaminationsdetails: state.allexaminationsdetails,
-    allexaminationsubdetails: state.allexaminationsubdetails,
     all_patient_examinations: state.all_patient_examinations
   };
 }
@@ -468,10 +499,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPhysicalExaminations: AlgaehActions,
-      getPhysicalExaminationsDetails: AlgaehActions,
-      getPatientPhysicalExamination: AlgaehActions,
-      getPhysicalExaminationsSubDetails: AlgaehActions
+      getAllDepartmentBased: AlgaehActions,
+      getPatientPhysicalExamination: AlgaehActions
     },
     dispatch
   );

@@ -12,7 +12,8 @@ import {
   titlehandle,
   onDrop,
   countryStatehandle,
-  datehandle
+  datehandle,
+  isDoctorChange
 } from "./PersonalDetailsEvents.js";
 import MyContext from "../../../../../utils/MyContext.js";
 import AHSnackbar from "../../../../common/Inputs/AHSnackbar.js";
@@ -30,7 +31,8 @@ class PersonalDetails extends PureComponent {
     super(props);
 
     this.state = {
-      selectedLang: "en"
+      selectedLang: "en",
+      Applicable: false
     };
   }
 
@@ -47,17 +49,6 @@ class PersonalDetails extends PureComponent {
         redux: {
           type: "TITLE_GET_DATA",
           mappingName: "titles"
-        }
-      });
-    }
-
-    if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
-      this.props.getIDTypes({
-        uri: "/identity/get",
-        method: "GET",
-        redux: {
-          type: "IDTYPE_GET_DATA",
-          mappingName: "idtypes"
         }
       });
     }
@@ -145,7 +136,7 @@ class PersonalDetails extends PureComponent {
                         }}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-2 mandatory" }}
+                        div={{ className: "col-lg-3 mandatory" }}
                         label={{
                           fieldName: "title_id",
                           isImp: true
@@ -170,7 +161,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4 mandatory" }}
+                        div={{ className: "col-lg-3 mandatory" }}
                         label={{
                           fieldName: "full_name",
                           isImp: true
@@ -211,7 +202,10 @@ class PersonalDetails extends PureComponent {
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3 mandatory", tabIndex: "5" }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
-                        textBox={{ className: "txt-fld" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "date_of_birth"
+                        }}
                         maxDate={new Date()}
                         events={{
                           onChange: datehandle.bind(this, this, context)
@@ -219,7 +213,7 @@ class PersonalDetails extends PureComponent {
                         value={this.state.date_of_birth}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-2 mandatory" }}
+                        div={{ className: "col-lg-3 mandatory" }}
                         label={{
                           fieldName: "gender",
                           isImp: true
@@ -246,6 +240,25 @@ class PersonalDetails extends PureComponent {
                       <AlagehFormGroup
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
+                          fieldName: "license_number",
+                          isImp: true
+                        }}
+                        textBox={{
+                          value: this.state.license_number,
+                          className: "txt-fld",
+                          name: "license_number",
+
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            tabIndex: "10"
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
                           fieldName: "contact_no",
                           isImp: true
                         }}
@@ -264,6 +277,36 @@ class PersonalDetails extends PureComponent {
                       />
                     </div>
                     <div className="row paddin-bottom-5">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
+                          fieldName: "employee_designation_id",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "employee_designation_id",
+                          className: "select-fld",
+                          value: this.state.employee_designation_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "country_name"
+                                : "arabic_country_name",
+                            valueField: "hims_d_country_id",
+                            data: this.props.countries
+                          },
+                          onChange: countryStatehandle.bind(
+                            this,
+                            this,
+                            context
+                          ),
+                          others: {
+                            disabled: this.state.existingPatient,
+                            tabIndex: "13"
+                          }
+                        }}
+                      />
+
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
@@ -348,6 +391,45 @@ class PersonalDetails extends PureComponent {
                     </div>
 
                     <div className="row paddin-bottom-5">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "services_id"
+                        }}
+                        selector={{
+                          name: "services_id",
+                          className: "select-fld",
+                          value: this.state.services_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "service_name"
+                                : "arabic_service_name",
+                            valueField: "hims_d_services_id",
+                            data: this.props.services
+                          },
+                          others: { disabled: this.state.Billexists },
+                          onChange: texthandle.bind(this, this, context)
+                        }}
+                      />
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "blood_group"
+                        }}
+                        selector={{
+                          name: "blood_group",
+                          className: "select-fld",
+                          value: this.state.blood_group,
+
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: variableJson.FORMAT_BLOOD_GROUP
+                          },
+                          onChange: texthandle.bind(this, this, context)
+                        }}
+                      />
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
@@ -359,57 +441,6 @@ class PersonalDetails extends PureComponent {
                           value: this.state.address,
                           events: {
                             onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            disabled: this.state.existingPatient
-                          }
-                        }}
-                      />
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "visa_type_id"
-                        }}
-                        selector={{
-                          name: "visa_type_id",
-                          className: "select-fld",
-                          value: this.state.visa_type_id,
-
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "visa_type"
-                                : "arabic_visa_type",
-                            valueField: "hims_d_visa_type_id",
-                            data: this.props.visatypes
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            disabled: this.state.existingPatient
-                          }
-                        }}
-                      />
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "visa_type_id"
-                        }}
-                        selector={{
-                          name: "visa_type_id",
-                          className: "select-fld",
-                          value: this.state.visa_type_id,
-
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "visa_type"
-                                : "arabic_visa_type",
-                            valueField: "hims_d_visa_type_id",
-                            data: this.props.visatypes
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            disabled: this.state.existingPatient
                           }
                         }}
                       />
@@ -417,57 +448,46 @@ class PersonalDetails extends PureComponent {
                   </div>
                   <div className="col-lg-4 secondary-details">
                     <div className="row secondary-box-container">
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-6 mandatory" }}
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-8 mandatory" }}
                         label={{
-                          fieldName: "primary_identity_id",
+                          fieldName: "email",
                           isImp: true
                         }}
-                        selector={{
-                          name: "primary_identity_id",
-                          className: "select-fld",
-                          value: this.state.primary_identity_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "identity_document_name"
-                                : "arabic_identity_document_name",
-                            valueField: "hims_d_identity_document_id",
-                            data: this.props.idtypes
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            disabled: this.state.existingPatient,
-                            tabIndex: "14"
+                        textBox={{
+                          value: this.state.email,
+                          className: "txt-fld",
+                          name: "email",
+
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-6 mandatory" }}
-                        label={{
-                          fieldName: "primary_id_no",
-                          isImp: true
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "primary_id_no",
-                          value: this.state.primary_id_no,
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            disabled: this.state.existingPatient,
-                            tabIndex: "15"
-                          }
-                        }}
-                      />
+                      <div
+                        className="col-lg-4 customCheckbox"
+                        style={{ paddingTop: "20px" }}
+                      >
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="isdoctor"
+                            value="Y"
+                            checked={this.state.Applicable}
+                            onChange={isDoctorChange.bind(this, this, context)}
+                          />
+                          <span>
+                            <AlgaehLabel label={{ fieldName: "isdoctor" }} />
+                          </span>
+                        </label>
+                      </div>
                     </div>
                     <div
                       className="row secondary-box-container"
                       style={{ paddingTop: "5px" }}
                     >
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                      <div className="col-lg-6">
                         <div className="image-drop-area">
                           <Dropzone
                             onDrop={onDrop.bind(
@@ -482,10 +502,7 @@ class PersonalDetails extends PureComponent {
                             multiple={false}
                             name="image"
                           >
-                            <img
-                              // className="preview-image"
-                              src={this.state.filePreview}
-                            />
+                            <img src={this.state.filePreview} />
 
                             <div className="attach-design text-center">
                               <AlgaehLabel
@@ -497,39 +514,6 @@ class PersonalDetails extends PureComponent {
                             </div>
                           </Dropzone>
                         </div>
-                        {/* <div>
-                      
-                      </div> */}
-                      </div>
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <div className="image-drop-area">
-                          <Dropzone
-                            className="dropzone"
-                            onDrop={onDrop.bind(
-                              this,
-                              this,
-                              "filePrimaryPreview"
-                            )}
-                            id="attach-primary-id"
-                            accept="image/*"
-                            multiple={false}
-                            name="image"
-                          >
-                            <img
-                              //className="preview-image"
-                              src={this.state.filePrimaryPreview}
-                            />
-                            <div className="attach-design text-center">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "attach_idcard",
-                                  align: ""
-                                }}
-                              />
-                            </div>
-                          </Dropzone>
-                        </div>
-                        <div />
                       </div>
                     </div>
 
@@ -537,56 +521,31 @@ class PersonalDetails extends PureComponent {
                       className="row secondary-box-container"
                       style={{ paddingTop: "10px" }}
                     >
-                      <AlagehAutoComplete
-                        div={{
-                          className: "col-lg-6"
-                        }}
-                        label={{
-                          fieldName: "marital_status",
-                          isImp: false
-                        }}
-                        selector={{
-                          name: "marital_status",
-                          className: "select-fld",
-                          value: this.state.marital_status,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "name"
-                                : "arabic_name",
-                            valueField: "value",
-                            data: variableJson.FORMAT_MARTIALSTS
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            disabled: this.state.existingPatient
-                          }
-                        }}
-                      />
-
-                      <AlagehAutoComplete
+                      <AlgaehDateHandler
                         div={{ className: "col-lg-6" }}
-                        label={{
-                          fieldName: "religion_id",
-                          isImp: false
+                        label={{ fieldName: "date_of_joining", isImp: true }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "date_of_joining"
                         }}
-                        selector={{
-                          name: "religion_id",
-                          className: "select-fld",
-                          value: this.state.religion_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "religion_name"
-                                : "arabic_religion_name",
-                            valueField: "hims_d_religion_id",
-                            data: this.props.relegions
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            disabled: this.state.existingPatient
-                          }
+                        maxDate={new Date()}
+                        events={{
+                          onChange: datehandle.bind(this, this, context)
                         }}
+                        value={this.state.date_of_joining}
+                      />
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-6" }}
+                        label={{ fieldName: "date_of_leaving", isImp: true }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "date_of_leaving"
+                        }}
+                        maxDate={new Date()}
+                        events={{
+                          onChange: datehandle.bind(this, this, context)
+                        }}
+                        value={this.state.date_of_leaving}
                       />
                     </div>
                   </div>
@@ -608,16 +567,11 @@ class PersonalDetails extends PureComponent {
 function mapStateToProps(state) {
   return {
     titles: state.titles,
-    nationalities: state.nationalities,
-    idtypes: state.idtypes,
-    relegions: state.relegions,
     cities: state.cities,
     countries: state.countries,
     countrystates: state.countrystates,
     patients: state.patients,
-    visatypes: state.visatypes,
-    patienttype: state.patienttype,
-    hospitaldetails: state.hospitaldetails
+    services: state.services
   };
 }
 
@@ -625,15 +579,10 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getTitles: AlgaehActions,
-      getNationalities: AlgaehActions,
-      getIDTypes: AlgaehActions,
-      getRelegion: AlgaehActions,
       getCities: AlgaehActions,
       getCountries: AlgaehActions,
       getStates: AlgaehActions,
-      getVisatypes: AlgaehActions,
-      getPatientType: AlgaehActions,
-      getHospitalDetails: AlgaehActions
+      getServices: AlgaehActions
     },
     dispatch
   );

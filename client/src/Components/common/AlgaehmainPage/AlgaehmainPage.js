@@ -134,33 +134,40 @@ class PersistentDrawer extends React.Component {
       renderComp = renderComp.substring(0, renderComp.length - 2);
     }
     if (secLang === "en") {
-      this.setState({
-        languageName: "English",
-        Language: "en",
-        title: this.state.enlabl
-      });
+      setCookie("ScreenName", renderComp, 30);
+      this.setState(
+        {
+          languageName: "English",
+          Language: "en",
+          title: this.state.enlabl,
+          renderComponent: ""
+        },
+        () => {
+          debugger;
+          this.setState({
+            renderComponent: renderComp
+          });
+        }
+      );
     } else if (secLang === "ar") {
-      this.setState({
-        languageName: "عربي",
-        Language: "ar",
-        title: this.state.arlabl
-      });
-
-      if (renderComp === "FrontDesk") {
+      if (renderComp === "FrontDesk" || renderComp === "OPBilling") {
         renderComp = renderComp + "Ar";
       }
+      setCookie("ScreenName", renderComp, 30);
+      this.setState(
+        {
+          languageName: "عربي",
+          Language: "ar",
+          title: this.state.arlabl,
+          renderComponent: ""
+        },
+        () => {
+          this.setState({
+            renderComponent: renderComp
+          });
+        }
+      );
     }
-
-    this.setState(
-      {
-        renderComponent: ""
-      },
-      () => {
-        this.setState({
-          renderComponent: renderComp
-        });
-      }
-    );
   }
 
   handleOpenClick = event => {
