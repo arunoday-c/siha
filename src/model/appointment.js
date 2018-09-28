@@ -476,7 +476,7 @@ let addAppointmentScheduleDUMMY = (req, res, next) => {
 };
 
 //created by irfan: to add appointment schedule
-let addAppointmentSchedule = (req, res, next) => {
+let addDoctorsSchedule = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -497,13 +497,12 @@ let addAppointmentSchedule = (req, res, next) => {
         }
 
         connection.query(
-          "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id,schedule_status,schedule_description,`month`,`year`,\
+          "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id,schedule_description,`month`,`year`,\
           from_work_hr,to_work_hr,work_break1,from_break_hr1,to_break_hr1,work_break2,from_break_hr2,to_break_hr2,monday,tuesday,wednesday,\
           thursday,friday,saturday,sunday,created_by,created_date,updated_by,updated_date)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.sub_dept_id,
-            input.schedule_status,
             input.schedule_description,
             input.month,
             input.year,
@@ -535,72 +534,95 @@ let addAppointmentSchedule = (req, res, next) => {
               });
             }
 
+            let working_days = [];
+
+            let inputDays = [
+              req.body.sunday,
+              req.body.monday,
+              req.body.tuesday,
+              req.body.wednesday,
+              req.body.thursday,
+              req.body.friday,
+              req.body.saturday
+            ];
+
+            for (let d = 0; d < 7; d++) {
+              if (inputDays[d] == "Y") {
+                working_days.push(d);
+              }
+            }
+
             let daylist = getDaysArray(
               new Date(input.from_date),
-              new Date(input.to_date)
+              new Date(input.to_date),
+              working_days
             );
             daylist.map(v => v.toLocaleString());
             //.slice(0, 10)).join("");
 
             debugLog("daylist:", daylist.length);
+            if (input.schedule_detail.length != 0) {
+              if (result.insertId != null) {
+                for (let doc = 0; doc < input.schedule_detail.length; doc++) {
+                  let doctorSchedule = [];
 
-            if (result.insertId != null) {
-              for (let doc = 0; doc < input.schedule_detail.length; doc++) {
-                let doctorSchedule = [];
-                for (let i = 0; i < daylist.length; i++) {
-                  doctorSchedule.push({
-                    ...input.schedule_detail[0],
-                    ...{ schedule_date: daylist[i] }
-                  });
-                }
+                  for (let i = 0; i < daylist.length; i++) {
+                    doctorSchedule.push({
+                      ...input.schedule_detail[doc],
+                      ...{ schedule_date: daylist[i] }
+                    });
+                  }
 
-                debugLog("doctorSchedule month:", doctorSchedule);
-                const insurtColumns = [
-                  "provider_id",
-                  "clinic_id",
-                  "slot",
-                  "schedule_date",
-                  "created_by",
-                  "updated_by"
-                ];
+                  const insurtColumns = [
+                    "provider_id",
+                    "clinic_id",
+                    "slot",
+                    "schedule_date",
+                    "created_by",
+                    "updated_by"
+                  ];
 
-                connection.query(
-                  "INSERT INTO hims_d_appointment_schedule_detail(" +
-                    insurtColumns.join(",") +
-                    ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?",
-                  [
-                    jsonArrayToObject({
-                      sampleInputObject: insurtColumns,
-                      arrayObj: doctorSchedule,
-                      newFieldToInsert: [
-                        result.insertId,
-                        new Date(),
-                        new Date()
-                      ],
-                      req: req
-                    })
-                  ],
-                  (error, schedule_detailResult) => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
-                    }
-
-                    connection.commit(error => {
+                  connection.query(
+                    "INSERT INTO hims_d_appointment_schedule_detail(" +
+                      insurtColumns.join(",") +
+                      ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?",
+                    [
+                      jsonArrayToObject({
+                        sampleInputObject: insurtColumns,
+                        arrayObj: doctorSchedule,
+                        newFieldToInsert: [
+                          result.insertId,
+                          new Date(),
+                          new Date()
+                        ],
+                        req: req
+                      })
+                    ],
+                    (error, schedule_detailResult) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
                           next(error);
                         });
                       }
-                      req.records = schedule_detailResult;
-                      next();
-                    });
-                  }
-                );
+
+                      connection.commit(error => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        req.records = schedule_detailResult;
+                        next();
+                      });
+                    }
+                  );
+                }
               }
+            } else {
+              req.records = { message: "please select doctors" };
+              next();
             }
           }
         );
@@ -611,6 +633,19 @@ let addAppointmentSchedule = (req, res, next) => {
   }
 };
 
+//[0,1,2,3,4,5,6]
+function getDaysArray(start, end, days) {
+  for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
+    const dat = new Date(dt);
+    const day = new Date(dat).getDay();
+
+    if (days.indexOf(day) > -1) {
+      arr.push(dat);
+    }
+  }
+  debugLog("day:", arr);
+  return arr;
+}
 //created by irfan: to add appointment leave
 let addLeaveOrModifySchedule = (req, res, next) => {
   try {
@@ -733,12 +768,6 @@ let getAppointmentSchedule = (req, res, next) => {
   }
 };
 
-function getDaysArray(start, end) {
-  for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
-    arr.push(new Date(dt));
-  }
-  return arr;
-}
 module.exports = {
   addAppointmentStatus,
   addAppointmentRoom,
@@ -749,7 +778,7 @@ module.exports = {
   updateAppointmentStatus,
   updateAppointmentRoom,
   updateAppointmentClinic,
-  addAppointmentSchedule,
+  addDoctorsSchedule,
   getAppointmentSchedule,
   addLeaveOrModifySchedule
 };

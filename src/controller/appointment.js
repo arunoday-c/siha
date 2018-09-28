@@ -12,7 +12,7 @@ import {
   updateAppointmentStatus,
   updateAppointmentRoom,
   updateAppointmentClinic,
-  addAppointmentSchedule,
+  addDoctorsSchedule,
   getAppointmentSchedule,
   addLeaveOrModifySchedule
 } from "../model/appointment";
@@ -157,8 +157,8 @@ export default ({ config, db }) => {
 
   // created by irfan :to add Appointment schedule
   api.post(
-    "/addAppointmentSchedule",
-    addAppointmentSchedule,
+    "/addDoctorsSchedule",
+    addDoctorsSchedule,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
