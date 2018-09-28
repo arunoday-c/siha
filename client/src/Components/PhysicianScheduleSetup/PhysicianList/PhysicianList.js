@@ -12,6 +12,7 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 import moment from "moment";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
+import MyContext from "../../../utils/MyContext.js";
 
 const provider_array = [];
 
@@ -55,12 +56,17 @@ class PhysicianList extends Component {
     this.setState({ openModal: false });
   }
 
-  deptDropDownHandler(value) {
+  deptDropDownHandler(context, value) {
+    debugger;
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
         .where(w => w.sub_department_id === this.state.sub_department_id)
         .firstOrDefault();
       this.setState({ doctors: dept.doctors });
+
+      if (context !== null) {
+        context.updateState({ doctors: dept.doctors });
+      }
     });
   }
 
@@ -121,6 +127,7 @@ class PhysicianList extends Component {
           }
         },
         onFailure: error => {
+          AlgaehLoader({ show: false });
           swal(error.message, {
             buttons: false,
             icon: "error",
@@ -280,53 +287,58 @@ class PhysicianList extends Component {
         {/* End of Modal */}
 
         <div className="col-lg-12">
-          <div className="row">
-            <div className="col portlet portlet-bordered box-shadow-normal">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Physician List</h3>
-                </div>
-                <div className="actions">
-                  <a
-                    className="btn btn-primary btn-circle active"
-                    //onClick={this.addAllergies}
-                  >
-                    <i className="fas fa-trash" />
-                  </a>
-                  <a
-                    className="btn btn-primary btn-circle active"
-                    onClick={() => {
-                      this.setState({ openModal: true });
-                    }}
-                  >
-                    <i className="fas fa-edit" />
-                  </a>
-                </div>
-              </div>
+          <MyContext.Consumer>
+            {context => (
+              <div className="row">
+                <div className="col portlet portlet-bordered box-shadow-normal">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Physician List</h3>
+                    </div>
+                    <div className="actions">
+                      <a
+                        className="btn btn-primary btn-circle active"
+                        //onClick={this.addAllergies}
+                      >
+                        <i className="fas fa-trash" />
+                      </a>
+                      <a
+                        className="btn btn-primary btn-circle active"
+                        onClick={() => {
+                          this.setState({ openModal: true });
+                        }}
+                      >
+                        <i className="fas fa-edit" />
+                      </a>
+                    </div>
+                  </div>
 
-              <div className="portlet-body">
-                <div className="col-lg-12 card box-shadow-normal">
-                  <div className="row ">
-                    <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
-                      label={{
-                        fieldName: "department_name"
-                      }}
-                      selector={{
-                        name: "sub_department_id",
-                        className: "select-fld",
-                        value: this.state.sub_department_id,
-                        dataSource: {
-                          textField: "sub_department_name",
-                          valueField: "sub_department_id",
-                          data: this.state.departments
-                        },
-                        onChange: this.deptDropDownHandler.bind(this)
-                      }}
-                      error={this.state.department_error}
-                      helperText={this.state.department_error_text}
-                    />
-                    {/* <AlgaehDateHandler
+                  <div className="portlet-body">
+                    <div className="col-lg-12 card box-shadow-normal">
+                      <div className="row ">
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            fieldName: "department_name"
+                          }}
+                          selector={{
+                            name: "sub_department_id",
+                            className: "select-fld",
+                            value: this.state.sub_department_id,
+                            dataSource: {
+                              textField: "sub_department_name",
+                              valueField: "sub_department_id",
+                              data: this.state.departments
+                            },
+                            onChange: this.deptDropDownHandler.bind(
+                              this,
+                              context
+                            )
+                          }}
+                          error={this.state.department_error}
+                          helperText={this.state.department_error_text}
+                        />
+                        {/* <AlgaehDateHandler
                       div={{ className: "col-lg-3" }}
                       label={{ forceLabel: "Selected From Date", isImp: true }}
                       textBox={{
@@ -357,113 +369,115 @@ class PhysicianList extends Component {
                     />
                   */}
 
-                    <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
-                      label={{
-                        forceLabel: "Select Month"
-                      }}
-                      selector={{
-                        name: "month",
-                        className: "select-fld",
-                        value: this.state.month,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: GlobalVariables.MONTHS
-                        },
-                        onChange: this.dropDownHandler.bind(this)
-                      }}
-                    />
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            forceLabel: "Select Month"
+                          }}
+                          selector={{
+                            name: "month",
+                            className: "select-fld",
+                            value: this.state.month,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.MONTHS
+                            },
+                            onChange: this.dropDownHandler.bind(this)
+                          }}
+                        />
 
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      label={{
-                        forceLabel: "Year",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "year",
-                        value: this.state.year,
-                        events: {
-                          onChange: this.textHandler.bind(this)
-                        },
-                        others: {
-                          type: "number"
-                        }
-                      }}
-                    />
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            forceLabel: "Year",
+                            isImp: true
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "year",
+                            value: this.state.year,
+                            events: {
+                              onChange: this.textHandler.bind(this)
+                            },
+                            others: {
+                              type: "number"
+                            }
+                          }}
+                        />
 
-                    <div className="col-lg-1 form-group margin-top-15">
-                      <span
-                        style={{ cursor: "pointer" }}
-                        onClick={this.getApptSchedule.bind(this)}
-                        className="fas fa-search fa-2x"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <table className="table table-striped table-bordered table-hover table-sm">
-                  <thead>
-                    <tr>
-                      <th scope="col" />
-                      <th scope="col">Physician Name</th>
-                      <th scope="col">Selected Dates</th>
-                      <th scope="col">Work Hours</th>
-                      <th scope="col">Working Break 1</th>
-                      <th scope="col">Working Break 2</th>
-                      <th scope="col">Working Days</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.state.scheduleList.map((row, index) => (
-                      <tr key={index}>
-                        <th scope="row">
-                          <input
-                            type="checkbox"
-                            id={row.provider_id}
-                            row={JSON.stringify(row)}
-                            onChange={this.checkHandle.bind(this)}
+                        <div className="col-lg-1 form-group margin-top-15">
+                          <span
+                            style={{ cursor: "pointer" }}
+                            onClick={this.getApptSchedule.bind(this)}
+                            className="fas fa-search fa-2x"
                           />
-                        </th>
-                        <td>{row.first_name + " " + row.last_name}</td>
-                        <td>
-                          {moment(row.from_date).format("DD-MM-YYYY") +
-                            " to " +
-                            moment(row.to_date).format("DD-MM-YYYY")}{" "}
-                        </td>
-                        <td>
-                          {moment(row.from_work_hr, "HH:mm:ss").format(
-                            "HH:mm a"
-                          ) +
-                            " to " +
-                            moment(row.to_break_hr1, "HH:mm:ss").format(
-                              "HH:mm a"
-                            )}{" "}
-                        </td>
-                        <td>
-                          {row.from_break_hr2 !== null
-                            ? row.from_break_hr2
-                            : "---" + " to " + row.to_break_hr2 !== null
-                              ? row.to_break_hr2
-                              : "---"}
-                        </td>
-                        <td />
-                        <td />
-                        {/* <td>{row.from_break_hr2 + ""+ row.to_break_hr2} </td> */}
+                        </div>
+                      </div>
+                    </div>
 
-                        {/* <td>--/--/---- - --/--/----</td>
+                    <table className="table table-striped table-bordered table-hover table-sm">
+                      <thead>
+                        <tr>
+                          <th scope="col" />
+                          <th scope="col">Physician Name</th>
+                          <th scope="col">Selected Dates</th>
+                          <th scope="col">Work Hours</th>
+                          <th scope="col">Working Break 1</th>
+                          <th scope="col">Working Break 2</th>
+                          <th scope="col">Working Days</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {this.state.scheduleList.map((row, index) => (
+                          <tr key={index}>
+                            <th scope="row">
+                              <input
+                                type="checkbox"
+                                id={row.provider_id}
+                                row={JSON.stringify(row)}
+                                onChange={this.checkHandle.bind(this)}
+                              />
+                            </th>
+                            <td>{row.first_name + " " + row.last_name}</td>
+                            <td>
+                              {moment(row.from_date).format("DD-MM-YYYY") +
+                                " to " +
+                                moment(row.to_date).format("DD-MM-YYYY")}{" "}
+                            </td>
+                            <td>
+                              {moment(row.from_work_hr, "HH:mm:ss").format(
+                                "HH:mm a"
+                              ) +
+                                " to " +
+                                moment(row.to_break_hr1, "HH:mm:ss").format(
+                                  "HH:mm a"
+                                )}{" "}
+                            </td>
+                            <td>
+                              {row.from_break_hr2 !== null
+                                ? row.from_break_hr2
+                                : "---" + " to " + row.to_break_hr2 !== null
+                                  ? row.to_break_hr2
+                                  : "---"}
+                            </td>
+                            <td />
+                            <td />
+                            {/* <td>{row.from_break_hr2 + ""+ row.to_break_hr2} </td> */}
+
+                            {/* <td>--/--/---- - --/--/----</td>
                         <td>00:00 AM to 00:00 AM</td>
                         <td>00:00 AM to 00:00 AM</td>
                         <td>00:00 AM to 00:00 AM</td> */}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            )}
+          </MyContext.Consumer>
         </div>
       </div>
     );

@@ -41,36 +41,6 @@
   .displayInlineBlock {
     display: inline-block;
   }
-  .bordered-layout {
-    border: 1px solid #c1c1c1;
-    min-height: 70px;
-    max-height: 150px;
-    overflow: auto;
-    border-radius: 0 0 5px 5px;
-
-    ul {
-      margin: 0px;
-      padding: 0px;
-
-      li {
-        cursor: pointer;
-        list-style: none;
-        margin: 0px;
-        padding: 5px;
-        font-size: 0.85rem;
-      }
-      li:nth-child(odd) {
-        background: #f2f2f2;
-      }
-      li:nth-child(even) {
-        background: #ffffff;
-      }
-      li:nth-child(odd):hover,
-      li:nth-child(even):hover {
-        background: #eafffd;
-      }
-    }
-  }
 }
 
 .durationCntr {

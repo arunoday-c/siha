@@ -350,6 +350,10 @@
     { "name": "CLINICAL", "value": "CLINICAL" },
     { "name": "NON-CLINICAL", "value": "NON-CLINICAL" }
   ],
+  "SERVICE_COMMISSION": [
+    { "name": "All Service Type", "value": "AS" },
+    { "name": "Selected Service Type", "value": "SS" }
+  ],
   "MONTHS": [
     { "name": "January", "value": "1" },
     { "name": "February", "value": "2" },
@@ -363,5 +367,9 @@
     { "name": "October", "value": "10" },
     { "name": "November", "value": "11" },
     { "name": "December", "value": "12" }
+  ],
+  "CASE_TYPE": [
+    { "name": "OP", "value": "OP" },
+    { "name": "IP", "value": "IP" }
   ]
 }

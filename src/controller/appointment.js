@@ -13,7 +13,8 @@ import {
   updateAppointmentRoom,
   updateAppointmentClinic,
   addAppointmentSchedule,
-  getAppointmentSchedule
+  getAppointmentSchedule,
+  addLeaveOrModifySchedule
 } from "../model/appointment";
 
 export default ({ config, db }) => {
@@ -184,5 +185,19 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan :to addLeaveOrModifySchedule
+  api.post(
+    "/addLeaveOrModifySchedule",
+    addLeaveOrModifySchedule,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };

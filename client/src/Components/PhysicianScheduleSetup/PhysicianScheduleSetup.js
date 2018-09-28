@@ -6,6 +6,8 @@ import AlgaehReport from "../Wrapper/printReports";
 import AppBar from "@material-ui/core/AppBar";
 import PhysicianList from "./PhysicianList/PhysicianList";
 import Scheduler from "./Scheduler/Scheduler";
+import MyContext from "../../utils/MyContext.js";
+import PhySchSetup from "./PhySchSetup";
 
 class PhysicianScheduleSetup extends Component {
   constructor(props) {
@@ -95,14 +97,22 @@ class PhysicianScheduleSetup extends Component {
             ]
           }}
         />
-
-        <div className="spacing-push">
-          <PhysicianList doctors={this.state.doctors} />
-        </div>
-        <div className="margin-top-15">
-          <Scheduler />
-        </div>
-
+        {/* <MyContext.Provider
+          value={{
+            state: this.state,
+            updateState: obj => {
+              debugger;
+              this.setState({ ...obj });
+            }
+          }}
+        >
+          <div className="spacing-push">
+            <PhysicianList />
+          </div>
+          <div className="margin-top-15">
+            <Scheduler />
+          </div>
+        </MyContext.Provider>
         <div className="hptl-phase1-footer">
           <AppBar position="static" className="main">
             <div className="row">
@@ -117,6 +127,10 @@ class PhysicianScheduleSetup extends Component {
               </div>
             </div>
           </AppBar>
+        </div> */}
+        <div className="spacing-push">
+          {" "}
+          <PhySchSetup />
         </div>
       </div>
     );

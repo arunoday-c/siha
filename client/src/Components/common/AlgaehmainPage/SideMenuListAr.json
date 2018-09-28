@@ -8,6 +8,12 @@
         "name": "Dashboard",
         "label": "لوحة القيادة",
         "path": "/Dashboard"
+      },
+
+      {
+        "name": "Doctor Commission",
+        "label": "عمولة طبيب",
+        "path": "/DoctorCommission"
       }
     ]
   },
@@ -50,6 +56,11 @@
         "name": "Item Setup",
         "label": "إعداد العنصر",
         "path": "/ItemSetup"
+      },
+      {
+        "name": "Hospital Service Setup",
+        "label": "إعداد خدمة المستشفى",
+        "path": "/HospitalServiceSetup"
       }
     ]
   },

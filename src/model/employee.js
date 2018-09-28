@@ -135,26 +135,7 @@ let getEmployee = (req, res, next) => {
       {
         db: req.db,
         query:
-          "SELECT hims_d_employee_id \
-        ,employee_code            	\
-        ,first_name               	\
-        ,middle_name              	\
-        ,last_name                	\
-        ,arabic_name \
-        ,sex                      	\
-        ,date_of_birth            	\
-        ,date_of_joining          	\
-        ,date_of_leaving          	\
-        ,address                  	\
-        ,primary_contact_no       	\
-        ,secondary_contact_no     	\
-        ,email                    	\
-        ,emergancy_contact_person 	\
-        ,emergancy_contact_no     	\
-        ,blood_group              	\
-        ,employee_status          	\
-        ,effective_start_date     	\
-        ,effective_end_date,CONCAT(first_name ,' ', middle_name,' ' ,last_name )as full_name FROM hims_d_employee WHERE record_status ='A' AND " +
+          "SELECT * FROM hims_d_employee WHERE record_status ='A' AND " +
           condition.condition +
           " " +
           pagePaging,
