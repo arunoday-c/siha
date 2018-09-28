@@ -497,13 +497,13 @@ let addAppointmentSchedule = (req, res, next) => {
         }
 
         connection.query(
-          "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id,schedule_status,schedule_description,`month`,`year`,\
+          "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id,schedule_description,`month`,`year`,\
           from_work_hr,to_work_hr,work_break1,from_break_hr1,to_break_hr1,work_break2,from_break_hr2,to_break_hr2,monday,tuesday,wednesday,\
           thursday,friday,saturday,sunday,created_by,created_date,updated_by,updated_date)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.sub_dept_id,
-            input.schedule_status,
+
             input.schedule_description,
             input.month,
             input.year,
@@ -535,9 +535,30 @@ let addAppointmentSchedule = (req, res, next) => {
               });
             }
 
+            let working_days = [];
+
+            let inputDays = [
+              req.body.sunday,
+              req.body.monday,
+              req.body.tuesday,
+              req.body.wednesday,
+              req.body.thursday,
+              req.body.friday,
+              req.body.saturday
+            ];
+
+            for (let d = 0; d < 7; d++) {
+              if (inputDays[d] == "Y") {
+                working_days.push(d);
+              }
+            }
+
+            debugLog("working_days:", working_days);
+
             let daylist = getDaysArray(
               new Date(input.from_date),
-              new Date(input.to_date)
+              new Date(input.to_date),
+              working_days
             );
             daylist.map(v => v.toLocaleString());
             //.slice(0, 10)).join("");
@@ -549,7 +570,7 @@ let addAppointmentSchedule = (req, res, next) => {
                 let doctorSchedule = [];
                 for (let i = 0; i < daylist.length; i++) {
                   doctorSchedule.push({
-                    ...input.schedule_detail[0],
+                    ...input.schedule_detail[doc],
                     ...{ schedule_date: daylist[i] }
                   });
                 }
@@ -611,6 +632,19 @@ let addAppointmentSchedule = (req, res, next) => {
   }
 };
 
+//[0,1,2,3,4,5,6]
+function getDaysArray(start, end, days) {
+  for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
+    const dat = new Date(dt);
+    const day = new Date(dat).getDay();
+
+    if (days.indexOf(day) > -1) {
+      arr.push(dat);
+    }
+  }
+  debugLog("day:", arr);
+  return arr;
+}
 //created by irfan: to add appointment leave
 let addLeaveOrModifySchedule = (req, res, next) => {
   try {
@@ -733,12 +767,6 @@ let getAppointmentSchedule = (req, res, next) => {
   }
 };
 
-function getDaysArray(start, end) {
-  for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
-    arr.push(new Date(dt));
-  }
-  return arr;
-}
 module.exports = {
   addAppointmentStatus,
   addAppointmentRoom,
