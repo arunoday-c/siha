@@ -91,6 +91,7 @@ class PhySchSetup extends Component {
       from_break_hr2: "",
       to_break_hr2: ""
     });
+    provider_array.length = 0;
   }
 
   checkHandle(e) {
@@ -125,6 +126,10 @@ class PhySchSetup extends Component {
         description_error: true,
         description_error_text: "Please Enter the Description"
       });
+    } else if (provider_array.length === 0) {
+      swal("Please Select Doctors to add to this schedule", {
+        icon: "warning"
+      });
     } else {
       const myObj = {};
       myObj.sub_dept_id = this.state.sub_department_id;
@@ -156,10 +161,10 @@ class PhySchSetup extends Component {
       myObj.schedule_detail = provider_array;
 
       this.setState({ send_obj: myObj }, () => {
-        console.log("ABC:", this.state.send_obj);
+        console.log("ABC:", JSON.stringify(this.state.send_obj));
 
         algaehApiCall({
-          uri: "/appointment/addAppointmentSchedule",
+          uri: "/appointment/addDoctorsSchedule",
           methid: "POST",
           data: this.state.send_obj,
           onSuccess: response => {
@@ -315,10 +320,13 @@ class PhySchSetup extends Component {
 
   componentDidMount() {
     this.getDoctorsAndDepts();
+    console.log("Provider Array:", provider_array);
   }
 
   handleClose() {
     this.setState({ openScheduler: false, openModifier: false });
+    provider_array.length = 0;
+    console.log("Provider Array:", provider_array);
   }
 
   render() {
@@ -1047,7 +1055,7 @@ class PhySchSetup extends Component {
                             textBox={{
                               className: "txt-fld",
                               name: "from_work_hr",
-                              value: this.state.from_time,
+                              value: this.state.from_work_hr,
                               events: {
                                 onChange: this.changeTexts.bind(this)
                               },
@@ -1068,7 +1076,7 @@ class PhySchSetup extends Component {
                             textBox={{
                               className: "txt-fld",
                               name: "to_work_hr",
-                              value: this.state.to_time,
+                              value: this.state.to_work_hr,
                               events: {
                                 onChange: this.changeTexts.bind(this)
                               },
