@@ -3,6 +3,10 @@ import "./appointment.css";
 import moment from "moment";
 import { AlagehAutoComplete, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import Modal from "@material-ui/core/Modal";
+import { algaehApiCall } from "../../utils/algaehApiCall";
+import swal from "sweetalert";
+import Enumerable from "linq";
+
 class Appointment extends Component {
   constructor(props) {
     super(props);
@@ -11,8 +15,35 @@ class Appointment extends Component {
       selectedHDate: moment(dateToday, "YYYYMMDD")._d,
       fromDate: new Date(),
       toDate: new Date(),
-      showApt: false
+      showApt: false,
+      departments: [],
+      doctors: []
     };
+  }
+
+  componentDidMount() {
+    this.getDoctorsAndDepts();
+  }
+
+  getDoctorsAndDepts() {
+    algaehApiCall({
+      uri: "/department/selectDoctorsAndClinic",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            departments: response.data.records.departmets
+          });
+        }
+      },
+      onFailure: error => {
+        swal(error.message, {
+          buttons: false,
+          icon: "error",
+          timer: 2000
+        });
+      }
+    });
   }
 
   onSelectedDateHandler(e) {
@@ -25,6 +56,21 @@ class Appointment extends Component {
   monthChangeHandler(e) {
     let dt = moment(e.target.value + "-01", "YYYY-MM-DD")._d;
     this.setState({ selectedHDate: dt, activeDateHeader: dt });
+  }
+
+  deptDropDownHandler(value) {
+    this.setState({ [value.name]: value.value }, () => {
+      let dept = Enumerable.from(this.state.departments)
+        .where(w => w.sub_dept_id === this.state.sub_department_id)
+        .firstOrDefault();
+      this.setState({ doctors: dept.doctors }, () => {
+        console.log("Docs", this.state.doctors);
+      });
+    });
+  }
+
+  dropDownHandle(value) {
+    this.setState({ [value.name]: value.value });
   }
 
   handleClose() {
@@ -201,6 +247,7 @@ class Appointment extends Component {
           </div>
         </Modal>
         {/* Pop up end */}
+
         {/* Calendar Component Starts */}
         <div className="row">
           <div className="my-calendar col-lg-12">
@@ -220,24 +267,26 @@ class Appointment extends Component {
         {/* Calendar Component Ends */}
 
         <div className="col-lg-12 card box-shadow-normal margin-top-15">
+          {/* Filter Bar Start */}
           <div className="row" style={{ padding: "10px" }}>
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{
-                forceLabel: "Select Dept."
+                fieldName: "department_name"
               }}
               selector={{
-                name: "dept",
+                name: "sub_department_id",
                 className: "select-fld",
-                //value: this.state.consultation,
+                value: this.state.sub_department_id,
                 dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: []
+                  textField: "sub_department_name",
+                  valueField: "sub_dept_id",
+                  data: this.state.departments
                 },
-                //onChange: this.changeTexts.bind(this)
-                onChange: () => {}
+                onChange: this.deptDropDownHandler.bind(this)
               }}
+              error={this.state.department_error}
+              helperText={this.state.department_error_text}
             />
 
             <AlagehAutoComplete
@@ -246,185 +295,48 @@ class Appointment extends Component {
                 forceLabel: "Filter by Doctor"
               }}
               selector={{
-                name: "doc",
+                name: "provider_id",
                 className: "select-fld",
-                //value: this.state.consultation,
+                value: this.state.provider_id,
                 dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: []
+                  textField: "full_name",
+                  valueField: "provider_id",
+                  data: this.state.doctors
                 },
-                //onChange: this.changeTexts.bind(this)
-                onChange: () => {}
+                onChange: this.dropDownHandle.bind(this)
               }}
             />
+
+            <div className="col-lg-1 form-group margin-top-15">
+              <span
+                style={{ cursor: "pointer" }}
+                className="fas fa-search fa-2x"
+              />
+            </div>
           </div>
+          {/* Filter Bar End */}
         </div>
-
+        {/* Table Start */}
         <div className="col-lg-12 card box-shadow-normal">
-          {/* <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>
-                  <i className="far fa-clock" />
-                </th>
-                <th>Dr. Norman John</th>
-                <th>Dr. Norman John</th>
-                <th>Dr. Norman John</th>
-                <th>Dr. Norman John</th>
-                <th>Dr. Norman John</th>
-                <th>Dr. Norman John</th>
-                <th>Dr. Norman John</th>
-              </tr>
-              <tr>
-                <th>Booked</th>
-                <th>Standby</th>
-                <th>Booked</th>
-                <th>Standby</th>
-                <th>Booked</th>
-                <th>Standby</th>
-                <th>Booked</th>
-                <th>Standby</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td scope="row">09:00 AM</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>mdo</td>
-                <td>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td>Otto</td>
-                <td>mdo</td>
-                <td>mdo</td>
-              </tr>
-              <tr>
-                <td scope="row">09:15 AM</td>
-                <td>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td>Thornton</td>
-                <td>fat</td>
-                <td>Jacob</td>
-                <td>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td>fat</td>
-                <td>fat</td>
-              </tr>
-              <tr>
-                <td scope="row">09:30 AM</td>
-                <td>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td>Thornton</td>
-                <td>fat</td>
-                <td>Jacob</td>
-                <td>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td>fat</td>
-                <td>fat</td>
-              </tr>
-              <tr>
-                <td scope="row">09:45 AM</td>
-                <td>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td>Thornton</td>
-                <td>fat</td>
-                <td>Jacob</td>
-                <td>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td>fat</td>
-                <td>fat</td>
-              </tr>
-              <tr>
-                <td scope="row">10:00 AM</td>
-                <td>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td>Thornton</td>
-                <td>fat</td>
-                <td>Jacob</td>
-                <td>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td>fat</td>
-                <td>fat</td>
-              </tr>
-              <tr>
-                <td scope="row">10:15 AM</td>
-                <td>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td>Thornton</td>
-                <td>fat</td>
-                <td>Jacob</td>
-                <td>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td>fat</td>
-                <td>fat</td>
-              </tr>
-            </tbody>
-          </table> */}
-
           <table className="tg">
             <tr>
               <th className="tg-c3ow">Time</th>
-              <th className="tg-amwm" colspan="2">
+              <th className="tg-amwm" colSpan="2">
                 Dr. Norman John
               </th>
-              <th className="tg-amwm" colspan="2">
+              <th className="tg-amwm" colSpan="2">
                 Dr. Norman John
               </th>
-              <th className="tg-amwm" colspan="2">
+              <th className="tg-amwm" colSpan="2">
                 Dr. Norman John
               </th>
-              <th className="tg-amwm" colspan="2">
+              <th className="tg-amwm" colSpan="2">
                 Dr. Norman John
               </th>
-              <th className="tg-amwm" colspan="2">
+              <th className="tg-amwm" colSpan="2">
                 Dr. Norman John
               </th>
-              <th className="tg-amwm" colspan="2">
+              <th className="tg-amwm" colSpan="2">
                 Dr. Norman John
               </th>
             </tr>
@@ -703,6 +615,7 @@ class Appointment extends Component {
             </tr>
           </table>
         </div>
+        {/* Table End */}
       </div>
     );
   }

@@ -302,7 +302,6 @@ class PhySchSetup extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          console.log("New Depts:", response.data.records);
           this.setState({
             departments: response.data.records.departmets
           });
@@ -659,8 +658,8 @@ class PhySchSetup extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "from_time",
-                          value: this.state.from_time,
+                          name: "from_work_hr",
+                          value: this.state.from_work_hr,
                           events: {
                             onChange: this.changeTexts.bind(this)
                           },
@@ -681,8 +680,8 @@ class PhySchSetup extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "to_time",
-                          value: this.state.to_time,
+                          name: "to_work_hr",
+                          value: this.state.to_work_hr,
                           events: {
                             onChange: this.changeTexts.bind(this)
                           },
