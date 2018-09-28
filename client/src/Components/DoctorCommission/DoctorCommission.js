@@ -552,7 +552,8 @@ function mapDispatchToProps(dispatch) {
       getServiceTypes: AlgaehActions,
       getDoctorCommission: AlgaehActions,
       getDoctorsCommission: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      CalculateCommission: AlgaehActions
     },
     dispatch
   );

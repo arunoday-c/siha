@@ -17,15 +17,29 @@ const changeTexts = ($this, ctrl, e) => {
 
 const CalculateCommission = $this => {
   debugger;
-  algaehApiCall({
+  // algaehApiCall({
+  //   uri: "/doctorsCommission/doctorsCommissionCal",
+  //   data: $this.state.billscommission,
+  //   method: "POST",
+  //   onSuccess: response => {
+  //     debugger;
+  //     $this.setState({ billscommission: response.data });
+  //   },
+  //   onFailure: error => {
+  //     console.log(error);
+  //   }
+  // });
+
+  $this.props.CalculateCommission({
     uri: "/doctorsCommission/doctorsCommissionCal",
-    data: $this.state.billscommission,
     method: "POST",
-    onSuccess: response => {
-      debugger;
+    data: $this.state.billscommission,
+    redux: {
+      type: "CALCULATE_COMMISSION_GET_DATA",
+      mappingName: "billscommission"
     },
-    onFailure: error => {
-      console.log(error);
+    afterSuccess: data => {
+      $this.setState({ billscommission: data });
     }
   });
 };
