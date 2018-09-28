@@ -8,7 +8,11 @@ import IconButton from "@material-ui/core/IconButton";
 import Enumerable from "linq";
 import "./HospitalServiceSetup.css";
 import "../../styles/site.css";
-import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
+import {
+  AlgaehLabel,
+  AlgaehDataGrid,
+  AlagehAutoComplete
+} from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import HospitalServices from "./HospitalServices/HospitalServices";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
@@ -17,6 +21,7 @@ import Options from "../../Options.json";
 import AppBar from "@material-ui/core/AppBar";
 import { getCookie } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
+import { texthandle, getHospotalServices } from "./HospitalServiceSetupEvents";
 
 class HospitalServiceSetup extends Component {
   constructor(props) {
@@ -24,7 +29,13 @@ class HospitalServiceSetup extends Component {
     this.state = {
       isOpen: false,
       servicePop: [],
-      selectedLang: "en"
+      selectedLang: "en",
+      sub_department_id: null,
+      hospital_id: null,
+      service_type_id: null,
+      dummy: true,
+      service_name: null,
+      ServiceNames: []
     };
   }
 
@@ -45,6 +56,19 @@ class HospitalServiceSetup extends Component {
         redux: {
           type: "SERVICES_GET_DATA",
           mappingName: "hospitalservices"
+        },
+        afterSuccess: data => {
+          let ServiceNames = Enumerable.from(data)
+            .groupBy("$.hims_d_services_id", null, (k, g) => {
+              let firstRecordSet = Enumerable.from(g).firstOrDefault();
+              return {
+                service_name: firstRecordSet.service_name,
+                hims_d_services_id: firstRecordSet.hims_d_services_id
+              };
+            })
+            .toArray();
+
+          this.setState({ ServiceNames: ServiceNames });
         }
       });
     }
@@ -137,6 +161,19 @@ class HospitalServiceSetup extends Component {
     });
   }
 
+  clearData(e) {
+    this.setState(
+      {
+        sub_department_id: null,
+        hospital_id: null,
+        service_type_id: null
+      },
+      () => {
+        getHospotalServices(this, this);
+      }
+    );
+  }
+
   render() {
     return (
       <div className="hims_hospitalservices">
@@ -167,9 +204,92 @@ class HospitalServiceSetup extends Component {
             }
           ]}
         />
+
         <div className="row">
           <div className="col-lg-12" style={{ marginTop: "75px" }}>
-            {/* <hr /> */}
+            <div className="row">
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "service_name"
+                }}
+                selector={{
+                  name: "service_name",
+                  className: "select-fld",
+                  value: this.state.service_name,
+                  dataSource: {
+                    textField: "service_name",
+                    valueField: "hims_d_services_id",
+                    data: this.state.ServiceNames
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "sub_department_id"
+                }}
+                selector={{
+                  name: "sub_department_id",
+                  className: "select-fld",
+                  value: this.state.sub_department_id,
+                  dataSource: {
+                    textField:
+                      this.state.selectedLang == "en"
+                        ? "sub_department_name"
+                        : "arabic_sub_department_name",
+                    valueField: "hims_d_sub_department_id",
+                    data: this.props.subdepartments
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "hospital_id"
+                }}
+                selector={{
+                  name: "hospital_id",
+                  className: "select-fld",
+                  value: this.state.hospital_id,
+                  dataSource: {
+                    textField:
+                      this.state.selectedLang == "en"
+                        ? "hospital_name"
+                        : "arabic_hospital_name",
+                    valueField: "hims_d_hospital_id",
+                    data: this.props.hospitaldetails
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "service_type_id"
+                }}
+                selector={{
+                  name: "service_type_id",
+                  className: "select-fld",
+                  value: this.state.service_type_id,
+                  dataSource: {
+                    textField:
+                      this.state.selectedLang == "en"
+                        ? "service_type"
+                        : "arabic_service_type",
+                    valueField: "hims_d_service_type_id",
+                    data: this.props.servicetype
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+            </div>
+            <hr />
             <div className="row">
               <div className="col-lg-12">
                 <AlgaehDataGrid
@@ -350,7 +470,16 @@ class HospitalServiceSetup extends Component {
                   /> */}
                   Add New
                 </button>
-
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={this.clearData.bind(this)}
+                >
+                  {/* <AlgaehLabel
+                    label={{ fieldName: "btn_save", returnText: true }}
+                  /> */}
+                  Clear
+                </button>
                 <HospitalServices
                   HeaderCaption={
                     <AlgaehLabel

@@ -10,11 +10,9 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  Button,
   Modal
 } from "../Wrapper/algaehWrapper";
 import variableJson from "../../utils/GlobalVariables.json";
-import Typography from "@material-ui/core/Typography";
 
 import {
   texthandle,

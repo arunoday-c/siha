@@ -162,6 +162,10 @@ class AddReciptForm extends Component {
                       value: this.state.cash_amount,
                       events: {
                         onChange: cashtexthandle.bind(this, this, context)
+                      },
+                      others: {
+                        disabled: !this.state.Cashchecked,
+                        placeholder: "0.00"
                       }
                     }}
                   />
@@ -198,6 +202,10 @@ class AddReciptForm extends Component {
                       value: this.state.card_amount,
                       events: {
                         onChange: cardtexthandle.bind(this, this, context)
+                      },
+                      others: {
+                        disabled: !this.state.Cardchecked,
+                        placeholder: "0.00"
                       }
                     }}
                   />
@@ -213,6 +221,9 @@ class AddReciptForm extends Component {
                       value: this.state.card_check_number,
                       events: {
                         onChange: texthandle.bind(this, this, context)
+                      },
+                      others: {
+                        disabled: !this.state.Cardchecked
                       }
                     }}
                   />
@@ -267,7 +278,9 @@ class AddReciptForm extends Component {
                         onChange: chequetexthandle.bind(this, this, context)
                       },
                       others: {
-                        "data-receipt": "true"
+                        "data-receipt": "true",
+                        disabled: !this.state.Checkchecked,
+                        placeholder: "0.00"
                       }
                     }}
                   />
@@ -284,6 +297,9 @@ class AddReciptForm extends Component {
                       value: this.state.cheque_number,
                       events: {
                         onChange: texthandle.bind(this, this, context)
+                      },
+                      others: {
+                        disabled: !this.state.Checkchecked
                       }
                     }}
                   />

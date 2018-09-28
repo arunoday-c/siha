@@ -11,11 +11,9 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  Button,
   Modal
 } from "../Wrapper/algaehWrapper";
 import variableJson from "../../utils/GlobalVariables.json";
-import Typography from "@material-ui/core/Typography";
 
 import {
   texthandle,
@@ -38,7 +36,11 @@ import { postAdvance } from "../../actions/RegistrationPatient/Billingactions";
 class AddAdvanceModal extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      Cashchecked: true,
+      Cardchecked: false,
+      Checkchecked: false
+    };
   }
   componentWillMount() {
     let IOputs = AdvRefunIOputs.inputParam();
@@ -243,6 +245,7 @@ class AddAdvanceModal extends PureComponent {
                         onChange: cashtexthandle.bind(this, this)
                       },
                       others: {
+                        disabled: !this.state.Cashchecked,
                         placeholder: "0.00"
                       }
                     }}
@@ -282,6 +285,7 @@ class AddAdvanceModal extends PureComponent {
                         onChange: cardtexthandle.bind(this, this)
                       },
                       others: {
+                        disabled: !this.state.Cardchecked,
                         placeholder: "0.00"
                       }
                     }}
@@ -298,6 +302,9 @@ class AddAdvanceModal extends PureComponent {
                       value: this.state.card_number,
                       events: {
                         onChange: texthandle.bind(this, this)
+                      },
+                      others: {
+                        disabled: !this.state.Cardchecked
                       }
                     }}
                   />
@@ -352,6 +359,7 @@ class AddAdvanceModal extends PureComponent {
                         onChange: chequetexthandle.bind(this, this)
                       },
                       others: {
+                        disabled: !this.state.Checkchecked,
                         placeholder: "0.00"
                       }
                     }}
@@ -369,6 +377,9 @@ class AddAdvanceModal extends PureComponent {
                       value: this.state.cheque_number,
                       events: {
                         onChange: texthandle.bind(this, this)
+                      },
+                      others: {
+                        disabled: !this.state.Checkchecked
                       }
                     }}
                   />

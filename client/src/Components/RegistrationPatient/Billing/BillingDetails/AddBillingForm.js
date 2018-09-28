@@ -405,6 +405,7 @@ class AddBillingForm extends Component {
                               onChange: cashtexthandle.bind(this, this, context)
                             },
                             others: {
+                              disabled: !this.state.Cashchecked,
                               placeholder: "0.00"
                             }
                           }}
@@ -453,6 +454,7 @@ class AddBillingForm extends Component {
                               onChange: cardtexthandle.bind(this, this, context)
                             },
                             others: {
+                              disabled: !this.state.Cardchecked,
                               placeholder: "0.00"
                             }
                           }}
@@ -469,6 +471,9 @@ class AddBillingForm extends Component {
                             value: this.state.card_number,
                             events: {
                               onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: !this.state.Cardchecked
                             }
                           }}
                         />
@@ -536,6 +541,7 @@ class AddBillingForm extends Component {
                               )
                             },
                             others: {
+                              disabled: !this.state.Checkchecked,
                               placeholder: "0.00"
                             }
                           }}
@@ -553,6 +559,9 @@ class AddBillingForm extends Component {
                             value: this.state.cheque_number,
                             events: {
                               onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: !this.state.Checkchecked
                             }
                           }}
                         />

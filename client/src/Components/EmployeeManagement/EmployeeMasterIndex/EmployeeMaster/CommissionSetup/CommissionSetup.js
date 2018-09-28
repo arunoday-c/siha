@@ -50,9 +50,9 @@ class CommissionSetup extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  handleClose = () => {
-    this.setState({ open: false });
-  };
+  // handleClose = () => {
+  //   this.setState({ open: false });
+  // };
 
   render() {
     return (
