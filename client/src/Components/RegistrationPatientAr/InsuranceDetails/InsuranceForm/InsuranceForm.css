@@ -2,56 +2,56 @@
   background: #ffff;
   border-radius: 5px; }
 
-.htpl-phase1-primary-insurance-form .primary-details {
+.htpl-phase1-primary-insurance-form-Ar .primary-details {
   padding-top: 8px;
   border-left: 1px dashed #d3d3d3;
   border-right: none;
   padding-bottom: 22px; }
 
-.htpl-phase1-primary-insurance-form mark {
+.htpl-phase1-primary-insurance-form-Ar mark {
   background: none;
   color: red; }
 
-.htpl-phase1-primary-insurance-form .centerAlign {
+.htpl-phase1-primary-insurance-form-Ar .centerAlign {
   text-align: center; }
 
-.htpl-phase1-primary-insurance-form .go-button {
+.htpl-phase1-primary-insurance-form-Ar .go-button {
   cursor: pointer;
   margin-top: 10px; }
 
-.htpl-phase1-primary-insurance-form .text_field {
+.htpl-phase1-primary-insurance-form-Ar .text_field {
   width: 100% !important;
   background-color: #fbfbfb;
   margin-right: "5px"; }
 
-.htpl-phase1-primary-insurance-form .form-details {
+.htpl-phase1-primary-insurance-form-Ar .form-details {
   padding: 5px;
   padding-bottom: 0px; }
 
-.htpl-phase1-primary-insurance-form .radio-design {
+.htpl-phase1-primary-insurance-form-Ar .radio-design {
   position: absolute;
   top: 4px;
   left: 7px; }
 
-.htpl-phase1-primary-insurance-form .refactor-design {
+.htpl-phase1-primary-insurance-form-Ar .refactor-design {
   min-height: 28px;
   background-color: #fbfbfb;
   border: 0px; }
 
-.htpl-phase1-primary-insurance-form .file-name-upload {
+.htpl-phase1-primary-insurance-form-Ar .file-name-upload {
   margin-left: 4%;
   margin-top: 2%; }
 
-.htpl-phase1-primary-insurance-form .secondary-details {
+.htpl-phase1-primary-insurance-form-Ar .secondary-details {
   padding-top: 8px; }
-  .htpl-phase1-primary-insurance-form .secondary-details .secondary-box-container .attach-design {
+  .htpl-phase1-primary-insurance-form-Ar .secondary-details .secondary-box-container .attach-design {
     background: #8c8c8c;
     color: #fff;
     position: relative;
     cursor: pointer;
     margin-left: -1px;
     margin-right: -1px; }
-  .htpl-phase1-primary-insurance-form .secondary-details .secondary-box-container .preview-image {
+  .htpl-phase1-primary-insurance-form-Ar .secondary-details .secondary-box-container .preview-image {
     position: absolute;
     top: -1px;
     left: 15px;

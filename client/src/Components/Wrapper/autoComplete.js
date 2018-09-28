@@ -1,133 +1,10 @@
 import React, { Component } from "react";
-import Select from "react-select";
+
 import Label from "../Wrapper/label";
-import "react-select/dist/react-select.css";
-import { withStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
 
-const ITEM_HEIGHT = 48;
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    height: 250
-  },
-  chip: {
-    margin: theme.spacing.unit / 4
-  },
+import Enumerable from "linq";
 
-  "@global": {
-    ".Select-control": {
-      borderRadius: "none",
-      display: "flex",
-      alignItems: "center",
-      border: "1px solid #d3d3d3",
-      height: "auto",
-      background: "transparent",
-      "&:hover": {
-        boxShadow: "none"
-      }
-    },
-    ".Select-multi-value-wrapper": {
-      flexGrow: 1,
-      display: "flex",
-      flexWrap: "wrap"
-      // fontSize: "14px"
-    },
-    ".Select--multi .Select-input": {
-      margin: 0
-    },
-    ".Select.has-value.is-clearable.Select--single > .Select-control .Select-value": {
-      padding: 0
-    },
-    ".Select-noresults": {
-      padding: theme.spacing.unit * 2
-    },
-
-    ".Select-placeholder, .Select--single .Select-value .Select-value-label": {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      display: "flex",
-      alignItems: "center",
-      //fontFamily: theme.typography.fontFamily,
-      // fontSize: theme.typography.pxToRem(16),
-      paddingLeft: "4px"
-    },
-    ".Select-placeholder": {
-      backgroundColor: "#fff",
-      color: "#212529"
-    },
-    ".Select-menu-outer": {
-      backgroundColor: theme.palette.background.paper,
-      boxShadow: theme.shadows[2],
-      position: "absolute",
-      left: 0,
-      top: `calc(100% + ${theme.spacing.unit}px)`,
-      width: "100%",
-      background: "#fbfbfb",
-      zIndex: 2,
-      maxHeight: ITEM_HEIGHT * 4.5
-    },
-    ".Select.is-focused:not(.is-open) > .Select-control": {
-      boxShadow: "none"
-    },
-    ".Select-menu": {
-      maxHeight: ITEM_HEIGHT * 4.5,
-      overflowY: "auto"
-    },
-    ".Select-menu div": {
-      boxSizing: "content-box"
-    },
-    ".Select-arrow-zone, .Select-clear-zone": {
-      color: theme.palette.action.active,
-      cursor: "pointer",
-      height: 21,
-      width: 21,
-      zIndex: 1
-    },
-    // Only for screen readers. We can't use display none.
-    ".Select-aria-only": {
-      position: "absolute",
-      overflow: "hidden",
-      clip: "rect(0 0 0 0)",
-      height: 1,
-      width: 1,
-      margin: -1
-    },
-    ".Select": {
-      width: "100%",
-      padding: 0
-    }
-  }
-});
 class AutoComplete extends Component {
-  handleChange = value => {
-    if (value !== null) {
-      if (
-        this.props.selector.multi !== undefined &&
-        this.props.selector.multi === true
-      ) {
-        this.setState({ single: value }, () => {
-          this.props.selector.onChange({
-            selected: value,
-            value: value[this.props.selector.dataSource.valueField],
-            name: this.props.selector.name
-          });
-        });
-      } else {
-        this.props.selector.onChange({
-          selected: value,
-          value: value[this.props.selector.dataSource.valueField],
-          name: this.props.selector.name
-        });
-      }
-    } else {
-      this.setState({ single: null });
-    }
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -137,35 +14,46 @@ class AutoComplete extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (
-      this.props.selector.multi !== undefined &&
-      this.props.selector.multi === true
-    ) {
-      this.setState({
-        disabled:
-          props.selector.others != null
-            ? props.selector.others.disabled == null
-              ? false
-              : props.selector.others.disabled
-            : false
-      });
-    } else {
-      this.setState({
-        single: props.selector.value,
-        disabled:
-          props.selector.others != null
-            ? props.selector.others.disabled == null
-              ? false
-              : props.selector.others.disabled
-            : false
-      });
+    if (props.selector.dataSource.data !== undefined) {
+      const item = new Enumerable.from(props.selector.dataSource.data)
+        .where(
+          w =>
+            String(w[this.props.selector.dataSource.textField])
+              .toUpperCase()
+              .trim() ===
+            String(props.selector.value)
+              .toUpperCase()
+              .trim()
+        )
+        .lastOrDefault();
+
+      if (item !== undefined) {
+        this.setState({
+          single: item[this.props.selector.dataSource.textField]
+        });
+      }
     }
   }
 
-  componentWillMount() {
-    this.setState({
-      single: this.props.selector.value
-    });
+  componentDidMount() {
+    if (this.props.selector.dataSource.data !== undefined) {
+      const item = new Enumerable.from(this.props.selector.dataSource.data)
+        .where(
+          w =>
+            String(w[this.props.selector.dataSource.textField])
+              .toUpperCase()
+              .trim() ===
+            String(this.props.selector.value)
+              .toUpperCase()
+              .trim()
+        )
+        .lastOrDefault();
+      if (item !== undefined) {
+        this.setState({
+          single: item[this.props.selector.dataSource.textField]
+        });
+      }
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -193,36 +81,99 @@ class AutoComplete extends Component {
     }
   }
 
+  onChangeSelectedDropDown(e) {
+    const value = e.currentTarget.value;
+    const name = e.currentTarget.name;
+    const data = this.props.selector.dataSource.data;
+    const item = new Enumerable.from(data)
+      .where(
+        w =>
+          String(w[this.props.selector.dataSource.textField])
+            .toUpperCase()
+            .trim() ===
+          String(value)
+            .toUpperCase()
+            .trim()
+      )
+      .lastOrDefault();
+
+    if (item !== undefined) {
+      this.setState({ single: value }, () => {
+        this.props.selector.onChange({
+          selected: item,
+          value: item[this.props.selector.dataSource.valueField],
+          name: name
+        });
+      });
+    } else {
+      this.setState({ single: value });
+    }
+  }
+  clearInput(e) {
+    this.setState({ single: "" });
+  }
   renderAutoComplete = () => {
+    const data =
+      this.props.selector.dataSource.data === undefined
+        ? []
+        : this.props.selector.dataSource.data;
     return (
-      <TextField
-        fullWidth
-        placeholder="Select multiple countries"
-        style={{ background: "#fbfbfb" }}
-        InputProps={{
-          inputComponent: () => {
-            return (
-              <Select
-                labelKey={this.props.selector.dataSource.textField}
-                valueKey={this.props.selector.dataSource.valueField}
-                name={this.props.selector.name}
-                onChange={this.handleChange.bind(this)}
-                value={this.state.single}
-                options={this.props.selector.dataSource.data}
-                multi={this.props.selector.multi}
-                valueComponent={this.props.selector.valueComponet}
-                optionComponent={this.props.selector.optionComponent}
-                selectedValue={this.props.selector.value}
-                onBlur={this.bluringEvent.bind(this)}
-                clearable={false}
-                {...this.props.selector.others}
-              />
-            );
-          }
-        }}
-        error={this.props.error}
-        helperText={this.props.helperText}
-      />
+      <div className="autoselect-Div">
+        <input
+          className="autoselect-input"
+          list={this.props.selector.name}
+          placeholder="Select.."
+          onChange={this.onChangeSelectedDropDown.bind(this)}
+          value={this.state.single}
+          name={this.props.selector.name}
+          {...this.props.selector.others}
+        />
+        <i
+          className="fas fa-times-circle"
+          onClick={this.clearInput.bind(this)}
+        />
+        <datalist id={this.props.selector.name}>
+          {data.map((item, index) => (
+            <option
+              key={index}
+              data-index={index}
+              data-value={item[this.props.selector.dataSource.valueField]}
+            >
+              {this.props.selector.template === undefined
+                ? item[this.props.selector.dataSource.textField]
+                : this.props.selector.template}
+            </option>
+          ))}
+        </datalist>
+      </div>
+      // <TextField
+      //   fullWidth
+      //   placeholder="Select multiple countries"
+      //   style={{ background: "#fbfbfb" }}
+      //   InputProps={{
+      //     inputComponent: () => {
+      //       return (
+      //         <Select
+      //           labelKey={this.props.selector.dataSource.textField}
+      //           valueKey={this.props.selector.dataSource.valueField}
+      //           name={this.props.selector.name}
+      //           onChange={this.handleChange.bind(this)}
+      //           value={this.state.single}
+      //           options={this.props.selector.dataSource.data}
+      //           multi={this.props.selector.multi}
+      //           valueComponent={this.props.selector.valueComponet}
+      //           optionComponent={this.props.selector.optionComponent}
+      //           selectedValue={this.props.selector.value}
+      //           onBlur={this.bluringEvent.bind(this)}
+      //           clearable={false}
+      //           {...this.props.selector.others}
+      //         />
+      //       );
+      //     }
+      //   }}
+      //   error={this.props.error}
+      //   helperText={this.props.helperText}
+      // />
     );
   };
 
@@ -246,4 +197,4 @@ class AutoComplete extends Component {
     );
   }
 }
-export default withStyles(styles)(AutoComplete);
+export default AutoComplete;

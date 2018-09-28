@@ -3,19 +3,18 @@
   min-width: 100%;
   min-height: 100%; }
   .login input[type="text"] {
-    height: 25px;
     padding: 8px 10px;
     border-radius: 5px;
     overflow: hidden;
     background: #fff;
     border: 1px solid #3a95aa; }
   .login input[type="password"] {
-    height: 25px;
     padding: 8px 10px;
     border-radius: 5px;
     overflow: hidden;
     background: #fff;
-    border: 1px solid #3a95aa; }
+    border: 1px solid #3a95aa;
+    width: 100%; }
   .login .margintop15 {
     margin-top: 8%; }
   .login .row-eq-height {

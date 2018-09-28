@@ -433,22 +433,6 @@ body {
 :global .hptl-phase1-master-footer .app_bar {
   background: #000000; }
 
-div[numberbox="true"] input[type="text"] {
-  text-align: right !important; }
-
-.DayPickerInput input {
-  font: inherit;
-  color: currentColor;
-  border: 0;
-  margin: 0;
-  padding: 6px 0 7px;
-  box-sizing: content-box;
-  background: none;
-  vertical-align: middle;
-  -webkit-tap-highlight-color: transparent;
-  background-color: #fbfbfb;
-  min-width: 100%; }
-
 label {
   margin-bottom: 0px;
   font-size: 0.75rem;
@@ -458,12 +442,14 @@ label {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased !important; }
 
-input[type="text"] {
+input[type="text"],
+input[type="number"] {
   font-size: 0.85rem;
   padding: 4px 6px 4px;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
-  background: #fff; }
+  background: #fff;
+  width: 100%; }
 
 input[type="color"] {
   font-size: 0.85rem;
@@ -481,6 +467,13 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 
 input[type="color"]::-webkit-color-swatch {
   border: none; }
+
+input.autoselect-input {
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #d3d3d3;
+  font-size: 0.8rem;
+  padding: 5px 5px 4px; }
 
 .color-picker-icon {
   position: absolute;
@@ -514,72 +507,62 @@ textarea {
    React date picker customizing style
 */
 .algaeh-datePicker {
-  border: 1px solid #d3d3d3;
-  max-width: 100%;
-  border-radius: 4px; }
-  .algaeh-datePicker .react-date-picker__button {
-    border: none;
-    padding-top: 3px;
-    padding-bottom: 2px; }
-  .algaeh-datePicker .react-date-picker {
-    width: 100%;
-    padding-left: 6px; }
-  .algaeh-datePicker .react-date-picker__button {
-    width: 100%; }
-  .algaeh-datePicker .react-date-picker__button__input {
-    margin-left: 0px;
-    min-width: inherit;
-    font-size: 0.85rem; }
-  .algaeh-datePicker button {
-    margin-left: 0px;
-    padding: 3px 6px !important; }
-    .algaeh-datePicker button svg {
-      height: 16px; }
+  position: relative; }
+  .algaeh-datePicker input[type="date"] {
+    margin: 1px;
+    font-size: 0.8rem;
+    padding: 3px 3px 2px;
+    width: 99%;
+    text-transform: uppercase;
+    border: 1px solid #d3d3d3;
+    border-radius: 4px; }
+  .algaeh-datePicker input[type="date"]::-webkit-calendar-picker-indicator {
+    color: rgba(0, 0, 0, 0);
+    opacity: 1;
+    display: block;
+    background: url(../assets/svg/calendar-alt-regular.svg) no-repeat center;
+    width: 18px;
+    height: 15px;
+    border-width: thin;
+    background-size: 60%; }
+  .algaeh-datePicker input[type="date"]:disabled {
+    background: #fffdfa;
+    border: 1px dashed #d3d3d3;
+    color: #000;
+    font-weight: bold; }
 
-.mandatory .algaeh-datePicker {
+.mandatory input[type="text"],
+.mandatory input[type="number"],
+.mandatory input.autoselect-input,
+.mandatory .algaeh-datePicker input[type="date"] {
   background-color: none;
   border: 1px solid #d9ae58; }
 
-.mandatory .Select-placeholder {
-  background-color: none;
-  border: none; }
+.autoselect-Div {
+  position: relative; }
+  .autoselect-Div i {
+    display: none; }
 
-.mandatory .Select-control {
-  border: 1px solid #d9ae58; }
-
-.mandatory input[type="text"] {
-  background-color: none;
-  border: 1px solid #d9ae58; }
-
-.MuiInput-underline-90:before {
-  border: none !important; }
+.autoselect-Div:hover i {
+  display: block;
+  color: #7f8284;
+  position: absolute;
+  top: 8px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 13px; }
 
 input[type="text"]:disabled {
-  background: #f0f0f0;
-  border: 1px solid #d3d3d3;
+  background: #fffdfa;
+  border: 1px dashed #d3d3d3;
   color: #000;
   font-weight: bold; }
 
-.is-disabled .Select-control {
-  border: 1px solid #d3d3d3;
-  padding: 0px 10px; }
-
-.is-disabled .Select-value {
-  background: #f0f0f0;
+input.autoselect-input:disabled {
+  background: #fffdfa;
+  border: 1px dashed #d3d3d3;
   color: #000;
   font-weight: bold; }
-
-.is-disabled .Select-arrow-zone {
-  display: none; }
-
-.is-disabled .Select-placeholder {
-  background: #f0f0f0; }
-
-.algaeh-datePicker .react-date-picker--disabled .react-date-picker__button {
-  padding-top: 3px;
-  padding-bottom: 3px; }
-  .algaeh-datePicker .react-date-picker--disabled .react-date-picker__button button {
-    display: none; }
 
 .table-responsive {
   border: 1px solid #e2e2e2;
@@ -730,6 +713,11 @@ th {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased !important;
     text-align: right; }
+  .algaeh_Arabic_Version input:focus,
+  .algaeh_Arabic_Version select:focus,
+  .algaeh_Arabic_Version textarea:focus,
+  .algaeh_Arabic_Version button:focus {
+    outline: none; }
   .algaeh_Arabic_Version input[type="text"] {
     font-size: 0.85rem;
     padding: 4px 6px 4px;
@@ -798,15 +786,6 @@ th {
       padding: 3px 6px !important; }
       .algaeh_Arabic_Version .algaeh-datePicker button svg {
         height: 16px; }
-  .algaeh_Arabic_Version .mandatory .algaeh-datePicker {
-    background-color: none;
-    border: 1px solid #d9ae58; }
-  .algaeh_Arabic_Version .mandatory .Select-placeholder {
-    background-color: none;
-    border: none; }
-  .algaeh_Arabic_Version .mandatory .Select-control {
-    border: 1px solid #d9ae58;
-    direction: rtl; }
   .algaeh_Arabic_Version .mandatory input[type="text"] {
     background-color: none;
     border: 1px solid #d9ae58;
@@ -817,7 +796,8 @@ th {
     background: #f0f0f0;
     border: 1px solid #d3d3d3;
     color: #000;
-    font-weight: bold; }
+    font-weight: bold;
+    width: 100%; }
   .algaeh_Arabic_Version .is-disabled .Select-control {
     border: 1px solid #d3d3d3;
     padding: 0px 10px;
@@ -835,11 +815,6 @@ th {
     display: none; }
   .algaeh_Arabic_Version .is-disabled .Select-placeholder {
     background: #f0f0f0; }
-  .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker--disabled .react-date-picker__button {
-    padding-top: 3px;
-    padding-bottom: 3px; }
-    .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker--disabled .react-date-picker__button button {
-      display: none; }
   .algaeh_Arabic_Version .table-responsive {
     border: 1px solid #e2e2e2;
     border-radius: 4px; }
