@@ -891,9 +891,9 @@ let getDoctorScheduleDateWise = (req, res, next) => {
         "select hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status, schedule_description, month, year,\
         from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
         to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
-         hims_d_appointment_schedule_detail_id, provider_id,clinic_id, ASD.schedule_status, slot,schedule_date, modified \
-         from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD   where SH.record_status='A'\
-         and ASD.record_status='A' and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id and " +
+         hims_d_appointment_schedule_detail_id, provider_id,E.first_name,E.last_name,clinic_id, ASD.schedule_status, slot,schedule_date, modified \
+         from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E  where SH.record_status='A' and E.record_status='A'\
+         and ASD.record_status='A' and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id and " +
           selectDoctor +
           "" +
           where.condition,
