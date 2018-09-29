@@ -21,7 +21,9 @@ import {
   AddItems,
   datehandle,
   dateFormater,
-  getCtrlCode
+  getCtrlCode,
+  PatientSearch,
+  processItems
 } from "./PointOfSaleEvents";
 import "./PointOfSale.css";
 import "../../../styles/site.css";
@@ -86,13 +88,14 @@ class PointOfSale extends Component {
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         <div>
           <BreadCrumb
             title={
               <AlgaehLabel
-                label={{ forceLabel: "Initial Stock", align: "ltr" }}
+                label={{ forceLabel: "Point Of Sale", align: "ltr" }}
               />
             }
             breadStyle={this.props.breadStyle}
@@ -111,7 +114,7 @@ class PointOfSale extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Initial Stock", align: "ltr" }}
+                    label={{ forceLabel: "Point Of Sale", align: "ltr" }}
                   />
                 )
               }
@@ -119,7 +122,7 @@ class PointOfSale extends Component {
             soptlightSearch={{
               label: (
                 <AlgaehLabel
-                  label={{ forceLabel: "Document Number", returnText: true }}
+                  label={{ forceLabel: "POS Number", returnText: true }}
                 />
               ),
               value: this.state.patient_code,
@@ -138,7 +141,7 @@ class PointOfSale extends Component {
                 div={{ className: "col" }}
                 label={{
                   forceLabel: (
-                    <AlgaehLabel label={{ forceLabel: "Initial Stock Date" }} />
+                    <AlgaehLabel label={{ forceLabel: "POS Date" }} />
                   ),
                   className: "internal-label"
                 }}
@@ -158,62 +161,98 @@ class PointOfSale extends Component {
 
           <div className="hptl-phase1-pos-form">
             <div className="col-lg-12">
+              <div className="row card-deck panel-layout">
+                {/* Patient code */}
+                <div className="col-lg-6 card box-shadow-normal">
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-5" }}
+                      label={{ forceLabel: "Location" }}
+                      selector={{
+                        name: "location_id",
+                        className: "select-fld",
+                        value: this.state.location_id,
+                        dataSource: {
+                          textField: "location_description",
+                          valueField: "hims_d_pharmacy_location_id",
+                          data: this.props.locations
+                        },
+
+                        onChange: changeTexts.bind(this, this)
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-5" }}
+                      label={{
+                        forceLabel: "Patient Code"
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "patient_code",
+                        value: this.state.patient_code,
+                        events: {
+                          onChange: changeTexts.bind(this, this)
+                        },
+                        others: {
+                          disabled: true
+                        }
+                      }}
+                    />
+
+                    <div className="col-lg-2 form-group print_actions">
+                      <span
+                        className="fas fa-search fa-2x"
+                        onClick={PatientSearch.bind(this, this)}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-6 card box-shadow-normal">
+                  <div className="row">
+                    <div className="col-lg-3">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Patient Name"
+                        }}
+                      />
+                      <h6>
+                        {this.state.full_name
+                          ? this.state.full_name
+                          : "Patient Name"}
+                      </h6>
+                    </div>
+
+                    <div className="col-lg-3">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Patient Type"
+                        }}
+                      />
+                      <h6>
+                        {this.state.patient_type
+                          ? this.state.patient_type
+                          : "Patient Type"}
+                      </h6>
+                    </div>
+
+                    <div className="col-lg-3">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Mode of Payment"
+                        }}
+                      />
+                      <h6>
+                        {this.state.mode_of_pay
+                          ? this.state.mode_of_pay
+                          : "Mode of Payment"}
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Location" }}
-                  selector={{
-                    name: "location_id",
-                    className: "select-fld",
-                    value: this.state.location_id,
-                    dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
-                    },
-
-                    onChange: changeTexts.bind(this, this)
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Item Category" }}
-                  selector={{
-                    name: "category_id",
-                    className: "select-fld",
-                    value: this.state.category_id,
-                    dataSource: {
-                      textField: "category_desc",
-                      valueField: "hims_d_item_category_id",
-                      data: this.props.itemcategory
-                    },
-                    others: {
-                      disabled: true
-                    },
-                    onChange: null
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Item Group" }}
-                  selector={{
-                    name: "group_id",
-                    className: "select-fld",
-                    value: this.state.group_id,
-                    dataSource: {
-                      textField: "group_description",
-                      valueField: "hims_d_item_group_id",
-                      data: this.props.itemgroup
-                    },
-                    others: {
-                      disabled: true
-                    },
-                    onChange: null
-                  }}
-                />
-
                 <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
                   label={{ forceLabel: "Item Name" }}
@@ -229,8 +268,24 @@ class PointOfSale extends Component {
                     onChange: itemchangeText.bind(this, this)
                   }}
                 />
-              </div>
-              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{ forceLabel: "UOM", isImp: true }}
+                  selector={{
+                    name: "uom_id",
+                    className: "select-fld",
+                    value: this.state.uom_id,
+                    dataSource: {
+                      textField: "uom_description",
+                      valueField: "hims_d_pharmacy_uom_id",
+                      data: this.props.itemuom
+                    },
+                    others: {
+                      disabled: true
+                    },
+                    onChange: itemchangeText.bind(this, this)
+                  }}
+                />
                 <AlagehFormGroup
                   div={{ className: "col-lg-3" }}
                   label={{
@@ -245,7 +300,6 @@ class PointOfSale extends Component {
                     }
                   }}
                 />
-
                 <AlgaehDateHandler
                   div={{ className: "col-lg-3" }}
                   label={{ forceLabel: "Expiry Date" }}
@@ -256,7 +310,6 @@ class PointOfSale extends Component {
                   }}
                   value={this.state.expirt_date}
                 />
-
                 <AlagehFormGroup
                   div={{ className: "col-lg-3" }}
                   label={{
@@ -272,7 +325,6 @@ class PointOfSale extends Component {
                     }
                   }}
                 />
-
                 <AlagehFormGroup
                   div={{ className: "col-lg-4" }}
                   label={{
@@ -288,7 +340,6 @@ class PointOfSale extends Component {
                     }
                   }}
                 />
-
                 <div className="col-lg-3">
                   <button
                     className="btn btn-primary"
@@ -298,85 +349,43 @@ class PointOfSale extends Component {
                     Add Item
                   </button>
                 </div>
+                <div className="col-lg-3">
+                  <button
+                    className="btn btn-primary"
+                    style={{ marginTop: "24px" }}
+                    onClick={processItems.bind(this, this)}
+                  >
+                    Process
+                  </button>
+                </div>
               </div>
 
               <div className="row form-group">
                 <AlgaehDataGrid
-                  id="initial_stock"
+                  id="POS_items"
                   columns={[
                     {
-                      fieldName: "location_id",
-                      label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
-                      displayTemplate: row => {
-                        let display =
-                          this.props.locations === undefined
-                            ? []
-                            : this.props.locations.filter(
-                                f =>
-                                  f.hims_d_pharmacy_location_id ===
-                                  row.location_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].location_description
-                              : ""}
-                          </span>
-                        );
-                      },
-                      disabled: true
-                    },
-
-                    {
-                      fieldName: "category_id",
+                      fieldName: "generic_id",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Item Category" }} />
+                        <AlgaehLabel label={{ forceLabel: "Generic Name" }} />
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.itemcategory === undefined
+                          this.props.genericlist === undefined
                             ? []
-                            : this.props.itemcategory.filter(
-                                f =>
-                                  f.hims_d_item_category_id === row.category_id
+                            : this.props.genericlist.filter(
+                                f => f.hims_d_item_generic_id === row.generic_id
                               );
 
                         return (
                           <span>
                             {display !== undefined && display.length !== 0
-                              ? display[0].category_desc
+                              ? display[0].generic_name
                               : ""}
                           </span>
                         );
-                      },
-                      disabled: true
+                      }
                     },
-
-                    {
-                      fieldName: "group_id",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Item Group" }} />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.itemgroup === undefined
-                            ? []
-                            : this.props.itemgroup.filter(
-                                f => f.hims_d_item_group_id === row.group_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].group_description
-                              : ""}
-                          </span>
-                        );
-                      },
-                      disabled: true
-                    },
-
                     {
                       fieldName: "item_id",
                       label: (
@@ -401,38 +410,87 @@ class PointOfSale extends Component {
                       disabled: true
                     },
                     {
-                      fieldName: "batch_no",
-                      label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
-                    },
-                    {
-                      fieldName: "expirt_date",
+                      fieldName: "frequency",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
+                        <AlgaehLabel label={{ forceLabel: "Frequency" }} />
                       ),
                       displayTemplate: row => {
-                        return <span>{dateFormater(row.expirt_date)}</span>;
+                        return row.frequency == "0"
+                          ? "1-0-1"
+                          : row.frequency == "1"
+                            ? "1-0-0"
+                            : row.frequency == "2"
+                              ? "0-0-1"
+                              : row.frequency == "3"
+                                ? "0-1-0"
+                                : row.frequency == "4"
+                                  ? "1-1-0"
+                                  : row.frequency == "5"
+                                    ? "0-1-1"
+                                    : row.frequency == "6"
+                                      ? "1-1-1"
+                                      : null;
                       }
                     },
                     {
-                      fieldName: "quantity",
-                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                      fieldName: "frequency_type",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Frequency Type" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.frequency_type == "PD"
+                          ? "Per Day"
+                          : row.frequency_type == "PH"
+                            ? "Per Hour"
+                            : row.frequency_type == "PW"
+                              ? "Per Week"
+                              : row.frequency_type == "PM"
+                                ? "Per Month"
+                                : row.frequency_type == "AD"
+                                  ? "Alternate Day"
+                                  : null;
+                      }
                     },
                     {
-                      fieldName: "unit_cost",
-                      label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                      fieldName: "frequency_time",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Frequency Time" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.frequency_time == "BM"
+                          ? "Before Meals"
+                          : row.frequency_time == "AM"
+                            ? "After Meals"
+                            : null;
+                      }
+                    },
+                    {
+                      fieldName: "dosage",
+                      label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />
+                    },
+                    {
+                      fieldName: "no_of_days",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Duration (Days)" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "start_date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Start Date" }} />
+                      ),
+                      displayTemplate: row => {
+                        return <span>{this.dateFormater(row.start_date)}</span>;
+                      }
                     }
                   ]}
                   keyId="item_id"
                   dataSource={{
-                    data: this.state.ListItems
+                    data: this.props.medication_list
                   }}
-                  // isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
-                  events={{
-                    //   onDelete: deleteServices.bind(this, this),
-                    onEdit: row => {}
-                    // onDone: this.updateBillDetail.bind(this)
-                  }}
                 />
               </div>
             </div>
@@ -483,25 +541,6 @@ class PointOfSale extends Component {
                 </div>
               </AppBar>
             </div>
-            {/* <div
-              className="container-fluid"
-              style={{ marginBottom: "1vh", marginTop: "1vh" }}
-            >
-              <div className="row" position="fixed">
-                <div className="col-lg-12">
-                  <span className="float-right">
-                    <button
-                      style={{ marginRight: "15px" }}
-                      className="htpl1-phase1-btn-primary"
-                      //   onClick={SaveOrdersServices.bind(this, this)}
-                      //   disabled={this.state.saved}
-                    >
-                      <AlgaehLabel label={{ forceLabel: "Save" }} />
-                    </button>
-                  </span>
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
       </React.Fragment>
@@ -514,7 +553,9 @@ function mapStateToProps(state) {
     itemlist: state.itemlist,
     locations: state.locations,
     itemcategory: state.itemcategory,
-    itemgroup: state.itemgroup
+    itemgroup: state.itemgroup,
+    patients: state.patients,
+    medicationlist: state.medicationlist
   };
 }
 
@@ -524,7 +565,9 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
       getItemCategory: AlgaehActions,
-      getItemGroup: AlgaehActions
+      getItemGroup: AlgaehActions,
+      getPatientDetails: AlgaehActions,
+      getMedicationList: AlgaehActions
     },
     dispatch
   );

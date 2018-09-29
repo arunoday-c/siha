@@ -43,6 +43,7 @@ import FrontDeskAr from "./Components/RegistrationPatientAr/RegistrationPatientA
 import OPBillingAr from "./Components/OPBillingAr/OPBillingAr";
 import DoctorCommission from "./Components/DoctorCommission/DoctorCommission";
 import HospitalServiceSetup from "./Components/HospitalServiceSetup/HospitalServiceSetup";
+import PointOfSale from "./Components/Pharmacy/PointOfSale/PointOfSale";
 // function height() {
 //   let height =
 //     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -92,7 +93,10 @@ const componts = (selectedLang, breadStyle) => {
     FrontDeskAr: <FrontDeskAr SelectLanguage={selectedLang} />,
     OPBillingAr: <OPBillingAr SelectLanguage={selectedLang} />,
     DoctorCommission: <DoctorCommission SelectLanguage={selectedLang} />,
-    HospitalServiceSetup: <HospitalServiceSetup SelectLanguage={selectedLang} />
+    HospitalServiceSetup: (
+      <HospitalServiceSetup SelectLanguage={selectedLang} />
+    ),
+    PointOfSale: <PointOfSale SelectLanguage={selectedLang} />
   };
 };
 
