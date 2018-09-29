@@ -16,6 +16,10 @@
   "patient_type": "نوع المريض",
   "full_name": "اسم المريض",
 
+  "responsibility": "المسئولية",
+  "tax_details": "ضريبة",
+  "payable": "تدفع",
+
   "select_service": "اختر الخدمة",
 
   "gross_total": "المجموع الكلي",
@@ -86,9 +90,9 @@
   "amount": "كمية",
   "unbalanced_amount": "المبلغ غير المتوازن",
 
-  "responsibility": "المسئولية",
-  "tax_details": "ضريبة",
-  "payable": "تدفع",
+  "responsibility_lbl": "المسئولية",
+  "tax_lbl": "ضريبة",
+  "payable_lbl": "تدفع",
 
   "patient_lbl": "صبور",
   "company_lbl": "الشركة الرئيسية",
@@ -100,6 +104,8 @@
   "policy_no": "رقم مركز الشرطه",
   "card_no": "رقم البطاقة",
   "ins_expiry_date": "تاريخ الانتهاء",
+
+  "consultation": "تشاور",
 
   "bill_details": "تفاصيل الفاتورة"
 }
