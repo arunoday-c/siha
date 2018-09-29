@@ -552,6 +552,22 @@ let addDoctorsSchedule = (req, res, next) => {
               }
             }
 
+            // const weedDays = new LINQ([
+            //   { day: req.body.sunday, dayid: 0 },
+            //   { day: req.body.monday, dayid: 1 },
+            //   { day: req.body.tuesday, dayid: 2 },
+            //   { day: req.body.wednesday, dayid: 3 },
+            //   { day: req.body.thursday, dayid: 4 },
+            //   { day: req.body.friday, dayid: 5 },
+            //   { day: req.body.saturday, dayid: 6 }
+            // ])
+            //   .Where(w => w.day == "Y")
+            //   .Select(s => {
+            //     return s.dayid;
+            //   })
+            //   .ToArray();
+            //   debugLog("weedDays",weedDays);
+
             let daylist = getDaysArray(
               new Date(input.from_date),
               new Date(input.to_date),
@@ -692,8 +708,8 @@ let addLeaveOrModifySchedule = (req, res, next) => {
   }
 };
 
-//created by irfan: to get Appointment Schedule
-let getAppointmentSchedule = (req, res, next) => {
+//created by irfan: to get doctors Schedule list
+let getDoctorsScheduledList = (req, res, next) => {
   let selectWhere = {
     sub_dept_id: "ALL",
     month: "ALL",
@@ -704,12 +720,17 @@ let getAppointmentSchedule = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+    let selectDoctor = "";
+    if (req.query.provider_id != "null" && req.query.provider_id != null) {
+      selectDoctor = `and ASD.provider_id=${req.query.provider_id}`;
+    }
+    delete req.query.provider_id;
 
     let where = whereCondition(extend(selectWhere, req.query));
-    let outputArray = [];
+
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_appointment_schedule_header_id,schedule_description,monday,tuesday,wednesday,thursday,friday,saturday,sunday from hims_d_appointment_schedule_header where record_status='A' AND " +
+        "select hims_d_appointment_schedule_header_id from hims_d_appointment_schedule_header where record_status='A' AND " +
           where.condition,
         where.values,
         (error, result) => {
@@ -722,40 +743,31 @@ let getAppointmentSchedule = (req, res, next) => {
             .Select(s => s.hims_d_appointment_schedule_header_id)
             .ToArray();
 
-          debugLog("schedule_header_id_all:", schedule_header_id_all);
-
-          // req.records = result;
-          // next();
           if (result.length != 0) {
-            for (let i = 0; i < result.length; i++) {
-              connection.query(
-                "SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,SH.schedule_description hdr_description,ASD.provider_id,E.first_name,E.last_name,\
-              ASD.sub_dept_id,clinic_id,AC.description as clinic_description,ASD.schedule_status,default_slot,schedule_date,from_work_hr,\
-              to_work_hr,work_break1,work_break2,\
-              from_break_hr1,to_break_hr1,from_break_hr2,to_break_hr2\
-              from hims_d_appointment_schedule_detail ASD ,hims_d_employee E, hims_d_appointment_clinic AC,hims_d_appointment_schedule_header SH\
-               where ASD.record_status='A' and E.record_status='A' and AC.record_status='A'and SH.record_status='A' and ASD.provider_id=E.hims_d_employee_id\
-               and ASD.clinic_id=AC.hims_d_appointment_clinic_id and ASD.appointment_schedule_header_id=SH.hims_d_appointment_schedule_header_id and\
-               appointment_schedule_header_id in (" +
-                  schedule_header_id_all[i] +
-                  ");",
-                (error, results) => {
-                  if (error) {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  }
-                  result[i]["detail"] = results;
-                  outputArray.push(result[i]);
-                  if (i == result.length - 1) {
-                    req.records = outputArray;
-                    next();
-                  }
-
-                  // req.records = results;
-                  // next();
+            connection.query(
+              "SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,SH.schedule_description hdr_description,\
+                SH.schedule_status deprt_schedule_status,ASD.provider_id,E.first_name,E.last_name,\
+                clinic_id,AC.description as clinic_description,slot,schedule_date,from_work_hr,\
+                 to_work_hr,work_break1,work_break2,\
+                 from_break_hr1,to_break_hr1,from_break_hr2,to_break_hr2  ,ASD.schedule_status doctor_schedule_status\
+                 from hims_d_appointment_schedule_detail ASD ,hims_d_employee E, hims_d_appointment_clinic AC,hims_d_appointment_schedule_header SH\
+                  where ASD.record_status='A' and E.record_status='A' and AC.record_status='A'and SH.record_status='A' and ASD.provider_id=E.hims_d_employee_id\
+                  and ASD.clinic_id=AC.hims_d_appointment_clinic_id and ASD.appointment_schedule_header_id=SH.hims_d_appointment_schedule_header_id and\
+                  appointment_schedule_header_id in (" +
+                schedule_header_id_all +
+                ")" +
+                selectDoctor +
+                ";",
+              (error, results) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
                 }
-              );
-            }
+
+                req.records = results;
+                next();
+              }
+            );
           } else {
             req.records = result;
             next();
@@ -779,6 +791,6 @@ module.exports = {
   updateAppointmentRoom,
   updateAppointmentClinic,
   addDoctorsSchedule,
-  getAppointmentSchedule,
+  getDoctorsScheduledList,
   addLeaveOrModifySchedule
 };

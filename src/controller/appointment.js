@@ -13,7 +13,7 @@ import {
   updateAppointmentRoom,
   updateAppointmentClinic,
   addDoctorsSchedule,
-  getAppointmentSchedule,
+  getDoctorsScheduledList,
   addLeaveOrModifySchedule
 } from "../model/appointment";
 
@@ -170,10 +170,10 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan :to get Appointment Schedule
+  // created by irfan :to get Doctors Scheduled List
   api.get(
-    "/getAppointmentSchedule",
-    getAppointmentSchedule,
+    "/getDoctorsScheduledList",
+    getDoctorsScheduledList,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
