@@ -267,8 +267,8 @@ class PhySchSetup extends Component {
       thursday: docs.thursday === "Y" ? true : false,
       friday: docs.friday === "Y" ? true : false,
       saturday: docs.saturday === "Y" ? true : false,
-      from_date: "",
-      to_date: ""
+      from_date: docs.from_date,
+      to_date: docs.to_date
     });
   }
 
