@@ -77,7 +77,9 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const dateFormater = ({ value }) => {
+  debugger;
   if (value !== null) {
+    debugger;
     return moment(value).format(Options.dateFormat);
   }
 };
@@ -234,6 +236,7 @@ const LoadBills = $this => {
         // let providers = Enumerable.from(data)
         //   .where(w => w.isdoctor === "Y")
         //   .toArray();
+        debugger;
         $this.setState({ billscommission: data }, () => {
           AlgaehLoader({ show: false });
         });

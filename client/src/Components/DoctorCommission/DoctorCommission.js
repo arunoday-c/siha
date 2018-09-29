@@ -33,6 +33,8 @@ import "../../styles/site.css";
 import { AlgaehActions } from "../../actions/algaehActions";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import GlobalVariables from "../../utils/GlobalVariables.json";
+import moment from "moment";
+import Options from "../../Options.json";
 
 class DoctorCommission extends Component {
   constructor(props) {
@@ -92,6 +94,13 @@ class DoctorCommission extends Component {
     });
   }
 
+  dateFormater(value) {
+    debugger;
+    if (value !== null) {
+      debugger;
+      return moment(value).format(Options.dateFormat);
+    }
+  }
   handleClose = () => {
     this.setState({ SnackbarOpen: false });
   };
@@ -322,7 +331,8 @@ class DoctorCommission extends Component {
                         <AlgaehLabel label={{ forceLabel: "Bill Date" }} />
                       ),
                       displayTemplate: row => {
-                        return <span>{dateFormater(row.bill_date)}</span>;
+                        debugger;
+                        return <span>{this.dateFormater(row.bill_date)}</span>;
                       }
                     },
                     {
