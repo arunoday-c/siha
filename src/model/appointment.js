@@ -745,7 +745,7 @@ let getDoctorsScheduledList = (req, res, next) => {
 
           if (result.length != 0) {
             connection.query(
-              "SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,SH.schedule_description hdr_description,\
+              "SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,SH.schedule_description ,\
                 SH.schedule_status deprt_schedule_status,ASD.provider_id,E.first_name,E.last_name,\
                 clinic_id,AC.description as clinic_description,slot,schedule_date,from_work_hr,\
                  to_work_hr,work_break1,work_break2,\
