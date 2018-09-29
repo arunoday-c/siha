@@ -6,6 +6,7 @@ import Modal from "@material-ui/core/Modal";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import swal from "sweetalert";
 import Enumerable from "linq";
+import renderHTML from "react-render-html";
 
 class Appointment extends Component {
   constructor(props) {
@@ -18,13 +19,15 @@ class Appointment extends Component {
       toDate: new Date(),
       showApt: false,
       departments: [],
-      doctors: []
+      doctors: [],
+      appointmentSchedule: []
     };
   }
 
   componentDidMount() {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
+    this.getAppointmentSchedule();
   }
 
   getDoctorsAndDepts() {
@@ -57,6 +60,36 @@ class Appointment extends Component {
         if (response.data.success) {
           console.log("Appt Status:", response.data.records);
           this.setState({ appointmentStatus: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swal(error.message, {
+          buttons: false,
+          icon: "danger",
+          timer: 2000
+        });
+      }
+    });
+  }
+
+  //getDoctorScheduleDateWise
+
+  getAppointmentSchedule() {
+    algaehApiCall({
+      uri: "/appointment/getDoctorScheduleDateWise",
+      method: "GET",
+      data: {
+        sub_dept_id: 10,
+        schedule_date: "2018-09-03",
+        provider_id: null
+        // sub_dept_id : this.state.sub_department_id,
+        // schedule_date : this.state.toDate,
+        // provider_id : this.state.provider_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          console.log("Appt Schedule:", response.data.records);
+          this.setState({ appointmentSchedule: response.data.records });
         }
       },
       onFailure: error => {
@@ -167,6 +200,83 @@ class Appointment extends Component {
     this.setState({
       showApt: true
     });
+  }
+
+  createDoctorTimeSlot(options) {
+    let tds = [];
+    const duration = options.slot;
+    const _from_hr = moment(options.from_work_hr, "hh:mm:ss");
+    let _to_hr = moment(options.to_work_hr, "hh:mm:ss");
+    let count = 0;
+    for (;;) {
+      let newFrom = count === 0 ? _from_hr : _from_hr.add(duration, "minutes");
+      if (newFrom.isBefore(_to_hr)) {
+        tds.push({
+          provider_id: options.provider_id,
+          clinic_id: options.clinic_id,
+          hims_d_appointment_schedule_detail_id:
+            options.hims_d_appointment_schedule_detail_id
+        });
+        // tds +="<td class='tg-baqh'><span class='dynSlot'>"+newFrom.format("hh:mm tt")+"</span><span></span></td>";
+      } else {
+        break;
+      }
+
+      count = count + 1;
+    }
+    return tds;
+  }
+
+  plotAppointments(appointmentSchedule) {
+    debugger;
+    let timeing = [];
+    let componentElementDoctors = "<table class='tg'><tbody><tr>";
+    let componetElementBookStandBy = "<tr>";
+    if (appointmentSchedule === undefined)
+      return componentElementDoctors + "</tr>";
+
+    const docLength = appointmentSchedule.length;
+    const tdCount = docLength * 2;
+    let componetElementTiming = "<tr>";
+
+    appointmentSchedule.map((doctors, index) => {
+      componentElementDoctors +=
+        "<th key='" +
+        index +
+        "' class='tg-amwm' colspan='2'>" +
+        doctors.first_name +
+        " " +
+        doctors.last_name +
+        "</th>";
+      componetElementBookStandBy +=
+        "<td class='tg-baqh'>BOOKED</td> <td class='tg-baqh'>STANDBY</td>";
+      timeing.push(this.createDoctorTimeSlot(doctors));
+    });
+    componentElementDoctors += "</tr>";
+    componetElementBookStandBy += "</tr>";
+
+    if (docLength != 0) {
+      let docCount = 0;
+      let maxTdLength = 0;
+      for (let k = 0; k < timeing.length; k++) {
+        if (timeing[k].length > maxTdLength) maxTdLength = timeing[k].length;
+      }
+
+      for (let i = docCount; i < timeing.length; i++) {
+        let row = 0;
+        if (timeing[i].length <= maxTdLength) {
+          row = row + 1;
+        } else {
+          break;
+        }
+        for (let j = 0; j < tdCount; j++) {}
+      }
+    }
+
+    console.log("Max lenght", maxTime);
+    return (
+      componentElementDoctors + componetElementBookStandBy + "</tbody></table>"
+    );
   }
 
   render() {
@@ -370,6 +480,7 @@ class Appointment extends Component {
         </div>
         {/* Table Start */}
         <div className="col-lg-12 card box-shadow-normal">
+          {renderHTML(this.plotAppointments(this.state.appointmentSchedule))}
           <table className="tg">
             <tbody>
               <tr>
