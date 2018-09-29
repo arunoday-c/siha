@@ -663,6 +663,23 @@ textarea {
     font-weight: bold;
   }
 }
+.autoselect-Div {
+  position: relative;
+  i {
+    display: none;
+    color: #7f8284;
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+}
+.autoselect-Div:hover {
+  i {
+    display: block;
+  }
+}
 //mandatort fields styles
 .mandatory {
   input[type="text"],
@@ -674,23 +691,6 @@ textarea {
   }
 }
 
-.autoselect-Div {
-  position: relative;
-  i {
-    display: none;
-  }
-}
-.autoselect-Div:hover {
-  i {
-    display: block;
-    color: #7f8284;
-    position: absolute;
-    top: 8px;
-    right: 20px;
-    cursor: pointer;
-    font-size: 13px;
-  }
-}
 //input field disabled style
 input[type="text"]:disabled {
   background: #fffdfa;
@@ -852,6 +852,25 @@ th {
 }
 //Arabic Version
 .algaeh_Arabic_Version {
+  .autoselect-Div {
+    position: relative;
+    i {
+      display: none;
+      color: #7f8284;
+      position: absolute;
+      top: 8px;
+      right: auto;
+      left: 20px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+  }
+  .autoselect-Div:hover {
+    i {
+      display: block;
+    }
+  }
+
   .tab-container {
     ul.nav {
       direction: rtl;

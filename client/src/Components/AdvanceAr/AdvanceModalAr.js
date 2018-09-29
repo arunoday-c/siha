@@ -132,8 +132,25 @@ class AddAdvanceModalAr extends PureComponent {
       <React.Fragment>
         <div>
           <Modal open={this.props.show}>
-            <div className="algaeh-modal">
-              <div className="popupHeader">{this.props.HeaderCaption} </div>
+            <div className="algaeh-modal-Ar">
+              <div className="popupHeader">
+                <div className="row">
+                  <div className="col-lg-8">
+                    <h4>{this.props.HeaderCaption}</h4>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div>
+              </div>
               <div className="col-lg-12 popupInner">
                 <div className="row">
                   <div className="col-lg-3">
