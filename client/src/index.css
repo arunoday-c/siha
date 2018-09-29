@@ -12,6 +12,8 @@
   /* Btn Grey Salsa */
   /* Btn Red */
   /* Btn Red */ }
+  :global .displayInlineBlock {
+    display: inline-block; }
   :global .bordered-layout {
     border: 1px solid #c1c1c1;
     min-height: 70px;

@@ -11,6 +11,7 @@ class Appointment extends Component {
   constructor(props) {
     super(props);
     let dateToday = moment().format("YYYY") + moment().format("MM") + "01";
+    //let dateToday = new Date();
     this.state = {
       selectedHDate: moment(dateToday, "YYYYMMDD")._d,
       fromDate: new Date(),
@@ -23,6 +24,7 @@ class Appointment extends Component {
 
   componentDidMount() {
     this.getDoctorsAndDepts();
+    this.getAppointmentStatus();
   }
 
   getDoctorsAndDepts() {
@@ -40,6 +42,27 @@ class Appointment extends Component {
         swal(error.message, {
           buttons: false,
           icon: "error",
+          timer: 2000
+        });
+      }
+    });
+  }
+
+  getAppointmentStatus() {
+    algaehApiCall({
+      uri: "/appointment/getAppointmentStatus",
+      method: "GET",
+      data: {},
+      onSuccess: response => {
+        if (response.data.success) {
+          console.log("Appt Status:", response.data.records);
+          this.setState({ appointmentStatus: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swal(error.message, {
+          buttons: false,
+          icon: "danger",
           timer: 2000
         });
       }
@@ -88,7 +111,7 @@ class Appointment extends Component {
     var lastDay = new Date(y, m + 1, 0);
     let endDate = moment(lastDay)._d;
 
-    let generatedLi = new Array();
+    let generatedLi = [];
 
     while (initialDate <= endDate) {
       let dt = moment(initialDate);
@@ -103,7 +126,7 @@ class Appointment extends Component {
   }
 
   generateHorizontalDateBlocks() {
-    let classesCurrentDate = moment().format("YYYYMMDD");
+    //let classesCurrentDate = moment().format("YYYYMMDD");
 
     return (
       <div className="calendar">
@@ -312,6 +335,35 @@ class Appointment extends Component {
                 style={{ cursor: "pointer" }}
                 className="fas fa-search fa-2x"
               />
+            </div>
+            <div className="col-lg-5">
+              <ul style={{ listStyle: "none", display: "inline-block" }}>
+                {this.state.appointmentStatus !== undefined
+                  ? this.state.appointmentStatus.map((data, index) => (
+                      <li
+                        key={index}
+                        style={{ display: "inline", marginRight: "5px" }}
+                      >
+                        <span className="displayInlineBlock">
+                          <span
+                            className="displayInlineBlock"
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              backgroundColor: data.color_code,
+                              marginRight: "2px"
+                            }}
+                          />
+                          <span
+                            style={{ marginTop: "auto", marginBottom: "auto" }}
+                          >
+                            {data.description}
+                          </span>
+                        </span>
+                      </li>
+                    ))
+                  : null}
+              </ul>
             </div>
           </div>
           {/* Filter Bar End */}

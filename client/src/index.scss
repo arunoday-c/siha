@@ -1,5 +1,9 @@
 $forntSize: 0.7rem;
 :global {
+  .displayInlineBlock {
+    display: inline-block;
+  }
+
   .bordered-layout {
     border: 1px solid #c1c1c1;
     min-height: 70px;

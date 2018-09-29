@@ -219,34 +219,33 @@ class AppointmentStatus extends Component {
                 />
               </div>
             </div> */}
-            <div className="col-lg-3">
-              <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col-lg-11" }}
-                  label={{
-                    fieldName: "color_code",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "color_code",
-                    value: this.state.color_code,
-                    events: {
-                      onChange: this.changeTexts.bind(this)
-                    },
-                    others: {
-                      type: "color"
-                    },
-
-                    error: this.state.color_code_error,
-                    helperText: this.state.color_code_error_text
-                  }}
-                />
-                <span className="color-picker-icon col-lg-1">
+            {/* <div className="col-lg-3">
+              <div className="row"> */}
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "color_code",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "color_code",
+                value: this.state.color_code,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                },
+                others: {
+                  type: "color"
+                },
+                error: this.state.color_code_error,
+                helperText: this.state.color_code_error_text
+              }}
+            />
+            {/* <span className="color-picker-icon col-lg-1">
                   <i className="fas fa-palette" />
                 </span>
               </div>
-            </div>
+            </div> */}
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
