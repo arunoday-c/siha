@@ -99,7 +99,9 @@
   "insurance": "تأمين",
   "copay_percentage": "كوباي٪",
   "copay_amount": "مبلغ التعويض",
-
+  "responsibility_lbl": "المسئولية",
+  "tax_lbl": "ضريبة",
+  "payable_lbl": "تدفع",
   "deductable_percentage": "خصم ٪",
   "deductable_amount": "مقدار الخصم",
 
