@@ -14,7 +14,8 @@ import {
   updateAppointmentClinic,
   addDoctorsSchedule,
   getDoctorsScheduledList,
-  addLeaveOrModifySchedule
+  addLeaveOrModifySchedule,
+  getDoctorScheduleDateWise
 } from "../model/appointment";
 
 export default ({ config, db }) => {
@@ -174,6 +175,21 @@ export default ({ config, db }) => {
   api.get(
     "/getDoctorsScheduledList",
     getDoctorsScheduledList,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to get Doctor Schedule DateWise
+  api.get(
+    "/getDoctorScheduleDateWise",
+    getDoctorScheduleDateWise,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
