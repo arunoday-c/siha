@@ -57,7 +57,8 @@ class PhySchSetup extends Component {
       description_error_text: "",
       description: "",
       days: [],
-      selected_doctor: ""
+      selected_doctor: "",
+      modify : []
     };
   }
 
@@ -225,11 +226,9 @@ class PhySchSetup extends Component {
     let provider_id = e.currentTarget.getAttribute("provider-id");
     let header_id = e.currentTarget.getAttribute("id");
     let provider_name = e.currentTarget.getAttribute("provider-name");
+    this.getDoctorScheduleToModify(header_id , provider_id);
     this.setState({ openModifier: true, selected_doctor: provider_name });
-    console.log(
-      "Provider:",
-      provider_id + " Header :" + header_id + "Name:" + provider_name
-    );
+  
   }
 
   deptDropDownHandler(value) {
@@ -322,6 +321,31 @@ class PhySchSetup extends Component {
 
   dropDownHandler(value) {
     this.setState({ [value.name]: value.value });
+  }
+
+  getDoctorScheduleToModify(header_id , provider_id){
+    algaehApiCall({
+      uri: "/appointment/getDoctorScheduleToModify",
+      method: "GET",
+      data : {appointment_schedule_header_id : header_id, provider_id : provider_id},
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            modify : response.data.records
+           // departments: response.data.records.departmets
+           // departments: response.data.records.departmets
+          });
+        }
+      },
+      onFailure: error => {
+        swal(error.message, {
+          buttons: false,
+          icon: "error",
+          timer: 2000
+        });
+      }
+    });
+
   }
 
   getDoctorsAndDepts() {
@@ -434,7 +458,7 @@ class PhySchSetup extends Component {
                   id="sch-modify-grid"
                   columns={[
                     {
-                      fieldName: "appt_date",
+                      fieldName: "schedule_date",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Appointment Date" }}
@@ -456,25 +480,31 @@ class PhySchSetup extends Component {
                     {
                       fieldName: "from_break_hr1",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Work Break 1" }} />
+                        <AlgaehLabel label={{ forceLabel: "From Work Break 1" }} />
                       )
                     },
                     {
                       fieldName: "to_break_hr1",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Work Break 2" }} />
+                        <AlgaehLabel label={{ forceLabel: "To Work Break 1" }} />
                       )
                     },
                     {
-                      fieldName: "days",
+                      fieldName: "from_break_hr2",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Working Days" }} />
+                        <AlgaehLabel label={{ forceLabel: "From Work Break 2" }} />
+                      )
+                    },
+                    {
+                      fieldName: "to_break_hr2",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "To Work Break 2" }} />
                       )
                     }
                   ]}
                   keyId="hims_d_appointment_status_id"
                   dataSource={{
-                    data: []
+                    data: this.state.modify
                   }}
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
