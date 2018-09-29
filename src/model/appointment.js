@@ -912,6 +912,45 @@ let getDoctorScheduleDateWise = (req, res, next) => {
     next(e);
   }
 };
+//created by irfan: to get Doctor Schedule to Modify
+let getDoctorScheduleToModify = (req, res, next) => {
+  let selectWhere = {
+    appointment_schedule_header_id: "ALL",
+    provider_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status as deprt_schedule_status, schedule_description, month, year,\
+        from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2, \
+        to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
+        hims_d_appointment_schedule_detail_id, provider_id,clinic_id, ASD.schedule_status as doctor_schedule_status, slot,schedule_date, modified  \
+       from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD \
+       where SH.record_status='A' and ASD.record_status='A' and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id\
+       and " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 
 module.exports = {
   addAppointmentStatus,
@@ -926,5 +965,6 @@ module.exports = {
   addDoctorsSchedule,
   getDoctorsScheduledList,
   addLeaveOrModifySchedule,
-  getDoctorScheduleDateWise
+  getDoctorScheduleDateWise,
+  getDoctorScheduleToModify
 };
