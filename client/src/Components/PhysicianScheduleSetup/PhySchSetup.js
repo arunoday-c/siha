@@ -40,7 +40,7 @@ class PhySchSetup extends Component {
       department_error: false,
       department_error_text: "",
       openScheduler: false,
-      openModifier: true,
+      openModifier: false,
       send_obj: {},
       slot: "",
       schedule_status: "Y",
@@ -56,7 +56,8 @@ class PhySchSetup extends Component {
       description_error: false,
       description_error_text: "",
       description: "",
-      days: []
+      days: [],
+      selected_doctor: ""
     };
   }
 
@@ -220,6 +221,17 @@ class PhySchSetup extends Component {
     }
   }
 
+  openModifierPopup(e) {
+    let provider_id = e.currentTarget.getAttribute("provider-id");
+    let header_id = e.currentTarget.getAttribute("id");
+    let provider_name = e.currentTarget.getAttribute("provider-name");
+    this.setState({ openModifier: true, selected_doctor: provider_name });
+    console.log(
+      "Provider:",
+      provider_id + " Header :" + header_id + "Name:" + provider_name
+    );
+  }
+
   deptDropDownHandler(value) {
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
@@ -242,7 +254,22 @@ class PhySchSetup extends Component {
       .firstOrDefault();
 
     this.setState({
-      scheduleDoctors: docs.detail
+      scheduleDoctors: docs.doctorsList,
+      from_break_hr1: docs.from_break_hr1,
+      to_break_hr1: docs.to_break_hr1,
+      from_break_hr2: docs.from_break_hr2,
+      to_break_hr2: docs.to_break_hr2,
+      from_work_hr: docs.from_work_hr,
+      to_work_hr: docs.to_work_hr,
+      sunday: docs.sunday === "Y" ? true : false,
+      monday: docs.monday === "Y" ? true : false,
+      tuesday: docs.tuesday === "Y" ? true : false,
+      wednesday: docs.wednesday === "Y" ? true : false,
+      thursday: docs.thursday === "Y" ? true : false,
+      friday: docs.friday === "Y" ? true : false,
+      saturday: docs.saturday === "Y" ? true : false,
+      from_date: "",
+      to_date: ""
     });
   }
 
@@ -256,17 +283,18 @@ class PhySchSetup extends Component {
     } else {
       AlgaehLoader({ show: true });
       algaehApiCall({
-        uri: "/appointment/getAppointmentSchedule",
+        uri: "/appointment/getDoctorsScheduledList",
         method: "GET",
         data: {
           sub_dept_id: this.state.sub_department_id,
           month: this.state.month,
-          year: this.state.year
+          year: this.state.year,
+          provider_id: null
         },
         onSuccess: response => {
           if (response.data.success) {
             AlgaehLoader({ show: false });
-            //console.log("RRRRR Data:", response.data.records);
+            console.log("RRRRR Data:", response.data.records);
             this.setState(
               {
                 scheduleList: response.data.records,
@@ -319,7 +347,6 @@ class PhySchSetup extends Component {
 
   componentDidMount() {
     this.getDoctorsAndDepts();
-    console.log("Provider Array:", provider_array);
   }
 
   handleClose() {
@@ -349,8 +376,8 @@ class PhySchSetup extends Component {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        name: "from_time",
-                        value: this.state.from_time,
+                        name: "selected_doctor",
+                        value: this.state.selected_doctor,
                         events: {
                           onChange: null
                         },
@@ -892,6 +919,7 @@ class PhySchSetup extends Component {
           </div>
         </Modal>
         {/* Schedule Modal End */}
+
         {/* Top Filter Start */}
         <div className="col-lg-12 card box-shadow-normal">
           <div className="row ">
@@ -987,9 +1015,7 @@ class PhySchSetup extends Component {
                                   {data.schedule_description}
                                 </span>
                                 <i
-                                  id={
-                                    data.hims_d_appointment_schedule_header_id
-                                  }
+                                  id={data.appointment_schedule_header_id}
                                   className="fas fa-edit fa-1x float-right"
                                   style={{
                                     cursor: "pointer"
@@ -1280,11 +1306,16 @@ class PhySchSetup extends Component {
                                   {data.first_name + " " + data.last_name}
                                 </span>
                                 <i
+                                  provider-name={
+                                    data.first_name + " " + data.last_name
+                                  }
+                                  provider-id={data.provider_id}
                                   id={data.appointment_schedule_header_id}
                                   className="fas fa-edit fa-1x float-right"
                                   style={{
                                     cursor: "pointer"
                                   }}
+                                  onClick={this.openModifierPopup.bind(this)}
                                 />
                               </li>
                             ))

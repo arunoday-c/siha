@@ -497,15 +497,17 @@ let addDoctorsSchedule = (req, res, next) => {
         }
 
         connection.query(
-          "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id,schedule_description,`month`,`year`,\
+          "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id,schedule_description,`month`,`year`,from_date,to_date,\
           from_work_hr,to_work_hr,work_break1,from_break_hr1,to_break_hr1,work_break2,from_break_hr2,to_break_hr2,monday,tuesday,wednesday,\
           thursday,friday,saturday,sunday,created_by,created_date,updated_by,updated_date)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.sub_dept_id,
             input.schedule_description,
             input.month,
             input.year,
+            input.from_date,
+            input.to_date,
             input.from_work_hr,
             input.to_work_hr,
             input.work_break1,
@@ -731,7 +733,7 @@ let getDoctorsScheduledList = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_appointment_schedule_header_id, sub_dept_id, schedule_status, schedule_description, month, year, from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
+        "select hims_d_appointment_schedule_header_id, sub_dept_id, schedule_status, schedule_description, month, year,from_date,to_date, from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
          to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday from hims_d_appointment_schedule_header where record_status='A' AND " +
           where.condition,
         where.values,
@@ -863,6 +865,54 @@ let getAppointmentSchedule = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to get Doctor Schedule Date Wise
+let getDoctorScheduleDateWise = (req, res, next) => {
+  let selectWhere = {
+    sub_dept_id: "ALL",
+    schedule_date: "ALL",
+    provider_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let selectDoctor = "";
+    if (req.query.provider_id != "null" && req.query.provider_id != null) {
+      selectDoctor = `provider_id=${req.query.provider_id} and `;
+    }
+    delete req.query.provider_id;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status, schedule_description, month, year,\
+        from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
+        to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
+         hims_d_appointment_schedule_detail_id, provider_id,E.first_name,E.last_name,clinic_id, ASD.schedule_status, slot,schedule_date, modified \
+         from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E  where SH.record_status='A' and E.record_status='A'\
+         and ASD.record_status='A' and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id and " +
+          selectDoctor +
+          "" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addAppointmentStatus,
   addAppointmentRoom,
@@ -875,5 +925,6 @@ module.exports = {
   updateAppointmentClinic,
   addDoctorsSchedule,
   getDoctorsScheduledList,
-  addLeaveOrModifySchedule
+  addLeaveOrModifySchedule,
+  getDoctorScheduleDateWise
 };
