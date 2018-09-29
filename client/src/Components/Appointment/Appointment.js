@@ -273,7 +273,7 @@ class Appointment extends Component {
       }
     }
 
-    console.log("Max lenght", maxTime);
+    //console.log("Max lenght", maxTime);
     return (
       componentElementDoctors + componetElementBookStandBy + "</tbody></table>"
     );
