@@ -304,56 +304,6 @@ class PersonalDetails extends PureComponent {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
-                          fieldName: "category_id",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "category_id",
-                          className: "select-fld",
-                          value: this.state.category_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "country_name"
-                                : "arabic_country_name",
-                            valueField: "hims_d_country_id",
-                            data: this.props.countries
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            tabIndex: "8"
-                          }
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3 mandatory" }}
-                        label={{
-                          fieldName: "speciality_id",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "speciality_id",
-                          className: "select-fld",
-                          value: this.state.speciality_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "country_name"
-                                : "arabic_country_name",
-                            valueField: "hims_d_country_id",
-                            data: this.props.countries
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            tabIndex: "8"
-                          }
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3 mandatory" }}
-                        label={{
                           fieldName: "country_id",
                           isImp: true
                         }}
@@ -379,9 +329,7 @@ class PersonalDetails extends PureComponent {
                           }
                         }}
                       />
-                    </div>
 
-                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -434,27 +382,9 @@ class PersonalDetails extends PureComponent {
                           }
                         }}
                       />
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "services_id"
-                        }}
-                        selector={{
-                          name: "services_id",
-                          className: "select-fld",
-                          value: this.state.services_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "service_name"
-                                : "arabic_service_name",
-                            valueField: "hims_d_services_id",
-                            data: this.props.services
-                          },
-                          others: { disabled: this.state.Billexists },
-                          onChange: texthandle.bind(this, this, context)
-                        }}
-                      />
+                    </div>
+
+                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -473,11 +403,8 @@ class PersonalDetails extends PureComponent {
                           onChange: texthandle.bind(this, this, context)
                         }}
                       />
-                    </div>
-
-                    <div className="row paddin-bottom-5">
                       <AlagehFormGroup
-                        div={{ className: "col-lg-12" }}
+                        div={{ className: "col-lg-6" }}
                         label={{
                           fieldName: "address"
                         }}

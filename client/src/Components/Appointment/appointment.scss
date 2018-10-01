@@ -1,4 +1,13 @@
 .appointment {
+  .appointment-outer-cntr {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: 94.8vw;
+    height: 355px;
+  }
+  .appointment-inner-cntr {
+    width: 2900px;
+  }
   .my-calendar {
     text-align: center;
     background: #00afa4;
@@ -107,8 +116,7 @@
   }
 
   .tg {
-    border-collapse: collapse;
-    border-spacing: 0;
+    display: inline;
     th {
       font-family: Arial, sans-serif;
       font-size: 0.9rem;
@@ -120,6 +128,7 @@
       border-top: 1px solid #000;
     }
     td {
+      width: 120px;
       font-family: Arial, sans-serif;
       font-size: 0.8rem;
       overflow: hidden;
@@ -141,12 +150,14 @@
         right: -1px;
         border: 1px solid #d3d3d3;
         padding: 3px;
+        width: 20px;
       }
-      i.fa-edit {
-        background: gray;
+      i.fa-pen {
+        color: blue !important;
       }
-      i.fa-plus {
-        background: #eafffd;
+      i.fa-times {
+        color: red !important;
+        top: 18px !important;
       }
     }
 
@@ -175,6 +186,26 @@
       font-weight: bold;
       text-align: center;
       vertical-align: top;
+    }
+  }
+  ul.ul-legend {
+    list-style: none;
+    display: inline-block;
+    li {
+      display: inline;
+      margin-left: 5px;
+      border: 1px solid #000;
+      span:first-child {
+        display: inline-block;
+        padding: 10px;
+      }
+      span:last-child {
+        display: inline-block;
+        font-size: 0.8rem;
+        line-height: 0px;
+        vertical-align: super;
+        margin-left: 5px;
+      }
     }
   }
 }

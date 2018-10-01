@@ -15,6 +15,7 @@ const getEmployeeDetails = $this => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();
           return {
             hims_d_employee_id: firstRecordSet.hims_d_employee_id,
+            title_id: firstRecordSet.title_id,
             employee_code: firstRecordSet.employee_code,
             full_name: firstRecordSet.full_name,
             arabic_name: firstRecordSet.arabic_name,

@@ -455,7 +455,7 @@ class Appointment extends Component {
                           className: "txt-fld",
                           name: "full_name",
                           others: {
-                            // multiline: true
+                            multiline: true
                           },
 
                           events: {}
@@ -550,29 +550,16 @@ class Appointment extends Component {
               />
             </div>
             <div className="col-lg-5">
-              <ul style={{ listStyle: "none", display: "inline-block" }}>
+              <ul className="ul-legend">
                 {this.state.appointmentStatus !== undefined
                   ? this.state.appointmentStatus.map((data, index) => (
-                      <li
-                        key={index}
-                        style={{ display: "inline", marginRight: "5px" }}
-                      >
-                        <span className="displayInlineBlock">
-                          <span
-                            className="displayInlineBlock"
-                            style={{
-                              width: "20px",
-                              height: "20px",
-                              backgroundColor: data.color_code,
-                              marginRight: "2px"
-                            }}
-                          />
-                          <span
-                            style={{ marginTop: "auto", marginBottom: "auto" }}
-                          >
-                            {data.description}
-                          </span>
-                        </span>
+                      <li key={index}>
+                        <span
+                          style={{
+                            backgroundColor: data.color_code
+                          }}
+                        />
+                        <span>{data.description}</span>
                       </li>
                     ))
                   : null}
@@ -582,27 +569,13 @@ class Appointment extends Component {
           {/* Filter Bar End */}
         </div>
         {/* Table Start */}
-        <div className="col-lg-12 card box-shadow-normal">
+        <div
+          className="col-lg-12 card box-shadow-normal">
           {/* {renderHTML(this.plotAppointments(this.state.appointmentSchedule))} */}
-          <table className="tg">
+          <div className="appointment-outer-cntr"><div className="appointment-inner-cntr"><table className="tg">
             <tbody>
               <tr>
                 {/* <th className="tg-c3ow">Time</th> */}
-                <th className="tg-amwm" colSpan="2">
-                  Dr. Norman John
-                </th>
-                <th className="tg-amwm" colSpan="2">
-                  Dr. Norman John
-                </th>
-                <th className="tg-amwm" colSpan="2">
-                  Dr. Norman John
-                </th>
-                <th className="tg-amwm" colSpan="2">
-                  Dr. Norman John
-                </th>
-                <th className="tg-amwm" colSpan="2">
-                  Dr. Norman John
-                </th>
                 <th className="tg-amwm" colSpan="2">
                   Dr. Norman John
                 </th>
@@ -611,99 +584,22 @@ class Appointment extends Component {
                 {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
                 <td className="tbl-subHdg">BOOKED</td>
                 <td className="tbl-subHdg">STANDBY</td>
-                <td className="tbl-subHdg">BOOKED</td>
-                <td className="tbl-subHdg">STANDBY</td>
-                <td className="tbl-subHdg">BOOKED</td>
-                <td className="tbl-subHdg">STANDBY</td>
-                <td className="tbl-subHdg">BOOKED</td>
-                <td className="tbl-subHdg">STANDBY</td>
-                <td className="tbl-subHdg">BOOKED</td>
-                <td className="tbl-subHdg">STANDBY</td>
-                <td className="tbl-subHdg">BOOKED</td>
-                <td className="tbl-subHdg">STANDBY</td>
               </tr>
               <tr>
-                {/* <th className="tg-amwm">09:00 AM</th> */}
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-pen"
                   />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
                   <span className="dynPatient">John Doe</span>
                 </td>
                 <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
+                  <span class="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -711,15 +607,6 @@ class Appointment extends Component {
                 </td>
               </tr>
               <tr>
-                {/* <th className="tg-amwm">09:00 AM</th> */}
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-pen"
-                  />
-                  <span className="dynPatient">John Doe</span>
-                </td>
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
@@ -728,70 +615,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
+                  <span class="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -799,22 +623,90 @@ class Appointment extends Component {
                 </td>
               </tr>
               <tr>
-                {/* <th className="tg-amwm">09:00 AM</th> */}
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="tg">
+            <tbody>
+              <tr>
+                {/* <th className="tg-c3ow">Time</th> */}
+                <th className="tg-amwm" colSpan="2">
+                  Dr. Norman John
+                </th>
+              </tr>
+              <tr>
+                {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                <td className="tbl-subHdg">BOOKED</td>
+                <td className="tbl-subHdg">STANDBY</td>
+              </tr>
+              <tr>
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-pen"
                   />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
                   <span className="dynPatient">John Doe</span>
                 </td>
                 <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
+                  <span class="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
                   />
                 </td>
+              </tr>
+              <tr>
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
@@ -823,12 +715,14 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
+                  <span class="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
                   />
                 </td>
+              </tr>
+              <tr>
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
@@ -837,12 +731,14 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
+                  <span class="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
                   />
                 </td>
+              </tr>
+              <tr>
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
@@ -851,12 +747,14 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
+                  <span class="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
                   />
                 </td>
+              </tr>
+              <tr>
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
@@ -865,12 +763,82 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="tg">
+            <tbody>
+              <tr>
+                {/* <th className="tg-c3ow">Time</th> */}
+                <th className="tg-amwm" colSpan="2">
+                  Dr. Norman John
+                </th>
+              </tr>
+              <tr>
+                {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                <td className="tbl-subHdg">BOOKED</td>
+                <td className="tbl-subHdg">STANDBY</td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
                   />
                 </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
@@ -887,166 +855,6 @@ class Appointment extends Component {
                 </td>
               </tr>
               <tr>
-                {/* <th className="tg-amwm">09:00 AM</th> */}
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-pen"
-                  />
-                  <span className="dynPatient">John Doe</span>
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">09:00 AM</th> */}
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-pen"
-                  />
-                  <span className="dynPatient">John Doe</span>
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
@@ -1064,6 +872,913 @@ class Appointment extends Component {
               </tr>
             </tbody>
           </table>
+          <table className="tg">
+            <tbody>
+              <tr>
+                {/* <th className="tg-c3ow">Time</th> */}
+                <th className="tg-amwm" colSpan="2">
+                  Dr. Norman John
+                </th>
+              </tr>
+              <tr>
+                {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                <td className="tbl-subHdg">BOOKED</td>
+                <td className="tbl-subHdg">STANDBY</td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                {/* <th className="tg-amwm">09:00 AM</th> */}
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="tg">
+            <tbody>
+              <tr>
+                {/* <th className="tg-c3ow">Time</th> */}
+                <th className="tg-amwm" colSpan="2">
+                  Dr. Norman John
+                </th>
+              </tr>
+              <tr>
+                {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                <td className="tbl-subHdg">BOOKED</td>
+                <td className="tbl-subHdg">STANDBY</td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="tg">
+            <tbody>
+              <tr>
+                {/* <th className="tg-c3ow">Time</th> */}
+                <th className="tg-amwm" colSpan="2">
+                  Dr. Norman John
+                </th>
+              </tr>
+              <tr>
+                {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                <td className="tbl-subHdg">BOOKED</td>
+                <td className="tbl-subHdg">STANDBY</td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                {/* <th className="tg-amwm">09:00 AM</th> */}
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="tg">
+            <tbody>
+              <tr>
+                {/* <th className="tg-c3ow">Time</th> */}
+                <th className="tg-amwm" colSpan="2">
+                  Dr. Norman John
+                </th>
+              </tr>
+              <tr>
+                {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                <td className="tbl-subHdg">BOOKED</td>
+                <td className="tbl-subHdg">STANDBY</td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                {/* <th className="tg-amwm">09:00 AM</th> */}
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="tg">
+            <tbody>
+              <tr>
+                {/* <th className="tg-c3ow">Time</th> */}
+                <th className="tg-amwm" colSpan="2">
+                  Dr. Norman John
+                </th>
+              </tr>
+              <tr>
+                {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                <td className="tbl-subHdg">BOOKED</td>
+                <td className="tbl-subHdg">STANDBY</td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="tg">
+            <tbody>
+              <tr>
+                {/* <th className="tg-c3ow">Time</th> */}
+                <th className="tg-amwm" colSpan="2">
+                  Dr. Norman John
+                </th>
+              </tr>
+              <tr>
+                {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                <td className="tbl-subHdg">BOOKED</td>
+                <td className="tbl-subHdg">STANDBY</td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="tg">
+            <tbody>
+              <tr>
+                {/* <th className="tg-c3ow">Time</th> */}
+                <th className="tg-amwm" colSpan="2">
+                  Dr. Norman John
+                </th>
+              </tr>
+              <tr>
+                {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                <td className="tbl-subHdg">BOOKED</td>
+                <td className="tbl-subHdg">STANDBY</td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="tg">
+            <tbody>
+              <tr>
+                {/* <th className="tg-c3ow">Time</th> */}
+                <th className="tg-amwm" colSpan="2">
+                  Dr. Norman John
+                </th>
+              </tr>
+              <tr>
+                {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                <td className="tbl-subHdg">BOOKED</td>
+                <td className="tbl-subHdg">STANDBY</td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="tg">
+            <tbody>
+              <tr>
+                {/* <th className="tg-c3ow">Time</th> */}
+                <th className="tg-amwm" colSpan="2">
+                  Dr. Norman John
+                </th>
+              </tr>
+              <tr>
+                {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                <td className="tbl-subHdg">BOOKED</td>
+                <td className="tbl-subHdg">STANDBY</td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-times"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+                <td className="tg-baqh">
+                  <span class="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          </div>
         </div>
         {/* Table End */}
       </div>

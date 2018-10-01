@@ -60,20 +60,6 @@ const Validations = $this => {
       MandatoryMsg: "Invalid Input. Date Of Birth Cannot be blank."
     });
     return isError;
-  } else if ($this.state.category_id === null) {
-    isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Category."
-    });
-    return isError;
-  } else if ($this.state.speciality_id === null) {
-    isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Speciality."
-    });
-    return isError;
   } else if ($this.state.country_id === null) {
     isError = true;
     $this.setState({
@@ -113,7 +99,7 @@ const InsertUpdateEmployee = $this => {
     debugger;
     // if ($this.state.hims_d_employee_id === null) {
     //   algaehApiCall({
-    //     uri: "/pharmacy/addItemMaster",
+    //     uri: "/employee/addEmployee",
     //     data: $this.state,
     //     onSuccess: response => {
     //       if (response.data.success === true) {
