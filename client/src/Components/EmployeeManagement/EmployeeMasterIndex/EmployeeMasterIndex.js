@@ -17,13 +17,17 @@ import Options from "../../../Options.json";
 import AppBar from "@material-ui/core/AppBar";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { setGlobal } from "../../../utils/GlobalFunctions";
-import { getEmployeeDetails } from "./EmployeeMasterIndexEvent";
+import {
+  getEmployeeDetails,
+  EditEmployeeMaster
+} from "./EmployeeMasterIndexEvent";
 
 class EmployeeMasterIndex extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: false,
+      employeeDetailsPop: {},
       Employeedetails: [],
       selectedLang: "en"
     };
@@ -101,24 +105,15 @@ class EmployeeMasterIndex extends Component {
   }
 
   CloseModel(e) {
-    this.setState({
-      ...this.state,
-      isOpen: !this.state.isOpen
-    });
-    // this.props.getServices({
-    //   uri: "/serviceType/getService",
-    //   method: "GET",
-    //   redux: {
-    //     type: "SERVICES_GET_DATA",
-    //     mappingName: "hospitalservices"
-    //   },
-    //   afterSuccess: data => {
-    //     this.setState({
-    //       ...this.state,
-    //       isOpen: !this.state.isOpen
-    //     });
-    //   }
-    // });
+    this.setState(
+      {
+        ...this.state,
+        isOpen: !this.state.isOpen
+      },
+      () => {
+        getEmployeeDetails(this, this);
+      }
+    );
   }
 
   changeDateFormat = date => {
@@ -193,7 +188,11 @@ class EmployeeMasterIndex extends Component {
                               style={{ maxHeight: "4vh" }}
                             >
                               <Edit
-                              // onClick={this.EditItemMaster.bind(this, row)}
+                                onClick={EditEmployeeMaster.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
                               />
                             </IconButton>
                           </span>
@@ -245,29 +244,12 @@ class EmployeeMasterIndex extends Component {
                       )
                     },
                     {
-                      fieldName: "category_id",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "category_id" }} />
-                      )
-
-                      // displayTemplate: row => {
-                      //   let display =
-                      //     this.props.hospitaldetails === undefined
-                      //       ? []
-                      //       : this.props.hospitaldetails.filter(
-                      //           f => f.hims_d_hospital_id === row.category_id
-                      //         );
-
-                      //   return (
-                      //     <span>
-                      //       {display !== null && display.length !== 0
-                      //         ? this.state.selectedLang === "en"
-                      //           ? display[0].hospital_name
-                      //           : display[0].arabic_hospital_name
-                      //         : ""}
-                      //     </span>
-                      //   );
-                      // }
+                      fieldName: "primary_contact_no",
+                      label: <AlgaehLabel label={{ fieldName: "contact_no" }} />
+                    },
+                    {
+                      fieldName: "email",
+                      label: <AlgaehLabel label={{ fieldName: "email" }} />
                     }
                   ]}
                   keyId="service_code"

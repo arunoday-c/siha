@@ -49,4 +49,11 @@ const getEmployeeDetails = $this => {
   });
 };
 
-export { getEmployeeDetails };
+const EditEmployeeMaster = ($this, row) => {
+  $this.setState({
+    isOpen: !$this.state.isOpen,
+    employeeDetailsPop: row
+  });
+};
+
+export { getEmployeeDetails, EditEmployeeMaster };
