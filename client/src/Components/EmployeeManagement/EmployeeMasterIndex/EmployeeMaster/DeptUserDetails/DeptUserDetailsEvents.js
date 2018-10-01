@@ -25,10 +25,7 @@ const departmenttexthandle = ($this, ctrl, e) => {
         data: { sub_department_id: $this.state.sub_department_id },
         redux: {
           type: "EMP_SPECILITY_GET_DATA",
-          mappingName: "empspeciality"
-        },
-        afterSucces: data => {
-          debugger;
+          mappingName: "empdepspeciality"
         }
       });
     }
@@ -46,15 +43,15 @@ const specialitytexthandle = ($this, ctrl, e) => {
     },
     () => {
       debugger;
-      $this.props.getEmpSpeciality({
-        uri: "/employeesetups/getEmpSpeciality",
+      $this.props.getEmployeeCategory({
+        uri: "/employee/getEmployeeCategory",
         method: "GET",
-        data: { sub_department_id: $this.state.sub_department_id },
+        data: { speciality_id: $this.state.speciality_id },
         redux: {
-          type: "EMP_SPECILITY_GET_DATA",
-          mappingName: "empspeciality"
+          type: "EMP_SPEC_CATEGORY_GET_DATA",
+          mappingName: "specimapcategory"
         },
-        afterSucces: data => {
+        afterSuccess: data => {
           debugger;
         }
       });
@@ -69,7 +66,8 @@ const categorytexthandle = ($this, ctrl, e) => {
 
   $this.setState({
     [name]: value,
-    category_speciality_id: e.selected
+    hims_m_category_speciality_mappings_id:
+      e.selected.hims_m_category_speciality_mappings_id
   });
 };
 
@@ -78,7 +76,11 @@ const AddDeptUser = ($this, context) => {
   let deptDetails = $this.state.deptDetails;
   let inpObj = {
     sub_department_id: $this.state.sub_department_id,
-    user_id: $this.state.user_id
+    hims_m_category_speciality_mappings_id:
+      $this.state.hims_m_category_speciality_mappings_id,
+    user_id: $this.state.user_id,
+    category_id: $this.state.category_id,
+    speciality_id: $this.state.speciality_id
   };
 
   deptDetails.push(inpObj);

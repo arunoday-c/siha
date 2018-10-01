@@ -89,8 +89,7 @@ let getEmpSpeciality = (req, res, next) => {
 
 let getEmpCategory = (req, res, next) => {
   let Diet = {
-    hims_employee_category_id: "ALL",
-    sub_department_id: "ALL"
+    hims_employee_category_id: "ALL"
   };
   try {
     if (req.db == null) {

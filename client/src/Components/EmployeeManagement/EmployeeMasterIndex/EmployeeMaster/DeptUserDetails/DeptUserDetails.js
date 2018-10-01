@@ -31,7 +31,7 @@ class DeptUserDetails extends Component {
     this.state = {
       sub_department_id: null,
       user_id: null,
-      category_speciality_id: null
+      hims_m_category_speciality_mappings_id: null
     };
   }
 
@@ -51,6 +51,19 @@ class DeptUserDetails extends Component {
         redux: {
           type: "EMP_SPECILITY_GET_DATA",
           mappingName: "empcategory"
+        }
+      });
+    }
+    if (
+      this.props.empspeciality === undefined ||
+      this.props.empspeciality.length === 0
+    ) {
+      this.props.getEmpSpeciality({
+        uri: "/employeesetups/getEmpSpeciality",
+        method: "GET",
+        redux: {
+          type: "EMP_SPECILITY_GET_DATA",
+          mappingName: "empspeciality"
         }
       });
     }
@@ -105,7 +118,7 @@ class DeptUserDetails extends Component {
                     dataSource: {
                       textField: "speciality_name",
                       valueField: "hims_d_employee_speciality_id",
-                      data: this.props.empspeciality
+                      data: this.props.empdepspeciality
                     },
 
                     onChange: specialitytexthandle.bind(this, this)
@@ -121,12 +134,12 @@ class DeptUserDetails extends Component {
                   selector={{
                     name: "category_id",
                     className: "select-fld",
-                    value: this.state.speciality_id,
+                    value: this.state.category_id,
 
                     dataSource: {
                       textField: "employee_category_name",
                       valueField: "hims_employee_category_id",
-                      data: this.props.empcategory
+                      data: this.props.specimapcategory
                     },
 
                     onChange: categorytexthandle.bind(this, this)
@@ -222,6 +235,58 @@ class DeptUserDetails extends Component {
                         }
                       },
                       {
+                        fieldName: "speciality_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "speciality_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.empspeciality === undefined
+                              ? []
+                              : this.props.empspeciality.filter(
+                                  f =>
+                                    f.hims_d_employee_speciality_id ===
+                                    row.speciality_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].speciality_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "category_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "category_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.empcategory === undefined
+                              ? []
+                              : this.props.empcategory.filter(
+                                  f =>
+                                    f.hims_employee_category_id ===
+                                    row.category_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].employee_category_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
                         fieldName: "user_id",
                         label: <AlgaehLabel label={{ fieldName: "user_id" }} />,
                         displayTemplate: row => {
@@ -265,7 +330,9 @@ function mapStateToProps(state) {
     subdepartment: state.subdepartment,
     userdrtails: state.userdrtails,
     empspeciality: state.empspeciality,
-    empcategory: state.empcategory
+    empcategory: state.empcategory,
+    specimapcategory: state.specimapcategory,
+    empdepspeciality: state.empdepspeciality
   };
 }
 
@@ -275,7 +342,8 @@ function mapDispatchToProps(dispatch) {
       getUserDetails: AlgaehActions,
       getSubDepartment: AlgaehActions,
       getEmpSpeciality: AlgaehActions,
-      getEmpCategory: AlgaehActions
+      getEmpCategory: AlgaehActions,
+      getEmployeeCategory: AlgaehActions
     },
     dispatch
   );

@@ -29,6 +29,8 @@
         margin: 0px;
         padding: 5px;
         font-size: 0.85rem; }
+        :global .bordered-layout ul li.active {
+          background: #eafffd; }
       :global .bordered-layout ul li:nth-child(odd) {
         background: #f2f2f2; }
       :global .bordered-layout ul li:nth-child(even) {
