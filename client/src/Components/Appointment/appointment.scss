@@ -84,45 +84,97 @@
         cursor: pointer;
       }
     }
+    .dynSlot {
+      position: absolute;
+      top: 2px;
+      left: 6px;
+      font-size: 0.7rem;
+      color: #7d7d7d;
+    }
+    .dynPatient {
+      display: inline-block;
+      text-align: left;
+      width: 100%;
+      padding-left: 5px;
+    }
+    .tbl-subHdg {
+      text-transform: uppercase;
+      font-size: 0.7rem !important;
+      border: 1px solid #009e94 !important;
+      background: #fffff4;
+      color: #5a5a5a;
+    }
   }
 
   .tg {
     border-collapse: collapse;
     border-spacing: 0;
-  }
-  .tg td {
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    padding: 10px 5px;
-    border-style: solid;
-    border-width: 1px;
-    overflow: hidden;
-    word-break: normal;
-    border-color: black;
-  }
-  .tg th {
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    font-weight: normal;
-    padding: 10px 5px;
-    border-style: solid;
-    border-width: 1px;
-    overflow: hidden;
-    word-break: normal;
-    border-color: black;
-  }
-  .tg .tg-baqh {
-    text-align: center;
-    vertical-align: top;
-  }
-  .tg .tg-c3ow {
-    border-color: inherit;
-    text-align: center;
-    vertical-align: top;
-  }
-  .tg .tg-amwm {
-    font-weight: bold;
-    text-align: center;
-    vertical-align: top;
+    th {
+      font-family: Arial, sans-serif;
+      font-size: 0.9rem;
+      font-weight: normal;
+      overflow: hidden;
+      word-break: normal;
+      border: 1px solid lightgrey;
+      border-bottom: 1px solid #000;
+      border-top: 1px solid #000;
+    }
+    td {
+      font-family: Arial, sans-serif;
+      font-size: 0.8rem;
+      overflow: hidden;
+      word-break: normal;
+      border: 1px solid #009e94;
+      border-bottom: 1px solid lightgrey;
+      border-top: 1px solid lightgrey;
+    }
+    .tg-baqh {
+      text-align: center;
+      position: relative;
+      padding: 15px 0 5px;
+      height: 55px;
+
+      i {
+        visibility: hidden;
+        position: absolute;
+        top: -1px;
+        right: -1px;
+        border: 1px solid #d3d3d3;
+        padding: 3px;
+      }
+      i.fa-edit {
+        background: gray;
+      }
+      i.fa-plus {
+        background: #eafffd;
+      }
+    }
+
+    .tg-baqh:hover {
+      i {
+        visibility: visible;
+      }
+    }
+
+    .tg-baqh:nth-child(odd) {
+      border-right: 1px dashed lightgrey !important;
+      // background: #edfffd;
+    }
+    .tg-baqh:nth-child(even) {
+      border-left: none !important;
+      .dynSlot {
+        visibility: hidden;
+      }
+    }
+    .tg-c3ow {
+      border-color: inherit;
+      text-align: center;
+      vertical-align: top;
+    }
+    .tg-amwm {
+      font-weight: bold;
+      text-align: center;
+      vertical-align: top;
+    }
   }
 }

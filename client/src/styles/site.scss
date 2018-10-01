@@ -571,6 +571,11 @@ input[type="time"] {
   background: #fff;
   width: 100%;
 }
+
+input[type="number"] {
+  text-align: right;
+  direction: rtl;
+}
 input[type="color"] {
   font-size: $textFontSize;
   -webkit-appearance: none;
@@ -859,6 +864,9 @@ th {
 }
 //Arabic Version
 .algaeh_Arabic_Version {
+  .table-responsive{
+    direction: rtl;
+  }
   .autoselect-Div {
     position: relative;
     i {
@@ -1196,4 +1204,10 @@ th {
       }
     }
   }
+}
+.invalid-feedback {
+  font-size: 0.7rem;
+}
+.is-invalid {
+  border-color: #dc3545;
 }

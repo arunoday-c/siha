@@ -109,7 +109,17 @@
   "card_no": "Card Number",
   "ins_expiry_date": "Expiry Date",
 
-  "consultation": "تشاور",
+  "consultation": "Consultation",
 
-  "bill_details": "Bill Details"
+  "bill_details": "Bill Details",
+
+  "services": "Services",
+  "percentage": "Percentage",
+  "max_limit": "Max-Limit",
+  "laboratory": "Laboratory",
+  "radiology": "Radiology",
+  "procedure": "Procedure",
+  "dental": "Dental",
+  "medicine": "Medicine",
+  "co_insurance": "Co_Insurance"
 }
