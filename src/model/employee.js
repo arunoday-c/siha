@@ -21,14 +21,13 @@ let addEmployee = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT hims_d_employee(employee_code,services_id,title_id,first_name,middle_name,last_name,\
+        "INSERT hims_d_employee(employee_code,title_id,first_name,middle_name,last_name,\
           full_name,arabic_name,employee_designation_id,license_number,sex,date_of_birth,date_of_joining,date_of_leaving,address,\
           address2,pincode,city_id,state_id,country_id,primary_contact_no,secondary_contact_no,email,emergancy_contact_person,emergancy_contact_no,\
-          blood_group,isdoctor,employee_status,effective_start_date,effective_end_date,category_id,created_date,created_by,updated_date,updated_by) values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          blood_group,isdoctor,employee_status,effective_start_date,effective_end_date,created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.employee_code,
-          input.services_id,
           input.title_id,
           input.first_name,
           input.middle_name,
@@ -57,7 +56,6 @@ let addEmployee = (req, res, next) => {
           input.employee_status,
           input.effective_start_date,
           input.effective_end_date,
-          input.category_id,
           new Date(),
           input.created_by,
           new Date(),
@@ -68,6 +66,37 @@ let addEmployee = (req, res, next) => {
             releaseDBConnection(db, connection);
             next(error);
           }
+
+          const insurtColumns = [
+            "employee_id",
+            "sub_department_id",
+            "category_speciality_id",
+            "user_id",
+            "created_by",
+            "updated_by"
+          ];
+
+          connection.query(
+            "INSERT INTO hims_d_rad_template_detail(" +
+              insurtColumns.join(",") +
+              ",`test_id`) VALUES ?",
+            [
+              jsonArrayToObject({
+                sampleInputObject: insurtColumns,
+                arrayObj: req.body.RadTemplate,
+                newFieldToInsert: [req.body.test_id],
+                req: req
+              })
+            ],
+            (error, radiolgyResult) => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+            }
+          );
 
           connection.query(
             "SELECT * FROM hims_d_employee WHERE hims_d_employee_id=?",
