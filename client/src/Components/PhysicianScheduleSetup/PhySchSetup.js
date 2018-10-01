@@ -58,7 +58,8 @@ class PhySchSetup extends Component {
       description: "",
       days: [],
       selected_doctor: "",
-      modify : []
+      modify: [],
+      scheduleDisable: true
     };
   }
 
@@ -226,9 +227,8 @@ class PhySchSetup extends Component {
     let provider_id = e.currentTarget.getAttribute("provider-id");
     let header_id = e.currentTarget.getAttribute("id");
     let provider_name = e.currentTarget.getAttribute("provider-name");
-    this.getDoctorScheduleToModify(header_id , provider_id);
+    this.getDoctorScheduleToModify(header_id, provider_id);
     this.setState({ openModifier: true, selected_doctor: provider_name });
-  
   }
 
   deptDropDownHandler(value) {
@@ -243,7 +243,12 @@ class PhySchSetup extends Component {
   }
 
   loadDetails(e) {
-    debugger;
+    var element = document.querySelectorAll("[schedules]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
+    }
+    e.currentTarget.classList.add("active");
+
     let header_id = e.currentTarget.getAttribute("id");
 
     let docs = Enumerable.from(this.state.scheduleList)
@@ -323,17 +328,20 @@ class PhySchSetup extends Component {
     this.setState({ [value.name]: value.value });
   }
 
-  getDoctorScheduleToModify(header_id , provider_id){
+  getDoctorScheduleToModify(header_id, provider_id) {
     algaehApiCall({
       uri: "/appointment/getDoctorScheduleToModify",
       method: "GET",
-      data : {appointment_schedule_header_id : header_id, provider_id : provider_id},
+      data: {
+        appointment_schedule_header_id: header_id,
+        provider_id: provider_id
+      },
       onSuccess: response => {
         if (response.data.success) {
           this.setState({
-            modify : response.data.records
-           // departments: response.data.records.departmets
-           // departments: response.data.records.departmets
+            modify: response.data.records
+            // departments: response.data.records.departmets
+            // departments: response.data.records.departmets
           });
         }
       },
@@ -345,7 +353,6 @@ class PhySchSetup extends Component {
         });
       }
     });
-
   }
 
   getDoctorsAndDepts() {
@@ -480,25 +487,33 @@ class PhySchSetup extends Component {
                     {
                       fieldName: "from_break_hr1",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "From Work Break 1" }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "From Work Break 1" }}
+                        />
                       )
                     },
                     {
                       fieldName: "to_break_hr1",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "To Work Break 1" }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "To Work Break 1" }}
+                        />
                       )
                     },
                     {
                       fieldName: "from_break_hr2",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "From Work Break 2" }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "From Work Break 2" }}
+                        />
                       )
                     },
                     {
                       fieldName: "to_break_hr2",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "To Work Break 2" }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "To Work Break 2" }}
+                        />
                       )
                     }
                   ]}
@@ -1033,6 +1048,7 @@ class PhySchSetup extends Component {
                         {this.state.scheduleList.length !== 0
                           ? this.state.scheduleList.map((data, index) => (
                               <li
+                                schedules={data.schedule_description}
                                 id={data.hims_d_appointment_schedule_header_id}
                                 key={index}
                                 onClick={this.loadDetails.bind(this)}
@@ -1049,6 +1065,11 @@ class PhySchSetup extends Component {
                                   className="fas fa-edit fa-1x float-right"
                                   style={{
                                     cursor: "pointer"
+                                  }}
+                                  onClick={() => {
+                                    this.setState({
+                                      scheduleDisable: false
+                                    });
                                   }}
                                 />
                               </li>
@@ -1073,7 +1094,10 @@ class PhySchSetup extends Component {
                             label={{ forceLabel: "From Date", isImp: true }}
                             textBox={{
                               className: "txt-fld",
-                              name: "from_date"
+                              name: "from_date",
+                              others: {
+                                disabled: this.state.scheduleDisable
+                              }
                             }}
                             events={{
                               onChange: selectedDate => {
@@ -1087,7 +1111,10 @@ class PhySchSetup extends Component {
                             label={{ forceLabel: "To Date", isImp: true }}
                             textBox={{
                               className: "txt-fld",
-                              name: "to_date"
+                              name: "to_date",
+                              others: {
+                                disabled: this.state.scheduleDisable
+                              }
                             }}
                             events={{
                               onChange: selectedDate => {
@@ -1115,7 +1142,8 @@ class PhySchSetup extends Component {
                                 onChange: this.changeTexts.bind(this)
                               },
                               others: {
-                                type: "time"
+                                type: "time",
+                                disabled: this.state.scheduleDisable
                               }
 
                               // error: this.state.description_error,
@@ -1136,7 +1164,8 @@ class PhySchSetup extends Component {
                                 onChange: this.changeTexts.bind(this)
                               },
                               others: {
-                                type: "time"
+                                type: "time",
+                                disabled: this.state.scheduleDisable
                               }
 
                               // error: this.state.description_error,
@@ -1165,7 +1194,8 @@ class PhySchSetup extends Component {
                                 onChange: this.changeTexts.bind(this)
                               },
                               others: {
-                                type: "time"
+                                type: "time",
+                                disabled: this.state.scheduleDisable
                               }
                               // error: this.state.description_error,
                               // helperText: this.state.description_error_text
@@ -1185,7 +1215,8 @@ class PhySchSetup extends Component {
                                 onChange: this.changeTexts.bind(this)
                               },
                               others: {
-                                type: "time"
+                                type: "time",
+                                disabled: this.state.scheduleDisable
                               }
 
                               // error: this.state.description_error,
@@ -1211,7 +1242,8 @@ class PhySchSetup extends Component {
                                 onChange: this.changeTexts.bind(this)
                               },
                               others: {
-                                type: "time"
+                                type: "time",
+                                disabled: this.state.scheduleDisable
                               }
                               // error: this.state.description_error,
                               // helperText: this.state.description_error_text
@@ -1231,7 +1263,8 @@ class PhySchSetup extends Component {
                                 onChange: this.changeTexts.bind(this)
                               },
                               others: {
-                                type: "time"
+                                type: "time",
+                                disabled: this.state.scheduleDisable
                               }
                               // error: this.state.description_error,
                               // helperText: this.state.description_error_text
@@ -1243,7 +1276,14 @@ class PhySchSetup extends Component {
                     <div className="row margin-top-15">
                       <div className="col-lg-12">
                         <label>Working Days</label>
-                        <div className="customCheckbox">
+                        <div
+                          className="customCheckbox"
+                          style={{
+                            pointerEvents: this.state.scheduleDisable
+                              ? "none"
+                              : ""
+                          }}
+                        >
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
