@@ -20,99 +20,216 @@ let addEmployee = (req, res, next) => {
         next(error);
       }
 
-      connection.query(
-        "INSERT hims_d_employee(employee_code,title_id,first_name,middle_name,last_name,\
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        connection.query(
+          "INSERT hims_d_employee(employee_code,title_id,first_name,middle_name,last_name,\
           full_name,arabic_name,employee_designation_id,license_number,sex,date_of_birth,date_of_joining,date_of_leaving,address,\
           address2,pincode,city_id,state_id,country_id,primary_contact_no,secondary_contact_no,email,emergancy_contact_person,emergancy_contact_no,\
           blood_group,isdoctor,employee_status,effective_start_date,effective_end_date,created_date,created_by,updated_date,updated_by) values(\
             ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          input.employee_code,
-          input.title_id,
-          input.first_name,
-          input.middle_name,
-          input.last_name,
-          input.full_name,
-          input.arabic_name,
-          input.employee_designation_id,
-          input.license_number,
-          input.sex,
-          input.date_of_birth,
-          input.date_of_joining,
-          input.date_of_leaving,
-          input.address,
-          input.address2,
-          input.pincode,
-          input.city_id,
-          input.state_id,
-          input.country_id,
-          input.primary_contact_no,
-          input.secondary_contact_no,
-          input.email,
-          input.emergancy_contact_person,
-          input.emergancy_contact_no,
-          input.blood_group,
-          input.isdoctor,
-          input.employee_status,
-          input.effective_start_date,
-          input.effective_end_date,
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
-        ],
-        (error, result) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-
-          const insurtColumns = [
-            "employee_id",
-            "sub_department_id",
-            "category_speciality_id",
-            "user_id",
-            "created_by",
-            "updated_by"
-          ];
-
-          connection.query(
-            "INSERT INTO hims_d_rad_template_detail(" +
-              insurtColumns.join(",") +
-              ",`employee_id`) VALUES ?",
-            [
-              jsonArrayToObject({
-                sampleInputObject: insurtColumns,
-                arrayObj: req.body.RadTemplate,
-                newFieldToInsert: [result.insertId],
-                req: req
-              })
-            ],
-            (error, radiolgyResult) => {
-              if (error) {
-                connection.rollback(() => {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                });
-              }
-            }
-          );
-          fdf;
-
-          connection.query(
-            "SELECT * FROM hims_d_employee WHERE hims_d_employee_id=?",
-            [result["insertId"]],
-            (error, resultBack) => {
-              releaseDBConnection(db, connection);
-              if (error) {
+          [
+            input.employee_code,
+            input.title_id,
+            input.first_name,
+            input.middle_name,
+            input.last_name,
+            input.full_name,
+            input.arabic_name,
+            input.employee_designation_id,
+            input.license_number,
+            input.sex,
+            input.date_of_birth,
+            input.date_of_joining,
+            input.date_of_leaving,
+            input.address,
+            input.address2,
+            input.pincode,
+            input.city_id,
+            input.state_id,
+            input.country_id,
+            input.primary_contact_no,
+            input.secondary_contact_no,
+            input.email,
+            input.emergancy_contact_person,
+            input.emergancy_contact_no,
+            input.blood_group,
+            input.isdoctor,
+            input.employee_status,
+            input.effective_start_date,
+            input.effective_end_date,
+            new Date(),
+            input.created_by,
+            new Date(),
+            input.updated_by
+          ],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
                 next(error);
-              }
-              req.records = resultBack;
+              });
+            }
+            if (result.insertId != null && req.body.deptDetails.length != 0) {
+              const insurtColumns = [
+                "employee_id",
+                "services_id",
+                "sub_department_id",
+                "category_speciality_id",
+                "user_id",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_m_employee_department_mappings(" +
+                  insurtColumns.join(",") +
+                  ",employee_id,created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: req.body.deptDetails,
+                    newFieldToInsert: [result.insertId, new Date(), new Date()],
+                    req: req
+                  })
+                ],
+                (error, departResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  new Promise((resolve, reject) => {
+                    try {
+                      if (req.body.serviceComm.length != 0) {
+                        const insurtColumns = [
+                          "provider_id",
+                          "services_id",
+                          "service_type_id",
+                          "op_cash_commission_percent",
+                          "op_credit_commission_percent",
+                          "ip_cash_commission_percent",
+                          "ip_credit_commission_percent",
+                          "created_by",
+                          "updated_by"
+                        ];
+
+                        connection.query(
+                          "INSERT INTO hims_m_doctor_service_commission(" +
+                            insurtColumns.join(",") +
+                            ",created_date,updated_date) VALUES ?",
+                          [
+                            jsonArrayToObject({
+                              sampleInputObject: insurtColumns,
+                              arrayObj: req.body.serviceComm,
+                              newFieldToInsert: [new Date(), new Date()],
+                              req: req
+                            })
+                          ],
+                          (error, serviceCommResult) => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+                            return resolve(serviceCommResult);
+                          }
+                        );
+                      } else {
+                        return resolve();
+                      }
+                    } catch (e) {
+                      reject(e);
+                    }
+                  }).then(results => {
+                    if (req.body.servTypeCommission.length != 0) {
+                      const insurtColumns = [
+                        "provider_id",
+                        "service_type_id",
+                        "op_cash_comission_percent",
+                        "op_credit_comission_percent",
+                        "ip_cash_commission_percent",
+                        "ip_credit_commission_percent",
+                        "created_by",
+                        "updated_by"
+                      ];
+
+                      connection.query(
+                        "INSERT INTO hims_m_doctor_service_type_commission(" +
+                          insurtColumns.join(",") +
+                          ",created_date,updated_date) VALUES ?",
+                        [
+                          jsonArrayToObject({
+                            sampleInputObject: insurtColumns,
+                            arrayObj: req.body.servTypeCommission,
+                            newFieldToInsert: [new Date(), new Date()],
+                            req: req
+                          })
+                        ],
+                        (error, serviceTypeCommResult) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+
+                          connection.commit(error => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+                            req.records = serviceTypeCommResult;
+                            next();
+                          });
+                        }
+                      );
+                    } else {
+                      connection.commit(error => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        req.records = results;
+                        next();
+                      });
+                    }
+                  });
+                }
+              );
+            } else {
+              req.records = result;
               next();
             }
-          );
-        }
-      );
+
+            // connection.query(
+            //   "SELECT * FROM hims_d_employee WHERE hims_d_employee_id=?",
+            //   [result["insertId"]],
+            //   (error, resultBack) => {
+            //     releaseDBConnection(db, connection);
+            //     if (error) {
+            //       next(error);
+            //     }
+            //     req.records = resultBack;
+            //     next();
+            //   }
+            // );
+          }
+        );
+      });
     });
   } catch (e) {
     next(e);
