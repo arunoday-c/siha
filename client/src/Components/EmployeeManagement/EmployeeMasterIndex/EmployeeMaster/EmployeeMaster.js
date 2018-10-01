@@ -129,6 +129,17 @@ class EmployeeMaster extends Component {
     this.setState({ open: false });
   };
 
+  componentWillReceiveProps(newProps) {
+    debugger;
+    if (newProps.employeeDetailsPop.hims_d_employee_id !== undefined) {
+      let IOputs = newProps.employeeDetailsPop;
+      this.setState({ ...this.state, ...IOputs });
+    } else {
+      let IOputs = EmpMasterIOputs.inputParam();
+      this.setState(IOputs);
+    }
+  }
+
   render() {
     return (
       <div className="hims_employee_master">

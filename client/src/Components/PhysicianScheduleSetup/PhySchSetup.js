@@ -25,7 +25,7 @@ class PhySchSetup extends Component {
       scheduleList: [],
       scheduleDoctors: [],
       year: moment().year(),
-      month: moment(new Date()).format("M"),
+      month: moment().format("M"),
       from_date: new Date(),
       to_date: new Date(),
       all: false,
@@ -118,8 +118,7 @@ class PhySchSetup extends Component {
     } else {
       provider_array.push(myRow);
     }
-
-    console.log("Pushed:", provider_array);
+    // console.log("Pushed:", provider_array);
   }
 
   saveApptSchedule(e) {
@@ -164,7 +163,7 @@ class PhySchSetup extends Component {
       myObj.schedule_detail = provider_array;
 
       this.setState({ send_obj: myObj }, () => {
-        console.log("ABC:", JSON.stringify(this.state.send_obj));
+        //  console.log("ABC:", JSON.stringify(this.state.send_obj));
 
         algaehApiCall({
           uri: "/appointment/addDoctorsSchedule",
@@ -178,7 +177,7 @@ class PhySchSetup extends Component {
                 icon: "success",
                 timer: 2000
               });
-              console.log("Save Response:", response.data.records);
+              //console.log("Save Response:", response.data.records);
             }
           },
           onFailure: error => {}
@@ -257,7 +256,9 @@ class PhySchSetup extends Component {
       )
       .firstOrDefault();
 
+    debugger;
     this.setState({
+      description: docs.schedule_description,
       scheduleDoctors: docs.doctorsList,
       from_break_hr1: docs.from_break_hr1,
       to_break_hr1: docs.to_break_hr1,
@@ -325,6 +326,13 @@ class PhySchSetup extends Component {
   }
 
   dropDownHandler(value) {
+    debugger;
+    if (value.name === "month") {
+      let dateToday = this.state.year + this.state.month + "01";
+      this.setState({
+        from_date: this.state.year + this.state.month + "01"
+      });
+    }
     this.setState({ [value.name]: value.value });
   }
 
@@ -685,10 +693,12 @@ class PhySchSetup extends Component {
                             onChange: this.changeTexts.bind(this)
                           },
                           others: {
-                            type: "number"
+                            type: "number",
+                            min: moment().year()
                           }
                         }}
                       />
+
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3" }}
                         label={{ forceLabel: "From Date", isImp: true }}
@@ -760,9 +770,6 @@ class PhySchSetup extends Component {
                           others: {
                             type: "time"
                           }
-
-                          // error: this.state.description_error,
-                          // helperText: this.state.description_error_text
                         }}
                       />
                     </div>
@@ -1020,7 +1027,8 @@ class PhySchSetup extends Component {
                   onChange: this.changeTexts.bind(this)
                 },
                 others: {
-                  type: "number"
+                  type: "number",
+                  min: moment().year()
                 }
               }}
             />
@@ -1081,10 +1089,32 @@ class PhySchSetup extends Component {
                 </div>
               </div>
 
-              {/* Scheduler Start */}
+              {/* Scheduler Display Start */}
               <div className="col-lg-9 divInnerRight">
                 <div className="row">
                   <div className="col-lg-8">
+                    <div className="row">
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-5" }}
+                        label={{
+                          forceLabel: "Schedule Description",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "description",
+                          value: this.state.description,
+                          events: {
+                            onChange: this.changeTexts.bind(this)
+                          },
+                          others: {
+                            disabled: this.state.scheduleDisable
+                          },
+                          error: this.state.description_error,
+                          helperText: this.state.description_error_text
+                        }}
+                      />
+                    </div>
                     <div className="row">
                       <div className="col-lg-6">
                         <label>Date Range</label>
@@ -1395,6 +1425,7 @@ class PhySchSetup extends Component {
                   </div>
                 </div>
               </div>
+              {/* Scheduler Display End */}
             </div>
           </div>
         </div>

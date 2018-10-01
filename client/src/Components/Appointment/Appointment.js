@@ -847,7 +847,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -863,7 +863,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -899,7 +899,7 @@ class Appointment extends Component {
                   <span className="dynPatient">John Doe</span>
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -915,7 +915,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -931,7 +931,25 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-plus"
+                  />
+                </td>
+              </tr>
+              <tr>
+                {/* <th className="tg-amwm">09:00 AM</th> */}
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
+                  <i
+                    onClick={this.showModal.bind(this)}
+                    className="fas fa-pen"
+                  />
+                  <span className="dynPatient">John Doe</span>
+                </td>
+                <td className="tg-baqh">
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -947,23 +965,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -999,7 +1001,7 @@ class Appointment extends Component {
                   <span className="dynPatient">John Doe</span>
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1015,7 +1017,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1031,7 +1033,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1047,7 +1049,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1059,11 +1061,12 @@ class Appointment extends Component {
                   <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
+                    className="fas fa-pen"
                   />
+                  <span className="dynPatient">John Doe</span>
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1099,7 +1102,7 @@ class Appointment extends Component {
                   <span className="dynPatient">John Doe</span>
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1115,7 +1118,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1131,7 +1134,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1147,7 +1150,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1155,15 +1158,17 @@ class Appointment extends Component {
                 </td>
               </tr>
               <tr>
+                {/* <th className="tg-amwm">09:00 AM</th> */}
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
+                    className="fas fa-pen"
                   />
+                  <span className="dynPatient">John Doe</span>
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1199,7 +1204,7 @@ class Appointment extends Component {
                   <span className="dynPatient">John Doe</span>
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1215,7 +1220,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1231,7 +1236,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1247,7 +1252,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1255,6 +1260,7 @@ class Appointment extends Component {
                 </td>
               </tr>
               <tr>
+                {/* <th className="tg-amwm">09:00 AM</th> */}
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
@@ -1266,8 +1272,9 @@ class Appointment extends Component {
                   <span class="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
+                    className="fas fa-pen"
                   />
+                  <span className="dynPatient">John Doe</span>
                 </td>
               </tr>
             </tbody>
@@ -1299,7 +1306,7 @@ class Appointment extends Component {
                   <span className="dynPatient">John Doe</span>
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1315,7 +1322,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1331,7 +1338,7 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
@@ -1347,14 +1354,12 @@ class Appointment extends Component {
                   />
                 </td>
                 <td className="tg-baqh">
-                  <span class="dynSlot">09:00 AM</span>
+                  <span className="dynSlot">09:00 AM</span>
                   <i
                     onClick={this.showModal.bind(this)}
                     className="fas fa-plus"
                   />
                 </td>
-              </tr>
-              <tr>
                 <td className="tg-baqh">
                   <span className="dynSlot">09:00 AM</span>
                   <i
