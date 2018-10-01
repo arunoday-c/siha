@@ -1,3 +1,12 @@
+.appointment .appointment-outer-cntr {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  width: 94.8vw;
+  height: 355px; }
+
+.appointment .appointment-inner-cntr {
+  width: 2900px; }
+
 .appointment .my-calendar {
   text-align: center;
   background: #00afa4;
@@ -74,8 +83,7 @@
   color: #5a5a5a; }
 
 .appointment .tg {
-  border-collapse: collapse;
-  border-spacing: 0; }
+  display: inline; }
   .appointment .tg th {
     font-family: Arial, sans-serif;
     font-size: 0.9rem;
@@ -86,6 +94,7 @@
     border-bottom: 1px solid #000;
     border-top: 1px solid #000; }
   .appointment .tg td {
+    width: 120px;
     font-family: Arial, sans-serif;
     font-size: 0.8rem;
     overflow: hidden;
@@ -104,11 +113,13 @@
       top: -1px;
       right: -1px;
       border: 1px solid #d3d3d3;
-      padding: 3px; }
-    .appointment .tg .tg-baqh i.fa-edit {
-      background: gray; }
-    .appointment .tg .tg-baqh i.fa-plus {
-      background: #eafffd; }
+      padding: 3px;
+      width: 20px; }
+    .appointment .tg .tg-baqh i.fa-pen {
+      color: blue !important; }
+    .appointment .tg .tg-baqh i.fa-times {
+      color: red !important;
+      top: 18px !important; }
   .appointment .tg .tg-baqh:hover i {
     visibility: visible; }
   .appointment .tg .tg-baqh:nth-child(odd) {
@@ -125,3 +136,20 @@
     font-weight: bold;
     text-align: center;
     vertical-align: top; }
+
+.appointment ul.ul-legend {
+  list-style: none;
+  display: inline-block; }
+  .appointment ul.ul-legend li {
+    display: inline;
+    margin-left: 5px;
+    border: 1px solid #000; }
+    .appointment ul.ul-legend li span:first-child {
+      display: inline-block;
+      padding: 10px; }
+    .appointment ul.ul-legend li span:last-child {
+      display: inline-block;
+      font-size: 0.8rem;
+      line-height: 0px;
+      vertical-align: super;
+      margin-left: 5px; }
