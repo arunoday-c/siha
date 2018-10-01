@@ -107,5 +107,14 @@
 
   "consultation": "تشاور",
 
-  "bill_details": "تفاصيل الفاتورة"
+  "bill_details": "تفاصيل الفاتورة",
+  "services": "خدمات",
+  "percentage": "النسبة المئوية",
+  "max_limit": "ماكس الحد",
+  "laboratory": "مختبر",
+  "radiology": "طب إشعاعي",
+  "procedure": "إجراء",
+  "dental": "الأسنان",
+  "medicine": "دواء",
+  "co_insurance": "شركة التأمين"
 }
