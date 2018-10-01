@@ -287,12 +287,12 @@ class PersonalDetails extends PureComponent {
                           className: "select-fld",
                           value: this.state.employee_designation_id,
                           dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "country_name"
-                                : "arabic_country_name",
-                            valueField: "hims_d_country_id",
-                            data: this.props.countries
+                            textField: "designation",
+                            // this.state.selectedLang === "en"
+                            //   ? "designation"
+                            //   : "arabic_country_name",
+                            valueField: "hims_d_designation_id",
+                            data: this.props.designations
                           },
                           onChange: texthandle.bind(this, this, context),
                           others: {
@@ -617,7 +617,8 @@ function mapStateToProps(state) {
     countries: state.countries,
     countrystates: state.countrystates,
     patients: state.patients,
-    services: state.services
+    services: state.services,
+    designations: state.designations
   };
 }
 
@@ -628,7 +629,8 @@ function mapDispatchToProps(dispatch) {
       getCities: AlgaehActions,
       getCountries: AlgaehActions,
       getStates: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      getDesignations: AlgaehActions
     },
     dispatch
   );
