@@ -8,6 +8,71 @@ const texthandle = ($this, context, ctrl, e) => {
   });
 };
 
+const departmenttexthandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      debugger;
+      $this.props.getEmpSpeciality({
+        uri: "/employeesetups/getEmpSpeciality",
+        method: "GET",
+        data: { sub_department_id: $this.state.sub_department_id },
+        redux: {
+          type: "EMP_SPECILITY_GET_DATA",
+          mappingName: "empspeciality"
+        },
+        afterSucces: data => {
+          debugger;
+        }
+      });
+    }
+  );
+};
+
+const specialitytexthandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      debugger;
+      $this.props.getEmpSpeciality({
+        uri: "/employeesetups/getEmpSpeciality",
+        method: "GET",
+        data: { sub_department_id: $this.state.sub_department_id },
+        redux: {
+          type: "EMP_SPECILITY_GET_DATA",
+          mappingName: "empspeciality"
+        },
+        afterSucces: data => {
+          debugger;
+        }
+      });
+    }
+  );
+};
+
+const categorytexthandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value,
+    category_speciality_id: e.selected
+  });
+};
+
 const AddDeptUser = ($this, context) => {
   debugger;
   let deptDetails = $this.state.deptDetails;
@@ -27,6 +92,8 @@ const AddDeptUser = ($this, context) => {
     context.updateState({ deptDetails: deptDetails });
   }
 };
+
+// getEmpSpeciality
 
 const deleteDeptUser = ($this, context, row) => {
   if (row.hims_m_doctor_service_commission_id === undefined) {
@@ -69,4 +136,11 @@ const deleteDeptUser = ($this, context, row) => {
   }
 };
 
-export { texthandle, AddDeptUser, deleteDeptUser };
+export {
+  texthandle,
+  AddDeptUser,
+  deleteDeptUser,
+  departmenttexthandle,
+  specialitytexthandle,
+  categorytexthandle
+};
