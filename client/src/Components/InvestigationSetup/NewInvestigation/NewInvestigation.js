@@ -33,6 +33,7 @@ class NewInvestigation extends PureComponent {
     };
   }
   componentWillMount() {
+    debugger;
     let IOputs = InvestigationIOputs.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
@@ -58,17 +59,15 @@ class NewInvestigation extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
+    debugger;
     if (newProps.InvestigationPop.hims_d_investigation_test_id !== undefined) {
       let IOputs = newProps.InvestigationPop;
       IOputs.InvestigationtypeEnable = true;
       this.setState({ ...this.state, ...IOputs });
+    } else {
+      let IOputs = InvestigationIOputs.inputParam();
+      this.setState({ ...this.state, ...IOputs });
     }
-    // else {
-    //   debugger;
-
-    //   let IOputs = InvestigationIOputs.inputParam();
-    //   this.setState({ ...this.state, ...IOputs });
-    // }
   }
   onClose = e => {
     this.props.onClose && this.props.onClose(e);

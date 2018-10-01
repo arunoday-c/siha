@@ -93,7 +93,7 @@ class ItemSetup extends Component {
     this.setState({
       ...this.state,
       isOpen: !this.state.isOpen,
-      addNew: true
+      itemPop: {}
     });
   }
 

@@ -67,6 +67,24 @@ class HospitalServices extends PureComponent {
       }
 
       this.setState({ ...this.state, ...IOputs });
+    } else {
+      this.setState({
+        open: false,
+        MandatoryMsg: "",
+        selectedLang: "en",
+        Applicable: false,
+
+        hims_d_services_id: null,
+        service_code: null,
+        cpt_code: null,
+        service_name: null,
+        hospital_id: null,
+        service_type_id: null,
+
+        standard_fee: 0,
+        vat_applicable: "N",
+        vat_percent: 0
+      });
     }
   }
   onClose = e => {
