@@ -100,7 +100,8 @@ class EmployeeMasterIndex extends Component {
   ShowModel(e) {
     this.setState({
       ...this.state,
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
+      employeeDetailsPop: {}
     });
   }
 
@@ -291,7 +292,7 @@ class EmployeeMasterIndex extends Component {
                   }
                   open={this.state.isOpen}
                   onClose={this.CloseModel.bind(this)}
-                  servicePop={this.state.servicePop}
+                  employeeDetailsPop={this.state.employeeDetailsPop}
                 />
               </div>
             </div>

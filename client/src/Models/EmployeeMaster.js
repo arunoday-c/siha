@@ -38,13 +38,13 @@ export default {
       employee_status: "A",
 
       servTypeCommission: [],
-      seviceComm: [],
+      serviceComm: [],
 
       updateservTypeCommission: [],
       insertservTypeCommission: [],
 
-      updateseviceComm: [],
-      insertseviceComm: [],
+      updateserviceComm: [],
+      insertserviceComm: [],
 
       deptDetails: [],
       updatedeptDetails: [],

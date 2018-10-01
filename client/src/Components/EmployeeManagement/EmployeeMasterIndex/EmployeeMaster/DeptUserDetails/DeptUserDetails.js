@@ -31,7 +31,8 @@ class DeptUserDetails extends Component {
     this.state = {
       sub_department_id: null,
       user_id: null,
-      hims_m_category_speciality_mappings_id: null
+      hims_m_category_speciality_mappings_id: null,
+      depserviceslist: []
     };
   }
 
@@ -67,6 +68,23 @@ class DeptUserDetails extends Component {
         }
       });
     }
+
+    if (
+      this.props.depservices === undefined ||
+      this.props.depservices.length === 0
+    ) {
+      this.props.getDepServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "depservices"
+        },
+        afterSuccess: data => {
+          this.setState({ depserviceslist: data });
+        }
+      });
+    }
   }
 
   handleClose = () => {
@@ -81,7 +99,7 @@ class DeptUserDetails extends Component {
             <div className="hptl-phase1-dept-user-form">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-lg-2" }}
                   label={{
                     fieldName: "sub_department_id",
                     isImp: true
@@ -105,7 +123,7 @@ class DeptUserDetails extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-lg-2" }}
                   label={{
                     fieldName: "speciality_id",
                     isImp: true
@@ -126,7 +144,7 @@ class DeptUserDetails extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-lg-2" }}
                   label={{
                     fieldName: "category_id",
                     isImp: true
@@ -159,6 +177,28 @@ class DeptUserDetails extends Component {
                       valueField: "algaeh_d_app_user_id",
                       data: this.props.userdrtails
                     },
+                    onChange: texthandle.bind(this, this, context)
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "services_id"
+                  }}
+                  selector={{
+                    name: "services_id",
+                    className: "select-fld",
+                    value: this.state.services_id,
+                    dataSource: {
+                      textField:
+                        this.state.selectedLang === "en"
+                          ? "service_name"
+                          : "arabic_service_name",
+                      valueField: "hims_d_services_id",
+                      data: this.props.depservices
+                    },
+                    others: { disabled: this.state.Billexists },
                     onChange: texthandle.bind(this, this, context)
                   }}
                 />
@@ -307,6 +347,30 @@ class DeptUserDetails extends Component {
                             </span>
                           );
                         }
+                      },
+                      {
+                        fieldName: "services_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "services_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.state.depserviceslist === undefined
+                              ? []
+                              : this.state.depserviceslist.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_name
+                                  : display[0].arabic_service_name
+                                : ""}
+                            </span>
+                          );
+                        }
                       }
                     ]}
                     keyId="analyte_id"
@@ -332,7 +396,9 @@ function mapStateToProps(state) {
     empspeciality: state.empspeciality,
     empcategory: state.empcategory,
     specimapcategory: state.specimapcategory,
-    empdepspeciality: state.empdepspeciality
+    empdepspeciality: state.empdepspeciality,
+    depservices: state.depservices,
+    depserviceslist: state.depserviceslist
   };
 }
 
@@ -343,7 +409,8 @@ function mapDispatchToProps(dispatch) {
       getSubDepartment: AlgaehActions,
       getEmpSpeciality: AlgaehActions,
       getEmpCategory: AlgaehActions,
-      getEmployeeCategory: AlgaehActions
+      getEmployeeCategory: AlgaehActions,
+      getDepServices: AlgaehActions
     },
     dispatch
   );

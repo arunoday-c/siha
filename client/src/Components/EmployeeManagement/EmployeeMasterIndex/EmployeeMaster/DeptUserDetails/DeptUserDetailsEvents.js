@@ -74,15 +74,21 @@ const categorytexthandle = ($this, ctrl, e) => {
 const AddDeptUser = ($this, context) => {
   debugger;
   let deptDetails = $this.state.deptDetails;
+  let insertdeptDetails = $this.state.insertdeptDetails;
   let inpObj = {
     sub_department_id: $this.state.sub_department_id,
     hims_m_category_speciality_mappings_id:
       $this.state.hims_m_category_speciality_mappings_id,
     user_id: $this.state.user_id,
     category_id: $this.state.category_id,
-    speciality_id: $this.state.speciality_id
+    speciality_id: $this.state.speciality_id,
+    services_id: $this.state.services_id
   };
 
+  if ($this.state.hims_d_employee_id !== undefined) {
+    inpObj.employee_id = $this.state.hims_d_employee_id;
+    insertdeptDetails.push(inpObj);
+  }
   deptDetails.push(inpObj);
   $this.setState({
     deptDetails: deptDetails,
