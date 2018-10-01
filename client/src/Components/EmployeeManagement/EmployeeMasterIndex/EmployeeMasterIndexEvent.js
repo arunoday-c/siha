@@ -52,8 +52,7 @@ const getEmployeeDetails = $this => {
 const EditEmployeeMaster = ($this, row) => {
   $this.setState({
     isOpen: !$this.state.isOpen,
-    itemPop: row,
-    addNew: false
+    employeeDetailsPop: row
   });
 };
 

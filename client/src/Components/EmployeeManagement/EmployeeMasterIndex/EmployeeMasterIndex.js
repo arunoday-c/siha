@@ -27,6 +27,7 @@ class EmployeeMasterIndex extends Component {
     super(props);
     this.state = {
       isOpen: false,
+      employeeDetailsPop: {},
       Employeedetails: [],
       selectedLang: "en"
     };
@@ -187,7 +188,8 @@ class EmployeeMasterIndex extends Component {
                               style={{ maxHeight: "4vh" }}
                             >
                               <Edit
-                                onClick={this.EditEmployeeMaster.bind(
+                                onClick={EditEmployeeMaster.bind(
+                                  this,
                                   this,
                                   row
                                 )}
