@@ -118,7 +118,8 @@ class HospitalServiceSetup extends Component {
   ShowModel(e) {
     this.setState({
       ...this.state,
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
+      servicePop: {}
     });
   }
 
