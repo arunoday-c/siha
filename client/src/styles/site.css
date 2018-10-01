@@ -452,6 +452,10 @@ input[type="time"] {
   background: #fff;
   width: 100%; }
 
+input[type="number"] {
+  text-align: right;
+  direction: rtl; }
+
 input[type="color"] {
   font-size: 0.85rem;
   -webkit-appearance: none;
@@ -680,6 +684,8 @@ th {
   /*
    for dropdown list
   */ }
+  .algaeh_Arabic_Version .table-responsive {
+    direction: rtl; }
   .algaeh_Arabic_Version .autoselect-Div {
     position: relative; }
     .algaeh_Arabic_Version .autoselect-Div i {
@@ -898,3 +904,9 @@ th {
         font-weight: 500;
         font-size: 2rem;
         padding-left: 10px; }
+
+.invalid-feedback {
+  font-size: 0.7rem; }
+
+.is-invalid {
+  border-color: #dc3545; }
