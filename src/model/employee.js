@@ -79,12 +79,12 @@ let addEmployee = (req, res, next) => {
           connection.query(
             "INSERT INTO hims_d_rad_template_detail(" +
               insurtColumns.join(",") +
-              ",`test_id`) VALUES ?",
+              ",`employee_id`) VALUES ?",
             [
               jsonArrayToObject({
                 sampleInputObject: insurtColumns,
                 arrayObj: req.body.RadTemplate,
-                newFieldToInsert: [req.body.test_id],
+                newFieldToInsert: [result.insertId],
                 req: req
               })
             ],
@@ -97,6 +97,7 @@ let addEmployee = (req, res, next) => {
               }
             }
           );
+          fdf;
 
           connection.query(
             "SELECT * FROM hims_d_employee WHERE hims_d_employee_id=?",
@@ -278,10 +279,10 @@ let getEmployeeDetails = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.first_name,E.middle_name,E.last_name,E.full_name,E.arabic_name,E.employee_designation_id,\
+        "SELECT E.hims_d_employee_id,E.employee_code,E.services_id,E.title_id,E.first_name,E.middle_name,E.last_name,E.full_name,E.arabic_name,E.employee_designation_id,\
         E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_leaving,E.address,E.address2,E.pincode,E.city_id,E.state_id,E.country_id,E.primary_contact_no,\
         E.secondary_contact_no,E.email,E.emergancy_contact_person,E.emergancy_contact_no,E.blood_group,\
-        E.isdoctor,E.employee_status,E.effective_start_date,E.effective_end_date,\
+        E.isdoctor,E.employee_status,E.effective_start_date,E.effective_end_date,E.category_id,\
         ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id,CS.hims_m_category_speciality_mappings_id,CS.category_id,CS.speciality_id,\
         CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date\
         from hims_d_employee E,hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
