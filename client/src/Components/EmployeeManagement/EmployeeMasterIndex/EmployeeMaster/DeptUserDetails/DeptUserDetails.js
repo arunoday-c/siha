@@ -17,7 +17,10 @@ import MyContext from "../../../../../utils/MyContext.js";
 import {
   texthandle,
   AddDeptUser,
-  deleteDeptUser
+  deleteDeptUser,
+  departmenttexthandle,
+  specialitytexthandle,
+  categorytexthandle
 } from "./DeptUserDetailsEvents";
 // import GlobalVariables from "../../../../../utils/GlobalVariables.json";
 import AHSnackbar from "../../../../common/Inputs/AHSnackbar";
@@ -27,13 +30,43 @@ class DeptUserDetails extends Component {
     super(props);
     this.state = {
       sub_department_id: null,
-      user_id: null
+      user_id: null,
+      hims_m_category_speciality_mappings_id: null
     };
   }
 
   componentWillMount() {
     let InputOutput = this.props.EmpMasterIOputs;
     this.setState({ ...this.state, ...InputOutput });
+  }
+
+  componentDidMount() {
+    if (
+      this.props.empcategory === undefined ||
+      this.props.empcategory.length === 0
+    ) {
+      this.props.getEmpCategory({
+        uri: "/employeesetups/getEmpCategory",
+        method: "GET",
+        redux: {
+          type: "EMP_SPECILITY_GET_DATA",
+          mappingName: "empcategory"
+        }
+      });
+    }
+    if (
+      this.props.empspeciality === undefined ||
+      this.props.empspeciality.length === 0
+    ) {
+      this.props.getEmpSpeciality({
+        uri: "/employeesetups/getEmpSpeciality",
+        method: "GET",
+        redux: {
+          type: "EMP_SPECILITY_GET_DATA",
+          mappingName: "empspeciality"
+        }
+      });
+    }
   }
 
   handleClose = () => {
@@ -67,11 +100,53 @@ class DeptUserDetails extends Component {
                       data: this.props.subdepartment
                     },
 
-                    onChange: texthandle.bind(this, this, context)
+                    onChange: departmenttexthandle.bind(this, this)
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "speciality_id",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "speciality_id",
+                    className: "select-fld",
+                    value: this.state.speciality_id,
+
+                    dataSource: {
+                      textField: "speciality_name",
+                      valueField: "hims_d_employee_speciality_id",
+                      data: this.props.empdepspeciality
+                    },
+
+                    onChange: specialitytexthandle.bind(this, this)
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "category_id",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "category_id",
+                    className: "select-fld",
+                    value: this.state.category_id,
+
+                    dataSource: {
+                      textField: "employee_category_name",
+                      valueField: "hims_employee_category_id",
+                      data: this.props.specimapcategory
+                    },
+
+                    onChange: categorytexthandle.bind(this, this)
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-lg-2" }}
                   label={{
                     fieldName: "user_id"
                   }}
@@ -160,6 +235,58 @@ class DeptUserDetails extends Component {
                         }
                       },
                       {
+                        fieldName: "speciality_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "speciality_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.empspeciality === undefined
+                              ? []
+                              : this.props.empspeciality.filter(
+                                  f =>
+                                    f.hims_d_employee_speciality_id ===
+                                    row.speciality_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].speciality_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "category_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "category_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.empcategory === undefined
+                              ? []
+                              : this.props.empcategory.filter(
+                                  f =>
+                                    f.hims_employee_category_id ===
+                                    row.category_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].employee_category_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
                         fieldName: "user_id",
                         label: <AlgaehLabel label={{ fieldName: "user_id" }} />,
                         displayTemplate: row => {
@@ -201,7 +328,11 @@ class DeptUserDetails extends Component {
 function mapStateToProps(state) {
   return {
     subdepartment: state.subdepartment,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
+    empspeciality: state.empspeciality,
+    empcategory: state.empcategory,
+    specimapcategory: state.specimapcategory,
+    empdepspeciality: state.empdepspeciality
   };
 }
 
@@ -209,7 +340,10 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getUserDetails: AlgaehActions,
-      getSubDepartment: AlgaehActions
+      getSubDepartment: AlgaehActions,
+      getEmpSpeciality: AlgaehActions,
+      getEmpCategory: AlgaehActions,
+      getEmployeeCategory: AlgaehActions
     },
     dispatch
   );

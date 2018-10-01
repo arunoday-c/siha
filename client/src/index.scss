@@ -21,6 +21,9 @@ $forntSize: 0.7rem;
         margin: 0px;
         padding: 5px;
         font-size: 0.85rem;
+        &.active {
+          background: #eafffd;
+        }
       }
       li:nth-child(odd) {
         background: #f2f2f2;

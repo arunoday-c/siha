@@ -8,12 +8,79 @@ const texthandle = ($this, context, ctrl, e) => {
   });
 };
 
+const departmenttexthandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      debugger;
+      $this.props.getEmpSpeciality({
+        uri: "/employeesetups/getEmpSpeciality",
+        method: "GET",
+        data: { sub_department_id: $this.state.sub_department_id },
+        redux: {
+          type: "EMP_SPECILITY_GET_DATA",
+          mappingName: "empdepspeciality"
+        }
+      });
+    }
+  );
+};
+
+const specialitytexthandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      debugger;
+      $this.props.getEmployeeCategory({
+        uri: "/employee/getEmployeeCategory",
+        method: "GET",
+        data: { speciality_id: $this.state.speciality_id },
+        redux: {
+          type: "EMP_SPEC_CATEGORY_GET_DATA",
+          mappingName: "specimapcategory"
+        },
+        afterSuccess: data => {
+          debugger;
+        }
+      });
+    }
+  );
+};
+
+const categorytexthandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value,
+    hims_m_category_speciality_mappings_id:
+      e.selected.hims_m_category_speciality_mappings_id
+  });
+};
+
 const AddDeptUser = ($this, context) => {
   debugger;
   let deptDetails = $this.state.deptDetails;
   let inpObj = {
     sub_department_id: $this.state.sub_department_id,
-    user_id: $this.state.user_id
+    hims_m_category_speciality_mappings_id:
+      $this.state.hims_m_category_speciality_mappings_id,
+    user_id: $this.state.user_id,
+    category_id: $this.state.category_id,
+    speciality_id: $this.state.speciality_id
   };
 
   deptDetails.push(inpObj);
@@ -27,6 +94,8 @@ const AddDeptUser = ($this, context) => {
     context.updateState({ deptDetails: deptDetails });
   }
 };
+
+// getEmpSpeciality
 
 const deleteDeptUser = ($this, context, row) => {
   if (row.hims_m_doctor_service_commission_id === undefined) {
@@ -69,4 +138,11 @@ const deleteDeptUser = ($this, context, row) => {
   }
 };
 
-export { texthandle, AddDeptUser, deleteDeptUser };
+export {
+  texthandle,
+  AddDeptUser,
+  deleteDeptUser,
+  departmenttexthandle,
+  specialitytexthandle,
+  categorytexthandle
+};

@@ -206,6 +206,7 @@ export default class Login extends Component {
                       isImp: true
                     }}
                     textBox={{
+                      required: true,
                       className: "txt-fld",
                       name: "username",
                       value: this.state.username,
