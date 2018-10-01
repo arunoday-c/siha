@@ -4,7 +4,8 @@ import {
   addEmployee,
   getEmployee,
   updateEmployee,
-  getEmployeeDetails
+  getEmployeeDetails,
+  getEmployeeCategory
 } from "../model/employee";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
@@ -59,6 +60,20 @@ export default ({ config, db }) => {
   api.get(
     "/getEmployeeDetails",
     getEmployeeDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/getEmployeeCategory",
+    getEmployeeCategory,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

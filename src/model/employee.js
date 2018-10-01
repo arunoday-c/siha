@@ -9,71 +9,59 @@ import httpStatus from "../utils/httpStatus";
 
 // api to add employee
 let addEmployee = (req, res, next) => {
-  let employeeModel = {
-    hims_d_employee_id: 0,
-    employee_code: null,
-    first_name: null,
-    middle_name: null,
-    last_name: null,
-    arabic_name: null,
-    sex: "MALE",
-    date_of_birth: null,
-    date_of_joining: null,
-    date_of_leaving: null,
-    address: null,
-    primary_contact_no: null,
-    secondary_contact_no: null,
-    email: null,
-    emergancy_contact_person: null,
-    emergancy_contact_no: null,
-    blood_group: null,
-    employee_status: "A",
-    effective_start_date: null,
-    effective_end_date: null,
-    created_date: new Date(),
-    created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_date: new Date(),
-    updated_by: req.userIdentity.algaeh_d_app_user_id
-  };
-
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let employeeDetails = extend(employeeModel, req.body);
+    let input = extend({}, req.body);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
       }
 
       connection.query(
-        "INSERT hims_d_employee(employee_code,first_name,middle_name,last_name,arabic_name, \
-            sex,date_of_birth,date_of_joining,date_of_leaving,address,primary_contact_no,\
-            secondary_contact_no,email,emergancy_contact_person,emergancy_contact_no,\
-            blood_group,effective_start_date,effective_end_date,created_date,created_by) \
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        "INSERT hims_d_employee(employee_code,services_id,title_id,first_name,middle_name,last_name,\
+          full_name,arabic_name,employee_designation_id,license_number,sex,date_of_birth,date_of_joining,date_of_leaving,address,\
+          address2,pincode,city_id,state_id,country_id,primary_contact_no,secondary_contact_no,email,emergancy_contact_person,emergancy_contact_no,\
+          blood_group,isdoctor,employee_status,effective_start_date,effective_end_date,category_id,created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
-          employeeDetails.employee_code,
-          employeeDetails.first_name,
-          employeeDetails.middle_name,
-          employeeDetails.last_name,
-          employeeDetails.arabic_name,
-          employeeDetails.sex,
-          employeeDetails.date_of_birth,
-          employeeDetails.date_of_joining,
-          employeeDetails.date_of_leaving,
-          employeeDetails.address,
-          employeeDetails.primary_contact_no,
-          employeeDetails.secondary_contact_no,
-          employeeDetails.email,
-          employeeDetails.emergancy_contact_person,
-          employeeDetails.emergancy_contact_no,
-          employeeDetails.blood_group,
-          employeeDetails.effective_start_date,
-          employeeDetails.effective_end_date,
-          employeeDetails.created_date,
-          employeeDetails.created_by
+          input.employee_code,
+          input.services_id,
+          input.title_id,
+          input.first_name,
+          input.middle_name,
+          input.last_name,
+          input.full_name,
+          input.arabic_name,
+          input.employee_designation_id,
+          input.license_number,
+          input.sex,
+          input.date_of_birth,
+          input.date_of_joining,
+          input.date_of_leaving,
+          input.address,
+          input.address2,
+          input.pincode,
+          input.city_id,
+          input.state_id,
+          input.country_id,
+          input.primary_contact_no,
+          input.secondary_contact_no,
+          input.email,
+          input.emergancy_contact_person,
+          input.emergancy_contact_no,
+          input.blood_group,
+          input.isdoctor,
+          input.employee_status,
+          input.effective_start_date,
+          input.effective_end_date,
+          input.category_id,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
         ],
         (error, result) => {
           if (error) {
@@ -286,9 +274,39 @@ let getEmployeeDetails = (req, res, next) => {
   }
 };
 
+//created by irfan: to get eployee details
+let getEmployeeCategory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_m_category_speciality_mappings_id, category_id, speciality_id ,C.hims_employee_category_id,C.employee_category_code,C.employee_category_name,\
+        C.employee_category_desc from hims_m_category_speciality_mappings CS,hims_d_employee_category C\
+         where CS.record_status='A' and C.record_status='A' and  CS.category_id=C.hims_employee_category_id and speciality_id=?",
+        [req.query.speciality_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployee,
   getEmployee,
   updateEmployee,
-  getEmployeeDetails
+  getEmployeeDetails,
+  getEmployeeCategory
 };
