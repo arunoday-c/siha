@@ -7,11 +7,15 @@ import "./EmployeeMaster.css";
 
 import CommissionSetup from "./CommissionSetup/CommissionSetup";
 import PersonalDetails from "./PersonalDetails/PersonalDetails";
+import DeptUserDetails from "./DeptUserDetails/DeptUserDetails";
 
 import { AlgaehLabel, Modal } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
 import AHSnackbar from "../../../common/Inputs/AHSnackbar";
+import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
+import { getCookie } from "../../../../utils/algaehApiCall";
+import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 
 class EmployeeMaster extends Component {
   constructor(props) {
@@ -21,6 +25,11 @@ class EmployeeMaster extends Component {
       pageDisplay: "PersonalDetails",
       sidBarOpen: true
     };
+  }
+
+  componentWillMount() {
+    let IOputs = EmpMasterIOputs.inputParam();
+    this.setState(IOputs);
   }
 
   openTab(e) {
@@ -33,6 +42,14 @@ class EmployeeMaster extends Component {
     this.setState({
       pageDisplay: specified
     });
+  }
+
+  componentDidMount() {
+    let prevLang = getCookie("Language");
+
+    let IOputs = EmpMasterIOputs.inputParam();
+    IOputs.selectedLang = prevLang;
+    this.setState(IOputs);
   }
 
   SideMenuBarOpen(sidOpen) {
@@ -53,6 +70,15 @@ class EmployeeMaster extends Component {
   };
 
   componentDidMount() {
+    this.props.getSubDepartment({
+      uri: "/department/get/subdepartment",
+      method: "GET",
+      redux: {
+        type: "SUB_DEPT_GET_DATA",
+        mappingName: "subdepartment"
+      }
+    });
+
     this.props.getUserDetails({
       uri: "/algaehappuser/selectAppUsers",
       method: "GET",
@@ -62,31 +88,46 @@ class EmployeeMaster extends Component {
       }
     });
 
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
-      });
-    }
+    this.props.getServiceTypes({
+      uri: "/serviceType",
+      method: "GET",
+      redux: {
+        type: "SERVIES_TYPES_GET_DATA",
+        mappingName: "servicetype"
+      }
+    });
 
-    if (this.props.services === undefined || this.props.services.length === 0) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "services"
-        }
-      });
-    }
+    this.props.getServiceTypes({
+      uri: "/serviceType",
+      method: "GET",
+      redux: {
+        type: "SERVIES_TYPES_GET_DATA",
+        mappingName: "servicetypelist"
+      }
+    });
+
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "services"
+      }
+    });
+
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "serviceslist"
+      }
+    });
   }
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
 
   render() {
     return (
@@ -144,6 +185,20 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
+                    <li
+                      style={{ marginRight: 2 }}
+                      algaehtabs={"DeptUserDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "deptuser_details"
+                          }}
+                        />
+                      }
+                    </li>
                   </ul>
                 </div>
                 <MyContext.Provider
@@ -156,11 +211,14 @@ class EmployeeMaster extends Component {
                 >
                   <div className="employee-section">
                     {this.state.pageDisplay === "PersonalDetails" ? (
-                      <PersonalDetails />
+                      <PersonalDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "CommissionSetup" ? (
-                      <CommissionSetup />
+                      <CommissionSetup EmpMasterIOputs={this.state} />
+                    ) : this.state.pageDisplay === "DeptUserDetails" ? (
+                      <DeptUserDetails EmpMasterIOputs={this.state} />
                     ) : null}
                   </div>
+                  {/*  */}
                 </MyContext.Provider>
               </div>
 
@@ -171,11 +229,11 @@ class EmployeeMaster extends Component {
 
                     <div className="col-lg-8">
                       <button
-                        // onClick={InsertUpdateItems.bind(this, this)}
+                        onClick={InsertUpdateEmployee.bind(this, this)}
                         type="button"
                         className="btn btn-primary"
                       >
-                        {this.state.hims_d_item_master_id === null ? (
+                        {this.state.hims_d_employee_id === null ? (
                           <AlgaehLabel label={{ fieldName: "btnSave" }} />
                         ) : (
                           <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
@@ -211,7 +269,10 @@ function mapStateToProps(state) {
   return {
     userdrtails: state.userdrtails,
     servicetype: state.servicetype,
-    services: state.services
+    services: state.services,
+    serviceslist: state.serviceslist,
+    servicetypelist: state.servicetypelist,
+    subdepartment: state.subdepartment
   };
 }
 
@@ -220,7 +281,10 @@ function mapDispatchToProps(dispatch) {
     {
       getUserDetails: AlgaehActions,
       getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      getSubDepartment: AlgaehActions
+
+      // /get/subdepartment
     },
     dispatch
   );

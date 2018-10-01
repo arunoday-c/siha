@@ -282,7 +282,7 @@ class AddOPBillingForm extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-op-add-billing-form">
+            <div className="hptl-phase1-op-add-billing-form" style={{direction:"rtl"}}>
               <div className="container-fluid">
                 <div className="row margin-top-15">
                   {/* <div className="col-lg-1">

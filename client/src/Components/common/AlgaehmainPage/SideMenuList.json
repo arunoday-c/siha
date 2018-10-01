@@ -250,10 +250,10 @@
         "path": "/InitialStock"
       },
       {
-        "name": "POS Entry",
+        "name": "Point Of Sale",
         "label": "POS Entry",
         "arlabel": "دخول POS",
-        "path": "/POSEntry"
+        "path": "/PointOfSale"
       },
       {
         "name": "Sales Return",

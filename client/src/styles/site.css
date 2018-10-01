@@ -443,7 +443,8 @@ label {
   -webkit-font-smoothing: antialiased !important; }
 
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+input[type="time"] {
   font-size: 0.85rem;
   padding: 4px 6px 4px;
   border: 1px solid #d3d3d3;
@@ -509,9 +510,8 @@ textarea {
 .algaeh-datePicker {
   position: relative; }
   .algaeh-datePicker input[type="date"] {
-    margin: 1px;
     font-size: 0.8rem;
-    padding: 3px 3px 2px;
+    padding: 4px 3px 3px;
     width: 99%;
     text-transform: uppercase;
     border: 1px solid #d3d3d3;
@@ -530,6 +530,25 @@ textarea {
     border: 1px dashed #d3d3d3;
     color: #000;
     font-weight: bold; }
+  .algaeh-datePicker button {
+    margin-left: 0px;
+    padding: 3px 6px !important; }
+    .algaeh-datePicker button svg {
+      height: 16px; }
+
+.autoselect-Div {
+  position: relative; }
+  .autoselect-Div i {
+    display: none;
+    color: #7f8284;
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    cursor: pointer;
+    font-size: 13px; }
+
+.autoselect-Div:hover i {
+  display: block; }
 
 .mandatory input[type="text"],
 .mandatory input[type="number"],
@@ -537,20 +556,6 @@ textarea {
 .mandatory .algaeh-datePicker input[type="date"] {
   background-color: none;
   border: 1px solid #d9ae58; }
-
-.autoselect-Div {
-  position: relative; }
-  .autoselect-Div i {
-    display: none; }
-
-.autoselect-Div:hover i {
-  display: block;
-  color: #7f8284;
-  position: absolute;
-  top: 8px;
-  right: 20px;
-  cursor: pointer;
-  font-size: 13px; }
 
 input[type="text"]:disabled {
   background: #fffdfa;
@@ -675,6 +680,19 @@ th {
   /*
    for dropdown list
   */ }
+  .algaeh_Arabic_Version .autoselect-Div {
+    position: relative; }
+    .algaeh_Arabic_Version .autoselect-Div i {
+      display: none;
+      color: #7f8284;
+      position: absolute;
+      top: 8px;
+      right: auto;
+      left: 20px;
+      cursor: pointer;
+      font-size: 13px; }
+  .algaeh_Arabic_Version .autoselect-Div:hover i {
+    display: block; }
   .algaeh_Arabic_Version .tab-container ul.nav {
     direction: rtl;
     padding-right: 5px; }
@@ -763,29 +781,6 @@ th {
     text-align: right;
     display: block;
     font-size: 0.9rem; }
-  .algaeh_Arabic_Version .algaeh-datePicker {
-    border: 1px solid #d3d3d3;
-    max-width: 100%;
-    border-radius: 4px;
-    text-align: right; }
-    .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker__button {
-      border: none;
-      padding-top: 3px;
-      padding-bottom: 2px; }
-    .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker {
-      width: 100%;
-      padding-left: 6px; }
-    .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker__button {
-      width: 100%; }
-    .algaeh_Arabic_Version .algaeh-datePicker .react-date-picker__button__input {
-      margin-left: 0px;
-      min-width: inherit;
-      font-size: 0.85rem; }
-    .algaeh_Arabic_Version .algaeh-datePicker button {
-      margin-left: 0px;
-      padding: 3px 6px !important; }
-      .algaeh_Arabic_Version .algaeh-datePicker button svg {
-        height: 16px; }
   .algaeh_Arabic_Version .mandatory input[type="text"] {
     background-color: none;
     border: 1px solid #d9ae58;

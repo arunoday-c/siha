@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import moment from "moment";
-import "./AdvanceModal.css";
+import "./AdvanceModalAr.css";
 import "./../../styles/site.css";
 import {
   AlgaehLabel,
@@ -25,7 +25,7 @@ import {
   checkcardhandaler,
   checkcheckhandaler,
   Validations
-} from "./AdvanceModalHandaler";
+} from "./AdvanceModalArHandaler";
 
 import AdvRefunIOputs from "../../Models/AdvanceRefund";
 import { successfulMessage } from "../../utils/GlobalFunctions";
@@ -33,7 +33,7 @@ import { getCookie } from "../../utils/algaehApiCall";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import { postAdvance } from "../../actions/RegistrationPatient/Billingactions";
 
-class AddAdvanceModal extends PureComponent {
+class AddAdvanceModalAr extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -132,8 +132,25 @@ class AddAdvanceModal extends PureComponent {
       <React.Fragment>
         <div>
           <Modal open={this.props.show}>
-            <div className="algaeh-modal">
-              <div className="popupHeader">{this.props.HeaderCaption} </div>
+            <div className="algaeh-modal-Ar">
+              <div className="popupHeader">
+                <div className="row">
+                  <div className="col-lg-8">
+                    <h4>{this.props.HeaderCaption}</h4>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div>
+              </div>
               <div className="col-lg-12 popupInner">
                 <div className="row">
                   <div className="col-lg-3">
@@ -511,5 +528,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(AddAdvanceModal)
+  )(AddAdvanceModalAr)
 );

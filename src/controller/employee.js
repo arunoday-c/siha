@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { releaseConnection } from "../utils";
-import { addEmployee, getEmployee, updateEmployee } from "../model/employee";
+import {
+  addEmployee,
+  getEmployee,
+  updateEmployee,
+  getEmployeeDetails
+} from "../model/employee";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
   let api = Router();
@@ -50,5 +55,20 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.get(
+    "/getEmployeeDetails",
+    getEmployeeDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };

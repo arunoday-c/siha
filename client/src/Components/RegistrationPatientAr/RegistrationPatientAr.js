@@ -23,7 +23,7 @@ import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import { getCookie } from "../../utils/algaehApiCall";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
-import AddAdvanceModal from "../Advance/AdvanceModal";
+import AddAdvanceModalAr from "../AdvanceAr/AdvanceModalAr";
 import {
   successfulMessage,
   imageToByteArray
@@ -560,7 +560,7 @@ class RegistrationPatientAr extends Component {
                       />
                     </button>
 
-                    <AddAdvanceModal
+                    <AddAdvanceModalAr
                       show={this.state.RefundOpen}
                       onClose={this.ShowRefundScreen.bind(this)}
                       selectedLang={this.state.selectedLang}
@@ -596,7 +596,7 @@ class RegistrationPatientAr extends Component {
                       />
                     </button>
 
-                    <AddAdvanceModal
+                    <AddAdvanceModalAr
                       show={this.state.AdvanceOpen}
                       onClose={this.ShowAdvanceScreen.bind(this)}
                       selectedLang={this.state.selectedLang}

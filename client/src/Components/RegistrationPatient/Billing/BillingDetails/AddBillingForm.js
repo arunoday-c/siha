@@ -80,34 +80,42 @@ class AddBillingForm extends Component {
                     <Paper className="Paper">
                       <div className="row primary-box-container">
                         <div className="col-lg-6">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "bill"
-                            }}
-                          />
-                          <h6>
-                            {this.state.bill_number
-                              ? this.state.bill_number
-                              : "Not Generated"}
-                          </h6>
+                          <button
+                            className="btn btn-primary btn-sm"
+                            type="button"
+                            onClick={ProcessInsurance.bind(this, this, context)}
+                          >
+                            Process Insurance
+                          </button>
                         </div>
-
                         <div className="col-lg-6">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "bill_date"
+                          <button
+                            className="btn btn-primary btn-sm"
+                            type="button"
+                            onClick={this.ShowBillDetails.bind(this)}
+                          >
+                            Bill Details
+                          </button>
+
+                          <DisplayOPBilling
+                            HeaderCaption={
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "bill_details",
+                                  align: "ltr"
+                                }}
+                              />
+                            }
+                            BillingIOputs={{
+                              selectedLang: this.state.selectedLang,
+                              billdetails: this.state.billdetails
                             }}
+                            show={this.state.isOpen}
+                            onClose={this.ShowBillDetails.bind(this)}
                           />
-                          <h6>
-                            {this.state.bill_date
-                              ? moment(this.state.bill_date).format(
-                                  "DD-MM-YYYY"
-                                )
-                              : "DD/MM/YYYY"}
-                          </h6>
                         </div>
                       </div>
-
+                      <hr />
                       <div className="row primary-box-container">
                         <div className="col-lg-4">
                           <AlgaehLabel
@@ -149,44 +157,6 @@ class AddBillingForm extends Component {
                         </div>
                       </div>
                       <hr style={{ margin: "0.6rem 0rem" }} />
-                      <div className="row primary-box-container">
-                        <div className="col-lg-6">
-                          <button
-                            className="btn btn-primary btn-sm"
-                            type="button"
-                            onClick={ProcessInsurance.bind(this, this, context)}
-                          >
-                            Process Insurance
-                          </button>
-                        </div>
-                        <div className="col-lg-6">
-                          <button
-                            className="btn btn-primary btn-sm"
-                            type="button"
-                            onClick={this.ShowBillDetails.bind(this)}
-                          >
-                            Bill Details
-                          </button>
-
-                          <DisplayOPBilling
-                            HeaderCaption={
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "bill_details",
-                                  align: "ltr"
-                                }}
-                              />
-                            }
-                            BillingIOputs={{
-                              selectedLang: this.state.selectedLang,
-                              billdetails: this.state.billdetails
-                            }}
-                            show={this.state.isOpen}
-                            onClose={this.ShowBillDetails.bind(this)}
-                          />
-                        </div>
-                      </div>
-                      <hr />
                       <div className="row primary-box-container">
                         <AlagehFormGroup
                           div={{ className: "col-3" }}
@@ -307,6 +277,36 @@ class AddBillingForm extends Component {
                           </h6>
                         </div>
                       </div>
+                      <hr />
+                      <div className="row primary-box-container">
+                        <div className="col-lg-6">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "bill"
+                            }}
+                          />
+                          <h6>
+                            {this.state.bill_number
+                              ? this.state.bill_number
+                              : "Not Generated"}
+                          </h6>
+                        </div>
+
+                        <div className="col-lg-6">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "bill_date"
+                            }}
+                          />
+                          <h6>
+                            {this.state.bill_date
+                              ? moment(this.state.bill_date).format(
+                                  "DD-MM-YYYY"
+                                )
+                              : "DD/MM/YYYY"}
+                          </h6>
+                        </div>
+                      </div>
                     </Paper>
                     {/* </div> */}
                   </div>
@@ -314,32 +314,6 @@ class AddBillingForm extends Component {
                     {/* <div className="container-fluid"> */}
                     <Paper className="Paper">
                       <div className="row secondary-box-container">
-                        <div className="col-lg-3">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "receipt_number"
-                            }}
-                          />
-                          <h6>
-                            {this.state.receipt_number
-                              ? this.state.receipt_number
-                              : "Not Generated"}
-                          </h6>
-                        </div>
-                        <div className="col-lg-3">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "receipt_date"
-                            }}
-                          />
-                          <h6>
-                            {this.state.receipt_date
-                              ? moment(this.state.receipt_date).format(
-                                  "DD-MM-YYYY"
-                                )
-                              : "DD/MM/YYYY"}
-                          </h6>
-                        </div>
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3 mandatory" }}
                           label={{
@@ -431,6 +405,7 @@ class AddBillingForm extends Component {
                               onChange: cashtexthandle.bind(this, this, context)
                             },
                             others: {
+                              disabled: !this.state.Cashchecked,
                               placeholder: "0.00"
                             }
                           }}
@@ -479,6 +454,7 @@ class AddBillingForm extends Component {
                               onChange: cardtexthandle.bind(this, this, context)
                             },
                             others: {
+                              disabled: !this.state.Cardchecked,
                               placeholder: "0.00"
                             }
                           }}
@@ -495,6 +471,9 @@ class AddBillingForm extends Component {
                             value: this.state.card_number,
                             events: {
                               onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: !this.state.Cardchecked
                             }
                           }}
                         />
@@ -562,6 +541,7 @@ class AddBillingForm extends Component {
                               )
                             },
                             others: {
+                              disabled: !this.state.Checkchecked,
                               placeholder: "0.00"
                             }
                           }}
@@ -579,6 +559,9 @@ class AddBillingForm extends Component {
                             value: this.state.cheque_number,
                             events: {
                               onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: !this.state.Checkchecked
                             }
                           }}
                         />
@@ -626,8 +609,8 @@ class AddBillingForm extends Component {
                           }}
                         /> */}
                         {/* <div className="col-lg-6" /> */}
-                        <div className="col-lg-3" />
-                        <div className="col-lg-6">
+
+                        <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
                               fieldName: "unbalanced_amount"
@@ -652,30 +635,32 @@ class AddBillingForm extends Component {
                               : "₹0.00"}
                           </h5>
                         </div>
-                        {/* <div className="col-lg-3">
+                        <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
-                              fieldName: "total_amount"
+                              fieldName: "receipt_number"
                             }}
                           />
+                          <h6>
+                            {this.state.receipt_number
+                              ? this.state.receipt_number
+                              : "Not Generated"}
+                          </h6>
                         </div>
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.total_amount,
-                            className: "txt-fld",
-                            name: "total_amount",
-
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        /> */}
+                        <div className="col-lg-3">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "receipt_date"
+                            }}
+                          />
+                          <h6>
+                            {this.state.receipt_date
+                              ? moment(this.state.receipt_date).format(
+                                  "DD-MM-YYYY"
+                                )
+                              : "DD/MM/YYYY"}
+                          </h6>
+                        </div>
                       </div>
                     </Paper>
                     {/* </div> */}

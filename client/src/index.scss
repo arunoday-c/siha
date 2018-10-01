@@ -1,5 +1,9 @@
 $forntSize: 0.7rem;
 :global {
+  .displayInlineBlock {
+    display: inline-block;
+  }
+
   .bordered-layout {
     border: 1px solid #c1c1c1;
     min-height: 70px;
@@ -584,6 +588,103 @@ $forntSize: 0.7rem;
       button {
         float: right;
         margin-left: 10px;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        min-width: 70px;
+      }
+      .btn-primary {
+        background: #34b8bc;
+        color: #fff;
+        border: 1px solid #34b8bc;
+      }
+      .btn-default {
+        background: #efefef;
+        color: #5a5a5a;
+        border: 1px solid #adadad;
+      }
+    }
+  }
+
+  .algaeh-modal-Ar {
+    margin: 3% auto 0;
+    background-color: #fff;
+    padding: 0;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 80%;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.4);
+    direction: rtl;
+    text-align: right;
+
+    .popupHeader {
+      background: #dbad64;
+      padding: 5px 15px 0;
+      h4 {
+        color: #fff;
+        font-size: 1.1rem;
+        padding: 0 0 3px;
+        line-height: 30px;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      }
+      label {
+        color: #fff;
+        font-size: 1.1rem;
+        padding: 0 0 3px;
+        line-height: 30px;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        font-weight: bold;
+      }
+      button {
+        margin: 0;
+        padding: 0;
+        font-size: 1.3rem;
+        float: left;
+        background: none;
+        border: none;
+        color: #fff;
+        line-height: 30px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      }
+      button:hover {
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0);
+      }
+    }
+    .popupInner {
+      overflow-y: auto;
+      overflow-x: hidden;
+      .popLeftDiv {
+        border-right: 1px dashed #e0e0e0;
+        min-height: 30vh;
+        max-height: 70vh;
+        overflow: auto;
+        padding: 15px;
+      }
+      .popRightDiv {
+        border-right: 1px dashed #e0e0e0;
+        min-height: 30vh;
+        max-height: 70vh;
+        overflow: auto;
+        padding: 15px;
+      }
+    }
+    .popupFooter {
+      border-top: 1px dashed #e0e0e0;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      height: 40px;
+      margin-top: 15px;
+      .button-left {
+        float: left;
+        margin-right: 10px;
+        margin-left: 0px;
+      }
+      button {
+        float: left;
+        margin-right: 10px;
+        margin-left: 0;
         padding: 5px 10px;
         font-size: 0.8rem;
         text-transform: uppercase;

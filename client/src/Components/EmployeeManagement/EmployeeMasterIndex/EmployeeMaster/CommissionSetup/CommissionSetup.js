@@ -17,30 +17,42 @@ import MyContext from "../../../../../utils/MyContext.js";
 import {
   texthandle,
   AddSeviceTypeComm,
-  deleteSeviceTypeComm
+  AddSeviceComm,
+  deleteSeviceTypeComm,
+  serviceTypeHandeler,
+  serviceServTypeHandeler,
+  numberSet,
+  deleteSeviceComm
 } from "./CommissionSetupEvents";
 // import GlobalVariables from "../../../../../utils/GlobalVariables.json";
-import AHSnackbar from "../../../../common/Inputs/AHSnackbar";
+// import AHSnackbar from "../../../../common/Inputs/AHSnackbar";
 
 class CommissionSetup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      uom_id: null,
-      stocking_uom: null,
-      conversion_factor: 0,
-      convertEnable: false
+      op_cash_servtyp_percent: 0,
+      op_credit_servtyp_percent: 0,
+      ip_cash_servtyp_percent: 0,
+      ip_credit_servtyp_percent: 0,
+
+      services_id: null,
+      service_type_id: null,
+      op_cash_commission_percent: 0,
+      op_credit_commission_percent: 0,
+      ip_cash_commission_percent: 0,
+      ip_credit_commission_percent: 0
     };
   }
 
   componentWillMount() {
-    let InputOutput = this.props.itemPop;
+    let InputOutput = this.props.EmpMasterIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  handleClose = () => {
-    this.setState({ open: false });
-  };
+  // handleClose = () => {
+  //   this.setState({ open: false });
+  // };
 
   render() {
     return (
@@ -49,7 +61,10 @@ class CommissionSetup extends Component {
           {context => (
             <div className="hptl-phase1-commissiom-setup-form">
               <div className="col-lg-12">
-                <div className="row card-deck panel-layout">
+                <div
+                  className="row card-deck panel-layout"
+                  style={{ paddingTop: "1%", paddingBottom: "1%" }}
+                >
                   {/* Patient code */}
                   <div className="col-lg-6 card box-shadow-normal">
                     <div className="row">
@@ -59,15 +74,23 @@ class CommissionSetup extends Component {
                           fieldName: "service_type_id"
                         }}
                         selector={{
-                          name: "service_type_id",
+                          name: "service_type_typ_id",
                           className: "select-fld",
-                          value: this.state.service_type_id,
+                          value: this.state.service_type_typ_id,
                           dataSource: {
-                            textField: "uom_description",
-                            valueField: "hims_d_pharmacy_uom_id",
-                            data: this.props.itemuom
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "service_type"
+                                : "arabic_service_type",
+                            valueField: "hims_d_service_type_id",
+                            data: this.props.servicetype
                           },
-                          onChange: texthandle.bind(this, this, context)
+                          others: { disabled: this.state.Billexists },
+                          onChange: serviceTypeHandeler.bind(
+                            this,
+                            this,
+                            context
+                          )
                         }}
                       />
 
@@ -77,11 +100,12 @@ class CommissionSetup extends Component {
                           fieldName: "op_cash_comission_percent"
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           className: "txt-fld",
-                          name: "op_cash_comission_percent",
-                          value: this.state.op_cash_comission_percent,
+                          name: "op_cash_servtyp_percent",
+                          value: this.state.op_cash_servtyp_percent,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: numberSet.bind(this, this, context)
                           }
                         }}
                       />
@@ -92,11 +116,12 @@ class CommissionSetup extends Component {
                           fieldName: "op_credit_comission_percent"
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           className: "txt-fld",
-                          name: "op_credit_comission_percent",
-                          value: this.state.op_credit_comission_percent,
+                          name: "op_credit_servtyp_percent",
+                          value: this.state.op_credit_servtyp_percent,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: numberSet.bind(this, this, context)
                           }
                         }}
                       />
@@ -106,11 +131,12 @@ class CommissionSetup extends Component {
                           fieldName: "ip_cash_commission_percent"
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           className: "txt-fld",
-                          name: "ip_cash_commission_percent",
-                          value: this.state.ip_cash_commission_percent,
+                          name: "ip_cash_servtyp_percent",
+                          value: this.state.ip_cash_servtyp_percent,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: numberSet.bind(this, this, context)
                           }
                         }}
                       />
@@ -120,16 +146,20 @@ class CommissionSetup extends Component {
                           fieldName: "ip_credit_commission_percent"
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           className: "txt-fld",
-                          name: "ip_credit_commission_percent",
-                          value: this.state.ip_credit_commission_percent,
+                          name: "ip_credit_servtyp_percent",
+                          value: this.state.ip_credit_servtyp_percent,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: numberSet.bind(this, this, context)
                           }
                         }}
                       />
 
-                      <div className="col-lg-1 actions">
+                      <div
+                        className="col-lg-1 actions"
+                        style={{ paddingTop: "4%" }}
+                      >
                         <a
                           href="javascript:;"
                           className="btn btn-primary btn-circle active"
@@ -185,25 +215,28 @@ class CommissionSetup extends Component {
                                 <AlgaehLabel
                                   label={{ fieldName: "service_type_id" }}
                                 />
-                              )
-                              // displayTemplate: row => {
-                              //   let display =
-                              //     this.props.itemuom === undefined
-                              //       ? []
-                              //       : this.props.itemuom.filter(
-                              //           f =>
-                              //             f.hims_d_pharmacy_uom_id ===
-                              //             row.service_type_id
-                              //         );
+                              ),
+                              displayTemplate: row => {
+                                let display =
+                                  this.props.servicetypelist === undefined
+                                    ? []
+                                    : this.props.servicetypelist.filter(
+                                        f =>
+                                          f.hims_d_service_type_id ===
+                                          row.service_type_id
+                                      );
 
-                              //   return (
-                              //     <span>
-                              //       {display !== undefined && display.length !== 0
-                              //         ? display[0].uom_description
-                              //         : ""}
-                              //     </span>
-                              //   );
-                              // },
+                                return (
+                                  <span>
+                                    {display !== undefined &&
+                                    display.length !== 0
+                                      ? this.state.selectedLang === "en"
+                                        ? display[0].service_type
+                                        : display[0].arabic_service_type
+                                      : ""}
+                                  </span>
+                                );
+                              }
                             },
 
                             {
@@ -251,7 +284,7 @@ class CommissionSetup extends Component {
                           ]}
                           keyId="service_type_id"
                           dataSource={{
-                            data: this.state.detail_item_uom
+                            data: this.state.servTypeCommission
                           }}
                           paging={{ page: 0, rowsPerPage: 5 }}
                         />
@@ -270,27 +303,38 @@ class CommissionSetup extends Component {
                           className: "select-fld",
                           value: this.state.service_type_id,
                           dataSource: {
-                            textField: "uom_description",
-                            valueField: "hims_d_pharmacy_uom_id",
-                            data: this.props.itemuom
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "service_type"
+                                : "arabic_service_type",
+                            valueField: "hims_d_service_type_id",
+                            data: this.props.servicetype
                           },
-                          onChange: texthandle.bind(this, this, context)
+
+                          onChange: serviceServTypeHandeler.bind(
+                            this,
+                            this,
+                            context
+                          )
                         }}
                       />
 
                       <AlagehAutoComplete
                         div={{ className: "col-lg-4" }}
                         label={{
-                          fieldName: "service_id"
+                          forceLabel: "Select Service Type"
                         }}
                         selector={{
-                          name: "service_id",
+                          name: "services_id",
                           className: "select-fld",
-                          value: this.state.service_id,
+                          value: this.state.services_id,
                           dataSource: {
-                            textField: "uom_description",
-                            valueField: "hims_d_pharmacy_uom_id",
-                            data: this.props.itemuom
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "service_name"
+                                : "arabic_service_name",
+                            valueField: "hims_d_services_id",
+                            data: this.props.services
                           },
                           onChange: texthandle.bind(this, this, context)
                         }}
@@ -302,11 +346,12 @@ class CommissionSetup extends Component {
                           fieldName: "op_cash_comission_percent"
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           className: "txt-fld",
-                          name: "op_cash_comission_percent",
-                          value: this.state.op_cash_comission_percent,
+                          name: "op_cash_commission_percent",
+                          value: this.state.op_cash_commission_percent,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: numberSet.bind(this, this, context)
                           }
                         }}
                       />
@@ -317,11 +362,12 @@ class CommissionSetup extends Component {
                           fieldName: "op_credit_comission_percent"
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           className: "txt-fld",
-                          name: "op_credit_comission_percent",
-                          value: this.state.op_credit_comission_percent,
+                          name: "op_credit_commission_percent",
+                          value: this.state.op_credit_commission_percent,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: numberSet.bind(this, this, context)
                           }
                         }}
                       />
@@ -331,41 +377,42 @@ class CommissionSetup extends Component {
                           fieldName: "ip_cash_commission_percent"
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           className: "txt-fld",
                           name: "ip_cash_commission_percent",
                           value: this.state.ip_cash_commission_percent,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: numberSet.bind(this, this, context)
                           }
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "ip_credit_commission_percent"
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           className: "txt-fld",
                           name: "ip_credit_commission_percent",
                           value: this.state.ip_credit_commission_percent,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: numberSet.bind(this, this, context)
                           }
                         }}
                       />
 
-                      <div className="col-lg-1 actions">
+                      <div
+                        className="col-lg-1 actions"
+                        style={{ paddingTop: "4%" }}
+                      >
                         <a
                           href="javascript:;"
                           className="btn btn-primary btn-circle active"
                         >
                           <i
                             className="fas fa-plus"
-                            onClick={AddSeviceTypeComm.bind(
-                              this,
-                              this,
-                              context
-                            )}
+                            onClick={AddSeviceComm.bind(this, this, context)}
                           />
                         </a>
                       </div>
@@ -374,7 +421,7 @@ class CommissionSetup extends Component {
                     <div className="row" style={{ marginTop: "10px" }}>
                       <div className="col-lg-12">
                         <AlgaehDataGrid
-                          id="servtyp_commission"
+                          id="service_commission"
                           columns={[
                             {
                               fieldName: "action",
@@ -392,7 +439,7 @@ class CommissionSetup extends Component {
                                       <i
                                         className="fa fa-trash"
                                         aria-hidden="true"
-                                        onClick={deleteSeviceTypeComm.bind(
+                                        onClick={deleteSeviceComm.bind(
                                           this,
                                           this,
                                           context,
@@ -410,29 +457,61 @@ class CommissionSetup extends Component {
                                 <AlgaehLabel
                                   label={{ fieldName: "service_type_id" }}
                                 />
-                              )
-                              // displayTemplate: row => {
-                              //   let display =
-                              //     this.props.itemuom === undefined
-                              //       ? []
-                              //       : this.props.itemuom.filter(
-                              //           f =>
-                              //             f.hims_d_pharmacy_uom_id ===
-                              //             row.service_type_id
-                              //         );
+                              ),
+                              displayTemplate: row => {
+                                let display =
+                                  this.props.servicetypelist === undefined
+                                    ? []
+                                    : this.props.servicetypelist.filter(
+                                        f =>
+                                          f.hims_d_service_type_id ===
+                                          row.service_type_id
+                                      );
 
-                              //   return (
-                              //     <span>
-                              //       {display !== undefined && display.length !== 0
-                              //         ? display[0].uom_description
-                              //         : ""}
-                              //     </span>
-                              //   );
-                              // },
+                                return (
+                                  <span>
+                                    {display !== undefined &&
+                                    display.length !== 0
+                                      ? this.state.selectedLang === "en"
+                                        ? display[0].service_type
+                                        : display[0].arabic_service_type
+                                      : ""}
+                                  </span>
+                                );
+                              }
                             },
 
                             {
-                              fieldName: "op_cash_comission_percent",
+                              fieldName: "services_id",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ fieldName: "services_id" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                let display =
+                                  this.props.serviceslist === undefined
+                                    ? []
+                                    : this.props.serviceslist.filter(
+                                        f =>
+                                          f.hims_d_services_id ===
+                                          row.services_id
+                                      );
+
+                                return (
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? this.state.selectedLang === "en"
+                                        ? display[0].service_name
+                                        : display[0].arabic_service_name
+                                      : ""}
+                                  </span>
+                                );
+                              }
+                            },
+
+                            {
+                              fieldName: "op_cash_commission_percent",
                               label: (
                                 <AlgaehLabel
                                   label={{
@@ -442,7 +521,7 @@ class CommissionSetup extends Component {
                               )
                             },
                             {
-                              fieldName: "op_credit_comission_percent",
+                              fieldName: "op_credit_commission_percent",
                               label: (
                                 <AlgaehLabel
                                   label={{
@@ -476,7 +555,7 @@ class CommissionSetup extends Component {
                           ]}
                           keyId="service_type_id"
                           dataSource={{
-                            data: this.state.detail_item_uom
+                            data: this.state.seviceComm
                           }}
                           paging={{ page: 0, rowsPerPage: 5 }}
                         />
@@ -484,11 +563,11 @@ class CommissionSetup extends Component {
                     </div>
                   </div>
                 </div>
-                <AHSnackbar
+                {/* <AHSnackbar
                   open={this.state.open}
                   handleClose={this.handleClose}
                   MandatoryMsg={this.state.MandatoryMsg}
-                />
+                /> */}
               </div>
             </div>
           )}
@@ -500,14 +579,20 @@ class CommissionSetup extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemuom: state.itemuom
+    services: state.services,
+    servicetype: state.servicetype,
+    services: state.services,
+    serviceslist: state.serviceslist,
+    servicetypelist: state.servicetypelist
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
+      getServiceTypes: AlgaehActions,
+      getServices: AlgaehActions
     },
     dispatch
   );

@@ -24,13 +24,17 @@ import {
   SaveDoctorCommission,
   deleteDoctorCommission,
   ClearData,
-  PostDoctorCommission
+  PostDoctorCommission,
+  CalculateCommission,
+  AdjustAmountCalculate
 } from "./DoctorCommissionEvents";
 import "./DoctorCommission.css";
 import "../../styles/site.css";
 import { AlgaehActions } from "../../actions/algaehActions";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import GlobalVariables from "../../utils/GlobalVariables.json";
+import moment from "moment";
+import Options from "../../Options.json";
 
 class DoctorCommission extends Component {
   constructor(props) {
@@ -45,7 +49,12 @@ class DoctorCommission extends Component {
       to_date: null,
       select_service: null,
       case_type: "OP",
-      billscommission: []
+      adjust_amount: 0,
+      billscommission: [],
+      op_commision: 0,
+      op_credit_comission: 0,
+      gross_comission: 0,
+      comission_payable: 0
     };
   }
 
@@ -85,6 +94,13 @@ class DoctorCommission extends Component {
     });
   }
 
+  dateFormater(value) {
+    debugger;
+    if (value !== null) {
+      debugger;
+      return moment(value).format(Options.dateFormat);
+    }
+  }
   handleClose = () => {
     this.setState({ SnackbarOpen: false });
   };
@@ -281,7 +297,7 @@ class DoctorCommission extends Component {
                   <button
                     className="btn btn-primary"
                     style={{ marginTop: "24px" }}
-                    // onClick={AddItems.bind(this, this)}
+                    onClick={CalculateCommission.bind(this, this)}
                   >
                     Calculate Commission
                   </button>
@@ -315,7 +331,8 @@ class DoctorCommission extends Component {
                         <AlgaehLabel label={{ forceLabel: "Bill Date" }} />
                       ),
                       displayTemplate: row => {
-                        return <span>{dateFormater(row.bill_date)}</span>;
+                        debugger;
+                        return <span>{this.dateFormater(row.bill_date)}</span>;
                       }
                     },
                     {
@@ -480,6 +497,113 @@ class DoctorCommission extends Component {
               </div>
             </div>
 
+            <div className="row">
+              <div className="col-lg-5" style={{ textAlign: "right" }}>
+                <div className="row">
+                  <div className="col-lg-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "OP Commision"
+                      }}
+                    />
+                    <h6>
+                      {this.state.op_commision
+                        ? "₹" + this.state.op_commision
+                        : "₹0.00"}
+                    </h6>
+                  </div>
+                  <div className="col-lg-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "OP Credit Comission"
+                      }}
+                    />
+                    <h6>
+                      {this.state.op_credit_comission
+                        ? "₹" + this.state.op_credit_comission
+                        : "₹0.00"}
+                    </h6>
+                  </div>
+
+                  {/* <div className="col-lg-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "IP Comission"
+                      }}
+                    />
+                    <h6>
+                      {this.state.ip_comission
+                        ? "₹" + this.state.ip_comission
+                        : "₹0.00"}
+                    </h6>
+                  </div>
+
+                  <div className="col-lg-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "IP Credit Comission"
+                      }}
+                    />
+                    <h6>
+                      {this.state.ip_credit_comission
+                        ? "₹" + this.state.ip_credit_comission
+                        : "₹0.00"}
+                    </h6>
+                  </div> */}
+
+                  <div className="col-lg-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Gross Comission"
+                      }}
+                    />
+                    <h6>
+                      {this.state.gross_comission
+                        ? "₹" + this.state.gross_comission
+                        : "₹0.00"}
+                    </h6>
+
+                    {/* adjust_amount */}
+                  </div>
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-4" }}
+                    label={{
+                      forceLabel: "Adjust Amount"
+                    }}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: this.state.adjust_amount,
+                      className: "txt-fld",
+                      name: "adjust_amount",
+
+                      events: {
+                        onChange: AdjustAmountCalculate.bind(this, this)
+                      },
+                      others: {
+                        placeholder: "0.00"
+                      }
+                    }}
+                  />
+
+                  <div className="col-lg-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Comission Payable"
+                      }}
+                    />
+                    <h6>
+                      {this.state.comission_payable
+                        ? "₹" + this.state.comission_payable
+                        : "₹0.00"}
+                    </h6>
+
+                    {/* adjust_amount */}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="hptl-phase1-footer">
               <AppBar position="static" className="main">
                 <div className="row">
@@ -540,7 +664,8 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     doctorcommission: state.doctorcommission,
     billscommission: state.billscommission,
-    services: state.services
+    services: state.services,
+    headercommission: state.headercommission
   };
 }
 
@@ -551,7 +676,9 @@ function mapDispatchToProps(dispatch) {
       getServiceTypes: AlgaehActions,
       getDoctorCommission: AlgaehActions,
       getDoctorsCommission: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      CalculateCommission: AlgaehActions,
+      calculateCommission: AlgaehActions
     },
     dispatch
   );

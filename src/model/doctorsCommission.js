@@ -156,15 +156,101 @@ let doctorsCommissionCal = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let input = extend([], req.body);
-
+    let outputArray = [];
     for (let i = 0; i < input.length; i++) {
-      debugLog(`input:${i}:`, input[i]);
+      let op_cash_comission_amount = 0;
+      let op_cash_comission = 0;
+      let op_crd_comission_amount = 0;
+      let op_crd_comission = 0;
+
+      let inputData = input[i];
+      if (
+        inputData.patient_share != 0 &&
+        inputData.op_cash_comission_percentage != 0
+      ) {
+        op_cash_comission_amount =
+          (inputData.patient_share * inputData.op_cash_comission_percentage) /
+          100;
+        op_cash_comission = op_cash_comission_amount;
+      }
+
+      if (
+        inputData.company_share != 0 &&
+        inputData.op_crd_comission_percentage != 0
+      ) {
+        op_cash_comission_amount =
+          (inputData.company_share * inputData.op_crd_comission_percentage) /
+          100;
+
+        op_crd_comission = op_crd_comission_amount;
+      }
+
+      inputData.op_cash_comission_amount = op_cash_comission_amount;
+      inputData.op_cash_comission = op_cash_comission;
+      inputData.op_crd_comission_amount = op_crd_comission_amount;
+      inputData.op_crd_comission = op_crd_comission;
+      outputArray.push(inputData);
+
+      // debugLog("op_cash_comission_amount:", op_cash_comission_amount);
+      // debugLog("op_cash_comission:", op_cash_comission);
     }
-    req.records = "result";
+
+    req.records = outputArray;
     next();
   } catch (e) {
     next(e);
   }
 };
 
-module.exports = { getDoctorsCommission, doctorsCommissionCal };
+//created by irfan: performing only calculation
+let commissionCalculations = (req, res, next) => {
+  try {
+    let inputParam = req.body;
+    // req.body.intCalculateall === undefined
+    //   ? req.body.billscommission
+    //   : req.body;
+
+    // let hasCalculateall =
+    //   req.body.intCalculateall === undefined ? true : req.body.intCalculateall;
+
+    let sendingObject = {};
+
+    let adjust_amount =
+      inputParam.adjust_amount === undefined ? 0 : inputParam.adjust_amount;
+
+    debugLog("Input", req.body);
+    debugLog("adjust_amount", adjust_amount);
+
+    if (adjust_amount == 0) {
+      sendingObject.op_commision = new LINQ(inputParam).Sum(
+        d => d.op_cash_comission
+      );
+      sendingObject.op_credit_comission = new LINQ(inputParam).Sum(
+        d => d.op_crd_comission
+      );
+
+      sendingObject.gross_comission =
+        sendingObject.op_commision + sendingObject.op_credit_comission;
+
+      sendingObject.net_comission = sendingObject.gross_comission;
+    } else {
+      sendingObject.net_comission =
+        inputParam.gross_comission - inputParam.adjust_amount;
+    }
+
+    sendingObject.comission_payable = sendingObject.net_comission;
+
+    debugLog("sendingObject", sendingObject);
+
+    req.records = sendingObject;
+    next();
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  getDoctorsCommission,
+  doctorsCommissionCal,
+  commissionCalculations
+};

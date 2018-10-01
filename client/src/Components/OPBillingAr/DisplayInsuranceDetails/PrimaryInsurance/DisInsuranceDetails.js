@@ -109,37 +109,6 @@ export default class AddInsuranceForm extends Component {
                       : "Policy No."}
                   </h6>
                 </div>
-                {/* <AlagehFormGroup
-                  div={{ className: "col-lg-6" }}
-                  label={{
-                    fieldName: "plan_desc"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "network_type",
-                    value: this.state.network_type,
-                    events: {
-                      onChange: null
-                    },
-                    disabled: true
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col-lg-6" }}
-                  label={{
-                    fieldName: "policy_no"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "policy_number",
-                    value: this.state.policy_number,
-                    events: {
-                      onChange: null
-                    },
-                    disabled: true
-                  }}
-                /> */}
               </div>
 
               <div className="row primary-box-container">
@@ -170,37 +139,6 @@ export default class AddInsuranceForm extends Component {
                       : "Expiry Date"}
                   </h6>
                 </div>
-                {/* <AlagehFormGroup
-                  div={{ className: "col-lg-6" }}
-                  label={{
-                    fieldName: "card_no"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "card_number",
-                    value: this.state.card_number,
-                    events: {
-                      onChange: null
-                    },
-                    disabled: true
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col-lg-6" }}
-                  label={{
-                    fieldName: "ins_expiry_date"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "effective_end_date",
-                    value: this.state.effective_end_date,
-                    events: {
-                      onChange: null
-                    },
-                    disabled: true
-                  }}
-                /> */}
               </div>
             </div>
             <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 primary-details">
@@ -234,7 +172,7 @@ export default class AddInsuranceForm extends Component {
                   <AlgaehLabel
                     label={{
                       // fieldName: "Co-Insurance"
-                      forceLabel: "Consultation"
+                      forceLabel: "consultation"
                     }}
                   />
                 </div>

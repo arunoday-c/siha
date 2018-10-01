@@ -64,6 +64,7 @@ export default {
       //  updated_by: null,
       updated_date: null,
       receiptdetails: [],
+      services: [],
 
       card_number: null,
       effective_end_date: null,

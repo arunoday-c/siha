@@ -15,81 +15,59 @@ const changeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value });
 };
 
-const CalcuateCommission = $this => {
-  if ($this.state.location_id === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Please select Location."
-    });
-  } else if ($this.state.item_id === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Please select Item."
-    });
-  } else if ($this.state.batchno === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Batch No. cannot be blank."
-    });
-  } else if ($this.state.expiry_date === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Please select Expiry Date."
-    });
-  } else if ($this.state.quantity === 0) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Quantity cannot be blank."
-    });
-  } else if ($this.state.unit_cost === 0) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Unit Cost cannot be blank."
-    });
-  } else if ($this.state.grn_number === 0) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Recipt Number(GRN) cannot be blank."
-    });
-  } else {
-    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-    let itemObj = {
-      location_id: $this.state.location_id,
-      location_type: $this.state.location_type,
-      item_category_id: $this.state.item_category_id,
-      item_group_id: $this.state.item_group_id,
-      item_id: $this.state.item_id,
-      uom_id: $this.state.uom_id,
-      batchno: $this.state.batchno,
-      expiry_date: $this.state.expiry_date,
-      quantity: $this.state.quantity,
-      unit_cost: $this.state.unit_cost,
-      extended_cost: $this.state.extended_cost,
-      conversion_factor: $this.state.conversion_factor,
-      barcode: "",
-      grn_number: $this.state.grn_number,
-      noorecords: pharmacy_stock_detail.length + 1
-    };
-    debugger;
-    pharmacy_stock_detail.push(itemObj);
-    $this.setState({
-      pharmacy_stock_detail: pharmacy_stock_detail,
+const CalculateCommission = $this => {
+  debugger;
+  AlgaehLoader({ show: true });
+  $this.props.CalculateCommission({
+    uri: "/doctorsCommission/doctorsCommissionCal",
+    method: "POST",
+    data: $this.state.billscommission,
+    redux: {
+      type: "CALCULATE_COMMISSION_GET_DATA",
+      mappingName: "billscommission"
+    },
+    afterSuccess: data => {
+      $this.setState({ billscommission: data }, () => {
+        debugger;
+        $this.props.calculateCommission({
+          uri: "/doctorsCommission/commissionCalculations",
+          method: "POST",
+          data: $this.state.billscommission,
+          redux: {
+            type: "COMMISSION_HEADER_GEN_GET_DATA",
+            mappingName: "headercommission"
+          },
+          afterSuccess: data => {
+            $this.setState({ ...data }, () => {
+              AlgaehLoader({ show: false });
+            });
+          }
+        });
+      });
+    }
+  });
+};
 
-      location_id: null,
-      item_category_id: null,
-      item_group_id: null,
-      item_id: null,
-      batchno: null,
-      expiry_date: null,
-      quantity: 0,
-      unit_cost: 0,
-      uom_id: null,
-      conversion_fact: null,
-      extended_cost: 0,
-      saveEnable: false,
-      grn_number: null
+const AdjustAmountCalculate = ($this, e) => {
+  debugger;
+
+  $this.setState({ [e.target.name]: e.target.value }, () => {
+    $this.props.calculateCommission({
+      uri: "/doctorsCommission/commissionCalculations",
+      method: "POST",
+      data: {
+        adjust_amount: $this.state.adjust_amount,
+        gross_comission: $this.state.gross_comission
+      },
+      redux: {
+        type: "COMMISSION_HEADER_GEN_GET_DATA",
+        mappingName: "headercommission"
+      },
+      afterSuccess: data => {
+        $this.setState({ ...data });
+      }
     });
-  }
+  });
 };
 
 const datehandle = ($this, ctrl, e) => {
@@ -99,7 +77,9 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const dateFormater = ({ value }) => {
+  debugger;
   if (value !== null) {
+    debugger;
     return moment(value).format(Options.dateFormat);
   }
 };
@@ -234,7 +214,7 @@ const LoadBills = $this => {
     });
   } else {
     debugger;
-
+    AlgaehLoader({ show: true });
     let inpObj = {
       incharge_or_provider: $this.state.doctor_id,
       from_date: moment($this.state.from_date).format(Options.dateFormatYear),
@@ -256,7 +236,10 @@ const LoadBills = $this => {
         // let providers = Enumerable.from(data)
         //   .where(w => w.isdoctor === "Y")
         //   .toArray();
-        $this.setState({ billscommission: data });
+        debugger;
+        $this.setState({ billscommission: data }, () => {
+          AlgaehLoader({ show: false });
+        });
       }
     });
   }
@@ -264,26 +247,30 @@ const LoadBills = $this => {
 
 const ClearData = $this => {
   $this.setState({
-    providers: [],
     select_type: "AS",
     doctor_id: null,
     from_date: null,
     to_date: null,
     select_service: null,
     case_type: "OP",
-    billscommission: []
+    billscommission: [],
+    op_commision: 0,
+    op_credit_comission: 0,
+    gross_comission: 0,
+    comission_payable: 0
   });
 };
 
 export {
   changeTexts,
   LoadBills,
-  CalcuateCommission,
+  CalculateCommission,
   datehandle,
   dateFormater,
   getCtrlCode,
   SaveDoctorCommission,
   deleteDoctorCommission,
   ClearData,
-  PostDoctorCommission
+  PostDoctorCommission,
+  AdjustAmountCalculate
 };

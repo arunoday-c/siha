@@ -67,17 +67,22 @@ class AddOPBillingForm extends Component {
         redux: {
           type: "SERVICES_GET_DATA",
           mappingName: "services"
+        },
+        afterSuccess: data => {
+          this.setState({
+            services: data
+          });
+        }
+      });
+      this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "serviceslist"
         }
       });
     }
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
-    });
   }
 
   ShowBillDetails(e) {
@@ -329,7 +334,7 @@ class AddOPBillingForm extends Component {
                             ? "service_name"
                             : "arabic_service_name",
                         valueField: "hims_d_services_id",
-                        data: this.props.services
+                        data: this.state.services
                       },
                       others: { disabled: this.state.Billexists },
                       onChange: serviceHandeler.bind(this, this, context)
@@ -435,10 +440,11 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
                           displayTemplate: row => {
+                            debugger;
                             let display =
-                              this.props.services === undefined
+                              this.props.serviceslist === undefined
                                 ? []
-                                : this.props.services.filter(
+                                : this.props.serviceslist.filter(
                                     f =>
                                       f.hims_d_services_id === row.services_id
                                   );
@@ -983,7 +989,8 @@ function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
     services: state.services,
-    genbill: state.genbill
+    genbill: state.genbill,
+    serviceslist: state.serviceslist
   };
 }
 

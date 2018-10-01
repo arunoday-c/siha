@@ -6,11 +6,9 @@ import {
   AlgaehLabel,
   AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert";
 import Enumerable from "linq";
-import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from "constants";
 
 class AppointmentClinics extends Component {
   constructor(props) {
@@ -70,6 +68,7 @@ class AppointmentClinics extends Component {
       data: {},
       onSuccess: response => {
         if (response.data.success) {
+          console.log("Rooms:", response.data.records);
           this.setState({ appointmentRooms: response.data.records });
         }
       },
@@ -110,6 +109,7 @@ class AppointmentClinics extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
+          debugger;
           console.log("DocsDepts:", response.data.records);
           this.setState({
             departments: response.data.records.departmets,
@@ -242,11 +242,32 @@ class AppointmentClinics extends Component {
 
   getDeptName(id) {
     let dept = Enumerable.from(
-      this.state.departments !== undefined ? this.state.departments : []
+      this.state.departments.length !== 0 ? this.state.departments : null
     )
       .where(w => w.sub_department_id === id)
       .firstOrDefault();
-    return dept.sub_department_name;
+    return dept !== undefined ? dept.sub_department_name : "";
+  }
+
+  getDoctorName(id) {
+    let doc = Enumerable.from(
+      this.state.doctors.length !== 0 ? this.state.doctors : null
+    )
+      .where(w => w.employee_id === id)
+      .firstOrDefault();
+    return doc !== undefined ? doc.full_name : "";
+  }
+
+  getRoomName(id) {
+    debugger;
+    let room = Enumerable.from(
+      this.state.appointmentRooms.length !== 0
+        ? this.state.appointmentRooms
+        : null
+    )
+      .where(w => w.hims_d_appointment_room_id === id)
+      .firstOrDefault();
+    return room !== undefined ? room.description : "";
   }
 
   render() {
@@ -366,17 +387,26 @@ class AppointmentClinics extends Component {
                   label: (
                     <AlgaehLabel label={{ fieldName: "department_name" }} />
                   ),
+                  displayTemplate: row => {
+                    return this.getDeptName(row.sub_department_id);
+                  },
                   editorTemplate: row => {
                     return (
-                      <AlagehFormGroup
+                      <AlagehAutoComplete
                         div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
+                        label={{
+                          fieldName: "department_name"
+                        }}
+                        selector={{
                           name: "sub_department_id",
+                          className: "select-fld",
                           value: row.sub_department_id,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
+                          dataSource: {
+                            textField: "sub_department_name",
+                            valueField: "sub_department_id",
+                            data: this.state.departments
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
                         }}
                       />
                     );
@@ -385,17 +415,26 @@ class AppointmentClinics extends Component {
                 {
                   fieldName: "provider_id",
                   label: <AlgaehLabel label={{ fieldName: "doctor" }} />,
+                  displayTemplate: row => {
+                    return this.getDoctorName(row.provider_id);
+                  },
                   editorTemplate: row => {
                     return (
-                      <AlagehFormGroup
+                      <AlagehAutoComplete
                         div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
+                        label={{
+                          fieldName: "doctor"
+                        }}
+                        selector={{
                           name: "provider_id",
+                          className: "select-fld",
                           value: row.provider_id,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
+                          dataSource: {
+                            textField: "full_name",
+                            valueField: "employee_id",
+                            data: this.state.doctors
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
                         }}
                       />
                     );
@@ -404,17 +443,26 @@ class AppointmentClinics extends Component {
                 {
                   fieldName: "room_id",
                   label: <AlgaehLabel label={{ fieldName: "room" }} />,
+                  displayTemplate: row => {
+                    return this.getRoomName(row.room_id);
+                  },
                   editorTemplate: row => {
                     return (
-                      <AlagehFormGroup
+                      <AlagehAutoComplete
                         div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
+                        label={{
+                          fieldName: "room"
+                        }}
+                        selector={{
                           name: "room_id",
+                          className: "select-fld",
                           value: row.room_id,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
+                          dataSource: {
+                            textField: "description",
+                            valueField: "hims_d_appointment_room_id",
+                            data: this.state.appointmentRooms
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
                         }}
                       />
                     );
