@@ -63,10 +63,10 @@ const categorytexthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
+  debugger;
   $this.setState({
     [name]: value,
-    category_speciality_id: e.selected.category_speciality_id
+    category_speciality_id: e.selected.hims_m_category_speciality_mappings_id
   });
 };
 
