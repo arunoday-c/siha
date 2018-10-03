@@ -14,14 +14,12 @@ import {
 import {
   texthandle,
   VatAppilicable,
-  InsertServices,
-  clearData
+  InsertServices
 } from "./HospitalServicesEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 // import { successfulMessage } from "../../../utils/GlobalFunctions";
-// import { getCookie } from "../../../utils/algaehApiCall";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 

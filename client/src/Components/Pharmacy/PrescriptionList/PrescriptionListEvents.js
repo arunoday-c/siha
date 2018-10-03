@@ -96,9 +96,9 @@ const datehandle = ($this, ctrl, e) => {
 
 const ListOfItems = ($this, row) => {
   debugger;
-  let rowSelected = {};
-  let saveupdate = false,
-    btnupdate = true;
+  // let rowSelected = {};
+  // let saveupdate = false,
+  //   btnupdate = true;
   // if (
   //   e.hims_d_insurance_network_id !== undefined &&
   //   e.hims_d_insurance_network_id !== null

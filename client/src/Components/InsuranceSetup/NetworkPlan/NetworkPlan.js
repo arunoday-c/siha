@@ -23,8 +23,8 @@ import {
   addNewNetwork,
   UpdateNetworkPlan
 } from "./NetworkPlanHandaler";
-import { setGlobal } from "../../../utils/GlobalFunctions";
-import { getCookie } from "../../../utils/algaehApiCall";
+// import { setGlobal } from "../../../utils/GlobalFunctions";
+// import { getCookie } from "../../../utils/algaehApiCall";
 import Paper from "@material-ui/core/Paper";
 
 import { FORMAT_PRICE_FROM } from "../../../utils/GlobalVariables.json";

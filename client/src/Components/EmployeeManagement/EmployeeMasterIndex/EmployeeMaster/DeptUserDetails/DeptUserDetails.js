@@ -8,7 +8,6 @@ import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import "./DeptUserDetails.css";
 import {
-  AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
   AlgaehLabel
@@ -23,7 +22,7 @@ import {
   categorytexthandle
 } from "./DeptUserDetailsEvents";
 // import GlobalVariables from "../../../../../utils/GlobalVariables.json";
-import AHSnackbar from "../../../../common/Inputs/AHSnackbar";
+// import AHSnackbar from "../../../../common/Inputs/AHSnackbar";
 
 class DeptUserDetails extends Component {
   constructor(props) {

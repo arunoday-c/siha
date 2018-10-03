@@ -19,7 +19,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   texthandle,
   saveSubInsurance,
-  addNewSubinsurance,
+  // addNewSubinsurance,
   datehandle,
   deleteSubInsurance,
   updateSubInsurance,

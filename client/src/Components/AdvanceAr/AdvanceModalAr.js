@@ -29,7 +29,7 @@ import {
 
 import AdvRefunIOputs from "../../Models/AdvanceRefund";
 import { successfulMessage } from "../../utils/GlobalFunctions";
-import { getCookie } from "../../utils/algaehApiCall";
+// import { getCookie } from "../../utils/algaehApiCall";
 import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import { postAdvance } from "../../actions/RegistrationPatient/Billingactions";
 

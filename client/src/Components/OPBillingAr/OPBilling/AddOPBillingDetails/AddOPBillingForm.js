@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import MyContext from "../../../../utils/MyContext";
 import "./AddOPBillingForm.css";
 import "./../../../../styles/site.css";
@@ -17,13 +16,11 @@ import DisplayOPBilling from "../../../BillDetails/BillDetails";
 import {
   serviceTypeHandeler,
   serviceHandeler,
-  texthandle,
   discounthandle,
   adjustadvance
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
 
-import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Paper from "@material-ui/core/Paper";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
@@ -282,7 +279,10 @@ class AddOPBillingForm extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-op-add-billing-form" style={{direction:"rtl"}}>
+            <div
+              className="hptl-phase1-op-add-billing-form"
+              style={{ direction: "rtl" }}
+            >
               <div className="container-fluid">
                 <div className="row margin-top-15">
                   {/* <div className="col-lg-1">

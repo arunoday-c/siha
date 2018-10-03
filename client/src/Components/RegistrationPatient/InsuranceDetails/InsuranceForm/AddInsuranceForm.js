@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import Dropzone from "react-dropzone";
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import AddCircle from "@material-ui/icons/AddCircle";
 import IconButton from "@material-ui/core/IconButton";
 
