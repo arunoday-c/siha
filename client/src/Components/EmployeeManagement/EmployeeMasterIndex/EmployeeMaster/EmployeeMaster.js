@@ -44,14 +44,6 @@ class EmployeeMaster extends Component {
     });
   }
 
-  componentDidMount() {
-    let prevLang = getCookie("Language");
-
-    let IOputs = EmpMasterIOputs.inputParam();
-    IOputs.selectedLang = prevLang;
-    this.setState(IOputs);
-  }
-
   SideMenuBarOpen(sidOpen) {
     this.setState({
       sidBarOpen: sidOpen
@@ -70,6 +62,12 @@ class EmployeeMaster extends Component {
   };
 
   componentDidMount() {
+    let prevLang = getCookie("Language");
+
+    let IOputs = EmpMasterIOputs.inputParam();
+    IOputs.selectedLang = prevLang;
+    this.setState(IOputs);
+
     this.props.getSubDepartment({
       uri: "/department/get/subdepartment",
       method: "GET",

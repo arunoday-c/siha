@@ -122,6 +122,8 @@ class PhySchSetup extends Component {
   }
 
   saveApptSchedule(e) {
+    console.log("State here :", this.state);
+
     e.preventDefault();
     if (this.state.description.length === 0) {
       this.setState({
@@ -130,6 +132,10 @@ class PhySchSetup extends Component {
       });
     } else if (provider_array.length === 0) {
       swal("Please Select Doctors to add to this schedule", {
+        icon: "warning"
+      });
+    } else if (this.state.from_date > this.state.to_date) {
+      swal("Please Select a proper date range", {
         icon: "warning"
       });
     } else {
@@ -878,7 +884,7 @@ class PhySchSetup extends Component {
                               type="checkbox"
                               name="All"
                               checked={this.state.all}
-                              onClick={this.changeChecks.bind(this)}
+                              onChange={this.changeChecks.bind(this)}
                             />
                             <span>All</span>
                           </label>
@@ -887,7 +893,7 @@ class PhySchSetup extends Component {
                               type="checkbox"
                               name="sunday"
                               checked={this.state.sunday}
-                              onClick={this.changeChecks.bind(this)}
+                              onChange={this.changeChecks.bind(this)}
                             />
                             <span>Sunday</span>
                           </label>
@@ -896,7 +902,7 @@ class PhySchSetup extends Component {
                               type="checkbox"
                               name="monday"
                               checked={this.state.monday}
-                              onClick={this.changeChecks.bind(this)}
+                              onChange={this.changeChecks.bind(this)}
                             />
                             <span>Monday</span>
                           </label>
@@ -905,7 +911,7 @@ class PhySchSetup extends Component {
                               type="checkbox"
                               name="tuesday"
                               checked={this.state.tuesday}
-                              onClick={this.changeChecks.bind(this)}
+                              onChange={this.changeChecks.bind(this)}
                             />
                             <span>Tuesday</span>
                           </label>
@@ -915,7 +921,7 @@ class PhySchSetup extends Component {
                               type="checkbox"
                               name="wednesday"
                               checked={this.state.wednesday}
-                              onClick={this.changeChecks.bind(this)}
+                              onChange={this.changeChecks.bind(this)}
                             />
                             <span>Wednesday</span>
                           </label>
@@ -924,7 +930,7 @@ class PhySchSetup extends Component {
                               type="checkbox"
                               name="thursday"
                               checked={this.state.thursday}
-                              onClick={this.changeChecks.bind(this)}
+                              onChange={this.changeChecks.bind(this)}
                             />
                             <span>Thursday</span>
                           </label>
@@ -933,7 +939,7 @@ class PhySchSetup extends Component {
                               type="checkbox"
                               name="friday"
                               checked={this.state.friday}
-                              onClick={this.changeChecks.bind(this)}
+                              onChange={this.changeChecks.bind(this)}
                             />
                             <span>Friday</span>
                           </label>
@@ -942,7 +948,7 @@ class PhySchSetup extends Component {
                               type="checkbox"
                               name="saturday"
                               checked={this.state.saturday}
-                              onClick={this.changeChecks.bind(this)}
+                              onChange={this.changeChecks.bind(this)}
                             />
                             <span>Saturday</span>
                           </label>

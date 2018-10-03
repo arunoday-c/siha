@@ -24,7 +24,7 @@ import {
   AlagehAutoComplete
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 
 class PersonalDetails extends PureComponent {
   constructor(props) {

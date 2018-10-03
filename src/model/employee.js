@@ -8,6 +8,7 @@ import {
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../utils/logging";
+import Promise from "bluebird";
 // api to add employee
 let addEmployee = (req, res, next) => {
   try {
@@ -111,7 +112,6 @@ let addEmployee = (req, res, next) => {
                     try {
                       if (input.serviceComm.length > 0) {
                         const insurtColumns = [
-                          
                           "services_id",
                           "service_type_id",
                           "op_cash_commission_percent",
@@ -130,7 +130,11 @@ let addEmployee = (req, res, next) => {
                             jsonArrayToObject({
                               sampleInputObject: insurtColumns,
                               arrayObj: req.body.serviceComm,
-                              newFieldToInsert: [result.insertId,new Date(), new Date()],
+                              newFieldToInsert: [
+                                result.insertId,
+                                new Date(),
+                                new Date()
+                              ],
                               req: req
                             })
                           ],
@@ -153,7 +157,6 @@ let addEmployee = (req, res, next) => {
                   }).then(results => {
                     if (input.servTypeCommission.length > 0) {
                       const insurtColumns = [
-                       
                         "service_type_id",
                         "op_cash_comission_percent",
                         "op_credit_comission_percent",
@@ -171,7 +174,11 @@ let addEmployee = (req, res, next) => {
                           jsonArrayToObject({
                             sampleInputObject: insurtColumns,
                             arrayObj: req.body.servTypeCommission,
-                            newFieldToInsert: [result.insertId,new Date(), new Date()],
+                            newFieldToInsert: [
+                              result.insertId,
+                              new Date(),
+                              new Date()
+                            ],
                             req: req
                           })
                         ],
@@ -289,82 +296,361 @@ let getEmployee = (req, res, next) => {
   }
 };
 
+//created by irfan: to update Employee
 let updateEmployee = (req, res, next) => {
-  let employeeModel = {
-    hims_d_employee_id: 0,
-    employee_code: null,
-    first_name: null,
-    middle_name: null,
-    last_name: null,
-    arabic_name: null,
-    sex: "MALE",
-    date_of_birth: null,
-    date_of_joining: null,
-    date_of_leaving: null,
-    address: null,
-    primary_contact_no: null,
-    secondary_contact_no: null,
-    email: null,
-    emergancy_contact_person: null,
-    emergancy_contact_no: null,
-    blood_group: null,
-    employee_status: "A",
-    effective_start_date: null,
-    effective_end_date: null,
-    created_date: new Date(),
-    created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_date: new Date(),
-    updated_by: req.userIdentity.algaeh_d_app_user_id
-  };
-
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let employeeDetails = extend(employeeModel, req.body);
+    let input = extend({}, req.body);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
       }
-      connection.query(
-        "UPDATE hims_d_employee SET first_name=?,middle_name=?\
-                     ,last_name=?,arabic_name=?,sex=?,date_of_birth=?,date_of_joining=?\
-                     ,date_of_leaving=?,address=?,primary_contact_no=?,secondary_contact_no=?\
-                     ,email=?,emergancy_contact_person=?,emergancy_contact_no=?\
-                     ,blood_group=?,employee_status=?,effective_start_date=?,effective_end_date=?\
-                     ,updated_date=now(),updated_by=? WHERE  hims_d_employee_id=?",
-        [
-          employeeDetails.first_name,
-          employeeDetails.middle_name,
-          employeeDetails.last_name,
-          employeeDetails.arabic_name,
-          employeeDetails.sex,
-          employeeDetails.date_of_birth,
-          employeeDetails.date_of_joining,
-          employeeDetails.date_of_leaving,
-          employeeDetails.address,
-          employeeDetails.primary_contact_no,
-          employeeDetails.secondary_contact_no,
-          employeeDetails.email,
-          employeeDetails.emergancy_contact_person,
-          employeeDetails.emergancy_contact_no,
-          employeeDetails.blood_group,
-          employeeDetails.employee_status,
-          employeeDetails.effective_start_date,
-          employeeDetails.effective_end_date,
-          employeeDetails.updated_by,
-          employeeDetails.hims_d_employee_id
-        ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
+
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
             next(error);
-          }
-          req.records = result;
-          next();
+          });
         }
-      );
+
+        connection.query(
+          "UPDATE hims_d_employee SET employee_code=?,title_id=?,first_name=?,middle_name=?,last_name=?,\
+        full_name=?,arabic_name=?,employee_designation_id=?,license_number=?,sex=?,date_of_birth=?,date_of_joining=?\
+        ,date_of_leaving=?,address=?,address2=?,pincode=?,city_id=?,state_id=?,country_id=?,primary_contact_no=?,\
+        secondary_contact_no=?,email=?,emergancy_contact_person=?,emergancy_contact_no=?,blood_group=?,isdoctor=?,\
+        employee_status=?,effective_start_date=?,effective_end_date=?,updated_date=?,updated_by=?,record_status=? WHERE record_status='A' and  hims_d_employee_id=?",
+          [
+            input.employee_code,
+            input.title_id,
+            input.first_name,
+            input.middle_name,
+            input.last_name,
+            input.full_name,
+            input.arabic_name,
+            input.employee_designation_id,
+            input.license_number,
+            input.sex,
+            input.date_of_birth,
+            input.date_of_joining,
+            input.date_of_leaving,
+            input.address,
+            input.address2,
+            input.pincode,
+            input.city_id,
+            input.state_id,
+            input.country_id,
+            input.primary_contact_no,
+            input.secondary_contact_no,
+            input.email,
+            input.emergancy_contact_person,
+            input.emergancy_contact_no,
+            input.blood_group,
+            input.isdoctor,
+            input.employee_status,
+            input.effective_start_date,
+            input.effective_end_date,
+            new Date(),
+            input.updated_by,
+            input.record_status,
+            input.hims_d_employee_id
+          ],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            if (result.length != 0) {
+              return new Promise((resolve, reject) => {
+                if (input.insertdeptDetails.length > 0) {
+                  const insurtColumns = [
+                    "employee_id",
+                    "services_id",
+                    "sub_department_id",
+                    "category_speciality_id",
+                    "user_id",
+                    "created_by",
+                    "updated_by"
+                  ];
+
+                  connection.query(
+                    "INSERT INTO hims_m_employee_department_mappings(" +
+                      insurtColumns.join(",") +
+                      ",created_date,updated_date) VALUES ?",
+                    [
+                      jsonArrayToObject({
+                        sampleInputObject: insurtColumns,
+                        arrayObj: req.body.insertdeptDetails,
+                        newFieldToInsert: [new Date(), new Date()],
+                        req: req
+                      })
+                    ],
+                    (error, insertDepartResult) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      return resolve(insertDepartResult);
+                    }
+                  );
+                } else {
+                  resolve(result);
+                }
+              })
+                .then(resultFrmInsertDept => {
+                  debugLog("inside 1 then");
+
+                  if (input.updatedeptDetails.length > 0) {
+                    debugLog("inside updatedeptDetails");
+                    let inputParam = extend([], req.body.updatedeptDetails);
+                    let qry = "";
+
+                    for (
+                      let i = 0;
+                      i < req.body.updatedeptDetails.length;
+                      i++
+                    ) {
+                      qry +=
+                        "UPDATE `hims_m_employee_department_mappings` SET employee_id='" +
+                        inputParam[i].employee_id +
+                        "', services_id='" +
+                        inputParam[i].services_id +
+                        "', sub_department_id='" +
+                        inputParam[i].sub_department_id +
+                        "', category_speciality_id='" +
+                        inputParam[i].category_speciality_id +
+                        "', user_id='" +
+                        inputParam[i].user_id +
+                        "', record_status='" +
+                        inputParam[i].record_status +
+                        "', updated_date='" +
+                        new Date().toLocaleString() +
+                        "',updated_by=\
+'" +
+                        req.body.updated_by +
+                        "' WHERE record_status='A' and hims_d_employee_department_id='" +
+                        inputParam[i].hims_d_employee_department_id +
+                        "';";
+                    }
+
+                    connection.query(qry, (error, updateDeptDetailResult) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                    });
+                  }
+                })
+                .then(updateDeptResult => {
+                  debugLog("inside 2 then");
+
+                  if (input.insertserviceComm.length > 0) {
+                    debugLog("inside insertserviceComm");
+                    const insurtColumns = [
+                      "provider_id",
+                      "services_id",
+                      "service_type_id",
+                      "op_cash_commission_percent",
+                      "op_credit_commission_percent",
+                      "ip_cash_commission_percent",
+                      "ip_credit_commission_percent",
+                      "created_by",
+                      "updated_by"
+                    ];
+
+                    connection.query(
+                      "INSERT INTO hims_m_doctor_service_commission(" +
+                        insurtColumns.join(",") +
+                        ",created_date,updated_date) VALUES ?",
+                      [
+                        jsonArrayToObject({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: req.body.insertserviceComm,
+                          newFieldToInsert: [new Date(), new Date()],
+                          req: req
+                        })
+                      ],
+                      (error, serviceCommResult) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        //--
+                      }
+                    );
+                  }
+                })
+                .then(serviceCommResult => {
+                  debugLog("inside 3 then");
+
+                  if (input.updateserviceComm.length > 0) {
+                    debugLog("inside updateserviceComm");
+                    let inputParam = extend([], req.body.updateserviceComm);
+                    let qry = "";
+
+                    for (
+                      let i = 0;
+                      i < req.body.updateserviceComm.length;
+                      i++
+                    ) {
+                      qry +=
+                        "UPDATE `hims_m_doctor_service_commission` SET provider_id='" +
+                        inputParam[i].provider_id +
+                        "', services_id='" +
+                        inputParam[i].services_id +
+                        "', service_type_id='" +
+                        inputParam[i].service_type_id +
+                        "', op_cash_commission_percent='" +
+                        inputParam[i].op_cash_commission_percent +
+                        "', op_credit_commission_percent='" +
+                        inputParam[i].op_credit_commission_percent +
+                        "', ip_cash_commission_percent='" +
+                        inputParam[i].ip_cash_commission_percent +
+                        "', ip_credit_commission_percent='" +
+                        inputParam[i].ip_credit_commission_percent +
+                        "', record_status='" +
+                        inputParam[i].record_status +
+                        "', updated_date='" +
+                        new Date().toLocaleString() +
+                        "',updated_by=\
+'" +
+                        req.body.updated_by +
+                        "' WHERE record_status='A' and hims_m_doctor_service_commission_id='" +
+                        inputParam[i].hims_m_doctor_service_commission_id +
+                        "';";
+                    }
+
+                    connection.query(qry, (error, updateServiceCommResult) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                    });
+                  }
+                })
+                .then(updateServiceCommResult => {
+                  debugLog("inside 4 then");
+                  if (input.insertservTypeCommission.length > 0) {
+                    debugLog("inside insertservTypeCommission");
+                    const insurtColumns = [
+                      "provider_id",
+                      "service_type_id",
+                      "op_cash_comission_percent",
+                      "op_credit_comission_percent",
+                      "ip_cash_commission_percent",
+                      "ip_credit_commission_percent",
+                      "created_by",
+                      "updated_by"
+                    ];
+
+                    connection.query(
+                      "INSERT INTO hims_m_doctor_service_type_commission(" +
+                        insurtColumns.join(",") +
+                        ",created_date,updated_date) VALUES ?",
+                      [
+                        jsonArrayToObject({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: req.body.insertservTypeCommission,
+                          newFieldToInsert: [new Date(), new Date()],
+                          req: req
+                        })
+                      ],
+                      (error, insrtServiceTypeCommResult) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        //-
+                      }
+                    );
+                  }
+                })
+                .then(insrtServiceTypeCommResult => {
+                  debugLog("inside 5 then");
+                  if (input.updateservTypeCommission.length > 0) {
+                    debugLog("inside updateservTypeCommission");
+                    let inputParam = extend(
+                      [],
+                      req.body.updateservTypeCommission
+                    );
+                    let qry = "";
+
+                    for (
+                      let i = 0;
+                      i < req.body.updateservTypeCommission.length;
+                      i++
+                    ) {
+                      qry +=
+                        "UPDATE `hims_m_doctor_service_type_commission` SET provider_id='" +
+                        inputParam[i].provider_id +
+                        "', service_type_id='" +
+                        inputParam[i].service_type_id +
+                        "', op_cash_comission_percent='" +
+                        inputParam[i].op_cash_comission_percent +
+                        "', op_credit_comission_percent='" +
+                        inputParam[i].op_credit_comission_percent +
+                        "', ip_cash_commission_percent='" +
+                        inputParam[i].ip_cash_commission_percent +
+                        "', ip_credit_commission_percent='" +
+                        inputParam[i].ip_credit_commission_percent +
+                        "', record_status='" +
+                        inputParam[i].record_status +
+                        "', updated_date='" +
+                        new Date().toLocaleString() +
+                        "',updated_by=\
+'" +
+                        req.body.updated_by +
+                        "' WHERE record_status='A' and hims_m_doctor_service_type_commission_id='" +
+                        inputParam[i].hims_m_doctor_service_type_commission_id +
+                        "';";
+                    }
+
+                    connection.query(qry, (error, updateServiceCommResult) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                    });
+                  }
+                })
+
+                .finally(allResult => {
+                  debugLog("inside finally");
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    req.records = result;
+                    next();
+                  });
+                });
+            } else {
+              req.records = result;
+              next();
+            }
+          }
+        );
+      });
     });
   } catch (e) {
     next(e);
@@ -450,10 +736,74 @@ let getEmployeeCategory = (req, res, next) => {
   }
 };
 
+//created by irfan: to get Doctor Service Commission
+let getDoctorServiceCommission = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_m_doctor_service_commission_id,provider_id,services_id,service_type_id,op_cash_commission_percent,\
+        op_credit_commission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
+         from hims_m_doctor_service_commission where record_status='A'and provider_id=?",
+        [input.provider_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Doctor Service  type Commission
+let getDoctorServiceTypeCommission = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_m_doctor_service_type_commission_id,provider_id,service_type_id,\
+        op_cash_comission_percent,op_credit_comission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
+         from hims_m_doctor_service_type_commission where record_status='A' and provider_id=?",
+        [input.provider_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployee,
   getEmployee,
   updateEmployee,
   getEmployeeDetails,
-  getEmployeeCategory
+  getEmployeeCategory,
+  getDoctorServiceCommission,
+  getDoctorServiceTypeCommission
 };

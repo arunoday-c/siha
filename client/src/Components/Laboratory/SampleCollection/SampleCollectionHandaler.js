@@ -3,7 +3,7 @@ import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
 import Enumerable from "linq";
-import { setLocaion } from "../../../utils/indexer";
+// import { setLocaion } from "../../../utils/indexer";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;

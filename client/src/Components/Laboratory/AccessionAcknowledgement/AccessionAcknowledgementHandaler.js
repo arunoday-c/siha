@@ -2,7 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 
@@ -77,19 +77,19 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
-      let sample_collection = Enumerable.from(data)
-        .groupBy("$.patient_id", null, (k, g) => {
-          let firstRecordSet = Enumerable.from(g).firstOrDefault();
-          return {
-            patient_code: firstRecordSet.patient_code,
-            full_name: firstRecordSet.full_name,
-            ordered_date: firstRecordSet.ordered_date,
-            number_of_tests: g.getSource().length,
-            test_details: g.getSource(),
-            provider_id: firstRecordSet.provider_id
-          };
-        })
-        .toArray();
+      // let sample_collection = Enumerable.from(data)
+      //   .groupBy("$.patient_id", null, (k, g) => {
+      //     let firstRecordSet = Enumerable.from(g).firstOrDefault();
+      //     return {
+      //       patient_code: firstRecordSet.patient_code,
+      //       full_name: firstRecordSet.full_name,
+      //       ordered_date: firstRecordSet.ordered_date,
+      //       number_of_tests: g.getSource().length,
+      //       test_details: g.getSource(),
+      //       provider_id: firstRecordSet.provider_id
+      //     };
+      //   })
+      //   .toArray();
       debugger;
       $this.setState({ sample_collection: data });
     }
