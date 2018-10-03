@@ -3,10 +3,11 @@ import {
   selectStatement,
   paging,
   whereCondition,
-  releaseDBConnection
+  releaseDBConnection,
+  jsonArrayToObject
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
-
+import { logger, debugFunction, debugLog } from "../utils/logging";
 // api to add employee
 let addEmployee = (req, res, next) => {
   try {
@@ -76,9 +77,8 @@ let addEmployee = (req, res, next) => {
                 next(error);
               });
             }
-            if (result.insertId != null && req.body.deptDetails.length != 0) {
+            if (result.insertId != null && req.body.deptDetails.length > 0) {
               const insurtColumns = [
-                "employee_id",
                 "services_id",
                 "sub_department_id",
                 "category_speciality_id",
@@ -109,7 +109,7 @@ let addEmployee = (req, res, next) => {
 
                   new Promise((resolve, reject) => {
                     try {
-                      if (req.body.serviceComm.length != 0) {
+                      if (input.serviceComm.length > 0) {
                         const insurtColumns = [
                           "provider_id",
                           "services_id",
@@ -145,13 +145,13 @@ let addEmployee = (req, res, next) => {
                           }
                         );
                       } else {
-                        return resolve();
+                        return resolve(departResult);
                       }
                     } catch (e) {
                       reject(e);
                     }
                   }).then(results => {
-                    if (req.body.servTypeCommission.length != 0) {
+                    if (input.servTypeCommission.length > 0) {
                       const insurtColumns = [
                         "provider_id",
                         "service_type_id",

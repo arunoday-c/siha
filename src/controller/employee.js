@@ -12,7 +12,7 @@ export default ({ config, db }) => {
   let api = Router();
 
   api.post(
-    "/add",
+    "/addEmployee",
     addEmployee,
     (req, res, next) => {
       let resultBack = req.records;
