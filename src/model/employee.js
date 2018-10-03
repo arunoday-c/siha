@@ -736,10 +736,74 @@ let getEmployeeCategory = (req, res, next) => {
   }
 };
 
+//created by irfan: to get Doctor Service Commission
+let getDoctorServiceCommission = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_m_doctor_service_commission_id,provider_id,services_id,service_type_id,op_cash_commission_percent,\
+        op_credit_commission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
+         from hims_m_doctor_service_commission where record_status='A'and provider_id=?",
+        [input.provider_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Doctor Service  type Commission
+let getDoctorServiceTypeCommission = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_m_doctor_service_type_commission_id,provider_id,service_type_id,\
+        op_cash_comission_percent,op_credit_comission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
+         from hims_m_doctor_service_type_commission where record_status='A' and provider_id=?",
+        [input.provider_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployee,
   getEmployee,
   updateEmployee,
   getEmployeeDetails,
-  getEmployeeCategory
+  getEmployeeCategory,
+  getDoctorServiceCommission,
+  getDoctorServiceTypeCommission
 };
