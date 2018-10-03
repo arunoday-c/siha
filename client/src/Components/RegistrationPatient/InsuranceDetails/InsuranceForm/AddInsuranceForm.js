@@ -37,12 +37,6 @@ class AddInsuranceForm extends Component {
       frontSide: null,
       backSide: null
     };
-    this.widthImg = "";
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    var width = document.getElementById("attach-width").offsetWidth;
-    this.widthImg = width + 1;
   }
 
   componentWillMount() {
