@@ -122,7 +122,7 @@ class PhySchSetup extends Component {
   }
 
   saveApptSchedule(e) {
-    console.log("State here :", this.state);
+    //console.log("State here :", this.state);
 
     e.preventDefault();
     if (this.state.description.length === 0) {
