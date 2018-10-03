@@ -395,6 +395,7 @@ class PhySchSetup extends Component {
   }
 
   render() {
+    debugger;
     return (
       <div className="phy-sch-setup">
         {/* Modify Modal Start */}
@@ -973,153 +974,166 @@ class PhySchSetup extends Component {
         {/* Schedule Modal End */}
 
         {/* Top Filter Start */}
-        <div className="col-lg-12 card box-shadow-normal">
-          <div className="row ">
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "department_name"
-              }}
-              selector={{
-                name: "sub_department_id",
-                className: "select-fld",
-                value: this.state.sub_department_id,
-                dataSource: {
-                  textField: "sub_department_name",
-                  valueField: "sub_dept_id",
-                  data: this.state.departments
-                },
-                onChange: this.deptDropDownHandler.bind(this)
-              }}
-              error={this.state.department_error}
-              helperText={this.state.department_error_text}
-            />
 
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Select Month"
-              }}
-              selector={{
-                name: "month",
-                className: "select-fld",
-                value: this.state.month,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.MONTHS
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
+        <div className="row  inner-top-search">
+          <AlagehAutoComplete
+            div={{ className: "col-lg-3" }}
+            label={{
+              fieldName: "department_name"
+            }}
+            selector={{
+              name: "sub_department_id",
+              className: "select-fld",
+              value: this.state.sub_department_id,
+              dataSource: {
+                textField: "sub_department_name",
+                valueField: "sub_dept_id",
+                data: this.state.departments
+              },
+              onChange: this.deptDropDownHandler.bind(this)
+            }}
+            error={this.state.department_error}
+            helperText={this.state.department_error_text}
+          />
 
-            <AlagehFormGroup
-              div={{ className: "col-lg-1" }}
-              label={{
-                forceLabel: "Year",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "year",
-                value: this.state.year,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                },
-                others: {
-                  type: "number",
-                  min: moment().year()
-                }
-              }}
-            />
+          <AlagehAutoComplete
+            div={{ className: "col-lg-3" }}
+            label={{
+              forceLabel: "Select Month"
+            }}
+            selector={{
+              name: "month",
+              className: "select-fld",
+              value: this.state.month,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.MONTHS
+              },
+              onChange: this.dropDownHandler.bind(this)
+            }}
+          />
 
-            <div className="col-lg-1 form-group margin-top-15">
-              <span
-                style={{ cursor: "pointer" }}
-                onClick={this.getApptSchedule.bind(this)}
-                className="fas fa-search fa-2x"
-              />
-            </div>
+          <AlagehFormGroup
+            div={{ className: "col-lg-1" }}
+            label={{
+              forceLabel: "Year",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "year",
+              value: this.state.year,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              },
+              others: {
+                type: "number",
+                min: moment().year()
+              }
+            }}
+          />
+
+          <div className="col-lg-1 form-group margin-top-15">
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={this.getApptSchedule.bind(this)}
+              className="fas fa-search fa-2x"
+            />
           </div>
         </div>
         {/* Top Filter End */}
-
-        <div className="card box-shadow-normal">
-          <div className="col-lg-12 divInner">
-            <div className="row">
-              <div className="col-lg-3 divInnerLeft">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <label>Available Schedules</label>
-                    <div className="bordered-layout">
-                      <ul>
-                        {this.state.scheduleList.length !== 0
-                          ? this.state.scheduleList.map((data, index) => (
-                              <li
-                                schedules={data.schedule_description}
-                                id={data.hims_d_appointment_schedule_header_id}
-                                key={index}
-                                onClick={this.loadDetails.bind(this)}
-                              >
-                                <span
-                                  style={{
-                                    width: "80%"
-                                  }}
-                                >
-                                  {data.schedule_description}
-                                </span>
-                                <i
-                                  id={data.appointment_schedule_header_id}
-                                  className="fas fa-edit fa-1x float-right"
-                                  style={{
-                                    cursor: "pointer"
-                                  }}
-                                  onClick={() => {
-                                    this.setState({
-                                      scheduleDisable: false
-                                    });
-                                  }}
-                                />
-                              </li>
-                            ))
-                          : "No Schedules Avialable"}
-                      </ul>
-                    </div>
-                  </div>
+        <div className="row">
+          <div className="col-lg-3">
+            <div class="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div class="portlet-title">
+                <div class="caption">
+                  <h3 class="caption-subject">Available Schedules</h3>
+                </div>
+                <div class="actions">
+                  <span
+                    className="btn btn-green btn-circle active"
+                    onClick={() => {
+                      this.setState({ openScheduler: true });
+                    }}
+                  >
+                    <i className="fas fa-plus" />
+                  </span>
                 </div>
               </div>
+              <div class="portlet-body">
+                <div className="bordered-layout-radius">
+                  <ul style={{ height: "53vh" }}>
+                    {this.state.scheduleList.length !== 0 ? (
+                      this.state.scheduleList.map((data, index) => (
+                        <li
+                          schedules={data.schedule_description}
+                          id={data.hims_d_appointment_schedule_header_id}
+                          key={index}
+                          onClick={this.loadDetails.bind(this)}
+                        >
+                          <span>{data.schedule_description}</span>
+                          <i
+                            id={data.appointment_schedule_header_id}
+                            className="fas fa-pen"
+                            onClick={() => {
+                              this.setState({
+                                scheduleDisable: false
+                              });
+                            }}
+                          />
+                        </li>
+                      ))
+                    ) : (
+                      <span className="noDataStyle">
+                        Select Dept. and month to view available schedules
+                      </span>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-9">
+            <div class="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div class="portlet-title">
+                <div class="caption">
+                  <h3 class="caption-subject">{this.state.description}</h3>
+                </div>
 
-              {/* Scheduler Display Start */}
-              <div className="col-lg-9 divInnerRight">
+                <div class="actions">
+                  <span className="btn btn-green btn-circle">
+                    <i className="fas fa-copy" />
+                  </span>
+                  <span className="btn btn-green btn-circle active">
+                    <i className="fas fa-pen" />
+                  </span>
+                </div>
+              </div>
+              <div class="portlet-body">
                 <div className="row">
                   <div className="col-lg-8">
                     <div className="row">
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-5" }}
-                        label={{
-                          forceLabel: "Schedule Description",
-                          isImp: true
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "description",
-                          value: this.state.description,
-                          events: {
-                            onChange: this.changeTexts.bind(this)
-                          },
-                          others: {
-                            disabled: this.state.scheduleDisable
-                          },
-                          error: this.state.description_error,
-                          helperText: this.state.description_error_text
-                        }}
-                      />
-                    </div>
-                    <div className="row">
                       <div className="col-lg-6">
-                        <label>Date Range</label>
+                        <label className="algaehLabelGroup">Date Range</label>
                         <div className="row">
-                          <AlgaehDateHandler
+                          <div className="col-lg-6">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "From Date",
+                                isImp: true
+                              }}
+                            />
+
+                            <h6>
+                              {this.state.from_date
+                                ? moment(this.state.from_date).format(
+                                    "DD-MM-YYYY"
+                                  )
+                                : "DD/MM/YYYY"}
+                            </h6>
+                          </div>
+                          {/* <AlgaehDateHandler
                             div={{ className: "col-lg-6" }}
                             label={{ forceLabel: "From Date", isImp: true }}
                             textBox={{
@@ -1135,8 +1149,25 @@ class PhySchSetup extends Component {
                               }
                             }}
                             value={this.state.from_date}
-                          />
-                          <AlgaehDateHandler
+                          /> */}
+
+                          <div className="col-lg-6">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "To Date",
+                                isImp: true
+                              }}
+                            />
+
+                            <h6>
+                              {this.state.to_date
+                                ? moment(this.state.to_date).format(
+                                    "DD-MM-YYYY"
+                                  )
+                                : "DD/MM/YYYY"}
+                            </h6>
+                          </div>
+                          {/* <AlgaehDateHandler
                             div={{ className: "col-lg-6" }}
                             label={{ forceLabel: "To Date", isImp: true }}
                             textBox={{
@@ -1152,13 +1183,28 @@ class PhySchSetup extends Component {
                               }
                             }}
                             value={this.state.to_date}
-                          />
+                          /> */}
                         </div>
                       </div>
                       <div className="col-lg-6">
-                        <label>Working Hours</label>
+                        <label className="algaehLabelGroup">Working Hours</label>
                         <div className="row">
-                          <AlagehFormGroup
+                          <div className="col-lg-6">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "From Time",
+                                isImp: true
+                              }}
+                            />
+
+                            <h6>
+                            {this.state.from_work_hr
+                              ? this.state.from_work_hr
+                              : "00:00"}
+                            </h6>
+                          </div>
+
+                          {/* <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
                               forceLabel: "From Time",
@@ -1179,8 +1225,24 @@ class PhySchSetup extends Component {
                               // error: this.state.description_error,
                               // helperText: this.state.description_error_text
                             }}
-                          />
-                          <AlagehFormGroup
+                          /> */}
+
+                          <div className="col-lg-6">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "To Time",
+                                isImp: true
+                              }}
+                            />
+
+                            <h6>
+                            {this.state.to_work_hr
+                              ? this.state.to_work_hr
+                              : "00:00"}
+                            </h6>
+                          </div>
+
+                          {/* <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
                               forceLabel: "To Time",
@@ -1201,16 +1263,30 @@ class PhySchSetup extends Component {
                               // error: this.state.description_error,
                               // helperText: this.state.description_error_text
                             }}
-                          />
+                          /> */}
                         </div>
                       </div>
                     </div>
 
                     <div className="row">
                       <div className="col-lg-6">
-                        <label className="margin-top-15">Day Break 1</label>
+                        <label className="algaehLabelGroup">Day Break 1</label>
                         <div className="row">
-                          <AlagehFormGroup
+
+                          <div className="col-lg-6">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "From Time",
+                                isImp: true
+                              }}
+                            />
+                              <h6>
+                            {this.state.from_work_hr1
+                              ? this.state.from_work_hr1
+                              : "00:00"}
+                            </h6>
+                          </div>
+                          {/* <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
                               forceLabel: "From Time",
@@ -1230,8 +1306,23 @@ class PhySchSetup extends Component {
                               // error: this.state.description_error,
                               // helperText: this.state.description_error_text
                             }}
-                          />
-                          <AlagehFormGroup
+                          /> */}
+
+                          <div className="col-lg-6">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "To Time",
+                                isImp: true
+                              }}
+                            />
+
+                            <h6>
+                            {this.state.to_work_hr1
+                              ? this.state.to_work_hr1
+                              : "00:00"}
+                            </h6>
+                          </div>
+                          {/* <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
                               forceLabel: "To Time",
@@ -1252,13 +1343,28 @@ class PhySchSetup extends Component {
                               // error: this.state.description_error,
                               // helperText: this.state.description_error_text
                             }}
-                          />
+                          /> */}
                         </div>
                       </div>
                       <div className="col-lg-6">
-                        <label className="margin-top-15">Day Break 2</label>
+                        <label className="algaehLabelGroup">Day Break 2</label>
                         <div className="row">
-                          <AlagehFormGroup
+                        <div className="col-lg-6">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "From Time",
+                                isImp: true
+                              }}
+                            />
+
+                            <h6>
+                            {this.state.from_work_hr2
+                              ? this.state.from_work_hr2
+                              : "00:00"}
+                            </h6>
+                          </div>
+
+                          {/* <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
                               forceLabel: "From Time",
@@ -1278,8 +1384,24 @@ class PhySchSetup extends Component {
                               // error: this.state.description_error,
                               // helperText: this.state.description_error_text
                             }}
-                          />
-                          <AlagehFormGroup
+                          /> */}
+
+                        <div className="col-lg-6">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "To Time",
+                                isImp: true
+                              }}
+                            />
+
+                            <h6>
+                            {this.state.to_work_hr2
+                              ? this.state.to_work_hr2
+                              : "00:00"}
+                            </h6>
+                          </div>
+
+                          {/* <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
                               forceLabel: "To Time",
@@ -1299,16 +1421,35 @@ class PhySchSetup extends Component {
                               // error: this.state.description_error,
                               // helperText: this.state.description_error_text
                             }}
-                          />
+                          /> */}
                         </div>
                       </div>
                     </div>
+                   
                     <div className="row margin-top-15">
-                      <div className="col-lg-12">
+
+
+<div className="col-lg-12">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Working Days",
+                                isImp: true
+                              }}
+                            />
+
+                            <h6>
+                              SUN, MON, TUE, WED, THU, FRI, SAT
+                            </h6>
+                          </div>
+
+                      {/* <div className="col-lg-12">
                         <label>Working Days</label>
+                          
+
                         <div
                           className="customCheckbox"
                           style={{
+                            border: "none",
                             pointerEvents: this.state.scheduleDisable
                               ? "none"
                               : ""
@@ -1388,60 +1529,40 @@ class PhySchSetup extends Component {
                             <span>Saturday</span>
                           </label>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className="col-lg-4">
                     <label>Doctors in the Schedule</label>
-                    <div className="bordered-layout">
-                      <ul>
-                        {this.state.scheduleDoctors !== undefined
-                          ? this.state.scheduleDoctors.map((data, index) => (
-                              <li key={index}>
-                                <span
-                                  style={{
-                                    width: "80%"
-                                  }}
-                                >
-                                  {data.first_name + " " + data.last_name}
-                                </span>
-                                <i
-                                  provider-name={
-                                    data.first_name + " " + data.last_name
-                                  }
-                                  provider-id={data.provider_id}
-                                  id={data.appointment_schedule_header_id}
-                                  className="fas fa-edit fa-1x float-right"
-                                  style={{
-                                    cursor: "pointer"
-                                  }}
-                                  onClick={this.openModifierPopup.bind(this)}
-                                />
-                              </li>
-                            ))
-                          : "No Doctors Available"}
+                    <div className="bordered-layout-radius">
+                      <ul style={{ height: "50vh" }}>
+                        {this.state.scheduleDoctors !== undefined ? (
+                          this.state.scheduleDoctors.map((data, index) => (
+                            <li key={index}>
+                              {data.first_name + " " + data.last_name}
+                              <i
+                                provider-name={
+                                  data.first_name + " " + data.last_name
+                                }
+                                provider-id={data.provider_id}
+                                id={data.appointment_schedule_header_id}
+                                onClick={this.openModifierPopup.bind(this)}
+                                className="fas fa-pen"
+                              />
+                              <i className="fas fa-trash-alt"/>
+                            </li>
+                          ))
+                        ) : (
+                          <span className="noDataStyle">
+                            Select schedule to view doctors
+                          </span>
+                        )}
                       </ul>
                     </div>
                   </div>
                 </div>
               </div>
-              {/* Scheduler Display End */}
             </div>
-          </div>
-        </div>
-        <div className="row float-right">
-          <div className="col">
-            <button className="btn btn-primary">Copy Current Schedule</button>
-          </div>
-          <div className="col">
-            <button
-              onClick={() => {
-                this.setState({ openScheduler: true });
-              }}
-              className="btn btn-primary"
-            >
-              Create New
-            </button>
           </div>
         </div>
       </div>

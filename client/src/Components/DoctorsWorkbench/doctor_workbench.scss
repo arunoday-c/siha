@@ -17,18 +17,44 @@
     color: #fff;
 
     .myDay_date {
-      float: none;
-      margin: 4px auto 2px;
-    }
+      position: relative;
 
-    .myDay_date input {
-      border: 1px solid #1d887f;
-      color: #fff;
-      background: #45a4aa;
-      font-size: 17px;
-      padding: 1px;
-      text-align: center;
-      border-radius: 3px;
+      input[type="month"] {
+        font-size: 0.8rem;
+        padding: 2px 3px 3px 8px;
+        width: 250px;
+        text-transform: uppercase;
+        border: 1px dashed #ffffff;
+        border-radius: 4px;
+        margin-top: 4px;
+        background: none;
+        color: #fff;
+      }
+      input[type="month"]::-webkit-calendar-picker-indicator {
+        color: rgba(0, 0, 0, 0);
+        opacity: 1;
+        display: block;
+        background: url(../../assets/svg/calendar-alt-regular.svg) no-repeat
+          center;
+        width: 18px;
+        height: 15px;
+        border-width: thin;
+        background-size: 60%;
+      }
+
+      input[type="month"]:disabled {
+        background: #fffdfa;
+        border: 1px dashed #d3d3d3;
+        color: #000;
+        font-weight: bold;
+      }
+      button {
+        margin-left: 0px;
+        padding: 3px 6px !important;
+        svg {
+          height: 16px;
+        }
+      }
     }
 
     .arrow-box {
