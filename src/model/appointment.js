@@ -944,6 +944,8 @@ let getDoctorScheduleToModify = (req, res, next) => {
           }
           req.records = result;
           next();
+
+          debugLog("result length:", result.length);
         }
       );
     });
@@ -999,7 +1001,7 @@ let updateDoctorScheduleDateWise = (req, res, next) => {
        to_break_hr1, work_break2, from_break_hr2, to_break_hr2,created_date, created_by, updated_date, updated_by)\
       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 [
-                  input.appointment_schedule_detail_id,
+                  input.hims_d_appointment_schedule_detail_id,
                   input.to_date,
                   input.slot,
                   input.from_work_hr,
