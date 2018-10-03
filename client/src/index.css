@@ -9,9 +9,7 @@
   /* Inputs */
   /* Tab */
   /* Btn Circle */
-  /* Btn Grey Salsa */
-  /* Btn Red */
-  /* Btn Red */ }
+  /* Btn Green */ }
   :global .displayInlineBlock {
     display: inline-block; }
   :global .bordered-layout {
@@ -38,6 +36,53 @@
       :global .bordered-layout ul li:nth-child(odd):hover,
       :global .bordered-layout ul li:nth-child(even):hover {
         background: #eafffd; }
+  :global .bordered-layout-radius {
+    overflow: auto;
+    border-radius: 3px; }
+    :global .bordered-layout-radius ul {
+      margin: 0px;
+      padding: 0px;
+      border: 1px solid #c1c1c1;
+      overflow: auto; }
+      :global .bordered-layout-radius ul li {
+        cursor: pointer;
+        list-style: none;
+        margin: 0px;
+        padding: 7px 5px;
+        font-size: 0.8rem;
+        border-bottom: 1px dashed #c1c1c1;
+        width: 100%;
+        position: relative; }
+        :global .bordered-layout-radius ul li.active {
+          background: #eafffd !important; }
+        :global .bordered-layout-radius ul li i {
+          display: block;
+          float: right;
+          line-height: 17px;
+          margin-right: 6px;
+          color: #212529;
+          margin-left: 10px; }
+      :global .bordered-layout-radius ul li.active::after {
+        content: "";
+        position: absolute;
+        right: 4px;
+        top: 7px;
+        width: 0;
+        height: 0;
+        border-top: 8px solid #f5232300;
+        border-left: 8px solid #44b8bd;
+        border-right: 8px solid transparent;
+        border-bottom: 8px solid #e8e8e800;
+        clear: both; }
+      :global .bordered-layout-radius ul li.active i {
+        display: none; }
+    :global .bordered-layout-radius .noDataStyle {
+      text-align: center;
+      width: 100%;
+      display: inline-block;
+      font-size: 1rem;
+      margin-top: 15%;
+      color: #d3d3d3; }
   :global ::-webkit-scrollbar {
     width: 5px;
     height: 5px; }
@@ -135,8 +180,10 @@
   :global .actions {
     float: right;
     display: inline-block; }
-  :global .actions a {
-    margin-left: 3px; }
+    :global .actions a {
+      margin-left: 3px; }
+    :global .actions span {
+      margin-left: 3px; }
   :global .actions .btn {
     color: #666;
     padding: 3px 9px;
@@ -210,32 +257,12 @@
     font-size: 12px;
     line-height: 22px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); }
-  :global .actions .btn.grey-salsa {
-    border: none;
-    margin-left: 3px;
-    box-shadow: none;
-    border-radius: 50px !important; }
-  :global .actions .btn.grey-salsa.active {
-    color: #fafcfb;
-    background: #8e9bae; }
-  :global .actions .grey-salsa.btn:hover,
-  :global .actions .grey-salsa.btn:focus,
-  :global .actions .grey-salsa.btn:active,
-  :global .actions .grey-salsa.btn.active {
-    color: #fafcfb;
-    background: #97a3b4; }
-  :global .actions .btn.btn-red.active,
-  :global .actions .btn.btn-red:hover {
+  :global .actions .btn.btn-green.active,
+  :global .actions .btn.btn-green:hover {
     color: #fff;
     box-shadow: none;
-    background: #e26a6a;
-    border-color: #e26a6a; }
-  :global .actions .btn.btn-purple.active,
-  :global .actions .btn.btn-purple:hover {
-    color: #fff;
-    box-shadow: none;
-    background: #8775a7;
-    border-color: #8775a7; }
+    background: #00bcb0;
+    border-color: #01968c; }
   :global .customRadio {
     border-bottom: 1px solid #eee;
     padding-bottom: 5px; }

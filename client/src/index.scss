@@ -43,6 +43,70 @@ $forntSize: 0.7rem;
     }
   }
 
+  .bordered-layout-radius {
+    overflow: auto;
+    border-radius: 3px;
+    ul {
+      margin: 0px;
+      padding: 0px;
+      border: 1px solid #c1c1c1;
+      overflow: auto;
+  
+
+      li {
+        cursor: pointer;
+        list-style: none;
+        margin: 0px;
+        padding: 7px 5px;
+        font-size: 0.8rem;
+        border-bottom: 1px dashed #c1c1c1;
+        width: 100%;
+        position: relative;
+
+        &.active {
+          background: #eafffd !important;
+        }
+        i {
+          display: block;
+          float: right;
+          line-height: 17px;
+          margin-right: 6px;
+          color: #212529;
+          margin-left: 10px;
+        }
+      }
+      li.active::after {
+        content: "";
+        position: absolute;
+        right: 4px;
+        top: 7px;
+        width: 0;
+        height: 0;
+        border-top: 8px solid #f5232300;
+        border-left: 8px solid #44b8bd;
+        border-right: 8px solid transparent;
+        border-bottom: 8px solid #e8e8e800;
+        clear: both;
+      }
+      li.active {
+        i {
+          display: none;
+        }
+      }
+      // li:first-child {
+      //   border-bottom: none;
+      // }
+    }
+    .noDataStyle {
+      text-align: center;
+      width: 100%;
+      display: inline-block;
+      font-size: 1rem;
+      margin-top: 15%;
+      color: #d3d3d3;
+    }
+  }
+
   ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
@@ -102,7 +166,7 @@ $forntSize: 0.7rem;
 
   .btn-primary:not(:disabled):not(.disabled).active,
   .btn-primary:not(:disabled):not(.disabled):active,
-  .show>.btn-primary.dropdown-toggle {
+  .show > .btn-primary.dropdown-toggle {
     background-color: #00bcb0;
     border: #00bcb0;
   }
@@ -121,7 +185,7 @@ $forntSize: 0.7rem;
 
   .btn-default:not(:disabled):not(.disabled).active,
   .btn-default:not(:disabled):not(.disabled):active,
-  .show>.btn-default.dropdown-toggle {
+  .show > .btn-default.dropdown-toggle {
     background-color: #efefef;
     border: 1px solid #efefef;
   }
@@ -202,10 +266,12 @@ $forntSize: 0.7rem;
   .actions {
     float: right;
     display: inline-block;
-  }
-
-  .actions a {
-    margin-left: 3px;
+    a {
+      margin-left: 3px;
+    }
+    span {
+      margin-left: 3px;
+    }
   }
 
   .actions .btn {
@@ -232,17 +298,17 @@ $forntSize: 0.7rem;
     border-radius: 50px;
   }
 
-  .pagination>li>a,
-  .pagination>li>span {
+  .pagination > li > a,
+  .pagination > li > span {
     padding: 4px 10px;
     font-size: 12px;
     color: #8775a7;
     background: #f7f7f7;
   }
 
-  .pagination>li:hover>a,
-  .pagination>li.active>a,
-  .pagination>li.active:hover>a {
+  .pagination > li:hover > a,
+  .pagination > li.active > a,
+  .pagination > li.active:hover > a {
     color: #fff;
     background: #8775a7;
     border-color: #8775a7;
@@ -263,7 +329,7 @@ $forntSize: 0.7rem;
   }
 
   /* Tab */
-  .portlet-title>.nav-tabs {
+  .portlet-title > .nav-tabs {
     background: none;
     margin: 0;
     float: right;
@@ -271,31 +337,31 @@ $forntSize: 0.7rem;
     border: 0;
   }
 
-  .portlet-title>.nav-tabs>li {
+  .portlet-title > .nav-tabs > li {
     background: none;
     margin: 0;
     border: 0;
   }
 
-  .portlet-title>.nav-tabs>li>a {
+  .portlet-title > .nav-tabs > li > a {
     background: none;
     border: 0;
     padding: 2px 10px 13px;
     color: #444;
   }
 
-  .portlet-title>.nav-tabs>li.active,
-  .portlet-title>.nav-tabs>li.active:hover {
+  .portlet-title > .nav-tabs > li.active,
+  .portlet-title > .nav-tabs > li.active:hover {
     border-bottom: 4px solid #f3565d;
     position: relative;
   }
 
-  .portlet-title>.nav-tabs>li:hover {
+  .portlet-title > .nav-tabs > li:hover {
     border-bottom: 4px solid #f29b9f;
   }
 
-  .portlet-title>.nav-tabs>li.active>a,
-  .portlet-title>.nav-tabs>li:hover>a {
+  .portlet-title > .nav-tabs > li.active > a,
+  .portlet-title > .nav-tabs > li:hover > a {
     color: #333;
     background: #fff;
     border: 0;
@@ -319,43 +385,13 @@ $forntSize: 0.7rem;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
   }
 
-  /* Btn Grey Salsa */
-  .actions .btn.grey-salsa {
-    border: none;
-    margin-left: 3px;
-    box-shadow: none;
-    border-radius: 50px !important;
-  }
-
-  .actions .btn.grey-salsa.active {
-    color: #fafcfb;
-    background: #8e9bae;
-  }
-
-  .actions .grey-salsa.btn:hover,
-  .actions .grey-salsa.btn:focus,
-  .actions .grey-salsa.btn:active,
-  .actions .grey-salsa.btn.active {
-    color: #fafcfb;
-    background: #97a3b4;
-  }
-
-  /* Btn Red */
-  .actions .btn.btn-red.active,
-  .actions .btn.btn-red:hover {
+  /* Btn Green */
+  .actions .btn.btn-green.active,
+  .actions .btn.btn-green:hover {
     color: #fff;
     box-shadow: none;
-    background: #e26a6a;
-    border-color: #e26a6a;
-  }
-
-  /* Btn Red */
-  .actions .btn.btn-purple.active,
-  .actions .btn.btn-purple:hover {
-    color: #fff;
-    box-shadow: none;
-    background: #8775a7;
-    border-color: #8775a7;
+    background: #00bcb0;
+    border-color: #01968c;
   }
 
   .customRadio {
@@ -366,7 +402,7 @@ $forntSize: 0.7rem;
       display: inline-block;
     }
 
-    .inline+.inline {
+    .inline + .inline {
       margin-left: 10px;
     }
 
@@ -410,11 +446,11 @@ $forntSize: 0.7rem;
       opacity: 0;
     }
 
-    .radio input[type="radio"]:checked+span {
+    .radio input[type="radio"]:checked + span {
       color: #00bcb0;
     }
 
-    .radio input[type="radio"]:checked+span:before {
+    .radio input[type="radio"]:checked + span:before {
       content: "";
       width: 5px;
       height: 5px;
@@ -438,7 +474,7 @@ $forntSize: 0.7rem;
       margin-right: 10px;
     }
 
-    .inline+.inline {
+    .inline + .inline {
       margin-left: 0;
     }
 
@@ -482,11 +518,11 @@ $forntSize: 0.7rem;
       opacity: 0;
     }
 
-    .checkbox input[type="checkbox"]:checked+span {
+    .checkbox input[type="checkbox"]:checked + span {
       color: #00bcb0;
     }
 
-    .checkbox input[type="checkbox"]:checked+span:before {
+    .checkbox input[type="checkbox"]:checked + span:before {
       content: "";
       width: 5px;
       height: 5px;
@@ -516,7 +552,8 @@ $forntSize: 0.7rem;
     list-style: none;
 
     li {
-      background: url("./assets/images/pain_scale.png") no-repeat center transparent;
+      background: url("./assets/images/pain_scale.png") no-repeat center
+        transparent;
       width: 31px;
       height: 31px;
       display: inline-block;
@@ -1025,7 +1062,6 @@ $forntSize: 0.7rem;
   }
 
   .ins-tab-container {
-
     .tab-button,
     label {
       width: 100%;

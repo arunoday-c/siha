@@ -545,7 +545,6 @@ class Appointment extends Component {
             <div style={{ height: "34px" }}>
               <div className="myDay_date">
                 <input
-                  className="calender-date"
                   type="month"
                   onChange={this.monthChangeHandler.bind(this)}
                   value={moment(this.state.selectedHDate).format("YYYY-MM")}
