@@ -31,7 +31,7 @@ class DeptUserDetails extends Component {
     this.state = {
       sub_department_id: null,
       user_id: null,
-      hims_m_category_speciality_mappings_id: null,
+      category_speciality_id: null,
       depserviceslist: []
     };
   }

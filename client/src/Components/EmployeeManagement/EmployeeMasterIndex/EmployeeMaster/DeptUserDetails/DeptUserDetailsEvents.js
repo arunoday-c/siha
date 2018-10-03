@@ -66,8 +66,7 @@ const categorytexthandle = ($this, ctrl, e) => {
 
   $this.setState({
     [name]: value,
-    hims_m_category_speciality_mappings_id:
-      e.selected.hims_m_category_speciality_mappings_id
+    category_speciality_id: e.selected.category_speciality_id
   });
 };
 
@@ -77,15 +76,14 @@ const AddDeptUser = ($this, context) => {
   let insertdeptDetails = $this.state.insertdeptDetails;
   let inpObj = {
     sub_department_id: $this.state.sub_department_id,
-    hims_m_category_speciality_mappings_id:
-      $this.state.hims_m_category_speciality_mappings_id,
+    category_speciality_id: $this.state.category_speciality_id,
     user_id: $this.state.user_id,
     category_id: $this.state.category_id,
     speciality_id: $this.state.speciality_id,
     services_id: $this.state.services_id
   };
 
-  if ($this.state.hims_d_employee_id !== undefined) {
+  if ($this.state.hims_d_employee_id !== null) {
     inpObj.employee_id = $this.state.hims_d_employee_id;
     insertdeptDetails.push(inpObj);
   }

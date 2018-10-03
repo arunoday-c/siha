@@ -1,5 +1,5 @@
-// import { algaehApiCall } from "../../../utils/algaehApiCall";
-// import swal from "sweetalert";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import swal from "sweetalert";
 
 const Validations = $this => {
   let isError = false;
