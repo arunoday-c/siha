@@ -36,10 +36,6 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import Options from "../../Options.json";
 
-// function Transition(props) {
-//   return <Slide direction="up" {...props} />;
-// }
-
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
   BillingIOputs.inputParam()
@@ -55,7 +51,6 @@ class RegistrationPatientAr extends Component {
     let IOputs = emptyObject;
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
-    // AlgaehLoader({ show: true });
   }
   componentDidMount() {
     debugger;
@@ -75,14 +70,6 @@ class RegistrationPatientAr extends Component {
         }
       });
     }
-    this.props.getProviderDetails({
-      uri: "/employee/get",
-      method: "GET",
-      redux: {
-        type: "DOCTOR_GET_DATA",
-        mappingName: "providers"
-      }
-    });
 
     if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
       this.props.initialbillingCalculations({
@@ -96,14 +83,6 @@ class RegistrationPatientAr extends Component {
   }
 
   ClearData(e) {
-    // this.props.initialStatePatientData({
-    //   redux: {
-    //     type: "PAT_INIT_DATA",
-    //     mappingName: "patients",
-    //     data: {}
-    //   }
-    // });
-
     let IOputs = emptyObject;
 
     this.setState(IOputs, () => {
@@ -122,9 +101,6 @@ class RegistrationPatientAr extends Component {
           expiry_date: null,
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
-          // created_by: getCookie("UserID"),
-          // created_date: new Date(),
-          //updated_by: null,
           updated_date: null,
           card_type: null
         });
@@ -136,9 +112,6 @@ class RegistrationPatientAr extends Component {
           expiry_date: this.state.card_date,
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
-          // created_by: getCookie("UserID"),
-          // created_date: new Date(),
-          // updated_by: null,
           updated_date: null,
           card_type: null
         });
@@ -150,9 +123,6 @@ class RegistrationPatientAr extends Component {
           expiry_date: this.state.cheque_date,
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
-          // created_by: getCookie("UserID"),
-          //created_date: new Date(),
-          //updated_by: null,
           updated_date: null,
           card_type: null
         });
@@ -634,8 +604,7 @@ function mapStateToProps(state) {
   return {
     patients: state.patients,
     genbill: state.genbill,
-    existinsurance: state.existinsurance,
-    providers: state.providers
+    existinsurance: state.existinsurance
   };
 }
 
@@ -649,8 +618,7 @@ function mapDispatchToProps(dispatch) {
       generateBill: AlgaehActions,
       initialStateBillGen: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      initialbillingCalculations: AlgaehActions,
-      getProviderDetails: AlgaehActions
+      initialbillingCalculations: AlgaehActions
     },
     dispatch
   );
