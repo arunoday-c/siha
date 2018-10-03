@@ -39,7 +39,8 @@
       :global .bordered-layout ul li:nth-child(even):hover {
         background: #eafffd; }
   :global ::-webkit-scrollbar {
-    width: 3px; }
+    width: 5px;
+    height: 5px; }
   :global ::-webkit-scrollbar-track {
     background: #929292; }
   :global ::-webkit-scrollbar-thumb {
