@@ -121,6 +121,20 @@ class EmployeeMaster extends Component {
         mappingName: "serviceslist"
       }
     });
+
+    if (
+      this.props.countries === undefined ||
+      this.props.countries.length === 0
+    ) {
+      this.props.getCountries({
+        uri: "/masters/get/countryStateCity",
+        method: "GET",
+        redux: {
+          type: "CTRY_GET_DATA",
+          mappingName: "countries"
+        }
+      });
+    }
   }
 
   handleClose = () => {
@@ -131,7 +145,38 @@ class EmployeeMaster extends Component {
     debugger;
     if (newProps.employeeDetailsPop.hims_d_employee_id !== undefined) {
       let IOputs = newProps.employeeDetailsPop;
-      this.setState({ ...this.state, ...IOputs });
+      this.setState({ ...this.state, ...IOputs }, () => {
+        // this.props.getDoctorServiceTypeCommission({
+        //   uri: "/employee/getDoctorServiceTypeCommission",
+        //   data: { provider_id: this.state.hims_d_employee_id },
+        //   method: "GET",
+        //   redux: {
+        //     type: "SERVICE_TYPE_COMM_GET_DATA",
+        //     mappingName: "servTypeCommission"
+        //   },
+        //   afterSuccess: data => {
+        //     debugger;
+        //     this.setState({
+        //       servTypeCommission: data
+        //     });
+        //   }
+        // });
+        // this.props.getDoctorServiceCommission({
+        //   uri: "/employee/getDoctorServiceCommission",
+        //   method: "GET",
+        //   data: { provider_id: this.state.hims_d_employee_id },
+        //   redux: {
+        //     type: "SERVICE_COMM_GET_DATA",
+        //     mappingName: "serviceComm"
+        //   },
+        //   afterSuccess: data => {
+        //     debugger;
+        //     this.setState({
+        //       serviceComm: data
+        //     });
+        //   }
+        // });
+      });
     } else {
       let IOputs = EmpMasterIOputs.inputParam();
       this.setState(IOputs);
@@ -281,7 +326,10 @@ function mapStateToProps(state) {
     services: state.services,
     serviceslist: state.serviceslist,
     servicetypelist: state.servicetypelist,
-    subdepartment: state.subdepartment
+    subdepartment: state.subdepartment,
+    servTypeCommission: state.servTypeCommission,
+    serviceComm: state.serviceComm,
+    countries: state.countries
   };
 }
 
@@ -291,7 +339,10 @@ function mapDispatchToProps(dispatch) {
       getUserDetails: AlgaehActions,
       getServiceTypes: AlgaehActions,
       getServices: AlgaehActions,
-      getSubDepartment: AlgaehActions
+      getSubDepartment: AlgaehActions,
+      getDoctorServiceTypeCommission: AlgaehActions,
+      getDoctorServiceCommission: AlgaehActions,
+      getCountries: AlgaehActions
 
       // /get/subdepartment
     },

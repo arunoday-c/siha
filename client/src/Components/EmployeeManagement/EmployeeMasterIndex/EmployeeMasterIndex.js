@@ -53,48 +53,8 @@ class EmployeeMasterIndex extends Component {
         }
       });
     }
+
     getEmployeeDetails(this, this);
-    // if (
-    //   this.props.servicetype === undefined ||
-    //   this.props.servicetype.length === 0
-    // ) {
-    //   this.props.getServiceTypes({
-    //     uri: "/serviceType",
-    //     method: "GET",
-    //     redux: {
-    //       type: "SERVIES_TYPES_GET_DATA",
-    //       mappingName: "servicetype"
-    //     }
-    //   });
-    // }
-
-    // if (
-    //   this.props.subdepartments === undefined ||
-    //   this.props.subdepartments.length === 0
-    // ) {
-    //   this.props.getSubDepatments({
-    //     uri: "/department/get/subdepartment",
-    //     method: "GET",
-    //     redux: {
-    //       type: "SERVIES_TYPES_GET_DATA",
-    //       mappingName: "subdepartments"
-    //     }
-    //   });
-    // }
-
-    // if (
-    //   this.props.hospitaldetails === undefined ||
-    //   this.props.hospitaldetails.length === 0
-    // ) {
-    //   this.props.getHospitalDetails({
-    //     uri: "/organization/getOrganization",
-    //     method: "GET",
-    //     redux: {
-    //       type: "HOSPITAL_DETAILS_GET_DATA",
-    //       mappingName: "hospitaldetails"
-    //     }
-    //   });
-    // }
   }
 
   ShowModel(e) {

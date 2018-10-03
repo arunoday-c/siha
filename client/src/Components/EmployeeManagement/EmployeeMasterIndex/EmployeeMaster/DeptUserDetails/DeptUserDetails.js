@@ -41,6 +41,7 @@ class DeptUserDetails extends Component {
   }
 
   componentDidMount() {
+    debugger;
     if (
       this.props.empcategory === undefined ||
       this.props.empcategory.length === 0

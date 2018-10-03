@@ -44,7 +44,21 @@ class PatientType extends Component {
     this.baseState = this.state;
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (
+      this.props.patienttypes === undefined ||
+      this.props.patienttypes.length === 0
+    ) {
+      this.props.getPatienttypes({
+        uri: "/patientType/getPatientType",
+        method: "GET",
+        redux: {
+          type: "PAT_TYP_GET_DATA",
+          mappingName: "patienttypes"
+        }
+      });
+    }
+  }
   dateFormater({ value }) {
     return String(moment(value).format("DD-MM-YYYY"));
   }
@@ -256,131 +270,7 @@ class PatientType extends Component {
           <div className="row form-details">
             <div className="col">
               <AlgaehDataGrid
-                id="patient_grd"
-                columns={[
-                  {
-                    fieldName: "patient_type_code",
-                    label: <AlgaehLabel label={{ fieldName: "type_code" }} />,
-                    disabled: true
-                  },
-                  {
-                    fieldName: "patitent_type_desc",
-                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.patitent_type_desc,
-                            className: "txt-fld",
-                            name: "patitent_type_desc",
-                            events: {
-                              onChange: this.onchangegridcol.bind(this, row)
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "arabic_patitent_type_desc",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "arabic_type_desc" }} />
-                    ),
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.arabic_patitent_type_desc,
-                            className: "txt-fld",
-                            name: "arabic_patitent_type_desc",
-                            events: {
-                              onChange: this.onchangegridcol.bind(this, row)
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_by",
-                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].user_displayname
-                            : ""}
-                        </span>
-                      );
-                    },
-                    disabled: true
-                  },
-                  {
-                    fieldName: "created_date",
-                    label: "Added Date",
-                    displayTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    },
-                    disabled: true
-                  },
-                  {
-                    fieldName: "identity_status",
-                    label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                    displayTemplate: row => {
-                      return row.identity_status === "A"
-                        ? "Active"
-                        : "Inactive";
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "identity_status",
-                            className: "select-fld",
-                            value: row.identity_status,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_STATUS
-                            },
-                            onChange: this.onchangegridcol.bind(this, row)
-                          }}
-                        />
-                      );
-                    }
-                  }
-                ]}
-                // keyId="patient_type_code"
-                dataSource={{
-                  uri: "/patientType/get",
-                  method: "GET",
-                  responseSchema: {
-                    data: "records.data",
-                    totalPages: "records.totalPages"
-                  }
-                }}
-                algaehSearch={true}
-                isEditable={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onDelete: this.deletePatientType.bind(this),
-                  onEdit: row => {},
-                  onDone: this.updatePatientType.bind(this)
-                }}
-              />
-
-              {/* <AlgaehDataGrid
-                id="patient_grd"
+                id="patient_type_grd"
                 columns={[
                   {
                     fieldName: "patient_type_code",
@@ -470,12 +360,10 @@ class PatientType extends Component {
                 ]}
                 keyId="patient_type_code"
                 dataSource={{
-                  uri: "/patientType/get",
-                  method: "GET",
-                  responseSchema: {
-                    data: "records.data",
-                    totalPages: "records.totalPages"
-                  }
+                  data:
+                    this.props.patienttypes === undefined
+                      ? []
+                      : this.props.patienttypes
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
@@ -484,7 +372,7 @@ class PatientType extends Component {
                   onEdit: row => {},
                   onDone: this.updatePatientType.bind(this)
                 }}
-              /> */}
+              />
             </div>
           </div>
         </Paper>
