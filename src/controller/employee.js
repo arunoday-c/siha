@@ -30,7 +30,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
   api.put(
-    "/update",
+    "/updateEmployee",
     updateEmployee,
     (req, res, next) => {
       let result = req.records;
