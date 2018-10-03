@@ -123,6 +123,11 @@ class PhySchSetup extends Component {
       data: send_data,
       onSuccess: response => {
         if (response.data.success) {
+          this.getDoctorScheduleToModify(
+            data.hims_d_appointment_schedule_header_id,
+            data.provider_id
+          );
+
           swal("Schedule Updated Successfully", {
             buttons: false,
             icon: "success",
@@ -316,7 +321,6 @@ class PhySchSetup extends Component {
       )
       .firstOrDefault();
 
-    debugger;
     this.setState({
       description: docs.schedule_description,
       scheduleDoctors: docs.doctorsList,
@@ -338,7 +342,17 @@ class PhySchSetup extends Component {
     });
   }
 
+  deleteDocFromSchedule(e) {
+    debugger;
+    let header_id = e.currentTarget.getAttribute("id");
+    let provider_id = e.currentTarget.getAttribute("provider-id");
+    alert(
+      "Deleting Doctor from header:" + header_id + " of Doctor:" + provider_id
+    );
+  }
+
   getApptSchedule(e) {
+    this.resetSaveState();
     e.preventDefault();
     if (this.state.sub_department_id === null) {
       this.setState({
@@ -408,8 +422,6 @@ class PhySchSetup extends Component {
         if (response.data.success) {
           this.setState({
             modify: response.data.records
-            // departments: response.data.records.departmets
-            // departments: response.data.records.departmets
           });
         }
       },
@@ -1140,7 +1152,7 @@ class PhySchSetup extends Component {
                   </span>
                 </div>
               </div>
-              <div class="portlet-body">
+              <div className="portlet-body">
                 <div className="bordered-layout-radius">
                   <ul style={{ height: "53vh" }}>
                     {this.state.scheduleList.length !== 0 ? (
@@ -1280,7 +1292,10 @@ class PhySchSetup extends Component {
 
                             <h6>
                               {this.state.from_work_hr
-                                ? this.state.from_work_hr
+                                ? moment(
+                                    this.state.from_work_hr,
+                                    "hh:mm:ss"
+                                  ).format("hh:mm a")
                                 : "00:00"}
                             </h6>
                           </div>
@@ -1318,7 +1333,10 @@ class PhySchSetup extends Component {
 
                             <h6>
                               {this.state.to_work_hr
-                                ? this.state.to_work_hr
+                                ? moment(
+                                    this.state.to_work_hr,
+                                    "hh:mm:ss"
+                                  ).format("hh:mm a")
                                 : "00:00"}
                             </h6>
                           </div>
@@ -1633,7 +1651,12 @@ class PhySchSetup extends Component {
                                 onClick={this.openModifierPopup.bind(this)}
                                 className="fas fa-pen"
                               />
-                              <i className="fas fa-trash-alt" />
+                              <i
+                                onClick={this.deleteDocFromSchedule.bind(this)}
+                                provider-id={data.provider_id}
+                                id={data.appointment_schedule_header_id}
+                                className="fas fa-trash-alt"
+                              />
                             </li>
                           ))
                         ) : (

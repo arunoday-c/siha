@@ -209,8 +209,22 @@ class Appointment extends Component {
     });
   }
 
+  generateChilderns(data) {
+    return (
+      <tr key={data.counter}>
+        <td className="tg-baqh">
+          <span className="dynSlot">{data.time}</span>
+          <i onClick={this.showModal.bind(this)} className="fas fa-plus" />
+        </td>
+        <td className="tg-baqh">
+          <span className="dynSlot">{data.time}</span>
+          <i onClick={this.showModal.bind(this)} className="fas fa-plus" />
+        </td>
+      </tr>
+    );
+  }
+
   generateTimeslots(data) {
-    debugger;
     //console.log("Timeslot Data", data);
     const from_work_hr = moment(data.from_work_hr, "hh:mm:ss");
     const to_work_hr = moment(data.to_work_hr, "hh:mm:ss");
@@ -219,46 +233,49 @@ class Appointment extends Component {
     const from_break_hr2 = moment(data.from_break_hr2, "hh:mm:ss");
     const to_break_hr2 = moment(data.to_break_hr2, "hh:mm:ss");
     const slot = data.slot;
-
-    // let docTimings = [];
-    // let time = from_work_hr._i;
-
-    // docTimings.push(time);
-    // for (;;) {
-    //   from_work_hr.add(slot, "minutes");
-    //   docTimings.push({
-    //     time: from_work_hr._i,
-    //     provider_id: data.provider_id,
-    //     clinic_id: data.clinic_id,
-    //     hims_d_appointment_schedule_detail_id:
-    //       data.hims_d_appointment_schedule_detail_id
-    //   });
-    //   if (from_work_hr._i === to_work_hr._i) {
-    //     break;
-    //   }
-    // }
-
+    let tds = [];
+    debugger;
     let count = 0;
     let docTimings = [];
     for (;;) {
       let newFrom =
         count === 0 ? from_work_hr : from_work_hr.add(slot, "minutes");
       if (newFrom.isBefore(to_work_hr)) {
-        docTimings.push({
-          time: newFrom._i,
-          provider_id: data.provider_id,
-          clinic_id: data.clinic_id,
-          hims_d_appointment_schedule_detail_id:
-            data.hims_d_appointment_schedule_detail_id
-        });
-        // tds +="<td class='tg-baqh'><span class='dynSlot'>"+newFrom.format("hh:mm tt")+"</span><span></span></td>";
+        tds.push(
+          this.generateChilderns({
+            time: newFrom.format("hh:mm a"),
+            counter: count
+          })
+        );
+        // tds +=
+        //   "<tr><td class='tg-baqh'><span class='dynSlot'>" +
+        //   newFrom.format("hh:mm tt") +
+        //   "</span><i \
+        //   onclick='clickAppointmentOptions(" +
+        //   this +
+        //   ")'\
+        //   class='fas fa-pen' \
+        // />\
+        // <i  onclick='clickAppointmentOptions(" +
+        //   this +
+        //   ")' \
+        //   class='fas fa-times' />\
+        // <span class='dynPatient'></span></td></tr>";
+        // docTimings.push({
+        //   time: newFrom._i,
+        //   provider_id: data.provider_id,
+        //   clinic_id: data.clinic_id,
+        //   hims_d_appointment_schedule_detail_id:
+        //     data.hims_d_appointment_schedule_detail_id
+        // });
+        //
       } else {
         break;
       }
 
       count = count + 1;
     }
-
+    return <React.Fragment>{tds}</React.Fragment>;
     console.log("Doctor Timings:", docTimings);
     // return docTimings;
   }
@@ -653,7 +670,8 @@ class Appointment extends Component {
                             <td className="tbl-subHdg">STANDBY</td>
                           </tr>
                           {this.generateTimeslots(data)}
-                          <tr>
+                          {/* {renderHTML(this.generateTimeslots(data))} */}
+                          {/* <tr>
                             <td className="tg-baqh">
                               <span className="dynSlot">09:00 AM</span>
                               <i
@@ -722,7 +740,7 @@ class Appointment extends Component {
                               />
                             </td>
                           </tr>
-                          <tr>
+                          <tr> 
                             <td className="tg-baqh">
                               <span className="dynSlot">09:00 AM</span>
                               <i
@@ -737,7 +755,7 @@ class Appointment extends Component {
                                 className="fas fa-plus"
                               />
                             </td>
-                          </tr>
+                          </tr>*/}
                         </tbody>
                       </table>
                     ))
