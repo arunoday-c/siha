@@ -17,7 +17,7 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import swal from "sweetalert";
-import { getCookie } from "../../../utils/algaehApiCall.js";
+// import { getCookie } from "../../../utils/algaehApiCall.js";
 
 class PatientType extends Component {
   constructor(props) {

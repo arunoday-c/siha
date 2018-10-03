@@ -5,9 +5,6 @@ import "./InsuranceDetails.css";
 import "./../../../styles/site.css";
 import AlgaehLabel from "../../Wrapper/label.js";
 
-import AddCircle from "@material-ui/icons/AddCircle";
-import IconButton from "@material-ui/core/IconButton";
-
 export default class InsuranceDetails extends PureComponent {
   constructor(props) {
     super(props);

@@ -1,4 +1,5 @@
 $forntSize: 0.7rem;
+
 :global {
   .displayInlineBlock {
     display: inline-block;
@@ -21,16 +22,20 @@ $forntSize: 0.7rem;
         margin: 0px;
         padding: 5px;
         font-size: 0.85rem;
+
         &.active {
           background: #eafffd;
         }
       }
+
       li:nth-child(odd) {
         background: #f2f2f2;
       }
+
       li:nth-child(even) {
         background: #ffffff;
       }
+
       li:nth-child(odd):hover,
       li:nth-child(even):hover {
         background: #eafffd;
@@ -39,8 +44,14 @@ $forntSize: 0.7rem;
   }
 
   ::-webkit-scrollbar {
-    width: 3px;
+    width: 5px;
+    height: 5px;
   }
+
+  // :hover::-webkit-scrollbar {
+  //   width: 10px;
+  //   height: 10px;
+  // }
 
   /* Track */
   ::-webkit-scrollbar-track {
@@ -56,9 +67,11 @@ $forntSize: 0.7rem;
   ::-webkit-scrollbar-thumb:hover {
     background: #dcac66;
   }
+
   .margin-top-15 {
     margin-top: 15px;
   }
+
   .margin-bottom-15 {
     margin-bottom: 15px;
   }
@@ -81,6 +94,7 @@ $forntSize: 0.7rem;
     text-transform: uppercase;
     font-size: 0.9rem;
   }
+
   .btn-primary:hover {
     background-color: #00bcb0;
     border: #00bcb0;
@@ -88,16 +102,18 @@ $forntSize: 0.7rem;
 
   .btn-primary:not(:disabled):not(.disabled).active,
   .btn-primary:not(:disabled):not(.disabled):active,
-  .show > .btn-primary.dropdown-toggle {
+  .show>.btn-primary.dropdown-toggle {
     background-color: #00bcb0;
     border: #00bcb0;
   }
+
   .btn-default {
     background-color: #efefef;
     border: 1px solid #efefef;
     text-transform: uppercase;
     font-size: 0.9rem;
   }
+
   .btn-default:hover {
     background-color: #00bcb0;
     border: #00bcb0;
@@ -105,7 +121,7 @@ $forntSize: 0.7rem;
 
   .btn-default:not(:disabled):not(.disabled).active,
   .btn-default:not(:disabled):not(.disabled):active,
-  .show > .btn-default.dropdown-toggle {
+  .show>.btn-default.dropdown-toggle {
     background-color: #efefef;
     border: 1px solid #efefef;
   }
@@ -216,17 +232,17 @@ $forntSize: 0.7rem;
     border-radius: 50px;
   }
 
-  .pagination > li > a,
-  .pagination > li > span {
+  .pagination>li>a,
+  .pagination>li>span {
     padding: 4px 10px;
     font-size: 12px;
     color: #8775a7;
     background: #f7f7f7;
   }
 
-  .pagination > li:hover > a,
-  .pagination > li.active > a,
-  .pagination > li.active:hover > a {
+  .pagination>li:hover>a,
+  .pagination>li.active>a,
+  .pagination>li.active:hover>a {
     color: #fff;
     background: #8775a7;
     border-color: #8775a7;
@@ -247,7 +263,7 @@ $forntSize: 0.7rem;
   }
 
   /* Tab */
-  .portlet-title > .nav-tabs {
+  .portlet-title>.nav-tabs {
     background: none;
     margin: 0;
     float: right;
@@ -255,31 +271,31 @@ $forntSize: 0.7rem;
     border: 0;
   }
 
-  .portlet-title > .nav-tabs > li {
+  .portlet-title>.nav-tabs>li {
     background: none;
     margin: 0;
     border: 0;
   }
 
-  .portlet-title > .nav-tabs > li > a {
+  .portlet-title>.nav-tabs>li>a {
     background: none;
     border: 0;
     padding: 2px 10px 13px;
     color: #444;
   }
 
-  .portlet-title > .nav-tabs > li.active,
-  .portlet-title > .nav-tabs > li.active:hover {
+  .portlet-title>.nav-tabs>li.active,
+  .portlet-title>.nav-tabs>li.active:hover {
     border-bottom: 4px solid #f3565d;
     position: relative;
   }
 
-  .portlet-title > .nav-tabs > li:hover {
+  .portlet-title>.nav-tabs>li:hover {
     border-bottom: 4px solid #f29b9f;
   }
 
-  .portlet-title > .nav-tabs > li.active > a,
-  .portlet-title > .nav-tabs > li:hover > a {
+  .portlet-title>.nav-tabs>li.active>a,
+  .portlet-title>.nav-tabs>li:hover>a {
     color: #333;
     background: #fff;
     border: 0;
@@ -315,6 +331,7 @@ $forntSize: 0.7rem;
     color: #fafcfb;
     background: #8e9bae;
   }
+
   .actions .grey-salsa.btn:hover,
   .actions .grey-salsa.btn:focus,
   .actions .grey-salsa.btn:active,
@@ -344,23 +361,28 @@ $forntSize: 0.7rem;
   .customRadio {
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
+
     .inline {
       display: inline-block;
     }
-    .inline + .inline {
+
+    .inline+.inline {
       margin-left: 10px;
     }
+
     .radio {
       color: #999;
       font-size: 15px;
       position: relative;
     }
+
     .radio span {
       position: relative;
       padding-left: 20px;
       text-transform: capitalize;
       font-size: 0.9rem;
     }
+
     .radio span:after {
       content: "";
       width: 15px;
@@ -378,6 +400,7 @@ $forntSize: 0.7rem;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
     }
+
     .radio input[type="radio"] {
       cursor: pointer;
       position: absolute;
@@ -386,10 +409,12 @@ $forntSize: 0.7rem;
       z-index: 1;
       opacity: 0;
     }
-    .radio input[type="radio"]:checked + span {
+
+    .radio input[type="radio"]:checked+span {
       color: #00bcb0;
     }
-    .radio input[type="radio"]:checked + span:before {
+
+    .radio input[type="radio"]:checked+span:before {
       content: "";
       width: 5px;
       height: 5px;
@@ -407,24 +432,29 @@ $forntSize: 0.7rem;
   .customCheckbox {
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
+
     .inline {
       display: inline-block;
       margin-right: 10px;
     }
-    .inline + .inline {
+
+    .inline+.inline {
       margin-left: 0;
     }
+
     .checkbox {
       color: #999;
       font-size: 15px;
       position: relative;
     }
+
     .checkbox span {
       position: relative;
       padding-left: 20px;
       text-transform: capitalize;
       font-size: 0.9rem;
     }
+
     .checkbox span:after {
       content: "";
       width: 15px;
@@ -442,6 +472,7 @@ $forntSize: 0.7rem;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
     }
+
     .checkbox input[type="checkbox"] {
       cursor: pointer;
       position: absolute;
@@ -450,10 +481,12 @@ $forntSize: 0.7rem;
       z-index: 1;
       opacity: 0;
     }
-    .checkbox input[type="checkbox"]:checked + span {
+
+    .checkbox input[type="checkbox"]:checked+span {
       color: #00bcb0;
     }
-    .checkbox input[type="checkbox"]:checked + span:before {
+
+    .checkbox input[type="checkbox"]:checked+span:before {
       content: "";
       width: 5px;
       height: 5px;
@@ -483,32 +516,38 @@ $forntSize: 0.7rem;
     list-style: none;
 
     li {
-      background: url("./assets/images/pain_scale.png") no-repeat center
-        transparent;
+      background: url("./assets/images/pain_scale.png") no-repeat center transparent;
       width: 31px;
       height: 31px;
       display: inline-block;
       cursor: pointer;
       margin-right: 10px;
     }
+
     .pain-1 {
       background-position: 0px 0px;
     }
+
     .pain-2 {
       background-position: 0px -32px;
     }
+
     .pain-3 {
       background-position: 0px -65px;
     }
+
     .pain-4 {
       background-position: 0px -98px;
     }
+
     .pain-5 {
       background-position: 0px -130px;
     }
+
     .pain-6 {
       background-position: 0px -163px;
     }
+
     .active {
       border-radius: 100%;
       box-shadow: 0 3px 8px #00000063;
@@ -527,6 +566,7 @@ $forntSize: 0.7rem;
     .popupHeader {
       background: #dbad64;
       padding: 5px 15px 0;
+
       h4 {
         color: #fff;
         font-size: 1.1rem;
@@ -535,6 +575,7 @@ $forntSize: 0.7rem;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
+
       label {
         color: #fff;
         font-size: 1.1rem;
@@ -544,6 +585,7 @@ $forntSize: 0.7rem;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold;
       }
+
       button {
         margin: 0;
         padding: 0;
@@ -555,13 +597,16 @@ $forntSize: 0.7rem;
         line-height: 30px;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
+
       button:hover {
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0);
       }
     }
+
     .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
+
       .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -569,6 +614,7 @@ $forntSize: 0.7rem;
         overflow: auto;
         padding: 15px;
       }
+
       .popRightDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -577,17 +623,20 @@ $forntSize: 0.7rem;
         padding: 15px;
       }
     }
+
     .popupFooter {
       border-top: 1px dashed #e0e0e0;
       padding-top: 4px;
       padding-bottom: 4px;
       height: 40px;
       margin-top: 15px;
+
       .button-left {
         float: left;
         margin-right: 10px;
         margin-left: 0px;
       }
+
       button {
         float: right;
         margin-left: 10px;
@@ -596,11 +645,13 @@ $forntSize: 0.7rem;
         text-transform: uppercase;
         min-width: 70px;
       }
+
       .btn-primary {
         background: #34b8bc;
         color: #fff;
         border: 1px solid #34b8bc;
       }
+
       .btn-default {
         background: #efefef;
         color: #5a5a5a;
@@ -623,6 +674,7 @@ $forntSize: 0.7rem;
     .popupHeader {
       background: #dbad64;
       padding: 5px 15px 0;
+
       h4 {
         color: #fff;
         font-size: 1.1rem;
@@ -631,6 +683,7 @@ $forntSize: 0.7rem;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
+
       label {
         color: #fff;
         font-size: 1.1rem;
@@ -640,6 +693,7 @@ $forntSize: 0.7rem;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold;
       }
+
       button {
         margin: 0;
         padding: 0;
@@ -651,13 +705,16 @@ $forntSize: 0.7rem;
         line-height: 30px;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
+
       button:hover {
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0);
       }
     }
+
     .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
+
       .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -665,6 +722,7 @@ $forntSize: 0.7rem;
         overflow: auto;
         padding: 15px;
       }
+
       .popRightDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -673,17 +731,20 @@ $forntSize: 0.7rem;
         padding: 15px;
       }
     }
+
     .popupFooter {
       border-top: 1px dashed #e0e0e0;
       padding-top: 4px;
       padding-bottom: 4px;
       height: 40px;
       margin-top: 15px;
+
       .button-left {
         float: left;
         margin-right: 10px;
         margin-left: 0px;
       }
+
       button {
         float: left;
         margin-right: 10px;
@@ -693,11 +754,13 @@ $forntSize: 0.7rem;
         text-transform: uppercase;
         min-width: 70px;
       }
+
       .btn-primary {
         background: #34b8bc;
         color: #fff;
         border: 1px solid #34b8bc;
       }
+
       .btn-default {
         background: #efefef;
         color: #5a5a5a;
@@ -715,6 +778,7 @@ $forntSize: 0.7rem;
       text-transform: uppercase;
       color: #717171;
     }
+
     .hospitalLogo {
       width: 150px;
       height: 70px;
@@ -724,6 +788,7 @@ $forntSize: 0.7rem;
       color: #ccc;
       text-align: center;
     }
+
     .hospitalAddress {
       font-size: 0.7rem;
       width: 250px;
@@ -732,9 +797,11 @@ $forntSize: 0.7rem;
       margin: 0;
       padding: 0;
     }
+
     .table-report {
       border: none;
       border-bottom: 2px;
+
       .table {
         tbody {
           td {
@@ -744,10 +811,12 @@ $forntSize: 0.7rem;
             color: #44b8bd;
             border: none;
           }
+
           td:first-child {
             color: #696969;
             text-transform: none;
           }
+
           td:nth-child(4) {
             color: #696969;
             text-transform: none;
@@ -759,6 +828,7 @@ $forntSize: 0.7rem;
     .text-danger strong {
       color: #9f181c;
     }
+
     .receipt-header-mid {
       margin: 15px 0 5px;
       overflow: hidden;
@@ -781,6 +851,7 @@ $forntSize: 0.7rem;
         color: #68509f !important;
         cursor: pointer;
       }
+
       &:focus {
         outline: none;
       }
@@ -800,6 +871,7 @@ $forntSize: 0.7rem;
 
     .tab {
       margin-right: -30px;
+
       &:last-child {
         .tab-button {
           //border-radius: 0px;
@@ -807,6 +879,7 @@ $forntSize: 0.7rem;
         }
       }
     }
+
     .tab-content {
       padding: 10px 20px;
       background-color: #fcfcfc;
@@ -839,9 +912,11 @@ $forntSize: 0.7rem;
 
     &:checked {
       border: 1px solid #e5e5e5;
+
       &:focus {
         outline: none;
       }
+
       &::before {
         content: "";
         background: #44b6ae;
@@ -917,6 +992,7 @@ $forntSize: 0.7rem;
       cursor: not-allowed;
     }
   }
+
   .htpl1-phase1-btn-others {
     font-size: 0.8rem;
     text-transform: uppercase;
@@ -947,7 +1023,9 @@ $forntSize: 0.7rem;
       cursor: not-allowed;
     }
   }
+
   .ins-tab-container {
+
     .tab-button,
     label {
       width: 100%;
@@ -966,6 +1044,7 @@ $forntSize: 0.7rem;
         background-color: #fff !important;
         color: #68509f !important;
       }
+
       &:focus {
         outline: none;
       }
@@ -985,12 +1064,14 @@ $forntSize: 0.7rem;
 
     .tab {
       margin-right: -30px;
+
       &:last-child {
         .tab-button {
           //padding: 6px 16px;
         }
       }
     }
+
     .tab-content {
       padding: 10px 20px;
       background-color: #fcfcfc;
@@ -1005,20 +1086,25 @@ $forntSize: 0.7rem;
   .spacing-push {
     margin-top: 5.5em !important;
   }
+
   .box-shadow {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
+
   .box-shadow:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }
+
   .box-shadow-normal {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
+
   .row-bottom-space {
     margin-bottom: 15px;
   }
+
   .divider {
     height: 1px;
     background-color: #485a63;
@@ -1030,6 +1116,7 @@ $forntSize: 0.7rem;
     padding-top: 10px;
     padding-bottom: 4px;
     width: 100%;
+
     label {
       font-weight: 500;
       font-size: 0.9rem;
@@ -1053,6 +1140,7 @@ $forntSize: 0.7rem;
       color: #68509f !important;
       cursor: pointer;
     }
+
     &:focus {
       outline: none;
     }
@@ -1072,6 +1160,7 @@ $forntSize: 0.7rem;
 
   .tab {
     margin-right: -30px;
+
     &:last-child {
       .tab-button {
         //border-radius: 0px;
@@ -1079,6 +1168,7 @@ $forntSize: 0.7rem;
       }
     }
   }
+
   .tab-content {
     padding: 10px 20px;
     background-color: #fcfcfc;
@@ -1089,12 +1179,15 @@ $forntSize: 0.7rem;
     }
   }
 }
+
 .hptl-phase1-footer {
   margin-top: 50px;
 }
+
 .divInner {
   overflow-y: auto;
   overflow-x: hidden;
+
   .divInnerLeft {
     border-right: 1px dashed #e0e0e0;
     min-height: 30vh;
@@ -1102,6 +1195,7 @@ $forntSize: 0.7rem;
     overflow: auto;
     padding: 15px;
   }
+
   .divInnerRight {
     min-height: 30vh;
     max-height: 70vh;

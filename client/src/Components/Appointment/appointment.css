@@ -137,19 +137,16 @@
     text-align: center;
     vertical-align: top; }
 
-.appointment ul.ul-legend {
+.appointment ul.ul-legend li {
+  float: left;
+  margin-right: 10px;
   list-style: none;
-  display: inline-block; }
-  .appointment ul.ul-legend li {
-    display: inline;
-    margin-left: 5px;
-    border: 1px solid #000; }
-    .appointment ul.ul-legend li span:first-child {
-      display: inline-block;
-      padding: 10px; }
-    .appointment ul.ul-legend li span:last-child {
-      display: inline-block;
-      font-size: 0.8rem;
-      line-height: 0px;
-      vertical-align: super;
-      margin-left: 5px; }
+  margin-top: 5px;
+  font-size: 0.7rem; }
+  .appointment ul.ul-legend li span {
+    border: 1px solid #ccc;
+    float: left;
+    width: 12px;
+    height: 12px;
+    margin: 2px;
+    margin-right: 5px; }

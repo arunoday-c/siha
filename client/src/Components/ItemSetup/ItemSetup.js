@@ -6,14 +6,10 @@ import { bindActionCreators } from "redux";
 import Edit from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import "./ItemSetup.css";
 import "../../styles/site.css";
-import {
-  AlgaehLabel,
-  AlgaehDataGrid,
-  AlagehAutoComplete
-} from "../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 
 import ItemMaster from "./ItemMaster/ItemMaster";
 import { AlgaehActions } from "../../actions/algaehActions";

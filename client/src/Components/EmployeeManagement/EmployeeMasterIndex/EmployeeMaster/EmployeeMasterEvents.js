@@ -97,43 +97,43 @@ const InsertUpdateEmployee = $this => {
   debugger;
   if (!err) {
     debugger;
-    // if ($this.state.hims_d_employee_id === null) {
-    //   algaehApiCall({
-    //     uri: "/employee/addEmployee",
-    //     data: $this.state,
-    //     onSuccess: response => {
-    //       if (response.data.success === true) {
-    //         swal("Saved successfully . .", {
-    //           icon: "success",
-    //           buttons: false,
-    //           timer: 2000
-    //         });
-    //       }
-    //     },
-    //     onFailure: error => {
-    //       console.log(error);
-    //     }
-    //   });
-    // } else {
-    //   $this.state.record_status = "A";
-    //   algaehApiCall({
-    //     uri: "/pharmacy/updateItemMasterAndUom",
-    //     data: $this.state,
-    //     method: "PUT",
-    //     onSuccess: response => {
-    //       if (response.data.success === true) {
-    //         swal("Updated successfully . .", {
-    //           icon: "success",
-    //           buttons: false,
-    //           timer: 2000
-    //         });
-    //       }
-    //     },
-    //     onFailure: error => {
-    //       console.log(error);
-    //     }
-    //   });
-    // }
+    if ($this.state.hims_d_employee_id === null) {
+      algaehApiCall({
+        uri: "/employee/addEmployee",
+        data: $this.state,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Saved successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
+    } else {
+      $this.state.record_status = "A";
+      algaehApiCall({
+        uri: "/pharmacy/updateItemMasterAndUom",
+        data: $this.state,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swal("Updated successfully . .", {
+              icon: "success",
+              buttons: false,
+              timer: 2000
+            });
+          }
+        },
+        onFailure: error => {
+          console.log(error);
+        }
+      });
+    }
   }
 };
 

@@ -2,17 +2,13 @@ import React, { PureComponent } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Typography from "@material-ui/core/Typography";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
 import {
-  AlgaehLabel,
-  AlgaehDataGrid,
   AlgaehDateHandler,
   AlagehAutoComplete,
-  AlagehFormGroup,
-  Modal
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 
 import "./../../../../styles/site.css";
