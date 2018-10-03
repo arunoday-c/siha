@@ -97,6 +97,49 @@ class PhySchSetup extends Component {
     provider_array.length = 0;
   }
 
+  updateDoctorScheduleDateWise(data) {
+    console.log("Update Data:", data);
+
+    let send_data = {
+      appointment_schedule_detail_id:
+        data.hims_d_appointment_schedule_detail_id,
+      to_date: data.schedule_date,
+      slot: data.slot,
+      from_work_hr: data.from_work_hr,
+      to_work_hr: data.to_work_hr,
+      work_break1: "Y",
+      from_break_hr1: data.from_break_hr1,
+      to_break_hr1: data.to_break_hr1,
+      work_break2: data.work_break2,
+      from_break_hr2: data.from_break_hr2,
+      to_break_hr2: data.to_break_hr2,
+      modified: "M",
+      hims_d_appointment_schedule_detail_id:
+        data.hims_d_appointment_schedule_detail_id
+    };
+    algaehApiCall({
+      uri: "/appointment/updateDoctorScheduleDateWise",
+      method: "PUT",
+      data: send_data,
+      onSuccess: response => {
+        if (response.data.success) {
+          swal("Schedule Updated Successfully", {
+            buttons: false,
+            icon: "success",
+            timer: 2000
+          });
+        }
+      },
+      onFailure: error => {
+        swal(error.message, {
+          buttons: false,
+          icon: "warning",
+          timer: 2000
+        });
+      }
+    });
+  }
+
   checkHandle(e) {
     let myRow = JSON.parse(e.currentTarget.getAttribute("row"));
     myRow.schedule_status = this.state.schedule_status;
@@ -226,6 +269,17 @@ class PhySchSetup extends Component {
         [e.target.name]: e.target.checked
       });
     }
+  }
+
+  refreshState() {
+    this.setState({ ...this.state });
+  }
+
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    this.refreshState();
   }
 
   openModifierPopup(e) {
@@ -485,13 +539,32 @@ class PhySchSetup extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "Appointment Date" }}
                         />
-                      )
+                      ),
+                      disabled: true
                     },
                     {
                       fieldName: "from_work_hr",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "From Work Hour" }} />
-                      )
+                      ),
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{ className: "" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "from_work_hr",
+                              value: row.from_work_hr,
+                              events: {
+                                onChange: this.changeGridEditors.bind(this, row)
+                              },
+                              others: {
+                                type: "time"
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
                     {
                       fieldName: "to_work_hr",
@@ -540,7 +613,7 @@ class PhySchSetup extends Component {
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onDelete: () => {},
-                    onDone: () => {}
+                    onDone: this.updateDoctorScheduleDateWise.bind(this)
                     // onDelete: this.deleteAppointmentStatus.bind(this),
                     // onDone: this.updateAppointmentStatus.bind(this)
                   }}
@@ -1051,12 +1124,12 @@ class PhySchSetup extends Component {
         {/* Top Filter End */}
         <div className="row">
           <div className="col-lg-3">
-            <div class="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-              <div class="portlet-title">
-                <div class="caption">
-                  <h3 class="caption-subject">Available Schedules</h3>
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Available Schedules</h3>
                 </div>
-                <div class="actions">
+                <div className="actions">
                   <span
                     className="btn btn-green btn-circle active"
                     onClick={() => {
@@ -1079,7 +1152,7 @@ class PhySchSetup extends Component {
                           onClick={this.loadDetails.bind(this)}
                         >
                           <span>{data.schedule_description}</span>
-                          <i
+                          {/* <i
                             id={data.appointment_schedule_header_id}
                             className="fas fa-pen"
                             onClick={() => {
@@ -1087,7 +1160,7 @@ class PhySchSetup extends Component {
                                 scheduleDisable: false
                               });
                             }}
-                          />
+                          /> */}
                         </li>
                       ))
                     ) : (
@@ -1101,10 +1174,10 @@ class PhySchSetup extends Component {
             </div>
           </div>
           <div className="col-lg-9">
-            <div class="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-              <div class="portlet-title">
-                <div class="caption">
-                  <h3 class="caption-subject">{this.state.description}</h3>
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">{this.state.description}</h3>
                 </div>
 
                 <div class="actions">
@@ -1193,7 +1266,9 @@ class PhySchSetup extends Component {
                         </div>
                       </div>
                       <div className="col-lg-6">
-                        <label className="algaehLabelGroup">Working Hours</label>
+                        <label className="algaehLabelGroup">
+                          Working Hours
+                        </label>
                         <div className="row">
                           <div className="col-lg-6">
                             <AlgaehLabel
@@ -1204,9 +1279,9 @@ class PhySchSetup extends Component {
                             />
 
                             <h6>
-                            {this.state.from_work_hr
-                              ? this.state.from_work_hr
-                              : "00:00"}
+                              {this.state.from_work_hr
+                                ? this.state.from_work_hr
+                                : "00:00"}
                             </h6>
                           </div>
 
@@ -1242,9 +1317,9 @@ class PhySchSetup extends Component {
                             />
 
                             <h6>
-                            {this.state.to_work_hr
-                              ? this.state.to_work_hr
-                              : "00:00"}
+                              {this.state.to_work_hr
+                                ? this.state.to_work_hr
+                                : "00:00"}
                             </h6>
                           </div>
 
@@ -1278,7 +1353,6 @@ class PhySchSetup extends Component {
                       <div className="col-lg-6">
                         <label className="algaehLabelGroup">Day Break 1</label>
                         <div className="row">
-
                           <div className="col-lg-6">
                             <AlgaehLabel
                               label={{
@@ -1286,10 +1360,10 @@ class PhySchSetup extends Component {
                                 isImp: true
                               }}
                             />
-                              <h6>
-                            {this.state.from_work_hr1
-                              ? this.state.from_work_hr1
-                              : "00:00"}
+                            <h6>
+                              {this.state.from_break_hr1
+                                ? this.state.from_break_hr1
+                                : "00:00"}
                             </h6>
                           </div>
                           {/* <AlagehFormGroup
@@ -1323,9 +1397,9 @@ class PhySchSetup extends Component {
                             />
 
                             <h6>
-                            {this.state.to_work_hr1
-                              ? this.state.to_work_hr1
-                              : "00:00"}
+                              {this.state.to_break_hr1
+                                ? this.state.to_break_hr1
+                                : "00:00"}
                             </h6>
                           </div>
                           {/* <AlagehFormGroup
@@ -1355,7 +1429,7 @@ class PhySchSetup extends Component {
                       <div className="col-lg-6">
                         <label className="algaehLabelGroup">Day Break 2</label>
                         <div className="row">
-                        <div className="col-lg-6">
+                          <div className="col-lg-6">
                             <AlgaehLabel
                               label={{
                                 forceLabel: "From Time",
@@ -1364,9 +1438,9 @@ class PhySchSetup extends Component {
                             />
 
                             <h6>
-                            {this.state.from_work_hr2
-                              ? this.state.from_work_hr2
-                              : "00:00"}
+                              {this.state.from_break_hr2
+                                ? this.state.from_break_hr2
+                                : "00:00"}
                             </h6>
                           </div>
 
@@ -1392,7 +1466,7 @@ class PhySchSetup extends Component {
                             }}
                           /> */}
 
-                        <div className="col-lg-6">
+                          <div className="col-lg-6">
                             <AlgaehLabel
                               label={{
                                 forceLabel: "To Time",
@@ -1401,9 +1475,9 @@ class PhySchSetup extends Component {
                             />
 
                             <h6>
-                            {this.state.to_work_hr2
-                              ? this.state.to_work_hr2
-                              : "00:00"}
+                              {this.state.to_break_hr2
+                                ? this.state.to_break_hr2
+                                : "00:00"}
                             </h6>
                           </div>
 
@@ -1431,22 +1505,26 @@ class PhySchSetup extends Component {
                         </div>
                       </div>
                     </div>
-                   
+
                     <div className="row margin-top-15">
+                      <div className="col-lg-12">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Working Days",
+                            isImp: true
+                          }}
+                        />
 
-
-<div className="col-lg-12">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Working Days",
-                                isImp: true
-                              }}
-                            />
-
-                            <h6>
-                              SUN, MON, TUE, WED, THU, FRI, SAT
-                            </h6>
-                          </div>
+                        <h6>
+                          {this.state.sunday ? "SUN" : ""}
+                          {this.state.monday ? " MON" : ""}
+                          {this.state.tuesday ? " TUE" : ""}
+                          {this.state.wednesday ? " WED" : ""}
+                          {this.state.thursday ? " THU" : ""}
+                          {this.state.friday ? " FRI" : ""}
+                          {this.state.saturday ? " SAT" : ""}
+                        </h6>
+                      </div>
 
                       {/* <div className="col-lg-12">
                         <label>Working Days</label>
@@ -1555,7 +1633,7 @@ class PhySchSetup extends Component {
                                 onClick={this.openModifierPopup.bind(this)}
                                 className="fas fa-pen"
                               />
-                              <i className="fas fa-trash-alt"/>
+                              <i className="fas fa-trash-alt" />
                             </li>
                           ))
                         ) : (
