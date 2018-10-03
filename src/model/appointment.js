@@ -979,7 +979,7 @@ let updateDoctorScheduleDateWise = (req, res, next) => {
 
         connection.query(
           "UPDATE `hims_d_appointment_schedule_detail` SET `modified`=?,\
-              `updated_by`=?, `updated_date`=?,  WHERE `record_status`='A' and \
+              `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
          `hims_d_appointment_schedule_detail_id`=?;",
           [
             input.modified,
@@ -995,7 +995,7 @@ let updateDoctorScheduleDateWise = (req, res, next) => {
               });
             }
 
-            if (input.modified == "M") {
+            if (result.length != 0 && input.modified == "M") {
               connection.query(
                 "INSERT INTO `hims_d_appointment_schedule_modify` ( appointment_schedule_detail_id, to_date, slot, from_work_hr, to_work_hr, work_break1, from_break_hr1,\
        to_break_hr1, work_break2, from_break_hr2, to_break_hr2,created_date, created_by, updated_date, updated_by)\
