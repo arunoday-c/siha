@@ -111,7 +111,7 @@ let addEmployee = (req, res, next) => {
                     try {
                       if (input.serviceComm.length > 0) {
                         const insurtColumns = [
-                          "provider_id",
+                          
                           "services_id",
                           "service_type_id",
                           "op_cash_commission_percent",
@@ -125,12 +125,12 @@ let addEmployee = (req, res, next) => {
                         connection.query(
                           "INSERT INTO hims_m_doctor_service_commission(" +
                             insurtColumns.join(",") +
-                            ",created_date,updated_date) VALUES ?",
+                            ",provider_id,created_date,updated_date) VALUES ?",
                           [
                             jsonArrayToObject({
                               sampleInputObject: insurtColumns,
                               arrayObj: req.body.serviceComm,
-                              newFieldToInsert: [new Date(), new Date()],
+                              newFieldToInsert: [result.insertId,new Date(), new Date()],
                               req: req
                             })
                           ],
@@ -153,7 +153,7 @@ let addEmployee = (req, res, next) => {
                   }).then(results => {
                     if (input.servTypeCommission.length > 0) {
                       const insurtColumns = [
-                        "provider_id",
+                       
                         "service_type_id",
                         "op_cash_comission_percent",
                         "op_credit_comission_percent",
@@ -166,12 +166,12 @@ let addEmployee = (req, res, next) => {
                       connection.query(
                         "INSERT INTO hims_m_doctor_service_type_commission(" +
                           insurtColumns.join(",") +
-                          ",created_date,updated_date) VALUES ?",
+                          ",provider_id,created_date,updated_date) VALUES ?",
                         [
                           jsonArrayToObject({
                             sampleInputObject: insurtColumns,
                             arrayObj: req.body.servTypeCommission,
-                            newFieldToInsert: [new Date(), new Date()],
+                            newFieldToInsert: [result.insertId,new Date(), new Date()],
                             req: req
                           })
                         ],
