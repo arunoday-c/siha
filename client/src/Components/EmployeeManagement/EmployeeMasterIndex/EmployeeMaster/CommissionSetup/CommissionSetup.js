@@ -51,6 +51,39 @@ class CommissionSetup extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
 
+  componentDidMount() {
+    debugger;
+    this.props.getDoctorServiceTypeCommission({
+      uri: "/employee/getDoctorServiceTypeCommission",
+      data: { provider_id: this.state.hims_d_employee_id },
+      method: "GET",
+      redux: {
+        type: "EMP_SPECILITY_GET_DATA",
+        mappingName: "servTypeCommission"
+      },
+      afterSuccess: data => {
+        this.setState({
+          servTypeCommission: data
+        });
+      }
+    });
+
+    this.props.getDoctorServiceCommission({
+      uri: "/employee/getDoctorServiceCommission",
+      method: "GET",
+      data: { provider_id: this.state.hims_d_employee_id },
+      redux: {
+        type: "EMP_SPECILITY_GET_DATA",
+        mappingName: "serviceComm"
+      },
+      afterSuccess: data => {
+        this.setState({
+          serviceComm: data
+        });
+      }
+    });
+  }
+
   // handleClose = () => {
   //   this.setState({ open: false });
   // };
@@ -587,7 +620,9 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     services: state.services,
     serviceslist: state.serviceslist,
-    servicetypelist: state.servicetypelist
+    servicetypelist: state.servicetypelist,
+    servTypeCommission: state.servTypeCommission,
+    serviceComm: state.serviceComm
   };
 }
 
@@ -596,7 +631,9 @@ function mapDispatchToProps(dispatch) {
     {
       getItemUOM: AlgaehActions,
       getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      getDoctorServiceTypeCommission: AlgaehActions,
+      getDoctorServiceCommission: AlgaehActions
     },
     dispatch
   );

@@ -9,19 +9,39 @@
 
 .appointment .my-calendar {
   text-align: center;
-  background: #00afa4;
+  background: #34b8bc;
   color: #fff; }
   .appointment .my-calendar .myDay_date {
-    float: none;
-    margin: 4px auto 2px; }
-  .appointment .my-calendar .myDay_date input {
-    border: 1px solid #1d887f;
-    color: #fff;
-    background: #28a59a;
-    font-size: 17px;
-    padding: 1px;
-    text-align: center;
-    border-radius: 3px; }
+    position: relative; }
+    .appointment .my-calendar .myDay_date input[type="month"] {
+      font-size: 0.8rem;
+      padding: 2px 3px 3px 8px;
+      width: 250px;
+      text-transform: uppercase;
+      border: 1px dashed #ffffff;
+      border-radius: 4px;
+      margin-top: 4px;
+      background: none;
+      color: #fff; }
+    .appointment .my-calendar .myDay_date input[type="month"]::-webkit-calendar-picker-indicator {
+      color: rgba(0, 0, 0, 0);
+      opacity: 1;
+      display: block;
+      background: url(../../assets/svg/calendar-alt-regular.svg) no-repeat center;
+      width: 18px;
+      height: 15px;
+      border-width: thin;
+      background-size: 60%; }
+    .appointment .my-calendar .myDay_date input[type="month"]:disabled {
+      background: #fffdfa;
+      border: 1px dashed #d3d3d3;
+      color: #000;
+      font-weight: bold; }
+    .appointment .my-calendar .myDay_date button {
+      margin-left: 0px;
+      padding: 3px 6px !important; }
+      .appointment .my-calendar .myDay_date button svg {
+        height: 16px; }
   .appointment .my-calendar .arrow-box {
     width: 60px;
     cursor: pointer; }

@@ -24,7 +24,7 @@ import {
   AlagehAutoComplete
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
-// import Enumerable from "linq";
+import Enumerable from "linq";
 
 class PersonalDetails extends PureComponent {
   constructor(props) {
@@ -51,7 +51,7 @@ class PersonalDetails extends PureComponent {
         }
       });
     }
-
+    debugger;
     if (
       this.props.countries === undefined ||
       this.props.countries.length === 0
@@ -62,49 +62,54 @@ class PersonalDetails extends PureComponent {
         redux: {
           type: "CTRY_GET_DATA",
           mappingName: "countries"
+        },
+        afterSuccess: data => {
+          debugger;
         }
       });
     }
   }
 
-  //   componentWillReceiveProps(nextProps) {
-  //     this.setState(nextProps.PatRegIOputs, () => {
-  //       if (this.state.country_id === null) return;
-  //       if (this.state.country_id !== nextProps.country_id) {
-  //         let country = Enumerable.from(this.props.countries)
-  //           .where(w => w.hims_d_country_id === this.state.country_id)
-  //           .firstOrDefault();
-  //         let states = country !== undefined ? country.states : [];
-  //         if (nextProps.state_id !== this.state.state_id) {
-  //           let cities = Enumerable.from(states)
-  //             .where(w => w.hims_d_state_id === this.state.state_id)
-  //             .firstOrDefault();
+  componentWillReceiveProps(nextProps) {
+    debugger;
+    this.setState(nextProps.EmpMasterIOputs, () => {
+      debugger;
+      if (this.state.country_id === null) return;
+      if (this.state.country_id !== nextProps.country_id) {
+        let country = Enumerable.from(this.props.countries)
+          .where(w => w.hims_d_country_id === this.state.country_id)
+          .firstOrDefault();
+        let states = country !== undefined ? country.states : [];
+        if (nextProps.state_id !== this.state.state_id) {
+          let cities = Enumerable.from(states)
+            .where(w => w.hims_d_state_id === this.state.state_id)
+            .firstOrDefault();
 
-  //           this.props.getStates({
-  //             redux: {
-  //               data: states,
-  //               type: "STATE_GET_DATA",
-  //               mappingName: "countrystates"
-  //             },
-  //             afterSuccess: callback => {
-  //               this.setState({
-  //                 state_id: this.state.state_id
-  //               });
-  //             }
-  //           });
-  //           if (cities !== undefined) {
-  //             this.props.getCities({
-  //               redux: {
-  //                 data: cities.cities,
-  //                 type: "CITY_GET_DATA",
-  //                 mappingName: "cities"
-  //               }
-  //             });
-  //           }
-  //         }
-  //       }
-  //     });
-  //   }
+          this.props.getStates({
+            redux: {
+              data: states,
+              type: "STATE_GET_DATA",
+              mappingName: "countrystates"
+            },
+            afterSuccess: callback => {
+              // this.setState({
+              //   state_id: this.state.state_id
+              // });
+            }
+          });
+          if (cities !== undefined) {
+            this.props.getCities({
+              redux: {
+                data: cities.cities,
+                type: "CITY_GET_DATA",
+                mappingName: "cities"
+              }
+            });
+          }
+        }
+      }
+    });
+  }
 
   render() {
     return (

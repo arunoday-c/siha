@@ -8,15 +8,22 @@ body {
   .header {
     max-height: 50px;
   }
-.inner-top-search{
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 0;
-  border: none;
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
-  margin-bottom: 10px;
-  padding-top: 5px;
-}
-
+  .inner-top-search {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    padding-top: 5px;
+  }
+  .algaehLabelGroup {
+    font-weight: bold;
+    text-decoration: underline;
+    text-transform: inherit;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    color: #369c92;
+  }
   .tab-container {
     .tab-button {
       // font-size: 12px;
@@ -873,7 +880,7 @@ th {
 }
 //Arabic Version
 .algaeh_Arabic_Version {
-  .table-responsive{
+  .table-responsive {
     direction: rtl;
   }
   .autoselect-Div {

@@ -117,7 +117,7 @@ const InsertUpdateEmployee = $this => {
     } else {
       $this.state.record_status = "A";
       algaehApiCall({
-        uri: "/pharmacy/updateItemMasterAndUom",
+        uri: "/employee/updateEmployee",
         data: $this.state,
         method: "PUT",
         onSuccess: response => {
