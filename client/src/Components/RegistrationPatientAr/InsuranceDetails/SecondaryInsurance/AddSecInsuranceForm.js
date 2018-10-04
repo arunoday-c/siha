@@ -39,12 +39,6 @@ class AddSecInsuranceForm extends Component {
       frontSide: null,
       backSide: null
     };
-    this.widthImg;
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    var width = document.getElementById("attach-width").offsetWidth;
-    this.widthImg = width + 1;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -81,7 +75,6 @@ class AddSecInsuranceForm extends Component {
           "Invalid Input. With out primary insurance cannot select secondary insurance",
         title: "Warning",
         icon: "error"
-        // button: "false"
       });
     }
   }

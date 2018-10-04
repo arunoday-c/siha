@@ -36,10 +36,6 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import Options from "../../Options.json";
 
-// function Transition(props) {
-//   return <Slide direction="up" {...props} />;
-// }
-
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
   BillingIOputs.inputParam()
@@ -59,7 +55,6 @@ class RegistrationPatient extends Component {
     let IOputs = emptyObject;
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
-    // AlgaehLoader({ show: true });
   }
   componentDidMount() {
     debugger;
@@ -79,14 +74,6 @@ class RegistrationPatient extends Component {
         }
       });
     }
-    this.props.getProviderDetails({
-      uri: "/employee/get",
-      method: "GET",
-      redux: {
-        type: "DOCTOR_GET_DATA",
-        mappingName: "providers"
-      }
-    });
 
     if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
       this.props.initialbillingCalculations({
@@ -100,14 +87,6 @@ class RegistrationPatient extends Component {
   }
 
   ClearData(e) {
-    // this.props.initialStatePatientData({
-    //   redux: {
-    //     type: "PAT_INIT_DATA",
-    //     mappingName: "patients",
-    //     data: {}
-    //   }
-    // });
-
     let IOputs = emptyObject;
     IOputs.visittypeselect = true;
     this.setState(IOputs, () => {
@@ -369,6 +348,8 @@ class RegistrationPatient extends Component {
     }, 1000);
   }
 
+  //Render Page Start Here
+
   render() {
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
@@ -622,8 +603,7 @@ function mapStateToProps(state) {
   return {
     patients: state.patients,
     genbill: state.genbill,
-    existinsurance: state.existinsurance,
-    providers: state.providers
+    existinsurance: state.existinsurance
   };
 }
 
@@ -637,8 +617,7 @@ function mapDispatchToProps(dispatch) {
       generateBill: AlgaehActions,
       initialStateBillGen: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      initialbillingCalculations: AlgaehActions,
-      getProviderDetails: AlgaehActions
+      initialbillingCalculations: AlgaehActions
     },
     dispatch
   );

@@ -62,15 +62,15 @@ class AddConsultationForm extends Component {
     }
 
     if (
-      this.props.providers === undefined ||
-      this.props.providers.length === 0
+      this.props.frontproviders === undefined ||
+      this.props.frontproviders.length === 0
     ) {
       this.props.getProviderDetails({
         uri: "/employee/get",
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",
-          mappingName: "providers"
+          mappingName: "frontproviders"
         }
       });
     }
@@ -350,7 +350,7 @@ class AddConsultationForm extends Component {
 function mapStateToProps(state) {
   return {
     visittypes: state.visittypes,
-    providers: state.providers,
+    frontproviders: state.frontproviders,
     deptanddoctors: state.deptanddoctors
   };
 }
