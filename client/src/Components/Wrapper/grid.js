@@ -17,7 +17,7 @@ class DataGrid extends PureComponent {
       editableRows: {},
       totalPages: 0,
       showLoading: false,
-      rowsPerPage: 5,
+      rowsPerPage: 10,
       selectionChanged: false
     };
     this.tmp = new Set();
@@ -369,8 +369,8 @@ class DataGrid extends PureComponent {
             this.props.paging !== undefined
               ? this.props.paging.rowsPerPage !== undefined
                 ? this.props.paging.rowsPerPage
-                : 5
-              : 5
+                : 10
+              : 10
         });
       }
     }
@@ -394,8 +394,8 @@ class DataGrid extends PureComponent {
               props.paging !== undefined
                 ? props.paging.rowsPerPage !== undefined
                   ? props.paging.rowsPerPage
-                  : 5
-                : 5
+                  : 10
+                : 10
           });
         },
         props.dataSource.inputParam
@@ -600,7 +600,7 @@ class DataGrid extends PureComponent {
                 : true
               : true
           }
-          pageSizeOptions={[5, 10, 20, 25, 50, 100]}
+          pageSizeOptions={[10, 20, 25, 50, 100]}
           previousText="Previous"
           nextText="Next"
           pageText="Page"
@@ -610,7 +610,7 @@ class DataGrid extends PureComponent {
           onPageChange={this.pageChangeHandler.bind(this)}
           {..._subComponent}
           {..._onExpandRow}
-          style={{ minHeight: "400px" }}
+          style={{ maxHeight: "400px" }}
           getTdProps={this.getTdHandler.bind(this)}
           getTrProps={this.getTrHandler.bind(this)}
         />
