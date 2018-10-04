@@ -29,6 +29,7 @@ import "./PointOfSale.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class PointOfSale extends Component {
   constructor(props) {
@@ -163,10 +164,10 @@ class PointOfSale extends Component {
             <div className="col-lg-12">
               <div className="row card-deck panel-layout">
                 {/* Patient code */}
-                <div className="col-lg-6 card box-shadow-normal">
+                <div className="col-lg-8 card box-shadow-normal">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-5" }}
+                      div={{ className: "col-lg-4" }}
                       label={{ forceLabel: "Location" }}
                       selector={{
                         name: "location_id",
@@ -182,8 +183,25 @@ class PointOfSale extends Component {
                       }}
                     />
 
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-3" }}
+                      label={{ forceLabel: "Case Type" }}
+                      selector={{
+                        name: "case_type",
+                        className: "select-fld",
+                        value: this.state.case_type,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.FORMAT_POS_CASE_TYPE
+                        },
+
+                        onChange: changeTexts.bind(this, this)
+                      }}
+                    />
+
                     <AlagehFormGroup
-                      div={{ className: "col-lg-5" }}
+                      div={{ className: "col-lg-3" }}
                       label={{
                         forceLabel: "Patient Code"
                       }}
@@ -208,9 +226,9 @@ class PointOfSale extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-6 card box-shadow-normal">
+                <div className="col-lg-4 card box-shadow-normal">
                   <div className="row">
-                    <div className="col-lg-3">
+                    <div className="col-lg-6">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Patient Name"
@@ -223,31 +241,22 @@ class PointOfSale extends Component {
                       </h6>
                     </div>
 
-                    <div className="col-lg-3">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Patient Type"
-                        }}
-                      />
-                      <h6>
-                        {this.state.patient_type
-                          ? this.state.patient_type
-                          : "Patient Type"}
-                      </h6>
-                    </div>
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-6" }}
+                      label={{ forceLabel: "Mode of Payment" }}
+                      selector={{
+                        name: "mode_of_pay",
+                        className: "select-fld",
+                        value: this.state.mode_of_pay,
+                        dataSource: {
+                          textField: "location_description",
+                          valueField: "hims_d_pharmacy_location_id",
+                          data: this.props.locations
+                        },
 
-                    <div className="col-lg-3">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Mode of Payment"
-                        }}
-                      />
-                      <h6>
-                        {this.state.mode_of_pay
-                          ? this.state.mode_of_pay
-                          : "Mode of Payment"}
-                      </h6>
-                    </div>
+                        onChange: changeTexts.bind(this, this)
+                      }}
+                    />
                   </div>
                 </div>
               </div>

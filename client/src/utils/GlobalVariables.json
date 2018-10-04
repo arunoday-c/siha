@@ -395,5 +395,9 @@
     { "name": "AB-", "value": "AB-" },
     { "name": "A+", "value": "A+" },
     { "name": "A-", "value": "A-" }
+  ],
+  "FORMAT_POS_CASE": [
+    { "name": "Others", "value": "O" },
+    { "name": "OP", "value": "OP" }
   ]
 }
