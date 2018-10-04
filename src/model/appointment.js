@@ -941,11 +941,48 @@ let getDoctorScheduleToModify = (req, res, next) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
-          }
-          req.records = result;
-          next();
+          }         
 
-          debugLog("result length:", result.length);
+          let activeSchedule = new LINQ(result)
+            .Where(w => w.modified != "M")
+            .Select(s => s)
+            .ToArray();
+         
+
+          let ids = new LINQ(result)
+            .Where(w => w.modified == "M")
+            .Select(s => s.hims_d_appointment_schedule_detail_id)
+            .ToArray();
+         
+
+          if (ids.length > 0) {
+            connection.query(
+              "SELECT hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, to_date, slot,\
+              from_work_hr, to_work_hr,\
+              work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2, to_break_hr2 \
+              from hims_d_appointment_schedule_modify where record_status='A' and  appointment_schedule_detail_id in (" +
+                ids +
+                ")",
+              (error, modResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+                if (modResult.length > 0) {
+                  let finResult = [...activeSchedule, ...modResult];
+                  
+                  req.records = finResult;
+                  next();
+                } else {
+                  req.records = result;
+                  next();
+                }
+              }
+            );
+          } else {
+            req.records = result;
+            next();
+          }
         }
       );
     });
