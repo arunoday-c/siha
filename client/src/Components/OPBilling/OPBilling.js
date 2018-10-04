@@ -176,28 +176,25 @@ class PatientDisplayDetails extends Component {
 
   getCtrlCode(billcode) {
     let $this = this;
-    clearInterval(intervalId);
-    intervalId = setInterval(() => {
-      AlgaehLoader({ show: true });
-      this.props.getBIllDetails({
-        uri: "/opBilling/get",
-        method: "GET",
-        printInput: true,
-        data: { bill_number: billcode },
-        redux: {
-          type: "BILLS_GET_DATA",
-          mappingName: "bills"
-        },
-        afterSuccess: data => {
-          debugger;
-          data.Billexists = true;
-          $this.setState(data, () => {
-            this.getPatientDetails(this, data);
-          });
-        }
-      });
-      clearInterval(intervalId);
-    }, 500);
+
+    AlgaehLoader({ show: true });
+    this.props.getBIllDetails({
+      uri: "/opBilling/get",
+      method: "GET",
+      printInput: true,
+      data: { bill_number: billcode },
+      redux: {
+        type: "BILLS_GET_DATA",
+        mappingName: "bills"
+      },
+      afterSuccess: data => {
+        debugger;
+        data.Billexists = true;
+        $this.setState(data, () => {
+          this.getPatientDetails(this, data);
+        });
+      }
+    });
   }
 
   GenerateReciept(callback) {

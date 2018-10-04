@@ -274,77 +274,76 @@ class RegistrationPatientAr extends Component {
   }
   getCtrlCode(patcode) {
     let $this = this;
-    clearInterval(intervalId);
-    intervalId = setInterval(() => {
-      this.props.getPatientDetails({
-        uri: "/frontDesk/get",
-        method: "GET",
-        printInput: true,
-        data: { patient_code: patcode },
-        redux: {
-          type: "PAT_GET_DATA",
-          mappingName: "patients"
-        },
-        afterSuccess: data => {
+
+    AlgaehLoader({ show: true });
+    this.props.getPatientDetails({
+      uri: "/frontDesk/get",
+      method: "GET",
+      printInput: true,
+      data: { patient_code: patcode },
+      redux: {
+        type: "PAT_GET_DATA",
+        mappingName: "patients"
+      },
+      afterSuccess: data => {
+        debugger;
+        if (data.response === undefined) {
+          data.patientRegistration.visitDetails = data.visitDetails;
+          data.patientRegistration.patient_id =
+            data.patientRegistration.hims_d_patient_id;
+          data.patientRegistration.existingPatient = true;
+
           debugger;
-          if (data.response === undefined) {
+          data.patientRegistration.filePreview =
+            "data:image/png;base64, " + data.patient_Image;
+          $this.setState(data.patientRegistration);
+
+          $this.props.getPatientInsurance({
+            uri: "/insurance/getPatientInsurance",
+            method: "GET",
+            data: { patient_id: data.patientRegistration.hims_d_patient_id },
+            redux: {
+              type: "EXIT_INSURANCE_GET_DATA",
+              mappingName: "existinsurance"
+            }
+          });
+        } else {
+          if (data.response.data.success === true) {
             data.patientRegistration.visitDetails = data.visitDetails;
             data.patientRegistration.patient_id =
               data.patientRegistration.hims_d_patient_id;
             data.patientRegistration.existingPatient = true;
-
             debugger;
             data.patientRegistration.filePreview =
               "data:image/png;base64, " + data.patient_Image;
+            data.patientRegistration.arabic_name = "No Name";
             $this.setState(data.patientRegistration);
 
             $this.props.getPatientInsurance({
               uri: "/insurance/getPatientInsurance",
               method: "GET",
-              data: { patient_id: data.patientRegistration.hims_d_patient_id },
+              data: {
+                patient_id: data.patientRegistration.hims_d_patient_id
+              },
               redux: {
                 type: "EXIT_INSURANCE_GET_DATA",
                 mappingName: "existinsurance"
               }
             });
           } else {
-            if (data.response.data.success === true) {
-              data.patientRegistration.visitDetails = data.visitDetails;
-              data.patientRegistration.patient_id =
-                data.patientRegistration.hims_d_patient_id;
-              data.patientRegistration.existingPatient = true;
-              debugger;
-              data.patientRegistration.filePreview =
-                "data:image/png;base64, " + data.patient_Image;
-              data.patientRegistration.arabic_name = "No Name";
-              $this.setState(data.patientRegistration);
-
-              $this.props.getPatientInsurance({
-                uri: "/insurance/getPatientInsurance",
-                method: "GET",
-                data: {
-                  patient_id: data.patientRegistration.hims_d_patient_id
-                },
-                redux: {
-                  type: "EXIT_INSURANCE_GET_DATA",
-                  mappingName: "existinsurance"
-                }
-              });
-            } else {
-              successfulMessage({
-                message: data.response.data.message,
-                title: "Error",
-                icon: "error"
-              });
-              debugger;
-              let IOputs = emptyObject;
-              this.setState(IOputs);
-            }
+            successfulMessage({
+              message: data.response.data.message,
+              title: "Error",
+              icon: "error"
+            });
+            debugger;
+            let IOputs = emptyObject;
+            this.setState(IOputs);
           }
         }
-      });
-      clearInterval(intervalId);
-    }, 1000);
+        AlgaehLoader({ show: true });
+      }
+    });
   }
 
   render() {
