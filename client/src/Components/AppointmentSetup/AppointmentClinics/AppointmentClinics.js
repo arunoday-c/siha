@@ -171,7 +171,11 @@ class AppointmentClinics extends Component {
           }
         });
       } else {
-        swal("Delete request cancelled");
+        swal("Delete request cancelled", {
+          buttons: false,
+          timer: 2000,
+          icon: "false"
+        });
       }
     });
   }
