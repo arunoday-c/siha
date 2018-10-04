@@ -206,12 +206,6 @@ let doctorsCommissionCal = (req, res, next) => {
 let commissionCalculations = (req, res, next) => {
   try {
     let inputParam = req.body;
-    // req.body.intCalculateall === undefined
-    //   ? req.body.billscommission
-    //   : req.body;
-
-    // let hasCalculateall =
-    //   req.body.intCalculateall === undefined ? true : req.body.intCalculateall;
 
     let sendingObject = {};
 
@@ -239,8 +233,6 @@ let commissionCalculations = (req, res, next) => {
     }
 
     sendingObject.comission_payable = sendingObject.net_comission;
-
-    debugLog("sendingObject", sendingObject);
 
     req.records = sendingObject;
     next();

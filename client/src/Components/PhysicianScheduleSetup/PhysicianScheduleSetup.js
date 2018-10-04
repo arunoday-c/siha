@@ -128,8 +128,7 @@ class PhysicianScheduleSetup extends Component {
             </div>
           </AppBar>
         </div> */}
-        <div className="spacing-push">
-          {" "}
+        <div style={{ marginTop: "76px" }}>
           <PhySchSetup />
         </div>
       </div>

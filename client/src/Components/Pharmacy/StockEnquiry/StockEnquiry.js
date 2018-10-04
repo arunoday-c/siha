@@ -3,14 +3,14 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import AppBar from "@material-ui/core/AppBar";
+// import AppBar from "@material-ui/core/AppBar";
 
 import {
-  AlagehFormGroup,
+  // AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehAutoComplete
+  // AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
@@ -33,7 +33,6 @@ class StockEnquiry extends Component {
       expirt_date: null,
       quantity: 0,
       unit_cost: 0,
-      quantity: 0,
       initial_stock_date: new Date()
     };
   }

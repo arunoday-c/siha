@@ -64,7 +64,7 @@ let addVisit = (req, res, next) => {
     connection.query(
       "INSERT INTO `hims_d_visit_type` (`visit_type_code`, `visit_type_desc`,`arabic_visit_type_desc`, `consultation` \
       , `created_by` ,`created_date`,`visit_status`) \
-   VALUES ( ?, ?, ?, ?, ?,?)",
+   VALUES ( ?, ?, ?, ?, ?, ?, ?)",
       [
         inputParam.visit_type_code,
         inputParam.visit_type_desc,

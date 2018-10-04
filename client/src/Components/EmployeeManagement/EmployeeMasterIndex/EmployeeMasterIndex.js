@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 
 import Edit from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
-import Enumerable from "linq";
+
 import "./employee_master_index.css";
 import "../../../styles/site.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
@@ -17,13 +17,18 @@ import Options from "../../../Options.json";
 import AppBar from "@material-ui/core/AppBar";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { setGlobal } from "../../../utils/GlobalFunctions";
+import {
+  getEmployeeDetails,
+  EditEmployeeMaster
+} from "./EmployeeMasterIndexEvent";
 
 class EmployeeMasterIndex extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: false,
-      servicePop: [],
+      employeeDetailsPop: {},
+      Employeedetails: [],
       selectedLang: "en"
     };
   }
@@ -34,107 +39,42 @@ class EmployeeMasterIndex extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    debugger;
 
     if (
-      this.props.providers === undefined ||
-      this.props.providers.length === 0
+      this.props.designations === undefined ||
+      this.props.designations.length === 0
     ) {
-      debugger;
-      this.props.getProviderDetails({
-        uri: "/employee/get",
+      this.props.getDesignations({
+        uri: "/employeesetups/getDesignations",
         method: "GET",
         redux: {
-          type: "DOCTOR_GET_DATA",
-          mappingName: "providers"
-        },
-        afterSuccess: data => {
-          debugger;
+          type: "SERVICES_GET_DATA",
+          mappingName: "designations"
         }
       });
     }
-    // if (
-    //   this.props.hospitalservices === undefined ||
-    //   this.props.hospitalservices.length === 0
-    // ) {
-    //   this.props.getServices({
-    //     uri: "/serviceType/getService",
-    //     method: "GET",
-    //     redux: {
-    //       type: "SERVICES_GET_DATA",
-    //       mappingName: "hospitalservices"
-    //     }
-    //   });
-    // }
-    // if (
-    //   this.props.servicetype === undefined ||
-    //   this.props.servicetype.length === 0
-    // ) {
-    //   this.props.getServiceTypes({
-    //     uri: "/serviceType",
-    //     method: "GET",
-    //     redux: {
-    //       type: "SERVIES_TYPES_GET_DATA",
-    //       mappingName: "servicetype"
-    //     }
-    //   });
-    // }
 
-    // if (
-    //   this.props.subdepartments === undefined ||
-    //   this.props.subdepartments.length === 0
-    // ) {
-    //   this.props.getSubDepatments({
-    //     uri: "/department/get/subdepartment",
-    //     method: "GET",
-    //     redux: {
-    //       type: "SERVIES_TYPES_GET_DATA",
-    //       mappingName: "subdepartments"
-    //     }
-    //   });
-    // }
-
-    // if (
-    //   this.props.hospitaldetails === undefined ||
-    //   this.props.hospitaldetails.length === 0
-    // ) {
-    //   this.props.getHospitalDetails({
-    //     uri: "/organization/getOrganization",
-    //     method: "GET",
-    //     redux: {
-    //       type: "HOSPITAL_DETAILS_GET_DATA",
-    //       mappingName: "hospitaldetails"
-    //     }
-    //   });
-    // }
+    getEmployeeDetails(this, this);
   }
 
   ShowModel(e) {
     this.setState({
       ...this.state,
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
+      employeeDetailsPop: {}
     });
   }
 
   CloseModel(e) {
-    this.setState({
-      ...this.state,
-      isOpen: !this.state.isOpen
-    });
-    // this.props.getServices({
-    //   uri: "/serviceType/getService",
-    //   method: "GET",
-    //   redux: {
-    //     type: "SERVICES_GET_DATA",
-    //     mappingName: "hospitalservices"
-    //   },
-    //   afterSuccess: data => {
-    //     this.setState({
-    //       ...this.state,
-    //       isOpen: !this.state.isOpen
-    //     });
-    //   }
-    // });
+    this.setState(
+      {
+        ...this.state,
+        isOpen: !this.state.isOpen
+      },
+      () => {
+        getEmployeeDetails(this, this);
+      }
+    );
   }
 
   changeDateFormat = date => {
@@ -209,7 +149,11 @@ class EmployeeMasterIndex extends Component {
                               style={{ maxHeight: "4vh" }}
                             >
                               <Edit
-                              // onClick={this.EditItemMaster.bind(this, row)}
+                                onClick={EditEmployeeMaster.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
                               />
                             </IconButton>
                           </span>
@@ -234,27 +178,25 @@ class EmployeeMasterIndex extends Component {
                         <AlgaehLabel
                           label={{ fieldName: "employee_designation_id" }}
                         />
-                      )
-                      // displayTemplate: row => {
-                      //   let display =
-                      //     this.props.subdepartments === undefined
-                      //       ? []
-                      //       : this.props.subdepartments.filter(
-                      //           f =>
-                      //             f.hims_d_sub_department_id ===
-                      //             row.employee_designation_id
-                      //         );
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.designations === undefined
+                            ? []
+                            : this.props.designations.filter(
+                                f =>
+                                  f.hims_d_designation_id ===
+                                  row.employee_designation_id
+                              );
 
-                      //   return (
-                      //     <span>
-                      //       {display !== null && display.length !== 0
-                      //         ? this.state.selectedLang === "en"
-                      //           ? display[0].sub_department_name
-                      //           : display[0].arabic_sub_department_name
-                      //         : ""}
-                      //     </span>
-                      //   );
-                      // }
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].designation
+                              : ""}
+                          </span>
+                        );
+                      }
                     },
                     {
                       fieldName: "license_number",
@@ -263,34 +205,17 @@ class EmployeeMasterIndex extends Component {
                       )
                     },
                     {
-                      fieldName: "category_id",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "category_id" }} />
-                      )
-
-                      // displayTemplate: row => {
-                      //   let display =
-                      //     this.props.hospitaldetails === undefined
-                      //       ? []
-                      //       : this.props.hospitaldetails.filter(
-                      //           f => f.hims_d_hospital_id === row.category_id
-                      //         );
-
-                      //   return (
-                      //     <span>
-                      //       {display !== null && display.length !== 0
-                      //         ? this.state.selectedLang === "en"
-                      //           ? display[0].hospital_name
-                      //           : display[0].arabic_hospital_name
-                      //         : ""}
-                      //     </span>
-                      //   );
-                      // }
+                      fieldName: "primary_contact_no",
+                      label: <AlgaehLabel label={{ fieldName: "contact_no" }} />
+                    },
+                    {
+                      fieldName: "email",
+                      label: <AlgaehLabel label={{ fieldName: "email" }} />
                     }
                   ]}
                   keyId="service_code"
                   dataSource={{
-                    data: this.props.providers
+                    data: this.state.Employeedetails
                   }}
                   // isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -327,7 +252,7 @@ class EmployeeMasterIndex extends Component {
                   }
                   open={this.state.isOpen}
                   onClose={this.CloseModel.bind(this)}
-                  servicePop={this.state.servicePop}
+                  employeeDetailsPop={this.state.employeeDetailsPop}
                 />
               </div>
             </div>
@@ -344,7 +269,8 @@ function mapStateToProps(state) {
     hospitalservices: state.hospitalservices,
     servicetype: state.servicetype,
     subdepartments: state.subdepartments,
-    providers: state.providers
+    employeedetails: state.employeedetails,
+    designations: state.designations
   };
 }
 
@@ -354,7 +280,8 @@ function mapDispatchToProps(dispatch) {
       getServices: AlgaehActions,
       getServiceTypes: AlgaehActions,
       getSubDepatments: AlgaehActions,
-      getProviderDetails: AlgaehActions
+      getEmployeeDetails: AlgaehActions,
+      getDesignations: AlgaehActions
     },
     dispatch
   );

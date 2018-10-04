@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import Collections from "@material-ui/icons/Collections";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
 import "./AccessionAcknowledgement.css";

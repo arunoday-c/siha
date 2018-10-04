@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import MyContext from "../../../../utils/MyContext";
 import "./AddOPBillingForm.css";
 import "./../../../../styles/site.css";
@@ -17,13 +16,10 @@ import DisplayOPBilling from "../../../BillDetails/BillDetails";
 import {
   serviceTypeHandeler,
   serviceHandeler,
-  texthandle,
   discounthandle,
   adjustadvance
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
-
-import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Paper from "@material-ui/core/Paper";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";

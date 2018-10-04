@@ -9,12 +9,6 @@
         "label": "Dashboard",
         "arlabel": "لوحة القيادة",
         "path": "/Dashboard"
-      },
-      {
-        "name": "Doctor Commission",
-        "label": "Doctor Commission",
-        "arlabel": "عمولة طبيب",
-        "path": "/DoctorCommission"
       }
     ]
   },
@@ -132,6 +126,12 @@
         "label": "Employee Master Index",
         "arlabel": "مؤشر الموظف الرئيسي",
         "path": "/EmployeeMasterIndex"
+      },
+      {
+        "name": "Doctor Commission",
+        "label": "Doctor Commission",
+        "arlabel": "عمولة طبيب",
+        "path": "/DoctorCommission"
       }
     ]
   },

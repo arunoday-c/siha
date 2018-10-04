@@ -6,21 +6,12 @@ import { bindActionCreators } from "redux";
 import "./BillDetails.css";
 import "./../../styles/site.css";
 import {
-  AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  Button,
   Modal
 } from "../Wrapper/algaehWrapper";
 
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
-import Toolbar from "@material-ui/core/Toolbar";
 import Paper from "@material-ui/core/Paper";
 
 import { AlgaehActions } from "../../actions/algaehActions";

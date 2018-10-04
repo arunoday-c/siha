@@ -6,6 +6,22 @@ body {
 :global .header {
   max-height: 50px; }
 
+:global .inner-top-search {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+  padding-top: 5px; }
+
+:global .algaehLabelGroup {
+  font-weight: bold;
+  text-decoration: underline;
+  text-transform: inherit;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  color: #369c92; }
+
 :global .tab-container .tab-button {
   font-weight: normal;
   border-radius: 0px;
@@ -452,6 +468,10 @@ input[type="time"] {
   background: #fff;
   width: 100%; }
 
+input[type="number"] {
+  text-align: right;
+  direction: rtl; }
+
 input[type="color"] {
   font-size: 0.85rem;
   -webkit-appearance: none;
@@ -680,6 +700,8 @@ th {
   /*
    for dropdown list
   */ }
+  .algaeh_Arabic_Version .table-responsive {
+    direction: rtl; }
   .algaeh_Arabic_Version .autoselect-Div {
     position: relative; }
     .algaeh_Arabic_Version .autoselect-Div i {
@@ -898,3 +920,9 @@ th {
         font-weight: 500;
         font-size: 2rem;
         padding-left: 10px; }
+
+.invalid-feedback {
+  font-size: 0.7rem; }
+
+.is-invalid {
+  border-color: #dc3545; }

@@ -8,12 +8,6 @@
         "name": "Dashboard",
         "label": "لوحة القيادة",
         "path": "/Dashboard"
-      },
-
-      {
-        "name": "Doctor Commission",
-        "label": "عمولة طبيب",
-        "path": "/DoctorCommission"
       }
     ]
   },
@@ -88,6 +82,23 @@
         "name": "Patient Recall",
         "label": "استدعاء المريض",
         "path": "/PatientRecall"
+      }
+    ]
+  },
+  {
+    "name": "EmployeeManagement",
+    "label": "إدارة موظف",
+    "icon": "fas fa-users",
+    "subMenu": [
+      {
+        "name": "EmployeeMasterIndex",
+        "label": "مؤشر الموظف الرئيسي",
+        "path": "/EmployeeMasterIndex"
+      },
+      {
+        "name": "Doctor Commission",
+        "label": "عمولة طبيب",
+        "path": "/DoctorCommission"
       }
     ]
   },

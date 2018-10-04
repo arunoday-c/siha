@@ -5,9 +5,8 @@ import { bindActionCreators } from "redux";
 
 import "./../../../styles/site.css";
 import "./InsuranceAdd.css";
-import { Button, Modal } from "../../Wrapper/algaehWrapper";
+import { Modal } from "../../Wrapper/algaehWrapper";
 
-import Typography from "@material-ui/core/Typography";
 import InsuranceProvider from "../InsuranceProvider/InsuranceProvider";
 import SubInsurance from "../SubInsurance/SubInsurance";
 import NetworkPlan from "../NetworkPlan/NetworkPlan";
@@ -16,17 +15,14 @@ import ServicePriceList from "../ServicePriceList/ServicePriceList";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
-import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import InsuranceSetup from "../../../Models/InsuranceSetup";
 import {
   handleNext,
   handleBack,
-  handleReset,
+  // handleReset,
   updatedata
 } from "./InsuranceAddHandaler";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
 
 import AHSnackbar from "../../common/Inputs/AHSnackbar";
 import MyContext from "../../../utils/MyContext";

@@ -846,9 +846,9 @@ let updateItemMasterAndUom = (req, res, next) => {
 
               //bulk  update uom maping
               if (input.updateUomMapResult.length != 0) {
-                debugLog("inside update map uom");
+                
                 let inputParam = extend([], req.body.updateUomMapResult);
-                debugLog("input update UomMapResult", inputParam);
+                
 
                 let qry = "";
 

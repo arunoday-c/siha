@@ -6,21 +6,21 @@ import { setSecure } from "../../utils/indexer";
 import { algaehApiCall, setCookie } from "../../utils/algaehApiCall.js";
 import swal from "sweetalert";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
-const styles = {
-  root: {
-    height: "100%"
-  },
-  textField: {
-    margin: 10,
-    width: 200,
-    textAlign: "left"
-  },
-  login_btn: {
-    margin: 40,
-    width: 200,
-    backgroundColor: "#3A95AA"
-  }
-};
+// const styles = {
+//   root: {
+//     height: "100%"
+//   },
+//   textField: {
+//     margin: 10,
+//     width: 200,
+//     textAlign: "left"
+//   },
+//   login_btn: {
+//     margin: 40,
+//     width: 200,
+//     backgroundColor: "#3A95AA"
+//   }
+// };
 
 export default class Login extends Component {
   constructor(props) {
@@ -206,6 +206,7 @@ export default class Login extends Component {
                       isImp: true
                     }}
                     textBox={{
+                      required: true,
                       className: "txt-fld",
                       name: "username",
                       value: this.state.username,

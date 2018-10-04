@@ -1,4 +1,5 @@
 $forntSize: 0.7rem;
+
 :global {
   .displayInlineBlock {
     display: inline-block;
@@ -21,13 +22,20 @@ $forntSize: 0.7rem;
         margin: 0px;
         padding: 5px;
         font-size: 0.85rem;
+
+        &.active {
+          background: #eafffd;
+        }
       }
+
       li:nth-child(odd) {
         background: #f2f2f2;
       }
+
       li:nth-child(even) {
         background: #ffffff;
       }
+
       li:nth-child(odd):hover,
       li:nth-child(even):hover {
         background: #eafffd;
@@ -35,9 +43,79 @@ $forntSize: 0.7rem;
     }
   }
 
-  ::-webkit-scrollbar {
-    width: 3px;
+  .bordered-layout-radius {
+    overflow: auto;
+    border-radius: 3px;
+    ul {
+      margin: 0px;
+      padding: 0px;
+      border: 1px solid #c1c1c1;
+      overflow: auto;
+  
+
+      li {
+        cursor: pointer;
+        list-style: none;
+        margin: 0px;
+        padding: 7px 5px;
+        font-size: 0.8rem;
+        border-bottom: 1px dashed #c1c1c1;
+        width: 100%;
+        position: relative;
+
+        &.active {
+          background: #eafffd !important;
+        }
+        i {
+          display: block;
+          float: right;
+          line-height: 17px;
+          margin-right: 6px;
+          color: #212529;
+          margin-left: 10px;
+        }
+      }
+      li.active::after {
+        content: "";
+        position: absolute;
+        right: 4px;
+        top: 7px;
+        width: 0;
+        height: 0;
+        border-top: 8px solid #f5232300;
+        border-left: 8px solid #44b8bd;
+        border-right: 8px solid transparent;
+        border-bottom: 8px solid #e8e8e800;
+        clear: both;
+      }
+      li.active {
+        i {
+          display: none;
+        }
+      }
+      // li:first-child {
+      //   border-bottom: none;
+      // }
+    }
+    .noDataStyle {
+      text-align: center;
+      width: 100%;
+      display: inline-block;
+      font-size: 1rem;
+      margin-top: 15%;
+      color: #d3d3d3;
+    }
   }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  // :hover::-webkit-scrollbar {
+  //   width: 10px;
+  //   height: 10px;
+  // }
 
   /* Track */
   ::-webkit-scrollbar-track {
@@ -53,9 +131,11 @@ $forntSize: 0.7rem;
   ::-webkit-scrollbar-thumb:hover {
     background: #dcac66;
   }
+
   .margin-top-15 {
     margin-top: 15px;
   }
+
   .margin-bottom-15 {
     margin-bottom: 15px;
   }
@@ -78,6 +158,7 @@ $forntSize: 0.7rem;
     text-transform: uppercase;
     font-size: 0.9rem;
   }
+
   .btn-primary:hover {
     background-color: #00bcb0;
     border: #00bcb0;
@@ -89,12 +170,14 @@ $forntSize: 0.7rem;
     background-color: #00bcb0;
     border: #00bcb0;
   }
+
   .btn-default {
     background-color: #efefef;
     border: 1px solid #efefef;
     text-transform: uppercase;
     font-size: 0.9rem;
   }
+
   .btn-default:hover {
     background-color: #00bcb0;
     border: #00bcb0;
@@ -183,10 +266,12 @@ $forntSize: 0.7rem;
   .actions {
     float: right;
     display: inline-block;
-  }
-
-  .actions a {
-    margin-left: 3px;
+    a {
+      margin-left: 3px;
+    }
+    span {
+      margin-left: 3px;
+    }
   }
 
   .actions .btn {
@@ -300,64 +385,40 @@ $forntSize: 0.7rem;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
   }
 
-  /* Btn Grey Salsa */
-  .actions .btn.grey-salsa {
-    border: none;
-    margin-left: 3px;
-    box-shadow: none;
-    border-radius: 50px !important;
-  }
-
-  .actions .btn.grey-salsa.active {
-    color: #fafcfb;
-    background: #8e9bae;
-  }
-  .actions .grey-salsa.btn:hover,
-  .actions .grey-salsa.btn:focus,
-  .actions .grey-salsa.btn:active,
-  .actions .grey-salsa.btn.active {
-    color: #fafcfb;
-    background: #97a3b4;
-  }
-
-  /* Btn Red */
-  .actions .btn.btn-red.active,
-  .actions .btn.btn-red:hover {
+  /* Btn Green */
+  .actions .btn.btn-green.active,
+  .actions .btn.btn-green:hover {
     color: #fff;
     box-shadow: none;
-    background: #e26a6a;
-    border-color: #e26a6a;
-  }
-
-  /* Btn Red */
-  .actions .btn.btn-purple.active,
-  .actions .btn.btn-purple:hover {
-    color: #fff;
-    box-shadow: none;
-    background: #8775a7;
-    border-color: #8775a7;
+    background: #00bcb0;
+    border-color: #01968c;
   }
 
   .customRadio {
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
+
     .inline {
       display: inline-block;
     }
+
     .inline + .inline {
       margin-left: 10px;
     }
+
     .radio {
       color: #999;
       font-size: 15px;
       position: relative;
     }
+
     .radio span {
       position: relative;
       padding-left: 20px;
       text-transform: capitalize;
       font-size: 0.9rem;
     }
+
     .radio span:after {
       content: "";
       width: 15px;
@@ -375,6 +436,7 @@ $forntSize: 0.7rem;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
     }
+
     .radio input[type="radio"] {
       cursor: pointer;
       position: absolute;
@@ -383,9 +445,11 @@ $forntSize: 0.7rem;
       z-index: 1;
       opacity: 0;
     }
+
     .radio input[type="radio"]:checked + span {
       color: #00bcb0;
     }
+
     .radio input[type="radio"]:checked + span:before {
       content: "";
       width: 5px;
@@ -404,24 +468,29 @@ $forntSize: 0.7rem;
   .customCheckbox {
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
+
     .inline {
       display: inline-block;
       margin-right: 10px;
     }
+
     .inline + .inline {
       margin-left: 0;
     }
+
     .checkbox {
       color: #999;
       font-size: 15px;
       position: relative;
     }
+
     .checkbox span {
       position: relative;
       padding-left: 20px;
       text-transform: capitalize;
       font-size: 0.9rem;
     }
+
     .checkbox span:after {
       content: "";
       width: 15px;
@@ -439,6 +508,7 @@ $forntSize: 0.7rem;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
     }
+
     .checkbox input[type="checkbox"] {
       cursor: pointer;
       position: absolute;
@@ -447,9 +517,11 @@ $forntSize: 0.7rem;
       z-index: 1;
       opacity: 0;
     }
+
     .checkbox input[type="checkbox"]:checked + span {
       color: #00bcb0;
     }
+
     .checkbox input[type="checkbox"]:checked + span:before {
       content: "";
       width: 5px;
@@ -488,24 +560,31 @@ $forntSize: 0.7rem;
       cursor: pointer;
       margin-right: 10px;
     }
+
     .pain-1 {
       background-position: 0px 0px;
     }
+
     .pain-2 {
       background-position: 0px -32px;
     }
+
     .pain-3 {
       background-position: 0px -65px;
     }
+
     .pain-4 {
       background-position: 0px -98px;
     }
+
     .pain-5 {
       background-position: 0px -130px;
     }
+
     .pain-6 {
       background-position: 0px -163px;
     }
+
     .active {
       border-radius: 100%;
       box-shadow: 0 3px 8px #00000063;
@@ -524,6 +603,7 @@ $forntSize: 0.7rem;
     .popupHeader {
       background: #dbad64;
       padding: 5px 15px 0;
+
       h4 {
         color: #fff;
         font-size: 1.1rem;
@@ -532,6 +612,7 @@ $forntSize: 0.7rem;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
+
       label {
         color: #fff;
         font-size: 1.1rem;
@@ -541,6 +622,7 @@ $forntSize: 0.7rem;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold;
       }
+
       button {
         margin: 0;
         padding: 0;
@@ -552,13 +634,16 @@ $forntSize: 0.7rem;
         line-height: 30px;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
+
       button:hover {
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0);
       }
     }
+
     .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
+
       .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -566,6 +651,7 @@ $forntSize: 0.7rem;
         overflow: auto;
         padding: 15px;
       }
+
       .popRightDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -574,17 +660,20 @@ $forntSize: 0.7rem;
         padding: 15px;
       }
     }
+
     .popupFooter {
       border-top: 1px dashed #e0e0e0;
       padding-top: 4px;
       padding-bottom: 4px;
       height: 40px;
       margin-top: 15px;
+
       .button-left {
         float: left;
         margin-right: 10px;
         margin-left: 0px;
       }
+
       button {
         float: right;
         margin-left: 10px;
@@ -593,11 +682,13 @@ $forntSize: 0.7rem;
         text-transform: uppercase;
         min-width: 70px;
       }
+
       .btn-primary {
         background: #34b8bc;
         color: #fff;
         border: 1px solid #34b8bc;
       }
+
       .btn-default {
         background: #efefef;
         color: #5a5a5a;
@@ -620,6 +711,7 @@ $forntSize: 0.7rem;
     .popupHeader {
       background: #dbad64;
       padding: 5px 15px 0;
+
       h4 {
         color: #fff;
         font-size: 1.1rem;
@@ -628,6 +720,7 @@ $forntSize: 0.7rem;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
+
       label {
         color: #fff;
         font-size: 1.1rem;
@@ -637,6 +730,7 @@ $forntSize: 0.7rem;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold;
       }
+
       button {
         margin: 0;
         padding: 0;
@@ -648,13 +742,16 @@ $forntSize: 0.7rem;
         line-height: 30px;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
+
       button:hover {
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0);
       }
     }
+
     .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
+
       .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -662,6 +759,7 @@ $forntSize: 0.7rem;
         overflow: auto;
         padding: 15px;
       }
+
       .popRightDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -670,17 +768,20 @@ $forntSize: 0.7rem;
         padding: 15px;
       }
     }
+
     .popupFooter {
       border-top: 1px dashed #e0e0e0;
       padding-top: 4px;
       padding-bottom: 4px;
       height: 40px;
       margin-top: 15px;
+
       .button-left {
         float: left;
         margin-right: 10px;
         margin-left: 0px;
       }
+
       button {
         float: left;
         margin-right: 10px;
@@ -690,11 +791,13 @@ $forntSize: 0.7rem;
         text-transform: uppercase;
         min-width: 70px;
       }
+
       .btn-primary {
         background: #34b8bc;
         color: #fff;
         border: 1px solid #34b8bc;
       }
+
       .btn-default {
         background: #efefef;
         color: #5a5a5a;
@@ -712,6 +815,7 @@ $forntSize: 0.7rem;
       text-transform: uppercase;
       color: #717171;
     }
+
     .hospitalLogo {
       width: 150px;
       height: 70px;
@@ -721,6 +825,7 @@ $forntSize: 0.7rem;
       color: #ccc;
       text-align: center;
     }
+
     .hospitalAddress {
       font-size: 0.7rem;
       width: 250px;
@@ -729,9 +834,11 @@ $forntSize: 0.7rem;
       margin: 0;
       padding: 0;
     }
+
     .table-report {
       border: none;
       border-bottom: 2px;
+
       .table {
         tbody {
           td {
@@ -741,10 +848,12 @@ $forntSize: 0.7rem;
             color: #44b8bd;
             border: none;
           }
+
           td:first-child {
             color: #696969;
             text-transform: none;
           }
+
           td:nth-child(4) {
             color: #696969;
             text-transform: none;
@@ -756,6 +865,7 @@ $forntSize: 0.7rem;
     .text-danger strong {
       color: #9f181c;
     }
+
     .receipt-header-mid {
       margin: 15px 0 5px;
       overflow: hidden;
@@ -778,6 +888,7 @@ $forntSize: 0.7rem;
         color: #68509f !important;
         cursor: pointer;
       }
+
       &:focus {
         outline: none;
       }
@@ -797,6 +908,7 @@ $forntSize: 0.7rem;
 
     .tab {
       margin-right: -30px;
+
       &:last-child {
         .tab-button {
           //border-radius: 0px;
@@ -804,6 +916,7 @@ $forntSize: 0.7rem;
         }
       }
     }
+
     .tab-content {
       padding: 10px 20px;
       background-color: #fcfcfc;
@@ -836,9 +949,11 @@ $forntSize: 0.7rem;
 
     &:checked {
       border: 1px solid #e5e5e5;
+
       &:focus {
         outline: none;
       }
+
       &::before {
         content: "";
         background: #44b6ae;
@@ -914,6 +1029,7 @@ $forntSize: 0.7rem;
       cursor: not-allowed;
     }
   }
+
   .htpl1-phase1-btn-others {
     font-size: 0.8rem;
     text-transform: uppercase;
@@ -944,6 +1060,7 @@ $forntSize: 0.7rem;
       cursor: not-allowed;
     }
   }
+
   .ins-tab-container {
     .tab-button,
     label {
@@ -963,6 +1080,7 @@ $forntSize: 0.7rem;
         background-color: #fff !important;
         color: #68509f !important;
       }
+
       &:focus {
         outline: none;
       }
@@ -982,12 +1100,14 @@ $forntSize: 0.7rem;
 
     .tab {
       margin-right: -30px;
+
       &:last-child {
         .tab-button {
           //padding: 6px 16px;
         }
       }
     }
+
     .tab-content {
       padding: 10px 20px;
       background-color: #fcfcfc;
@@ -1002,20 +1122,25 @@ $forntSize: 0.7rem;
   .spacing-push {
     margin-top: 5.5em !important;
   }
+
   .box-shadow {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
+
   .box-shadow:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }
+
   .box-shadow-normal {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
+
   .row-bottom-space {
     margin-bottom: 15px;
   }
+
   .divider {
     height: 1px;
     background-color: #485a63;
@@ -1027,6 +1152,7 @@ $forntSize: 0.7rem;
     padding-top: 10px;
     padding-bottom: 4px;
     width: 100%;
+
     label {
       font-weight: 500;
       font-size: 0.9rem;
@@ -1050,6 +1176,7 @@ $forntSize: 0.7rem;
       color: #68509f !important;
       cursor: pointer;
     }
+
     &:focus {
       outline: none;
     }
@@ -1069,6 +1196,7 @@ $forntSize: 0.7rem;
 
   .tab {
     margin-right: -30px;
+
     &:last-child {
       .tab-button {
         //border-radius: 0px;
@@ -1076,6 +1204,7 @@ $forntSize: 0.7rem;
       }
     }
   }
+
   .tab-content {
     padding: 10px 20px;
     background-color: #fcfcfc;
@@ -1086,12 +1215,15 @@ $forntSize: 0.7rem;
     }
   }
 }
+
 .hptl-phase1-footer {
   margin-top: 50px;
 }
+
 .divInner {
   overflow-y: auto;
   overflow-x: hidden;
+
   .divInnerLeft {
     border-right: 1px dashed #e0e0e0;
     min-height: 30vh;
@@ -1099,6 +1231,7 @@ $forntSize: 0.7rem;
     overflow: auto;
     padding: 15px;
   }
+
   .divInnerRight {
     min-height: 30vh;
     max-height: 70vh;

@@ -942,8 +942,45 @@ let getDoctorScheduleToModify = (req, res, next) => {
             releaseDBConnection(db, connection);
             next(error);
           }
-          req.records = result;
-          next();
+
+          let activeSchedule = new LINQ(result)
+            .Where(w => w.modified != "M")
+            .Select(s => s)
+            .ToArray();
+
+          let ids = new LINQ(result)
+            .Where(w => w.modified == "M")
+            .Select(s => s.hims_d_appointment_schedule_detail_id)
+            .ToArray();
+
+          if (ids.length > 0) {
+            connection.query(
+              "SELECT hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, to_date, slot,\
+              from_work_hr, to_work_hr,\
+              work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2, to_break_hr2 \
+              from hims_d_appointment_schedule_modify where record_status='A' and  appointment_schedule_detail_id in (" +
+                ids +
+                ")",
+              (error, modResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+                if (modResult.length > 0) {
+                  let finResult = [...activeSchedule, ...modResult];
+
+                  req.records = finResult;
+                  next();
+                } else {
+                  req.records = result;
+                  next();
+                }
+              }
+            );
+          } else {
+            req.records = result;
+            next();
+          }
         }
       );
     });
@@ -952,6 +989,156 @@ let getDoctorScheduleToModify = (req, res, next) => {
   }
 };
 
+//created by irfan: to update Doctor Schedule DateWise
+let updateDoctorScheduleDateWise = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+    debugLog("Input Data", input);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        connection.query(
+          "UPDATE `hims_d_appointment_schedule_detail` SET `modified`=?,\
+              `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
+         `hims_d_appointment_schedule_detail_id`=?;",
+          [
+            input.modified,
+            input.updated_by,
+            new Date(),
+            input.hims_d_appointment_schedule_detail_id
+          ],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+
+            if (
+              input.hims_d_appointment_schedule_modify_id != null &&
+              input.modified == "M"
+            ) {
+              connection.query(
+                "UPDATE `hims_d_appointment_schedule_modify` SET appointment_schedule_detail_id=?,to_date=?,slot=?,\
+    from_work_hr=?,to_work_hr=?,work_break1=?,from_break_hr1=?,to_break_hr1=?,work_break2=?,from_break_hr2=?,to_break_hr2=?,\
+        `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
+   `hims_d_appointment_schedule_modify_id`=?;",
+                [
+                  input.hims_d_appointment_schedule_detail_id,
+                  input.to_date,
+                  input.slot,
+                  input.from_work_hr,
+                  input.to_work_hr,
+                  input.work_break1,
+                  input.from_break_hr1,
+                  input.to_break_hr1,
+                  input.work_break2,
+                  input.from_break_hr2,
+                  input.to_break_hr2,
+                  input.updated_by,
+                  new Date(),
+                  input.hims_d_appointment_schedule_modify_id
+                ],
+                (error, updateModResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+
+                    req.records = updateModResult;
+                    next();
+                  });
+                }
+              );
+            } else {
+              if (result.length != 0 && input.modified == "M") {
+                connection.query(
+                  "INSERT INTO `hims_d_appointment_schedule_modify` ( appointment_schedule_detail_id, to_date, slot, from_work_hr, to_work_hr, work_break1, from_break_hr1,\
+       to_break_hr1, work_break2, from_break_hr2, to_break_hr2,created_date, created_by, updated_date, updated_by)\
+      VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                  [
+                    input.hims_d_appointment_schedule_detail_id,
+                    input.to_date,
+                    input.slot,
+                    input.from_work_hr,
+                    input.to_work_hr,
+                    input.work_break1,
+                    input.from_break_hr1,
+                    input.to_break_hr1,
+                    input.work_break2,
+                    input.from_break_hr2,
+                    input.to_break_hr2,
+                    new Date(),
+                    input.created_by,
+                    new Date(),
+                    input.updated_by
+                  ],
+                  (error, results) => {
+                    if (error) {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    }
+
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+
+                      req.records = results;
+                      next();
+                    });
+                  }
+                );
+              } else {
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  req.records = result;
+                  next();
+                });
+              }
+            }
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   addAppointmentStatus,
   addAppointmentRoom,
@@ -966,5 +1153,6 @@ module.exports = {
   getDoctorsScheduledList,
   addLeaveOrModifySchedule,
   getDoctorScheduleDateWise,
-  getDoctorScheduleToModify
+  getDoctorScheduleToModify,
+  updateDoctorScheduleDateWise
 };

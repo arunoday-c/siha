@@ -4,14 +4,17 @@ import {
   addEmployee,
   getEmployee,
   updateEmployee,
-  getEmployeeDetails
+  getEmployeeDetails,
+  getDoctorServiceCommission,
+  getEmployeeCategory,
+  getDoctorServiceTypeCommission
 } from "../model/employee";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
   let api = Router();
 
   api.post(
-    "/add",
+    "/addEmployee",
     addEmployee,
     (req, res, next) => {
       let resultBack = req.records;
@@ -29,7 +32,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
   api.put(
-    "/update",
+    "/updateEmployee",
     updateEmployee,
     (req, res, next) => {
       let result = req.records;
@@ -59,6 +62,48 @@ export default ({ config, db }) => {
   api.get(
     "/getEmployeeDetails",
     getEmployeeDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/getEmployeeCategory",
+    getEmployeeCategory,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/getDoctorServiceCommission",
+    getDoctorServiceCommission,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/getDoctorServiceTypeCommission",
+    getDoctorServiceTypeCommission,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

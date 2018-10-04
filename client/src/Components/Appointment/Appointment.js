@@ -1,18 +1,22 @@
 import React, { Component } from "react";
 import "./appointment.css";
 import moment from "moment";
-import { AlagehAutoComplete, AlagehFormGroup } from "../Wrapper/algaehWrapper";
+import {
+  AlagehAutoComplete,
+  AlagehFormGroup,
+  AlgaehLabel,
+  AlgaehDateHandler
+} from "../Wrapper/algaehWrapper";
 import Modal from "@material-ui/core/Modal";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import swal from "sweetalert";
 import Enumerable from "linq";
 import renderHTML from "react-render-html";
-
+import algaehLoader from "../Wrapper/fullPageLoader";
 class Appointment extends Component {
   constructor(props) {
     super(props);
     let dateToday = moment().format("YYYY") + moment().format("MM") + "01";
-    //let dateToday = new Date();
     this.state = {
       selectedHDate: moment(dateToday, "YYYYMMDD")._d,
       fromDate: new Date(),
@@ -20,7 +24,8 @@ class Appointment extends Component {
       showApt: false,
       departments: [],
       doctors: [],
-      appointmentSchedule: []
+      appointmentSchedule: [],
+      provider_id: null
     };
   }
 
@@ -58,7 +63,7 @@ class Appointment extends Component {
       data: {},
       onSuccess: response => {
         if (response.data.success) {
-          console.log("Appt Status:", response.data.records);
+          //console.log("Appt Status:", response.data.records);
           this.setState({ appointmentStatus: response.data.records });
         }
       },
@@ -72,27 +77,28 @@ class Appointment extends Component {
     });
   }
 
-  //getDoctorScheduleDateWise
-
   getAppointmentSchedule() {
+    algaehLoader({ show: true });
     algaehApiCall({
       uri: "/appointment/getDoctorScheduleDateWise",
       method: "GET",
       data: {
-        sub_dept_id: 10,
-        schedule_date: "2018-09-03",
-        provider_id: null
-        // sub_dept_id : this.state.sub_department_id,
-        // schedule_date : this.state.toDate,
-        // provider_id : this.state.provider_id
+        // sub_dept_id: 10,
+        // schedule_date: "2018-09-03",
+        // provider_id: null
+        sub_dept_id: this.state.sub_department_id,
+        schedule_date: moment(this.state.activeDateHeader).format("YYYY-MM-DD"),
+        provider_id: this.state.provider_id
       },
       onSuccess: response => {
+        algaehLoader({ show: false });
         if (response.data.success) {
           console.log("Appt Schedule:", response.data.records);
           this.setState({ appointmentSchedule: response.data.records });
         }
       },
       onFailure: error => {
+        algaehLoader({ show: false });
         swal(error.message, {
           buttons: false,
           icon: "danger",
@@ -107,6 +113,7 @@ class Appointment extends Component {
       activeDateHeader: e.target.getAttribute("date"),
       fromDate: e.target.getAttribute("date"),
       toDate: e.target.getAttribute("date")
+      // selectedHDate: e.target.getAttribute("date")
     });
   }
   monthChangeHandler(e) {
@@ -202,6 +209,77 @@ class Appointment extends Component {
     });
   }
 
+  generateChilderns(data) {
+    return (
+      <tr key={data.counter}>
+        <td className="tg-baqh">
+          <span className="dynSlot">{data.time}</span>
+          <i onClick={this.showModal.bind(this)} className="fas fa-plus" />
+        </td>
+        <td className="tg-baqh">
+          <span className="dynSlot">{data.time}</span>
+          <i onClick={this.showModal.bind(this)} className="fas fa-plus" />
+        </td>
+      </tr>
+    );
+  }
+
+  generateTimeslots(data) {
+    //console.log("Timeslot Data", data);
+    const from_work_hr = moment(data.from_work_hr, "hh:mm:ss");
+    const to_work_hr = moment(data.to_work_hr, "hh:mm:ss");
+    const from_break_hr1 = moment(data.from_break_hr1, "hh:mm:ss");
+    const to_break_hr1 = moment(data.to_break_hr1, "hh:mm:ss");
+    const from_break_hr2 = moment(data.from_break_hr2, "hh:mm:ss");
+    const to_break_hr2 = moment(data.to_break_hr2, "hh:mm:ss");
+    const slot = data.slot;
+    let tds = [];
+    debugger;
+    let count = 0;
+    let docTimings = [];
+    for (;;) {
+      let newFrom =
+        count === 0 ? from_work_hr : from_work_hr.add(slot, "minutes");
+      if (newFrom.isBefore(to_work_hr)) {
+        tds.push(
+          this.generateChilderns({
+            time: newFrom.format("hh:mm a"),
+            counter: count
+          })
+        );
+        // tds +=
+        //   "<tr><td class='tg-baqh'><span class='dynSlot'>" +
+        //   newFrom.format("hh:mm tt") +
+        //   "</span><i \
+        //   onclick='clickAppointmentOptions(" +
+        //   this +
+        //   ")'\
+        //   class='fas fa-pen' \
+        // />\
+        // <i  onclick='clickAppointmentOptions(" +
+        //   this +
+        //   ")' \
+        //   class='fas fa-times' />\
+        // <span class='dynPatient'></span></td></tr>";
+        // docTimings.push({
+        //   time: newFrom._i,
+        //   provider_id: data.provider_id,
+        //   clinic_id: data.clinic_id,
+        //   hims_d_appointment_schedule_detail_id:
+        //     data.hims_d_appointment_schedule_detail_id
+        // });
+        //
+      } else {
+        break;
+      }
+
+      count = count + 1;
+    }
+    return <React.Fragment>{tds}</React.Fragment>;
+    console.log("Doctor Timings:", docTimings);
+    // return docTimings;
+  }
+
   createDoctorTimeSlot(options) {
     let tds = [];
     const duration = options.slot;
@@ -228,7 +306,6 @@ class Appointment extends Component {
   }
 
   plotAppointments(appointmentSchedule) {
-    debugger;
     let timeing = [];
     let componentElementDoctors = "<table class='tg'><tbody><tr>";
     let componetElementBookStandBy = "<tr>";
@@ -284,88 +361,186 @@ class Appointment extends Component {
       <div className="appointment">
         {/* Pop up start */}
         <Modal open={this.state.showApt}>
-          <div className="algaeh-modal">
+          <div className="algaeh-modal" style={{ width: 500 }}>
             <div className="popupHeader">
               <h4>Book an Appointment</h4>
             </div>
             <div className="popupInner">
-              <AlagehFormGroup
-                div={{ className: "col-lg-12 margin-top-15" }}
-                label={{
-                  forceLabel: "Full Name",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "full_name",
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-12 popRightDiv">
+                    <div className="row">
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Appointment Date"
+                          }}
+                        />
+                        <h6>12/10/2018</h6>
+                      </div>
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Appointment Time"
+                          }}
+                        />
+                        <h6>09:15 AM</h6>
+                      </div>
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-4" }}
+                        label={{
+                          forceLabel: "Select Slots",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "visit_type",
+                          className: "select-fld",
+                          //value: this.state.allergy_severity,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value"
+                            //data: GlobalVariables.PAIN_SEVERITY
+                          }
+                          //onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4 margin-top-15" }}
+                        label={{
+                          forceLabel: "Patient Code",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
 
-                  //value: this.state.allergy_comment,
-                  events: {
-                    // onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-12 margin-top-15" }}
-                label={{
-                  forceLabel: "Mobile No.",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "mob_no",
+                          //value: this.state.allergy_comment,
+                          events: {
+                            // onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-8 margin-top-15" }}
+                        label={{
+                          forceLabel: "Patient Name",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
 
-                  // value: this.state.allergy_comment,
-                  events: {
-                    // onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
+                          //value: this.state.allergy_comment,
+                          events: {
+                            // onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
 
-              <AlagehAutoComplete
-                div={{ className: "col-lg-12 margin-top-15" }}
-                label={{
-                  forceLabel: "Visit Type"
-                }}
-                selector={{
-                  name: "visit_type",
-                  className: "select-fld",
-                  //value: this.state.allergy_severity,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value"
-                    //data: GlobalVariables.PAIN_SEVERITY
-                  }
-                  //onChange: this.dropDownHandle.bind(this)
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-12 margin-top-15" }}
-                label={{
-                  forceLabel: "Visit Purpose.",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "allergy_comment",
-                  others: {
-                    multiline: true,
-                    rows: "4"
-                  },
-                  value: this.state.allergy_comment,
-                  events: {
-                    // onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
-            </div>
-            <div className="row popupFooter">
-              <div className="col">
-                <button
-                  //onClick={this.addAllergyToPatient.bind(this)}
-                  type="button"
-                  className="btn btn-primary"
-                >
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-4 margin-top-15" }}
+                        label={{
+                          forceLabel: "Date of Birth"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "card_date"
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4 margin-top-15" }}
+                        label={{
+                          forceLabel: "Age",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+
+                          //value: this.state.allergy_comment,
+                          events: {
+                            // onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-4 margin-top-15" }}
+                        label={{
+                          forceLabel: "Gender",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "visit_type",
+                          className: "select-fld",
+                          //value: this.state.allergy_severity,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value"
+                            //data: GlobalVariables.PAIN_SEVERITY
+                          }
+                          //onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4 margin-top-15" }}
+                        label={{
+                          forceLabel: "Mobile No.",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+
+                          //value: this.state.allergy_comment,
+                          events: {
+                            // onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-8 margin-top-15" }}
+                        label={{
+                          forceLabel: "Email Address",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+
+                          //value: this.state.allergy_comment,
+                          events: {
+                            // onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12 margin-top-15" }}
+                        label={{
+                          forceLabel: "Remarks",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+                          others: {
+                            multiline: true
+                          },
+
+                          events: {}
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>{" "}
+            <div className="popupFooter">
+              <div className="col-lg-12">
+                <button type="button" className="btn btn-primary">
                   Save
                 </button>
                 <button
@@ -387,7 +562,6 @@ class Appointment extends Component {
             <div style={{ height: "34px" }}>
               <div className="myDay_date">
                 <input
-                  className="calender-date"
                   type="month"
                   onChange={this.monthChangeHandler.bind(this)}
                   value={moment(this.state.selectedHDate).format("YYYY-MM")}
@@ -399,387 +573,197 @@ class Appointment extends Component {
         </div>
         {/* Calendar Component Ends */}
 
-        <div className="col-lg-12 card box-shadow-normal margin-top-15">
-          {/* Filter Bar Start */}
-          <div className="row" style={{ padding: "10px" }}>
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "department_name"
-              }}
-              selector={{
-                name: "sub_department_id",
-                className: "select-fld",
-                value: this.state.sub_department_id,
-                dataSource: {
-                  textField: "sub_department_name",
-                  valueField: "sub_dept_id",
-                  data: this.state.departments
-                },
-                onChange: this.deptDropDownHandler.bind(this)
-              }}
-              error={this.state.department_error}
-              helperText={this.state.department_error_text}
-            />
+        {/* Filter Bar Start */}
+        <div className="row inner-top-search">
+          <AlagehAutoComplete
+            div={{ className: "col-lg-3" }}
+            label={{
+              fieldName: "department_name"
+            }}
+            selector={{
+              name: "sub_department_id",
+              className: "select-fld",
+              value: this.state.sub_department_id,
+              dataSource: {
+                textField: "sub_department_name",
+                valueField: "sub_dept_id",
+                data: this.state.departments
+              },
+              onChange: this.deptDropDownHandler.bind(this)
+            }}
+            error={this.state.department_error}
+            helperText={this.state.department_error_text}
+          />
 
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Filter by Doctor"
-              }}
-              selector={{
-                name: "provider_id",
-                className: "select-fld",
-                value: this.state.provider_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "provider_id",
-                  data: this.state.doctors
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
+          <AlagehAutoComplete
+            div={{ className: "col-lg-3" }}
+            label={{
+              forceLabel: "Filter by Doctor"
+            }}
+            selector={{
+              name: "provider_id",
+              className: "select-fld",
+              value: this.state.provider_id,
+              dataSource: {
+                textField: "full_name",
+                valueField: "provider_id",
+                data: this.state.doctors
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
 
-            <div className="col-lg-1 form-group margin-top-15">
-              <span
-                style={{ cursor: "pointer" }}
-                className="fas fa-search fa-2x"
-              />
+          <div className="col-lg-1 form-group margin-top-15">
+            <span
+              onClick={this.getAppointmentSchedule.bind(this)}
+              style={{ cursor: "pointer" }}
+              className="fas fa-search fa-2x"
+            />
+          </div>
+          <div className="col-lg-5" />
+        </div>
+        {/* Filter Bar End */}
+
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          {/* Portlet Top Bar Start */}
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Doctors Availability</h3>
             </div>
-            <div className="col-lg-5">
-              <ul style={{ listStyle: "none", display: "inline-block" }}>
+            <div className="actions">
+              <ul className="ul-legend">
                 {this.state.appointmentStatus !== undefined
                   ? this.state.appointmentStatus.map((data, index) => (
-                      <li
-                        key={index}
-                        style={{ display: "inline", marginRight: "5px" }}
-                      >
-                        <span className="displayInlineBlock">
-                          <span
-                            className="displayInlineBlock"
-                            style={{
-                              width: "20px",
-                              height: "20px",
-                              backgroundColor: data.color_code,
-                              marginRight: "2px"
-                            }}
-                          />
-                          <span
-                            style={{ marginTop: "auto", marginBottom: "auto" }}
-                          >
-                            {data.description}
-                          </span>
-                        </span>
+                      <li key={index}>
+                        <span
+                          style={{
+                            backgroundColor: data.color_code
+                          }}
+                        />
+                        {data.description}
                       </li>
                     ))
                   : null}
               </ul>
             </div>
           </div>
-          {/* Filter Bar End */}
+          {/* Portlet Top Bar End */}
+
+          <div className="portlet-body">
+            <div className="appointment-outer-cntr">
+              <div className="appointment-inner-cntr">
+                {/* Table Start */}
+                {this.state.appointmentSchedule.length !== 0
+                  ? this.state.appointmentSchedule.map((data, index) => (
+                      <table key={index} className="tg">
+                        <tbody>
+                          <tr>
+                            {/* <th className="tg-c3ow">Time</th> */}
+                            <th className="tg-amwm" colSpan="2">
+                              {data.first_name + " " + data.last_name}
+                              {/* Dr. Norman John */}
+                            </th>
+                          </tr>
+                          <tr>
+                            {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                            <td className="tbl-subHdg">BOOKED</td>
+                            <td className="tbl-subHdg">STANDBY</td>
+                          </tr>
+                          {this.generateTimeslots(data)}
+                          {/* {renderHTML(this.generateTimeslots(data))} */}
+                          {/* <tr>
+                            <td className="tg-baqh">
+                              <span className="dynSlot">09:00 AM</span>
+                              <i
+                                onClick={this.showModal.bind(this)}
+                                className="fas fa-pen"
+                              />
+                              <i
+                                onClick={this.showModal.bind(this)}
+                                className="fas fa-times"
+                              />
+                              <span className="dynPatient">John Doe</span>
+                            </td>
+                            <td className="tg-baqh">
+                              <span className="dynSlot">09:00 AM</span>
+                              <i
+                                onClick={this.showModal.bind(this)}
+                                className="fas fa-plus"
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="tg-baqh">
+                              <span className="dynSlot">09:00 AM</span>
+                              <i
+                                onClick={this.showModal.bind(this)}
+                                className="fas fa-plus"
+                              />
+                            </td>
+                            <td className="tg-baqh">
+                              <span className="dynSlot">09:00 AM</span>
+                              <i
+                                onClick={this.showModal.bind(this)}
+                                className="fas fa-plus"
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="tg-baqh">
+                              <span className="dynSlot">09:00 AM</span>
+                              <i
+                                onClick={this.showModal.bind(this)}
+                                className="fas fa-plus"
+                              />
+                            </td>
+                            <td className="tg-baqh">
+                              <span className="dynSlot">09:00 AM</span>
+                              <i
+                                onClick={this.showModal.bind(this)}
+                                className="fas fa-plus"
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="tg-baqh">
+                              <span className="dynSlot">09:00 AM</span>
+                              <i
+                                onClick={this.showModal.bind(this)}
+                                className="fas fa-plus"
+                              />
+                            </td>
+                            <td className="tg-baqh">
+                              <span className="dynSlot">09:00 AM</span>
+                              <i
+                                onClick={this.showModal.bind(this)}
+                                className="fas fa-plus"
+                              />
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td className="tg-baqh">
+                              <span className="dynSlot">09:00 AM</span>
+                              <i
+                                onClick={this.showModal.bind(this)}
+                                className="fas fa-plus"
+                              />
+                            </td>
+                            <td className="tg-baqh">
+                              <span className="dynSlot">09:00 AM</span>
+                              <i
+                                onClick={this.showModal.bind(this)}
+                                className="fas fa-plus"
+                              />
+                            </td>
+                          </tr>*/}
+                        </tbody>
+                      </table>
+                    ))
+                  : "No Doctors available for the selected criteria"}
+              </div>
+            </div>
+          </div>
         </div>
-        {/* Table Start */}
-        <div className="col-lg-12 card box-shadow-normal">
-          {renderHTML(this.plotAppointments(this.state.appointmentSchedule))}
-          <table className="tg">
-            <tbody>
-              <tr>
-                {/* <th className="tg-c3ow">Time</th> */}
-                <th className="tg-amwm" colSpan="2">
-                  Dr. Norman John
-                </th>
-                <th className="tg-amwm" colSpan="2">
-                  Dr. Norman John
-                </th>
-                <th className="tg-amwm" colSpan="2">
-                  Dr. Norman John
-                </th>
-                <th className="tg-amwm" colSpan="2">
-                  Dr. Norman John
-                </th>
-                <th className="tg-amwm" colSpan="2">
-                  Dr. Norman John
-                </th>
-                <th className="tg-amwm" colSpan="2">
-                  Dr. Norman John
-                </th>
-              </tr>
-              <tr>
-                {/* <td className="tg-baqh" /> */}
-                <td className="tg-baqh">BOOKED</td>
-                <td className="tg-baqh">STANDBY</td>
-                <td className="tg-baqh">BOOKED</td>
-                <td className="tg-baqh">STANDBY</td>
-                <td className="tg-baqh">BOOKED</td>
-                <td className="tg-baqh">STANDBY</td>
-                <td className="tg-baqh">BOOKED</td>
-                <td className="tg-baqh">STANDBY</td>
-                <td className="tg-baqh">BOOKED</td>
-                <td className="tg-baqh">STANDBY</td>
-                <td className="tg-baqh">BOOKED</td>
-                <td className="tg-baqh">STANDBY</td>
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">09:00 AM</th> */}
-                <td className="tg-baqh">
-                  <span className="dynSlot">09:00 AM</span>
-                  <span className="dynPatient">John Doe</span>
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">09:15 AM</th> */}
-                <td className="tg-baqh">
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">09:30 AM</th> */}
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">09:45 AM</th> */}
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">10:00 AM</th> */}
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">10:15 AM</th> */}
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">10:30 AM</th> */}
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">10:45 AM</th> */}
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">11:00 AM</th> */}
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">11:15 AM</th> */}
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-              </tr>
-              <tr>
-                {/* <th className="tg-amwm">11:30 AM</th> */}
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-                <td className="tg-baqh">
-                  {" "}
-                  <i
-                    onClick={this.showModal.bind(this)}
-                    className="fas fa-plus"
-                  />
-                </td>
-                <td className="tg-baqh" />
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        {/* Table End */}
       </div>
     );
   }

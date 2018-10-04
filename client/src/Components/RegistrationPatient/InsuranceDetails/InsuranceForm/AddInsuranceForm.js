@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import Dropzone from "react-dropzone";
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import AddCircle from "@material-ui/icons/AddCircle";
 import IconButton from "@material-ui/core/IconButton";
 
@@ -38,12 +37,6 @@ class AddInsuranceForm extends Component {
       frontSide: null,
       backSide: null
     };
-    this.widthImg = "";
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    var width = document.getElementById("attach-width").offsetWidth;
-    this.widthImg = width + 1;
   }
 
   componentWillMount() {

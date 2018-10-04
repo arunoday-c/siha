@@ -51,7 +51,7 @@ class PersonalDetails extends PureComponent {
         }
       });
     }
-
+    debugger;
     if (
       this.props.countries === undefined ||
       this.props.countries.length === 0
@@ -62,49 +62,54 @@ class PersonalDetails extends PureComponent {
         redux: {
           type: "CTRY_GET_DATA",
           mappingName: "countries"
+        },
+        afterSuccess: data => {
+          debugger;
         }
       });
     }
   }
 
-  //   componentWillReceiveProps(nextProps) {
-  //     this.setState(nextProps.PatRegIOputs, () => {
-  //       if (this.state.country_id === null) return;
-  //       if (this.state.country_id !== nextProps.country_id) {
-  //         let country = Enumerable.from(this.props.countries)
-  //           .where(w => w.hims_d_country_id === this.state.country_id)
-  //           .firstOrDefault();
-  //         let states = country !== undefined ? country.states : [];
-  //         if (nextProps.state_id !== this.state.state_id) {
-  //           let cities = Enumerable.from(states)
-  //             .where(w => w.hims_d_state_id === this.state.state_id)
-  //             .firstOrDefault();
+  componentWillReceiveProps(nextProps) {
+    debugger;
+    this.setState(nextProps.EmpMasterIOputs, () => {
+      debugger;
+      if (this.state.country_id === null) return;
+      if (this.state.country_id !== nextProps.country_id) {
+        let country = Enumerable.from(this.props.countries)
+          .where(w => w.hims_d_country_id === this.state.country_id)
+          .firstOrDefault();
+        let states = country !== undefined ? country.states : [];
+        if (nextProps.state_id !== this.state.state_id) {
+          let cities = Enumerable.from(states)
+            .where(w => w.hims_d_state_id === this.state.state_id)
+            .firstOrDefault();
 
-  //           this.props.getStates({
-  //             redux: {
-  //               data: states,
-  //               type: "STATE_GET_DATA",
-  //               mappingName: "countrystates"
-  //             },
-  //             afterSuccess: callback => {
-  //               this.setState({
-  //                 state_id: this.state.state_id
-  //               });
-  //             }
-  //           });
-  //           if (cities !== undefined) {
-  //             this.props.getCities({
-  //               redux: {
-  //                 data: cities.cities,
-  //                 type: "CITY_GET_DATA",
-  //                 mappingName: "cities"
-  //               }
-  //             });
-  //           }
-  //         }
-  //       }
-  //     });
-  //   }
+          this.props.getStates({
+            redux: {
+              data: states,
+              type: "STATE_GET_DATA",
+              mappingName: "countrystates"
+            },
+            afterSuccess: callback => {
+              // this.setState({
+              //   state_id: this.state.state_id
+              // });
+            }
+          });
+          if (cities !== undefined) {
+            this.props.getCities({
+              redux: {
+                data: cities.cities,
+                type: "CITY_GET_DATA",
+                mappingName: "cities"
+              }
+            });
+          }
+        }
+      }
+    });
+  }
 
   render() {
     return (
@@ -287,62 +292,12 @@ class PersonalDetails extends PureComponent {
                           className: "select-fld",
                           value: this.state.employee_designation_id,
                           dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "country_name"
-                                : "arabic_country_name",
-                            valueField: "hims_d_country_id",
-                            data: this.props.countries
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            tabIndex: "8"
-                          }
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3 mandatory" }}
-                        label={{
-                          fieldName: "category_id",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "category_id",
-                          className: "select-fld",
-                          value: this.state.category_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "country_name"
-                                : "arabic_country_name",
-                            valueField: "hims_d_country_id",
-                            data: this.props.countries
-                          },
-                          onChange: texthandle.bind(this, this, context),
-                          others: {
-                            tabIndex: "8"
-                          }
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3 mandatory" }}
-                        label={{
-                          fieldName: "speciality_id",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "speciality_id",
-                          className: "select-fld",
-                          value: this.state.speciality_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "country_name"
-                                : "arabic_country_name",
-                            valueField: "hims_d_country_id",
-                            data: this.props.countries
+                            textField: "designation",
+                            // this.state.selectedLang === "en"
+                            //   ? "designation"
+                            //   : "arabic_country_name",
+                            valueField: "hims_d_designation_id",
+                            data: this.props.designations
                           },
                           onChange: texthandle.bind(this, this, context),
                           others: {
@@ -379,9 +334,7 @@ class PersonalDetails extends PureComponent {
                           }
                         }}
                       />
-                    </div>
 
-                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -434,27 +387,9 @@ class PersonalDetails extends PureComponent {
                           }
                         }}
                       />
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "services_id"
-                        }}
-                        selector={{
-                          name: "services_id",
-                          className: "select-fld",
-                          value: this.state.services_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "service_name"
-                                : "arabic_service_name",
-                            valueField: "hims_d_services_id",
-                            data: this.props.services
-                          },
-                          others: { disabled: this.state.Billexists },
-                          onChange: texthandle.bind(this, this, context)
-                        }}
-                      />
+                    </div>
+
+                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -473,11 +408,8 @@ class PersonalDetails extends PureComponent {
                           onChange: texthandle.bind(this, this, context)
                         }}
                       />
-                    </div>
-
-                    <div className="row paddin-bottom-5">
                       <AlagehFormGroup
-                        div={{ className: "col-lg-12" }}
+                        div={{ className: "col-lg-6" }}
                         label={{
                           fieldName: "address"
                         }}
@@ -617,7 +549,8 @@ function mapStateToProps(state) {
     countries: state.countries,
     countrystates: state.countrystates,
     patients: state.patients,
-    services: state.services
+    services: state.services,
+    designations: state.designations
   };
 }
 
@@ -628,7 +561,8 @@ function mapDispatchToProps(dispatch) {
       getCities: AlgaehActions,
       getCountries: AlgaehActions,
       getStates: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      getDesignations: AlgaehActions
     },
     dispatch
   );

@@ -533,7 +533,7 @@ let selectdoctors = (req, res, next) => {
          hims_m_employee_department_mappings.sub_department_id,\
       hims_d_employee.full_name,\
       hims_d_employee.arabic_name,\
-      hims_d_employee.services_id,\
+      hims_m_employee_department_mappings.services_id,\
       hims_d_sub_department.department_id,\
       hims_d_sub_department.sub_department_name,\
       hims_d_sub_department.arabic_sub_department_name\
@@ -618,7 +618,7 @@ let selectDoctorsAndClinic = (req, res, next) => {
       hims_d_employee.middle_name,' ',\
       hims_d_employee.last_name) full_name,\
       hims_d_employee.arabic_name,\
-      hims_d_employee.services_id,\
+      hims_m_employee_department_mappings.services_id,\
       hims_d_sub_department.department_id,\
       hims_d_sub_department.sub_department_name,\
       hims_d_sub_department.arabic_sub_department_name,hims_d_appointment_clinic_id as clinic_id,AP.description as clinic_description\

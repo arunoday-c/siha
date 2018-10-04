@@ -1,22 +1,57 @@
 .appointment {
+  .appointment-outer-cntr {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: 94.8vw;
+    height: 355px;
+  }
+  .appointment-inner-cntr {
+    width: 2900px;
+  }
   .my-calendar {
     text-align: center;
-    background: #00afa4;
+    background: #34b8bc;
     color: #fff;
 
     .myDay_date {
-      float: none;
-      margin: 4px auto 2px;
-    }
+      position: relative;
 
-    .myDay_date input {
-      border: 1px solid #1d887f;
-      color: #fff;
-      background: #28a59a;
-      font-size: 17px;
-      padding: 1px;
-      text-align: center;
-      border-radius: 3px;
+      input[type="month"] {
+        font-size: 0.8rem;
+        padding: 2px 3px 3px 8px;
+        width: 250px;
+        text-transform: uppercase;
+        border: 1px dashed #ffffff;
+        border-radius: 4px;
+        margin-top: 4px;
+        background: none;
+        color: #fff;
+      }
+      input[type="month"]::-webkit-calendar-picker-indicator {
+        color: rgba(0, 0, 0, 0);
+        opacity: 1;
+        display: block;
+        background: url(../../assets/svg/calendar-alt-regular.svg) no-repeat
+          center;
+        width: 18px;
+        height: 15px;
+        border-width: thin;
+        background-size: 60%;
+      }
+
+      input[type="month"]:disabled {
+        background: #fffdfa;
+        border: 1px dashed #d3d3d3;
+        color: #000;
+        font-weight: bold;
+      }
+      button {
+        margin-left: 0px;
+        padding: 3px 6px !important;
+        svg {
+          height: 16px;
+        }
+      }
     }
 
     .arrow-box {
@@ -84,45 +119,116 @@
         cursor: pointer;
       }
     }
+    .dynSlot {
+      position: absolute;
+      top: 2px;
+      left: 6px;
+      font-size: 0.7rem;
+      color: #7d7d7d;
+    }
+    .dynPatient {
+      display: inline-block;
+      text-align: left;
+      width: 100%;
+      padding-left: 5px;
+    }
+    .tbl-subHdg {
+      text-transform: uppercase;
+      font-size: 0.7rem !important;
+      border: 1px solid #009e94 !important;
+      background: #fffff4;
+      color: #5a5a5a;
+    }
   }
 
   .tg {
-    border-collapse: collapse;
-    border-spacing: 0;
+    display: inline;
+    th {
+      font-family: Arial, sans-serif;
+      font-size: 0.9rem;
+      font-weight: normal;
+      overflow: hidden;
+      word-break: normal;
+      border: 1px solid lightgrey;
+      border-bottom: 1px solid #000;
+      border-top: 1px solid #000;
+    }
+    td {
+      width: 120px;
+      font-family: Arial, sans-serif;
+      font-size: 0.8rem;
+      overflow: hidden;
+      word-break: normal;
+      border: 1px solid #009e94;
+      border-bottom: 1px solid lightgrey;
+      border-top: 1px solid lightgrey;
+    }
+    .tg-baqh {
+      text-align: center;
+      position: relative;
+      padding: 15px 0 5px;
+      height: 55px;
+
+      i {
+        visibility: hidden;
+        position: absolute;
+        top: -1px;
+        right: -1px;
+        border: 1px solid #d3d3d3;
+        padding: 3px;
+        width: 20px;
+      }
+      i.fa-pen {
+        color: blue !important;
+      }
+      i.fa-times {
+        color: red !important;
+        top: 18px !important;
+      }
+    }
+
+    .tg-baqh:hover {
+      i {
+        visibility: visible;
+      }
+    }
+
+    .tg-baqh:nth-child(odd) {
+      border-right: 1px dashed lightgrey !important;
+      // background: #edfffd;
+    }
+    .tg-baqh:nth-child(even) {
+      border-left: none !important;
+      .dynSlot {
+        visibility: hidden;
+      }
+    }
+    .tg-c3ow {
+      border-color: inherit;
+      text-align: center;
+      vertical-align: top;
+    }
+    .tg-amwm {
+      font-weight: bold;
+      text-align: center;
+      vertical-align: top;
+    }
   }
-  .tg td {
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    padding: 10px 5px;
-    border-style: solid;
-    border-width: 1px;
-    overflow: hidden;
-    word-break: normal;
-    border-color: black;
-  }
-  .tg th {
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    font-weight: normal;
-    padding: 10px 5px;
-    border-style: solid;
-    border-width: 1px;
-    overflow: hidden;
-    word-break: normal;
-    border-color: black;
-  }
-  .tg .tg-baqh {
-    text-align: center;
-    vertical-align: top;
-  }
-  .tg .tg-c3ow {
-    border-color: inherit;
-    text-align: center;
-    vertical-align: top;
-  }
-  .tg .tg-amwm {
-    font-weight: bold;
-    text-align: center;
-    vertical-align: top;
+  ul.ul-legend {
+    li {
+      float: left;
+      margin-right: 10px;
+      list-style: none;
+      margin-top: 5px;
+      font-size: 0.7rem;
+      span {
+        border: 1px solid #ccc;
+        float: left;
+        width: 12px;
+        height: 12px;
+        margin: 2px;
+        margin-right: 5px;
+      }
+    }
   }
 }

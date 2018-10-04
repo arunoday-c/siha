@@ -2,7 +2,7 @@ import moment from "moment";
 import { Validations } from "./SubInsuranceValidation";
 import swal from "sweetalert";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-import { getCookie } from "../../../utils/algaehApiCall.js";
+// import { getCookie } from "../../../utils/algaehApiCall.js";
 
 const texthandle = ($this, context, e) => {
   let name;

@@ -17,12 +17,12 @@ import MyContext from "../../../../../utils/MyContext.js";
 import {
   texthandle,
   AddSeviceTypeComm,
-  AddSeviceComm,
+  AddServiceComm,
   deleteSeviceTypeComm,
   serviceTypeHandeler,
   serviceServTypeHandeler,
   numberSet,
-  deleteSeviceComm
+  deleteServiceComm
 } from "./CommissionSetupEvents";
 // import GlobalVariables from "../../../../../utils/GlobalVariables.json";
 // import AHSnackbar from "../../../../common/Inputs/AHSnackbar";
@@ -41,13 +41,47 @@ class CommissionSetup extends Component {
       op_cash_commission_percent: 0,
       op_credit_commission_percent: 0,
       ip_cash_commission_percent: 0,
-      ip_credit_commission_percent: 0
+      ip_credit_commission_percent: 0,
+      service_type_typ_id: null
     };
   }
 
   componentWillMount() {
     let InputOutput = this.props.EmpMasterIOputs;
     this.setState({ ...this.state, ...InputOutput });
+  }
+
+  componentDidMount() {
+    debugger;
+    this.props.getDoctorServiceTypeCommission({
+      uri: "/employee/getDoctorServiceTypeCommission",
+      data: { provider_id: this.state.hims_d_employee_id },
+      method: "GET",
+      redux: {
+        type: "EMP_SPECILITY_GET_DATA",
+        mappingName: "servTypeCommission"
+      },
+      afterSuccess: data => {
+        this.setState({
+          servTypeCommission: data
+        });
+      }
+    });
+
+    this.props.getDoctorServiceCommission({
+      uri: "/employee/getDoctorServiceCommission",
+      method: "GET",
+      data: { provider_id: this.state.hims_d_employee_id },
+      redux: {
+        type: "EMP_SPECILITY_GET_DATA",
+        mappingName: "serviceComm"
+      },
+      afterSuccess: data => {
+        this.setState({
+          serviceComm: data
+        });
+      }
+    });
   }
 
   // handleClose = () => {
@@ -69,9 +103,10 @@ class CommissionSetup extends Component {
                   <div className="col-lg-6 card box-shadow-normal">
                     <div className="row">
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col-lg-4 mandatory" }}
                         label={{
-                          fieldName: "service_type_id"
+                          fieldName: "service_type_id",
+                          isImp: true
                         }}
                         selector={{
                           name: "service_type_typ_id",
@@ -294,9 +329,10 @@ class CommissionSetup extends Component {
                   <div className="col-lg-6 card box-shadow-normal">
                     <div className="row">
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col-lg-4 mandatory" }}
                         label={{
-                          fieldName: "service_type_id"
+                          fieldName: "service_type_id",
+                          isImp: true
                         }}
                         selector={{
                           name: "service_type_id",
@@ -320,9 +356,10 @@ class CommissionSetup extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col-lg-4 mandatory" }}
                         label={{
-                          forceLabel: "Select Service Type"
+                          forceLabel: "Select Service Type",
+                          isImp: true
                         }}
                         selector={{
                           name: "services_id",
@@ -412,7 +449,7 @@ class CommissionSetup extends Component {
                         >
                           <i
                             className="fas fa-plus"
-                            onClick={AddSeviceComm.bind(this, this, context)}
+                            onClick={AddServiceComm.bind(this, this, context)}
                           />
                         </a>
                       </div>
@@ -439,7 +476,7 @@ class CommissionSetup extends Component {
                                       <i
                                         className="fa fa-trash"
                                         aria-hidden="true"
-                                        onClick={deleteSeviceComm.bind(
+                                        onClick={deleteServiceComm.bind(
                                           this,
                                           this,
                                           context,
@@ -555,7 +592,7 @@ class CommissionSetup extends Component {
                           ]}
                           keyId="service_type_id"
                           dataSource={{
-                            data: this.state.seviceComm
+                            data: this.state.serviceComm
                           }}
                           paging={{ page: 0, rowsPerPage: 5 }}
                         />
@@ -583,7 +620,9 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     services: state.services,
     serviceslist: state.serviceslist,
-    servicetypelist: state.servicetypelist
+    servicetypelist: state.servicetypelist,
+    servTypeCommission: state.servTypeCommission,
+    serviceComm: state.serviceComm
   };
 }
 
@@ -592,7 +631,9 @@ function mapDispatchToProps(dispatch) {
     {
       getItemUOM: AlgaehActions,
       getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      getDoctorServiceTypeCommission: AlgaehActions,
+      getDoctorServiceCommission: AlgaehActions
     },
     dispatch
   );
