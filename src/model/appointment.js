@@ -483,7 +483,8 @@ let addDoctorsSchedule = (req, res, next) => {
     }
     let db = req.db;
     let input = extend({}, req.body);
-
+    debugLog("input:", input);
+    debugLog("from_Date:", new Date(input.from_date));
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -553,22 +554,6 @@ let addDoctorsSchedule = (req, res, next) => {
                 working_days.push(d);
               }
             }
-
-            // const weedDays = new LINQ([
-            //   { day: req.body.sunday, dayid: 0 },
-            //   { day: req.body.monday, dayid: 1 },
-            //   { day: req.body.tuesday, dayid: 2 },
-            //   { day: req.body.wednesday, dayid: 3 },
-            //   { day: req.body.thursday, dayid: 4 },
-            //   { day: req.body.friday, dayid: 5 },
-            //   { day: req.body.saturday, dayid: 6 }
-            // ])
-            //   .Where(w => w.day == "Y")
-            //   .Select(s => {
-            //     return s.dayid;
-            //   })
-            //   .ToArray();
-            //   debugLog("weedDays",weedDays);
 
             let daylist = getDaysArray(
               new Date(input.from_date),
@@ -955,10 +940,10 @@ let getDoctorScheduleToModify = (req, res, next) => {
 
           if (ids.length > 0) {
             connection.query(
-              "SELECT hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, to_date, slot,\
-              from_work_hr, to_work_hr,\
-              work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2, to_break_hr2 \
-              from hims_d_appointment_schedule_modify where record_status='A' and  appointment_schedule_detail_id in (" +
+              "SELECT hims_d_appointment_schedule_modify_id, SD.provider_id, SD.clinic_id, SD.schedule_status,appointment_schedule_detail_id, to_date as schedule_date, SM.slot,\
+              from_work_hr, to_work_hr,work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2, to_break_hr2 \
+              from hims_d_appointment_schedule_modify SM, hims_d_appointment_schedule_detail SD where SM.record_status='A' and SM.record_status='A' and SM.appointment_schedule_detail_id=SD.hims_d_appointment_schedule_detail_id and\
+              appointment_schedule_detail_id in (" +
                 ids +
                 ")",
               (error, modResult) => {
@@ -967,9 +952,14 @@ let getDoctorScheduleToModify = (req, res, next) => {
                   next(error);
                 }
                 if (modResult.length > 0) {
-                  let finResult = [...activeSchedule, ...modResult];
+                  let mergeResult = [...activeSchedule, ...modResult];
+
+                  let finResult = new LINQ(mergeResult)
+                    .OrderBy(w => w.schedule_date)
+                    .ToArray();
 
                   req.records = finResult;
+
                   next();
                 } else {
                   req.records = result;
@@ -1139,6 +1129,119 @@ let updateDoctorScheduleDateWise = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to delete Doctor From Schedule
+let deleteDoctorFromSchedule = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+    debugLog("Input Data", input);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        " update hims_d_appointment_schedule_detail set record_status='I',updated_by=?,updated_date=?\
+         where record_status='A' and appointment_schedule_header_id=? and provider_id=?;",
+        [
+          input.updated_by,
+          new Date(),
+          input.appointment_schedule_header_id,
+          input.provider_id
+        ],
+        (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to update Schedule
+let updateSchedule = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+    debugLog("Input Data", input);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "UPDATE `hims_d_appointment_schedule_header` SET `sub_dept_id`=?, `schedule_status`=?,\
+        `schedule_description`=?, `month`=?, `year`=?, `from_date`=?, `to_date`=?, \
+        `from_work_hr`=?, `to_work_hr`=?, `work_break1`=?, `from_break_hr1`=?, \
+        `to_break_hr1`=?, `work_break2`=?, `from_break_hr2`=?, `to_break_hr2`=?,\
+               `monday`=?, `tuesday`=?, `wednesday`=?, `thursday`=?, `friday`=?, `saturday`=?,\
+         `sunday`=?, `updated_by`=?, `updated_date`=?, `record_status`=? \
+         WHERE record_status='A' and `hims_d_appointment_schedule_header_id`=? ;",
+        [
+          input.sub_dept_id,
+          input.schedule_status,
+          input.schedule_description,
+          input.month,
+          input.year,
+          input.from_date,
+          input.to_date,
+          input.from_work_hr,
+          input.to_work_hr,
+          input.work_break1,
+          input.from_break_hr1,
+          input.to_break_hr1,
+          input.work_break2,
+          input.from_break_hr2,
+          input.to_break_hr2,
+          input.monday,
+          input.tuesday,
+          input.wednesday,
+          input.thursday,
+          input.friday,
+          input.saturday,
+          input.sunday,
+          input.updated_by,
+          new Date(),
+          input.record_status,
+          input.hims_d_appointment_schedule_header_id
+        ],
+        (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          debugLog("result:", result);
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addAppointmentStatus,
   addAppointmentRoom,
@@ -1154,5 +1257,7 @@ module.exports = {
   addLeaveOrModifySchedule,
   getDoctorScheduleDateWise,
   getDoctorScheduleToModify,
-  updateDoctorScheduleDateWise
+  updateDoctorScheduleDateWise,
+  deleteDoctorFromSchedule,
+  updateSchedule
 };
