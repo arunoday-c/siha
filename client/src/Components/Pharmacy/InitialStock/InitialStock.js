@@ -42,6 +42,7 @@ class InitialStock extends Component {
       location_id: null,
       item_category_id: null,
       item_group_id: null,
+      sales_uom: null,
       item_id: null,
       batchno: null,
       expiry_date: null,
