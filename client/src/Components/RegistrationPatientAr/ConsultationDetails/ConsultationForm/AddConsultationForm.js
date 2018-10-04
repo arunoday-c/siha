@@ -112,7 +112,6 @@ class AddConsultationForm extends Component {
                   <h6>Past Visit</h6>
                   <AlgaehDataGrid
                     columns={[
-                      ,
                       {
                         fieldName: "doctor_id",
                         label: (

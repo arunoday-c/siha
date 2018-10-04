@@ -74,7 +74,7 @@ const countryStatehandle = ($this, context, e) => {
 
 //Todo title and gender related chnage need to do
 const titlehandle = ($this, context, e) => {
-  let setGender;
+  let setGender = null;
   if (e.value === 1) {
     setGender = "Male";
   } else if (e.value === 2) {

@@ -36,6 +36,7 @@ import pharmacy from "../Pharmacy/controller/pharmacy";
 import appointment from "../controller/appointment";
 import doctorsCommission from "../controller/doctorsCommission";
 import employeesetups from "../controller/employeesetups";
+import initialstock from "../Pharmacy/controller/initialstock";
 
 let router = express();
 
@@ -80,6 +81,7 @@ initializedDb(db => {
   router.use("/appointment", appointment({ config, db }));
   router.use("/doctorsCommission", doctorsCommission({ config, db }));
   router.use("/employeesetups", employeesetups({ config, db }));
+  router.use("/initialstock", initialstock({ config, db }));
 });
 
 export default router;
