@@ -255,10 +255,8 @@ class DataGrid extends PureComponent {
 
   componentDidMount() {
     if (this.state.columns.length == 0) {
-      const _anyRecords = Enumerable.from(this.props.columns)
-        .where(w => w.className !== undefined)
-        .firstOrDefault();
-      let _hasTDStyling = _anyRecords !== undefined ? true : false;
+      debugger;
+
       if (this.props.columns !== undefined && this.props.columns.length !== 0) {
         let _columns = Enumerable.from(this.props.columns)
           .select(s => {
@@ -311,24 +309,28 @@ class DataGrid extends PureComponent {
                   <React.Fragment>
                     {_allowEditButton ? (
                       edit ? (
-                        <button onClick={() => this.toggleRowSave(index)}>
-                          Save Row
-                        </button>
+                        <i
+                          className="fas fa-save"
+                          onClick={() => this.toggleRowSave(index)}
+                        />
                       ) : (
-                        <button onClick={() => this.toggleRowEditable(index)}>
-                          Edit Row
-                        </button>
+                        <i
+                          className="fas fa-pen"
+                          onClick={() => this.toggleRowEditable(index)}
+                        />
                       )
                     ) : null}
                     {_allowDeleteButton ? (
                       edit ? (
-                        <button onClick={() => this.toggleRowCancel(index)}>
-                          Cancel Row
-                        </button>
+                        <i
+                          className="fas fa-times"
+                          onClick={() => this.toggleRowCancel(index)}
+                        />
                       ) : (
-                        <button onClick={() => this.toggleRowDelete(index)}>
-                          Delete Row
-                        </button>
+                        <i
+                          className="fas fa-trash-alt"
+                          onClick={() => this.toggleRowDelete(index)}
+                        />
                       )
                     ) : null}
                   </React.Fragment>
@@ -355,7 +357,9 @@ class DataGrid extends PureComponent {
         }
         const _total = Math.ceil(
           this.props.dataSource.uri === undefined
-            ? this.props.dataSource.data.length
+            ? this.props.dataSource.data !== undefined
+              ? this.props.dataSource.data.length
+              : 0
             : 0 / this.props.paging.rowsPerPage
         );
         this.setState({
@@ -402,7 +406,11 @@ class DataGrid extends PureComponent {
       );
     } else {
       const _total = Math.ceil(
-        props.dataSource.data.length / props.paging.rowsPerPage
+        props.dataSource !== undefined
+          ? this.props.dataSource.data !== undefined
+            ? this.props.dataSource.data.length
+            : 0
+          : 0 / props.paging.rowsPerPage
       );
       this.setState({
         data: props.dataSource.data,
@@ -455,7 +463,6 @@ class DataGrid extends PureComponent {
     return this.tmp.has(rowID);
   };
   RowClickHandler = (action, row, index) => {
-    debugger;
     if (this.tmp.has(index)) this.tmp.delete(index);
     this.tmp.add(index);
     this.setState(
@@ -474,7 +481,7 @@ class DataGrid extends PureComponent {
     if (rowInfo !== undefined) {
       const _isRowSelected = this.isRowSelected(rowInfo.index);
       const _selectedColor =
-        _isRowSelected !== undefined ? "selected-grid-row " : "";
+        _isRowSelected !== false ? "selected-grid-row " : "";
       const _rowSel =
         this.props.rowClassName !== undefined
           ? this.props.rowClassName(rowInfo.original)

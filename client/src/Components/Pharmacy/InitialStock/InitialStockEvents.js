@@ -23,7 +23,7 @@ const LocationchangeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value, location_type: e.selected.location_type });
 };
 
-const numberchangeTexts = ($this, ctrl, e) => {
+const numberchangeTexts = ($this, e) => {
   debugger;
 
   let name = e.name || e.target.name;
@@ -71,7 +71,8 @@ const itemchangeText = ($this, e) => {
     [name]: value,
     item_category_id: e.selected.category_id,
     item_group_id: e.selected.group_id,
-    uom_id: e.selected.stocking_uom_id
+    uom_id: e.selected.stocking_uom_id,
+    sales_uom: e.selected.sales_uom_id
   });
 };
 
@@ -120,6 +121,7 @@ const AddItems = $this => {
       item_group_id: $this.state.item_group_id,
       item_id: $this.state.item_id,
       uom_id: $this.state.uom_id,
+      sales_uom: $this.state.sales_uom,
       batchno: $this.state.batchno,
       expiry_date: $this.state.expiry_date,
       quantity: $this.state.quantity,
@@ -147,7 +149,8 @@ const AddItems = $this => {
       conversion_fact: null,
       extended_cost: 0,
       saveEnable: false,
-      grn_number: null
+      grn_number: null,
+      sales_uom: null
     });
   }
 };

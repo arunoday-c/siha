@@ -6,6 +6,53 @@ body {
 :global .header {
   max-height: 50px; }
 
+:global .btn {
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  background-size: 300% 100%;
+  text-transform: uppercase;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out; }
+
+:global .btn:hover {
+  background-position: 100% 0;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out; }
+
+:global .btn-primary {
+  color: #fff;
+  background-color: none;
+  background-image: linear-gradient(to right, #34b8bc, #25d8df, #34b8bc, #25d8df);
+  border-color: #44b8bd; }
+
+:global .btn-primary:hover {
+  background-color: none;
+  border-color: #44b8bd; }
+
+:global .btn-primary:active,
+:global .btn-primary:focus {
+  background-color: #34b8bc;
+  border-color: #34b8bc; }
+
+:global .btn-default {
+  color: #212529;
+  background-color: none;
+  background-image: linear-gradient(to right, #ffffff, #ececec, #ffffff, #ececec);
+  border-color: #b6b6b6; }
+
+:global .btn-default:hover,
+:global .btn-default:focus {
+  background-color: none;
+  border-color: #b6b6b6; }
+
+:global .btn-primary:active {
+  background-color: #fff;
+  border-color: #fff; }
+
 :global .inner-top-search {
   background: rgba(255, 255, 255, 0.5);
   border-radius: 0;
@@ -926,3 +973,9 @@ th {
 
 .is-invalid {
   border-color: #dc3545; }
+
+.subFooter-btn {
+  margin-bottom: 10px; }
+  .subFooter-btn button {
+    float: right;
+    margin-left: 10px; }

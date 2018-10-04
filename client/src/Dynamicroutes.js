@@ -44,6 +44,7 @@ import OPBillingAr from "./Components/OPBillingAr/OPBillingAr";
 import DoctorCommission from "./Components/DoctorCommission/DoctorCommission";
 import HospitalServiceSetup from "./Components/HospitalServiceSetup/HospitalServiceSetup";
 import PointOfSale from "./Components/Pharmacy/PointOfSale/PointOfSale";
+import OPBillPendingList from "./Components/OPBillPendingList/OPBillPendingList";
 // function height() {
 //   let height =
 //     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -96,7 +97,8 @@ const componts = (selectedLang, breadStyle) => {
     HospitalServiceSetup: (
       <HospitalServiceSetup SelectLanguage={selectedLang} />
     ),
-    PointOfSale: <PointOfSale SelectLanguage={selectedLang} />
+    PointOfSale: <PointOfSale SelectLanguage={selectedLang} />,
+    OPBillPendingList: <OPBillPendingList SelectLanguage={selectedLang} />
   };
 };
 

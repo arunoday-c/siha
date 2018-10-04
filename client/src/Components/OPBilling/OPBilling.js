@@ -107,7 +107,7 @@ class PatientDisplayDetails extends Component {
   getPatientDetails($this, output) {
     debugger;
     clearInterval(intervalId);
-    let patient_type = "";
+    // let patient_type = "";
     intervalId = setInterval(() => {
       AlgaehLoader({ show: true });
       this.props.getPatientDetails({

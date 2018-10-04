@@ -846,9 +846,7 @@ let updateItemMasterAndUom = (req, res, next) => {
 
               //bulk  update uom maping
               if (input.updateUomMapResult.length != 0) {
-                
                 let inputParam = extend([], req.body.updateUomMapResult);
-                
 
                 let qry = "";
 
@@ -1239,6 +1237,7 @@ let addPharmacyInitialStock = (req, res, next) => {
                   "uom_id",
                   "barcode",
                   "batchno",
+                  "sales_uom",
                   "expiry_date",
                   "grn_number",
                   "quantity",
@@ -1350,7 +1349,7 @@ let getPharmacyInitialStock = (req, res, next) => {
               }
             );
           } else {
-            req.records =headerResult;
+            req.records = headerResult;
             next();
           }
         }

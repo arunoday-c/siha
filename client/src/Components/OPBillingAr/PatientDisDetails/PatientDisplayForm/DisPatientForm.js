@@ -5,14 +5,10 @@ import { bindActionCreators } from "redux";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./PatientDisplayForm.css";
-import {
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehLabel
-} from "../../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext.js";
 import { texthandle, PatientSearch } from "./DisPatientHandlers";
-import variableJson from "../../../../utils/GlobalVariables.json";
+// import variableJson from "../../../../utils/GlobalVariables.json";
 
 class DisPatientForm extends Component {
   constructor(props) {
