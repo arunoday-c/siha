@@ -78,6 +78,7 @@ class NewInvestigation extends PureComponent {
   };
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-investigation-form">

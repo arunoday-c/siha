@@ -340,6 +340,7 @@ class LabInvestigation extends Component {
                               />
                             ),
                             displayTemplate: row => {
+                              debugger;
                               let display =
                                 this.props.labanalytes === undefined
                                   ? []
@@ -407,7 +408,6 @@ class LabInvestigation extends Component {
                               );
                             }
                           },
-                          ,
                           {
                             fieldName: "normal_high",
                             label: (
