@@ -173,7 +173,7 @@ const getCtrlCode = ($this, docNumber) => {
   intervalId = setInterval(() => {
     AlgaehLoader({ show: true });
     $this.props.getInitialStock({
-      uri: "/pharmacy/getPharmacyInitialStock",
+      uri: "/initialstock/getPharmacyInitialStock",
       method: "GET",
       printInput: true,
       data: { document_number: docNumber },
@@ -191,6 +191,7 @@ const getCtrlCode = ($this, docNumber) => {
         } else {
           data.postEnable = false;
         }
+        data.dataExitst = true;
         $this.setState(data);
         AlgaehLoader({ show: false });
       }
@@ -202,7 +203,7 @@ const getCtrlCode = ($this, docNumber) => {
 const SaveInitialStock = $this => {
   debugger;
   algaehApiCall({
-    uri: "/pharmacy/addPharmacyInitialStock",
+    uri: "/initialstock/addPharmacyInitialStock",
     data: $this.state,
     onSuccess: response => {
       debugger;
@@ -240,6 +241,7 @@ const deleteInitialStock = ($this, row) => {
 };
 const ClearData = $this => {
   $this.setState({
+    description: "",
     pharmacy_stock_detail: [],
     document_number: null,
     location_id: null,
@@ -254,7 +256,8 @@ const ClearData = $this => {
     conversion_fact: null,
     extended_cost: 0,
     saveEnable: true,
-    postEnable: true
+    postEnable: true,
+    dataExitst: false
   });
 };
 

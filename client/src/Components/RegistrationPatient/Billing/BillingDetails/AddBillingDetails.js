@@ -324,6 +324,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
         mappingName: "xxx"
       },
       afterSuccess: data => {
+        data.saveEnable = false;
         if (context != null) {
           context.updateState({ ...data });
         }
