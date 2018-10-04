@@ -83,9 +83,6 @@ class Appointment extends Component {
       uri: "/appointment/getDoctorScheduleDateWise",
       method: "GET",
       data: {
-        // sub_dept_id: 10,
-        // schedule_date: "2018-09-03",
-        // provider_id: null
         sub_dept_id: this.state.sub_department_id,
         schedule_date: moment(this.state.activeDateHeader).format("YYYY-MM-DD"),
         provider_id: this.state.provider_id

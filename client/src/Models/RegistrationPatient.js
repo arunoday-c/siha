@@ -84,7 +84,7 @@ export default {
       AGEMM: 0,
       AGEDD: 0,
       breadCrumbWidth: null,
-      saveEnable: false,
+      saveEnable: true,
       clearData: true,
       pay_cash: "CA",
       pay_card: "CD",

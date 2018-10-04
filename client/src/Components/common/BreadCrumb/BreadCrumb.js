@@ -69,7 +69,8 @@ class BreadCrumb extends PureComponent {
                     onChange: this.Handle.bind(this)
                   },
                   others: {
-                    placeholder: "*** NEW ***"
+                    placeholder: "*** NEW ***",
+                    disabled: true
                   }
                 }}
               />
