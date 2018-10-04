@@ -1,37 +1,214 @@
 import React, { PureComponent } from "react";
-import TextField from "@material-ui/core/TextField";
-import Paper from "@material-ui/core/Paper";
-import TablePagination from "@material-ui/core/TablePagination";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import Done from "@material-ui/icons/Done";
-import CancelIcon from "@material-ui/icons/Cancel";
-import IconButton from "@material-ui/core/IconButton";
-import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
-import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
-import "./wrapper.css";
+import ReactTable from "react-table";
+import withFixedColumns from "react-table-hoc-fixed-columns";
+import "react-table/react-table.css";
+import Enumerable from "linq";
+import moment from "moment";
+import { AlgaehDateHandler, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall";
-// import { resolve } from "path";
+import "../Wrapper/wrapper.css";
+const ReactTableFixedColumns = withFixedColumns(ReactTable);
 class DataGrid extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      columns: [],
       data: [],
-      page: 0,
-      rowsPerPage: 5,
+      editableRows: {},
       totalPages: 0,
-      selectedPreviousRow: null,
-      isEditable: false,
-      rowToIndexEdit: -1,
-      expanded: null,
-      keyField: "",
-      width: null,
-      id: null,
-      editMode: false,
-      inputParam: {},
-      dummyChange: false
+      showLoading: false,
+      rowsPerPage: 5,
+      selectionChanged: false
     };
+    this.tmp = new Set();
   }
+  onTextHandleEditChange(e) {
+    const data = [...this.state.data];
+    const _element = e.currentTarget;
+    const _rowIndex = parseInt(_element.getAttribute("row-id"));
+    const _colIndex = _element.getAttribute("column-id");
+    let _value = "";
+    if (typeof data[_rowIndex][_colIndex] === "number")
+      _value =
+        e.target.value !== "" ? parseFloat(e.target.value) : e.target.value;
+    else {
+      _value = e.target.value;
+    }
+    data[_rowIndex][_colIndex] = _value;
+
+    this.setState({ data });
+  }
+
+  onDateHandleEditChange(e, index, columnId) {
+    const data = [...this.state.data];
+    const _rowIndex = index;
+    const _colIndex = columnId;
+    let _value = e;
+    data[_rowIndex][_colIndex] = _value;
+    this.setState({ data });
+  }
+
+  renderEditable = (templates, cellInfo) => {
+    const editable = this.state.editableRows[cellInfo.index];
+    const rowDetail = this.state.data[cellInfo.index];
+    if (editable === undefined || editable === false) {
+      if (templates.displayTemp !== undefined) {
+        return templates.displayTemp(rowDetail);
+      } else {
+        return <span>{rowDetail[cellInfo.column.id]}</span>;
+      }
+    } else {
+      if (templates.editorTemp !== undefined) {
+        return templates.editorTemp(rowDetail);
+      } else {
+        const _value = rowDetail[cellInfo.column.id];
+        const _date = moment(_value).isValid();
+        if (_date && typeof _value !== "number") {
+          return (
+            <AlgaehDateHandler
+              textBox={{
+                className: "txt-fld",
+                name: "effective_start_date"
+              }}
+              events={{
+                onChange: e => {
+                  this.onDateHandleEditChange(
+                    e,
+                    cellInfo.index,
+                    cellInfo.column.id
+                  );
+                }
+              }}
+              value={_value}
+            />
+          );
+        } else {
+          const isnumber = typeof _value === "number" ? { number: true } : {};
+          return (
+            <AlagehFormGroup
+              textBox={{
+                className: "txt-fld",
+                value: _value,
+                events: {
+                  onChange: this.onTextHandleEditChange.bind(this)
+                },
+                others: {
+                  "column-id": cellInfo.column.id,
+                  "row-id": cellInfo.index
+                },
+                ...isnumber
+              }}
+            />
+          );
+        }
+      }
+    }
+  };
+  toggleRowEditable = index => {
+    let existsing = sessionStorage.getItem(this.props.id);
+    existsing = existsing !== null ? JSON.parse(existsing)["collection"] : [];
+    const prevStateIndexData = this.state.data[index];
+    let row = Enumerable.from(existsing)
+      .where(w => w.rowIdx === index)
+      .firstOrDefault();
+    const _index = existsing.indexOf(row);
+    if (_index > -1) {
+      existsing.splice(_index, 1);
+    } else {
+      row = {};
+    }
+    row = prevStateIndexData;
+    row["rowIdx"] = index;
+    existsing.push(row);
+    sessionStorage.removeItem(this.props.id);
+    sessionStorage.setItem(
+      this.props.id,
+      JSON.stringify({ collection: existsing })
+    );
+    this.setState(
+      {
+        editableRows: {
+          ...this.state.editableRows,
+          [index]: !this.state.editableRows[index]
+        }
+      },
+      () => {
+        this.props.events.onEdit(this.state.data[index]);
+      }
+    );
+  };
+  componentWillUnmount() {
+    sessionStorage.removeItem(this.props.id);
+  }
+  toggleRowCancel = index => {
+    const row = this.settingPreviousRowData(index);
+    const data = [...this.state.data];
+    data[row.rowIdx] = row;
+    this.setState({
+      editableRows: {
+        ...this.state.editableRows,
+        [index]: !this.state.editableRows[index]
+      },
+      data
+    });
+  };
+  settingPreviousRowData = index => {
+    let existsing = sessionStorage.getItem(this.props.id);
+    existsing = existsing !== null ? JSON.parse(existsing)["collection"] : [];
+    let row = Enumerable.from(existsing)
+      .where(w => w.rowIdx === index)
+      .firstOrDefault();
+    const _index = existsing.indexOf(row);
+    if (_index > -1) {
+      existsing.splice(_index, 1);
+    }
+
+    sessionStorage.removeItem(this.props.id);
+    sessionStorage.setItem(
+      this.props.id,
+      JSON.stringify({ collection: existsing })
+    );
+    return row;
+  };
+  toggleRowDelete = index => {
+    if (
+      this.props.events !== undefined &&
+      this.props.events.onDelete !== undefined
+    ) {
+      this.props.events.onDelete(this.state.data[index]);
+    }
+  };
+  toggleRowSave = index => {
+    this.settingPreviousRowData(index);
+    if (this.props.events !== undefined) {
+      if (this.props.events.onDone !== undefined) {
+        this.setState(
+          {
+            editableRows: {
+              ...this.state.editableRows,
+              [index]: !this.state.editableRows[index]
+            }
+          },
+          () => {
+            const row = this.state.data[index];
+            this.props.events.onDone(row);
+          }
+        );
+      } else {
+        console.warn(
+          "No data save from algaeh grid '" +
+            this.props.id +
+            "', Reason no  on done event"
+        );
+      }
+    } else {
+      console.warn(
+        "No data save from algaeh grid '" +
+          this.props.id +
+          "', Reason no events linked"
+      );
+    }
+  };
 
   apiCallingFunction = ($this, page, callBack, inputProps) => {
     inputProps = inputProps || $this.state.inputParam;
@@ -76,583 +253,368 @@ class DataGrid extends PureComponent {
     });
   };
 
-  handleChangePage = (event, page) => {
+  componentDidMount() {
+    if (this.state.columns.length == 0) {
+      const _anyRecords = Enumerable.from(this.props.columns)
+        .where(w => w.className !== undefined)
+        .firstOrDefault();
+      let _hasTDStyling = _anyRecords !== undefined ? true : false;
+      if (this.props.columns !== undefined && this.props.columns.length !== 0) {
+        let _columns = Enumerable.from(this.props.columns)
+          .select(s => {
+            const _displayTemp =
+              s.displayTemplate === undefined
+                ? { accessor: s.fieldName }
+                : { accessor: row => s.displayTemplate(row) };
+            const _assignClass =
+              s.className !== undefined ? row => s.className(row) : "";
+
+            return {
+              Header: s.label,
+              id: s.fieldName,
+              Cell: this.renderEditable.bind(this, {
+                displayTemp: s.displayTemplate,
+                editorTemp: s.editorTemplate
+              }),
+              assignTdClass: _assignClass,
+              ..._displayTemp
+            };
+          })
+          .toArray();
+        const _allowEditButton =
+          this.props.actions === undefined
+            ? true
+            : this.props.actions.allowEdit !== undefined
+              ? this.props.actions.allowEdit
+              : true;
+        const _allowDeleteButton =
+          this.props.actions === undefined
+            ? true
+            : this.props.actions.allowDelete !== undefined
+              ? this.props.actions.allowDelete
+              : true;
+        if (
+          this.props.isEditable !== undefined &&
+          this.props.isEditable === true
+        ) {
+          if (_allowEditButton || _allowDeleteButton) {
+            _columns.splice(0, 0, {
+              Header: "Actions",
+              headerClassName: "sticky",
+              fixed: "left",
+              Cell: ({ index }) => {
+                const edit =
+                  this.state.editableRows[index] === undefined
+                    ? false
+                    : this.state.editableRows[index];
+                return (
+                  <React.Fragment>
+                    {_allowEditButton ? (
+                      edit ? (
+                        <button onClick={() => this.toggleRowSave(index)}>
+                          Save Row
+                        </button>
+                      ) : (
+                        <button onClick={() => this.toggleRowEditable(index)}>
+                          Edit Row
+                        </button>
+                      )
+                    ) : null}
+                    {_allowDeleteButton ? (
+                      edit ? (
+                        <button onClick={() => this.toggleRowCancel(index)}>
+                          Cancel Row
+                        </button>
+                      ) : (
+                        <button onClick={() => this.toggleRowDelete(index)}>
+                          Delete Row
+                        </button>
+                      )
+                    ) : null}
+                  </React.Fragment>
+                );
+              },
+              style: { textAlign: "center" }
+            });
+          }
+        }
+        if (this.props.dataSource.uri !== undefined) {
+          this.apiCallingFunction(this, 0, (data, totalPages) => {
+            const _total = Math.ceil(
+              this.props.dataSource.responseSchema.totalPages === undefined
+                ? data.length
+                : totalPages / this.props.paging.rowsPerPage
+            );
+
+            this.setState({
+              data: data,
+              totalPages: _total,
+              rowsPerPage: this.props.paging.rowsPerPage
+            });
+          });
+        }
+        const _total = Math.ceil(
+          this.props.dataSource.uri === undefined
+            ? this.props.dataSource.data.length
+            : 0 / this.props.paging.rowsPerPage
+        );
+        this.setState({
+          columns: _columns,
+          data:
+            this.props.dataSource.uri === undefined
+              ? this.props.dataSource.data
+              : [],
+          totalPages: _total,
+          rowsPerPage:
+            this.props.paging !== undefined
+              ? this.props.paging.rowsPerPage !== undefined
+                ? this.props.paging.rowsPerPage
+                : 5
+              : 5
+        });
+      }
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    if (props.algaehSearch !== undefined) {
+      this.apiCallingFunction(
+        this,
+        0,
+        (data, totalPages) => {
+          const _total = Math.ceil(
+            this.props.dataSource.responseSchema.totalPages === undefined
+              ? data.length
+              : totalPages / this.state.rowsPerPage
+          );
+          this.setState({
+            data: data,
+            totalPages: _total,
+            rowsPerPage:
+              props.paging !== undefined
+                ? props.paging.rowsPerPage !== undefined
+                  ? props.paging.rowsPerPage
+                  : 5
+                : 5
+          });
+        },
+        props.dataSource.inputParam
+      );
+    } else {
+      const _total = Math.ceil(
+        props.dataSource.data.length / props.paging.rowsPerPage
+      );
+      this.setState({
+        data: props.dataSource.data,
+        totalPages: _total,
+        rowsPerPage: props.paging.rowsPerPage
+      });
+    }
+  }
+  pageChangeHandler(pageIndex) {
     if (
       this.props.dataSource.uri !== undefined &&
       this.props.dataSource.responseSchema.totalPages !== undefined
     ) {
-      this.apiCallingFunction(this, page, (data, totalPages) => {
+      this.apiCallingFunction(this, pageIndex, (data, totalPages) => {
+        const _total = Math.ceil(
+          this.props.dataSource.responseSchema.totalPages === undefined
+            ? data.length
+            : totalPages / this.state.rowsPerPage
+        );
+
         this.setState({
           data: data,
-          totalPages:
-            this.props.dataSource.responseSchema.totalPages === undefined
-              ? data.length
-              : totalPages,
-          page: page,
-          editMode: false
+          totalPages: _total
         });
       });
-    } else {
-      this.setState({ page: page, editMode: false });
     }
-  };
+  }
+  pageSizeChange(pageSize) {
+    this.setState({ rowsPerPage: pageSize }, () => {
+      if (
+        this.props.dataSource.uri !== undefined &&
+        this.props.dataSource.responseSchema.totalPages !== undefined
+      ) {
+        this.apiCallingFunction(this, 0, (data, totalPages) => {
+          const _total = Math.ceil(
+            this.props.dataSource.responseSchema.totalPages === undefined
+              ? data.length
+              : totalPages / this.state.rowsPerPage
+          );
 
-  handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
+          this.setState({
+            data: data,
+            totalPages: _total
+          });
+        });
+      }
+    });
+  }
+  isRowSelected = rowID => {
+    return this.tmp.has(rowID);
   };
-  handleEditRow = event => {
-    let width = document.getElementById(this.props.id).clientWidth + "px";
-    let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
-    let row = this.state.data[rowId];
-    sessionStorage.setItem(this.state.id, JSON.stringify(row));
+  RowClickHandler = (action, row, index) => {
+    debugger;
+    if (this.tmp.has(index)) this.tmp.delete(index);
+    this.tmp.add(index);
     this.setState(
       {
-        isEditable: true,
-        rowToIndexEdit: rowId,
-        width: width,
-        editMode: false
+        selectionChanged: !this.state.selectionChanged
       },
       () => {
-        if (this.props.events != null) {
-          if (this.props.events.onEdit) {
-            this.props.events.onEdit(row);
-          }
+        if (this.props.onRowSelect !== undefined) {
+          this.props.onRowSelect(row);
         }
       }
     );
   };
-  componentDidMount() {
-    sessionStorage.removeItem(this.state.id);
-    if (this.props.dataSource.uri !== undefined) {
-      this.apiCallingFunction(this, 0, (data, totalPages) => {
-        this.setState({
-          data: data,
-          totalPages:
-            this.props.dataSource.responseSchema.totalPages === undefined
-              ? data.length
-              : totalPages,
-          page: 0,
-          editMode: false
-        });
-      });
-    }
-  }
-  handleDeleteRow = event => {
-    sessionStorage.removeItem(this.state.id);
-    let rowId = 0;
-    let row = 0;
-    if (this.props.dataSource.uri !== undefined) {
-      rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
-    } else {
-      rowId =
-        this.state.rowsPerPage * this.state.page +
-        event.currentTarget.parentElement.parentElement.rowIndex -
-        1;
-    }
-    row = this.state.data[rowId];
-    return;
-    if (this.props.events != null) {
-      if (this.props.events.onDelete) {
-        row["onDeleteFinish"] = () => {
-          if (this.props.dataSource.uri !== undefined) {
-            this.apiCallingFunction(
-              this,
-              this.state.page,
-              (data, totalPages) => {
-                this.setState({
-                  data: data,
-                  totalPages:
-                    this.props.dataSource.responseSchema.totalPages ===
-                    undefined
-                      ? data.length
-                      : totalPages,
-                  page: this.state.page,
-                  editMode: false
-                });
-              }
-            );
-          }
-        };
-        this.props.events.onDelete(row, rowId);
-      }
-    }
-  };
 
-  handleCancelRow = event => {
-    let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
-    this.state.data[rowId] = JSON.parse(sessionStorage.getItem(this.state.id));
-    this.setState({
-      data: this.state.data,
-      rowToIndexEdit: -1,
-      width: null,
-      editMode: false
-    });
-    sessionStorage.removeItem(this.state.id);
-  };
-  handleDoneRow = event => {
-    sessionStorage.removeItem(this.state.id);
-    this.setState({ rowToIndexEdit: -1, width: null, editMode: false });
-    let rowId = event.currentTarget.parentElement.parentElement.rowIndex - 1;
-    if (this.props.events != null) {
-      if (this.props.events.onDone) {
-        let row = this.state.data[rowId];
-        row["onDoneFinish"] = () => {
-          if (this.props.dataSource.uri !== undefined) {
-            this.apiCallingFunction(
-              this,
-              this.state.page,
-              (data, totalPages) => {
-                this.setState({
-                  data: data,
-                  totalPages:
-                    this.props.dataSource.responseSchema.totalPages ===
-                    undefined
-                      ? data.length
-                      : totalPages,
-                  page: this.state.page,
-                  editMode: false
-                });
-              }
-            );
-          }
-        };
-        this.props.events.onDone(row);
-      }
-    }
-  };
-  handleExpandRow = event => {
-    let rowId = event.currentTarget.getAttribute("row-key");
-    let target = event.currentTarget.getAttribute("thisis");
-    let _expandRows;
-    let currentArray =
-      this.state.expanded.expandRows == null
-        ? []
-        : this.state.expanded.expandRows;
-    if (target === "E") {
-      currentArray.splice(0, 0, rowId);
+  getTrHandler = (state, rowInfo, column) => {
+    if (rowInfo !== undefined) {
+      const _isRowSelected = this.isRowSelected(rowInfo.index);
+      const _selectedColor =
+        _isRowSelected !== undefined ? "selected-grid-row " : "";
+      const _rowSel =
+        this.props.rowClassName !== undefined
+          ? this.props.rowClassName(rowInfo.original)
+          : "";
+      return {
+        className: _selectedColor + " " + _rowSel
+      };
     } else {
-      var index = currentArray.indexOf(rowId);
-      if (index > -1) {
-        currentArray.splice(index, 1);
-      }
+      return {
+        className: ""
+      };
     }
-    _expandRows = currentArray;
-    let obj = {
-      multiExpand: this.state.expanded.multiExpand,
-      expandRows: _expandRows
-    };
-    this.setState({ expanded: obj });
   };
-  expandButton = rowKey => {
-    if (this.state.expanded) {
+  getTdHandler = (state, rowInfo, column) => {
+    if (rowInfo !== undefined) {
+      const _clickEvent = {
+        onClick: (event, handleOriginal) => {
+          event.stopPropagation();
+          this.RowClickHandler("click", rowInfo.row._original, rowInfo.index);
+          if (handleOriginal) handleOriginal();
+        }
+      };
       if (
-        this.state.expanded.multiExpand !== null &&
-        this.state.expanded.multiExpand === true
+        column.assignTdClass !== undefined &&
+        typeof column.assignTdClass === "function"
       ) {
-        let _expand = this.state.expanded.expandRows;
-        if (_expand != null)
-          _expand = this.state.expanded.expandRows.filter(
-            f => f === String(rowKey)
-          );
-        if (_expand != null && _expand.length > 0) {
-          return (
-            <IconButton
-              row-key={String(rowKey)}
-              thisis="C"
-              onClick={this.handleExpandRow.bind(this)}
-            >
-              <KeyboardArrowDown />
-            </IconButton>
-          );
-        } else {
-          return (
-            <IconButton
-              row-key={String(rowKey)}
-              thisis="E"
-              onClick={this.handleExpandRow.bind(this)}
-            >
-              <KeyboardArrowUp />
-            </IconButton>
-          );
-        }
+        return {
+          className: column.assignTdClass(rowInfo.original),
+          ..._clickEvent
+        };
       } else {
-        return (
-          <IconButton
-            row-key={String(rowKey)}
-            thisis="E"
-            onClick={this.handleExpandRow.bind(this)}
-          >
-            <KeyboardArrowUp />
-          </IconButton>
-        );
+        return {
+          className: column.assignTdClass,
+          ..._clickEvent
+        };
       }
-    }
-  };
-  renderDetailTemplate = (row, rowid) => {
-    if (this.state.expanded.expandRows == null) return null;
-    var index = this.state.expanded.expandRows.indexOf(
-      String(row[this.state.keyField])
-    );
-    if (index > -1) {
-      let colSpan =
-        this.props.columns.length + 1 + (this.state.isEditable ? 1 : 0);
-      return (
-        <tr
-          key={rowid + "_Expand"}
-          className={
-            this.props.rowClassName !== undefined
-              ? this.props.rowClassName(row)
-              : ""
-          }
-        >
-          <td colSpan={colSpan}>{this.props.expanded.detailTemplate(row)}</td>
-        </tr>
-      );
-    }
-  };
-  /*
-    columns:[{fieldName:"",label:"",numeric:flase,displayTemplate:return(),
-    editorTemplate:return(),disabled:true}],
-    keyId:string|int,
-    expanded:{multiExpand:true,detailTemplate:object}
-    dataSource:{data:[]}
-*/
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      data:
-        nextProps.dataSource.uri === undefined ? nextProps.dataSource.data : [],
-      expanded:
-        nextProps.expanded != null
-          ? {
-              multiExpand: true,
-              expandRows: [],
-              detailTemplate:
-                nextProps.expanded != null
-                  ? nextProps.expanded.detailTemplate
-                  : null
-            }
-          : null,
-      id: nextProps.id ? "prevRecord_" + nextProps.id : "prevRecord",
-      inputParam: nextProps.dataSource.inputParam,
-      editMode: false
-    });
-    if (this.props.algaehSearch !== undefined) {
-      if (!this.state.editMode) {
-        this.apiCallingFunction(
-          this,
-          0,
-          (data, totalPages) => {
-            this.setState({
-              data: data,
-              totalPages:
-                this.props.dataSource.responseSchema.totalPages === undefined
-                  ? data.length
-                  : totalPages,
-              page: 0
-            });
-          },
-          nextProps.dataSource.inputParam
-        );
-      } else {
-        this.setState({ data: this.state.data });
-      }
-    }
-  }
-  componentWillMount() {
-    this.setState({
-      page: this.props.paging != null ? this.props.paging.page : 0,
-      rowsPerPage:
-        this.props.paging != null ? this.props.paging.rowsPerPage : 0,
-      isEditable: this.props.isEditable,
-      data: this.props.dataSource.data,
-      expanded: this.props.expanded,
-      keyField: this.props.keyField,
-      inputParam: this.props.dataSource.inputParam
-    });
-  }
-  returnTableHeaderColumns = () => {
-    return this.props.columns.map((row, i) => {
-      return (
-        <th key={i.toString()}>
-          {typeof row.label === "function" ? row.label() : row.label}
-        </th>
-      );
-    });
-  };
-  returnExpandColumn = () => {
-    if (this.state.expanded != null) {
-      return <th scope="col" />;
-    }
-  };
-  returnEditableColumn = () => {
-    if (this.state.isEditable != null && this.state.isEditable) {
-      return <th scope="col" />;
-    }
-  };
-  returnEditableButtons = (row, rowId) => {
-    if (this.state.isEditable !== null && this.state.isEditable === true) {
-      return (
-        <td width="10%">
-          <IconButton row-key={rowId} onClick={this.handleDoneRow.bind(this)}>
-            <Done />
-          </IconButton>
-          <IconButton onClick={this.handleCancelRow.bind(this)}>
-            <CancelIcon />
-          </IconButton>
-          {this.returnExpandButton(row[this.state.keyField])}
-        </td>
-      );
-    } else
-      return (
-        <React.Fragment>
-          {this.returnExpandButton(row[this.state.keyField])}
-        </React.Fragment>
-      );
-  };
-  returnExpandButton = row => {
-    if (this.state.expanded != null) {
-      if (this.state.isEditable !== null && this.state.isEditable === true)
-        return (
-          <React.Fragment>
-            {this.expandButton(row[[this.state.keyField]])}
-          </React.Fragment>
-        );
-      else return <td>{this.expandButton(row[[this.state.keyField]])}</td>;
-    }
-  };
-
-  returnTableRowWithColumns = (row, index) => {
-    row["onChangeFinish"] = editedRow => {
-      if (this.props.dataSource.uri !== undefined) {
-        row = editedRow;
-        const dChange = !this.state.dummyChange;
-        this.setState({ editMode: true, dummyChange: dChange });
-      }
-    };
-    return this.props.columns.map((col, ind) => {
-      return (
-        <td
-          key={ind}
-          className={col.className === undefined ? "" : col.className(row)}
-        >
-          {col.editorTemplate != null ? (
-            col.editorTemplate(row)
-          ) : (
-            <TextField
-              name={col.fieldName}
-              value={row[col.fieldName]}
-              disabled={col.disabled}
-              onChange={(control, $this = this) => {
-                const value = control.target.value;
-                $this.state.data[index][col.fieldName] = value;
-                $this.setState({ data: $this.state.data });
-              }}
-            />
-          )}
-        </td>
-      );
-    });
-  };
-
-  returnEditableStateRow = (row, index) => {
-    return (
-      <React.Fragment>
-        <tr
-          key={index.toString()}
-          className={
-            this.props.rowClassName !== undefined
-              ? this.props.rowClassName(row)
-              : ""
-          }
-        >
-          {this.returnEditableButtons(row, row[this.state.keyField])}
-          {this.returnTableRowWithColumns(row, index)}
-        </tr>
-      </React.Fragment>
-    );
-  };
-
-  returnEditDeleteButtons = row => {
-    if (this.state.isEditable !== null && this.state.isEditable === true) {
-      return (
-        <td width="10%">
-          {/* <IconButton
-           
-          > */}
-          <EditIcon
-            row-key={row[this.state.keyField]}
-            onClick={this.handleEditRow.bind(this)}
-            style={{ height: "20px", width: "30px", cursor: "pointer" }}
-          />
-          {/* </IconButton> 
-          <IconButton
-           
-          >*/}
-          <DeleteIcon
-            row-key={row[this.state.keyField]}
-            onClick={this.handleDeleteRow.bind(this)}
-            style={{ height: "20px", width: "30px", cursor: "pointer" }}
-          />
-          {/* </IconButton> */}
-          {this.returnExpandButton(row)}
-        </td>
-      );
     } else {
-      return <React.Fragment>{this.returnExpandButton(row)}</React.Fragment>;
+      return { className: "" };
     }
   };
-
-  returnTableRoNonEditWithColumns = (row, index) => {
-    return this.props.columns.map((col, i) => {
-      return (
-        <td
-          key={i}
-          className={col.className === undefined ? "" : col.className(row)}
-        >
-          {col.displayTemplate != null
-            ? col.displayTemplate(row)
-            : row[col.fieldName]}
-        </td>
-      );
-    });
-  };
-  getRowDetailsOnClick(event) {
-    let rowId = event.target.parentElement.rowIndex - 1;
-    let row = this.state.data[rowId];
-    this.props.onRowSelect(row);
-  }
-
-  returnNonEditedStateRow = (row, index) => {
-    if (this.props.algaehSearch === undefined) {
-      return (
-        <React.Fragment>
-          <tr
-            key={index.toString()}
-            className={
-              this.props.rowClassName !== undefined
-                ? this.props.rowClassName(row)
-                : ""
-            }
-          >
-            {this.returnEditDeleteButtons(row)}
-            {this.returnTableRoNonEditWithColumns(row, index)}
-          </tr>
-        </React.Fragment>
-      );
-    } else {
-      return (
-        <React.Fragment>
-          <tr
-            key={index.toString()}
-            onClick={this.getRowDetailsOnClick.bind(this)}
-            className={
-              this.props.rowClassName !== undefined
-                ? this.props.rowClassName(row)
-                : ""
-            }
-          >
-            {this.returnEditDeleteButtons(row)}
-            {this.returnTableRoNonEditWithColumns(row, index)}
-          </tr>
-        </React.Fragment>
-      );
-    }
-  };
-  renderDetailedTemplateRecords = (row, index) => {
-    if (this.state.expanded != null) {
-      if (this.props.expanded.detailTemplate != null) {
-        return (
-          <React.Fragment key={index}>
-            {this.renderDetailTemplate(row, index)}
-          </React.Fragment>
-        );
-      }
-    }
-  };
-  renderTableRows = () => {
-    let { data, rowsPerPage, page, isEditable, rowToIndexEdit } = this.state;
-
-    if (this.props.paging == null) {
-      page = page !== undefined ? page : 0;
-      rowsPerPage = rowsPerPage !== undefined ? rowsPerPage : data.length;
-    }
-
-    if (data === undefined) {
-      return null;
-    }
-    if (
-      this.props.dataSource.uri !== undefined &&
-      this.props.dataSource.responseSchema.totalPages !== undefined
-    )
-      page = 0;
-    return (
-      <React.Fragment>
-        {data
-          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          .map((n, i) => (
-            <React.Fragment key={i.toString()}>
-              {isEditable && i === rowToIndexEdit ? (
-                <React.Fragment key={i.toString()}>
-                  {this.returnEditableStateRow(n, i)}
-                  {this.renderDetailedTemplateRecords(n, i)}
-                </React.Fragment>
-              ) : (
-                <React.Fragment key={i}>
-                  {this.returnNonEditedStateRow(n, i)}
-                  {this.renderDetailedTemplateRecords(n, i)}
-                </React.Fragment>
-              )}
-            </React.Fragment>
-          ))}
-      </React.Fragment>
-    );
-  };
-
-  renderFooter = () => {
-    if (this.props.paging != null) {
-      const { data, rowsPerPage, page } = this.state;
-      return (
-        <TablePagination
-          component="div"
-          count={
-            this.props.dataSource.uri
-              ? this.state.totalPages
-              : data === undefined
-                ? 0
-                : data.length
-          }
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-          {...this.props.others}
-        />
-      );
-    }
-  };
-
   render() {
-    return (
-      <div
-        className="table-responsive"
-        // style={{ width: this.state.width != null ? this.state.width : "100%" }}
-      >
-        <table
-          id={this.props.id}
-          className="table table-striped table-bordered table-hover table-sm"
-          {...this.props.others}
-        >
-          <thead>
-            <tr>
-              {this.returnEditableColumn()}
-              {this.returnTableHeaderColumns()}
-            </tr>
-          </thead>
-          <tbody>{this.renderTableRows()}</tbody>
-        </table>
+    const _data = this.state.data;
+    const _filter =
+      this.props.filter !== undefined ? { filterable: this.props.filter } : {};
+    const _noDataText =
+      this.props.noDataText !== undefined
+        ? this.props.noDataText
+        : "No records to show";
+    const _defaultSize =
+      this.props.paging !== undefined
+        ? this.props.paging.rowsPerPage !== undefined
+          ? {
+              defaultPageSize: this.props.paging.rowsPerPage
+            }
+          : {}
+        : {};
+    const _subComponent =
+      this.props.expanded !== undefined
+        ? this.props.expanded.detailTemplate !== undefined
+          ? {
+              SubComponent: row => {
+                return this.props.expanded.detailTemplate(row);
+              }
+            }
+          : {}
+        : {};
+    const _onExpandRow =
+      this.props.expanded !== undefined
+        ? this.props.expanded.events !== undefined
+          ? this.props.expanded.events.onExpandRow !== undefined
+            ? {
+                onExpandRow: row => {
+                  this.props.expanded.events.onExpandRow(row);
+                }
+              }
+            : {}
+          : {}
+        : {};
 
-        {this.renderFooter()}
-      </div>
+    return (
+      <React.Fragment>
+        <ReactTableFixedColumns
+          data={_data}
+          columns={this.state.columns}
+          className="-striped -highlight"
+          {..._filter}
+          {..._defaultSize}
+          pages={this.state.totalPages}
+          noDataText={_noDataText}
+          loading={this.state.showLoading}
+          showPagination={
+            this.props.paging !== undefined
+              ? this.props.paging.showPagination !== undefined
+                ? this.props.paging.showPagination
+                : true
+              : true
+          }
+          showPaginationTop={
+            this.props.paging !== undefined
+              ? this.props.paging.showPaginationTop !== undefined
+                ? this.props.paging.showPaginationTop
+                : false
+              : false
+          }
+          showPaginationBottom={
+            this.props.paging !== undefined
+              ? this.props.paging.showPaginationBottom !== undefined
+                ? this.props.paging.showPaginationBottom
+                : true
+              : true
+          }
+          showPageJump={
+            this.props.paging !== undefined
+              ? this.props.paging.showPageJump !== undefined
+                ? this.props.paging.showPageJump
+                : true
+              : true
+          }
+          showPageSizeOptions={
+            this.props.paging !== undefined
+              ? this.props.paging.showPageSizeOptions !== undefined
+                ? this.props.paging.showPageSizeOptions
+                : true
+              : true
+          }
+          pageSizeOptions={[5, 10, 20, 25, 50, 100]}
+          previousText="Previous"
+          nextText="Next"
+          pageText="Page"
+          ofText="of"
+          rowsText=""
+          onPageSizeChange={this.pageSizeChange.bind(this)}
+          onPageChange={this.pageChangeHandler.bind(this)}
+          {..._subComponent}
+          {..._onExpandRow}
+          style={{ minHeight: "400px" }}
+          getTdProps={this.getTdHandler.bind(this)}
+          getTrProps={this.getTrHandler.bind(this)}
+        />
+      </React.Fragment>
     );
   }
 }
