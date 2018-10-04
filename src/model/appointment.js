@@ -1242,6 +1242,139 @@ let updateSchedule = (req, res, next) => {
   }
 };
 
+//created by irfan: to add Doctor To Existing Schedule
+let addDoctorToExistingSchedule = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    debugLog("input:", input);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        connection.query(
+          "SELECT from_date, to_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
+          from hims_d_appointment_schedule_header where  record_status='A' and hims_d_appointment_schedule_header_id=?",
+          [input.hims_d_appointment_schedule_header_id],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+
+            let working_days = [];
+
+            let inputDays = [
+              result[0].sunday,
+              result[0].monday,
+              result[0].tuesday,
+              result[0].wednesday,
+              result[0].thursday,
+              result[0].friday,
+              result[0].saturday
+            ];
+
+            for (let d = 0; d < 7; d++) {
+              if (inputDays[d] == "Y") {
+                working_days.push(d);
+              }
+            }
+
+            let daylist = getDaysArray(
+              new Date(result[0].from_date),
+              new Date(result[0].to_date),
+              working_days
+            );
+            daylist.map(v => v.toLocaleString());
+            //.slice(0, 10)).join("");
+
+            debugLog("daylist:", daylist.length);
+            if (input.schedule_detail.length != 0) {
+              if (input.hims_d_appointment_schedule_header_id != null) {
+                for (let doc = 0; doc < input.schedule_detail.length; doc++) {
+                  let doctorSchedule = [];
+
+                  for (let i = 0; i < daylist.length; i++) {
+                    doctorSchedule.push({
+                      ...input.schedule_detail[doc],
+                      ...{ schedule_date: daylist[i] }
+                    });
+                  }
+
+                  const insurtColumns = [
+                    "provider_id",
+                    "clinic_id",
+                    "slot",
+                    "schedule_date",
+                    "created_by",
+                    "updated_by"
+                  ];
+
+                  connection.query(
+                    "INSERT INTO hims_d_appointment_schedule_detail(" +
+                      insurtColumns.join(",") +
+                      ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?",
+                    [
+                      jsonArrayToObject({
+                        sampleInputObject: insurtColumns,
+                        arrayObj: doctorSchedule,
+                        newFieldToInsert: [
+                          input.hims_d_appointment_schedule_header_id,
+                          new Date(),
+                          new Date()
+                        ],
+                        req: req
+                      })
+                    ],
+                    (error, schedule_detailResult) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+
+                      connection.commit(error => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        req.records = schedule_detailResult;
+                        next();
+                      });
+                    }
+                  );
+                }
+              }
+            } else {
+              req.records = { message: "please select doctors" };
+              next();
+            }
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addAppointmentStatus,
   addAppointmentRoom,
@@ -1259,5 +1392,6 @@ module.exports = {
   getDoctorScheduleToModify,
   updateDoctorScheduleDateWise,
   deleteDoctorFromSchedule,
-  updateSchedule
+  updateSchedule,
+  addDoctorToExistingSchedule
 };
