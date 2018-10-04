@@ -254,4 +254,44 @@ let selectBill = (req, res, next) => {
   }
 };
 
-module.exports = { addOpBIlling, selectBill };
+let getPednigBills = (req, res, next) => {
+  let selectWhere = {
+    visit_id: "ALL",
+    patient_id: "ALL",
+    visit_id: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    req.query["date(S.created_date)"] = req.query.created_date;
+    delete req.query.created_date;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let where = whereCondition(extend(selectWhere, req.query));
+      connection.query(
+        "SELECT  S.patient_id, S.visit_id, S.insurance_yesno, P.patient_code,P.full_name FROM hims_f_ordered_services S,hims_f_patient P  \
+       WHERE S.record_status='A' AND S.billed='N' AND P.hims_d_patient_id=S.patient_id AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { addOpBIlling, selectBill, getPednigBills };

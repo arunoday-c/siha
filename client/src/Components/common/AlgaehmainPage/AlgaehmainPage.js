@@ -2,24 +2,16 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
 import MenuItem from "@material-ui/core/MenuItem";
-import ExpandMore from "@material-ui/icons/ExpandMore";
 import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import sideMenuEn from "./SideMenuList.json";
 import sideMenuAr from "./SideMenuListAr.json";
 import "./AlgaehmainPage.css";
 import { setCookie, getCookie } from "../../../utils/algaehApiCall";
 import directRoutes from "../../../Dynamicroutes";
-import CancelIcon from "@material-ui/icons/Close";
-// import { setGlobal } from "../../../utils/GlobalFunctions";
-import Button from "@material-ui/core/Button";
 import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import Paper from "@material-ui/core/Paper";
 import Menu from "@material-ui/core/Menu";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Login from "./"
@@ -335,7 +327,6 @@ class PersistentDrawer extends React.Component {
                   <h5>{this.state.title}</h5>
                 </div>
                 <span style={{ float: "right", fontSize: "0.9rem" }}>
-                  {" "}
                   {this.state.languageName}
                 </span>
                 <button

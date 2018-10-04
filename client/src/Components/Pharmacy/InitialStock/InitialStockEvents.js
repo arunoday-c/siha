@@ -23,7 +23,7 @@ const LocationchangeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value, location_type: e.selected.location_type });
 };
 
-const numberchangeTexts = ($this, ctrl, e) => {
+const numberchangeTexts = ($this, e) => {
   debugger;
 
   let name = e.name || e.target.name;

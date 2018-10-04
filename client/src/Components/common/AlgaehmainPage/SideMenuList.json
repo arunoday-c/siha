@@ -143,18 +143,15 @@
       {
         "name": "OP Billing",
         "label": "OP Billing",
+        "arlabel": "الفواتير OP",
         "path": "/OPBilling",
         "language": "True"
       },
       {
-        "name": "Advance List",
-        "label": "Advance List",
-        "path": "/AdvanceList"
-      },
-      {
-        "name": "Refund List",
-        "label": "Refund List",
-        "path": "/RefundList"
+        "name": "OP Bill Pending List",
+        "label": "OP-Bill Pending List",
+        "arlabel": "الفواتير قيد الانتظار قائمة OP",
+        "path": "/OPBillPendingList"
       }
     ]
   },
