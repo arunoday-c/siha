@@ -2,3 +2,41 @@
 .selected-grid-row.-even .rt-td {
   background-color: #d9fdff !important;
 }
+.ReactTable {
+  font-size: 0.8rem;
+  .rt-th {
+    background: #34b8bc !important;
+    color: #fff !important;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.8rem;
+  }
+  button {
+    margin-left: 0;
+  }
+  i.fa-pen,
+  i.fa-trash-alt,
+  i.fa-save,
+  i.fa-times {
+    cursor: pointer;
+    border: 1px solid #44b8bd;
+    height: 28px;
+    border-radius: 100%;
+    font-size: 0.9rem;
+    width: 28px;
+    display: inline-block;
+    text-align: center;
+    line-height: 25px;
+    background: #fff;
+    margin: 0 5px;
+    color: #313538;
+  }
+
+  i.fa-pen:hover,
+  i.fa-trash-alt:hover,
+  i.fa-save:hover,
+  i.fa-times:hover {
+    background: #44b8bd;
+    color: #fff;
+  }
+}

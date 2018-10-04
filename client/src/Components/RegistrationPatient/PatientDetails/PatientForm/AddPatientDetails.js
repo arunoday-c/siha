@@ -74,7 +74,7 @@ const countryStatehandle = ($this, context, e) => {
 
 //Todo title and gender related chnage need to do
 const titlehandle = ($this, context, e) => {
-  let setGender;
+  let setGender = null;
   if (e.value === 1) {
     setGender = "Male";
   } else if (e.value === 2) {
@@ -129,7 +129,7 @@ const calculateAge = ($this, context, e) => {
   }
 };
 
-const setAge = ($this, context, ctrl, e) => {
+const setAge = ($this, context, e) => {
   if (e !== undefined) {
     let years = context.state.age;
     let months = context.state.AGEMM;

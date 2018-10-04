@@ -307,24 +307,28 @@ class DataGrid extends PureComponent {
                   <React.Fragment>
                     {_allowEditButton ? (
                       edit ? (
-                        <button onClick={() => this.toggleRowSave(index)}>
-                          Save Row
-                        </button>
+                        <i
+                          className="fas fa-save"
+                          onClick={() => this.toggleRowSave(index)}
+                        />
                       ) : (
-                        <button onClick={() => this.toggleRowEditable(index)}>
-                          Edit Row
-                        </button>
+                        <i
+                          className="fas fa-pen"
+                          onClick={() => this.toggleRowEditable(index)}
+                        />
                       )
                     ) : null}
                     {_allowDeleteButton ? (
                       edit ? (
-                        <button onClick={() => this.toggleRowCancel(index)}>
-                          Cancel Row
-                        </button>
+                        <i
+                          className="fas fa-times"
+                          onClick={() => this.toggleRowCancel(index)}
+                        />
                       ) : (
-                        <button onClick={() => this.toggleRowDelete(index)}>
-                          Delete Row
-                        </button>
+                        <i
+                          className="fas fa-trash-alt"
+                          onClick={() => this.toggleRowDelete(index)}
+                        />
                       )
                     ) : null}
                   </React.Fragment>
@@ -393,8 +397,8 @@ class DataGrid extends PureComponent {
               props.paging !== undefined
                 ? props.paging.rowsPerPage !== undefined
                   ? props.paging.rowsPerPage
-                  : 5
-                : 5
+                  : 10
+                : 10
           });
         },
         props.dataSource.inputParam
@@ -627,7 +631,7 @@ class DataGrid extends PureComponent {
           onPageChange={this.pageChangeHandler.bind(this)}
           {..._subComponent}
           {..._onExpandRow}
-          style={{ minHeight: "400px" }}
+          style={{ maxHeight: "400px" }}
           getTdProps={this.getTdHandler.bind(this)}
           getTrProps={this.getTrHandler.bind(this)}
         />

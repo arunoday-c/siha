@@ -1,5 +1,6 @@
 {
   "baseUrl": "/api/v1",
+  "base-Url": "http://192.168.0.149:3000/api/v1",
   "apiAuth": {
     "user": "devteam",
     "password": "devteam"

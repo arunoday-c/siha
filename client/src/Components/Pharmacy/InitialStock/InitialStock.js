@@ -38,10 +38,12 @@ class InitialStock extends Component {
     super(props);
 
     this.state = {
+      description: "",
       pharmacy_stock_detail: [],
       location_id: null,
       item_category_id: null,
       item_group_id: null,
+      sales_uom: null,
       item_id: null,
       batchno: null,
       expiry_date: null,
@@ -56,7 +58,8 @@ class InitialStock extends Component {
       saveEnable: true,
       posted: "N",
       grn_number: null,
-      postEnable: true
+      postEnable: true,
+      dataExitst: false
     };
   }
 
@@ -376,6 +379,7 @@ class InitialStock extends Component {
                     className="btn btn-primary"
                     style={{ marginTop: "24px" }}
                     onClick={AddItems.bind(this, this)}
+                    disabled={this.state.dataExitst}
                   >
                     Add Item
                   </button>
@@ -388,7 +392,7 @@ class InitialStock extends Component {
                   columns={[
                     {
                       fieldName: "action",
-                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                      label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
                       displayTemplate: row => {
                         return (
                           <span>

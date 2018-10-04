@@ -71,7 +71,8 @@ const itemchangeText = ($this, e) => {
     [name]: value,
     item_category_id: e.selected.category_id,
     item_group_id: e.selected.group_id,
-    uom_id: e.selected.stocking_uom_id
+    uom_id: e.selected.stocking_uom_id,
+    sales_uom: e.selected.sales_uom_id
   });
 };
 
@@ -120,6 +121,7 @@ const AddItems = $this => {
       item_group_id: $this.state.item_group_id,
       item_id: $this.state.item_id,
       uom_id: $this.state.uom_id,
+      sales_uom: $this.state.sales_uom,
       batchno: $this.state.batchno,
       expiry_date: $this.state.expiry_date,
       quantity: $this.state.quantity,
@@ -147,7 +149,8 @@ const AddItems = $this => {
       conversion_fact: null,
       extended_cost: 0,
       saveEnable: false,
-      grn_number: null
+      grn_number: null,
+      sales_uom: null
     });
   }
 };
@@ -170,7 +173,7 @@ const getCtrlCode = ($this, docNumber) => {
   intervalId = setInterval(() => {
     AlgaehLoader({ show: true });
     $this.props.getInitialStock({
-      uri: "/pharmacy/getPharmacyInitialStock",
+      uri: "/initialstock/getPharmacyInitialStock",
       method: "GET",
       printInput: true,
       data: { document_number: docNumber },
@@ -188,6 +191,7 @@ const getCtrlCode = ($this, docNumber) => {
         } else {
           data.postEnable = false;
         }
+        data.dataExitst = true;
         $this.setState(data);
         AlgaehLoader({ show: false });
       }
@@ -199,7 +203,7 @@ const getCtrlCode = ($this, docNumber) => {
 const SaveInitialStock = $this => {
   debugger;
   algaehApiCall({
-    uri: "/pharmacy/addPharmacyInitialStock",
+    uri: "/initialstock/addPharmacyInitialStock",
     data: $this.state,
     onSuccess: response => {
       debugger;
@@ -237,6 +241,7 @@ const deleteInitialStock = ($this, row) => {
 };
 const ClearData = $this => {
   $this.setState({
+    description: "",
     pharmacy_stock_detail: [],
     document_number: null,
     location_id: null,
@@ -251,7 +256,8 @@ const ClearData = $this => {
     conversion_fact: null,
     extended_cost: 0,
     saveEnable: true,
-    postEnable: true
+    postEnable: true,
+    dataExitst: false
   });
 };
 
