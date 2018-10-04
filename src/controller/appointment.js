@@ -19,7 +19,8 @@ import {
   getDoctorScheduleToModify,
   updateDoctorScheduleDateWise,
   deleteDoctorFromSchedule,
-  updateSchedule
+  updateSchedule,
+  addDoctorToExistingSchedule
 } from "../model/appointment";
 
 export default ({ config, db }) => {
@@ -269,6 +270,21 @@ export default ({ config, db }) => {
   api.put(
     "/updateSchedule",
     updateSchedule,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to update Schedule
+  api.post(
+    "/addDoctorToExistingSchedule",
+    addDoctorToExistingSchedule,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
