@@ -2,7 +2,7 @@ import { Router } from "express";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
-import { addOpBIlling, selectBill } from "../model/opBilling";
+import { addOpBIlling, selectBill, getPednigBills } from "../model/opBilling";
 import { insertLadOrderedServices } from "../model/laboratory";
 import { updateOrderedServicesBilled } from "../model/orderAndPreApproval";
 import { insertRadOrderedServices } from "../model/radiology";
@@ -23,6 +23,21 @@ export default ({ config, db }) => {
       res.status(httpStatus.ok).json({
         success: true,
         records: req.body
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad: to  getPednigBills
+  api.get(
+    "/getPednigBills",
+    getPednigBills,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
       });
       next();
     },

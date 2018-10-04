@@ -129,7 +129,7 @@ const calculateAge = ($this, context, e) => {
   }
 };
 
-const setAge = ($this, context, ctrl, e) => {
+const setAge = ($this, context, e) => {
   if (e !== undefined) {
     let years = context.state.age;
     let months = context.state.AGEMM;
