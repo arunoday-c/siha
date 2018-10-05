@@ -2,6 +2,7 @@
 .selected-grid-row.-even .rt-td {
   background-color: #d9fdff !important;
 }
+
 .ReactTable {
   font-size: 0.8rem;
   .rt-th {
@@ -38,5 +39,36 @@
   i.fa-times:hover {
     background: #44b8bd;
     color: #fff;
+  }
+  .-pagination {
+    .-previous,
+    .-next {
+      flex: inherit !important;
+
+      .-btn {
+        height: 100%;
+        width: auto;
+        padding: 6px 16px;
+        border: 1px solid #44b8bd;
+        color: #3faeb3;
+        background: #fff;
+      }
+      .-btn:hover {
+        background-color: #fff;
+      }
+      .-btn[disabled] {
+        border-color: #e2dfde;
+        color: #c7c4c2;
+      }
+    }
+
+    .-center {
+      flex: none !important;
+    }
+
+    input,
+    select {
+      padding: 2px 5px !important;
+    }
   }
 }

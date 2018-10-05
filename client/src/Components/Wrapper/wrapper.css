@@ -34,3 +34,26 @@
   .ReactTable i.fa-times:hover {
     background: #44b8bd;
     color: #fff; }
+  .ReactTable .-pagination .-previous,
+  .ReactTable .-pagination .-next {
+    flex: inherit !important; }
+    .ReactTable .-pagination .-previous .-btn,
+    .ReactTable .-pagination .-next .-btn {
+      height: 100%;
+      width: auto;
+      padding: 6px 16px;
+      border: 1px solid #44b8bd;
+      color: #3faeb3;
+      background: #fff; }
+    .ReactTable .-pagination .-previous .-btn:hover,
+    .ReactTable .-pagination .-next .-btn:hover {
+      background-color: #fff; }
+    .ReactTable .-pagination .-previous .-btn[disabled],
+    .ReactTable .-pagination .-next .-btn[disabled] {
+      border-color: #e2dfde;
+      color: #c7c4c2; }
+  .ReactTable .-pagination .-center {
+    flex: none !important; }
+  .ReactTable .-pagination input,
+  .ReactTable .-pagination select {
+    padding: 2px 5px !important; }

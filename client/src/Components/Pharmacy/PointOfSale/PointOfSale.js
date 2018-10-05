@@ -36,7 +36,7 @@ class PointOfSale extends Component {
     super(props);
 
     this.state = {
-      ListItems: [],
+      itemlist: [],
       location_id: null,
       category_id: null,
       group_id: null,
@@ -527,7 +527,7 @@ class PointOfSale extends Component {
                         ]}
                         keyId="item_id"
                         dataSource={{
-                          data: this.props.medication_list
+                          data: this.state.itemlist
                         }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                       />
