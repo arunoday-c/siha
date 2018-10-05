@@ -132,6 +132,7 @@ class SearchModule extends Component {
     clearInterval(intervalId);
     intervalId = setInterval(() => {
       if (typeof $this.props.onContainsChange === "function") {
+        debugger;
         $this.props.onContainsChange(contains, $this.state.searchBy, value => {
           return value;
         });
@@ -173,7 +174,7 @@ class SearchModule extends Component {
           paging={{
             page: 0,
             rowsPerPage:
-              this.props.rowsPerPage !== undefined ? this.props.rowsPerPage : 5
+              this.props.rowsPerPage !== undefined ? this.props.rowsPerPage : 10
           }}
           algaehSearch={true}
           onRowSelect={row => {
