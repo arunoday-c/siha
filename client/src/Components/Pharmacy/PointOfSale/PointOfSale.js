@@ -268,7 +268,7 @@ class PointOfSale extends Component {
                   <div className="row">
                     {" "}
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col-4" }}
                       label={{ forceLabel: "Item Name" }}
                       selector={{
                         name: "item_id",
@@ -283,7 +283,7 @@ class PointOfSale extends Component {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col" }}
                       label={{ forceLabel: "UOM", isImp: true }}
                       selector={{
                         name: "uom_id",
@@ -301,7 +301,7 @@ class PointOfSale extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Batch No."
                       }}
@@ -315,7 +315,7 @@ class PointOfSale extends Component {
                       }}
                     />
                     <AlgaehDateHandler
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col" }}
                       label={{ forceLabel: "Expiry Date" }}
                       textBox={{ className: "txt-fld", name: "expirt_date" }}
                       minDate={new Date()}
@@ -325,7 +325,7 @@ class PointOfSale extends Component {
                       value={this.state.expirt_date}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Quantity"
                       }}
@@ -343,7 +343,7 @@ class PointOfSale extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-lg-4" }}
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Unit Cost"
                       }}
@@ -529,7 +529,7 @@ class PointOfSale extends Component {
                         dataSource={{
                           data: this.state.itemlist
                         }}
-                        paging={{ page: 0, rowsPerPage: 10 }}
+                        paging={{ page: 0, rowsPerPage: 5 }}
                       />
                     </div>
                   </div>
