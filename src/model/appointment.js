@@ -1191,9 +1191,10 @@ let addPatientAppointment = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_patient_appointment` (patient_id,provider_id,sub_department_id,appointment_date,appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,\
+        "INSERT INTO `hims_f_patient_appointment` (patient_id,provider_id,sub_department_id,appointment_date,appointment_from_time,appointment_to_time,\
+          appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
           created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.patient_id,
           input.provider_id,
@@ -1210,6 +1211,8 @@ let addPatientAppointment = (req, res, next) => {
           input.email,
           input.send_to_provider,
           input.gender,
+          input.appointment_remarks,
+          input.is_stand_by,
           new Date(),
           input.created_by,
           new Date(),
