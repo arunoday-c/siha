@@ -17,7 +17,7 @@ class DataGrid extends PureComponent {
       editableRows: {},
       totalPages: 0,
       showLoading: false,
-      rowsPerPage: 10,
+      rowsPerPage: 5,
       selectionChanged: false
     };
     this.tmp = new Set();
@@ -51,7 +51,15 @@ class DataGrid extends PureComponent {
   renderEditable = (templates, cellInfo) => {
     const editable = this.state.editableRows[cellInfo.index];
     const rowDetail = this.state.data[cellInfo.index];
-    if (editable === undefined || editable === false) {
+    const _Usereditable =
+      cellInfo.column.editable !== undefined
+        ? !cellInfo.column.editable
+        : false;
+    if (
+      editable === undefined ||
+      editable === false ||
+      _Usereditable === true
+    ) {
       if (templates.displayTemp !== undefined) {
         return templates.displayTemp(rowDetail);
       } else {
@@ -63,6 +71,7 @@ class DataGrid extends PureComponent {
       } else {
         const _value = rowDetail[cellInfo.column.id];
         const _date = moment(_value).isValid();
+
         if (_date && typeof _value !== "number") {
           return (
             <AlgaehDateHandler
@@ -89,6 +98,7 @@ class DataGrid extends PureComponent {
               textBox={{
                 className: "txt-fld",
                 value: _value,
+
                 events: {
                   onChange: this.onTextHandleEditChange.bind(this)
                 },
@@ -255,8 +265,6 @@ class DataGrid extends PureComponent {
 
   componentDidMount() {
     if (this.state.columns.length == 0) {
-      debugger;
-
       if (this.props.columns !== undefined && this.props.columns.length !== 0) {
         let _columns = Enumerable.from(this.props.columns)
           .select(s => {
@@ -266,7 +274,8 @@ class DataGrid extends PureComponent {
                 : { accessor: row => s.displayTemplate(row) };
             const _assignClass =
               s.className !== undefined ? row => s.className(row) : "";
-
+            const _disabled =
+              s.disabled !== undefined ? { editable: !s.disabled } : {};
             return {
               Header: s.label,
               id: s.fieldName,
@@ -275,7 +284,9 @@ class DataGrid extends PureComponent {
                 editorTemp: s.editorTemplate
               }),
               assignTdClass: _assignClass,
-              ..._displayTemp
+              ..._disabled,
+              ..._displayTemp,
+              ...s.others
             };
           })
           .toArray();
@@ -291,6 +302,12 @@ class DataGrid extends PureComponent {
             : this.props.actions.allowDelete !== undefined
               ? this.props.actions.allowDelete
               : true;
+        const _orientation =
+          this.props.actions === undefined
+            ? "left"
+            : this.props.actions.position !== undefined
+              ? this.props.actions.position
+              : "left";
         if (
           this.props.isEditable !== undefined &&
           this.props.isEditable === true
@@ -299,7 +316,7 @@ class DataGrid extends PureComponent {
             _columns.splice(0, 0, {
               Header: "Actions",
               headerClassName: "sticky",
-              fixed: "left",
+              fixed: _orientation,
               Cell: ({ index }) => {
                 const edit =
                   this.state.editableRows[index] === undefined
@@ -312,14 +329,12 @@ class DataGrid extends PureComponent {
                         <i
                           className="fas fa-save"
                           onClick={() => this.toggleRowSave(index)}
-                        >
-                        </i>
+                        />
                       ) : (
                         <i
                           className="fas fa-pen"
                           onClick={() => this.toggleRowEditable(index)}
-                        >
-                        </i>
+                        />
                       )
                     ) : null}
                     {_allowDeleteButton ? (
@@ -327,14 +342,12 @@ class DataGrid extends PureComponent {
                         <i
                           className="fas fa-times"
                           onClick={() => this.toggleRowCancel(index)}
-                        >
-                        </i>
+                        />
                       ) : (
                         <i
                           className="fas fa-trash-alt"
                           onClick={() => this.toggleRowDelete(index)}
-                        >
-                        </i>
+                        />
                       )
                     ) : null}
                   </React.Fragment>
@@ -346,11 +359,11 @@ class DataGrid extends PureComponent {
         }
         if (this.props.dataSource.uri !== undefined) {
           this.apiCallingFunction(this, 0, (data, totalPages) => {
-            const _total = Math.ceil(
+            const _res =
               this.props.dataSource.responseSchema.totalPages === undefined
-                ? data.length
-                : totalPages / this.props.paging.rowsPerPage
-            );
+                ? data.length / this.props.paging.rowsPerPage
+                : totalPages / this.props.paging.rowsPerPage;
+            const _total = Math.ceil(_res);
 
             this.setState({
               data: data,
@@ -358,28 +371,28 @@ class DataGrid extends PureComponent {
               rowsPerPage: this.props.paging.rowsPerPage
             });
           });
+        } else {
+          const _res =
+            this.props.dataSource.data !== undefined
+              ? this.props.dataSource.data.length /
+                this.props.paging.rowsPerPage
+              : 0 / this.props.paging.rowsPerPage;
+          const _total = Math.ceil(_res);
+          this.setState({
+            columns: _columns,
+            data:
+              this.props.dataSource.data === undefined
+                ? this.props.dataSource.data
+                : [],
+            totalPages: _total,
+            rowsPerPage:
+              this.props.paging !== undefined
+                ? this.props.paging.rowsPerPage !== undefined
+                  ? this.props.paging.rowsPerPage
+                  : 5
+                : 5
+          });
         }
-        const _total = Math.ceil(
-          this.props.dataSource.uri === undefined
-            ? this.props.dataSource.data !== undefined
-              ? this.props.dataSource.data.length
-              : 0
-            : 0 / this.props.paging.rowsPerPage
-        );
-        this.setState({
-          columns: _columns,
-          data:
-            this.props.dataSource.uri === undefined
-              ? this.props.dataSource.data
-              : [],
-          totalPages: _total,
-          rowsPerPage:
-            this.props.paging !== undefined
-              ? this.props.paging.rowsPerPage !== undefined
-                ? this.props.paging.rowsPerPage
-                : 10
-              : 10
-        });
       }
     }
   }
@@ -392,7 +405,7 @@ class DataGrid extends PureComponent {
         (data, totalPages) => {
           const _total = Math.ceil(
             this.props.dataSource.responseSchema.totalPages === undefined
-              ? data.length
+              ? data.length / this.state.rowsPerPage
               : totalPages / this.state.rowsPerPage
           );
           this.setState({
@@ -409,13 +422,11 @@ class DataGrid extends PureComponent {
         props.dataSource.inputParam
       );
     } else {
-      const _total = Math.ceil(
-        props.dataSource !== undefined
-          ? this.props.dataSource.data !== undefined
-            ? this.props.dataSource.data.length
-            : 0
-          : 0 / props.paging.rowsPerPage
-      );
+      const _res =
+        props.dataSource.data !== undefined
+          ? props.dataSource.data.length / props.paging.rowsPerPage
+          : 0;
+      const _total = Math.ceil(_res);
       this.setState({
         data: props.dataSource.data,
         totalPages: _total,
@@ -431,7 +442,7 @@ class DataGrid extends PureComponent {
       this.apiCallingFunction(this, pageIndex, (data, totalPages) => {
         const _total = Math.ceil(
           this.props.dataSource.responseSchema.totalPages === undefined
-            ? data.length
+            ? data.length / this.state.rowsPerPage
             : totalPages / this.state.rowsPerPage
         );
 
@@ -443,32 +454,47 @@ class DataGrid extends PureComponent {
     }
   }
   pageSizeChange(pageSize) {
-    this.setState({ rowsPerPage: pageSize }, () => {
-      if (
-        this.props.dataSource.uri !== undefined &&
-        this.props.dataSource.responseSchema.totalPages !== undefined
-      ) {
-        this.apiCallingFunction(this, 0, (data, totalPages) => {
-          const _total = Math.ceil(
-            this.props.dataSource.responseSchema.totalPages === undefined
-              ? data.length
-              : totalPages / this.state.rowsPerPage
-          );
+    if (
+      this.props.dataSource.uri !== undefined &&
+      this.props.dataSource.responseSchema.totalPages !== undefined
+    ) {
+      this.apiCallingFunction(this, 0, (data, totalPages) => {
+        const res =
+          this.props.dataSource.responseSchema.totalPages === undefined
+            ? data.length / this.state.rowsPerPage
+            : totalPages / this.state.rowsPerPage;
+        const _total = Math.ceil(res);
 
-          this.setState({
-            data: data,
-            totalPages: _total
-          });
+        this.setState({
+          data: data,
+          totalPages: _total,
+          rowsPerPage: pageSize
         });
-      }
-    });
+      });
+    } else {
+      const res = this.state.data.length / pageSize;
+      const _total1 = Math.ceil(res);
+      this.setState({
+        totalPages: _total1,
+        rowsPerPage: pageSize
+      });
+    }
   }
   isRowSelected = rowID => {
     return this.tmp.has(rowID);
   };
   RowClickHandler = (action, row, index) => {
-    if (this.tmp.has(index)) this.tmp.delete(index);
-    this.tmp.add(index);
+    if (
+      this.props.multiSelect !== undefined &&
+      this.props.multiSelect === true
+    ) {
+      if (this.tmp.has(index)) this.tmp.delete(index);
+      this.tmp.add(index);
+    } else {
+      this.tmp = new Set();
+      this.tmp.add(index);
+    }
+
     this.setState(
       {
         selectionChanged: !this.state.selectionChanged
@@ -564,7 +590,7 @@ class DataGrid extends PureComponent {
             : {}
           : {}
         : {};
-
+    const _totalRecords = _data.length;
     return (
       <React.Fragment>
         <ReactTableFixedColumns
@@ -611,10 +637,17 @@ class DataGrid extends PureComponent {
                 : true
               : true
           }
-          pageSizeOptions={[10, 20, 25, 50, 100]}
+          pageSizeOptions={[5,10, 20, 25, 50, 100]}
           previousText="Previous"
           nextText="Next"
-          pageText="Page"
+          pageText={
+            <React.Fragment>
+              <span>
+                Total Records: {_totalRecords}
+                ,&nbsp;Current Page
+              </span>
+            </React.Fragment>
+          }
           ofText="of"
           rowsText=""
           onPageSizeChange={this.pageSizeChange.bind(this)}

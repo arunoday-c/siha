@@ -26,8 +26,8 @@ class PhySchSetup extends Component {
       scheduleDoctors: [],
       year: moment().year(),
       month: moment().format("M"),
-      from_date: new Date(),
-      to_date: new Date(),
+      from_date: "",
+      to_date: "",
       all: false,
       monday: false,
       tuesday: false,
@@ -59,14 +59,14 @@ class PhySchSetup extends Component {
       days: [],
       selected_doctor: "",
       modify: [],
-      scheduleDisable: true
+      scheduleDisable: true,
+      leave: false
     };
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value,
-      disable: false
+      [e.target.name]: e.target.value
     });
   }
 
@@ -99,24 +99,47 @@ class PhySchSetup extends Component {
 
   updateDoctorScheduleDateWise(data) {
     console.log("Update Data:", data);
+    debugger;
 
-    let send_data = {
-      appointment_schedule_detail_id:
-        data.hims_d_appointment_schedule_detail_id,
-      to_date: data.schedule_date,
-      slot: data.slot,
-      from_work_hr: data.from_work_hr,
-      to_work_hr: data.to_work_hr,
-      work_break1: "Y",
-      from_break_hr1: data.from_break_hr1,
-      to_break_hr1: data.to_break_hr1,
-      work_break2: data.work_break2,
-      from_break_hr2: data.from_break_hr2,
-      to_break_hr2: data.to_break_hr2,
-      modified: "M",
-      hims_d_appointment_schedule_detail_id:
-        data.hims_d_appointment_schedule_detail_id
-    };
+    let send_data = {};
+    if (data.hims_d_appointment_schedule_modify_id !== undefined) {
+      send_data = {
+        hims_d_appointment_schedule_detail_id:
+          data.appointment_schedule_detail_id,
+        hims_d_appointment_schedule_modify_id:
+          data.hims_d_appointment_schedule_modify_id,
+        to_date: data.schedule_date,
+        slot: data.slot,
+        from_work_hr: data.from_work_hr,
+        to_work_hr: data.to_work_hr,
+        work_break1: "Y",
+        from_break_hr1: data.from_break_hr1,
+        to_break_hr1: data.to_break_hr1,
+        work_break2: data.work_break2,
+        from_break_hr2: data.from_break_hr2,
+        to_break_hr2: data.to_break_hr2,
+        modified: data.modified
+      };
+    } else {
+      send_data = {
+        appointment_schedule_detail_id:
+          data.hims_d_appointment_schedule_detail_id,
+        to_date: data.schedule_date,
+        slot: data.slot,
+        from_work_hr: data.from_work_hr,
+        to_work_hr: data.to_work_hr,
+        work_break1: "Y",
+        from_break_hr1: data.from_break_hr1,
+        to_break_hr1: data.to_break_hr1,
+        work_break2: data.work_break2,
+        from_break_hr2: data.from_break_hr2,
+        to_break_hr2: data.to_break_hr2,
+        modified: data.modified,
+        hims_d_appointment_schedule_detail_id:
+          data.hims_d_appointment_schedule_detail_id
+      };
+    }
+
     algaehApiCall({
       uri: "/appointment/updateDoctorScheduleDateWise",
       method: "PUT",
@@ -127,7 +150,6 @@ class PhySchSetup extends Component {
             data.hims_d_appointment_schedule_header_id,
             data.provider_id
           );
-
           swal("Schedule Updated Successfully", {
             buttons: false,
             icon: "success",
@@ -166,11 +188,14 @@ class PhySchSetup extends Component {
     } else {
       provider_array.push(myRow);
     }
-    // console.log("Pushed:", provider_array);
+    console.log("Pushed:", provider_array);
   }
 
   saveApptSchedule(e) {
     //console.log("State here :", this.state);
+
+    console.log("Irfan From Date:", this.state.from_date);
+    console.log("Irfan To Date:", this.state.to_date);
 
     e.preventDefault();
     if (this.state.description.length === 0) {
@@ -207,8 +232,8 @@ class PhySchSetup extends Component {
       myObj.work_break2 = this.state.from_break_hr2 ? "Y" : "N";
       myObj.from_break_hr2 = this.state.from_break_hr2;
       myObj.to_break_hr2 = this.state.to_break_hr2;
-      myObj.from_date = this.state.from_date;
-      myObj.to_date = this.state.to_date;
+      myObj.from_date = moment(this.state.from_date).format("YYYY-MM-DD");
+      myObj.to_date = moment(this.state.to_date).format("YYYY-MM-DD");
 
       for (let i = 0; i < provider_array.length; i++) {
         provider_array[i].slot = this.state.slot;
@@ -284,6 +309,17 @@ class PhySchSetup extends Component {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
+    row["modified"] = "M";
+    this.refreshState();
+  }
+  changeCheckBox(row, e) {
+    debugger;
+    if (row.modified !== undefined) {
+      if (row.modified === "L") row.modified = "N";
+      else row.modified = "L";
+    } else {
+      row.modified = "L";
+    }
     this.refreshState();
   }
 
@@ -343,12 +379,50 @@ class PhySchSetup extends Component {
   }
 
   deleteDocFromSchedule(e) {
-    debugger;
     let header_id = e.currentTarget.getAttribute("id");
     let provider_id = e.currentTarget.getAttribute("provider-id");
-    alert(
-      "Deleting Doctor from header:" + header_id + " of Doctor:" + provider_id
-    );
+
+    let send_data = {
+      appointment_schedule_header_id: header_id,
+      provider_id: provider_id
+    };
+
+    swal({
+      title: "Are you sure you want to delete this Doctor?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        algaehApiCall({
+          uri: "/appointment/deleteDoctorFromSchedule",
+          method: "PUT",
+          data: send_data,
+          onSuccess: response => {
+            if (response.data.success) {
+              swal("Doctor Deleted Successfully", {
+                buttons: false,
+                icon: "success",
+                timer: 2000
+              });
+            }
+          },
+          onFailure: error => {
+            swal(error.message, {
+              buttons: false,
+              icon: "warning",
+              timer: 2000
+            });
+          }
+        });
+      } else {
+        swal("Delete request cancelled", {
+          buttons: false,
+          icon: "warning",
+          timer: 2000
+        });
+      }
+    });
   }
 
   getApptSchedule(e) {
@@ -400,7 +474,6 @@ class PhySchSetup extends Component {
   }
 
   dropDownHandler(value) {
-    debugger;
     if (value.name === "month") {
       let dateToday = this.state.year + this.state.month + "01";
       this.setState({
@@ -420,9 +493,14 @@ class PhySchSetup extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({
-            modify: response.data.records
-          });
+          this.setState(
+            {
+              modify: response.data.records
+            },
+            () => {
+              console.log("Modify Array:", this.state.modify);
+            }
+          );
         }
       },
       onFailure: error => {
@@ -467,19 +545,28 @@ class PhySchSetup extends Component {
   }
 
   render() {
-    debugger;
     return (
       <div className="phy-sch-setup">
         {/* Modify Modal Start */}
         <Modal open={this.state.openModifier}>
           <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Modify Working Hours</h4>
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4>Modify Working Hours</h4>
+                </div>
+
+                <div className="col-lg-4">
+                  <button type="button" onClick={this.handleClose.bind(this)}>
+                    <i className="fas fa-times-circle" />
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="popupInner">
               <div className="col-lg-12 margin-top-15">
                 <div className="col-lg-12 card box-shadow-normal">
-                  <div className="row ">
+                  <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col-lg-3" }}
                       label={{
@@ -498,7 +585,7 @@ class PhySchSetup extends Component {
                         }
                       }}
                     />
-                    <AlgaehDateHandler
+                    {/* <AlgaehDateHandler
                       div={{ className: "col-lg-3" }}
                       label={{ forceLabel: "Selected From Date", isImp: true }}
                       textBox={{
@@ -528,7 +615,7 @@ class PhySchSetup extends Component {
                     />
                     <div className="col-lg-1 form-group margin-top-15">
                       <span className="fas fa-search fa-2x" />
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -552,13 +639,60 @@ class PhySchSetup extends Component {
                           label={{ forceLabel: "Appointment Date" }}
                         />
                       ),
-                      disabled: true
+                      disabled: true,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.schedule_date).format("DD-MM-YYYY")}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.schedule_date).format("DD-MM-YYYY")}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "modified",
+                      label: <AlgaehLabel label={{ forceLabel: "Leave" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <input
+                            style={{ pointerEvents: "none" }}
+                            type="checkbox"
+                            checked={row.modified === "L" ? true : false}
+                            onChange={null}
+                          />
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <input
+                            type="checkbox"
+                            name="modified"
+                            checked={row.modified === "L" ? true : false}
+                            onChange={this.changeCheckBox.bind(this, row)}
+                          />
+                        );
+                      }
                     },
                     {
                       fieldName: "from_work_hr",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "From Work Hour" }} />
                       ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.from_work_hr, "hh:mm:ss").format(
+                              "hh:mm A"
+                            )}
+                          </span>
+                        );
+                      },
                       editorTemplate: row => {
                         return (
                           <AlagehFormGroup
@@ -582,7 +716,34 @@ class PhySchSetup extends Component {
                       fieldName: "to_work_hr",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "To Work Hour" }} />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.to_work_hr, "hh:mm:ss").format(
+                              "hh:mm A"
+                            )}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{ className: "" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "to_work_hr",
+                              value: row.to_work_hr,
+                              events: {
+                                onChange: this.changeGridEditors.bind(this, row)
+                              },
+                              others: {
+                                type: "time"
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
                     {
                       fieldName: "from_break_hr1",
@@ -590,7 +751,34 @@ class PhySchSetup extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "From Work Break 1" }}
                         />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.from_break_hr1, "hh:mm:ss").format(
+                              "hh:mm A"
+                            )}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{ className: "" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "from_break_hr1",
+                              value: row.from_break_hr1,
+                              events: {
+                                onChange: this.changeGridEditors.bind(this, row)
+                              },
+                              others: {
+                                type: "time"
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
                     {
                       fieldName: "to_break_hr1",
@@ -598,7 +786,34 @@ class PhySchSetup extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "To Work Break 1" }}
                         />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.to_break_hr1, "hh:mm:ss").format(
+                              "hh:mm A"
+                            )}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{ className: "" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "to_break_hr1",
+                              value: row.to_break_hr1,
+                              events: {
+                                onChange: this.changeGridEditors.bind(this, row)
+                              },
+                              others: {
+                                type: "time"
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
                     {
                       fieldName: "from_break_hr2",
@@ -606,7 +821,34 @@ class PhySchSetup extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "From Work Break 2" }}
                         />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.from_break_hr2, "hh:mm:ss").format(
+                              "hh:mm A"
+                            )}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{ className: "" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "from_break_hr2",
+                              value: row.from_break_hr2,
+                              events: {
+                                onChange: this.changeGridEditors.bind(this, row)
+                              },
+                              others: {
+                                type: "time"
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
                     {
                       fieldName: "to_break_hr2",
@@ -614,7 +856,34 @@ class PhySchSetup extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "To Work Break 2" }}
                         />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.to_break_hr2, "hh:mm:ss").format(
+                              "hh:mm A"
+                            )}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{ className: "" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "to_break_hr2",
+                              value: row.to_break_hr2,
+                              events: {
+                                onChange: this.changeGridEditors.bind(this, row)
+                              },
+                              others: {
+                                type: "time"
+                              }
+                            }}
+                          />
+                        );
+                      }
                     }
                   ]}
                   keyId="hims_d_appointment_status_id"
@@ -626,27 +895,9 @@ class PhySchSetup extends Component {
                   events={{
                     onDelete: () => {},
                     onDone: this.updateDoctorScheduleDateWise.bind(this)
-                    // onDelete: this.deleteAppointmentStatus.bind(this),
-                    // onDone: this.updateAppointmentStatus.bind(this)
                   }}
                 />
               </div>
-            </div>
-            <div className="popupFooter">
-              <button
-                type="button"
-                className="btn btn-primary"
-                //onClick={this.handleClose}
-              >
-                Amend Timeslot
-              </button>
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={this.handleClose.bind(this)}
-              >
-                Close
-              </button>
             </div>
           </div>
         </Modal>
@@ -800,7 +1051,10 @@ class PhySchSetup extends Component {
                         }}
                         events={{
                           onChange: selectedDate => {
-                            this.setState({ from_date: selectedDate });
+                            debugger;
+                            this.setState({
+                              from_date: selectedDate
+                            });
                           }
                         }}
                         value={this.state.from_date}
@@ -1065,7 +1319,6 @@ class PhySchSetup extends Component {
         {/* Schedule Modal End */}
 
         {/* Top Filter Start */}
-
         <div className="row  inner-top-search">
           <AlagehAutoComplete
             div={{ className: "col-lg-3" }}
@@ -1134,6 +1387,7 @@ class PhySchSetup extends Component {
           </div>
         </div>
         {/* Top Filter End */}
+
         <div className="row">
           <div className="col-lg-3">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
@@ -1164,6 +1418,7 @@ class PhySchSetup extends Component {
                           onClick={this.loadDetails.bind(this)}
                         >
                           <span>{data.schedule_description}</span>
+                          {/* <span className="fas fa-trash" /> */}
                           {/* <i
                             id={data.appointment_schedule_header_id}
                             className="fas fa-pen"
@@ -1192,16 +1447,21 @@ class PhySchSetup extends Component {
                   <h3 className="caption-subject">{this.state.description}</h3>
                 </div>
 
-                <div class="actions">
-                  <span className="btn btn-green btn-circle">
-                    <i className="fas fa-copy" />
-                  </span>
-                  <span className="btn btn-green btn-circle active">
-                    <i className="fas fa-pen" />
-                  </span>
-                </div>
+                {this.state.description ? (
+                  <div className="actions">
+                    <span className="btn btn-green btn-circle">
+                      <i className="fas fa-copy" />
+                    </span>
+                    <span className="btn btn-green btn-circle active">
+                      <i className="fas fa-trash-alt" />
+                    </span>
+                    <span className="btn btn-green btn-circle active">
+                      <i className="fas fa-pen" />
+                    </span>
+                  </div>
+                ) : null}
               </div>
-              <div class="portlet-body">
+              <div className="portlet-body">
                 <div className="row">
                   <div className="col-lg-8">
                     <div className="row">
@@ -1380,7 +1640,10 @@ class PhySchSetup extends Component {
                             />
                             <h6>
                               {this.state.from_break_hr1
-                                ? this.state.from_break_hr1
+                                ? moment(
+                                    this.state.from_break_hr1,
+                                    "hh:mm:ss"
+                                  ).format("hh:mm a")
                                 : "00:00"}
                             </h6>
                           </div>
@@ -1416,7 +1679,10 @@ class PhySchSetup extends Component {
 
                             <h6>
                               {this.state.to_break_hr1
-                                ? this.state.to_break_hr1
+                                ? moment(
+                                    this.state.to_break_hr1,
+                                    "hh:mm:ss"
+                                  ).format("hh:mm a")
                                 : "00:00"}
                             </h6>
                           </div>
@@ -1457,7 +1723,10 @@ class PhySchSetup extends Component {
 
                             <h6>
                               {this.state.from_break_hr2
-                                ? this.state.from_break_hr2
+                                ? moment(
+                                    this.state.from_break_hr2,
+                                    "hh:mm:ss"
+                                  ).format("hh:mm a")
                                 : "00:00"}
                             </h6>
                           </div>
@@ -1494,7 +1763,10 @@ class PhySchSetup extends Component {
 
                             <h6>
                               {this.state.to_break_hr2
-                                ? this.state.to_break_hr2
+                                ? moment(
+                                    this.state.to_break_hr2,
+                                    "hh:mm:ss"
+                                  ).format("hh:mm a")
                                 : "00:00"}
                             </h6>
                           </div>
