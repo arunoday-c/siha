@@ -93,6 +93,7 @@ class AutoComplete extends Component {
   }
 
   onChangeSelectedDropDown(e) {
+    debugger;
     const value = e.currentTarget.value;
     const name = e.currentTarget.name;
     const data = this.props.selector.dataSource.data;

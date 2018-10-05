@@ -99,7 +99,6 @@ class PhySchSetup extends Component {
 
   updateDoctorScheduleDateWise(data) {
     console.log("Update Data:", data);
-    debugger;
 
     let send_data = {};
     if (data.hims_d_appointment_schedule_modify_id !== undefined) {
@@ -343,13 +342,14 @@ class PhySchSetup extends Component {
   }
 
   loadDetails(e) {
+    debugger;
     var element = document.querySelectorAll("[schedules]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
     }
     e.currentTarget.classList.add("active");
 
-    let header_id = e.currentTarget.getAttribute("id");
+    let header_id = e.currentTarget.getAttribute("header-id");
 
     let docs = Enumerable.from(this.state.scheduleList)
       .where(
@@ -400,11 +400,15 @@ class PhySchSetup extends Component {
           data: send_data,
           onSuccess: response => {
             if (response.data.success) {
+              debugger;
+              // this.getApptSchedule.bind(this);
+              //document.querySelectorAll("#schedule-ul li.active")[0].click();
               swal("Doctor Deleted Successfully", {
                 buttons: false,
                 icon: "success",
                 timer: 2000
               });
+              document.getElementById("srch-sch").click();
             }
           },
           onFailure: error => {
@@ -426,6 +430,7 @@ class PhySchSetup extends Component {
   }
 
   getApptSchedule(e) {
+    debugger;
     this.resetSaveState();
     e.preventDefault();
     if (this.state.sub_department_id === null) {
@@ -457,6 +462,14 @@ class PhySchSetup extends Component {
               },
               () => {
                 console.log("Schedule List:", this.state.scheduleList);
+                if (
+                  document.querySelectorAll("#schedule-ul li.active")[0] !==
+                  undefined
+                ) {
+                  document
+                    .querySelectorAll("#schedule-ul li.active")[0]
+                    .click();
+                }
               }
             );
           }
@@ -893,6 +906,7 @@ class PhySchSetup extends Component {
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
+                    onEdit: () => {},
                     onDelete: () => {},
                     onDone: this.updateDoctorScheduleDateWise.bind(this)
                   }}
@@ -1380,6 +1394,7 @@ class PhySchSetup extends Component {
 
           <div className="col-lg-1 form-group margin-top-15">
             <span
+              id="srch-sch"
               style={{ cursor: "pointer" }}
               onClick={this.getApptSchedule.bind(this)}
               className="fas fa-search fa-2x"
@@ -1408,12 +1423,12 @@ class PhySchSetup extends Component {
               </div>
               <div className="portlet-body">
                 <div className="bordered-layout-radius">
-                  <ul style={{ height: "53vh" }}>
+                  <ul id="schedule-ul" style={{ height: "53vh" }}>
                     {this.state.scheduleList.length !== 0 ? (
                       this.state.scheduleList.map((data, index) => (
                         <li
                           schedules={data.schedule_description}
-                          id={data.hims_d_appointment_schedule_header_id}
+                          header-id={data.hims_d_appointment_schedule_header_id}
                           key={index}
                           onClick={this.loadDetails.bind(this)}
                         >

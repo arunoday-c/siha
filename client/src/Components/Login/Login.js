@@ -195,7 +195,7 @@ export default class Login extends Component {
               <h3
                 style={{ marginTop: 20, marginBottom: 20, textAlign: "center" }}
               >
-                <span style={{ color: "#3A95AA" }}> ALGAEH</span> ERP
+                <span style={{ color: "#3A95AA" }}> ALGAEH</span> HIMS
               </h3>
               <div>
                 <form onSubmit={this.handleLogin.bind(this)}>

@@ -614,10 +614,8 @@ let selectDoctorsAndClinic = (req, res, next) => {
       connection.query(
         "select hims_m_employee_department_mappings.employee_id as provider_id,\
          hims_m_employee_department_mappings.sub_department_id as sub_dept_id,\
-      concat( hims_d_employee.first_name,' ',\
-      hims_d_employee.middle_name,' ',\
-      hims_d_employee.last_name) full_name,\
-      hims_d_employee.arabic_name,\
+       hims_d_employee.full_name,\
+  hims_d_employee.arabic_name,\
       hims_m_employee_department_mappings.services_id,\
       hims_d_sub_department.department_id,\
       hims_d_sub_department.sub_department_name,\
