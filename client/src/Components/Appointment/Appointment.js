@@ -653,7 +653,7 @@ class Appointment extends Component {
                 {this.state.appointmentSchedule.length !== 0
                   ? this.state.appointmentSchedule.map((data, index) => (
                       <table key={index} className="tg">
-                        <tbody>
+                        <thead>
                           <tr>
                             {/* <th className="tg-c3ow">Time</th> */}
                             <th className="tg-amwm" colSpan="2">
@@ -663,9 +663,11 @@ class Appointment extends Component {
                           </tr>
                           <tr>
                             {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
-                            <td className="tbl-subHdg">BOOKED</td>
-                            <td className="tbl-subHdg">STANDBY</td>
+                            <th className="tbl-subHdg">BOOKED</th>
+                            <th className="tbl-subHdg">STANDBY</th>
                           </tr>
+                        </thead>
+                        <tbody>
                           {this.generateTimeslots(data)}
                           {/* {renderHTML(this.generateTimeslots(data))} */}
                           {/* <tr>
