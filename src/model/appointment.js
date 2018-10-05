@@ -1375,7 +1375,7 @@ let addDoctorToExistingSchedule = (req, res, next) => {
   }
 };
 
-//created by irfan: to add patient appointment 
+//created by irfan: to add patient appointment
 let addPatientAppointment = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -1388,39 +1388,6 @@ let addPatientAppointment = (req, res, next) => {
       if (error) {
         next(error);
       }
-
-      // connection.query(
-      //   "INSERT INTO `hims_f_patient_appointment` (patient_id,provider_id,sub_department_id,appointment_date,appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,\
-      //     confirmed,confirmed_by,comfirmed_date,cancelled,cancelled_by,cancelled_date,cancel_reason,created_date, created_by, updated_date, updated_by)\
-      //     VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      //   [
-      //     input.patient_id,
-      //     input.provider_id,
-      //     input.sub_department_id,
-      //     input.appointment_date,
-      //     input.appointment_from_time,
-      //     input.appointment_to_time,
-      //     input.appointment_status_id,
-      //     input.patient_name,
-      //     input.arabic_name,
-      //     input.date_of_birth,
-      //     input.age,
-      //     input.contact_number,
-      //     input.email,
-      //     input.send_to_provider,
-      //     input.gender,
-      //     input.confirmed,
-      //     input.confirmed_by,
-      //     input.comfirmed_date,
-      //     input.cancelled,
-      //     input.cancelled_by,
-      //     input.cancelled_date,
-      //     input.cancel_reason,
-      //     new Date(),
-      //     input.created_by,
-      //     new Date(),
-      //     input.updated_by
-      //   ],
 
       connection.query(
         "INSERT INTO `hims_f_patient_appointment` (patient_id,provider_id,sub_department_id,appointment_date,appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,\
@@ -1462,8 +1429,6 @@ let addPatientAppointment = (req, res, next) => {
   }
 };
 
-
-
 //created by irfan: to update Patient Appointment
 let updatePatientAppointment = (req, res, next) => {
   try {
@@ -1503,6 +1468,37 @@ let updatePatientAppointment = (req, res, next) => {
   }
 };
 
+//created by irfan: to get Patient Appointment
+let getPatientAppointment = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_appointment_id,patient_id,provider_id,sub_department_id,appointment_date,\
+            appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,\
+        contact_number,email,send_to_provider,gender,confirmed,\
+        confirmed_by,comfirmed_date,cancelled,cancelled_by,cancelled_date,cancel_reason\
+        from hims_f_patient_appointment where record_status='A' and appointment_date=?",
+        [req.query.appointment_date],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addAppointmentStatus,
   addAppointmentRoom,
@@ -1522,5 +1518,6 @@ module.exports = {
   deleteDoctorFromSchedule,
   updateSchedule,
   addDoctorToExistingSchedule,
-  addPatientAppointment
+  addPatientAppointment,
+  getPatientAppointment
 };
