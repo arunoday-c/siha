@@ -32,7 +32,6 @@ class Appointment extends Component {
   componentDidMount() {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
-    this.getAppointmentSchedule();
   }
 
   getDoctorsAndDepts() {
@@ -98,7 +97,7 @@ class Appointment extends Component {
         algaehLoader({ show: false });
         swal(error.message, {
           buttons: false,
-          icon: "danger",
+          icon: "warning",
           timer: 2000
         });
       }
@@ -119,6 +118,7 @@ class Appointment extends Component {
   }
 
   deptDropDownHandler(value) {
+    debugger;
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
         .where(w => w.sub_dept_id === this.state.sub_department_id)
@@ -130,6 +130,7 @@ class Appointment extends Component {
   }
 
   dropDownHandle(value) {
+    debugger;
     this.setState({ [value.name]: value.value });
   }
 
@@ -373,7 +374,11 @@ class Appointment extends Component {
                             forceLabel: "Appointment Date"
                           }}
                         />
-                        <h6>12/10/2018</h6>
+                        <h6>
+                          {moment(this.state.activeDateHeader).format(
+                            "DD-MM-YYYY"
+                          )}
+                        </h6>
                       </div>
                       <div className="col-lg-4">
                         <AlgaehLabel
@@ -653,7 +658,7 @@ class Appointment extends Component {
                 {this.state.appointmentSchedule.length !== 0
                   ? this.state.appointmentSchedule.map((data, index) => (
                       <table key={index} className="tg">
-                        <tbody>
+                        <thead>
                           <tr>
                             {/* <th className="tg-c3ow">Time</th> */}
                             <th className="tg-amwm" colSpan="2">
@@ -663,9 +668,11 @@ class Appointment extends Component {
                           </tr>
                           <tr>
                             {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
-                            <td className="tbl-subHdg">BOOKED</td>
-                            <td className="tbl-subHdg">STANDBY</td>
+                            <th className="tbl-subHdg">BOOKED</th>
+                            <th className="tbl-subHdg">STANDBY</th>
                           </tr>
+                        </thead>
+                        <tbody>
                           {this.generateTimeslots(data)}
                           {/* {renderHTML(this.generateTimeslots(data))} */}
                           {/* <tr>
