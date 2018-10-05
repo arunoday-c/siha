@@ -309,24 +309,32 @@ class DataGrid extends PureComponent {
                   <React.Fragment>
                     {_allowEditButton ? (
                       edit ? (
-                        <button onClick={() => this.toggleRowSave(index)}>
-                          Save Row
-                        </button>
+                        <i
+                          className="fas fa-save"
+                          onClick={() => this.toggleRowSave(index)}
+                        >
+                        </i>
                       ) : (
-                        <button onClick={() => this.toggleRowEditable(index)}>
-                          Edit Row
-                        </button>
+                        <i
+                          className="fas fa-pen"
+                          onClick={() => this.toggleRowEditable(index)}
+                        >
+                        </i>
                       )
                     ) : null}
                     {_allowDeleteButton ? (
                       edit ? (
-                        <button onClick={() => this.toggleRowCancel(index)}>
-                          Cancel Row
-                        </button>
+                        <i
+                          className="fas fa-times"
+                          onClick={() => this.toggleRowCancel(index)}
+                        >
+                        </i>
                       ) : (
-                        <button onClick={() => this.toggleRowDelete(index)}>
-                          Delete Row
-                        </button>
+                        <i
+                          className="fas fa-trash-alt"
+                          onClick={() => this.toggleRowDelete(index)}
+                        >
+                        </i>
                       )
                     ) : null}
                   </React.Fragment>
