@@ -71,6 +71,7 @@ export default {
       filePreview: null,
       filePrimaryPreview: null,
       vat_applicable: "N",
+      mode_of_pay: null,
 
       widthImg: "",
       open: false,

@@ -91,65 +91,72 @@ class AddOPBillingForm extends Component {
   ProcessToBill(context, e) {
     debugger;
     let $this = this;
-
-    let serviceInput = [
-      {
-        insured: this.state.insured,
-        vat_applicable: this.state.vat_applicable,
-        hims_d_services_id: this.state.s_service,
-        primary_insurance_provider_id: this.state.insurance_provider_id,
-        primary_network_office_id: this.state
-          .hims_d_insurance_network_office_id,
-        primary_network_id: this.state.network_id,
-        sec_insured: this.state.sec_insured,
-        secondary_insurance_provider_id: this.state
-          .secondary_insurance_provider_id,
-        secondary_network_id: this.state.secondary_network_id,
-        secondary_network_office_id: this.state.secondary_network_office_id
-      }
-    ];
-
-    this.props.generateBill({
-      uri: "/billing/getBillDetails",
-      method: "POST",
-      data: serviceInput,
-      redux: {
-        type: "BILL_GEN_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        debugger;
-        if (data.billdetails[0].pre_approval === "Y") {
-          successfulMessage({
-            message:
-              "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-            title: "Warning",
-            icon: "warning"
-          });
-        } else {
-          let existingservices = $this.state.billdetails;
-
-          if (data.billdetails.length !== 0) {
-            data.billdetails[0].ordered_date = new Date();
-            existingservices.splice(0, 0, data.billdetails[0]);
-          }
-
-          if (context != null) {
-            context.updateState({ billdetails: existingservices });
-          }
-
-          $this.props.billingCalculations({
-            uri: "/billing/billingCalculations",
-            method: "POST",
-            data: { billdetails: existingservices },
-            redux: {
-              type: "BILL_HEADER_GEN_GET_DATA",
-              mappingName: "genbill"
-            }
-          });
+    if (this.state.patient_id !== null && this.state.visit_id !== null) {
+      let serviceInput = [
+        {
+          insured: this.state.insured,
+          vat_applicable: this.state.vat_applicable,
+          hims_d_services_id: this.state.s_service,
+          primary_insurance_provider_id: this.state.insurance_provider_id,
+          primary_network_office_id: this.state
+            .hims_d_insurance_network_office_id,
+          primary_network_id: this.state.network_id,
+          sec_insured: this.state.sec_insured,
+          secondary_insurance_provider_id: this.state
+            .secondary_insurance_provider_id,
+          secondary_network_id: this.state.secondary_network_id,
+          secondary_network_office_id: this.state.secondary_network_office_id
         }
-      }
-    });
+      ];
+
+      this.props.generateBill({
+        uri: "/billing/getBillDetails",
+        method: "POST",
+        data: serviceInput,
+        redux: {
+          type: "BILL_GEN_GET_DATA",
+          mappingName: "xxx"
+        },
+        afterSuccess: data => {
+          debugger;
+          if (data.billdetails[0].pre_approval === "Y") {
+            successfulMessage({
+              message:
+                "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+              title: "Warning",
+              icon: "warning"
+            });
+          } else {
+            let existingservices = $this.state.billdetails;
+
+            if (data.billdetails.length !== 0) {
+              data.billdetails[0].ordered_date = new Date();
+              existingservices.splice(0, 0, data.billdetails[0]);
+            }
+
+            if (context != null) {
+              context.updateState({ billdetails: existingservices });
+            }
+
+            $this.props.billingCalculations({
+              uri: "/billing/billingCalculations",
+              method: "POST",
+              data: { billdetails: existingservices },
+              redux: {
+                type: "BILL_HEADER_GEN_GET_DATA",
+                mappingName: "genbill"
+              }
+            });
+          }
+        }
+      });
+    } else {
+      successfulMessage({
+        message: "Invalid Input. Please select the patient and visit.",
+        title: "Warning",
+        icon: "warning"
+      });
+    }
   }
   //Calculate Row Detail
   calculateAmount(row, context, ctrl, e) {

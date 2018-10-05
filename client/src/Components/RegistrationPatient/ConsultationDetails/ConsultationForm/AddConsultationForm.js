@@ -74,6 +74,20 @@ class AddConsultationForm extends Component {
         }
       });
     }
+
+    if (
+      this.props.viewsubdept === undefined ||
+      this.props.viewsubdept.length === 0
+    ) {
+      this.props.getSubDepartment({
+        uri: "/department/get/subdepartment",
+        method: "GET",
+        redux: {
+          type: "DOCTOR_GET_DATA",
+          mappingName: "viewsubdept"
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -281,11 +295,12 @@ class AddConsultationForm extends Component {
                         ),
                         displayTemplate: row => {
                           let display = [];
-                          this.props.deptanddoctors === undefined
+                          this.props.viewsubdept === undefined
                             ? []
-                            : (display = this.props.deptanddoctors.departmets.filter(
+                            : (display = this.props.viewsubdept.filter(
                                 f =>
-                                  f.sub_department_id === row.sub_department_id
+                                  f.hims_d_sub_department_id ===
+                                  row.sub_department_id
                               ));
 
                           return (
@@ -307,10 +322,10 @@ class AddConsultationForm extends Component {
                         ),
                         displayTemplate: row => {
                           let display = [];
-                          this.props.deptanddoctors === undefined
+                          this.props.frontproviders === undefined
                             ? []
-                            : (display = this.props.deptanddoctors.doctors.filter(
-                                f => f.employee_id === row.doctor_id
+                            : (display = this.props.frontproviders.filter(
+                                f => f.hims_d_employee_id === row.doctor_id
                               ));
 
                           return (
@@ -351,7 +366,8 @@ function mapStateToProps(state) {
   return {
     visittypes: state.visittypes,
     frontproviders: state.frontproviders,
-    deptanddoctors: state.deptanddoctors
+    deptanddoctors: state.deptanddoctors,
+    viewsubdept: state.viewsubdept
   };
 }
 
@@ -362,7 +378,8 @@ function mapDispatchToProps(dispatch) {
       getProviderDetails: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
       generateBill: AlgaehActions,
-      billingCalculations: AlgaehActions
+      billingCalculations: AlgaehActions,
+      getSubDepartment: AlgaehActions
     },
     dispatch
   );

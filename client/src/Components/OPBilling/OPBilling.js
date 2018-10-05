@@ -98,6 +98,7 @@ class PatientDisplayDetails extends Component {
     }
     if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
       nextProps.genbill.patient_payable_h = nextProps.genbill.patient_payable;
+      nextProps.genbill.saveEnable = false;
       billOut = nextProps.genbill;
     }
 
@@ -189,7 +190,7 @@ class PatientDisplayDetails extends Component {
       },
       afterSuccess: data => {
         debugger;
-        data.Billexists = true;
+        data.saveEnable = true;
         $this.setState(data, () => {
           this.getPatientDetails(this, data);
         });
@@ -399,7 +400,7 @@ class PatientDisplayDetails extends Component {
                   type="button"
                   className="btn btn-primary"
                   onClick={this.SaveBill.bind(this)}
-                  disabled={this.state.Billexists}
+                  disabled={this.state.saveEnable}
                 >
                   {/* <AlgaehLabel
                     label={{ fieldName: "btn_save", returnText: true }}
