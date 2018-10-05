@@ -1,8 +1,7 @@
 .appointment .appointment-outer-cntr {
   overflow-x: scroll;
   overflow-y: hidden;
-  width: 94.8vw;
-  height: 355px; }
+  width: 94.8vw; }
 
 .appointment .appointment-inner-cntr {
   width: 2900px; }
@@ -72,90 +71,87 @@
   .appointment .my-calendar .CurrentDate {
     border-top: 2px solid yellow !important; }
 
-.appointment table tr {
-  text-align: center; }
-
-.appointment table th {
-  color: #009e94; }
-
-.appointment table td i {
-  color: #009e94;
-  cursor: pointer; }
-
-.appointment table .dynSlot {
-  position: absolute;
-  top: 2px;
-  left: 6px;
-  font-size: 0.7rem;
-  color: #7d7d7d; }
-
-.appointment table .dynPatient {
-  display: inline-block;
-  text-align: left;
-  width: 100%;
-  padding-left: 5px; }
-
-.appointment table .tbl-subHdg {
-  text-transform: uppercase;
-  font-size: 0.7rem !important;
-  border: 1px solid #009e94 !important;
-  background: #fffff4;
-  color: #5a5a5a; }
-
 .appointment .tg {
-  display: inline; }
-  .appointment .tg th {
-    font-family: Arial, sans-serif;
-    font-size: 0.9rem;
-    font-weight: normal;
-    overflow: hidden;
-    word-break: normal;
-    border: 1px solid lightgrey;
-    border-bottom: 1px solid #000;
-    border-top: 1px solid #000; }
-  .appointment .tg td {
-    width: 120px;
-    font-family: Arial, sans-serif;
-    font-size: 0.8rem;
-    overflow: hidden;
-    word-break: normal;
-    border: 1px solid #009e94;
-    border-bottom: 1px solid lightgrey;
-    border-top: 1px solid lightgrey; }
-  .appointment .tg .tg-baqh {
-    text-align: center;
-    position: relative;
-    padding: 15px 0 5px;
-    height: 55px; }
-    .appointment .tg .tg-baqh i {
+  display: inline-block; }
+  .appointment .tg thead tr {
+    text-align: center; }
+    .appointment .tg thead tr th {
+      font-family: Arial, sans-serif;
+      font-size: 0.9rem;
+      font-weight: normal;
+      overflow: hidden;
+      word-break: normal;
+      border: 1px solid lightgrey;
+      border-bottom: 1px solid #000;
+      border-top: 1px solid #000; }
+    .appointment .tg thead tr .tbl-subHdg {
+      text-transform: uppercase;
+      font-size: 0.7rem !important;
+      border: 1px solid #009e94 !important;
+      background: #fffff4;
+      color: #5a5a5a;
+      padding: 0;
+      width: 120px; }
+  .appointment .tg tbody {
+    height: 300px;
+    overflow: auto;
+    display: grid; }
+    .appointment .tg tbody td.tg-baqh {
+      width: 120px;
+      font-family: Arial, sans-serif;
+      font-size: 0.8rem;
+      overflow: hidden;
+      word-break: normal;
+      border: 1px solid #009e94;
+      border-bottom: 1px solid lightgrey;
+      border-top: 1px solid lightgrey;
+      text-align: center;
+      position: relative;
+      padding: 15px 0 5px;
+      height: 55px;
+      width: 120px; }
+    .appointment .tg tbody .dynPatient {
+      display: inline-block;
+      text-align: left;
+      width: 100%;
+      padding-left: 5px; }
+    .appointment .tg tbody .dynSlot {
+      position: absolute;
+      top: 2px;
+      left: 6px;
+      font-size: 0.7rem;
+      color: #7d7d7d; }
+    .appointment .tg tbody i {
       visibility: hidden;
       position: absolute;
       top: -1px;
       right: -1px;
       border: 1px solid #d3d3d3;
       padding: 3px;
-      width: 20px; }
-    .appointment .tg .tg-baqh i.fa-pen {
+      width: 20px;
+      color: #009e94;
+      cursor: pointer; }
+    .appointment .tg tbody i.fa-pen {
       color: blue !important; }
-    .appointment .tg .tg-baqh i.fa-times {
+    .appointment .tg tbody i.fa-times {
       color: red !important;
       top: 18px !important; }
-  .appointment .tg .tg-baqh:hover i {
-    visibility: visible; }
-  .appointment .tg .tg-baqh:nth-child(odd) {
-    border-right: 1px dashed lightgrey !important; }
-  .appointment .tg .tg-baqh:nth-child(even) {
-    border-left: none !important; }
-    .appointment .tg .tg-baqh:nth-child(even) .dynSlot {
-      visibility: hidden; }
-  .appointment .tg .tg-c3ow {
-    border-color: inherit;
-    text-align: center;
-    vertical-align: top; }
-  .appointment .tg .tg-amwm {
-    font-weight: bold;
-    text-align: center;
-    vertical-align: top; }
+    .appointment .tg tbody td.tg-baqh:hover i {
+      visibility: visible; }
+    .appointment .tg tbody td.tg-baqh:nth-child(odd) {
+      border-right: 1px dashed lightgrey !important; }
+    .appointment .tg tbody td.tg-baqh:nth-child(even) {
+      border-left: none !important; }
+      .appointment .tg tbody td.tg-baqh:nth-child(even) .dynSlot {
+        visibility: hidden; }
+    .appointment .tg tbody .tg-c3ow {
+      border-color: inherit;
+      text-align: center;
+      vertical-align: top; }
+    .appointment .tg tbody .tg-amwm {
+      font-weight: bold;
+      text-align: center;
+      vertical-align: top; }
 
 .appointment ul.ul-legend li {
   float: left;

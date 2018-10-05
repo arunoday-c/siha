@@ -3,7 +3,6 @@
     overflow-x: scroll;
     overflow-y: hidden;
     width: 94.8vw;
-    height: 355px;
   }
   .appointment-inner-cntr {
     width: 2900px;
@@ -106,69 +105,67 @@
     }
   }
 
-  table {
-    tr {
-      text-align: center;
-    }
-    th {
-      color: #009e94;
-    }
-    td {
-      i {
-        color: #009e94;
-        cursor: pointer;
+  .tg {
+    display: inline-block;
+    thead {
+      tr {
+        text-align: center;
+
+        th {
+          font-family: Arial, sans-serif;
+          font-size: 0.9rem;
+          font-weight: normal;
+          overflow: hidden;
+          word-break: normal;
+          border: 1px solid lightgrey;
+          border-bottom: 1px solid #000;
+          border-top: 1px solid #000;
+        }
+        .tbl-subHdg {
+          text-transform: uppercase;
+          font-size: 0.7rem !important;
+          border: 1px solid #009e94 !important;
+          background: #fffff4;
+          color: #5a5a5a;
+          padding: 0;
+          width: 120px;
+        }
       }
     }
-    .dynSlot {
-      position: absolute;
-      top: 2px;
-      left: 6px;
-      font-size: 0.7rem;
-      color: #7d7d7d;
-    }
-    .dynPatient {
-      display: inline-block;
-      text-align: left;
-      width: 100%;
-      padding-left: 5px;
-    }
-    .tbl-subHdg {
-      text-transform: uppercase;
-      font-size: 0.7rem !important;
-      border: 1px solid #009e94 !important;
-      background: #fffff4;
-      color: #5a5a5a;
-    }
-  }
+    tbody {
+      height: 300px;
+      overflow: auto;
+      display: grid;
+      td.tg-baqh {
+        width: 120px;
+        font-family: Arial, sans-serif;
+        font-size: 0.8rem;
+        overflow: hidden;
+        word-break: normal;
+        border: 1px solid #009e94;
+        border-bottom: 1px solid lightgrey;
+        border-top: 1px solid lightgrey;
+        text-align: center;
+        position: relative;
+        padding: 15px 0 5px;
+        height: 55px;
+        width: 120px;
+      }
 
-  .tg {
-    display: inline;
-    th {
-      font-family: Arial, sans-serif;
-      font-size: 0.9rem;
-      font-weight: normal;
-      overflow: hidden;
-      word-break: normal;
-      border: 1px solid lightgrey;
-      border-bottom: 1px solid #000;
-      border-top: 1px solid #000;
-    }
-    td {
-      width: 120px;
-      font-family: Arial, sans-serif;
-      font-size: 0.8rem;
-      overflow: hidden;
-      word-break: normal;
-      border: 1px solid #009e94;
-      border-bottom: 1px solid lightgrey;
-      border-top: 1px solid lightgrey;
-    }
-    .tg-baqh {
-      text-align: center;
-      position: relative;
-      padding: 15px 0 5px;
-      height: 55px;
+      .dynPatient {
+        display: inline-block;
+        text-align: left;
+        width: 100%;
+        padding-left: 5px;
+      }
 
+      .dynSlot {
+        position: absolute;
+        top: 2px;
+        left: 6px;
+        font-size: 0.7rem;
+        color: #7d7d7d;
+      }
       i {
         visibility: hidden;
         position: absolute;
@@ -177,6 +174,8 @@
         border: 1px solid #d3d3d3;
         padding: 3px;
         width: 20px;
+        color: #009e94;
+        cursor: pointer;
       }
       i.fa-pen {
         color: blue !important;
@@ -185,33 +184,32 @@
         color: red !important;
         top: 18px !important;
       }
-    }
-
-    .tg-baqh:hover {
-      i {
-        visibility: visible;
+      td.tg-baqh:hover {
+        i {
+          visibility: visible;
+        }
       }
-    }
 
-    .tg-baqh:nth-child(odd) {
-      border-right: 1px dashed lightgrey !important;
-      // background: #edfffd;
-    }
-    .tg-baqh:nth-child(even) {
-      border-left: none !important;
-      .dynSlot {
-        visibility: hidden;
+      td.tg-baqh:nth-child(odd) {
+        border-right: 1px dashed lightgrey !important;
+        // background: #edfffd;
       }
-    }
-    .tg-c3ow {
-      border-color: inherit;
-      text-align: center;
-      vertical-align: top;
-    }
-    .tg-amwm {
-      font-weight: bold;
-      text-align: center;
-      vertical-align: top;
+      td.tg-baqh:nth-child(even) {
+        border-left: none !important;
+        .dynSlot {
+          visibility: hidden;
+        }
+      }
+      .tg-c3ow {
+        border-color: inherit;
+        text-align: center;
+        vertical-align: top;
+      }
+      .tg-amwm {
+        font-weight: bold;
+        text-align: center;
+        vertical-align: top;
+      }
     }
   }
   ul.ul-legend {
