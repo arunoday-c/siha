@@ -1467,7 +1467,7 @@ class PhySchSetup extends Component {
                     <span className="btn btn-green btn-circle">
                       <i className="fas fa-copy" />
                     </span>
-                    <span className="btn btn-green btn-circle active">
+                    <span className="btn btn-green btn-circle">
                       <i className="fas fa-trash-alt" />
                     </span>
                     <span className="btn btn-green btn-circle active">

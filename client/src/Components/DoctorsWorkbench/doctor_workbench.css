@@ -256,19 +256,18 @@
     padding-top: 5px;
     font-style: bolder; }
 
-.doctor_workbench .encounters-panel .rightLabelCount {
-  float: right; }
-  .doctor_workbench .encounters-panel .rightLabelCount .countNo {
-    background: #2aafa4;
-    color: #fff;
-    padding: 2px 10px;
-    border-radius: 25%;
-    font-size: 0.8rem;
-    margin-left: 3px;
-    display: inline-block; }
-  .doctor_workbench .encounters-panel .rightLabelCount .style_Label {
-    font-size: 0.8rem;
-    text-transform: initial; }
+.doctor_workbench .rightLabelCount .countNo {
+  background: #2aafa4;
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 25%;
+  font-size: 0.8rem;
+  margin-left: 3px;
+  display: inline-block; }
+
+.doctor_workbench .rightLabelCount .style_Label {
+  font-size: 0.8rem;
+  text-transform: initial; }
 
 .testColor {
   background-color: #acffc0 !important; }
