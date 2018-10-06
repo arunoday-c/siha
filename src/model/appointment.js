@@ -712,13 +712,14 @@ let getDoctorScheduleDateWise = (req, res, next) => {
                 }
                 const obj = {
                   ...result[i],
-                  ...{ list: appResult }
+                  ...{ patientList: appResult }
                 };
 
                 outputArray.push(obj);
-
-                req.records = [obj];
-                next();
+                if (i == result.length - 1) {
+                  req.records = outputArray;
+                  next();
+                }
               }
             );
             // } else {
