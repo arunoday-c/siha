@@ -68,21 +68,30 @@ class Appointment extends Component {
   addPatientAppointment(e) {
     e.preventDefault();
 
+    let from_time = this.state.apptFromTime;
+
+    let to_time = moment(from_time).add(
+      "minutes",
+      this.state.slot * this.state.no_of_slots
+    );
+
+    console.log("TOoooo time:", to_time);
+
     const send_data = {
-      provider_id: apptProvider,
-      sub_department_id: apptSubDept,
+      provider_id: this.state.apptProvider,
+      sub_department_id: this.state.apptSubDept,
       appointment_date: this.state.activeDateHeader,
       appointment_from_time: this.state.apptFromTime,
       appointment_to_time: "09:15:00",
       appointment_status_id: 1,
       patient_name: this.state.patient_name,
       arabic_name: "sdwdw",
-      date_of_birth: "1992-09-07",
-      age: 45,
-      contact_number: 9987543094,
-      email: "hhdg@gmail.com",
+      date_of_birth: this.state.date_of_birth,
+      age: this.state.age,
+      contact_number: this.state.contact_number,
+      email: this.state.email,
       send_to_provider: "Y",
-      gender: "female",
+      gender: this.state.gender,
       confirmed: "Y",
       confirmed_by: "3",
       comfirmed_date: "2018-07-08",
@@ -91,27 +100,28 @@ class Appointment extends Component {
       cancelled_date: null,
       cancel_reason: null
     };
+    console.log("Send Obj:", send_data);
 
-    algaehApiCall({
-      uri: "/appointment/addPatientAppointment",
-      method: "POST",
-      data: send_data,
-      onSuccess: response => {
-        if (response.data.success) {
-          console.log("Add Pat APpts REsp :", response.data.records);
-          this.setState({
-            //departments: response.data.records
-          });
-        }
-      },
-      onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
-        });
-      }
-    });
+    // algaehApiCall({
+    //   uri: "/appointment/addPatientAppointment",
+    //   method: "POST",
+    //   data: send_data,
+    //   onSuccess: response => {
+    //     if (response.data.success) {
+    //       console.log("Add Pat APpts REsp :", response.data.records);
+    //       this.setState({
+    //         //departments: response.data.records
+    //       });
+    //     }
+    //   },
+    //   onFailure: error => {
+    //     swal(error.message, {
+    //       buttons: false,
+    //       icon: "error",
+    //       timer: 2000
+    //     });
+    //   }
+    // });
   }
 
   getDoctorsAndDepts() {
