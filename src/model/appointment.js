@@ -665,8 +665,10 @@ let getDoctorScheduleDateWise = (req, res, next) => {
     }
     let db = req.db;
     let selectDoctor = "";
+    let provider_id = "";
     if (req.query.provider_id != "null" && req.query.provider_id != null) {
       selectDoctor = `provider_id=${req.query.provider_id} and `;
+      provider_id = req.query.provider_id;
     }
     delete req.query.provider_id;
 
@@ -689,8 +691,41 @@ let getDoctorScheduleDateWise = (req, res, next) => {
             releaseDBConnection(db, connection);
             next(error);
           }
-          req.records = result;
-          next();
+          let outputArray = [];
+          for (let i = 0; i < result.length; i++) {
+            // if (provider_id != "") {
+            connection.query(
+              "select hims_f_patient_appointment_id, patient_id, provider_id, sub_department_id, appointment_date, appointment_from_time,\
+    appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
+    gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
+    appointment_remarks, is_stand_by  from hims_f_patient_appointment where record_status='A' and sub_department_id=?\
+    and appointment_date=? and provider_id=? ",
+              [
+                result[i].sub_dept_id,
+                result[i].schedule_date,
+                result[i].provider_id
+              ],
+              (error, appResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+                const obj = {
+                  ...result[i],
+                  ...{ list: appResult }
+                };
+
+                outputArray.push(obj);
+
+                req.records = [obj];
+                next();
+              }
+            );
+            // } else {
+            //   req.records = result;
+            //   next();
+            // }
+          }
         }
       );
     });
@@ -698,6 +733,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
     next(e);
   }
 };
+
 //created by irfan: to get Doctor Schedule to Modify
 let getDoctorScheduleToModify = (req, res, next) => {
   let selectWhere = {

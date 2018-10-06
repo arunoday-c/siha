@@ -369,6 +369,7 @@ class Appointment extends Component {
             onClick={this.showModal.bind(this)}
             className="fas fa-plus"
           />
+          <span className="dynPatient">John Doe</span>
         </td>
         <td className="tg-baqh">
           <span className="dynSlot">{data.time}</span>
@@ -526,7 +527,7 @@ class Appointment extends Component {
       <div className="appointment">
         {/* Pop up start */}
         <Modal open={this.state.showApt}>
-          <div className="algaeh-modal" style={{ width: 500 }}>
+          <div className="algaeh-modal" style={{ width: "55vw" }}>
             <div className="popupHeader">
               <h4>Book an Appointment</h4>
             </div>
@@ -535,28 +536,78 @@ class Appointment extends Component {
                 <div className="row">
                   <div className="col-lg-12 popRightDiv">
                     <div className="row">
-                      <div className="col-lg-4">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Appointment Date"
-                          }}
-                        />
-                        <h6>
-                          {moment(this.state.activeDateHeader).format(
-                            "DD-MM-YYYY"
-                          )}
-                        </h6>
-                      </div>
-                      <div className="col-lg-4">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Appointment Time"
-                          }}
-                        />
-                        <h6>{this.state.apptFromTime}</h6>
-                      </div>
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          forceLabel: "Select Status",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "no_of_slots",
+                          className: "select-fld",
+                          value: this.state.no_of_slots,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.NO_OF_SLOTS
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          forceLabel: "APPOINTMENT Date"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "date_of_birth"
+                        }}
+                        events={{
+                          onChange: selectedDate => {
+                            this.setState(
+                              { date_of_birth: selectedDate },
+                              () => {
+                                this.setState({
+                                  age: moment().diff(
+                                    this.state.date_of_birth,
+                                    "years"
+                                  )
+                                });
+                              }
+                            );
+                          }
+                        }}
+                        value={this.state.date_of_birth}
+                      />
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          forceLabel: "APPOINTMENT TIME"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "date_of_birth"
+                        }}
+                        events={{
+                          onChange: selectedDate => {
+                            this.setState(
+                              { date_of_birth: selectedDate },
+                              () => {
+                                this.setState({
+                                  age: moment().diff(
+                                    this.state.date_of_birth,
+                                    "years"
+                                  )
+                                });
+                              }
+                            );
+                          }
+                        }}
+                        value={this.state.date_of_birth}
+                      />
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3" }}
                         label={{
                           forceLabel: "Select Slots",
                           isImp: true
@@ -573,8 +624,31 @@ class Appointment extends Component {
                           onChange: this.dropDownHandle.bind(this)
                         }}
                       />
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-3 margin-top-15">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Appo. Date"
+                          }}
+                        />
+                        <h6>
+                          {moment(this.state.activeDateHeader).format(
+                            "DD-MM-YYYY"
+                          )}
+                        </h6>
+                      </div>
+
+                      <div className="col-lg-2 margin-top-15">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Appo. Time"
+                          }}
+                        />
+                        <h6>{this.state.apptFromTime}</h6>
+                      </div>
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4 margin-top-15" }}
+                        div={{ className: "col-lg-3 margin-top-15" }}
                         label={{
                           forceLabel: "Patient Code",
                           isImp: false
@@ -592,12 +666,32 @@ class Appointment extends Component {
                         }}
                       />
 
-                      <div className="col-lg-1">
-                        <i className="fas fa-search" />
+                      <div className="col-lg-1" style={{paddingTop:"40px"}}>
+                        <i className="fas fa-search" style={{marginLeft:"-75%"}} />
                       </div>
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3 margin-top-15" }}
+                        label={{
+                          forceLabel: "Select Slots",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "no_of_slots",
+                          className: "select-fld",
+                          value: this.state.no_of_slots,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.NO_OF_SLOTS
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+                    </div>
 
+                    <div className="row">
                       <AlagehFormGroup
-                        div={{ className: "col-lg-8 margin-top-15" }}
+                        div={{ className: "col-lg-6 margin-top-15" }}
                         label={{
                           forceLabel: "Patient Name",
                           isImp: true
@@ -611,9 +705,24 @@ class Appointment extends Component {
                           }
                         }}
                       />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6 margin-top-15" }}
+                        label={{
+                          forceLabel: "Patient Name Arabic",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "patient_name",
+                          value: this.state.patient_name,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
 
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-4 margin-top-15" }}
+                        div={{ className: "col-lg-3 margin-top-15" }}
                         label={{
                           forceLabel: "Date of Birth"
                         }}
@@ -640,10 +749,46 @@ class Appointment extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4 margin-top-15" }}
+                        div={{ className: "col-lg-2 margin-top-15" }}
                         label={{
                           forceLabel: "Age",
-                          isImp: true
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "age",
+                          others: {
+                            type: "number"
+                          },
+                          value: this.state.age,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-2 margin-top-15" }}
+                        label={{
+                          forceLabel: ".",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "age",
+                          others: {
+                            type: "number"
+                          },
+                          value: this.state.age,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-2 margin-top-15" }}
+                        label={{
+                          forceLabel: ".",
+                          isImp: false
                         }}
                         textBox={{
                           className: "txt-fld",
@@ -659,7 +804,7 @@ class Appointment extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-4 margin-top-15" }}
+                        div={{ className: "col-lg-3 margin-top-15" }}
                         label={{
                           forceLabel: "Gender",
                           isImp: true
@@ -678,7 +823,7 @@ class Appointment extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4 margin-top-15" }}
+                        div={{ className: "col-lg-6 margin-top-15" }}
                         label={{
                           forceLabel: "Mobile No.",
                           isImp: true
@@ -697,7 +842,7 @@ class Appointment extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-8 margin-top-15" }}
+                        div={{ className: "col-lg-6 margin-top-15" }}
                         label={{
                           forceLabel: "Email Address",
                           isImp: false
@@ -867,95 +1012,7 @@ class Appointment extends Component {
                             <th className="tbl-subHdg">STANDBY</th>
                           </tr>
                         </thead>
-                        <tbody>
-                          {this.generateTimeslots(data)}
-                          {/* {renderHTML(this.generateTimeslots(data))} */}
-                          {/* <tr>
-                            <td className="tg-baqh">
-                              <span className="dynSlot">09:00 AM</span>
-                              <i
-                                onClick={this.showModal.bind(this)}
-                                className="fas fa-pen"
-                              />
-                              <i
-                                onClick={this.showModal.bind(this)}
-                                className="fas fa-times"
-                              />
-                              <span className="dynPatient">John Doe</span>
-                            </td>
-                            <td className="tg-baqh">
-                              <span className="dynSlot">09:00 AM</span>
-                              <i
-                                onClick={this.showModal.bind(this)}
-                                className="fas fa-plus"
-                              />
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="tg-baqh">
-                              <span className="dynSlot">09:00 AM</span>
-                              <i
-                                onClick={this.showModal.bind(this)}
-                                className="fas fa-plus"
-                              />
-                            </td>
-                            <td className="tg-baqh">
-                              <span className="dynSlot">09:00 AM</span>
-                              <i
-                                onClick={this.showModal.bind(this)}
-                                className="fas fa-plus"
-                              />
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="tg-baqh">
-                              <span className="dynSlot">09:00 AM</span>
-                              <i
-                                onClick={this.showModal.bind(this)}
-                                className="fas fa-plus"
-                              />
-                            </td>
-                            <td className="tg-baqh">
-                              <span className="dynSlot">09:00 AM</span>
-                              <i
-                                onClick={this.showModal.bind(this)}
-                                className="fas fa-plus"
-                              />
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="tg-baqh">
-                              <span className="dynSlot">09:00 AM</span>
-                              <i
-                                onClick={this.showModal.bind(this)}
-                                className="fas fa-plus"
-                              />
-                            </td>
-                            <td className="tg-baqh">
-                              <span className="dynSlot">09:00 AM</span>
-                              <i
-                                onClick={this.showModal.bind(this)}
-                                className="fas fa-plus"
-                              />
-                            </td>
-                          </tr>
-                          <tr> 
-                            <td className="tg-baqh">
-                              <span className="dynSlot">09:00 AM</span>
-                              <i
-                                onClick={this.showModal.bind(this)}
-                                className="fas fa-plus"
-                              />
-                            </td>
-                            <td className="tg-baqh">
-                              <span className="dynSlot">09:00 AM</span>
-                              <i
-                                onClick={this.showModal.bind(this)}
-                                className="fas fa-plus"
-                              />
-                            </td>
-                          </tr>*/}
-                        </tbody>
+                        <tbody>{this.generateTimeslots(data)}</tbody>
                       </table>
                     ))
                   : "No Doctors available for the selected criteria"}

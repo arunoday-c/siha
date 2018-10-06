@@ -1,5 +1,10 @@
 import extend from "extend";
-import { whereCondition, checkIsNull, uploadFile } from "../utils";
+import {
+  whereCondition,
+  releaseDBConnection,
+  checkIsNull,
+  uploadFile
+} from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { logger, debugLog, debugFunction } from "../utils/logging";
 
@@ -489,12 +494,13 @@ let patientSelect = (req, res, next) => {
     }
     let db = req.db;
     db.getConnection((error, connection) => {
-      if (errror) {
+      if (error) {
         next(error);
       }
       selectData(connection, req, (error, result) => {
         connection.release();
         if (error) {
+          releaseDBConnection(db, connection);
           next(error);
         }
         req.records = result;
@@ -524,7 +530,7 @@ let selectData = (dataBase, req, callBack) => {
   , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
   , `photo_file`, `primary_id_file`, `secondary_id_file`,`city_id`,`state_id`,`country_id`,`vat_applicable` \
    FROM `hims_f_patient`\
-   WHERE `record_status`='A' " +
+   WHERE `record_status`='A' and " +
         where.condition,
       where.values,
       (error, result) => {

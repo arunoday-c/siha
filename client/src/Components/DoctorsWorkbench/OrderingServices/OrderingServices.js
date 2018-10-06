@@ -240,7 +240,7 @@ class OrderingServices extends Component {
 
             <div className="col-lg-3"> &nbsp; </div>
           </div>
-          <div className="row form-details">
+          <div className="row">
             <div className="col-lg-12">
               <AlgaehDataGrid
                 id="Services_Ordering"
