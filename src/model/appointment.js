@@ -523,7 +523,7 @@ function getDaysArray(start, end, days) {
       arr.push(dat);
     }
   }
-  debugLog("day:", arr);
+  debugLog("dates:", arr);
   return arr;
 }
 //created by irfan: to add appointment leave
@@ -692,40 +692,45 @@ let getDoctorScheduleDateWise = (req, res, next) => {
             next(error);
           }
           let outputArray = [];
-          for (let i = 0; i < result.length; i++) {
-            // if (provider_id != "") {
-            connection.query(
-              "select hims_f_patient_appointment_id, patient_id, provider_id, sub_department_id, appointment_date, appointment_from_time,\
+          if (result.length > 0) {
+            for (let i = 0; i < result.length; i++) {
+              // if (provider_id != "") {
+              connection.query(
+                "select hims_f_patient_appointment_id, patient_id, provider_id, sub_department_id, appointment_date, appointment_from_time,\
     appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
     gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
     appointment_remarks, is_stand_by  from hims_f_patient_appointment where record_status='A' and sub_department_id=?\
     and appointment_date=? and provider_id=? ",
-              [
-                result[i].sub_dept_id,
-                result[i].schedule_date,
-                result[i].provider_id
-              ],
-              (error, appResult) => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                }
-                const obj = {
-                  ...result[i],
-                  ...{ patientList: appResult }
-                };
+                [
+                  result[i].sub_dept_id,
+                  result[i].schedule_date,
+                  result[i].provider_id
+                ],
+                (error, appResult) => {
+                  if (error) {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  }
+                  const obj = {
+                    ...result[i],
+                    ...{ patientList: appResult }
+                  };
 
-                outputArray.push(obj);
-                if (i == result.length - 1) {
-                  req.records = outputArray;
-                  next();
+                  outputArray.push(obj);
+                  if (i == result.length - 1) {
+                    req.records = outputArray;
+                    next();
+                  }
                 }
-              }
-            );
-            // } else {
-            //   req.records = result;
-            //   next();
-            // }
+              );
+              // } else {
+              //   req.records = result;
+              //   next();
+              // }
+            }
+          } else {
+            req.records = result;
+            next();
           }
         }
       );
@@ -1102,6 +1107,315 @@ let addDoctorToExistingSchedule = (req, res, next) => {
           });
         }
 
+        //generating list of dates by date range ie.(from_time and  to_time)
+        connection.query(
+          "SELECT from_work_hr,to_work_hr,from_date, to_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
+          from hims_d_appointment_schedule_header where  record_status='A' and hims_d_appointment_schedule_header_id=?",
+          [input.hims_d_appointment_schedule_header_id],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+
+            let working_days = [];
+
+            let inputDays = [
+              result[0].sunday,
+              result[0].monday,
+              result[0].tuesday,
+              result[0].wednesday,
+              result[0].thursday,
+              result[0].friday,
+              result[0].saturday
+            ];
+
+            for (let d = 0; d < 7; d++) {
+              if (inputDays[d] == "Y") {
+                working_days.push(d);
+              }
+            }
+
+            let newDateList = getDaysArray(
+              new Date(result[0].from_date),
+              new Date(result[0].to_date),
+              working_days
+            );
+            newDateList.map(v => v.toLocaleString());
+            //.slice(0, 10)).join("");
+
+            debugLog("newDateList:", newDateList.length);
+            //get list of dates which are already scheduled for this doctor
+            connection.query(
+              "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and schedule_date>?;",
+              [input.provider_id, new Date()],
+              (error, occupiedDoctorDates) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                let OccupiedDoctorDatesList = new LINQ(occupiedDoctorDates)
+                  .Select(s => s.schedule_date)
+                  .ToArray();
+
+                let clashingDate = [];
+                new LINQ(newDateList).Select(s => {
+                  const index = OccupiedDoctorDatesList.indexOf(
+                    moment(s).format("YYYY-MM-DD")
+                  );
+                  if (index > -1) {
+                    clashingDate.push(OccupiedDoctorDatesList[index]);
+                  }
+                });
+
+                debugLog("clashingDate: ", clashingDate);
+
+                //if date clashes check for time else add
+                if (clashingDate.length > 0) {
+                  let appointment_schedule_header_id = new LINQ(
+                    occupiedDoctorDates
+                  )
+                    .Where(w => w.schedule_date == clashingDate[0])
+                    .Select(s => s.appointment_schedule_header_id)
+                    .ToArray();
+                  //obtain existing schedule time
+                  connection.query(
+                    "select * from hims_d_appointment_schedule_header where time(from_work_hr)<=?  and time(to_work_hr)> ?\
+                    and hims_d_appointment_schedule_header_id=?",
+                    [
+                      result[0].from_work_hr,
+                      result[0].from_work_hr,
+                      appointment_schedule_header_id[0]
+                    ],
+                    (error, timeChecking) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+
+                      if (timeChecking.length > 0) {
+                        //reject adding to schedule
+                        debugLog("timeChecking", timeChecking);
+                        req.records = {
+                          message: "schedule already exist",
+                          schedule_exist: true
+                        };
+                        next();
+                      } else {
+                        //add to schedule
+
+                        if (input.schedule_detail.length != 0) {
+                          if (
+                            input.hims_d_appointment_schedule_header_id != null
+                          ) {
+                            for (
+                              let doc = 0;
+                              doc < input.schedule_detail.length;
+                              doc++
+                            ) {
+                              let doctorSchedule = [];
+
+                              for (let i = 0; i < newDateList.length; i++) {
+                                doctorSchedule.push({
+                                  ...input.schedule_detail[doc],
+                                  ...{ schedule_date: newDateList[i] }
+                                });
+                              }
+
+                              const insurtColumns = [
+                                "provider_id",
+                                "clinic_id",
+                                "slot",
+                                "schedule_date",
+                                "created_by",
+                                "updated_by"
+                              ];
+
+                              connection.query(
+                                "INSERT INTO hims_d_appointment_schedule_detail(" +
+                                  insurtColumns.join(",") +
+                                  ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?",
+                                [
+                                  jsonArrayToObject({
+                                    sampleInputObject: insurtColumns,
+                                    arrayObj: doctorSchedule,
+                                    newFieldToInsert: [
+                                      input.hims_d_appointment_schedule_header_id,
+                                      new Date(),
+                                      new Date()
+                                    ],
+                                    req: req
+                                  })
+                                ],
+                                (error, schedule_detailResult) => {
+                                  if (error) {
+                                    connection.rollback(() => {
+                                      releaseDBConnection(db, connection);
+                                      next(error);
+                                    });
+                                  }
+
+                                  connection.commit(error => {
+                                    if (error) {
+                                      connection.rollback(() => {
+                                        releaseDBConnection(db, connection);
+                                        next(error);
+                                      });
+                                    }
+                                    req.records = schedule_detailResult;
+                                    next();
+                                  });
+                                }
+                              );
+                            }
+                          }
+                        } else {
+                          req.records = { message: "please select doctors" };
+                          next();
+                        }
+                      }
+                    }
+                  );
+                } else {
+                  //else add doctor to schedule
+                  if (input.schedule_detail.length != 0) {
+                    if (input.hims_d_appointment_schedule_header_id != null) {
+                      for (
+                        let doc = 0;
+                        doc < input.schedule_detail.length;
+                        doc++
+                      ) {
+                        let doctorSchedule = [];
+
+                        for (let i = 0; i < newDateList.length; i++) {
+                          doctorSchedule.push({
+                            ...input.schedule_detail[doc],
+                            ...{ schedule_date: newDateList[i] }
+                          });
+                        }
+
+                        const insurtColumns = [
+                          "provider_id",
+                          "clinic_id",
+                          "slot",
+                          "schedule_date",
+                          "created_by",
+                          "updated_by"
+                        ];
+
+                        connection.query(
+                          "INSERT INTO hims_d_appointment_schedule_detail(" +
+                            insurtColumns.join(",") +
+                            ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?",
+                          [
+                            jsonArrayToObject({
+                              sampleInputObject: insurtColumns,
+                              arrayObj: doctorSchedule,
+                              newFieldToInsert: [
+                                input.hims_d_appointment_schedule_header_id,
+                                new Date(),
+                                new Date()
+                              ],
+                              req: req
+                            })
+                          ],
+                          (error, schedule_detailResult) => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+
+                            connection.commit(error => {
+                              if (error) {
+                                connection.rollback(() => {
+                                  releaseDBConnection(db, connection);
+                                  next(error);
+                                });
+                              }
+                              req.records = schedule_detailResult;
+                              next();
+                            });
+                          }
+                        );
+                      }
+                    }
+                  }
+                }
+              }
+            );
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add Doctor To Existing Schedule
+let BAckupaddDoctorToExistingSchedule = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    debugLog("input:", input);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        let newDates = [
+          "2018-10-01T00:00:00.000Z",
+          "2018-10-02T00:00:00.000Z",
+          "2018-10-03T00:00:00.000Z",
+          "2018-10-04T00:00:00.000Z",
+          "2018-10-05T00:00:00.000Z",
+          "2018-10-06T00:00:00.000Z",
+          "2018-10-07T00:00:00.000Z",
+          "2018-10-08T00:00:00.000Z",
+          "2018-10-09T00:00:00.000Z",
+          "2018-10-10T00:00:00.000Z"
+        ];
+
+        let providrDates = [
+          "2018-10-01",
+          "2018-10-02",
+          "2018-10-27",
+          "2018-10-28",
+          "2018-10-29"
+        ];
+
+        let existingDates = [];
+        new LINQ(newDates).Select(s => {
+          const index = providrDates.indexOf(moment(s).format("YYYY-MM-DD"));
+
+          if (index > -1) {
+            existingDates.push(providrDates[index]);
+          }
+        });
+        debugLog("existingDates: ", existingDates);
+        if (existingDates.length > 0) {
+        }
+        //-----------------
         connection.query(
           "SELECT from_date, to_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
           from hims_d_appointment_schedule_header where  record_status='A' and hims_d_appointment_schedule_header_id=?",
@@ -1185,17 +1499,18 @@ let addDoctorToExistingSchedule = (req, res, next) => {
                           next(error);
                         });
                       }
-
-                      connection.commit(error => {
-                        if (error) {
-                          connection.rollback(() => {
-                            releaseDBConnection(db, connection);
-                            next(error);
-                          });
-                        }
-                        req.records = schedule_detailResult;
-                        next();
-                      });
+                      req.records = schedule_detailResult;
+                      next();
+                      // connection.commit(error => {
+                      //   if (error) {
+                      //     connection.rollback(() => {
+                      //       releaseDBConnection(db, connection);
+                      //       next(error);
+                      //     });
+                      //   }
+                      //   req.records = schedule_detailResult;
+                      //   next();
+                      // });
                     }
                   );
                 }
