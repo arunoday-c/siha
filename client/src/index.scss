@@ -51,7 +51,6 @@ $forntSize: 0.7rem;
       padding: 0px;
       border: 1px solid #c1c1c1;
       overflow: auto;
-  
 
       li {
         cursor: pointer;
@@ -151,7 +150,6 @@ $forntSize: 0.7rem;
     margin-top: 10px;
   }
 
-
   /* Portlet */
   .portlet {
     background: #fff;
@@ -234,26 +232,48 @@ $forntSize: 0.7rem;
     span {
       margin-left: 3px;
     }
-  }
 
-  .actions .btn {
-    color: #666;
-    padding: 3px 9px;
-    font-size: 13px;
-    line-height: 1.5;
-    background-color: #fff;
-    border-color: #ccc;
-    border-radius: 50px;
-  }
+    .btn {
+      color: #666;
+      padding: 3px 9px;
+      font-size: 13px;
+      line-height: 1.5;
+      background-size: 300% 100%;
+      background-color: #fff;
+      border-color: #ccc;
+      border-radius: 50px;
 
-  .actions .btn i {
-    font-size: 12px;
-  }
+      -moz-transition: all 0.2s ease-in-out;
+      -o-transition: all 0.2s ease-in-out;
+      -webkit-transition: all 0.2s ease-in-out;
+      transition: all 0.2s ease-in-out;
+      i {
+        font-size: 12px;
+      }
+    }
 
-  .actions .btn:hover {
-    background: #f2f2f2;
+    .btn:hover {
+      background-position: 100% 0;
+      -moz-transition: all 0.2s ease-in-out;
+      -o-transition: all 0.2s ease-in-out;
+      -webkit-transition: all 0.2s ease-in-out;
+      transition: all 0.2s ease-in-out;
+    }
+    .btn-primary:not(:disabled):not(.disabled).active,
+    .btn-primary:not(:disabled):not(.disabled):active,
+    .show > .btn-primary.dropdown-toggle {
+      background-color: none;
+      background-image: linear-gradient(
+        to right,
+        #34b8bc,
+        #25d8df,
+        #34b8bc,
+        #25d8df
+      );
+      //box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
+      border-color: #44b8bd;
+    }
   }
-
   /* Pagination */
   .pagination {
     margin: -3px 0 0;

@@ -349,22 +349,19 @@
       font-style: bolder;
     }
   }
-  .encounters-panel {
-    .rightLabelCount {
-      float: right;
-      .countNo {
-        background: #2aafa4;
-        color: #fff;
-        padding: 2px 10px;
-        border-radius: 25%;
-        font-size: 0.8rem;
-        margin-left: 3px;
-        display: inline-block;
-      }
-      .style_Label {
-        font-size: 0.8rem;
-        text-transform: initial;
-      }
+  .rightLabelCount {
+    .countNo {
+      background: #2aafa4;
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 25%;
+      font-size: 0.8rem;
+      margin-left: 3px;
+      display: inline-block;
+    }
+    .style_Label {
+      font-size: 0.8rem;
+      text-transform: initial;
     }
   }
 }

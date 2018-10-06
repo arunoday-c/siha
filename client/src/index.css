@@ -158,18 +158,33 @@
       margin-left: 3px; }
     :global .actions span {
       margin-left: 3px; }
-  :global .actions .btn {
-    color: #666;
-    padding: 3px 9px;
-    font-size: 13px;
-    line-height: 1.5;
-    background-color: #fff;
-    border-color: #ccc;
-    border-radius: 50px; }
-  :global .actions .btn i {
-    font-size: 12px; }
-  :global .actions .btn:hover {
-    background: #f2f2f2; }
+    :global .actions .btn {
+      color: #666;
+      padding: 3px 9px;
+      font-size: 13px;
+      line-height: 1.5;
+      background-size: 300% 100%;
+      background-color: #fff;
+      border-color: #ccc;
+      border-radius: 50px;
+      -moz-transition: all 0.2s ease-in-out;
+      -o-transition: all 0.2s ease-in-out;
+      -webkit-transition: all 0.2s ease-in-out;
+      transition: all 0.2s ease-in-out; }
+      :global .actions .btn i {
+        font-size: 12px; }
+    :global .actions .btn:hover {
+      background-position: 100% 0;
+      -moz-transition: all 0.2s ease-in-out;
+      -o-transition: all 0.2s ease-in-out;
+      -webkit-transition: all 0.2s ease-in-out;
+      transition: all 0.2s ease-in-out; }
+    :global .actions .btn-primary:not(:disabled):not(.disabled).active,
+    :global .actions .btn-primary:not(:disabled):not(.disabled):active,
+    :global .actions .show > .btn-primary.dropdown-toggle {
+      background-color: none;
+      background-image: linear-gradient(to right, #34b8bc, #25d8df, #34b8bc, #25d8df);
+      border-color: #44b8bd; }
   :global .pagination {
     margin: -3px 0 0;
     border-radius: 50px; }

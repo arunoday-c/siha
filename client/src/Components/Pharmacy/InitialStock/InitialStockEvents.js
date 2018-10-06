@@ -264,27 +264,28 @@ const ClearData = $this => {
 const PostInitialStock = $this => {
   debugger;
   $this.state.posted = "Y";
-  // algaehApiCall({
-  //   uri: "/pharmacy/addPharmacyInitialStock",
-  //   data: $this.state,
-  //   onSuccess: response => {
-  //     debugger;
-  //     if (response.data.success === true) {
-  //       $this.setState({
-  //         document_number: response.data.records.document_number,
-  //         saveEnable: true
-  //       });
-  //       swal("Saved successfully . .", {
-  //         icon: "success",
-  //         buttons: false,
-  //         timer: 2000
-  //       });
-  //     }
-  //   },
-  //   onFailure: error => {
-  //     console.log(error);
-  //   }
-  // });
+  $this.state.transaction_type = "INT";
+  algaehApiCall({
+    uri: "/initialstock/updatePharmacyInitialStock",
+    data: $this.state,
+    method: "PUT",
+    onSuccess: response => {
+      debugger;
+      if (response.data.success === true) {
+        $this.setState({
+          postEnable: true
+        });
+        swal("Posted successfully . .", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
+      }
+    },
+    onFailure: error => {
+      console.log(error);
+    }
+  });
 };
 
 export {
