@@ -69,10 +69,10 @@ class Appointment extends Component {
     e.preventDefault();
 
     const send_data = {
-      provider_id: 2,
-      sub_department_id: 38,
-      appointment_date: "2018-10-05",
-      appointment_from_time: "09:15:00",
+      provider_id: apptProvider,
+      sub_department_id: apptSubDept,
+      appointment_date: this.state.activeDateHeader,
+      appointment_from_time: this.state.apptFromTime,
       appointment_to_time: "09:15:00",
       appointment_status_id: 1,
       patient_name: this.state.patient_name,
