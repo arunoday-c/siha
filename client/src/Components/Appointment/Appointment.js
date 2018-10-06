@@ -27,13 +27,38 @@ class Appointment extends Component {
       departments: [],
       doctors: [],
       appointmentSchedule: [],
-      provider_id: null
+      provider_id: null,
+      no_of_slots: 1
     };
   }
 
   componentDidMount() {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
+    this.getPatient();
+  }
+
+  getPatient(e) {
+    debugger;
+    algaehApiCall({
+      uri: "/patient/get",
+      method: "GET",
+      data: {
+        patient_code: "PAT-A-0000441"
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          console.log("Pat Code:", response.data.records);
+        }
+      },
+      onFailure: error => {
+        swal(error.message, {
+          buttons: false,
+          icon: "error",
+          timer: 2000
+        });
+      }
+    });
   }
 
   getPatientAppointment(e) {
@@ -67,38 +92,36 @@ class Appointment extends Component {
 
   addPatientAppointment(e) {
     e.preventDefault();
+    debugger;
 
     let from_time = this.state.apptFromTime;
+    let duration_minutes = this.state.apptSlot * this.state.no_of_slots;
+    let to_time = moment(from_time, "hh:mm a")
+      .add(duration_minutes, "minutes")
+      .format("HH:mm:ss");
 
-    let to_time = moment(from_time).add(
-      "minutes",
-      this.state.slot * this.state.no_of_slots
-    );
+    let appt_date =
+      this.state.activeDateHeader !== undefined
+        ? this.state.activeDateHeader
+        : new Date();
 
-    console.log("TOoooo time:", to_time);
+    //console.log("TOoooo time:", to_time);
 
     const send_data = {
       provider_id: this.state.apptProvider,
       sub_department_id: this.state.apptSubDept,
-      appointment_date: this.state.activeDateHeader,
+      appointment_date: appt_date,
       appointment_from_time: this.state.apptFromTime,
-      appointment_to_time: "09:15:00",
+      appointment_to_time: to_time,
       appointment_status_id: 1,
       patient_name: this.state.patient_name,
-      arabic_name: "sdwdw",
+      arabic_name: "Habbbbeeeeeebeeeeee",
       date_of_birth: this.state.date_of_birth,
       age: this.state.age,
       contact_number: this.state.contact_number,
       email: this.state.email,
       send_to_provider: "Y",
-      gender: this.state.gender,
-      confirmed: "Y",
-      confirmed_by: "3",
-      comfirmed_date: "2018-07-08",
-      cancelled: "N",
-      cancelled_by: null,
-      cancelled_date: null,
-      cancel_reason: null
+      gender: this.state.gender
     };
     console.log("Send Obj:", send_data);
 
@@ -220,7 +243,6 @@ class Appointment extends Component {
   }
 
   dropDownHandle(value) {
-    debugger;
     this.setState({ [value.name]: value.value });
   }
 
@@ -296,7 +318,6 @@ class Appointment extends Component {
   }
 
   showModal(e) {
-    debugger;
     const appt_time = e.currentTarget.getAttribute("appt-time");
     const to_work_hr = e.currentTarget.getAttribute("to_work_hr");
     const from_break_hr1 = e.currentTarget.getAttribute("from_break_hr1");
@@ -377,7 +398,6 @@ class Appointment extends Component {
       let newFrom =
         count === 0 ? from_work_hr : from_work_hr.add(slot, "minutes");
       if (newFrom.isBefore(to_work_hr)) {
-        debugger;
         let endtime = new Date(newFrom.format("hh:mm a"));
         endtime.setMinutes(endtime.getMinutes() + slot);
         if (
