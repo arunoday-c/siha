@@ -399,5 +399,12 @@
   "FORMAT_POS_CASE_TYPE": [
     { "name": "Others", "value": "O" },
     { "name": "OP", "value": "OP" }
+  ],
+  "NO_OF_SLOTS": [
+    { "name": "1", "value": 1 },
+    { "name": "2", "value": 2 },
+    { "name": "3", "value": 3 },
+    { "name": "4", "value": 4 },
+    { "name": "5", "value": 5 }
   ]
 }
