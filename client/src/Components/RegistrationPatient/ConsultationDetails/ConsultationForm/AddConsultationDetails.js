@@ -99,49 +99,62 @@ const doctorselectedHandeler = ($this, context, e) => {
       doctor_name = employee_list[0].full_name;
     }
     if ($this.state.hims_d_patient_id != null) {
-      algaehApiCall({
-        uri: "/visit/checkVisitExists",
-        data: $this.state,
-        onSuccess: response => {
-          if (response.data.success == true) {
-            debugger;
+      if (e.selected.services_id !== null) {
+        algaehApiCall({
+          uri: "/visit/checkVisitExists",
+          data: $this.state,
+          onSuccess: response => {
+            if (response.data.success == true) {
+              debugger;
 
-            $this.setState(
-              {
-                [e.name]: e.value,
-                visittypeselect: false,
-                hims_d_services_id: e.selected.services_id,
-                incharge_or_provider: e.value,
-                provider_id: e.value,
-                doctor_name: doctor_name,
-                saveEnable: false
-              },
-              () => {
-                generateBillDetails($this, context);
+              $this.setState(
+                {
+                  [e.name]: e.value,
+                  visittypeselect: false,
+                  hims_d_services_id: e.selected.services_id,
+                  incharge_or_provider: e.value,
+                  provider_id: e.value,
+                  doctor_name: doctor_name,
+                  saveEnable: false
+                },
+                () => {
+                  generateBillDetails($this, context);
+                }
+              );
+              if (context != null) {
+                context.updateState({
+                  [e.name]: e.value,
+                  hims_d_services_id: e.selected.services_id,
+                  incharge_or_provider: e.value,
+                  provider_id: e.value,
+                  doctor_name: doctor_name,
+                  saveEnable: false
+                });
               }
-            );
-            if (context != null) {
-              context.updateState({
-                [e.name]: e.value,
-                hims_d_services_id: e.selected.services_id,
-                incharge_or_provider: e.value,
-                provider_id: e.value,
-                doctor_name: doctor_name,
-                saveEnable: false
-              });
+            } else {
+              $this.setState(
+                {
+                  [e.name]: null
+                },
+                () => {
+                  unsuccessfulSignIn(response.data.message, "Warning");
+                }
+              );
             }
-          } else {
-            $this.setState(
-              {
-                [e.name]: null
-              },
-              () => {
-                unsuccessfulSignIn(response.data.message, "Warning");
-              }
-            );
           }
-        }
-      });
+        });
+      } else {
+        $this.setState({
+          [e.name]: null
+        });
+        swal({
+          title: "warning",
+          text: "Invalid Input. No Service defined for the selected doctor.",
+          icon: "warning",
+          button: false,
+          timer: 2500
+        });
+      }
     } else {
       if (e.selected.services_id !== null) {
         $this.setState(
