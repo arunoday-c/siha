@@ -690,7 +690,7 @@ let addDoctorsSchedule = (req, res, next) => {
                               req.records = {
                                 message: `schedule already exist at ${
                                   clashingDate[0]
-                                } for doctor_id: ${
+                                } for doctor_id:${
                                   input.schedule_detail[doc].provider_id
                                 }`,
                                 schedule_exist: true
