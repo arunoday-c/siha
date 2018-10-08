@@ -663,13 +663,16 @@ let addDoctorsSchedule = (req, res, next) => {
                           appointment_schedule_header_idS
                         );
 //checking time in all schedules of clashed date 
+// "select * from hims_d_appointment_schedule_header where time(from_work_hr)<=?  and time(to_work_hr)> ?\
+// and hims_d_appointment_schedule_header_id=?"
                         for(let j=0;j<appointment_schedule_header_idS.length;j++ ){
                         connection.query(
-                          "select * from hims_d_appointment_schedule_header where time(from_work_hr)<=?  and time(to_work_hr)> ?\
-        and hims_d_appointment_schedule_header_id=?",
+                          "SELECT  * from hims_d_appointment_schedule_header where (? BETWEEN time(from_work_hr) AND time(to_work_hr))\
+                           or  (? BETWEEN time(from_work_hr) AND time(to_work_hr))\
+                          and hims_d_appointment_schedule_header_id=?",
                           [
                             input.from_work_hr,
-                            input.from_work_hr,
+                            input.to_work_hr,
                             appointment_schedule_header_idS[j]
                           ],
                           (error, timeChecking) => {
