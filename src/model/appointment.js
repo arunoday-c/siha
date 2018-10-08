@@ -615,7 +615,6 @@ let addDoctorsSchedule = (req, res, next) => {
                       ...{ schedule_date: newDateList[i] }
                     });
                   }
-                  //--------------eisting schedule date
 
                   //get list of dates which are already scheduled for this doctor
                   connection.query(
@@ -650,7 +649,7 @@ let addDoctorsSchedule = (req, res, next) => {
                       //if date clashes check for time else add
                       if (clashingDate.length > 0) {
                         debugLog("functionality after clash");
-                        let appointment_schedule_header_idS= new LINQ(
+                        let appointment_schedule_header_idS = new LINQ(
                           occupiedDoctorDates
                         )
                           .Where(w => w.schedule_date == clashingDate[0])
@@ -662,92 +661,100 @@ let addDoctorsSchedule = (req, res, next) => {
                           "appointment_schedule_header_idS: ",
                           appointment_schedule_header_idS
                         );
-//checking time in all schedules of clashed date 
-// "select * from hims_d_appointment_schedule_header where time(from_work_hr)<=?  and time(to_work_hr)> ?\
-// and hims_d_appointment_schedule_header_id=?"
-                        for(let j=0;j<appointment_schedule_header_idS.length;j++ ){
-                        connection.query(
-                          "SELECT  * from hims_d_appointment_schedule_header where (? BETWEEN time(from_work_hr) AND time(to_work_hr))\
+                        //checking time in all schedules of clashed date
+                        // "select * from hims_d_appointment_schedule_header where time(from_work_hr)<=?  and time(to_work_hr)> ?\
+                        // and hims_d_appointment_schedule_header_id=?"
+                        for (
+                          let j = 0;
+                          j < appointment_schedule_header_idS.length;
+                          j++
+                        ) {
+                          connection.query(
+                            "SELECT  * from hims_d_appointment_schedule_header where (? BETWEEN time(from_work_hr) AND time(to_work_hr))\
                            or  (? BETWEEN time(from_work_hr) AND time(to_work_hr))\
                           and hims_d_appointment_schedule_header_id=?",
-                          [
-                            input.from_work_hr,
-                            input.to_work_hr,
-                            appointment_schedule_header_idS[j]
-                          ],
-                          (error, timeChecking) => {
-                            if (error) {
-                              connection.rollback(() => {
-                                releaseDBConnection(db, connection);
-                                next(error);
-                              });
-                            }
-                            debugLog("timeChecking", timeChecking);
-
-                            if (timeChecking.length > 0) {
-                              //reject adding to schedule
+                            [
+                              input.from_work_hr,
+                              input.to_work_hr,
+                              appointment_schedule_header_idS[j]
+                            ],
+                            (error, timeChecking) => {
+                              if (error) {
+                                connection.rollback(() => {
+                                  releaseDBConnection(db, connection);
+                                  next(error);
+                                });
+                              }
                               debugLog("timeChecking", timeChecking);
-                              req.records = {
-                                message: `schedule already exist at ${
-                                  clashingDate[0]
-                                } for doctor_id:${
-                                  input.schedule_detail[doc].provider_id
-                                }`,
-                                schedule_exist: true
-                              };
-                              next(error);
-                            } else {
-                              //adding records for single doctor at one time
-                              const insurtColumns = [
-                                "provider_id",
-                                "clinic_id",
-                                "slot",
-                                "schedule_date",
-                                "created_by",
-                                "updated_by"
-                              ];
 
-                              connection.query(
-                                "INSERT INTO hims_d_appointment_schedule_detail(" +
-                                  insurtColumns.join(",") +
-                                  ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?",
-                                [
-                                  jsonArrayToObject({
-                                    sampleInputObject: insurtColumns,
-                                    arrayObj: doctorSchedule,
-                                    newFieldToInsert: [
-                                      result.insertId,
-                                      new Date(),
-                                      new Date()
-                                    ],
-                                    req: req
-                                  })
-                                ],
-                                (error, schedule_detailResult) => {
-                                  if (error) {
-                                    connection.rollback(() => {
-                                      releaseDBConnection(db, connection);
-                                      next(error);
-                                    });
+                              if (timeChecking.length > 0) {
+                                //reject adding to schedule
+                                debugLog("timeChecking", timeChecking);
+                                req.records = {
+                                  message: `schedule already exist on ${
+                                    clashingDate[0]
+                                  } for doctor_id:${
+                                    input.schedule_detail[doc].provider_id
+                                  } from ${timeChecking[0].from_work_hr} to 
+                                 ${timeChecking[0].to_work_hr}`,
+                                  schedule_exist: true
+                                };
+                                next(error);
+                              } else {
+                                //adding records for single doctor at one time
+                                const insurtColumns = [
+                                  "provider_id",
+                                  "clinic_id",
+                                  "slot",
+                                  "schedule_date",
+                                  "created_by",
+                                  "updated_by"
+                                ];
+
+                                connection.query(
+                                  "INSERT INTO hims_d_appointment_schedule_detail(" +
+                                    insurtColumns.join(",") +
+                                    ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?",
+                                  [
+                                    jsonArrayToObject({
+                                      sampleInputObject: insurtColumns,
+                                      arrayObj: doctorSchedule,
+                                      newFieldToInsert: [
+                                        result.insertId,
+                                        new Date(),
+                                        new Date()
+                                      ],
+                                      req: req
+                                    })
+                                  ],
+                                  (error, schedule_detailResult) => {
+                                    if (error) {
+                                      connection.rollback(() => {
+                                        releaseDBConnection(db, connection);
+                                        next(error);
+                                      });
+                                    }
+                                    if (
+                                      doc ==
+                                      input.schedule_detail.length - 1
+                                    ) {
+                                      connection.commit(error => {
+                                        if (error) {
+                                          connection.rollback(() => {
+                                            releaseDBConnection(db, connection);
+                                            next(error);
+                                          });
+                                        }
+                                        req.records = schedule_detailResult;
+                                        next();
+                                      });
+                                    }
                                   }
-                                  if (doc == input.schedule_detail.length - 1) {
-                                    connection.commit(error => {
-                                      if (error) {
-                                        connection.rollback(() => {
-                                          releaseDBConnection(db, connection);
-                                          next(error);
-                                        });
-                                      }
-                                      req.records = schedule_detailResult;
-                                      next();
-                                    });
-                                  }
-                                }
-                              );
+                                );
+                              }
                             }
-                          }
-                        );
-                      }
+                          );
+                        }
                       }
 
                       //if no clashing dates
@@ -802,8 +809,6 @@ let addDoctorsSchedule = (req, res, next) => {
                       }
                     }
                   );
-
-                  //----------------------------
                 }
               }
             } else {
