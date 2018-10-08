@@ -60,7 +60,11 @@ class Appointment extends Component {
   getColorCode(id) {
     return Enumerable.from(this.state.appointmentStatus)
       .where(w => w.hims_d_appointment_status_id === id)
-      .firstOrDefault().color_code;
+      .firstOrDefault() !== undefined
+      ? Enumerable.from(this.state.appointmentStatus)
+          .where(w => w.hims_d_appointment_status_id === id)
+          .firstOrDefault().color_code
+      : "#ffffff";
   }
 
   getPatient(e) {
@@ -441,7 +445,20 @@ class Appointment extends Component {
       )
       .firstOrDefault();
     if (patient !== undefined) {
-      return <span className="dynPatient">{patient.patient_name} <span className="statusClr"></span></span>;
+      return (
+        <span className="dynPatient">
+          {patient.patient_name}{" "}
+          <span
+            className="statusClr"
+            style={{
+              background:
+                patient !== undefined
+                  ? this.getColorCode(patient.appointment_status_id)
+                  : null
+            }}
+          />
+        </span>
+      );
     } else {
       return null;
     }

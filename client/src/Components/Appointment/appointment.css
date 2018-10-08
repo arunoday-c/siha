@@ -72,7 +72,8 @@
     border-top: 2px solid yellow !important; }
 
 .appointment .tg {
-  display: inline-block; }
+  display: inline-block;
+  margin-right: 10px; }
   .appointment .tg thead tr {
     text-align: center; }
     .appointment .tg thead tr th {
@@ -116,7 +117,6 @@
       width: 100%;
       padding-left: 5px; }
       .appointment .tg tbody .dynPatient .statusClr {
-        background: #000;
         width: 5px;
         position: absolute;
         height: 54px;

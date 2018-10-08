@@ -107,6 +107,8 @@
 
   .tg {
     display: inline-block;
+    margin-right: 10px;
+
     thead {
       tr {
         text-align: center;
@@ -157,15 +159,14 @@
         text-align: left;
         width: 100%;
         padding-left: 5px;
-        .statusClr{
 
-    background: #000;
-    width: 5px;
-    position: absolute;
-    height: 54px;
-    display: inline-block;
-    left: 0;
-    top: 0;
+        .statusClr {
+          width: 5px;
+          position: absolute;
+          height: 54px;
+          display: inline-block;
+          left: 0;
+          top: 0;
         }
       }
 
