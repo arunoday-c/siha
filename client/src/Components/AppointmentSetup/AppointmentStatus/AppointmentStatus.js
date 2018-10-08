@@ -411,6 +411,7 @@ class AppointmentStatus extends Component {
               isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
+                onEdit: () => {},
                 onDelete: this.deleteAppointmentStatus.bind(this),
                 onDone: this.updateAppointmentStatus.bind(this)
               }}
