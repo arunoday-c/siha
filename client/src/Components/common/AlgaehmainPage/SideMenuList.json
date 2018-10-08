@@ -321,6 +321,13 @@
     "name": "MRD",
     "label": "MRD",
     "icon": "fas fa-paste",
-    "subMenu": []
+    "subMenu": [
+      {
+        "name": "Medical Record List",
+        "label": "Medical Record List",
+        "arlabel": "قائمة السجلات الطبية",
+        "path": "/MedicalRecordList"
+      }
+    ]
   }
 ]
