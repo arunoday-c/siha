@@ -21,8 +21,10 @@ let getUomLocationStock = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_m_item_uom_id, item_master_id, uom_id, stocking_uom, conversion_factor, uom_status\
-        from hims_m_item_uom where record_status='A' and item_master_id=? ",
+        "select hims_m_item_uom_id, item_master_id, uom_id, stocking_uom, conversion_factor, hims_m_item_uom.uom_status, \
+        hims_d_pharmacy_uom.uom_description  \
+        from hims_m_item_uom,hims_d_pharmacy_uom where hims_m_item_uom.record_status='A' and \
+        hims_m_item_uom.uom_id = hims_d_pharmacy_uom.hims_d_pharmacy_uom_id and hims_m_item_uom.item_master_id=? ",
         [req.query.item_id],
         (error, uomResult) => {
           if (error) {
