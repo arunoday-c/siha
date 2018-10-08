@@ -441,7 +441,7 @@ class Appointment extends Component {
       )
       .firstOrDefault();
     if (patient !== undefined) {
-      return <span className="dynPatient">{patient.patient_name}</span>;
+      return <span className="dynPatient">{patient.patient_name} <span className="statusClr"></span></span>;
     } else {
       return null;
     }
