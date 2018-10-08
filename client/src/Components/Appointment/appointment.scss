@@ -147,7 +147,7 @@
         border-top: 1px solid lightgrey;
         text-align: center;
         position: relative;
-        padding: 15px 0 5px;
+        padding: 15px 0 5px 4px;
         height: 55px;
         width: 120px;
       }
@@ -157,12 +157,22 @@
         text-align: left;
         width: 100%;
         padding-left: 5px;
+        .statusClr{
+
+    background: #000;
+    width: 5px;
+    position: absolute;
+    height: 54px;
+    display: inline-block;
+    left: 0;
+    top: 0;
+        }
       }
 
       .dynSlot {
         position: absolute;
         top: 2px;
-        left: 6px;
+        left: 8px;
         font-size: 0.7rem;
         color: #7d7d7d;
       }
