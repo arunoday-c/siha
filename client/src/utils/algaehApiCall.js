@@ -84,26 +84,6 @@ export function algaehApiCall(options) {
     cancelRequest = {
       requestId: settings.cancelRequestId
     };
-
-    // let CancelToken = axios.CancelToken;
-    // const source = CancelToken.source();
-    // cancelRequest = {
-    //   cancelToken: source.token
-    // };
-
-    // let previousRequestId =
-    //   Window.global === undefined
-    //     ? []
-    //     : Window.global["req_cancel"] === undefined
-    //       ? []
-    //       : Window.global["req_cancel"];
-    // previousRequestId.push({ id: settings.cancelRequestId, source: source });
-    // const removeAdd = Enumerable.from(previousRequestId)
-    //   .where(w => w.id !== settings.cancelRequestId)
-    //   .toArray();
-    // removeGlobal("req_cancel");
-    // setGlobal({ req_cancel: removeAdd });
-    //console.log("req_cancel", Window.global["req_cancel"]);
   }
 
   const headerToken = getToken();
@@ -145,26 +125,10 @@ export function algaehApiCall(options) {
         "x-app-user-identity": x_app_user_identity
       },
       data: settings.data,
-      timeout: settings.timeout,
+      timeout: settings.timeout !== undefined ? settings.timeout : 120000,
       ...cancelRequest
     })
       .then(response => {
-        // if (
-        //   settings.cancelRequestId !== undefined ||
-        //   settings.cancelRequestId !== null ||
-        //   settings.cancelRequestId !== ""
-        // ) {
-        //   const removeAdd = Enumerable.from(
-        //     Window.global["req_cancel"] === undefined
-        //       ? []
-        //       : Window.global["req_cancel"]
-        //   )
-        //     .where(w => w.id !== settings.cancelRequestId)
-        //     .toArray();
-        //   removeGlobal("req_cancel");
-        //   setGlobal({ req_cancel: removeAdd });
-        // }
-
         if (typeof settings.onSuccess == "function")
           settings.onSuccess(response);
       })
@@ -174,22 +138,36 @@ export function algaehApiCall(options) {
           settings.cancelRequestId !== null ||
           settings.cancelRequestId !== ""
         ) {
-          // let previousRequestId =
-          //   Window.global["req_cancel"] === undefined
-          //     ? []
-          //     : Window.global["req_cancel"];
-
-          // const removeAdd = Enumerable.from(previousRequestId)
-          //   .where(w => w.id !== settings.cancelRequestId)
-          //   .toArray();
-          // removeGlobal("req_cancel");
-          // setGlobal({ req_cancel: removeAdd });
           if (axios.isCancel(err)) {
-            console.log("Request canceled :", err.message);
+            console.warn("Request canceled :", err.message);
           }
         }
-
-        if (typeof settings.onFailure == "function") settings.onFailure(err);
+        if (err.code === "ECONNABORTED") {
+          console.error(
+            "Error Message : \n" +
+              err.message +
+              " \n Detail Info : \n" +
+              JSON.stringify(err)
+          );
+          swal({
+            title: "Error",
+            text: "Request taking long time to process....!",
+            icon: "error",
+            button: false,
+            timer: 5000
+          });
+        } else {
+          if (typeof settings.onFailure == "function") settings.onFailure(err);
+          else {
+            swal({
+              title: "Error",
+              text: err.message,
+              icon: "error",
+              button: false,
+              timer: 5000
+            });
+          }
+        }
       });
   }
 }

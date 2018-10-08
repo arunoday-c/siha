@@ -365,7 +365,9 @@ class DataGrid extends PureComponent {
           );
           const _data =
             this.props.dataSource.uri === undefined
-              ? this.props.dataSource.data
+              ? this.props.dataSource.data !== undefined
+                ? this.props.dataSource.data
+                : []
               : [];
           this.setState({
             columns: _columns,
