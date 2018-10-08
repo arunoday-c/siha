@@ -40,7 +40,6 @@ class Appointment extends Component {
   }
 
   getDoctorName(id) {
-    debugger;
     let doc = Enumerable.from(
       this.state.doctors.length !== 0 ? this.state.doctors : null
     )
@@ -56,6 +55,12 @@ class Appointment extends Component {
       .where(w => w.sub_department_id === parseInt(id))
       .firstOrDefault();
     return dept !== undefined ? dept.sub_department_name : "";
+  }
+
+  getColorCode(id) {
+    return Enumerable.from(this.state.appointmentStatus)
+      .where(w => w.hims_d_appointment_status_id === id)
+      .firstOrDefault().color_code;
   }
 
   getPatient(e) {
@@ -169,9 +174,12 @@ class Appointment extends Component {
       onSuccess: response => {
         if (response.data.success) {
           console.log("Add Pat APpts REsp :", response.data.records);
-          this.setState({
-            //departments: response.data.records
+          swal("Appointment Created Successfully", {
+            buttons: false,
+            icon: "success",
+            timer: 2000
           });
+          this.getAppointmentSchedule.bind(this);
         }
       },
       onFailure: error => {
@@ -446,6 +454,7 @@ class Appointment extends Component {
       : {};
 
     let bg_color = data.mark_as_break ? "#f2f2f2" : "#ffffff";
+    //let bg_color = this.getColorCode(this.state.appointment_status_id)
 
     return (
       <tr style={{ background: bg_color }} key={data.counter}>
