@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import "./business_setup.css";
 import "../../styles/site.css";
-import "../../index.css";
 import DeptMaster from "./DeptMaster/DeptMaster.js";
 import HolidayList from "./HolidayList/HolidayList.js";
-import OptionsTabs from "./Options/OptionsTabs.js";
+import Numbering from "./Numbering/Numbering";
+import Transaction from "./Transaction/Transaction";
 import Counter from "./Counter/Counter.js";
 import Shift from "./Shift/Shift.js";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
@@ -62,20 +62,6 @@ class BusinessSetup extends Component {
               }
             </li>
             <li
-              algaehtabs={"OptionsTabs"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "options"
-                  }}
-                />
-              }
-            </li>
-            <li
               algaehtabs={"Holiday"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button"}
@@ -117,20 +103,71 @@ class BusinessSetup extends Component {
                 />
               }
             </li>
+            <li
+              algaehtabs={"Transaction"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button"}
+              onClick={this.openTab.bind(this)}
+            >
+              TRANSACTION
+            </li>
+            <li
+              algaehtabs={"Numbering"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              onClick={this.openTab.bind(this)}
+            >
+              NUMBERING
+            </li>
+            <li
+              algaehtabs={"LabelSetup"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              onClick={this.openTab.bind(this)}
+            >
+              LABEL SETUP
+            </li>
+            <li
+              algaehtabs={"EpiodeCreation"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              onClick={this.openTab.bind(this)}
+            >
+              EPISODE CREATION
+            </li>
+            <li
+              algaehtabs={"Option"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              onClick={this.openTab.bind(this)}
+            >
+              OPTION
+            </li>
+
+            <li
+              algaehtabs={"QueueOption"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              onClick={this.openTab.bind(this)}
+            >
+              QUEUE OPTION
+            </li>
           </ul>
         </div>
 
         <div className="business-section">
           {this.state.pageDisplay === "DeptMaster" ? (
             <DeptMaster />
-          ) : this.state.pageDisplay === "OptionsTabs" ? (
-            <OptionsTabs />
           ) : this.state.pageDisplay === "Holiday" ? (
             <HolidayList />
           ) : this.state.pageDisplay === "Counter" ? (
             <Counter />
           ) : this.state.pageDisplay === "Shift" ? (
             <Shift />
+          ) : this.state.pageDisplay === "Transaction" ? (
+            <Transaction />
+          ) : this.state.pageDisplay === "Numbering" ? (
+            <Numbering />
           ) : null}
         </div>
       </div>

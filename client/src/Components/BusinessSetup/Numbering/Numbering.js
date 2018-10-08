@@ -1,11 +1,8 @@
 import React, { Component } from "react";
-// import { Paper, TextField } from "@material-ui/core";
 import "./numbering.css";
-// import { MuiThemeProvider, createMuiTheme } from "@material-ui/core";
-import { AlagehFormGroup } from "../../../Wrapper/algaehWrapper";
-// import { Button } from "@material-ui/core";
-import { algaehApiCall } from "../../../../utils/algaehApiCall.js";
-import { getOptions } from "../../../../actions/BusinessSetup/Options.js";
+import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+import { algaehApiCall } from "../../../utils/algaehApiCall.js";
+import { getOptions } from "../../../actions/BusinessSetup/Options.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
