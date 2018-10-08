@@ -1,10 +1,10 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 // import PropTypes from "prop-types";
-import TextField from "@material-ui/core/TextField";
-import NumberFormat from "react-number-format";
+//import TextField from "@material-ui/core/TextField";
+//import NumberFormat from "react-number-format";
 import "./wrapper.css";
 import Label from "../Wrapper/label";
-export default class FormGroup extends Component {
+export default class FormGroup extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -72,21 +72,49 @@ export default class FormGroup extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (
-      nextProps.textBox.value !== this.state.value ||
-      nextProps.textBox.error !== this.state.error ||
-      nextProps.textBox.helperText !== this.state.helperText ||
-      nextProps.textBox.disabled !== this.state.disabled
-    ) {
-      return true;
-    }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   debugger;
+  //   if (
+  //     nextProps.textBox.value !== this.state.value ||
+  //     nextProps.textBox.error !== this.state.error ||
+  //     nextProps.textBox.helperText !== this.state.helperText ||
+  //     nextProps.textBox.disabled !== this.state.disabled
+  //   ) {
+  //     return true;
+  //   }
 
-    return false;
+  //   return false;
+  // }
+
+  errorInvoid(e) {
+    debugger;
+    if (typeof this.props.textBox.helperText === "function") {
+      e.currentTarget.setCustomValidity(
+        this.props.textBox.helperText(e.currentTarget.value)
+      );
+    } else {
+      e.currentTarget.setCustomValidity(this.props.textBox.helperText);
+    }
   }
 
   textBoxRender = () => {
     if (this.props.textBox !== undefined) {
+      const _disabled =
+        this.props.textBox.disabled !== undefined
+          ? { disabled: this.props.textBox.disabled }
+          : {};
+      const _required =
+        this.props.label !== undefined
+          ? this.props.label.isImp !== undefined
+            ? { required: this.props.label.isImp }
+            : {}
+          : {};
+      const _invalid =
+        this.props.textBox.helperText !== undefined
+          ? {
+              onInvalid: this.errorInvoid.bind(this)
+            }
+          : {};
       if (this.props.textBox.decimal !== undefined) {
         return (
           <input
@@ -99,58 +127,10 @@ export default class FormGroup extends Component {
                 ? this.props.textBox.events.onChange
                 : () => {}
             }
+            {..._disabled}
+            {..._required}
             {...this.props.textBox.others}
           />
-
-          // <NumberFormat
-          //   name={this.props.textBox.name}
-          //   customInput={TextField}
-          //   thousandSeparator={
-          //     this.props.textBox.decimal.thousandSeparator === undefined
-          //       ? ","
-          //       : this.props.textBox.decimal.thousandSeparator
-          //   }
-          //   decimalSeparator={
-          //     this.props.textBox.decimal.decimalSeparator === undefined
-          //       ? "."
-          //       : this.props.textBox.decimal.decimalSeparator
-          //   }
-          //   allowNegative={
-          //     this.props.textBox.decimal.allowNegative === undefined
-          //       ? true
-          //       : this.props.textBox.decimal.allowNegative
-          //   }
-          //   decimalScale={
-          //     this.props.textBox.decimal.decimalScale === undefined
-          //       ? 2
-          //       : this.props.textBox.decimal.decimalScale
-          //   }
-          //   fixedDecimalScale={true}
-          //   onValueChange={
-          //     this.props.textBox.events !== undefined
-          //       ? this.props.textBox.events.onChange
-          //       : () => {}
-          //   }
-          //   className={this.props.textBox.className}
-          //   numberbox="true"
-          //   prefix={this.props.textBox.decimal.prefix}
-          //   suffix={this.props.textBox.decimal.suffix}
-          //   value={
-          //     this.props.textBox.value === undefined
-          //       ? 0
-          //       : this.props.textBox.value
-          //   }
-          //   disabled={this.state.disabled}
-          //   ref={
-          //     this.props.textBox.ref !== undefined
-          //       ? ele => {
-          //           return this.props.textBox.ref(ele);
-          //         }
-          //       : null
-          //   }
-          //   style={{ fontSize: "14px" }}
-          //   {...this.props.textBox.others}
-          // />
         );
       } else if (this.props.textBox.number !== undefined) {
         return (
@@ -164,42 +144,10 @@ export default class FormGroup extends Component {
                 ? this.props.textBox.events.onChange
                 : () => {}
             }
+            {..._required}
+            {..._disabled}
             {...this.props.textBox.others}
           />
-          // <NumberFormat
-          //   name={this.props.textBox.name}
-          //   customInput={TextField}
-          //   thousandSeparator={
-          //     this.props.textBox.number.thousandSeparator === undefined
-          //       ? ","
-          //       : this.props.textBox.number.thousandSeparator
-          //   }
-          //   allowNegative={
-          //     this.props.textBox.number.allowNegative === undefined
-          //       ? true
-          //       : this.props.textBox.number.allowNegative
-          //   }
-          //   onValueChange={
-          //     this.props.textBox.events !== undefined
-          //       ? this.props.textBox.events.onChange
-          //       : () => {}
-          //   }
-          //   decimalScale={0}
-          //   className={this.props.textBox.className}
-          //   numberbox="true"
-          //   value={this.props.textBox.value}
-          //   prefix={this.props.textBox.number.prefix}
-          //   suffix={this.props.textBox.number.suffix}
-          //   ref={
-          //     this.props.textBox.ref !== undefined
-          //       ? ele => {
-          //           return this.props.textBox.ref(ele);
-          //         }
-          //       : null
-          //   }
-          //   disabled={this.state.disabled}
-          //   {...this.props.textBox.others}
-          // />
         );
       } else if (this.props.textBox.mask !== undefined) {
         return (
@@ -213,30 +161,10 @@ export default class FormGroup extends Component {
                 ? this.props.textBox.events.onChange
                 : () => {}
             }
+            {..._disabled}
+            {..._required}
             {...this.props.textBox.others}
           />
-          // <NumberFormat
-          //   name={this.props.textBox.name}
-          //   customInput={TextField}
-          //   onValueChange={
-          //     this.props.textBox.events !== undefined
-          //       ? this.props.textBox.events.onChange
-          //       : () => {}
-          //   }
-          //   decimalScale={0}
-          //   className={this.props.textBox.className}
-          //   value={this.props.textBox.value}
-          //   format={this.props.textBox.mask.format}
-          //   disabled={this.state.disabled}
-          //   ref={
-          //     this.props.textBox.ref !== undefined
-          //       ? ele => {
-          //           return this.props.textBox.ref(ele);
-          //         }
-          //       : null
-          //   }
-          //   {...this.props.textBox.others}
-          // />
         );
       } else {
         return (
@@ -245,32 +173,11 @@ export default class FormGroup extends Component {
             name={this.props.textBox.name}
             value={this.state.value}
             onChange={this.props.textBox.events.onChange}
+            {..._disabled}
+            {..._required}
+            {..._invalid}
             {...this.props.textBox.others}
           />
-          // <TextField
-          //   name={this.props.textBox.name}
-          //   className={this.props.textBox.className}
-          //   value={this.state.value}
-          //   label={this.state.textLanguageBind}
-          //   onChange={this.props.textBox.events.onChange}
-          //   onBlur={this.props.textBox.events.onBlur}
-          //   onFocus={this.props.textBox.events.onFocus}
-          //   onKeyPress={this.props.textBox.events.onKeyPress}
-          //   onKeyDown={this.props.textBox.events.onKeyDown}
-          //   onKeyUp={this.props.textBox.events.onKeyUp}
-          //   error={this.state.error}
-          //   helperText={this.state.helperText}
-          //   disabled={this.state.disabled}
-          //   autoComplete={"off"}
-          //   ref={
-          //     this.props.textBox.ref !== undefined
-          //       ? ele => {
-          //           return this.props.textBox.ref(ele);
-          //         }
-          //       : null
-          //   }
-          //   {...this.props.textBox.others}
-          // />
         );
       }
     } else {
