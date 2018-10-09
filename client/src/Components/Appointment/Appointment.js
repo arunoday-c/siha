@@ -165,10 +165,7 @@ class Appointment extends Component {
       gender: this.state.gender,
       appointment_remarks: this.state.appointment_remarks
     };
-<<<<<<< HEAD
-=======
     //console.log("Send Obj:", send_data);
->>>>>>> 2b8b0f7160b747ee26813791ac1f07aef1985d41
 
     algaehApiCall({
       uri: "/appointment/addPatientAppointment",
@@ -232,11 +229,8 @@ class Appointment extends Component {
                   : null
             });
           });
-<<<<<<< HEAD
-=======
 
           //console.log("Default Status:", this.state.defaultStatus);
->>>>>>> 2b8b0f7160b747ee26813791ac1f07aef1985d41
         }
       },
       onFailure: error => {
@@ -438,15 +432,7 @@ class Appointment extends Component {
       )
       .firstOrDefault();
     if (patient !== undefined) {
-<<<<<<< HEAD
-      return (
-        <span className="dynPatient">
-          {patient.patient_name} <span className="statusClr" />
-        </span>
-      );
-=======
       return patient;
->>>>>>> 2b8b0f7160b747ee26813791ac1f07aef1985d41
     } else {
       return null;
     }
