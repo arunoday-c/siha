@@ -8,12 +8,15 @@
   .rt-table ,.rt-thead,.rt-tr,.rt-tbody{
     flex: initial!important;
   }
+  .rt-tbody{
+    margin-top: 29px;}
   .rt-th {
     background: #34b8bc !important;
     color: #fff !important;
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: normal !important;
     font-size: 0.8rem;
+    height: 30px;
   }
   button {
     margin-left: 0;
@@ -72,6 +75,9 @@
     input,
     select {
       padding: 2px 5px !important;
+    }
+    .-pageJump input{
+      width: 45px!important;
     }
   }
 }

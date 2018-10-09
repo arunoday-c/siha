@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import "./patient_mrd.css";
-import { AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
+import { AlgaehDataGrid,AlgaehLabel} from "../../Wrapper/algaehWrapper";
 class PatientMRD extends Component {
   render() {
     return (
       <div className="patient-mrd">
-        {/* Patient Info Top Band Start */}
-
+      <div className="row patientProfile">
         <div className="patientInfo-Top box-shadow-normal">
           <div className="patientImg box-shadow">
             <img src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" />
@@ -103,16 +102,25 @@ class PatientMRD extends Component {
             </button>
           </div>
         </div>
-        {/* Patient Info Top Band End */}
-
-        <div className="row margin-top-15">
-          <div className="col-lg-4 portlet portlet-bordered box-shadow-normal">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">OP Encounter List</h3>
+      </div>
+      <div className="patientTopNav box-shadow-normal">
+      <ul className="nav">
+      <li className="nav-item"><span algaehsoap="subjective" className="nav-link active">Subjective</span></li>
+      </ul>
+      </div>
+      <div className="patientContentArea">
+      <div className="row">
+      <div className="col-lg-4">
+      
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">OP Encounter List</h3>
+                </div>
+                <div className="actions" />
               </div>
-            </div>
-            <div className="portlet-body">
+
+              <div className="portlet-body">
               <AlgaehDataGrid
                 id="index"
                 columns={[
@@ -151,18 +159,25 @@ class PatientMRD extends Component {
                   onEdit: row => {},
                   onDone: row => {}
                 }}
-              />
-            </div>
-          </div>
-          <div className="col-lg-8 portlet portlet-bordered box-shadow-normal">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">OP Encounter Details</h3>
+              /></div></div>
+      </div>
+      <div className="col-lg-8">
+      
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">OP Encounter Details                  </h3>
+                </div>
+                <div className="actions" />
               </div>
-            </div>
-            <div className="portlet-body">Encounter Detail grid comes here</div>
-          </div>
-        </div>
+
+              <div className="portlet-body">
+              scvsfdfsg
+              
+              </div></div>
+      </div>
+      </div>
+      </div>
       </div>
     );
   }
