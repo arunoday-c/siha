@@ -715,10 +715,10 @@ let addDoctorsSchedule = (req, res, next) => {
                           j++
                         ) {
                           connection.query(
-                            "SELECT  * from hims_d_appointment_schedule_header where ((? BETWEEN time(from_work_hr) AND time(to_work_hr))\
+                            "SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where ((? BETWEEN time(from_work_hr) AND time(to_work_hr))\
                            or  (? BETWEEN time(from_work_hr) AND time(to_work_hr)))\
                           and hims_d_appointment_schedule_header_id=?;\
-                          SELECT  * from hims_d_appointment_schedule_header where  ((time(from_work_hr) BETWEEN time(?) AND time(?))\
+                          SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where  ((time(from_work_hr) BETWEEN time(?) AND time(?))\
                           or  (to_work_hr BETWEEN time(?) AND time(?))) and hims_d_appointment_schedule_header_id=?",
                             [
                               input.from_work_hr,
@@ -737,17 +737,15 @@ let addDoctorsSchedule = (req, res, next) => {
                                   next(error);
                                 });
                               }
-                              debugLog("timeChecking inside:", timeChecking[0]);
-                              debugLog(
-                                "timeChecking outside ",
-                                timeChecking[1]
-                              );
+                            
+                            
                               if (
-                                timeChecking[0].length > 0 &&
+                                timeChecking[0].length > 0 ||
                                 timeChecking[1].length > 0
                               ) {
                                 //reject adding to schedule
                                 if (timeChecking[0].length > 0) {
+                                  debugLog("timeChecking inside:", timeChecking[0]);
                                   req.records = {
                                     message: `schedule already exist on ${
                                       clashingDate[0]
@@ -760,13 +758,17 @@ let addDoctorsSchedule = (req, res, next) => {
                                   next();
                                 } else {
                                   if (timeChecking[1].length > 0) {
+                                    debugLog(
+                                      "timeChecking outside ",
+                                      timeChecking[1]
+                                    );
                                     req.records = {
                                       message: `schedule already exist on ${
                                         clashingDate[0]
                                       } for doctor_id:${
                                         input.schedule_detail[doc].provider_id
-                                      } from ${timeChecking[1][1].from_work_hr} to 
-                                   ${timeChecking[1][1].to_work_hr}`,
+                                      } from ${timeChecking[1][0].from_work_hr} to 
+                                   ${timeChecking[1][0].to_work_hr}`,
                                       schedule_exist: true
                                     };
                                     next();
