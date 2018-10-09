@@ -58,89 +58,47 @@ export default class Login extends Component {
 
   handleLogin(e) {
     e.preventDefault();
-    if (this.state.username.length === 0 && this.state.password.length === 0) {
-      this.setState({
-        userError: true,
-        pwdError: true,
-        userErrorText: "Please enter a Username",
-        pwdErrorText: "Password cannot be empty"
-      });
-    } else if (this.state.username.length === 0) {
-      this.setState({
-        userError: true,
-        userErrorText: "Please enter a Username",
-        pwdError: false,
-        pwdErrorText: ""
-      });
-    } else if (this.state.password.length === 0) {
-      this.setState({
-        pwdError: true,
-        pwdErrorText: "Password cannot be empty",
-        userError: false,
-        userErrorText: ""
-      });
-    } else if (this.state.password.length < 6) {
-      this.setState({
-        pwdError: true,
-        pwdErrorText: "Password too short.",
-        userError: false,
-        userErrorText: ""
-      });
+    let x = document.getElementById("myProg");
+    if (x.style.display === "none") {
+      x.style.display = "block";
     } else {
-      this.setState({
-        userError: false,
-        pwdError: false,
-        userErrorText: "",
-        pwdErrorText: ""
-      });
+      x.style.display = "none";
+    }
 
-      let x = document.getElementById("myProg");
-      if (x.style.display === "none") {
-        x.style.display = "block";
-      } else {
+    algaehApiCall({
+      uri: "/apiAuth/authUser",
+      data: this.state,
+      timeout: 10000,
+      onSuccess: response => {
+        if (response.data.success === true) {
+          setCookie("userName", response.data.records.user_displayname);
+          setCookie("keyResources", response.data.records.keyResources, 30);
+          setSecure(response.data.records.secureModels);
+
+          window.location.hash = "/Home";
+          window.history.pushState(null, null, window.location.href);
+          window.onpopstate = function(event) {
+            window.history.go(1);
+          };
+        } else {
+        }
+      },
+      onFailure: error => {
         x.style.display = "none";
-      }
-
-      algaehApiCall({
-        uri: "/apiAuth/authUser",
-        data: this.state,
-        timeout: 10000,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            setCookie("userName", response.data.records.user_displayname);
-            setCookie("keyResources", response.data.records.keyResources, 30);
-            setSecure(response.data.records.secureModels);
-
-            window.location.hash = "/Home";
-            window.history.pushState(null, null, window.location.href);
-            window.onpopstate = function(event) {
-              window.history.go(1);
-            };
-          } else {
-          }
-        },
-        onFailure: error => {
-          x.style.display = "none";
-          if (error) {
-            if (error.response) {
-              if (
-                error.response.status !== null &&
-                error.response.status === 404
-              ) {
-                this.unsuccessfulSignIn(
-                  "User Name or Password doesn't match.\n Please check and login again",
-                  "Invalid User Details."
-                );
-              } else if (
-                error.response.status !== null &&
-                error.response.status > 400
-              ) {
-                this.unsuccessfulSignIn(
-                  "Server is not responding, Please contact administator.",
-                  "Failure"
-                );
-              }
-            } else {
+        if (error) {
+          if (error.response) {
+            if (
+              error.response.status !== null &&
+              error.response.status === 404
+            ) {
+              this.unsuccessfulSignIn(
+                "User Name or Password doesn't match.\n Please check and login again",
+                "Invalid User Details."
+              );
+            } else if (
+              error.response.status !== null &&
+              error.response.status > 400
+            ) {
               this.unsuccessfulSignIn(
                 "Server is not responding, Please contact administator.",
                 "Failure"
@@ -152,9 +110,14 @@ export default class Login extends Component {
               "Failure"
             );
           }
+        } else {
+          this.unsuccessfulSignIn(
+            "Server is not responding, Please contact administator.",
+            "Failure"
+          );
         }
-      });
-    }
+      }
+    });
   }
 
   unsuccessfulSignIn(message, title) {
@@ -206,7 +169,6 @@ export default class Login extends Component {
                       isImp: true
                     }}
                     textBox={{
-                      required: true,
                       className: "txt-fld",
                       name: "username",
                       value: this.state.username,

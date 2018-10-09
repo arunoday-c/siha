@@ -5,6 +5,9 @@
 
 .ReactTable {
   font-size: 0.8rem;
+  .rt-table ,.rt-thead,.rt-tr,.rt-tbody{
+    flex: initial!important;
+  }
   .rt-th {
     background: #34b8bc !important;
     color: #fff !important;
