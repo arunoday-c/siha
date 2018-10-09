@@ -1,4 +1,5 @@
-.patient-mrd{.patientProfile {
+.patient-mrd{
+  .patientProfile {
     .patientInfo-Top {
       background: white;
       height: 70px;
@@ -207,9 +208,56 @@
       }
     }
     .patientContentArea {
-      margin: 100px 10px 0;
+      margin: 120px 10px 0;
       z-index: 1;
       width: 100%;
+
+      .generalInfo,.chiefComplaint,.vitals,.diagnosis,.investigation,.medication,.procedures{
+        
+    border-top: 1px solid #e1e1e1;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    h6{font-size: 0.8rem; font-weight: bold;}
+        span{
+          font-weight: normal;
+          margin-left: 3px;
+        }
+      }
+      .generalInfo{border-top: none;}
+      .investigation{
+        .row{
+          .col-lg-12{
+            border-bottom: 1px dotted #e1e1e1;
+            padding-top:3px; 
+            padding-bottom:3px;
+            h6{
+              span{
+                float:right;
+                text-transform: uppercase;
+                font-size: 0.7rem;
+                color:#0066ff;
+              }
+            }
+          }
+        }
+
+      }
+      .smallh6{
+
+        color: #00bbbd;
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+        font-weight: normal;
+          }
+          .danger{
+            color: #ff5c5c;
+          }
+          .borderVitals{
+
+            border: 1px solid #e1e1e1;
+            margin: 0 3px 5px;
+            border-radius: 5px;
+          }
     }
   }
 }
