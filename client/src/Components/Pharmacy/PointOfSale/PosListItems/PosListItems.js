@@ -19,7 +19,11 @@ import {
   itemchangeText,
   numberchangeTexts,
   AddItems,
-  datehandle
+  datehandle,
+  deletePosDetail,
+  updatePosDetail,
+  calculateAmount,
+  adjustadvance
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -74,6 +78,7 @@ class PosListItems extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     this.setState(nextProps.POSIOputs);
   }
 
@@ -249,6 +254,27 @@ class PosListItems extends Component {
                                     </span>
                                   );
                                 },
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehAutoComplete
+                                      div={{}}
+                                      selector={{
+                                        name: "item_id",
+                                        className: "select-fld",
+                                        value: row.item_id,
+                                        dataSource: {
+                                          textField: "item_description",
+                                          valueField: "hims_d_item_master_id",
+                                          data: this.props.itemlist
+                                        },
+                                        onChange: null,
+                                        others: {
+                                          disabled: true
+                                        }
+                                      }}
+                                    />
+                                  );
+                                },
                                 disabled: true
                               },
 
@@ -277,6 +303,27 @@ class PosListItems extends Component {
                                     </span>
                                   );
                                 },
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehAutoComplete
+                                      div={{}}
+                                      selector={{
+                                        name: "item_category",
+                                        className: "select-fld",
+                                        value: row.item_category,
+                                        dataSource: {
+                                          textField: "category_desc",
+                                          valueField: "hims_d_item_category_id",
+                                          data: this.props.itemcategory
+                                        },
+                                        onChange: null,
+                                        others: {
+                                          disabled: true
+                                        }
+                                      }}
+                                    />
+                                  );
+                                },
                                 disabled: true
                               },
 
@@ -287,13 +334,13 @@ class PosListItems extends Component {
                                     label={{ forceLabel: "Expiry Date" }}
                                   />
                                 ),
-                                displayTemplate: row => {
-                                  return (
-                                    <span>
-                                      {this.dateFormater(row.expiry_date)}
-                                    </span>
-                                  );
-                                },
+                                // displayTemplate: row => {
+                                //   return (
+                                //     <span>
+                                //       {this.dateFormater(row.expiry_date)}
+                                //     </span>
+                                //   );
+                                // },
                                 disabled: true
                               },
                               {
@@ -328,6 +375,24 @@ class PosListItems extends Component {
                                     </span>
                                   );
                                 },
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehAutoComplete
+                                      div={{}}
+                                      selector={{
+                                        name: "item_category",
+                                        className: "select-fld",
+                                        value: row.item_category,
+                                        dataSource: {
+                                          textField: "uom_description",
+                                          valueField: "uom_id",
+                                          data: this.state.ItemUOM
+                                        },
+                                        onChange: null
+                                      }}
+                                    />
+                                  );
+                                },
                                 disabled: true
                               },
                               {
@@ -345,26 +410,27 @@ class PosListItems extends Component {
                                   <AlgaehLabel
                                     label={{ forceLabel: "Quantity" }}
                                   />
-                                )
-                                // editorTemplate: row => {
-                                //   return (
-                                //     <AlagehFormGroup
-                                //       div={{}}
-                                //       textBox={{
-                                //         value: row.quantity,
-                                //         className: "txt-fld",
-                                //         name: "quantity",
-                                //         events: {
-                                //           onChange: this.calculateAmount.bind(
-                                //             this,
-                                //             row,
-                                //             context
-                                //           )
-                                //         }
-                                //       }}
-                                //     />
-                                //   );
-                                // }
+                                ),
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        value: row.quantity,
+                                        className: "txt-fld",
+                                        name: "quantity",
+                                        events: {
+                                          onChange: calculateAmount.bind(
+                                            this,
+                                            this,
+                                            row,
+                                            context
+                                          )
+                                        }
+                                      }}
+                                    />
+                                  );
+                                }
                               },
 
                               {
@@ -384,27 +450,28 @@ class PosListItems extends Component {
                                       forceLabel: "discount_percentage"
                                     }}
                                   />
-                                )
-                                // editorTemplate: row => {
-                                //   return (
-                                //     <AlagehFormGroup
-                                //       div={{}}
-                                //       textBox={{
-                                //         decimal: { allowNegative: false },
-                                //         value: row.discount_percentage,
-                                //         className: "txt-fld",
-                                //         name: "discount_percentage",
-                                //         events: {
-                                //           onChange: this.calculateAmount.bind(
-                                //             this,
-                                //             row,
-                                //             context
-                                //           )
-                                //         }
-                                //       }}
-                                //     />
-                                //   );
-                                // }
+                                ),
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        decimal: { allowNegative: false },
+                                        value: row.discount_percentage,
+                                        className: "txt-fld",
+                                        name: "discount_percentage",
+                                        events: {
+                                          onChange: calculateAmount.bind(
+                                            this,
+                                            this,
+                                            row,
+                                            context
+                                          )
+                                        }
+                                      }}
+                                    />
+                                  );
+                                }
                               },
                               {
                                 fieldName: "discount_amout",
@@ -412,27 +479,28 @@ class PosListItems extends Component {
                                   <AlgaehLabel
                                     label={{ forceLabel: "discount_amout" }}
                                   />
-                                )
-                                // editorTemplate: row => {
-                                //   return (
-                                //     <AlagehFormGroup
-                                //       div={{}}
-                                //       textBox={{
-                                //         decimal: { allowNegative: false },
-                                //         value: row.discount_amout,
-                                //         className: "txt-fld",
-                                //         name: "discount_amout",
-                                //         events: {
-                                //           onChange: this.calculateAmount.bind(
-                                //             this,
-                                //             row,
-                                //             context
-                                //           )
-                                //         }
-                                //       }}
-                                //     />
-                                //   );
-                                // }
+                                ),
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        decimal: { allowNegative: false },
+                                        value: row.discount_amout,
+                                        className: "txt-fld",
+                                        name: "discount_amout",
+                                        events: {
+                                          onChange: calculateAmount.bind(
+                                            this,
+                                            this,
+                                            row,
+                                            context
+                                          )
+                                        }
+                                      }}
+                                    />
+                                  );
+                                }
                               },
 
                               {
@@ -451,16 +519,62 @@ class PosListItems extends Component {
                             }}
                             isEditable={true}
                             paging={{ page: 0, rowsPerPage: 10 }}
-                            // events={{
-                            //   onDelete: this.deleteBillDetail.bind(
-                            //     this,
-                            //     context
-                            //   ),
-                            //   onEdit: row => {},
-                            //   onDone: this.updateBillDetail.bind(this)
-                            // }}
+                            events={{
+                              onDelete: deletePosDetail.bind(
+                                this,
+                                this,
+                                context
+                              ),
+                              onEdit: row => {},
+                              onDone: updatePosDetail.bind(this, this)
+                            }}
                           />
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-lg-7" />
+                  <div className="col-lg-5" style={{ textAlign: "right" }}>
+                    <div className="row">
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Sub Total"
+                          }}
+                        />
+                        <h6>
+                          {this.state.sub_total
+                            ? "₹" + this.state.sub_total
+                            : "₹0.00"}
+                        </h6>
+                      </div>
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Discount Amount"
+                          }}
+                        />
+                        <h6>
+                          {this.state.discount_amount
+                            ? "₹" + this.state.discount_amount
+                            : "₹0.00"}
+                        </h6>
+                      </div>
+
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Net Total"
+                          }}
+                        />
+                        <h6>
+                          {this.state.net_total
+                            ? "₹" + this.state.net_total
+                            : "₹0.00"}
+                        </h6>
                       </div>
                     </div>
                   </div>
@@ -482,7 +596,7 @@ class PosListItems extends Component {
                               : "₹0.00"}
                           </h6>
                         </div>
-                        <div className="col-lg-6">
+                        {/* <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Deductable Amount"
@@ -493,7 +607,7 @@ class PosListItems extends Component {
                               ? "₹" + this.state.deductable_amount
                               : "₹0.00"}
                           </h6>
-                        </div>
+                        </div> */}
                         <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
@@ -506,7 +620,7 @@ class PosListItems extends Component {
                               : "₹0.00"}
                           </h6>
                         </div>
-                        <div className="col-lg-6">
+                        {/* <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Sec Deductable Amount"
@@ -517,7 +631,7 @@ class PosListItems extends Component {
                               ? "₹" + this.state.sec_deductable_amount
                               : "₹0.00"}
                           </h6>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="row">
                         <div className="col-lg-12 patientRespo">
@@ -674,7 +788,24 @@ class PosListItems extends Component {
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
                           label={{
-                            forceLabel: "discount %"
+                            forceLabel: "Advance Adjust"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.advance_adjust,
+                            className: "txt-fld",
+                            name: "advance_adjust",
+
+                            events: {
+                              onChange: adjustadvance.bind(this, this, context)
+                            }
+                          }}
+                        />
+
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-4" }}
+                          label={{
+                            forceLabel: "Sheet Level Discount %"
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -691,7 +822,7 @@ class PosListItems extends Component {
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
                           label={{
-                            forceLabel: "Discount Amount"
+                            forceLabel: "Sheet Level Discount Amount"
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -711,18 +842,18 @@ class PosListItems extends Component {
                         className="row secondary-box-container"
                         style={{ marginBottom: "10px" }}
                       >
-                        {/* <div className="col-3">
+                        <div className="col-3">
                           <AlgaehLabel
                             label={{
-                              fieldName: "advance_amount"
+                              forceLabel: "Available Aavance"
                             }}
                           />
                           <h6>
-                            {this.state.company_payble
+                            {this.state.advance_amount
                               ? "₹" + this.state.advance_amount
                               : "₹0.00"}
                           </h6>
-                        </div> */}
+                        </div>
 
                         <div className="col-3">
                           <AlgaehLabel
@@ -773,7 +904,7 @@ class PosListItems extends Component {
                           </h4>
                         </div>
                       </div>
-                      <ReciptForm />
+                      <ReciptForm POSIOputs={this.state} />
                     </Paper>
                   </div>
                 </div>
@@ -791,7 +922,8 @@ function mapStateToProps(state) {
     itemlist: state.itemlist,
     itemdetaillist: state.itemdetaillist,
     itemcategory: state.itemcategory,
-    itemuom: state.itemuom
+    itemuom: state.itemuom,
+    posheader: state.posheader
   };
 }
 
@@ -803,7 +935,8 @@ function mapDispatchToProps(dispatch) {
       generateBill: AlgaehActions,
       billingCalculations: AlgaehActions,
       getItemCategory: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
+      PosHeaderCalculations: AlgaehActions
     },
     dispatch
   );

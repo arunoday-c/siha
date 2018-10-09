@@ -7,7 +7,6 @@ import AppBar from "@material-ui/core/AppBar";
 
 import {
   AlagehFormGroup,
-  AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDateHandler
@@ -16,13 +15,10 @@ import {
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
-  itemchangeText,
-  numberchangeTexts,
-  AddItems,
-  datehandle,
-  dateFormater,
   getCtrlCode,
-  PatientSearch
+  PatientSearch,
+  ClearData,
+  Patientchange
 } from "./PointOfSaleEvents";
 import "./PointOfSale.css";
 import "../../../styles/site.css";
@@ -37,7 +33,20 @@ class PointOfSale extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      mode_of_pay: "",
+      pay_cash: "CA",
+      pay_card: "CD",
+      pay_cheque: "CH",
+      cash_amount: 0,
+      card_check_number: "",
+      card_date: null,
+      card_amount: 0,
+      cheque_number: "",
+      cheque_date: null,
+      cheque_amount: 0,
+      advance: 0
+    };
   }
 
   componentWillMount() {
@@ -63,6 +72,43 @@ class PointOfSale extends Component {
         mappingName: "locations"
       }
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    debugger;
+    // let output = {};
+    let posHeaderOut = {};
+    // if (
+    //   nextProps.existinsurance !== undefined &&
+    //   nextProps.existinsurance.length !== 0
+    // ) {
+    //   output = nextProps.existinsurance[0];
+    // }
+    if (nextProps.posheader !== undefined && nextProps.posheader.length !== 0) {
+      debugger;
+      nextProps.posheader.patient_payable_h =
+        nextProps.posheader.patient_payable || this.state.patient_payable;
+      nextProps.posheader.sub_total = nextProps.posheader.sub_total_amount;
+      nextProps.posheader.patient_responsibility =
+        nextProps.posheader.patient_res;
+      nextProps.posheader.company_responsibility =
+        nextProps.posheader.company_res;
+
+      nextProps.posheader.company_payable = nextProps.posheader.company_payble;
+
+      nextProps.posheader.sec_company_payable =
+        nextProps.posheader.sec_company_paybale;
+
+      nextProps.posheader.copay_amount = nextProps.posheader.copay_amount;
+      nextProps.posheader.sec_copay_amount =
+        nextProps.posheader.sec_copay_amount;
+
+      nextProps.posheader.saveEnable = false;
+      posHeaderOut = nextProps.posheader;
+    }
+    debugger;
+    this.setState({ ...this.state, ...posHeaderOut });
+    // this.setState({ ...this.state, ...billOut, ...output });
   }
 
   render() {
@@ -155,7 +201,6 @@ class PointOfSale extends Component {
                       valueField: "hims_d_pharmacy_location_id",
                       data: this.props.locations
                     },
-
                     onChange: changeTexts.bind(this, this)
                   }}
                 />
@@ -187,11 +232,11 @@ class PointOfSale extends Component {
                     name: "patient_code",
                     value: this.state.patient_code,
                     events: {
-                      onChange: changeTexts.bind(this, this)
-                    },
-                    others: {
-                      disabled: true
+                      onChange: Patientchange.bind(this, this)
                     }
+                    // others: {
+                    //   disabled: true
+                    // }
                   }}
                 />
 
@@ -226,9 +271,9 @@ class PointOfSale extends Component {
                     className: "select-fld",
                     value: this.state.mode_of_pay,
                     dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.MODE_OF_PAY
                     },
 
                     onChange: changeTexts.bind(this, this)
@@ -272,7 +317,7 @@ class PointOfSale extends Component {
                     <button
                       type="button"
                       className="btn btn-default"
-                      // onClick={this.ClearData.bind(this)}
+                      onClick={ClearData.bind(this, this)}
                     >
                       <AlgaehLabel
                         label={{ forceLabel: "Clear", returnText: true }}
@@ -283,6 +328,7 @@ class PointOfSale extends Component {
                       type="button"
                       className="btn btn-other"
                       // onClick={this.ShowRefundScreen.bind(this)}
+                      disabled={this.state.postEnable}
                     >
                       <AlgaehLabel
                         label={{
@@ -305,7 +351,9 @@ class PointOfSale extends Component {
 function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
-    locations: state.locations
+    locations: state.locations,
+    posheader: state.posheader,
+    pospatients: state.pospatients
   };
 }
 
@@ -313,7 +361,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getItems: AlgaehActions,
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
+      getPatientDetails: AlgaehActions
     },
     dispatch
   );
