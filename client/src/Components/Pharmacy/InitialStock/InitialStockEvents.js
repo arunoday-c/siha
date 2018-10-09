@@ -66,7 +66,8 @@ const itemchangeText = ($this, e) => {
     item_category_id: e.selected.category_id,
     item_group_id: e.selected.group_id,
     uom_id: e.selected.stocking_uom_id,
-    sales_uom: e.selected.sales_uom_id
+    sales_uom: e.selected.sales_uom_id,
+    required_batchno: e.selected.required_batchno
   });
 };
 
@@ -124,7 +125,8 @@ const AddItems = $this => {
       conversion_factor: $this.state.conversion_factor,
       barcode: "",
       grn_number: $this.state.grn_number,
-      noorecords: pharmacy_stock_detail.length + 1
+      noorecords: pharmacy_stock_detail.length + 1,
+      required_batchno: $this.state.required_batchno
     };
 
     pharmacy_stock_detail.push(itemObj);

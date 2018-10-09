@@ -1034,6 +1034,7 @@ class PhySchSetup extends Component {
                           }
                         }}
                         value={this.state.from_date}
+                        minDate={new Date()}
                       />
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3" }}
@@ -1890,11 +1891,9 @@ class PhySchSetup extends Component {
                         {this.state.scheduleDoctors !== undefined ? (
                           this.state.scheduleDoctors.map((data, index) => (
                             <li key={index}>
-                              {data.first_name + " " + data.last_name}
+                              {data.full_name}
                               <i
-                                provider-name={
-                                  data.first_name + " " + data.last_name
-                                }
+                                provider-name={data.full_name}
                                 provider-id={data.provider_id}
                                 id={data.appointment_schedule_header_id}
                                 onClick={this.openModifierPopup.bind(this)}

@@ -4,12 +4,17 @@
 
 .ReactTable {
   font-size: 0.8rem; }
+  .ReactTable .rt-table, .ReactTable .rt-thead, .ReactTable .rt-tr, .ReactTable .rt-tbody {
+    flex: initial !important; }
+  .ReactTable .rt-tbody {
+    margin-top: 30px; }
   .ReactTable .rt-th {
     background: #34b8bc !important;
     color: #fff !important;
     text-transform: uppercase;
-    font-weight: bold;
-    font-size: 0.8rem; }
+    font-weight: normal !important;
+    font-size: 0.8rem;
+    min-height: 30px !important; }
   .ReactTable button {
     margin-left: 0; }
   .ReactTable i.fa-pen,
@@ -57,3 +62,5 @@
   .ReactTable .-pagination input,
   .ReactTable .-pagination select {
     padding: 2px 5px !important; }
+  .ReactTable .-pagination .-pageJump input {
+    width: 45px !important; }

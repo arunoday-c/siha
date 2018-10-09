@@ -40,12 +40,12 @@ class AddReciptForm extends Component {
   }
 
   componentWillMount() {
-    // let InputOutput = this.props.BillingIOputs;
-    // this.setState({ ...this.state, ...InputOutput });
+    let InputOutput = this.props.POSIOputs;
+    this.setState({ ...this.state, ...InputOutput });
   }
 
   componentWillReceiveProps(nextProps) {
-    // this.setState(nextProps.BillingIOputs);
+    this.setState(nextProps.POSIOputs);
   }
 
   render() {

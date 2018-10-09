@@ -19,7 +19,9 @@ class MedicationHistory extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      orderservicesdata: []
+    };
   }
 
   render() {

@@ -1,5 +1,9 @@
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
+// import Enumerable from "linq";
+import extend from "extend";
+
+let texthandlerInterval = null;
 
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
@@ -7,7 +11,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
-  if ([e.target.name] == "sheet_discount_percentage") {
+  if ([e.target.name] === "sheet_discount_percentage") {
     sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
     sheet_discount_amount = 0;
   } else {
@@ -27,7 +31,7 @@ const discounthandle = ($this, context, ctrl, e) => {
         sheet_discount_amount: sheet_discount_amount
       },
       () => {
-        // billheaderCalculation($this, context);
+        PosheaderCalculation($this, context);
       }
     );
 
@@ -48,43 +52,148 @@ const changeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value });
 };
 
-const numberchangeTexts = ($this, ctrl, e) => {
+const numberchangeTexts = ($this, context, e) => {
   debugger;
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({ [name]: value });
+
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({
+        [name]: value
+      });
+    }
+    clearInterval(texthandlerInterval);
+  }, 1000);
 };
 
 const itemchangeText = ($this, e) => {
   debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  $this.setState({
-    [name]: value,
-    category_id: e.selected.category_id,
-    group_id: e.selected.group_id,
-    quantity: 1,
-    unit_cost: "200.00"
+
+  $this.props.getSelectedItemDetais({
+    uri: "/pharmacyGlobal/getUomLocationStock",
+    method: "GET",
+    data: {
+      location_id: $this.state.location_id,
+      item_id: value
+    },
+    redux: {
+      type: "ITEMS_UOM_DETAILS_GET_DATA",
+      mappingName: "itemdetaillist"
+    },
+    afterSuccess: data => {
+      debugger;
+      if (data.locationResult.length > 0) {
+        debugger;
+        $this.setState({
+          [name]: value,
+          item_category: e.selected.category_id,
+          group_id: e.selected.group_id,
+          uom_id: e.selected.sales_uom_id,
+          service_id: e.selected.service_id,
+          quantity: 1,
+          unit_cost: data.locationResult[0].avgcost,
+          expiry_date: data.locationResult[0].expirydt,
+          batchno: data.locationResult[0].batchno,
+          ItemUOM: data.uomResult,
+          Batch_Items: data.locationResult
+        });
+      } else {
+        successfulMessage({
+          message: "Invalid Input. No Stock Avaiable for selected Item.",
+          title: "Warning",
+          icon: "warning"
+        });
+      }
+    }
   });
 };
 
-const AddItems = $this => {
+const AddItems = ($this, context) => {
   let ListItems = $this.state.ListItems;
-  let itemObj = {
-    location_id: $this.state.location_id,
-    category_id: $this.state.category_id,
-    group_id: $this.state.group_id,
-    item_id: $this.state.item_id,
-    batch_no: $this.state.batch_no,
-    expirt_date: $this.state.expirt_date,
-    quantity: $this.state.quantity,
-    unit_cost: $this.state.unit_cost,
-    quantity: $this.state.quantity
-  };
-  ListItems.push(itemObj);
-  $this.setState({
-    ListItems: ListItems
+  debugger;
+  let ItemInput = [
+    {
+      insured: $this.state.insured,
+      vat_applicable: "Y",
+      hims_d_services_id: $this.state.service_id,
+      unit_cost: $this.state.unit_cost,
+      pharmacy_item: "Y",
+      quantity: $this.state.quantity,
+      primary_insurance_provider_id: $this.state.primary_insurance_provider_id,
+      primary_network_office_id: $this.state.primary_network_office_id,
+      primary_network_id: $this.state.primary_network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id
+    }
+  ];
+
+  $this.props.generateBill({
+    uri: "/billing/getBillDetails",
+    method: "POST",
+    data: ItemInput,
+    redux: {
+      type: "BILL_GEN_GET_DATA",
+      mappingName: "xxx"
+    },
+    afterSuccess: data => {
+      debugger;
+
+      if (data.billdetails[0].pre_approval === "Y") {
+        successfulMessage({
+          message:
+            "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+          title: "Warning",
+          icon: "warning"
+        });
+      } else {
+        let existingservices = $this.state.PrescriptionItemList;
+
+        if (data.billdetails.length !== 0) {
+          data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
+          data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+
+          data.billdetails[0].item_id = $this.state.item_id;
+          data.billdetails[0].item_category = $this.state.item_category;
+          data.billdetails[0].expiry_date = $this.state.expiry_date;
+          data.billdetails[0].batchno = $this.state.batchno;
+          data.billdetails[0].uom_id = $this.state.uom_id;
+          existingservices.splice(0, 0, data.billdetails[0]);
+        }
+
+        if (context != null) {
+          context.updateState({ PrescriptionItemList: existingservices });
+        }
+
+        $this.setState({
+          item_id: null,
+          uom_id: null,
+          batchno: null,
+          expiry_date: null,
+          quantity: 0,
+          unit_cost: 0,
+          service_id: null
+        });
+
+        $this.props.PosHeaderCalculations({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: { billdetails: existingservices },
+          redux: {
+            type: "POS_HEADER_GEN_GET_DATA",
+            mappingName: "posheader"
+          }
+        });
+      }
+    }
   });
 };
 
@@ -94,11 +203,209 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
+const deletePosDetail = ($this, context, e, rowId) => {
+  let PrescriptionItemList = $this.state.PrescriptionItemList;
+  PrescriptionItemList.splice(rowId, 1);
+
+  $this.props.PosHeaderCalculations({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: { billdetails: PrescriptionItemList },
+    redux: {
+      type: "POS_HEADER_GEN_GET_DATA",
+      mappingName: "posheader"
+    }
+  });
+
+  if (PrescriptionItemList.length === 0) {
+    if (context !== undefined) {
+      context.updateState({
+        PrescriptionItemList: PrescriptionItemList,
+        advance_amount: 0,
+        discount_amount: 0,
+        sub_total_amount: 0,
+        total_tax: 0,
+        net_total: 0,
+        copay_amount: 0,
+        sec_copay_amount: 0,
+        deductable_amount: 0,
+        sec_deductable_amount: 0,
+        gross_total: 0,
+        sheet_discount_amount: 0,
+        sheet_discount_percentage: 0,
+        net_amount: 0,
+        patient_res: 0,
+        company_res: 0,
+        sec_company_res: 0,
+        patient_payable: 0,
+        company_payable: 0,
+        sec_company_payable: 0,
+        patient_tax: 0,
+        company_tax: 0,
+        sec_company_tax: 0,
+        net_tax: 0,
+        credit_amount: 0,
+        receiveable_amount: 0,
+
+        cash_amount: 0,
+        card_number: "",
+        card_date: null,
+        card_amount: 0,
+        cheque_number: "",
+        cheque_date: null,
+        cheque_amount: 0,
+        total_amount: 0,
+        unbalanced_amount: 0
+      });
+    }
+  } else {
+    if (context !== undefined) {
+      context.updateState({
+        PrescriptionItemList: PrescriptionItemList
+      });
+    }
+  }
+};
+
+const updatePosDetail = ($this, e) => {
+  $this.props.PosHeaderCalculations({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: { billdetails: $this.state.PrescriptionItemList },
+    redux: {
+      type: "posheader",
+      mappingName: "posheader"
+    }
+  });
+};
+
+//Calculate Row Detail
+const calculateAmount = ($this, row, context, ctrl, e) => {
+  debugger;
+  e = e || ctrl;
+
+  let PrescriptionItemList = $this.state.PrescriptionItemList;
+  debugger;
+  row[e.target.name] = parseFloat(e.target.value);
+  let inputParam = [
+    {
+      hims_d_services_id: row.services_id,
+      vat_applicable: "Y",
+      unit_cost: row.unit_cost,
+      pharmacy_item: "Y",
+      quantity: row.quantity,
+      discount_amout:
+        e.target.name === "discount_percentage" ? 0 : row.discount_amout,
+      discount_percentage:
+        e.target.name === "discount_amout" ? 0 : row.discount_percentage,
+
+      insured: $this.state.insured,
+      primary_insurance_provider_id: $this.state.insurance_provider_id,
+      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
+      primary_network_id: $this.state.network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id
+    }
+  ];
+
+  $this.props.generateBill({
+    uri: "/billing/getBillDetails",
+    method: "POST",
+    data: inputParam,
+    redux: {
+      type: "BILL_GEN_GET_DATA",
+      mappingName: "xxx"
+    },
+    afterSuccess: data => {
+      debugger;
+      data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
+      data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+
+      data.billdetails[0].item_id = $this.state.item_id;
+      data.billdetails[0].item_category = $this.state.item_category;
+      data.billdetails[0].expiry_date = $this.state.expiry_date;
+      data.billdetails[0].batchno = $this.state.batchno;
+      data.billdetails[0].uom_id = $this.state.uom_id;
+      extend(row, data.billdetails[0]);
+      for (let i = 0; i < PrescriptionItemList.length; i++) {
+        if (PrescriptionItemList[i].service_type_id === row.service_type_id) {
+          PrescriptionItemList[i] = row;
+        }
+      }
+      $this.setState({ PrescriptionItemList: PrescriptionItemList });
+    }
+  });
+};
+
+const adjustadvance = ($this, context, ctrl, e) => {
+  e = e || ctrl;
+
+  if (e.target.value > $this.state.advance_amount) {
+    successfulMessage({
+      message:
+        "Invalid Input. Adjusted amount cannot be greater than Advance amount",
+      title: "Warning",
+      icon: "warning"
+    });
+  } else {
+    $this.setState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => {
+        PosheaderCalculation($this, context);
+      }
+    );
+
+    if (context != null) {
+      context.updateState({
+        [e.target.name]: e.target.value
+      });
+    }
+  }
+};
+
+const PosheaderCalculation = ($this, context) => {
+  debugger;
+  var intervalId;
+  let ItemInput = {
+    isReceipt: false,
+    intCalculateall: false,
+    sheet_discount_percentage: parseFloat(
+      $this.state.sheet_discount_percentage
+    ),
+    sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
+    advance_adjust: parseFloat($this.state.advance_adjust),
+    gross_total: parseFloat($this.state.gross_total)
+  };
+
+  clearInterval(intervalId);
+
+  intervalId = setInterval(() => {
+    $this.props.PosHeaderCalculations({
+      uri: "/billing/billingCalculations",
+      method: "POST",
+      data: ItemInput,
+      redux: {
+        type: "POS_HEADER_GEN_GET_DATA",
+        mappingName: "posheader"
+      }
+    });
+    clearInterval(intervalId);
+  }, 1000);
+};
 export {
   discounthandle,
   changeTexts,
   itemchangeText,
   numberchangeTexts,
   AddItems,
-  datehandle
+  datehandle,
+  deletePosDetail,
+  updatePosDetail,
+  calculateAmount,
+  adjustadvance
 };

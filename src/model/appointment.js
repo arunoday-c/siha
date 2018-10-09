@@ -247,27 +247,74 @@ let updateAppointmentStatus = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.query(
-        "UPDATE `hims_d_appointment_status` SET color_code=?, description=?, default_status=?,\
-           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_status_id`=?;",
-        [
-          input.color_code,
-          input.description,
-          input.default_status,
-          new Date(),
-          input.updated_by,
-          input.record_status,
-          input.hims_d_appointment_status_id
-        ],
-        (error, result) => {
-          connection.release();
-          if (error) {
+
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
             next(error);
-          }
-          req.records = result;
-          next();
+          });
         }
-      );
+        connection.query(
+          "UPDATE `hims_d_appointment_status` SET color_code=?, description=?, default_status=?,\
+           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_status_id`=?;",
+          [
+            input.color_code,
+            input.description,
+            input.default_status,
+            new Date(),
+            input.updated_by,
+            input.record_status,
+            input.hims_d_appointment_status_id
+          ],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+
+            if (input.default_status == "Y") {
+              connection.query(
+                "UPDATE `hims_d_appointment_status` SET  default_status='N'\
+            WHERE  record_status='A' and hims_d_appointment_status_id <> ?;",
+                [input.hims_d_appointment_status_id],
+                (error, defStatusRsult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    req.records = result;
+                    next();
+                  });
+                }
+              );
+            } else {
+              connection.commit(error => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                req.records = result;
+                next();
+              });
+            }
+          }
+        );
+      });
     });
   } catch (e) {
     next(e);
@@ -661,19 +708,36 @@ let addDoctorsSchedule = (req, res, next) => {
                           "appointment_schedule_header_idS: ",
                           appointment_schedule_header_idS
                         );
-                        //checking time in all schedules of clashed date
-                        // "select * from hims_d_appointment_schedule_header where time(from_work_hr)<=?  and time(to_work_hr)> ?\
-                        // and hims_d_appointment_schedule_header_id=?"
+
+
+                        // SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where ((? BETWEEN time(from_work_hr) AND time(to_work_hr))\
+                        //    or  (? BETWEEN time(from_work_hr) AND time(to_work_hr)))\
+                        //   and hims_d_appointment_schedule_header_id=?
+                        // SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where  ((time(from_work_hr) BETWEEN time(?) AND time(?))\
+                        //   or  (to_work_hr BETWEEN time(?) AND time(?))) and hims_d_appointment_schedule_header_id=?
                         for (
                           let j = 0;
                           j < appointment_schedule_header_idS.length;
                           j++
                         ) {
+
+
+
                           connection.query(
-                            "SELECT  * from hims_d_appointment_schedule_header where (? BETWEEN time(from_work_hr) AND time(to_work_hr))\
-                           or  (? BETWEEN time(from_work_hr) AND time(to_work_hr))\
-                          and hims_d_appointment_schedule_header_id=?",
+                            "SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where\
+                            ((time(from_work_hr)<=?   AND time(to_work_hr)>?) or (time(from_work_hr)<=?   AND time(to_work_hr)>?))  and hims_d_appointment_schedule_header_id=?;\
+                            SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header\
+                            where ((time(from_work_hr) >=? AND   time(from_work_hr) <?) or \
+                            (time(to_work_hr) >=? AND   time(to_work_hr) <?))\
+                             and hims_d_appointment_schedule_header_id=?;",
                             [
+                              input.from_work_hr,
+                              input.from_work_hr,
+                              input.to_work_hr,
+                              input.to_work_hr,
+                              appointment_schedule_header_idS[j],
+                              input.from_work_hr,
+                              input.to_work_hr,
                               input.from_work_hr,
                               input.to_work_hr,
                               appointment_schedule_header_idS[j]
@@ -685,21 +749,57 @@ let addDoctorsSchedule = (req, res, next) => {
                                   next(error);
                                 });
                               }
-                              debugLog("timeChecking", timeChecking);
 
-                              if (timeChecking.length > 0) {
+                              if (
+                                timeChecking[0].length > 0 ||
+                                timeChecking[1].length > 0
+                              ) {
                                 //reject adding to schedule
-                                debugLog("timeChecking", timeChecking);
-                                req.records = {
-                                  message: `schedule already exist on ${
-                                    clashingDate[0]
-                                  } for doctor_id:${
-                                    input.schedule_detail[doc].provider_id
-                                  } from ${timeChecking[0].from_work_hr} to 
-                                 ${timeChecking[0].to_work_hr}`,
-                                  schedule_exist: true
-                                };
-                                next(error);
+                                if (timeChecking[0].length > 0) {
+                                  debugLog(
+                                    "timeChecking inside:",
+                                    timeChecking[0]
+                                  );
+
+                                  connection.rollback(() => {
+                                    releaseDBConnection(db, connection);
+                                  });
+                                  req.records = {
+                                    message: `schedule already exist on ${
+                                      clashingDate[0]
+                                    } for doctor_id:${
+                                      input.schedule_detail[doc].provider_id
+                                    } from ${
+                                      timeChecking[0][0].from_work_hr
+                                    } to 
+                                 ${timeChecking[0][0].to_work_hr}`,
+                                    schedule_exist: true
+                                  };
+                                  next();
+                                } else {
+                                  if (timeChecking[1].length > 0) {
+                                    debugLog(
+                                      "timeChecking outside ",
+                                      timeChecking[1]
+                                    );
+
+                                    connection.rollback(() => {
+                                      releaseDBConnection(db, connection);
+                                    });
+                                    req.records = {
+                                      message: `schedule already exist on ${
+                                        clashingDate[0]
+                                      } for doctor_id:${
+                                        input.schedule_detail[doc].provider_id
+                                      } from ${
+                                        timeChecking[1][0].from_work_hr
+                                      } to 
+                                   ${timeChecking[1][0].to_work_hr}`,
+                                      schedule_exist: true
+                                    };
+                                    next();
+                                  }
+                                }
                               } else {
                                 //adding records for single doctor at one time
                                 const insurtColumns = [
@@ -927,7 +1027,7 @@ let getDoctorsScheduledList = (req, res, next) => {
             for (let i = 0; i < result.length; i++) {
               connection.query(
                 "SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,SH.schedule_description ,\
-                SH.schedule_status deprt_schedule_status,ASD.provider_id,E.first_name,E.last_name,\
+                SH.schedule_status deprt_schedule_status,ASD.provider_id,E.full_name,\
                 clinic_id,AC.description as clinic_description,slot,schedule_date,from_work_hr,\
                  to_work_hr,work_break1,work_break2,\
                  from_break_hr1,to_break_hr1,from_break_hr2,to_break_hr2  ,ASD.schedule_status doctor_schedule_status\

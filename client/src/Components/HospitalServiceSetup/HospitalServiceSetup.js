@@ -439,7 +439,10 @@ class HospitalServiceSetup extends Component {
                   ]}
                   keyId="service_code"
                   dataSource={{
-                    data: this.props.hospitalservices
+                    data:
+                      this.props.hospitalservices === undefined
+                        ? []
+                        : this.props.hospitalservices
                   }}
                   // isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}

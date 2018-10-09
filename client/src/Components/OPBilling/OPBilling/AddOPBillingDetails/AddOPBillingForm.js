@@ -920,7 +920,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {this.state.company_payble
+                            {this.state.advance_amount
                               ? "₹" + this.state.advance_amount
                               : "₹0.00"}
                           </h6>

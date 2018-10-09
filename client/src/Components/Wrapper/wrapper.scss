@@ -5,12 +5,18 @@
 
 .ReactTable {
   font-size: 0.8rem;
+  .rt-table ,.rt-thead,.rt-tr,.rt-tbody{
+    flex: initial!important;
+  }
+  .rt-tbody{
+    margin-top: 30px;}
   .rt-th {
     background: #34b8bc !important;
     color: #fff !important;
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: normal !important;
     font-size: 0.8rem;
+    min-height: 30px!important;
   }
   button {
     margin-left: 0;
@@ -69,6 +75,9 @@
     input,
     select {
       padding: 2px 5px !important;
+    }
+    .-pageJump input{
+      width: 45px!important;
     }
   }
 }

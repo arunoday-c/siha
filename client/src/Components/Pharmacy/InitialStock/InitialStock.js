@@ -77,7 +77,7 @@ class InitialStock extends Component {
       uri: "/pharmacy/getPharmacyLocation",
       method: "GET",
       redux: {
-        type: "ANALYTES_GET_DATA",
+        type: "LOCATIONS_GET_DATA",
         mappingName: "locations"
       }
     });
@@ -95,7 +95,7 @@ class InitialStock extends Component {
       uri: "/pharmacy/getItemGroup",
       method: "GET",
       redux: {
-        type: "ANALYTES_GET_DATA",
+        type: "ITEM_GROUP_GET_DATA",
         mappingName: "itemgroup"
       }
     });
@@ -104,7 +104,7 @@ class InitialStock extends Component {
       uri: "/pharmacy/getPharmacyUom",
       method: "GET",
       redux: {
-        type: "ANALYTES_GET_DATA",
+        type: "ITEM_UOM_GET_DATA",
         mappingName: "itemuom"
       }
     });

@@ -21,6 +21,7 @@
   "storage_id": "Storage",
   "active": "Active",
   "inactive": "Inactive",
+  "service_id": "Services",
 
   "btnSave": "Save",
   "btnUpdate": "Update"

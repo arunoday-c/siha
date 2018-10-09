@@ -82,7 +82,7 @@ class LabResult extends Component {
         <div className="hptl-phase1-lab-result-form">
           <div className="container-fluid">
             <div className="row form-details">
-              <div className="col-lg-3">
+              <div className="col-lg-4">
                 <AlgaehDataGrid
                   id="Lab_list_grid"
                   columns={[
@@ -161,12 +161,15 @@ class LabResult extends Component {
                   ]}
                   keyId="patient_code"
                   dataSource={{
-                    data: this.props.labresult
+                    data:
+                      this.props.labresult === undefined
+                        ? []
+                        : this.props.labresult
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
-              <div className="col-lg-9">
+              <div className="col-lg-8">
                 <AlgaehDataGrid
                   id="Lab_Result_grid"
                   columns={[
@@ -271,7 +274,10 @@ class LabResult extends Component {
                   ]}
                   keyId="patient_code"
                   dataSource={{
-                    data: this.props.testanalytes
+                    data:
+                      this.props.testanalytes === undefined
+                        ? []
+                        : this.props.testanalytes
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />

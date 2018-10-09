@@ -1,0 +1,263 @@
+.patient-mrd{
+  .patientProfile {
+    .patientInfo-Top {
+      background: white;
+      height: 70px;
+      padding: 5px 0 0;
+      width: 100%;
+      position: fixed;
+      z-index: 999;
+  
+      div {
+        float: left;
+        color: #858585;
+      }
+  
+      .backBtn {
+        border-right: 1px solid #e1e1e1;
+        padding-right: 10px;
+        button {
+          height: 60px;
+          border: 1px solid #e1e1e1;
+          font-size: 0.7rem;
+        }
+        i {
+          display: block;
+          margin-bottom: 5px;
+        }
+      }
+  
+      .patientImg {
+        margin: 1px 10px;
+        border-radius: 4px;
+        border: 1px solid #e1e1e1;
+        img {
+          height: 55px;
+          border-radius: 4px;
+          overflow: hidden;
+        }
+      }
+      .patientName {
+        max-width: 230px;
+        margin-top: 2px;
+        border-left: 1px solid #e1e1e1;
+        border-right: 1px solid #e1e1e1;
+        padding-left: 10px;
+        padding-right: 10px;
+        min-height: 57px;
+        h6 {
+          font-size: 1rem;
+          margin-bottom: 2px;
+          color: #000;
+          line-height: 1.2rem;
+        }
+        p {
+          font-size: 0.8rem;
+          margin: 0;
+          padding: 0;
+        }
+      }
+      .patientDemographic {
+        font-size: 0.8rem;
+        line-height: 1.3rem;
+        border-right: 1px solid #e1e1e1;
+        padding-left: 10px;
+        padding-right: 10px;
+        min-height: 57px;
+        span {
+          display: block;
+          b {
+            color: #34b8bc;
+          }
+        }
+      }
+      .patientHospitalDetail {
+        font-size: 0.8rem;
+        line-height: 1.3rem;
+        border-right: 1px solid #e1e1e1;
+        padding-left: 10px;
+        padding-right: 10px;
+        min-height: 57px;
+        span {
+          display: block;
+          b {
+            color: #34b8bc;
+          }
+        }
+      }
+      .patientVital {
+        font-size: 0.8rem;
+        width: 210px;
+        line-height: 1.3rem;
+        padding-left: 10px;
+        padding-right: 10px;
+        min-height: 57px;
+        span {
+          display: inline-block;
+          margin-right: 8px;
+  
+          b {
+            color: #34b8bc;
+          }
+        }
+      }
+      .moreAction {
+        float: right;
+        border-right: 1px solid #e1e1e1;
+        padding-right: 10px;
+        button {
+          height: 60px;
+          border: 1px solid #e1e1e1;
+          font-size: 0.7rem;
+          margin-left: 0;
+        }
+        i {
+          display: block;
+          margin-bottom: 5px;
+        }
+      }
+    }
+    .patientTopNav {
+      background: white;
+      height: 35px;
+      padding: 5px 0 0;
+      width: 100%;
+      color: #797979;
+      font-size: 1rem;
+      text-transform: uppercase;
+      position: fixed;
+      top: 120px;
+      z-index: 99;
+      ul {
+        position: relative;
+        li {
+          span {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            padding: 5px 15px;
+            color: #858585;
+          }
+          span.active {
+            border-bottom: 3px solid #34b8bc;
+            color: #000;
+          }
+          span:hover {
+            border-bottom: 3px solid #34b8bc;
+            color: #000;
+            cursor: pointer;
+          }
+        }
+      }
+      .patient-quick-info {
+        color: #34b8bc;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        position: absolute;
+        right: 20px;
+        li {
+          background: #ffffff;
+          color: #53bcb1;
+          padding: 4px 10px 3px;
+          cursor: pointer;
+          margin: 0 10px;
+          list-style: none;
+          display: inline-block;
+          p {
+            width: 300px;
+            height: auto;
+            position: absolute;
+            right: 0;
+            top: 30px;
+            background: #53bdb1;
+            z-index: 9;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            display: none;
+            b {
+              display: block;
+              border-bottom: 1px solid #3f9c90;
+              margin-bottom: 10px;
+              padding-bottom: 5px;
+              font-size: 0.8rem;
+            }
+            .listofA-D-D {
+              display: inline-block;
+              margin-right: 8px;
+              border: 1px solid #317970;
+              padding: 3px 10px;
+              margin: 0;
+              color: #fff;
+              margin-right: 5px;
+              margin-bottom: 3px;
+              border-radius: 20px;
+              background: #3f9c91;
+              font-size: 0.7rem;
+            }
+          }
+        }
+        li:hover {
+          background: #53bcb1;
+          color: #fff;
+          padding: 4px 10px;
+          p {
+            display: block;
+          }
+        }
+      }
+    }
+    .patientContentArea {
+      margin: 120px 10px 0;
+      z-index: 1;
+      width: 100%;
+
+      .generalInfo,.chiefComplaint,.vitals,.diagnosis,.investigation,.medication,.procedures{
+        
+    border-top: 1px solid #e1e1e1;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    h6{font-size: 0.8rem; font-weight: bold;}
+        span{
+          font-weight: normal;
+          margin-left: 3px;
+        }
+      }
+      .generalInfo{border-top: none;}
+      .investigation{
+        .row{
+          .col-lg-12{
+            border-bottom: 1px dotted #e1e1e1;
+            padding-top:3px; 
+            padding-bottom:3px;
+            h6{
+              span{
+                float:right;
+                text-transform: uppercase;
+                font-size: 0.7rem;
+                color:#0066ff;
+              }
+            }
+          }
+        }
+
+      }
+      .smallh6{
+
+        color: #00bbbd;
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+        font-weight: normal;
+          }
+          .danger{
+            color: #ff5c5c;
+          }
+          .borderVitals{
+
+            border: 1px solid #e1e1e1;
+            margin: 0 3px 5px;
+            border-radius: 5px;
+          }
+    }
+  }
+}

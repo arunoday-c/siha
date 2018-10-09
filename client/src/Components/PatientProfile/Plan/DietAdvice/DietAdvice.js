@@ -139,7 +139,8 @@ class DietAdvice extends Component {
                 ]}
                 keyId="patient_code"
                 dataSource={{
-                  data: this.props.dietList
+                  data:
+                    this.props.dietList === undefined ? [] : this.props.dietList
                 }}
                 paging={{ page: 0, rowsPerPage: 3 }}
               />
