@@ -109,7 +109,6 @@ class PatientMRD extends Component {
               </button>
             </div>
           </div>
-        </div>
         {/* Top Bar End */}
 
         {/* Bottom Body Start */}
@@ -485,7 +484,7 @@ class PatientMRD extends Component {
             </div>
           </div>
         </div>
-        {/* Bottom Body End */}
+      </div>
       </div>
       //Main Render End
     );
