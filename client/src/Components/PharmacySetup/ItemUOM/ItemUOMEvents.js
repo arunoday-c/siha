@@ -1,6 +1,5 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -28,10 +27,9 @@ const updateItemUOM = ($this, data) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        swal("Record updated successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Record updated successfully . .",
+          type: "success"
         });
         getItemUOM($this);
       }
@@ -43,7 +41,7 @@ const updateItemUOM = ($this, data) => {
 const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this UOM?",
-    icon: "warning",
+    type: "warning",
     buttons: true,
     dangerMode: true
   }).then(willDelete => {
@@ -60,15 +58,13 @@ const showconfirmDialog = ($this, row) => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
-            swal("Record deleted successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Record deleted successfully . .",
+              type: "success"
             });
             getItemUOM($this);
           }
-        },
-        onFailure: error => {}
+        }
       });
     }
   });
@@ -99,26 +95,13 @@ const insertItemUOM = ($this, e) => {
           resetState($this);
           //Handle Successful Add here
           getItemUOM($this);
-
-          swal({
-            title: "Success",
-            text: "UOM added successfully",
-            icon: "success",
-            button: false,
-            timer: 2500
+          swalMessage({
+            title: "UOM added successfully . .",
+            type: "success"
           });
         } else {
           //Handle unsuccessful Add here.
         }
-      },
-      onFailure: error => {
-        swal({
-          title: "Error",
-          text: error.message,
-          icon: "error",
-          button: false,
-          timer: 2500
-        });
       }
     });
   }
@@ -134,10 +117,9 @@ const getItemUOM = $this => {
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
-        successfulMessage({
-          message: "No Records Found",
-          title: "Warning",
-          icon: "warning"
+        swalMessage({
+          title: "No Records Found",
+          type: "warning"
         });
       }
     }

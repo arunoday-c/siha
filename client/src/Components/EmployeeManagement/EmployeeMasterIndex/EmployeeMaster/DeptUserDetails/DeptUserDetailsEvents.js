@@ -1,4 +1,4 @@
-import swal from "sweetalert";
+import { swalMessage } from "../../../../../utils/algaehApiCall";
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
@@ -20,7 +20,6 @@ const departmenttexthandle = ($this, ctrl, e) => {
       [name]: value
     },
     () => {
-      debugger;
       $this.props.getEmpSpeciality({
         uri: "/employeesetups/getEmpSpeciality",
         method: "GET",
@@ -44,7 +43,6 @@ const specialitytexthandle = ($this, ctrl, e) => {
       [name]: value
     },
     () => {
-      debugger;
       $this.props.getEmployeeCategory({
         uri: "/employee/getEmployeeCategory",
         method: "GET",
@@ -52,9 +50,6 @@ const specialitytexthandle = ($this, ctrl, e) => {
         redux: {
           type: "EMP_SPEC_CATEGORY_GET_DATA",
           mappingName: "specimapcategory"
-        },
-        afterSuccess: data => {
-          debugger;
         }
       });
     }
@@ -65,7 +60,7 @@ const categorytexthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger;
+
   $this.setState({
     [name]: value,
     category_speciality_id: e.selected.hims_m_category_speciality_mappings_id
@@ -73,7 +68,6 @@ const categorytexthandle = ($this, ctrl, e) => {
 };
 
 const AddDeptUser = ($this, context) => {
-  debugger;
   let deptDetails = $this.state.deptDetails;
   let insertdeptDetails = $this.state.insertdeptDetails;
 
@@ -112,10 +106,9 @@ const AddDeptUser = ($this, context) => {
       });
     }
   } else {
-    swal("Invalid Input. Selected Depsrtment already defined.", {
-      icon: "warning",
-      buttons: false,
-      timer: 2000
+    swalMessage({
+      title: "Invalid Input. Selected Depsrtment already defined",
+      type: "warning"
     });
   }
 };
@@ -123,8 +116,6 @@ const AddDeptUser = ($this, context) => {
 // getEmpSpeciality
 
 const deleteDeptUser = ($this, context, row) => {
-  debugger;
-
   let deptDetails = $this.state.deptDetails;
   let updatedeptDetails = $this.state.updatedeptDetails;
   let insertdeptDetails = $this.state.insertdeptDetails;

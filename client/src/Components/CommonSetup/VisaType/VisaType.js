@@ -4,7 +4,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import "./visatype.css";
 import Button from "@material-ui/core/Button";
 import moment from "moment";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -16,7 +16,7 @@ import {
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
-import swal from "sweetalert";
+import swal from "sweetalert2";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall.js";
 
@@ -93,13 +93,9 @@ class VisaType extends Component {
               }
             });
             this.resetState();
-
-            swal({
-              title: "Success",
-              text: "Visa Type added successfully",
-              icon: "success",
-              button: false,
-              timer: 2500
+            swalMessage({
+              title: "Visa Type added successfully",
+              type: "success"
             });
           } else {
             //Handle unsuccessful Add here.
@@ -120,11 +116,11 @@ class VisaType extends Component {
       method: "PUT",
       onSuccess: response => {
         if (response.data.success) {
-          swal("Record updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Record updated successfully . .",
+            type: "success"
           });
+
           this.props.getVisatypes({
             uri: "/masters/get/visa",
             method: "GET",
@@ -198,10 +194,9 @@ class VisaType extends Component {
           method: "DELETE",
           onSuccess: response => {
             if (response.data.success) {
-              swal("Record deleted successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
               });
 
               this.props.getVisatypes({
@@ -217,7 +212,10 @@ class VisaType extends Component {
           onFailure: error => {}
         });
       } else {
-        swal("Delete request cancelled");
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "success"
+        });
       }
     });
   }

@@ -1,8 +1,7 @@
 import moment from "moment";
 import { Validations } from "./SubInsuranceValidation";
-import swal from "sweetalert";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-// import { getCookie } from "../../../utils/algaehApiCall.js";
+import swal from "sweetalert2";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, context, e) => {
   let name;
@@ -48,15 +47,11 @@ const saveSubInsurance = ($this, context) => {
         data: updatedata,
         onSuccess: response => {
           if (response.data.success === true) {
-            swal("Added successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              type: "success",
+              title: "Added successfully . ."
             });
           }
-        },
-        onFailure: error => {
-          console.log(error);
         }
       });
     }
@@ -92,7 +87,7 @@ const datehandle = ($this, ctrl, e) => {
 const showconfirmDialog = ($this, id) => {
   swal({
     title: "Are you sure you want to delete this ID Types?",
-    icon: "warning",
+    type: "warning",
     buttons: true,
     dangerMode: true
   }).then(willDelete => {
@@ -101,17 +96,15 @@ const showconfirmDialog = ($this, id) => {
         hims_d_insurance_sub_id: id
         //updated_by: getCookie("UserID")
       };
-      debugger;
       algaehApiCall({
         uri: "/insurance/deleteSubInsurance",
         data: data,
         method: "DELETE",
         onSuccess: response => {
           if (response.data.success) {
-            swal("Record deleted successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              type: "success",
+              title: "Record deleted successfully . ."
             });
             $this.props.getSubInsuranceDetails({
               uri: "/insurance/getSubInsurance",
@@ -125,7 +118,6 @@ const showconfirmDialog = ($this, id) => {
                 mappingName: "subinsuranceprovider"
               },
               afterSuccess: data => {
-                debugger;
                 $this.setState({ sub_insurance: data });
               }
             });
@@ -134,7 +126,10 @@ const showconfirmDialog = ($this, id) => {
         onFailure: error => {}
       });
     } else {
-      swal("Delete request cancelled");
+      swalMessage({
+        title: "Delete request cancelled",
+        type: "success"
+      });
     }
   });
 };
@@ -150,10 +145,9 @@ const updateSubInsurance = ($this, data) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        swal("Record updated successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          type: "success",
+          title: "Record updated successfully . ."
         });
         $this.props.getSubInsuranceDetails({
           uri: "/insurance/getSubInsurance",

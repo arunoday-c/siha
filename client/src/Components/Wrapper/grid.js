@@ -1,3 +1,4 @@
+"use strict";
 import React, { PureComponent } from "react";
 import ReactTable from "react-table";
 import withFixedColumns from "react-table-hoc-fixed-columns";
@@ -274,7 +275,8 @@ class DataGrid extends PureComponent {
                 editorTemp: s.editorTemplate
               }),
               assignTdClass: _assignClass,
-              ..._displayTemp
+              ..._displayTemp,
+              ...s.others
             };
           })
           .toArray();
@@ -406,7 +408,8 @@ class DataGrid extends PureComponent {
                 editorTemp: s.editorTemplate
               }),
               assignTdClass: _assignClass,
-              ..._displayTemp
+              ..._displayTemp,
+              ...s.others
             };
           })
           .toArray();

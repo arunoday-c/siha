@@ -6,8 +6,8 @@ import {
   AlgaehLabel,
   AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 import Enumerable from "linq";
 
 class AppointmentClinics extends Component {
@@ -68,15 +68,13 @@ class AppointmentClinics extends Component {
       data: {},
       onSuccess: response => {
         if (response.data.success) {
-          console.log("Rooms:", response.data.records);
           this.setState({ appointmentRooms: response.data.records });
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -89,15 +87,13 @@ class AppointmentClinics extends Component {
       data: {},
       onSuccess: response => {
         if (response.data.success) {
-          console.log("Clinics:", response.data.records);
           this.setState({ appointmentClinics: response.data.records });
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -109,8 +105,6 @@ class AppointmentClinics extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
-          console.log("DocsDepts:", response.data.records);
           this.setState({
             departments: response.data.records.departmets,
             doctors: response.data.records.doctors
@@ -118,10 +112,9 @@ class AppointmentClinics extends Component {
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -136,7 +129,7 @@ class AppointmentClinics extends Component {
   deleteAppointmentClinics(data) {
     swal({
       title: "Are you sure you want to delete this Clinic?",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willDelete => {
@@ -154,27 +147,25 @@ class AppointmentClinics extends Component {
           method: "PUT",
           onSuccess: response => {
             if (response.data.success) {
-              swal("Record deleted successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
               });
+
               this.getAppointmentClinics();
             }
           },
           onFailure: error => {
-            swal(error.message, {
-              buttons: false,
-              icon: "danger",
-              timer: 2000
+            swalMessage({
+              title: error.message,
+              type: "danger"
             });
           }
         });
       } else {
-        swal("Delete request cancelled", {
-          buttons: false,
-          timer: 2000,
-          icon: "false"
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "success"
         });
       }
     });
@@ -194,19 +185,18 @@ class AppointmentClinics extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          swal("Record updated successfully", {
-            buttons: false,
-            icon: "success",
-            timer: 2000
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
           });
+
           this.getAppointmentClinics();
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "success"
         });
       }
     });
@@ -227,18 +217,16 @@ class AppointmentClinics extends Component {
       onSuccess: response => {
         if (response.data.success) {
           this.getAppointmentClinics();
-          swal("Record Added Successfully", {
-            buttons: false,
-            icon: "success",
-            timer: 2000
+          swalMessage({
+            title: "Record Added Successfully",
+            type: "success"
           });
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -263,7 +251,6 @@ class AppointmentClinics extends Component {
   }
 
   getRoomName(id) {
-    debugger;
     let room = Enumerable.from(
       this.state.appointmentRooms.length !== 0
         ? this.state.appointmentRooms

@@ -1,7 +1,6 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
-import swal from "sweetalert";
-import { algaehApiCall, getCookie } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 //Text Handaler Change
 const texthandle = ($this, e) => {
@@ -39,7 +38,6 @@ const serviceHandeler = ($this, e) => {
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
-  debugger;
   let preserviceInput = $this.state.preserviceInput || [];
   let serviceInput = [
     {
@@ -83,7 +81,7 @@ const ProcessService = ($this, e) => {
         swal({
           title:
             "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pro aproved and will be as cash.",
-          icon: "warning",
+          type: "warning",
           buttons: true,
           dangerMode: true
         }).then(willProceed => {
@@ -167,10 +165,9 @@ const ProcessService = ($this, e) => {
           data.billdetails[0].pre_approval === "Y" &&
           $this.state.approval_limit_yesno === "N"
         ) {
-          successfulMessage({
-            message: "Selected Service is Pre-Approval required.",
-            title: "Warning",
-            icon: "warning"
+          swalMessage({
+            title: "Selected Service is Pre-Approval required.",
+            type: "warning"
           });
         } else if (
           data.billdetails[0].pre_approval === "N" &&
@@ -268,7 +265,6 @@ const deleteServices = ($this, row, rowId) => {
   }
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
-      debugger;
       for (var i = 0; i < preserviceInput.length; i++) {
         preserviceInput[i].approval_limit_yesno = "N";
       }
@@ -312,10 +308,9 @@ const SaveOrdersServices = ($this, e) => {
     method: "POST",
     onSuccess: response => {
       if (response.data.success) {
-        successfulMessage({
-          message: "Ordered Successfully...",
-          title: "Success",
-          icon: "success"
+        swalMessage({
+          title: "Ordered Successfully...",
+          type: "success"
         });
       }
     },

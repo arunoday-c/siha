@@ -14,7 +14,6 @@ import {
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
-// import swal from "sweetalert";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import {

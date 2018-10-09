@@ -1,6 +1,6 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { getCookie } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -28,11 +28,11 @@ const updateLabContainer = ($this, data) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        swal("Record updated successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Record updated successfully . ",
+          type: "success"
         });
+
         $this.props.getLabContainer({
           uri: "/labmasters/selectContainer",
           method: "GET",
@@ -50,7 +50,7 @@ const updateLabContainer = ($this, data) => {
 const showconfirmDialog = ($this, id) => {
   swal({
     title: "Are you sure you want to delete this Coutainer?",
-    icon: "warning",
+    type: "warning",
     buttons: true,
     dangerMode: true
   }).then(willDelete => {
@@ -65,10 +65,9 @@ const showconfirmDialog = ($this, id) => {
         method: "DELETE",
         onSuccess: response => {
           if (response.data.success) {
-            swal("Record deleted successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Record deleted successfully . ",
+              type: "success"
             });
             $this.props.getLabContainer({
               uri: "/labmasters/selectContainer",
@@ -123,26 +122,13 @@ const insertLabContainer = ($this, e) => {
               mappingName: "labcontainer"
             }
           });
-
-          swal({
-            title: "Success",
-            text: "Lab Container added successfully",
-            icon: "success",
-            button: false,
-            timer: 2500
+          swalMessage({
+            title: "Lab Container added successfully",
+            type: "success"
           });
         } else {
           //Handle unsuccessful Add here.
         }
-      },
-      onFailure: error => {
-        swal({
-          title: "Error",
-          text: error.message,
-          icon: "error",
-          button: false,
-          timer: 2500
-        });
       }
     });
   }

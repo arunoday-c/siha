@@ -26,10 +26,14 @@ import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
 import HPI from "@material-ui/icons/AssignmentInd";
 import moment from "moment";
-import { algaehApiCall, cancelRequest } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  cancelRequest,
+  swalMessage
+} from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import algaehLoader from "../../Wrapper/fullPageLoader";
-import swal from "sweetalert";
+import swal from "sweetalert2";
 
 // let patChiefComplain = [];
 
@@ -87,7 +91,7 @@ class ChiefComplaints extends Component {
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this Chief Complaint?",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willDelete => {
@@ -99,10 +103,9 @@ class ChiefComplaints extends Component {
           method: "DELETE",
           onSuccess: response => {
             if (response.data.success) {
-              swal("Record deleted successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
               });
               //  this.getPatientChiefComplaintsDetails();
               getAllChiefComplaints(this);
@@ -112,7 +115,10 @@ class ChiefComplaints extends Component {
           onFailure: error => {}
         });
       } else {
-        swal("Delete request cancelled");
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "success"
+        });
       }
     });
   }
@@ -272,10 +278,9 @@ class ChiefComplaints extends Component {
           }
         },
         onFailure: error => {
-          swal(error.message, {
-            icon: "error",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: error.message,
+            type: "error"
           });
         }
       });
@@ -291,22 +296,7 @@ class ChiefComplaints extends Component {
     const data = Enumerable.from(this.state.patientChiefComplains)
       .where(w => w.recordState === "update")
       .toArray();
-    // {
-    //   episode_id: this.state.episode_id,
-    //   chief_complaint_id: this.state.chief_complaint_id,
-    //   onset_date: this.state.onset_date,
-    //   interval: this.state.interval,
-    //   duration: this.state.duration,
-    //   severity: this.state.severity,
-    //   score: this.state.score,
-    //   pain: this.state.pain,
-    //   chronic: null,
-    //   complaint_inactive: null,
-    //   complaint_inactive_date: null,
-    //   comment: this.state.comment,
-    //   hims_f_episode_chief_complaint_id: this.state
-    //     .hims_f_episode_chief_complaint_id
-    // }
+
     if (data.length !== 0) {
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientChiefComplaints",
@@ -314,7 +304,6 @@ class ChiefComplaints extends Component {
         data: { chief_complaints: data },
         onSuccess: response => {
           if (response.data.success) {
-            //this.setState({ patientChiefComplains: response.data.records });
             this.setState({
               openComplain: false,
               openHpiModal: false,
@@ -324,10 +313,9 @@ class ChiefComplaints extends Component {
           }
         },
         onFailure: error => {
-          swal(error.message, {
-            icon: "error",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: error.message,
+            type: "error"
           });
         }
       });
@@ -379,11 +367,11 @@ class ChiefComplaints extends Component {
 
   calculateDurationDate(e) {
     if (parseFloat(e.currentTarget.value) < 0) {
-      swal("Invalid input, Duration cannot be negative", {
-        icon: "error",
-        buttons: false,
-        timer: 2000
+      swalMessage({
+        title: "Invalid input, Duration cannot be negative.",
+        type: "error"
       });
+
       this.setState({
         duration: 0
       });

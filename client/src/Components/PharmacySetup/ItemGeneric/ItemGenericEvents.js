@@ -1,6 +1,5 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -28,22 +27,20 @@ const updateItemGeneric = ($this, data) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        swal("Record updated successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Record updated successfully . .",
+          type: "success"
         });
         getItemGeneric($this);
       }
-    },
-    onFailure: error => {}
+    }
   });
 };
 
 const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this Generic?",
-    icon: "warning",
+    type: "warning",
     buttons: true,
     dangerMode: true
   }).then(willDelete => {
@@ -60,15 +57,13 @@ const showconfirmDialog = ($this, row) => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
-            swal("Record deleted successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Record updated successfully . .",
+              type: "success"
             });
             getItemGeneric($this);
           }
-        },
-        onFailure: error => {}
+        }
       });
     }
   });
@@ -99,26 +94,13 @@ const insertItemGeneric = ($this, e) => {
           resetState($this);
           //Handle Successful Add here
           getItemGeneric($this);
-
-          swal({
-            title: "Success",
-            text: "Generic added successfully",
-            icon: "success",
-            button: false,
-            timer: 2500
+          swalMessage({
+            title: "Generic added successfully . .",
+            type: "success"
           });
         } else {
           //Handle unsuccessful Add here.
         }
-      },
-      onFailure: error => {
-        swal({
-          title: "Error",
-          text: error.message,
-          icon: "error",
-          button: false,
-          timer: 2500
-        });
       }
     });
   }
@@ -134,10 +116,9 @@ const getItemGeneric = $this => {
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
-        successfulMessage({
-          message: "No Records Found",
-          title: "Warning",
-          icon: "warning"
+        swalMessage({
+          title: "No Records Found",
+          type: "warning"
         });
       }
     }

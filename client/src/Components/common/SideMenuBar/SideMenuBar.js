@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from "react";
+import React, { Component } from "react";
 import "./sideMenu.css";
 import sideMenu from "./SideMenuList.json";
 import IconButton from "@material-ui/core/IconButton";
@@ -17,7 +17,7 @@ const paper_style = {
   background: "#292929"
 };
 
-class SideMenuBar extends PureComponent {
+class SideMenuBar extends Component {
   constructor(props) {
     super(props);
     this.state = {

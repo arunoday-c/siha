@@ -1,6 +1,5 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import { getCookie } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -28,10 +27,9 @@ const updateTestCategory = ($this, data) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        swal("Record updated successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Record updated successfully . .",
+          type: "success"
         });
         $this.props.getTestCategory({
           uri: "/labmasters/selectTestCategory",
@@ -50,14 +48,13 @@ const updateTestCategory = ($this, data) => {
 const showconfirmDialog = ($this, id) => {
   swal({
     title: "Are you sure you want to delete this Test Category?",
-    icon: "warning",
+    type: "warning",
     buttons: true,
     dangerMode: true
   }).then(willDelete => {
     if (willDelete) {
       let data = {
         hims_d_test_category_id: id
-        // updated_by: getCookie("UserID")
       };
       algaehApiCall({
         uri: "/labmasters/deleteTestCategory",
@@ -65,10 +62,9 @@ const showconfirmDialog = ($this, id) => {
         method: "DELETE",
         onSuccess: response => {
           if (response.data.success) {
-            swal("Record deleted successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Record deleted successfully . .",
+              type: "success"
             });
             $this.props.getTestCategory({
               uri: "/labmasters/selectTestCategory",
@@ -109,7 +105,6 @@ const insertTestCategory = ($this, e) => {
       onSuccess: response => {
         if (response.data.success == true) {
           resetState($this);
-          //Handle Successful Add here
           $this.props.getTestCategory({
             uri: "/labmasters/selectTestCategory",
             method: "GET",
@@ -118,25 +113,18 @@ const insertTestCategory = ($this, e) => {
               mappingName: "testcategory"
             }
           });
-
-          swal({
-            title: "Success",
-            text: "Test Category added successfully",
-            icon: "success",
-            button: false,
-            timer: 2500
+          swalMessage({
+            title: "Test Category added successfully",
+            type: "success"
           });
         } else {
           //Handle unsuccessful Add here.
         }
       },
       onFailure: error => {
-        swal({
-          title: "Error",
-          text: error.message,
-          icon: "error",
-          button: false,
-          timer: 2500
+        swalMessage({
+          title: error.message,
+          type: "success"
         });
       }
     });

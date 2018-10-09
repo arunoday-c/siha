@@ -1,7 +1,6 @@
 import moment from "moment";
 import { Validations } from "./NetworkPlanValidation";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -67,15 +66,11 @@ const saveNetworkPlan = ($this, context) => {
         data: newdata,
         onSuccess: response => {
           if (response.data.success === true) {
-            swal("Added successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              type: "success",
+              title: "Added successfully . ."
             });
           }
-        },
-        onFailure: error => {
-          console.log(error);
         }
       });
     }
@@ -188,15 +183,11 @@ const UpdateNetworkPlan = ($this, context) => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success === true) {
-            swal("Updated successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              type: "success",
+              title: "Updated successfully . ."
             });
           }
-        },
-        onFailure: error => {
-          console.log(error);
         }
       });
     }

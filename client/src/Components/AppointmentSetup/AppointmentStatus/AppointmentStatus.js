@@ -6,8 +6,8 @@ import {
   AlgaehLabel,
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class AppointmentStatus extends Component {
@@ -57,7 +57,7 @@ class AppointmentStatus extends Component {
   deleteAppointmentStatus(data) {
     swal({
       title: "Are you sure you want to delete this Status?",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willDelete => {
@@ -74,24 +74,26 @@ class AppointmentStatus extends Component {
           method: "PUT",
           onSuccess: response => {
             if (response.data.success) {
-              swal("Record deleted successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
               });
+
               this.getAppointmentStatus();
             }
           },
           onFailure: error => {
-            swal(error.message, {
-              buttons: false,
-              icon: "danger",
-              timer: 2000
+            swalMessage({
+              title: error.message,
+              type: "error"
             });
           }
         });
       } else {
-        swal("Delete request cancelled");
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "success"
+        });
       }
     });
   }
@@ -109,19 +111,18 @@ class AppointmentStatus extends Component {
       method: "PUT",
       onSuccess: response => {
         if (response.data.success) {
-          swal("Record updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Record updated successfully . .",
+            type: "success"
           });
+
           this.getAppointmentStatus();
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "danger",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -138,10 +139,9 @@ class AppointmentStatus extends Component {
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "danger",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -180,11 +180,11 @@ class AppointmentStatus extends Component {
         },
         onSuccess: response => {
           if (response.data.success) {
-            swal("Record added successfully", {
-              buttons: false,
-              icon: "success",
-              timer: 2000
+            swalMessage({
+              title: "Record added successfully",
+              type: "success"
             });
+
             this.resetState();
             this.getAppointmentStatus();
           }

@@ -3,8 +3,6 @@ import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import "./LabContainer.css";
 import Button from "@material-ui/core/Button";
-// import moment from "moment";
-// import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -16,7 +14,7 @@ import {
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
-// import swal from "sweetalert";
+
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall.js";
 import {

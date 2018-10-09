@@ -709,19 +709,31 @@ let addDoctorsSchedule = (req, res, next) => {
                           appointment_schedule_header_idS
                         );
 
+
+                        // SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where ((? BETWEEN time(from_work_hr) AND time(to_work_hr))\
+                        //    or  (? BETWEEN time(from_work_hr) AND time(to_work_hr)))\
+                        //   and hims_d_appointment_schedule_header_id=?
+                        // SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where  ((time(from_work_hr) BETWEEN time(?) AND time(?))\
+                        //   or  (to_work_hr BETWEEN time(?) AND time(?))) and hims_d_appointment_schedule_header_id=?
                         for (
                           let j = 0;
                           j < appointment_schedule_header_idS.length;
                           j++
                         ) {
+
+
+
                           connection.query(
-                            "SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where ((? BETWEEN time(from_work_hr) AND time(to_work_hr))\
-                           or  (? BETWEEN time(from_work_hr) AND time(to_work_hr)))\
-                          and hims_d_appointment_schedule_header_id=?;\
-                          SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where  ((time(from_work_hr) BETWEEN time(?) AND time(?))\
-                          or  (to_work_hr BETWEEN time(?) AND time(?))) and hims_d_appointment_schedule_header_id=?",
+                            "SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where\
+                            ((time(from_work_hr)<=?   AND time(to_work_hr)>?) or (time(from_work_hr)<=?   AND time(to_work_hr)>?))  and hims_d_appointment_schedule_header_id=?;\
+                            SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header\
+                            where ((time(from_work_hr) >=? AND   time(from_work_hr) <?) or \
+                            (time(to_work_hr) >=? AND   time(to_work_hr) <?))\
+                             and hims_d_appointment_schedule_header_id=?;",
                             [
                               input.from_work_hr,
+                              input.from_work_hr,
+                              input.to_work_hr,
                               input.to_work_hr,
                               appointment_schedule_header_idS[j],
                               input.from_work_hr,

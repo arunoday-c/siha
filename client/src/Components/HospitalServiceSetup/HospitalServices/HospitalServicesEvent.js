@@ -1,5 +1,5 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -12,7 +12,6 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const VatAppilicable = ($this, e) => {
-  debugger;
   let Applicable = false;
   let Value = "N";
 
@@ -55,7 +54,7 @@ const Validations = $this => {
 
 const InsertServices = $this => {
   const err = Validations($this);
-  debugger;
+
   if (!err) {
     if ($this.state.hims_d_services_id === null) {
       algaehApiCall({
@@ -63,15 +62,11 @@ const InsertServices = $this => {
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
-            swal("Saved successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Saved successfully . .",
+              type: "success"
             });
           }
-        },
-        onFailure: error => {
-          console.log(error);
         }
       });
     } else {
@@ -81,15 +76,11 @@ const InsertServices = $this => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success === true) {
-            swal("Updated successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Updated successfully . .",
+              type: "success"
             });
           }
-        },
-        onFailure: error => {
-          console.log(error);
         }
       });
     }

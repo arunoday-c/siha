@@ -8,8 +8,7 @@ import {
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
 import Modal from "@material-ui/core/Modal";
-import { algaehApiCall } from "../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import GlobalVariables from "../../utils/GlobalVariables.json";
@@ -71,10 +70,9 @@ class Appointment extends Component {
   getPatient(e) {
     e.preventDefault();
     if (this.state.patient_code.length === 0) {
-      swal("Please Enter the Patient Code", {
-        buttons: false,
-        icon: "warning",
-        timer: 2000
+      swalMessage({
+        title: "Please Enter the Patient Code",
+        type: "warning"
       });
     } else {
       algaehApiCall({
@@ -100,10 +98,9 @@ class Appointment extends Component {
           }
         },
         onFailure: error => {
-          swal("Patient Not Found", {
-            buttons: false,
-            icon: "warning",
-            timer: 2000
+          swalMessage({
+            title: "Patient Not Found",
+            type: "warning"
           });
         }
       });
@@ -123,17 +120,15 @@ class Appointment extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          console.log("Pat Appts:", response.data.records);
           this.setState({
             patientAppointments: response.data.records
           });
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -178,21 +173,18 @@ class Appointment extends Component {
       data: send_data,
       onSuccess: response => {
         if (response.data.success) {
-          console.log("Add Pat APpts REsp :", response.data.records);
-          swal("Appointment Created Successfully", {
-            buttons: false,
-            icon: "success",
-            timer: 2000
+          swalMessage({
+            title: "Appointment Created Successfully",
+            type: "success"
           });
           this.setState({ showApt: false });
           this.getAppointmentSchedule();
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -210,10 +202,9 @@ class Appointment extends Component {
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -225,7 +216,6 @@ class Appointment extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          console.log("Appt Status:", response.data.records);
           this.setState({ appointmentStatus: response.data.records }, () => {
             let DefaultStatus = Enumerable.from(this.state.appointmentStatus)
               .where(w => w.default_status === "Y")
@@ -244,10 +234,9 @@ class Appointment extends Component {
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "danger",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -272,10 +261,9 @@ class Appointment extends Component {
       },
       onFailure: error => {
         algaehLoader({ show: false });
-        swal(error.message, {
-          buttons: false,
-          icon: "warning",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -299,9 +287,7 @@ class Appointment extends Component {
       let dept = Enumerable.from(this.state.departments)
         .where(w => w.sub_dept_id === this.state.sub_department_id)
         .firstOrDefault();
-      this.setState({ doctors: dept.doctors }, () => {
-        console.log("Docs", this.state.doctors);
-      });
+      this.setState({ doctors: dept.doctors });
     });
   }
 
@@ -405,8 +391,6 @@ class Appointment extends Component {
     const sub_dep_name = this.getDeptName(sub_dept_id);
     const doc_name = this.getDoctorName(provider_id);
 
-    console.log(sub_dep_name + "aaaaa" + doc_name);
-
     this.setState({
       showApt: true,
       apptFromTime: appt_time,
@@ -455,7 +439,6 @@ class Appointment extends Component {
   }
 
   generateChilderns(data) {
-    debugger;
     const colspan = data.mark_as_break
       ? { colSpan: 2, style: { width: "240px" } }
       : {};

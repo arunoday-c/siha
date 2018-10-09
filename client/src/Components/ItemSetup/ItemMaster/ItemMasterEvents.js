@@ -1,5 +1,4 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const Validations = $this => {
   let isError = false;
@@ -32,23 +31,7 @@ const Validations = $this => {
       MandatoryMsg: "Invalid Input. Please Select Group."
     });
     return isError;
-  }
-  //   else if ($this.state.form_id === null) {
-  //     isError = true;
-  //     $this.setState({
-  //       open: true,
-  //       MandatoryMsg: "Invalid Input. Please Select Form."
-  //     });
-  //     return isError;
-  //   } else if ($this.state.storage_id === null) {
-  //     isError = true;
-  //     $this.setState({
-  //       open: true,
-  //       MandatoryMsg: "Invalid Input. Please Select Storage."
-  //     });
-  //     return isError;
-  //   }
-  else if ($this.state.stocking_uom_id === null) {
+  } else if ($this.state.stocking_uom_id === null) {
     isError = true;
     $this.setState({
       open: true,
@@ -74,24 +57,19 @@ const Validations = $this => {
 
 const InsertUpdateItems = $this => {
   const err = Validations($this);
-  debugger;
+
   if (!err) {
-    debugger;
     if ($this.state.hims_d_item_master_id === null) {
       algaehApiCall({
         uri: "/pharmacy/addItemMaster",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
-            swal("Saved successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              type: "success",
+              title: "Saved successfully . ."
             });
           }
-        },
-        onFailure: error => {
-          console.log(error);
         }
       });
     } else {
@@ -102,15 +80,11 @@ const InsertUpdateItems = $this => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success === true) {
-            swal("Updated successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              type: "success",
+              title: "Updated successfully . ."
             });
           }
-        },
-        onFailure: error => {
-          console.log(error);
         }
       });
     }

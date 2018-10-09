@@ -1,7 +1,4 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
-import { getCookie } from "../../../utils/algaehApiCall.js";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const UpdateOrders = ($this, row) => {
   let dataSend = [];
@@ -22,8 +19,8 @@ const UpdateOrders = ($this, row) => {
         secondary_network_id: null,
         secondary_network_office_id: null,
         pre_approval: "Y",
-        approved_amount: row.approved_amount,
-       // updated_by: getCookie("UserID")
+        approved_amount: row.approved_amount
+        // updated_by: getCookie("UserID")
       }
     ];
 
@@ -33,20 +30,17 @@ const UpdateOrders = ($this, row) => {
       method: "PUT",
       onSuccess: response => {
         if (response.data.success) {
-          swal("Verified successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Verified successfully . .",
+            type: "success"
           });
         }
-      },
-      onFailure: error => {}
+      }
     });
   } else {
-    successfulMessage({
-      message: "Invalid Input. If Approved or Reject only can be processed",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. If Approved or Reject only can be processed",
+      type: "warning"
     });
   }
 };

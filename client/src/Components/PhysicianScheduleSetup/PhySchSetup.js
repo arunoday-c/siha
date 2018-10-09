@@ -10,8 +10,8 @@ import {
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import Enumerable from "linq";
-import { algaehApiCall } from "../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import swal from "sweetalert2";
 import moment from "moment";
 import Modal from "@material-ui/core/Modal";
 const provider_array = [];
@@ -99,8 +99,6 @@ class PhySchSetup extends Component {
   }
 
   updateDoctorScheduleDateWise(data) {
-    console.log("Update Data:", data);
-
     let send_data = {};
     if (data.hims_d_appointment_schedule_modify_id !== undefined) {
       send_data = {
@@ -150,19 +148,11 @@ class PhySchSetup extends Component {
             data.hims_d_appointment_schedule_header_id,
             data.provider_id
           );
-          swal("Schedule Updated Successfully", {
-            buttons: false,
-            icon: "success",
-            timer: 2000
+          swalMessage({
+            title: "Schedule updated successfully . .",
+            type: "success"
           });
         }
-      },
-      onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "warning",
-          timer: 2000
-        });
       }
     });
   }
@@ -188,7 +178,6 @@ class PhySchSetup extends Component {
     } else {
       provider_array.push(myRow);
     }
-    console.log("Pushed:", provider_array);
   }
 
   saveApptSchedule(e) {
@@ -199,12 +188,14 @@ class PhySchSetup extends Component {
         description_error_text: "Please Enter the Description"
       });
     } else if (provider_array.length === 0) {
-      swal("Please Select Doctors to add to this schedule", {
-        icon: "warning"
+      swalMessage({
+        title: "Please Select Doctors to add to this schedule.",
+        type: "success"
       });
     } else if (this.state.from_date > this.state.to_date) {
-      swal("Please Select a proper date range", {
-        icon: "warning"
+      swalMessage({
+        title: "Please Select a proper date range",
+        type: "warning"
       });
     } else {
       const myObj = {};
@@ -246,15 +237,12 @@ class PhySchSetup extends Component {
           onSuccess: response => {
             if (response.data.success) {
               this.resetSaveState();
-              swal("Schedule Added Successfully", {
-                buttons: false,
-                icon: "success",
-                timer: 2000
+              swalMessage({
+                title: "Schedule added successfully . .",
+                type: "success"
               });
-              //console.log("Save Response:", response.data.records);
             }
-          },
-          onFailure: error => {}
+          }
         });
       });
     }
@@ -308,7 +296,6 @@ class PhySchSetup extends Component {
     this.refreshState();
   }
   changeCheckBox(row, e) {
-    debugger;
     if (row.modified !== undefined) {
       if (row.modified === "L") row.modified = "N";
       else row.modified = "L";
@@ -331,14 +318,11 @@ class PhySchSetup extends Component {
       let dept = Enumerable.from(this.state.departments)
         .where(w => w.sub_dept_id === this.state.sub_department_id)
         .firstOrDefault();
-      this.setState({ doctors: dept.doctors }, () => {
-        console.log("Docs", this.state.doctors);
-      });
+      this.setState({ doctors: dept.doctors });
     });
   }
 
   loadDetails(e) {
-    debugger;
     var element = document.querySelectorAll("[schedules]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
@@ -385,7 +369,7 @@ class PhySchSetup extends Component {
 
     swal({
       title: "Are you sure you want to delete this Doctor?",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willDelete => {
@@ -396,37 +380,30 @@ class PhySchSetup extends Component {
           data: send_data,
           onSuccess: response => {
             if (response.data.success) {
-              debugger;
-              // this.getApptSchedule.bind(this);
-              //document.querySelectorAll("#schedule-ul li.active")[0].click();
-              swal("Doctor Deleted Successfully", {
-                buttons: false,
-                icon: "success",
-                timer: 2000
+              swalMessage({
+                title: "Doctor deleted successfully . .",
+                type: "success"
               });
               document.getElementById("srch-sch").click();
             }
           },
           onFailure: error => {
-            swal(error.message, {
-              buttons: false,
-              icon: "warning",
-              timer: 2000
+            swalMessage({
+              title: error.message,
+              type: "warning"
             });
           }
         });
       } else {
-        swal("Delete request cancelled", {
-          buttons: false,
-          icon: "warning",
-          timer: 2000
+        swalMessage({
+          title: "Delete request cancelled.",
+          type: "warning"
         });
       }
     });
   }
 
   getApptSchedule(e) {
-    debugger;
     this.resetSaveState();
     e.preventDefault();
     if (this.state.sub_department_id === null) {
@@ -448,7 +425,7 @@ class PhySchSetup extends Component {
         onSuccess: response => {
           if (response.data.success) {
             AlgaehLoader({ show: false });
-            console.log("RRRRR Data:", response.data.records);
+
             this.setState(
               {
                 scheduleList: response.data.records,
@@ -457,7 +434,6 @@ class PhySchSetup extends Component {
                 department_error: false
               },
               () => {
-                console.log("Schedule List:", this.state.scheduleList);
                 if (
                   document.querySelectorAll("#schedule-ul li.active")[0] !==
                   undefined
@@ -472,10 +448,9 @@ class PhySchSetup extends Component {
         },
         onFailure: error => {
           AlgaehLoader({ show: false });
-          swal(error.message, {
-            buttons: false,
-            icon: "error",
-            timer: 2000
+          swalMessage({
+            title: error.message,
+            type: "error"
           });
         }
       });
@@ -502,21 +477,15 @@ class PhySchSetup extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          this.setState(
-            {
-              modify: response.data.records
-            },
-            () => {
-              console.log("Modify Array:", this.state.modify);
-            }
-          );
+          this.setState({
+            modify: response.data.records
+          });
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -534,10 +503,9 @@ class PhySchSetup extends Component {
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -554,7 +522,6 @@ class PhySchSetup extends Component {
       openEdit: false
     });
     provider_array.length = 0;
-    console.log("Provider Array:", provider_array);
   }
 
   render() {
