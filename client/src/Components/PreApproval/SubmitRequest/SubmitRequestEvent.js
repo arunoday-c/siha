@@ -1,7 +1,5 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { getCookie } from "../../../utils/algaehApiCall.js";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -14,7 +12,6 @@ const texthandle = ($this, e) => {
 
 const SubmitRequestUpdate = ($this, e) => {
   if ($this.state.submission_type !== null) {
-    // row.updated_by = getCookie("UserID");
     let InputOutput = $this.state.services_details;
     for (let i = 0; i < InputOutput.length; i++) {
       if (InputOutput[i].checkselect === 1) {
@@ -28,21 +25,18 @@ const SubmitRequestUpdate = ($this, e) => {
       method: "PUT",
       onSuccess: response => {
         if (response.data.success) {
-          swal("Updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Record updated successfully . .",
+            type: "success"
           });
           $this.props.onClose && $this.props.onClose(e);
         }
-      },
-      onFailure: error => {}
+      }
     });
   } else {
-    successfulMessage({
-      message: "Invalid Input. Please select Submission Type.",
-      title: "Error",
-      icon: "error"
+    swalMessage({
+      title: "Invalid Input. Please select Submission Type.",
+      type: "error"
     });
   }
 };

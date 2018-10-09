@@ -21,8 +21,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import swal from "sweetalert";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import algaehLoader from "../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 
@@ -110,14 +110,12 @@ class Allergies extends Component {
         if (response.data.success) {
           getPatientAllergies(this);
           this.resetAllergies();
-          swal("Allergy added successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Allergy added successfully . .",
+            type: "success"
           });
         }
-      },
-      onFailure: error => {}
+      }
     });
   }
 
@@ -158,14 +156,12 @@ class Allergies extends Component {
       onSuccess: response => {
         if (response.data.success) {
           getPatientAllergies(this);
-          swal("Record updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Record updated successfully . .",
+            type: "success"
           });
         }
-      },
-      onFailure: error => {}
+      }
     });
   }
 
@@ -174,7 +170,7 @@ class Allergies extends Component {
 
     swal({
       title: "Are you sure you want to delete this Allergy?",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willDelete => {
@@ -194,10 +190,9 @@ class Allergies extends Component {
           method: "PUT",
           onSuccess: response => {
             if (response.data.success) {
-              swal("Record deleted successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
               });
               getPatientAllergies(this);
             }
@@ -205,7 +200,10 @@ class Allergies extends Component {
           onFailure: error => {}
         });
       } else {
-        swal("Delete request cancelled");
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "success"
+        });
       }
     });
   }

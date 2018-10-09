@@ -1,6 +1,5 @@
 import { Validations } from "./InsuranceAddValidation";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const handleNext = ($this, e) => {
   const err = Validations($this);
@@ -15,9 +14,6 @@ const handleNext = ($this, e) => {
             if (response.data.success === true) {
               setComponent($this, response.data.records);
             }
-          },
-          onFailure: error => {
-            console.log(error);
           }
         });
       } else {
@@ -34,9 +30,6 @@ const handleNext = ($this, e) => {
             if (response.data.success === true) {
               setComponent($this, response.data.records);
             }
-          },
-          onFailure: error => {
-            console.log(error);
           }
         });
       } else {
@@ -53,9 +46,6 @@ const handleNext = ($this, e) => {
             if (response.data.success === true) {
               setComponent($this, response.data.records);
             }
-          },
-          onFailure: error => {
-            console.log(error);
           }
         });
       } else {
@@ -143,16 +133,12 @@ const updatedata = ($this, e) => {
       data: $this.state,
       onSuccess: response => {
         if (response.data.success === true) {
-          swal("Updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Updated successfully . .",
+            type: "success"
           });
           $this.props.onClose && $this.props.onClose(e);
         }
-      },
-      onFailure: error => {
-        console.log(error);
       }
     });
   }

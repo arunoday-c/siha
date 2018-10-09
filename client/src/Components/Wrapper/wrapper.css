@@ -7,14 +7,14 @@
   .ReactTable .rt-table, .ReactTable .rt-thead, .ReactTable .rt-tr, .ReactTable .rt-tbody {
     flex: initial !important; }
   .ReactTable .rt-tbody {
-    margin-top: 29px; }
+    margin-top: 30px; }
   .ReactTable .rt-th {
     background: #34b8bc !important;
     color: #fff !important;
     text-transform: uppercase;
     font-weight: normal !important;
     font-size: 0.8rem;
-    height: 30px; }
+    min-height: 30px !important; }
   .ReactTable button {
     margin-left: 0; }
   .ReactTable i.fa-pen,

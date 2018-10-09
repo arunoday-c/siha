@@ -1,6 +1,5 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -20,30 +19,26 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updateLocation = ($this, data) => {
-  // data.updated_by = getCookie("UserID");
-
   algaehApiCall({
     uri: "/pharmacy/updatePharmacyLocation",
     data: data,
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        swal("Record updated successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Record updated successfully . .",
+          type: "success"
         });
         getLocation($this);
       }
-    },
-    onFailure: error => {}
+    }
   });
 };
 
 const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this Category?",
-    icon: "warning",
+    type: "warning",
     buttons: true,
     dangerMode: true
   }).then(willDelete => {
@@ -62,10 +57,9 @@ const showconfirmDialog = ($this, row) => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
-            swal("Record deleted successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Record updated successfully . .",
+              type: "success"
             });
             getLocation($this);
           }
@@ -106,26 +100,13 @@ const insertLocation = ($this, e) => {
           resetState($this);
           //Handle Successful Add here
           getLocation($this);
-
-          swal({
-            title: "Success",
-            text: "Category added successfully",
-            icon: "success",
-            button: false,
-            timer: 2500
+          swalMessage({
+            title: "Category added successfully . .",
+            type: "success"
           });
         } else {
           //Handle unsuccessful Add here.
         }
-      },
-      onFailure: error => {
-        swal({
-          title: "Error",
-          text: error.message,
-          icon: "error",
-          button: false,
-          timer: 2500
-        });
       }
     });
   }
@@ -141,10 +122,9 @@ const getLocation = $this => {
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
-        successfulMessage({
-          message: "No Records Found",
-          title: "Warning",
-          icon: "warning"
+        swalMessage({
+          title: "No Records Found",
+          type: "warning"
         });
       }
     }

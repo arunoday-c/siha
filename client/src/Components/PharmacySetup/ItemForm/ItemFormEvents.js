@@ -1,6 +1,5 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -20,36 +19,30 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updateItemForm = ($this, data) => {
-  // data.updated_by = getCookie("UserID");
-  debugger;
-
   algaehApiCall({
     uri: "/pharmacy/updateItemForm",
     data: data,
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        swal("Record updated successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Record updated successfully . .",
+          type: "success"
         });
         getItemForm($this);
       }
-    },
-    onFailure: error => {}
+    }
   });
 };
 
 const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this Category?",
-    icon: "warning",
+    type: "warning",
     buttons: true,
     dangerMode: true
   }).then(willDelete => {
     if (willDelete) {
-      debugger;
       let data = {
         hims_d_item_form_id: row.hims_d_item_form_id,
         form_description: row.form_description,
@@ -62,15 +55,13 @@ const showconfirmDialog = ($this, row) => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
-            swal("Record deleted successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Record updated successfully . .",
+              type: "success"
             });
             getItemForm($this);
           }
-        },
-        onFailure: error => {}
+        }
       });
     }
   });
@@ -82,7 +73,6 @@ const deleteItemForm = ($this, row) => {
 
 const insertItemForm = ($this, e) => {
   e.preventDefault();
-  debugger;
   if ($this.state.form_description.length == 0) {
     $this.setState({
       description_error: true,
@@ -102,26 +92,13 @@ const insertItemForm = ($this, e) => {
           resetState($this);
           //Handle Successful Add here
           getItemForm($this);
-
-          swal({
-            title: "Success",
-            text: "Category added successfully",
-            icon: "success",
-            button: false,
-            timer: 2500
+          swalMessage({
+            title: "Category added successfully . .",
+            type: "success"
           });
         } else {
           //Handle unsuccessful Add here.
         }
-      },
-      onFailure: error => {
-        swal({
-          title: "Error",
-          text: error.message,
-          icon: "error",
-          button: false,
-          timer: 2500
-        });
       }
     });
   }
@@ -137,10 +114,9 @@ const getItemForm = $this => {
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
-        successfulMessage({
-          message: "No Records Found",
-          title: "Warning",
-          icon: "warning"
+        swalMessage({
+          title: "No Records Found",
+          type: "warning"
         });
       }
     }

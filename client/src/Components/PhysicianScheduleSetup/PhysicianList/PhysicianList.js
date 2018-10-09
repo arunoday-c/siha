@@ -8,13 +8,11 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import MyContext from "../../../utils/MyContext.js";
 const provider_array = [];
-const send_array = [];
 
 class PhysicianList extends Component {
   constructor(props) {
@@ -38,11 +36,6 @@ class PhysicianList extends Component {
   }
 
   checkHandle(e) {
-    // if (provider_array.includes(e.currentTarget.getAttribute("id"))) {
-    //   provider_array.pop(e.currentTarget.getAttribute("id"));
-    // } else {
-    //   provider_array.push(e.currentTarget.getAttribute("id"));
-    // }
     let myRow = e.currentTarget.getAttribute("row");
 
     if (provider_array.includes(myRow)) {
@@ -50,15 +43,12 @@ class PhysicianList extends Component {
     } else {
       provider_array.push(myRow);
     }
-
-    console.log("Pushed:", provider_array);
   }
   handleClose() {
     this.setState({ openModal: false });
   }
 
   deptDropDownHandler(context, value) {
-    debugger;
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
         .where(w => w.sub_department_id === this.state.sub_department_id)
@@ -81,7 +71,6 @@ class PhysicianList extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          // console.log("DocsDepts:", response.data.records);
           this.setState({
             departments: response.data.records.departmets,
             doctors: response.data.records.doctors
@@ -89,17 +78,15 @@ class PhysicianList extends Component {
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.messag,
+          type: "error"
         });
       }
     });
   }
 
   getApptSchedule(e) {
-    debugger;
     e.preventDefault();
     if (this.state.sub_department_id === null) {
       this.setState({
@@ -119,7 +106,7 @@ class PhysicianList extends Component {
         onSuccess: response => {
           if (response.data.success) {
             AlgaehLoader({ show: false });
-            console.log("RRRRR Data:", response.data.records);
+
             this.setState({
               scheduleList: response.data.records,
 
@@ -130,10 +117,9 @@ class PhysicianList extends Component {
         },
         onFailure: error => {
           AlgaehLoader({ show: false });
-          swal(error.message, {
-            buttons: false,
-            icon: "error",
-            timer: 2000
+          swalMessage({
+            title: error.message,
+            type: "error"
           });
         }
       });
@@ -465,12 +451,6 @@ class PhysicianList extends Component {
                             </td>
                             <td />
                             <td />
-                            {/* <td>{row.from_break_hr2 + ""+ row.to_break_hr2} </td> */}
-
-                            {/* <td>--/--/---- - --/--/----</td>
-                        <td>00:00 AM to 00:00 AM</td>
-                        <td>00:00 AM to 00:00 AM</td>
-                        <td>00:00 AM to 00:00 AM</td> */}
                           </tr>
                         ))}
                       </tbody>

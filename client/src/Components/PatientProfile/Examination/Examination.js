@@ -14,8 +14,12 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { algaehApiCall, cancelRequest } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import {
+  algaehApiCall,
+  cancelRequest,
+  swalMessage
+} from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 class Examination extends Component {
   constructor(props) {
@@ -51,11 +55,11 @@ class Examination extends Component {
       method: "PUT",
       onSuccess: response => {
         if (response.data.success) {
-          swal("Record updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Record updated successfully . .",
+            type: "success"
           });
+
           getPatientPhysicalExamination(this);
         }
       },
@@ -95,7 +99,7 @@ class Examination extends Component {
   deletePatientExamn(row) {
     swal({
       title: "Are you sure you want to delete this EXamination?",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willDelete => {
@@ -116,17 +120,18 @@ class Examination extends Component {
           onSuccess: response => {
             if (response.data.success) {
               getPatientPhysicalExamination(this);
-              swal("Examination deleted successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Examination deleted successfully . .",
+                type: "success"
               });
             }
-          },
-          onFailure: error => {}
+          }
         });
       } else {
-        swal("Delete request cancelled");
+        swalMessage({
+          title: "Delete request cancelled.",
+          type: "success"
+        });
       }
     });
   }
@@ -157,14 +162,12 @@ class Examination extends Component {
         if (response.data.success) {
           getPatientPhysicalExamination(this);
           this.resetExmnState();
-          swal("Examination added successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Examination added successfully . .",
+            type: "success"
           });
         }
-      },
-      onFailure: error => {}
+      }
     });
   }
 
@@ -208,9 +211,7 @@ class Examination extends Component {
     this.setState({ [value.name]: value.value });
   }
 
-  changeGeneralOrSpecific(e) {
-    debugger;
-  }
+  changeGeneralOrSpecific(e) {}
 
   render() {
     return (

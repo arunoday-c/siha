@@ -12,8 +12,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { Line } from "react-chartjs-2";
 
 const LineData = {
@@ -137,11 +136,9 @@ class Vitals extends Component {
     e.preventDefault();
 
     if (this.state.weight.length === 0) {
-      swal({
+      swalMessage({
         title: "Please Capture at least one field",
-        icon: "warning",
-        buttons: false,
-        timer: 2000
+        type: "warning"
       });
     } else {
       algaehApiCall({
@@ -164,16 +161,14 @@ class Vitals extends Component {
         },
         onSuccess: response => {
           if (response.data.success) {
-            swal("Vitals recorded successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Vitals recorded successfully . .",
+              type: "success"
             });
             getVitalHistory(this);
             this.resetVitals();
           }
-        },
-        onFailure: error => {}
+        }
       });
     }
   }

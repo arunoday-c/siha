@@ -14,7 +14,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-// import Login from "./"
+
 const drawerWidth = 230;
 
 const titleStyles = {
@@ -118,8 +118,7 @@ class PersistentDrawer extends React.Component {
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
-    // let titlectrl = this.title;
-    debugger;
+
     let renderComp = this.state.renderComponent;
     var last2 = renderComp.slice(-2);
     if (last2 === "Ar") {
@@ -135,7 +134,6 @@ class PersistentDrawer extends React.Component {
           renderComponent: ""
         },
         () => {
-          debugger;
           this.setState({
             renderComponent: renderComp
           });
@@ -231,7 +229,7 @@ class PersistentDrawer extends React.Component {
   }
   render() {
     const authToken = getCookie("authToken");
-    const keyResources = getCookie("keyResources");
+    // const keyResources = getCookie("keyResources");
 
     if (authToken === "" || authToken === undefined) {
       return (

@@ -1,4 +1,4 @@
-import swal from "sweetalert";
+import { swalMessage } from "../../../../../utils/algaehApiCall";
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
@@ -11,7 +11,6 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const numberSet = ($this, context, e) => {
-  debugger;
   $this.setState({
     [e.target.name]: e.target.value
   });
@@ -21,7 +20,6 @@ const numberSet = ($this, context, e) => {
 };
 
 const AddSeviceTypeComm = ($this, context) => {
-  debugger;
   if ($this.state.service_type_typ_id === null) {
   } else {
     let intExists = false;
@@ -70,10 +68,9 @@ const AddSeviceTypeComm = ($this, context) => {
         });
       }
     } else {
-      swal("Invalid Input. Selected Service Type already defined.", {
-        icon: "warning",
-        buttons: false,
-        timer: 2000
+      swalMessage({
+        title: "Invalid Input. Selected Service Type already defined.",
+        type: "warning"
       });
     }
   }
@@ -124,17 +121,15 @@ const AddServiceComm = ($this, context) => {
         });
       }
     } else {
-      swal("Invalid Input. Selected Service already defined.", {
-        icon: "warning",
-        buttons: false,
-        timer: 2000
+      swalMessage({
+        title: "Invalid Input. Selected Service already defined",
+        type: "warning"
       });
     }
   }
 };
 
 const deleteServiceComm = ($this, context, row) => {
-  debugger;
   let serviceComm = $this.state.serviceComm;
   let updateserviceComm = $this.state.updateserviceComm;
   let insertserviceComm = $this.state.insertserviceComm;
@@ -182,7 +177,6 @@ const deleteServiceComm = ($this, context, row) => {
 };
 
 const deleteSeviceTypeComm = ($this, context, row) => {
-  debugger;
   let servTypeCommission = $this.state.servTypeCommission;
   let updateservTypeCommission = $this.state.updateservTypeCommission;
   let insertservTypeCommission = $this.state.insertservTypeCommission;

@@ -1,7 +1,6 @@
 import moment from "moment";
-import Enumerable from "linq";
-import swal from "sweetalert";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -13,7 +12,6 @@ const texthandle = ($this, e) => {
 };
 
 const examhandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -28,12 +26,11 @@ const examhandle = ($this, e) => {
     exam_end_date_time = moment(new Date())._d;
     report_type = "PR";
   }
-  debugger;
+
   if ($this.state.pre_exam_status === "CO") {
-    swal("Invalid Input. After Complete cant do any changes. .", {
-      icon: "warning",
-      buttons: false,
-      timer: 2000
+    swalMessage({
+      title: "Invalid Input. After Complete cant do any changes. .",
+      type: "warning"
     });
   } else {
     $this.setState(
@@ -51,10 +48,9 @@ const examhandle = ($this, e) => {
 };
 
 const templatehandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger;
+
   $this.setState({
     [name]: value,
     template_html: e.selected.template_html
@@ -66,7 +62,6 @@ const rtehandle = ($this, template_html) => {
 };
 
 const UpdateRadOrder = ($this, value) => {
-  debugger;
   let inputobj = {};
   let status = "",
     report_type = "";
@@ -113,7 +108,7 @@ const UpdateRadOrder = ($this, value) => {
       $this.state.full_name +
       "for the procedure" +
       $this.state.service_name,
-    icon: "success",
+    type: "success",
     buttons: true,
     dangerMode: true
   }).then(willProceed => {
@@ -124,10 +119,9 @@ const UpdateRadOrder = ($this, value) => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success === true) {
-            swal("Done successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Record updated successfully . .",
+              type: "success"
             });
             $this.props.getRadiologyTestList({
               uri: "/radiology/getRadOrderedServices",
@@ -146,10 +140,9 @@ const UpdateRadOrder = ($this, value) => {
           }
         },
         onFailure: error => {
-          swal(error, {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: error.message,
+            type: "error"
           });
         }
       });

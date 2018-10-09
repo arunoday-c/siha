@@ -1,14 +1,13 @@
 import moment from "moment";
 import Options from "../../../Options.json";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+
 import math from "mathjs";
 import Enumerable from "linq";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 var intervalId;
 const changeTexts = ($this, ctrl, e) => {
-  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -16,7 +15,6 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const LocationchangeTexts = ($this, ctrl, e) => {
-  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -24,8 +22,6 @@ const LocationchangeTexts = ($this, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, e) => {
-  debugger;
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let extended_cost = 0;
@@ -48,7 +44,6 @@ const getItemUom = $this => {
       mappingName: "itemuomlist"
     },
     afterSuccess: data => {
-      debugger;
       let itemuomlist = Enumerable.from(data)
         .where(
           w => w.hims_d_item_master_id === $this.state.item_id,
@@ -62,7 +57,6 @@ const getItemUom = $this => {
 };
 
 const itemchangeText = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this);
@@ -134,7 +128,7 @@ const AddItems = $this => {
       noorecords: pharmacy_stock_detail.length + 1,
       required_batchno: $this.state.required_batchno
     };
-    debugger;
+
     pharmacy_stock_detail.push(itemObj);
     $this.setState({
       pharmacy_stock_detail: pharmacy_stock_detail,
@@ -170,7 +164,6 @@ const dateFormater = ({ value }) => {
 };
 
 const getCtrlCode = ($this, docNumber) => {
-  debugger;
   clearInterval(intervalId);
   intervalId = setInterval(() => {
     AlgaehLoader({ show: true });
@@ -184,8 +177,6 @@ const getCtrlCode = ($this, docNumber) => {
         mappingName: "initialstock"
       },
       afterSuccess: data => {
-        debugger;
-
         data.saveEnable = true;
 
         if (data.posted === "Y") {
@@ -203,22 +194,19 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const SaveInitialStock = $this => {
-  debugger;
   algaehApiCall({
     uri: "/initialstock/addPharmacyInitialStock",
     data: $this.state,
     onSuccess: response => {
-      debugger;
       if (response.data.success === true) {
         $this.setState({
           document_number: response.data.records.document_number,
           saveEnable: true,
           postEnable: false
         });
-        swal("Saved successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Record Saved successfully . .",
+          type: "success"
         });
       }
     }
@@ -261,7 +249,6 @@ const ClearData = $this => {
 };
 
 const PostInitialStock = $this => {
-  debugger;
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
   algaehApiCall({
@@ -269,15 +256,13 @@ const PostInitialStock = $this => {
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
-      debugger;
       if (response.data.success === true) {
         $this.setState({
           postEnable: true
         });
-        swal("Posted successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Posted successfully . .",
+          type: "success"
         });
       }
     }
