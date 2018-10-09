@@ -638,11 +638,21 @@ let addDoctorsSchedule = (req, res, next) => {
                 working_days.push(d);
               }
             }
+let nightShift="";
+
+
+
+
+if(input.from_work_hr>input.to_work_hr){
+  nightShift=1;
+
+  debugLog("nightShift:", nightShift);
+  }
 
             let newDateList = getDaysArray(
               new Date(input.from_date),
               new Date(input.to_date),
-              working_days
+              working_days,nightShift
             );
             newDateList.map(v => v.toLocaleString());
             //.slice(0, 10)).join("");
@@ -928,7 +938,37 @@ let addDoctorsSchedule = (req, res, next) => {
 };
 
 //[0,1,2,3,4,5,6]
-function getDaysArray(start, end, days) {
+function getDaysArray(start, end, days,nightShift) {
+  for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
+    const dat = new Date(dt);
+    const day = new Date(dat).getDay();
+if(nightShift==1){
+  if (days.indexOf(day) > -1) {
+    arr.push(dat);
+    debugLog("dat:", dat);
+   
+
+
+
+    debugLog("dat+1:", dat.getDate());
+
+
+  }
+}else{
+  if (days.indexOf(day) > -1) {
+    arr.push(dat);
+  }
+}
+
+    
+  }
+  debugLog("newDatesList:", arr);
+  return arr;
+}
+
+
+//[0,1,2,3,4,5,6]
+function BackupgetDaysArray(start, end, days) {
   for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
     const dat = new Date(dt);
     const day = new Date(dat).getDay();
@@ -940,6 +980,10 @@ function getDaysArray(start, end, days) {
   debugLog("dates:", arr);
   return arr;
 }
+
+
+
+
 //created by irfan: to add appointment leave
 let addLeaveOrModifySchedule = (req, res, next) => {
   try {
@@ -2012,20 +2056,45 @@ let updatePatientAppointment = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "UPDATE `hims_d_appointment_status` SET color_code=?, description=?, default_status=?,\
-           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_status_id`=?;",
+        "UPDATE `hims_f_patient_appointment` SET patient_id=?,provider_id=?,sub_department_id=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
+        appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
+        send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
+        cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
+           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_f_patient_appointment_id`=?;",
         [
-          input.color_code,
-          input.description,
-          input.default_status,
+          input.patient_id,
+          input.provider_id,
+          input.sub_department_id,
+          input.appointment_date,
+          input.appointment_from_time,
+          input.appointment_to_time,
+          input.appointment_status_id,
+          input.patient_name,
+          input.arabic_name,
+          input.date_of_birth,
+          input.age,
+          input.contact_number,
+          input.email,
+          input.send_to_provider,
+          input.gender,
+          input.confirmed,
+          input.confirmed_by,
+          input.comfirmed_date,
+          input.cancelled,
+          input.cancelled_by,
+          input.cancelled_date,
+          input.cancel_reason,
+          input.appointment_remarks,
+          input.is_stand_by,
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_d_appointment_status_id
+          input.hims_f_patient_appointment_id
         ],
         (error, result) => {
-          connection.release();
+         
           if (error) {
+            connection.release();
             next(error);
           }
           req.records = result;
@@ -2104,5 +2173,6 @@ module.exports = {
   updateSchedule,
   addDoctorToExistingSchedule,
   addPatientAppointment,
-  getPatientAppointment
+  getPatientAppointment,
+  updatePatientAppointment
 };
