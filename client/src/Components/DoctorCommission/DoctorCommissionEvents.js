@@ -1,7 +1,7 @@
 import moment from "moment";
 import Options from "../../Options.json";
-import { algaehApiCall } from "../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+
 // import math from "mathjs";
 // import Enumerable from "linq";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
@@ -16,7 +16,6 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const CalculateCommission = $this => {
-  debugger;
   AlgaehLoader({ show: true });
   $this.props.CalculateCommission({
     uri: "/doctorsCommission/doctorsCommissionCal",
@@ -28,7 +27,6 @@ const CalculateCommission = $this => {
     },
     afterSuccess: data => {
       $this.setState({ billscommission: data }, () => {
-        debugger;
         $this.props.calculateCommission({
           uri: "/doctorsCommission/commissionCalculations",
           method: "POST",
@@ -49,8 +47,6 @@ const CalculateCommission = $this => {
 };
 
 const AdjustAmountCalculate = ($this, e) => {
-  debugger;
-
   $this.setState({ [e.target.name]: e.target.value }, () => {
     $this.props.calculateCommission({
       uri: "/doctorsCommission/commissionCalculations",
@@ -77,15 +73,12 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const dateFormater = ({ value }) => {
-  debugger;
   if (value !== null) {
-    debugger;
     return moment(value).format(Options.dateFormat);
   }
 };
 
 const getCtrlCode = ($this, docNumber) => {
-  debugger;
   clearInterval(intervalId);
   intervalId = setInterval(() => {
     AlgaehLoader({ show: true });
@@ -99,8 +92,6 @@ const getCtrlCode = ($this, docNumber) => {
         mappingName: "initialstock"
       },
       afterSuccess: data => {
-        debugger;
-
         data.saveEnable = true;
 
         if (data.posted === "Y") {
@@ -117,27 +108,27 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const SaveDoctorCommission = $this => {
-  debugger;
   algaehApiCall({
     uri: "/pharmacy/addPharmacyInitialStock",
     data: $this.state,
     onSuccess: response => {
-      debugger;
       if (response.data.success === true) {
         $this.setState({
           document_number: response.data.records.document_number,
           saveEnable: true,
           postEnable: false
         });
-        swal("Saved successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Saved successfully . .",
+          type: "success"
         });
       }
     },
     onFailure: error => {
-      console.log(error);
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -157,7 +148,6 @@ const deleteDoctorCommission = ($this, row) => {
 };
 
 const PostDoctorCommission = $this => {
-  debugger;
   $this.state.posted = "Y";
   // algaehApiCall({
   //   uri: "/pharmacy/addPharmacyInitialStock",
@@ -183,7 +173,6 @@ const PostDoctorCommission = $this => {
 };
 
 const LoadBills = $this => {
-  debugger;
   if ($this.state.doctor_id === null) {
     $this.setState({
       SnackbarOpen: true,
@@ -213,7 +202,6 @@ const LoadBills = $this => {
       MandatoryMsg: "Invalid Input. Please select Service."
     });
   } else {
-    debugger;
     AlgaehLoader({ show: true });
     let inpObj = {
       incharge_or_provider: $this.state.doctor_id,
@@ -232,11 +220,9 @@ const LoadBills = $this => {
         mappingName: "billscommission"
       },
       afterSuccess: data => {
-        debugger;
         // let providers = Enumerable.from(data)
         //   .where(w => w.isdoctor === "Y")
         //   .toArray();
-        debugger;
         $this.setState({ billscommission: data }, () => {
           AlgaehLoader({ show: false });
         });

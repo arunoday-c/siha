@@ -1,37 +1,37 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import axios from "axios";
 import extend from "extend";
 import moment from "moment";
-import swal from "sweetalert";
-import Slide from "@material-ui/core/Slide";
+import swal from "sweetalert2";
+
 import config from "../utils/config.json";
-import { setGlobal, removeGlobal } from "./GlobalFunctions";
-import Enumerable from "linq";
 import axiosCancel from "axios-cancel";
 export function algaehApiCall(options) {
   // "baseUrl": "http://192.168.0.149:3000/api/v1",
   if (!window.navigator.onLine) {
-    swal({
-      title: "Connection Error",
-      text:
-        "Looks like you're not connected to any network, please make sure you connect and try again",
-      icon: "images/nointernet.png",
-      button: false,
-      timer: 5000
+    swalMessage({
+      title:
+        "Looks like you're not connected to any network,\n please make sure you connect and try again",
+      imageUrl: "images/nointernet.png",
+      imageHeight: 30,
+      position: "center",
+      timer: 4000
     });
+
     return false;
   } else {
     if (
       window.navigator.connection !== undefined &&
       window.navigator.connection.effectiveType === "2g"
     ) {
-      <Slide
-        open={true}
-        direction="up"
-        vertical="top"
-        horizontal="center"
-        message={<span>Low internet connectivity</span>}
-      />;
+      swalMessage({
+        title: "Low internet connectivity, response may be delay",
+        imageUrl: "images/nointernet.png",
+        imageHeight: 30,
+        position: "top",
+        timer: 4000
+      });
     }
   }
 
@@ -125,7 +125,7 @@ export function algaehApiCall(options) {
         "x-app-user-identity": x_app_user_identity
       },
       data: settings.data,
-      timeout: settings.timeout !== undefined ? settings.timeout : 120000,
+      timeout: settings.timeout !== undefined ? settings.timeout : 20000,
       ...cancelRequest
     })
       .then(response => {
@@ -149,47 +149,43 @@ export function algaehApiCall(options) {
               " \n Detail Info : \n" +
               JSON.stringify(err)
           );
-          swal({
-            title: "Error",
-            text: "Request taking long time to process....!",
-            icon: "error",
-            button: false,
-            timer: 5000
+          swalMessage({
+            title: "Request taking long time to process....!",
+            type: "info"
           });
         } else {
           if (typeof settings.onFailure == "function") settings.onFailure(err);
           else {
-            swal({
-              title: "Error",
-              text: err.message,
-              icon: "error",
-              button: false,
-              timer: 5000
+            swalMessage({
+              title: err.message,
+              type: "error",
+              position: "top"
             });
           }
         }
+
+        ReactDOM.unmountComponentAtNode(
+          document.getElementById("fullPageLoader")
+        );
       });
   }
 }
 
+export function swalMessage(options) {
+  const settings = {
+    position: "top",
+    showConfirmButton: false,
+    timer: 3000,
+    toast: true,
+    ...options
+  };
+  const toast = swal.mixin(settings);
+
+  toast({ type: settings.type, title: settings.title });
+}
+
 export function cancelRequest(requestId) {
   axios.cancel(requestId);
-  // let getRequest =
-  //   Window.global["req_cancel"] === undefined
-  //     ? []
-  //     : Window.global["req_cancel"];
-
-  // const exactRequet = Enumerable.from(getRequest)
-  //   .where(w => w.id === requestId)
-  //   .firstOrDefault();
-  // if (exactRequet !== undefined) {
-  //   exactRequet.source.cancel("Operation Cancelled");
-  //   const removeAdd = Enumerable.from(getRequest)
-  //     .where(w => w.id !== requestId)
-  //     .toArray();
-  //   removeGlobal("req_cancel");
-  //   setGlobal({ req_cancel: removeAdd });
-  // }
 }
 
 export function SelectFiledData(options) {

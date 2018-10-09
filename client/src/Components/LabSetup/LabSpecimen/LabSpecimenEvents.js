@@ -1,6 +1,5 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import { getCookie } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -28,10 +27,9 @@ const updateLabSpecimen = ($this, data) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        swal("Record updated successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Record updated successfully . .",
+          type: "success"
         });
         $this.props.getLabSpecimen({
           uri: "/labmasters/selectSpecimen",
@@ -50,7 +48,7 @@ const updateLabSpecimen = ($this, data) => {
 const showconfirmDialog = ($this, id) => {
   swal({
     title: "Are you sure you want to delete this Specimen?",
-    icon: "warning",
+    type: "warning",
     buttons: true,
     dangerMode: true
   }).then(willDelete => {
@@ -65,10 +63,9 @@ const showconfirmDialog = ($this, id) => {
         method: "DELETE",
         onSuccess: response => {
           if (response.data.success) {
-            swal("Record deleted successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Record deleted successfully",
+              type: "success"
             });
             $this.props.getLabSpecimen({
               uri: "/labmasters/selectSpecimen",
@@ -119,24 +116,18 @@ const insertLabSpecimen = ($this, e) => {
             }
           });
 
-          swal({
-            title: "Success",
-            text: "Lab Specimen added successfully",
-            icon: "success",
-            button: false,
-            timer: 2500
+          swalMessage({
+            title: "Lab Specimen added successfully",
+            type: "success"
           });
         } else {
           //Handle unsuccessful Add here.
         }
       },
       onFailure: error => {
-        swal({
-          title: "Error",
-          text: error.message,
-          icon: "error",
-          button: false,
-          timer: 2500
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });

@@ -1,7 +1,6 @@
 import AlgaehSearch from "../../../Wrapper/globalSearch";
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
-import swal from "sweetalert";
-import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import swal from "sweetalert2";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import extend from "extend";
 
 //Text Handaler Change
@@ -41,7 +40,6 @@ const serviceHandeler = ($this, e) => {
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
-  debugger;
   let preserviceInput = $this.state.preserviceInput || [];
   let serviceInput = [
     {
@@ -85,7 +83,7 @@ const ProcessService = ($this, e) => {
         swal({
           title:
             "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pro aproved and will be as cash.",
-          icon: "warning",
+          type: "warning",
           buttons: true,
           dangerMode: true
         }).then(willProceed => {
@@ -185,15 +183,14 @@ const ProcessService = ($this, e) => {
         data.billdetails[0].doctor_id = Window.global["provider_id"];
 
         //If pre-approval required for selected service
-        debugger;
+
         if (
           data.billdetails[0].pre_approval === "Y" &&
           $this.state.approval_limit_yesno === "N"
         ) {
-          successfulMessage({
-            message: "Selected Service is Pre-Approval required.",
-            title: "Warning",
-            icon: "warning"
+          swalMessage({
+            title: "Selected Service is Pre-Approval required.",
+            type: "warning"
           });
         } else {
           data.billdetails[0].pre_approval = "N";
@@ -336,12 +333,10 @@ const SaveOrdersServices = ($this, e) => {
     data: $this.state.orderservicesdata,
     method: "POST",
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
-        successfulMessage({
-          message: "Ordered Successfully...",
-          title: "Success",
-          icon: "success"
+        swalMessage({
+          title: "Ordered Successfully...",
+          type: "success"
         });
         this.setState({ saved: true });
       }
@@ -352,7 +347,7 @@ const SaveOrdersServices = ($this, e) => {
 
 const calculateAmount = ($this, row, ctrl, e) => {
   e = e || ctrl;
-  debugger;
+
   let orderservicesdata = $this.state.orderservicesdata;
 
   row[e.target.name] = parseFloat(e.target.value);

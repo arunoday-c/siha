@@ -113,7 +113,7 @@ class UOMAdditionalInfo extends Component {
 
                     <div className="col-lg-1 actions">
                       <a
-                        href="javascript:;"
+                        // href="javascript:;"
                         className="btn btn-primary btn-circle active"
                       >
                         <i
@@ -246,7 +246,7 @@ class UOMAdditionalInfo extends Component {
                               />
                             ),
                             displayTemplate: row => {
-                              return row.stocking_uom == "N" ? "No" : "Yes";
+                              return row.stocking_uom === "N" ? "No" : "Yes";
                             },
                             editorTemplate: row => {
                               return (

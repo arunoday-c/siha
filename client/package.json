@@ -37,7 +37,8 @@
     "react-to-print": "^2.0.0-alpha-2",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "sweetalert2": "^7.28.4"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",
@@ -51,7 +52,8 @@
   },
   "eslintConfig": {
     "rules": {
-      "no-eval": 0
+      "no-eval": 0,
+      "no-script-url": 0
     }
   },
   "proxy": "http://localhost:3000"

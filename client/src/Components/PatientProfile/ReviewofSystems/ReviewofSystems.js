@@ -17,8 +17,12 @@ import {
   texthandle,
   updatePatientROS
 } from "./ReviewofSystemsHandlers";
-import swal from "sweetalert";
-import { algaehApiCall, cancelRequest } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
+import {
+  algaehApiCall,
+  cancelRequest,
+  swalMessage
+} from "../../../utils/algaehApiCall";
 
 class ReviewofSystems extends Component {
   constructor(props) {
@@ -53,14 +57,12 @@ class ReviewofSystems extends Component {
       onSuccess: response => {
         if (response.data.success) {
           getPatientROS(this);
-          swal("Review of System Updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Review of System updated successfully . .",
+            type: "success"
           });
         }
-      },
-      onFailure: error => {}
+      }
     });
   }
 
@@ -113,10 +115,9 @@ class ReviewofSystems extends Component {
     this.reloadState();
   }
   componentDidCatch(error, info) {
-    swal("Did Catch:" + error + "Info:" + info, {
-      icon: "error",
-      buttons: false,
-      timer: 2000
+    swalMessage({
+      title: "Did Catch : \n" + error + " \nInfo : \n" + info,
+      type: "error"
     });
   }
 
@@ -134,15 +135,13 @@ class ReviewofSystems extends Component {
       onSuccess: response => {
         if (response.data.success) {
           getPatientROS(this);
-          swal("Review of System Added successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Review of System Added successfully . .",
+            type: "success"
           });
           this.resetPatientROS();
         }
-      },
-      onFailure: error => {}
+      }
     });
   }
 
@@ -159,7 +158,7 @@ class ReviewofSystems extends Component {
 
     swal({
       title: "Are you sure you want to delete this Review of System?",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willDelete => {
@@ -179,10 +178,9 @@ class ReviewofSystems extends Component {
           method: "PUT",
           onSuccess: response => {
             if (response.data.success) {
-              swal("Record deleted successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
               });
               getPatientROS(this);
             }
@@ -190,7 +188,10 @@ class ReviewofSystems extends Component {
           onFailure: error => {}
         });
       } else {
-        swal("Delete request cancelled");
+        swalMessage({
+          title: "Delete request cancelled . .",
+          type: "success"
+        });
       }
     });
   }

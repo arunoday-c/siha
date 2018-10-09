@@ -1,3 +1,4 @@
+"use strict";
 import JsBarcode from "jsbarcode";
 import React from "react";
 import ReactDOM from "react-dom";

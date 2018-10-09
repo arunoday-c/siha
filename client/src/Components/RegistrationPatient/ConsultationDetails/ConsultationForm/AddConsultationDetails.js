@@ -1,10 +1,8 @@
-import swal from "sweetalert";
-import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 
 const DeptselectedHandeler = ($this, context, e) => {
-  debugger;
   let dept = Enumerable.from($this.state.departments)
     .where(w => w.sub_department_id === e.value)
     .firstOrDefault();
@@ -23,7 +21,6 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  debugger;
   if (
     $this.state.full_name !== "" &&
     $this.state.title_id !== null &&
@@ -46,7 +43,6 @@ const selectedHandeler = ($this, context, e) => {
         mappingName: "deptanddoctors"
       },
       afterSuccess: data => {
-        debugger;
         $this.setState({
           departments: data.departmets,
           doctors: data.doctors,
@@ -67,29 +63,21 @@ const selectedHandeler = ($this, context, e) => {
     $this.setState({
       [e.name]: null
     });
-
-    swal({
-      title: "warning",
-      text: "Invalid Input. Please fill Patient demographic details",
-      icon: "warning",
-      button: false,
-      timer: 2500
+    swalMessage({
+      title: "Invalid Input. Please fill Patient demographic details",
+      type: "warning"
     });
   }
 };
 
 const unsuccessfulSignIn = (message, title) => {
-  swal({
-    title: title,
-    text: message,
-    icon: "error",
-    button: false,
-    timer: 2500
+  swalMessage({
+    title: message,
+    type: "error"
   });
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
-  debugger;
   if ($this.state.sub_department_id !== null) {
     let employee_list = Enumerable.from($this.props.providers)
       .where(w => w.hims_d_employee_id == e.value)
@@ -105,8 +93,6 @@ const doctorselectedHandeler = ($this, context, e) => {
           data: $this.state,
           onSuccess: response => {
             if (response.data.success == true) {
-              debugger;
-
               $this.setState(
                 {
                   [e.name]: e.value,
@@ -147,12 +133,9 @@ const doctorselectedHandeler = ($this, context, e) => {
         $this.setState({
           [e.name]: null
         });
-        swal({
-          title: "warning",
-          text: "Invalid Input. No Service defined for the selected doctor.",
-          icon: "warning",
-          button: false,
-          timer: 2500
+        swalMessage({
+          title: "Invalid Input. No Service defined for the selected doctor.",
+          type: "warning"
         });
       }
     } else {
@@ -185,12 +168,9 @@ const doctorselectedHandeler = ($this, context, e) => {
         $this.setState({
           [e.name]: null
         });
-        swal({
-          title: "warning",
-          text: "Invalid Input. No Service defined for the selected doctor.",
-          icon: "warning",
-          button: false,
-          timer: 2500
+        swalMessage({
+          title: "Invalid Input. No Service defined for the selected doctor.",
+          type: "warning"
         });
       }
     }
@@ -198,12 +178,9 @@ const doctorselectedHandeler = ($this, context, e) => {
     $this.setState({
       [e.name]: null
     });
-    swal({
-      title: "warning",
-      text: "Invalid Input. Please select department.",
-      icon: "warning",
-      button: false,
-      timer: 2500
+    swalMessage({
+      title: "Invalid Input. Please select department.",
+      type: "warning"
     });
   }
 };
@@ -225,7 +202,6 @@ const generateBillDetails = ($this, context) => {
       secondary_network_office_id: $this.state.secondary_network_office_id
     }
   ];
-  debugger;
   AlgaehLoader({ show: true });
   $this.props.generateBill({
     uri: "/billing/getBillDetails",
@@ -236,7 +212,6 @@ const generateBillDetails = ($this, context) => {
       mappingName: "xxx"
     },
     afterSuccess: data => {
-      debugger;
       if (context != null) {
         context.updateState({ ...data });
       }

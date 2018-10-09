@@ -12,8 +12,11 @@ import IconButton from "@material-ui/core/IconButton";
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import Search from "@material-ui/icons/Search";
 import GlobalVariables from "../../utils/GlobalVariables.json";
-import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
-import swal from "sweetalert";
+import {
+  algaehApiCall,
+  cancelRequest,
+  swalMessage
+} from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
@@ -115,10 +118,9 @@ class DoctorsWorkbench extends Component {
       },
       onFailure: error => {
         algaehLoader({ show: false });
-        swal(error.message, {
-          icon: "error",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -154,7 +156,6 @@ class DoctorsWorkbench extends Component {
     return generatedLi;
   }
   onSelectedDateHandler(e) {
-    debugger;
     const fromDate = e.target.getAttribute("date");
     this.setState(
       {

@@ -303,14 +303,14 @@ class AddReciptForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    genbill: state.genbill
+    posheader: state.posheader
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      billingCalculations: AlgaehActions
+      reciptCalculations: AlgaehActions
     },
     dispatch
   );

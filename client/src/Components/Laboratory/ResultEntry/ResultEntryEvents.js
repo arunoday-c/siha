@@ -1,5 +1,5 @@
-import swal from "sweetalert";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -19,12 +19,11 @@ const UpdateLabOrder = ($this, value, status) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success === true) {
-        swal("Done successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          type: "success",
+          title: "Done successfully . ."
         });
-        debugger;
+
         for (let k = 0; k < value.length; k++) {
           if (value[k].run_type !== null && value[k].run_type !== undefined) {
             value.splice(k, 1);
@@ -34,25 +33,22 @@ const UpdateLabOrder = ($this, value, status) => {
       }
     },
     onFailure: error => {
-      swal(error, {
-        icon: "success",
-        buttons: false,
-        timer: 2000
+      swalMessage({
+        type: "success",
+        title: error.message
       });
     }
   });
 };
 
 const onvalidate = $this => {
-  debugger;
   let test_analytes = $this.state.test_analytes;
   let success = true;
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].confirm === "N") {
-      swal("Invalid Input. Please confirm the result", {
-        icon: "warning",
-        buttons: false,
-        timer: 2000
+      swalMessage({
+        type: "warning",
+        title: "Invalid Input. Please confirm the result"
       });
       success = false;
     } else {
@@ -63,7 +59,7 @@ const onvalidate = $this => {
   if (success === true) {
     swal({
       title: "Are you sure want to Validate",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willProceed => {
@@ -85,7 +81,6 @@ const getAnalytes = $this => {
       mappingName: "testanalytes"
     },
     afterSuccess: data => {
-      debugger;
       for (let i = 0; i < data.length; i++) {
         data[i].hims_f_lab_order_id = $this.state.hims_f_lab_order_id;
         if (data[i].status === "E" || data[i].status === "N") {
@@ -105,15 +100,13 @@ const getAnalytes = $this => {
 };
 
 const confirmedgridcol = ($this, row, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let test_analytes = $this.state.test_analytes;
   if (row.result === null && value === "Y") {
-    swal("Invalid Input. Please enter the result", {
-      icon: "warning",
-      buttons: false,
-      timer: 2000
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Please enter the result"
     });
   } else {
     if (row.validate === "Y" && value === "N") {
@@ -134,23 +127,18 @@ const confirmedgridcol = ($this, row, e) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let test_analytes = $this.state.test_analytes;
 
   if (name === "validate") {
     if (row.confirm === "N" && value === "Y") {
-      swal(
-        "Invalid Input. Without confirming cannot validate, please confirm",
-        {
-          icon: "warning",
-          buttons: false,
-          timer: 2000
-        }
-      );
+      swalMessage({
+        type: "warning",
+        title:
+          "Invalid Input. Without confirming cannot validate, please confirm"
+      });
     } else {
-      // row["status"] = "V";
       row[name] = value;
       for (let l = 0; l < test_analytes.length; l++) {
         if (
@@ -175,7 +163,6 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const resultEntryUpdate = $this => {
-  debugger;
   let test_analytes = $this.state.test_analytes;
   let enterResult = true;
   let enterRemarks = true;
@@ -205,32 +192,29 @@ const resultEntryUpdate = $this => {
     UpdateLabOrder($this, test_analytes, "E");
   } else {
     if (enterResult === false) {
-      swal("Invalid Input. Please enter input.", {
-        icon: "warning",
-        buttons: false,
-        timer: 2000
+      swalMessage({
+        type: "warning",
+        title: "Invalid Input. Please enter input."
       });
     } else if (enterRemarks === false) {
-      swal("Invalid Input. Please enter Remarks for Ammended.", {
-        icon: "warning",
-        buttons: false,
-        timer: 2000
+      swalMessage({
+        type: "warning",
+        title: "Invalid Input. Please enter Remarks for Ammended.."
       });
     }
   }
 };
 
 const onconfirm = $this => {
-  debugger;
   let test_analytes = $this.state.test_analytes;
   let success = true;
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].result === null) {
-      swal("Invalid Input. Please enter the result", {
-        icon: "warning",
-        buttons: false,
-        timer: 2000
+      swalMessage({
+        type: "warning",
+        title: "Invalid Input. Please enter the result."
       });
+
       success = false;
     } else {
       test_analytes[k].status = "C";
@@ -240,7 +224,7 @@ const onconfirm = $this => {
   if (success === true) {
     swal({
       title: "Are you sure want to Confirm",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willProceed => {
@@ -253,7 +237,6 @@ const onconfirm = $this => {
 };
 
 const onReRun = $this => {
-  debugger;
   let test_analytes = $this.state.test_analytes;
   let success = true;
   let runtype = [];
@@ -279,7 +262,7 @@ const onReRun = $this => {
   if (success === true) {
     swal({
       title: "Are you sure want to Re-Run",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willProceed => {
@@ -291,7 +274,6 @@ const onReRun = $this => {
 };
 
 const onchangegridresult = ($this, row, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let test_analytes = $this.state.test_analytes;
@@ -323,11 +305,9 @@ const onchangegridresult = ($this, row, e) => {
 };
 
 const onchangegridamended = ($this, row, e) => {
-  debugger;
-
   swal({
     title: "Are you sure you want to Ammend?",
-    icon: "warning",
+    type: "warning",
     buttons: true,
     dangerMode: true
   }).then(willProceed => {

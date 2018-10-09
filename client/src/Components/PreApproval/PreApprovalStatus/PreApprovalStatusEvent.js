@@ -1,5 +1,4 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const UpdatePreApproval = ($this, e) => {
   algaehApiCall({
@@ -8,15 +7,14 @@ const UpdatePreApproval = ($this, e) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        swal("Updated successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Record updated successfully . .",
+          type: "success"
         });
+
         $this.props.onClose && $this.props.onClose(e);
       }
-    },
-    onFailure: error => {}
+    }
   });
 };
 

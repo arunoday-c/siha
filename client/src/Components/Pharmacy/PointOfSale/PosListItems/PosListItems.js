@@ -515,7 +515,7 @@ class PosListItems extends Component {
                             ]}
                             keyId="service_type_id"
                             dataSource={{
-                              data: this.state.PrescriptionItemList
+                              data: this.state.pharmacy_stock_detail
                             }}
                             isEditable={true}
                             paging={{ page: 0, rowsPerPage: 10 }}

@@ -1,10 +1,8 @@
-import swal from "sweetalert";
-import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 
 const DeptselectedHandeler = ($this, context, e) => {
-  debugger;
   let dept = Enumerable.from($this.state.departments)
     .where(w => w.sub_department_id === e.value)
     .firstOrDefault();
@@ -23,7 +21,6 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  debugger;
   if ($this.state.full_name !== "") {
     $this.props.getDepartmentsandDoctors({
       uri: "/department/get/get_All_Doctors_DepartmentWise",
@@ -33,7 +30,6 @@ const selectedHandeler = ($this, context, e) => {
         mappingName: "deptanddoctors"
       },
       afterSuccess: data => {
-        debugger;
         $this.setState({
           departments: data.departmets,
           doctors: data.doctors,
@@ -54,29 +50,21 @@ const selectedHandeler = ($this, context, e) => {
     $this.setState({
       [e.name]: null
     });
-
-    swal({
-      title: "تحذير",
-      text: "غير صالحة. يرجى ملء التفاصيل الديموغرافية للمريض",
-      icon: "warning",
-      button: false,
-      timer: 2500
+    swalMessage({
+      title: "غير صالحة. يرجى ملء التفاصيل الديموغرافية للمريض",
+      type: "warning"
     });
   }
 };
 
 const unsuccessfulSignIn = (message, title) => {
-  swal({
-    title: title,
-    text: message,
-    icon: "error",
-    button: false,
-    timer: 2500
+  swalMessage({
+    title: message,
+    type: "error"
   });
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
-  debugger;
   if ($this.state.sub_department_id !== null) {
     let employee_list = Enumerable.from($this.props.providers)
       .where(w => w.hims_d_employee_id == e.value)
@@ -91,8 +79,6 @@ const doctorselectedHandeler = ($this, context, e) => {
         data: $this.state,
         onSuccess: response => {
           if (response.data.success == true) {
-            debugger;
-
             $this.setState(
               {
                 [e.name]: e.value,
@@ -159,12 +145,10 @@ const doctorselectedHandeler = ($this, context, e) => {
         $this.setState({
           [e.name]: null
         });
-        swal({
-          title: "تحذير",
-          text: "غير صالحة. لا توجد خدمة محددة  للطبيب المختار.",
-          icon: "warning",
-          button: false,
-          timer: 2500
+
+        swalMessage({
+          title: "غير صالحة. لا توجد خدمة محددة  للطبيب المختار.",
+          type: "warning"
         });
       }
     }
@@ -172,12 +156,9 @@ const doctorselectedHandeler = ($this, context, e) => {
     $this.setState({
       [e.name]: null
     });
-    swal({
-      title: "تحذير",
-      text: "غير صالحة. يرجى اختيار القسم",
-      icon: "warning",
-      button: false,
-      timer: 2500
+    swalMessage({
+      title: "غير صالحة. يرجى اختيار القسم",
+      type: "success"
     });
   }
 };

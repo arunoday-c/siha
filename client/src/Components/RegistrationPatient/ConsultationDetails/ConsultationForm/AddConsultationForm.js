@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import swal from "sweetalert";
 
 import "./ConsultationForm.css";
 import "./../../../../styles/site.css";

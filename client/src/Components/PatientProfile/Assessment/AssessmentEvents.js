@@ -1,7 +1,6 @@
-import { successfulMessage } from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
-import swal from "sweetalert";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const assnotetexthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -26,8 +25,6 @@ const texthandle = ($this, ctrl, e) => {
 
 const insertFinalICDS = $this => {
   if ($this.state.f_icd_id !== null) {
-    debugger;
-
     let finalICDS = $this.state.finalICDS;
     let diagnosis_type = "";
     if (finalICDS.length > 0) {
@@ -55,17 +52,15 @@ const insertFinalICDS = $this => {
       }
     );
   } else {
-    successfulMessage({
-      message: "Invalid Input. Please select Diagnosis",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Please select Diagnosis",
+      type: "warning"
     });
   }
 };
 
 const insertInitialICDS = $this => {
   if ($this.state.icd_id !== null) {
-    debugger;
     let InitialICDS = $this.state.InitialICDS;
     let insertInitialDiad = $this.state.insertInitialDiad;
     let diagnosis_type = "";
@@ -87,7 +82,7 @@ const insertInitialICDS = $this => {
     };
     insertInitialDiad.push(InitialICDSobj);
     InitialICDS.push(InitialICDSobj);
-    debugger;
+
     $this.setState(
       {
         InitialICDS: InitialICDS,
@@ -98,17 +93,16 @@ const insertInitialICDS = $this => {
       }
     );
   } else {
-    successfulMessage({
-      message: "Invalid Input. Please select Diagnosis",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Please select Diagnosis",
+      type: "warning"
     });
   }
 };
 
 const selectdIcd = ($this, row, e) => {
   let x = Enumerable.from($this.state.InitialICDS)
-    .where(w => w.radioselect == 1)
+    .where(w => w.radioselect === 1)
     .toArray();
   var index;
 
@@ -127,7 +121,6 @@ const selectdIcd = ($this, row, e) => {
 };
 
 const addFinalIcd = $this => {
-  debugger;
   let selecteddata = $this.state.selectdIcd;
   let finalICDS = $this.state.finalICDS;
   if (selecteddata.length > 0) {
@@ -147,10 +140,9 @@ const addFinalIcd = $this => {
       }
     );
   } else {
-    successfulMessage({
-      message: "Invalid Input. Please select Diagnosis",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Please select Diagnosis",
+      type: "warning"
     });
   }
 };
@@ -162,31 +154,27 @@ const saveDiagnosis = ($this, data) => {
     method: "POST",
     onSuccess: response => {
       if (response.data.success === true) {
-        swal("Added . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Record Added successfully . .",
+          type: "success"
         });
       }
     },
     onFailure: error => {
-      swal(error, {
-        icon: "success",
-        buttons: false,
-        timer: 2000
+      swalMessage({
+        title: error.message,
+        type: "error"
       });
     }
   });
 };
 
 const onchangegridcol = ($this, row, from, e) => {
-  debugger;
   if (from === "Intial" && row.final_daignosis === "Y") {
-    successfulMessage({
-      message:
+    swalMessage({
+      title:
         "Invalid Input. Already selected as final diagnosis. If changes required change in final diagnosis",
-      title: "Error",
-      icon: "error"
+      type: "error"
     });
   } else {
     let name = e.name || e.target.name;
@@ -225,12 +213,11 @@ const onchangegridcol = ($this, row, from, e) => {
 const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this Diagnosis?",
-    icon: "warning",
+    type: "warning",
     buttons: true,
     dangerMode: true
   }).then(willDelete => {
     if (willDelete) {
-      debugger;
       let data = {
         hims_f_patient_diagnosis_id: row.hims_f_patient_diagnosis_id,
         diagnosis_type: row.diagnosis_type,
@@ -243,15 +230,14 @@ const showconfirmDialog = ($this, row) => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
-            swal("Record deleted successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: "Record deleted successfully . .",
+              type: "success"
             });
+
             getPatientDiagnosis($this);
           }
-        },
-        onFailure: error => {}
+        }
       });
     }
   });
@@ -270,9 +256,9 @@ const getPatientDiagnosis = $this => {
       mappingName: "patientdiagnosis"
     },
     afterSuccess: data => {
-      let InitialICDS = Enumerable.from(data)
-        .where(w => w.final_daignosis === "N")
-        .toArray();
+      // let InitialICDS = Enumerable.from(data)
+      //   .where(w => w.final_daignosis === "N")
+      //   .toArray();
       let finalICDS = Enumerable.from(data)
         .where(w => w.final_daignosis === "Y")
         .toArray();
@@ -283,14 +269,11 @@ const getPatientDiagnosis = $this => {
 };
 
 const deleteDiagnosis = ($this, row, from) => {
-  //console.log("Delete Row ID: ", row.hims_d_visit_type_id);
-  debugger;
   if (row.final_daignosis === "Y") {
-    successfulMessage({
-      message:
+    swalMessage({
+      title:
         "Invalid Input. Already selected as Final diagnosis. Cannot delete from Intial diagnosis",
-      title: "Error",
-      icon: "error"
+      type: "error"
     });
   } else {
     showconfirmDialog($this, row);
@@ -298,14 +281,10 @@ const deleteDiagnosis = ($this, row, from) => {
 };
 
 const deleteFinalDiagnosis = ($this, row, from) => {
-  //console.log("Delete Row ID: ", row.hims_d_visit_type_id);
-
   showconfirmDialog($this, row);
 };
 
 const updateDiagnosis = ($this, row) => {
-  // data.updated_by = getCookie("UserID");
-
   let data = {
     hims_f_patient_diagnosis_id: row.hims_f_patient_diagnosis_id,
     diagnosis_type: row.diagnosis_type,
@@ -318,15 +297,13 @@ const updateDiagnosis = ($this, row) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        swal("Record updated successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Record updated successfully . .",
+          type: "success"
         });
         getPatientDiagnosis($this);
       }
-    },
-    onFailure: error => {}
+    }
   });
 };
 
