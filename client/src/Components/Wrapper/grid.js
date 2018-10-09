@@ -365,7 +365,9 @@ class DataGrid extends PureComponent {
           );
           const _data =
             this.props.dataSource.uri === undefined
-              ? this.props.dataSource.data
+              ? this.props.dataSource.data !== undefined
+                ? this.props.dataSource.data
+                : []
               : [];
           this.setState({
             columns: _columns,
@@ -724,7 +726,7 @@ class DataGrid extends PureComponent {
           onPageChange={this.pageChangeHandler.bind(this)}
           {..._subComponent}
           {..._onExpandRow}
-          style={{ maxHeight: "400px", minHeight: "400px" }}
+          style={{ maxHeight: "400px", minHeight: "120px" }}
           getTdProps={this.getTdHandler.bind(this)}
           getTrProps={this.getTrHandler.bind(this)}
         />

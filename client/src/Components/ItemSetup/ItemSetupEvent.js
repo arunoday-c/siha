@@ -28,6 +28,7 @@ const getItems = $this => {
             item_status: firstRecordSet.item_status,
             radioActive: firstRecordSet.item_status === "A" ? true : false,
             radioInactive: firstRecordSet.item_status === "I" ? true : false,
+            service_id: firstRecordSet.service_id,
             detail_item_uom: g.getSource()
           };
         })

@@ -231,6 +231,26 @@ class ItemDetails extends Component {
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "service_id"
+                    }}
+                    selector={{
+                      name: "service_id",
+                      className: "select-fld",
+                      value: this.state.service_id,
+                      dataSource: {
+                        textField: "service_name",
+                        // this.state.selectedLang === "en"
+                        //   ? "service_name"
+                        //   : "arabic_service_name",
+                        valueField: "hims_d_services_id",
+                        data: this.props.itemservices
+                      },
+                      onChange: texthandle.bind(this, this, context)
+                    }}
+                  />
                   <div className="col-lg-3" style={{ marginTop: "23px" }}>
                     <div className="customRadio">
                       <label className="radio inline">
@@ -283,7 +303,8 @@ function mapStateToProps(state) {
     itemgeneric: state.itemgeneric,
     itemform: state.itemform,
     itemuom: state.itemuom,
-    itemstorage: state.itemstorage
+    itemstorage: state.itemstorage,
+    itemservices: state.itemservices
   };
 }
 
@@ -294,7 +315,8 @@ function mapDispatchToProps(dispatch) {
       getItemGroup: AlgaehActions,
       getItemGeneric: AlgaehActions,
       getItemForm: AlgaehActions,
-      getItemStorage: AlgaehActions
+      getItemStorage: AlgaehActions,
+      getServices: AlgaehActions
     },
     dispatch
   );

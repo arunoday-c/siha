@@ -986,8 +986,12 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
             req.body[m].services_id = servicesDetails.hims_d_services_id;
 
             //Calculation Declarations
-            let unit_cost = 0,
-              gross_amount = 0,
+            let unit_cost =
+              servicesDetails.unit_cost === undefined
+                ? 0
+                : servicesDetails.unit_cost;
+
+            let gross_amount = 0,
               net_amout = 0,
               sec_unit_cost = 0;
 
@@ -1042,6 +1046,11 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               servicesDetails.approval_limit_yesno === undefined
                 ? "N"
                 : servicesDetails.approval_limit_yesno;
+
+            let PharmacyItem =
+              servicesDetails.pharmacy_item === undefined
+                ? "N"
+                : servicesDetails.pharmacy_item;
 
             let apprv_status =
               servicesDetails.apprv_status === undefined
@@ -1338,8 +1347,13 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     });
                   }
                 } else {
-                  unit_cost = records.standard_fee;
-                  gross_amount = quantity * records.standard_fee;
+                  if (PharmacyItem == "N") {
+                    unit_cost = records.standard_fee;
+                  } else {
+                    unit_cost = unit_cost;
+                  }
+
+                  gross_amount = quantity * unit_cost;
 
                   if (discount_amout > 0) {
                     discount_percentage = (discount_amout / gross_amount) * 100;
@@ -1471,10 +1485,10 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     patient_tax = math.round(
                       (patient_resp * records.vat_percent) / 100,
                       2
-                    );                    
+                    );
                   }
 
-                  if (records.vat_applicable == "Y") {                    
+                  if (records.vat_applicable == "Y") {
                     sec_company_tax = math.round(
                       (sec_company_res * records.vat_percent) / 100,
                       2

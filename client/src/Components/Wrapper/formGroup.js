@@ -87,7 +87,6 @@ export default class FormGroup extends PureComponent {
   // }
 
   errorInvoid(e) {
-    debugger;
     if (typeof this.props.textBox.helperText === "function") {
       e.currentTarget.setCustomValidity(
         this.props.textBox.helperText(e.currentTarget.value)
@@ -112,7 +111,8 @@ export default class FormGroup extends PureComponent {
       const _invalid =
         this.props.textBox.helperText !== undefined
           ? {
-              onInvalid: this.errorInvoid.bind(this)
+              onInvalid: this.errorInvoid.bind(this),
+              onBlur: this.errorInvoid.bind(this)
             }
           : {};
       if (this.props.textBox.decimal !== undefined) {

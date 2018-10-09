@@ -176,7 +176,10 @@ class LabResult extends Component {
                   ]}
                   keyId="patient_code"
                   dataSource={{
-                    data: this.props.radresult
+                    data:
+                      this.props.radresult === undefined
+                        ? []
+                        : this.props.radresult
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />

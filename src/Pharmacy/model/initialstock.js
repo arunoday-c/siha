@@ -11,6 +11,9 @@ import { logger, debugFunction, debugLog } from "../../utils/logging";
 import moment from "moment";
 import { LINQ } from "node-linq";
 import { insertItemHistory } from "./insertitemhistory";
+import { updateIntoItemLocation } from "./commonFunction";
+import Promise from "bluebird";
+
 //created by irfan: to pharmacy_intial_stock
 let addPharmacyInitialStock = (req, res, next) => {
   try {
@@ -258,6 +261,7 @@ let updatePharmacyInitialStock = (req, res, next) => {
               inputParam.hims_f_pharmacy_stock_header_id
             ],
             (error, result) => {
+              debugLog("error", error);
               releaseDBConnection(db, connection);
               if (error) {
                 reject(error);
@@ -268,33 +272,38 @@ let updatePharmacyInitialStock = (req, res, next) => {
           );
         })
           .then(output => {
-            return new Promise((resolve, reject) => {
-              req.options = {
-                db: connection,
-                onFailure: error => {
-                  reject(error);
-                },
-                onSuccess: result => {
-                  resolve(result);
-                }
-              };
+            return (
+              new Promise((resolve, reject) => {
+                debugLog("output", output);
+                req.options = {
+                  db: connection,
+                  onFailure: error => {
+                    reject(error);
+                  },
+                  onSuccess: result => {
+                    resolve(result);
+                  }
+                };
 
-              insertintoItemLocation(req, res, next);
-            })
-              .then(itemoutput => {
-                return new Promise((resolve, reject) => {
-                  req.options = {
-                    db: connection,
-                    onFailure: error => {
-                      reject(error);
-                    },
-                    onSuccess: result => {
-                      resolve(result);
-                    }
-                  };
-                  debugLog("insertItemHistory", "insertItemHistory");
-                  insertItemHistory(req, res, next);
-                }).then(records => {
+                updateIntoItemLocation(req, res, next);
+              })
+                // .then(itemoutput => {
+                //   return new Promise((resolve, reject) => {
+                //     req.options = {
+                //       db: connection,
+                //       onFailure: error => {
+                //         reject(error);
+                //       },
+                //       onSuccess: result => {
+                //         resolve(result);
+                //       }
+                //     };
+                //     debugLog("insertItemHistory", "insertItemHistory");
+                //     insertItemHistory(req, res, next);
+                //   })
+                //Data
+                // })
+                .then(records => {
                   connection.commit(error => {
                     if (error) {
                       releaseDBConnection(db, connection);
@@ -303,14 +312,14 @@ let updatePharmacyInitialStock = (req, res, next) => {
                     req.records = records;
                     next();
                   });
-                });
-              })
-              .catch(error => {
-                connection.rollback(() => {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                });
-              });
+                })
+                .catch(error => {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                })
+            );
           })
           .catch(error => {
             connection.rollback(() => {
@@ -345,7 +354,7 @@ let insertintoItemLocation = (req, res, next) => {
           cost_uom: s.uom_id,
           avgcost: s.unit_cost,
           item_type: "P",
-
+          grnno: s.grn_number,
           sales_uom: s.sales_uom,
           created_by: req.userIdentity.algaeh_d_app_user_id,
           created_date: new Date(),

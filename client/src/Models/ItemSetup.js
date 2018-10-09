@@ -21,7 +21,8 @@ export default {
       uom_description: null,
       ItemList: [],
       updateUomMapResult: [],
-      insertItemUomMap: []
+      insertItemUomMap: [],
+      service_id: null
     };
     return output;
   }
