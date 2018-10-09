@@ -169,11 +169,19 @@ export default ({ config, db }) => {
     addDoctorsSchedule,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
+      if (result.schedule_exist == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+        next();
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+        next();
+      }
     },
     releaseConnection
   );
