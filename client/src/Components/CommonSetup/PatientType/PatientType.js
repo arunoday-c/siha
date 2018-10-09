@@ -3,7 +3,7 @@ import Paper from "@material-ui/core/Paper";
 import "./patient_type.css";
 import Button from "@material-ui/core/Button";
 import moment from "moment";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,
@@ -16,7 +16,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables";
-import swal from "sweetalert";
+import swal from "sweetalert2";
 // import { getCookie } from "../../../utils/algaehApiCall.js";
 
 class PatientType extends Component {
@@ -70,7 +70,7 @@ class PatientType extends Component {
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this ID Types?",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willDelete => {
@@ -82,11 +82,11 @@ class PatientType extends Component {
           method: "DELETE",
           onSuccess: response => {
             if (response.data.success) {
-              swal("Record deleted successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
               });
+
               this.props.getPatienttypes({
                 uri: "/patientType/get",
                 method: "GET",
@@ -100,7 +100,10 @@ class PatientType extends Component {
           onFailure: error => {}
         });
       } else {
-        swal("Delete request cancelled");
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "success"
+        });
       }
     });
   }
@@ -139,13 +142,11 @@ class PatientType extends Component {
         data: this.state,
         onSuccess: response => {
           if (response.data.success === true) {
-            swal({
-              title: "Success",
-              text: "Patient Type added successfully",
-              icon: "success",
-              button: false,
-              timer: 2500
+            swalMessage({
+              title: "Patient Type added successfully",
+              type: "success"
             });
+
             this.resetState();
           } else {
             //Handle unsuccessful Add here.
@@ -165,11 +166,11 @@ class PatientType extends Component {
       method: "PUT",
       onSuccess: response => {
         if (response.data.success) {
-          swal("Record updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Record updated successfully . .",
+            type: "success"
           });
+
           data.onDoneFinish();
         }
       },

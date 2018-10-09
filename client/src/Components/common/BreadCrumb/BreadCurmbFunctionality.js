@@ -1,16 +1,17 @@
+"use strict";
+/*jslint evil: true */
 import AlgaehSearch from "../../Wrapper/globalSearch";
-
-// import FrontDesk from "../../../Search/FrontDesk.json";
-// import Bills from "../../../Search/Bills.json";
 
 const SearchDetails = ($this, context, e) => {
   let columnNames = [];
 
   const jsonFileName = $this.props.soptlightSearch.jsonFile.fileName + ".json";
   let lodFile = require("../../../Search/" + jsonFileName);
-  columnNames = eval(
-    "lodFile." + $this.props.soptlightSearch.jsonFile.fieldName
-  );
+  if (lodFile !== undefined) {
+    columnNames = eval(
+      "lodFile." + $this.props.soptlightSearch.jsonFile.fieldName
+    );
+  }
 
   AlgaehSearch({
     searchGrid: {
@@ -25,7 +26,6 @@ const SearchDetails = ($this, context, e) => {
       const selectValue = $this.props.soptlightSearch.selectValue;
 
       $this.setState({ value: row[selectValue] }, () => {
-        debugger;
         if ($this.props.soptlightSearch.events !== undefined) {
           $this.props.soptlightSearch.events.onChange(row[selectValue]);
         }

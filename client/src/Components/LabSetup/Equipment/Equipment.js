@@ -3,8 +3,7 @@ import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import "./Equipment.css";
 import Button from "@material-ui/core/Button";
-// import moment from "moment";
-// import { algaehApiCall } from "../../../utils/algaehApiCall";
+
 import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 import IconButton from "@material-ui/core/IconButton";
 
@@ -19,9 +18,7 @@ import {
   Tooltip
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
-// import swal from "sweetalert";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { getCookie } from "../../../utils/algaehApiCall.js";
 
 class Equipment extends Component {
   constructor(props) {

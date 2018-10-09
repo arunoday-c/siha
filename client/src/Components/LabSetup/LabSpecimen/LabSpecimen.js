@@ -24,7 +24,6 @@ import {
 } from "./LabSpecimenEvents";
 
 import GlobalVariables from "../../../utils/GlobalVariables";
-// import swal from "sweetalert";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall.js";
 import Options from "../../../Options.json";

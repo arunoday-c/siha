@@ -1,3 +1,4 @@
+"use strict";
 import React, { PureComponent } from "react";
 import ReactTable from "react-table";
 import withFixedColumns from "react-table-hoc-fixed-columns";
@@ -637,7 +638,7 @@ class DataGrid extends PureComponent {
                 : true
               : true
           }
-          pageSizeOptions={[5,10, 20, 25, 50, 100]}
+          pageSizeOptions={[5, 10, 20, 25, 50, 100]}
           previousText="Previous"
           nextText="Next"
           pageText={

@@ -6,9 +6,9 @@ import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 //import DeleteDialog from "../../../utils/DeleteDialog";
-import swal from "sweetalert";
+import swal from "sweetalert2";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
@@ -88,18 +88,14 @@ class IDType extends Component {
             });
 
             this.resetState();
-
-            swal({
-              title: "Success",
-              text: "ID Type added successfully",
-              icon: "success",
-              button: false,
-              timer: 2500
+            swalMessage({
+              title: "ID Type added successfully",
+              type: "success"
             });
           }
         },
         onFailure: error => {
-          console.log(error);
+          console.error(error);
         }
       });
     }
@@ -120,11 +116,11 @@ class IDType extends Component {
           method: "DELETE",
           onSuccess: response => {
             if (response.data.success) {
-              swal("Record deleted successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
               });
+
               this.props.getIDTypes({
                 uri: "/identity/get",
                 method: "GET",
@@ -138,7 +134,10 @@ class IDType extends Component {
           onFailure: error => {}
         });
       } else {
-        swal("Delete request cancelled");
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "success"
+        });
       }
     });
   }
@@ -174,11 +173,11 @@ class IDType extends Component {
       method: "PUT",
       onSuccess: response => {
         if (response.data.success) {
-          swal("Record updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Record updated successfully . .",
+            type: "success"
           });
+
           this.props.getIDTypes({
             uri: "/identity/get",
             method: "GET",

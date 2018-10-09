@@ -1,5 +1,4 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -35,7 +34,7 @@ const Validations = $this => {
 };
 const InsertLabTest = $this => {
   const err = Validations($this);
-  debugger;
+
   if (!err) {
     if ($this.state.hims_d_investigation_test_id === null) {
       algaehApiCall({
@@ -43,15 +42,11 @@ const InsertLabTest = $this => {
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
-            swal("Saved successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              type: "success",
+              title: "Saved successfully . ."
             });
           }
-        },
-        onFailure: error => {
-          console.log(error);
         }
       });
     } else {
@@ -61,15 +56,11 @@ const InsertLabTest = $this => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success === true) {
-            swal("Updated successfully . .", {
-              icon: "success",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              type: "success",
+              title: "Updated successfully . ."
             });
           }
-        },
-        onFailure: error => {
-          console.log(error);
         }
       });
     }

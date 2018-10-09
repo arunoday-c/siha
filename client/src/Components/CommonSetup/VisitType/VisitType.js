@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import "./visit_type.css";
 import moment from "moment";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -14,7 +14,7 @@ import {
   Button
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
-import swal from "sweetalert";
+import swal from "sweetalert2";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import { getCookie } from "../../../utils/algaehApiCall";
@@ -56,7 +56,7 @@ class VisitType extends Component {
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this Visit Type?",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willDelete => {
@@ -68,11 +68,11 @@ class VisitType extends Component {
           method: "DELETE",
           onSuccess: response => {
             if (response.data.success) {
-              swal("Record deleted successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
               });
+
               this.props.getVisittypes({
                 uri: "/visitType/get",
                 method: "GET",
@@ -198,13 +198,9 @@ class VisitType extends Component {
                 mappingName: "visittypes"
               }
             });
-
-            swal({
-              title: "Success",
-              text: "Visa Type added successfully",
-              icon: "success",
-              button: false,
-              timer: 2500
+            swalMessage({
+              title: "Visa Type added successfully",
+              type: "success"
             });
           } else {
             //Handle unsuccessful Add here.
@@ -249,11 +245,11 @@ class VisitType extends Component {
       method: "PUT",
       onSuccess: response => {
         if (response.data.success) {
-          swal("Record updated successfully . .", {
-            icon: "success",
-            buttons: false,
-            timer: 2000
+          swalMessage({
+            title: "Record updated successfully . .",
+            type: "success"
           });
+
           this.props.getVisittypes({
             uri: "/visitType/get",
             method: "GET",

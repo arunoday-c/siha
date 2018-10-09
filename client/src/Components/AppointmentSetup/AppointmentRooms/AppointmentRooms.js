@@ -6,8 +6,8 @@ import {
   AlgaehLabel,
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 
@@ -26,7 +26,7 @@ class AppointmentRooms extends Component {
   deleteApptRooms(data) {
     swal({
       title: "Are you sure you want to delete this Room?",
-      icon: "warning",
+      type: "warning",
       buttons: true,
       dangerMode: true
     }).then(willDelete => {
@@ -42,24 +42,26 @@ class AppointmentRooms extends Component {
           method: "PUT",
           onSuccess: response => {
             if (response.data.success) {
-              swal("Record deleted successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
               });
+
               this.getAppointmentRooms();
             }
           },
           onFailure: error => {
-            swal(error.message, {
-              buttons: false,
-              icon: "danger",
-              timer: 2000
+            swalMessage({
+              title: error.message,
+              type: "error"
             });
           }
         });
       } else {
-        swal("Delete request cancelled");
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "success"
+        });
       }
     });
   }
@@ -76,19 +78,18 @@ class AppointmentRooms extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          swal("Record updated successfully", {
-            buttons: false,
-            icon: "success",
-            timer: 2000
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
           });
+
           this.getAppointmentRooms();
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -127,10 +128,9 @@ class AppointmentRooms extends Component {
         }
       },
       onFailure: error => {
-        swal(error.message, {
-          buttons: false,
-          icon: "error",
-          timer: 2000
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -153,16 +153,20 @@ class AppointmentRooms extends Component {
         },
         onSuccess: response => {
           if (response.data.success) {
-            swal("Record added successfully", {
-              buttons: false,
-              icon: "success",
-              timer: 2000
+            swalMessage({
+              title: "Record added successfully",
+              type: "success"
             });
             this.resetState();
             this.getAppointmentRooms();
           }
         },
-        onFailure: error => {}
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
       });
     }
   }

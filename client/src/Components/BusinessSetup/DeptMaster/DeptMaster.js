@@ -12,9 +12,8 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import swal from "sweetalert";
 
 class DeptMaster extends Component {
   constructor(props) {
@@ -59,7 +58,6 @@ class DeptMaster extends Component {
       uri: "/department/get",
       method: "GET",
       onSuccess: response => {
-        console.log("Data:", response.data.records);
         this.setState({
           allDepartments: response.data.records
         });
@@ -76,7 +74,6 @@ class DeptMaster extends Component {
         department_id: 41
       },
       onSuccess: response => {
-        console.log("Sub Data:", response.data.records);
         this.setState({
           subDepartments: response.data.records
         });
@@ -125,9 +122,9 @@ class DeptMaster extends Component {
         data: this.state,
         onSuccess: response => {
           if (response.data.success) {
-            swal("Added Successfully", {
-              buttons: false,
-              icon: "success"
+            swalMessage({
+              title: "Added Successfully",
+              type: "success"
             });
           }
         },

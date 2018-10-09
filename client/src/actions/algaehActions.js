@@ -1,6 +1,5 @@
+"use strict";
 import { algaehApiCall } from "../utils/algaehApiCall";
-//import swal from "sweetalert";
-
 export const AlgaehActions = options => dispatch => {
   let settings = {
     ...{

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./wrapper.scss";
-import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
 import ReactToPrint from "react-to-print";
 export default class ReportUI extends Component {

@@ -3,24 +3,12 @@ import "./Login.css";
 import { Button } from "../Wrapper/algaehWrapper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { setSecure } from "../../utils/indexer";
-import { algaehApiCall, setCookie } from "../../utils/algaehApiCall.js";
-import swal from "sweetalert";
+import {
+  algaehApiCall,
+  setCookie,
+  swalMessage
+} from "../../utils/algaehApiCall.js";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
-// const styles = {
-//   root: {
-//     height: "100%"
-//   },
-//   textField: {
-//     margin: 10,
-//     width: 200,
-//     textAlign: "left"
-//   },
-//   login_btn: {
-//     margin: 40,
-//     width: 200,
-//     backgroundColor: "#3A95AA"
-//   }
-// };
 
 export default class Login extends Component {
   constructor(props) {
@@ -121,16 +109,12 @@ export default class Login extends Component {
   }
 
   unsuccessfulSignIn(message, title) {
-    swal({
-      title: title,
-      text: message,
-      icon: "error",
-      button: false,
-      timer: 2500
+    swalMessage({
+      title: message,
+      type: "error"
     });
 
     this.setState({ password: "", username: "" });
-    //document.getElementById("username").focus();
     document.querySelector("[name='username']").focus();
   }
 

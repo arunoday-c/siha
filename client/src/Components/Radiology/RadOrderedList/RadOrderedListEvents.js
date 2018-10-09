@@ -2,9 +2,8 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
-import Enumerable from "linq";
-import swal from "sweetalert";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -68,7 +67,6 @@ const getRadTestList = $this => {
     inputobj.patient_id = $this.state.patient_id;
   }
 
-  debugger;
   $this.props.getRadiologyTestList({
     uri: "/radiology/getRadOrderedServices",
     method: "GET",
@@ -77,25 +75,6 @@ const getRadTestList = $this => {
       type: "RAD_LIST_GET_DATA",
       mappingName: "radtestlist"
     }
-    // afterSuccess: data => {
-    //
-    //   let rad_test_list = Enumerable.from(data)
-    //     .groupBy("$.patient_id", null, (k, g) => {
-    //       let firstRecordSet = Enumerable.from(g).firstOrDefault();
-    //       return {
-    //         patient_code: firstRecordSet.patient_code,
-    //         full_name: firstRecordSet.full_name,
-    //         ordered_date: firstRecordSet.ordered_date,
-    //         number_of_tests: g.getSource().length,
-    //         test_details: g.getSource(),
-    //         provider_id: firstRecordSet.provider_id,
-    //         status: firstRecordSet.status
-    //       };
-    //     })
-    //     .toArray();
-
-    //   $this.setState({ rad_test_list: rad_test_list });
-    // }
   });
 };
 
@@ -106,7 +85,7 @@ const UpdateRadOrder = ($this, row) => {
     row.full_name +
     " has arrived for the procedure " +
     row.service_name;
-  debugger;
+
   if (inputobj.arrived === "N") {
     inputobj = {
       hims_f_rad_order_id: row.hims_f_rad_order_id,
@@ -133,7 +112,7 @@ const UpdateRadOrder = ($this, row) => {
         row.full_name +
         " has arrived for the procedure " +
         row.service_name,
-      icon: "success",
+      type: "success",
       buttons: true,
       dangerMode: true
     }).then(willProceed => {
@@ -144,29 +123,26 @@ const UpdateRadOrder = ($this, row) => {
           method: "PUT",
           onSuccess: response => {
             if (response.data.success === true) {
-              swal("Done successfully . .", {
-                icon: "success",
-                buttons: false,
-                timer: 2000
+              swalMessage({
+                title: "Record updated successfully . .",
+                type: "success"
               });
               getRadTestList($this);
             }
           },
           onFailure: error => {
-            swal(error, {
-              icon: "error",
-              buttons: false,
-              timer: 2000
+            swalMessage({
+              title: error.message,
+              type: "error"
             });
           }
         });
       }
     });
   } else {
-    swal("Invalid Input. Already Arrived. .", {
-      icon: "warning",
-      buttons: false,
-      timer: 2000
+    swalMessage({
+      title: "Invalid Input. Already Arrived. .",
+      type: "warning"
     });
   }
 };
