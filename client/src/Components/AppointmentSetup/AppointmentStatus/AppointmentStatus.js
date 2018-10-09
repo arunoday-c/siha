@@ -58,10 +58,15 @@ class AppointmentStatus extends Component {
     swal({
       title: "Are you sure you want to delete this Status?",
       type: "warning",
-      buttons: true,
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
       dangerMode: true
     }).then(willDelete => {
-      if (willDelete) {
+      debugger;
+      if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/updateAppointmentStatus",
           data: {
@@ -92,7 +97,7 @@ class AppointmentStatus extends Component {
       } else {
         swalMessage({
           title: "Delete request cancelled",
-          type: "success"
+          type: "error"
         });
       }
     });

@@ -4,7 +4,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import POSIOputs from "../../../Models/POS";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;

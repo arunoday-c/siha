@@ -242,6 +242,13 @@ class PhySchSetup extends Component {
                 type: "success"
               });
             }
+          },
+          onFailure: error => {
+            debugger;
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
           }
         });
       });
