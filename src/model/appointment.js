@@ -945,14 +945,11 @@ function getDaysArray(start, end, days,nightShift) {
 if(nightShift==1){
   if (days.indexOf(day) > -1) {
     arr.push(dat);
+    debugLog("dat:", dat);  
+
+    dat.setDate((dat.getDate()+1));
+    arr.push(dat);
     debugLog("dat:", dat);
-   
-
-
-
-    debugLog("dat+1:", dat.getDate());
-
-
   }
 }else{
   if (days.indexOf(day) > -1) {
