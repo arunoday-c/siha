@@ -247,27 +247,74 @@ let updateAppointmentStatus = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.query(
-        "UPDATE `hims_d_appointment_status` SET color_code=?, description=?, default_status=?,\
-           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_status_id`=?;",
-        [
-          input.color_code,
-          input.description,
-          input.default_status,
-          new Date(),
-          input.updated_by,
-          input.record_status,
-          input.hims_d_appointment_status_id
-        ],
-        (error, result) => {
-          connection.release();
-          if (error) {
+
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
             next(error);
-          }
-          req.records = result;
-          next();
+          });
         }
-      );
+        connection.query(
+          "UPDATE `hims_d_appointment_status` SET color_code=?, description=?, default_status=?,\
+           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_status_id`=?;",
+          [
+            input.color_code,
+            input.description,
+            input.default_status,
+            new Date(),
+            input.updated_by,
+            input.record_status,
+            input.hims_d_appointment_status_id
+          ],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+
+            if (input.default_status == "Y") {
+              connection.query(
+                "UPDATE `hims_d_appointment_status` SET  default_status='N'\
+            WHERE  record_status='A' and hims_d_appointment_status_id <> ?;",
+                [input.hims_d_appointment_status_id],
+                (error, defStatusRsult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    req.records = result;
+                    next();
+                  });
+                }
+              );
+            } else {
+              connection.commit(error => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                req.records = result;
+                next();
+              });
+            }
+          }
+        );
+      });
     });
   } catch (e) {
     next(e);
@@ -699,7 +746,7 @@ let addDoctorsSchedule = (req, res, next) => {
                                  ${timeChecking[0].to_work_hr}`,
                                   schedule_exist: true
                                 };
-                                next(error);
+                                next();
                               } else {
                                 //adding records for single doctor at one time
                                 const insurtColumns = [
