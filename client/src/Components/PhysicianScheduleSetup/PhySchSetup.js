@@ -60,7 +60,8 @@ class PhySchSetup extends Component {
       selected_doctor: "",
       modify: [],
       scheduleDisable: true,
-      leave: false
+      leave: false,
+      openEdit: false
     };
   }
 
@@ -191,11 +192,6 @@ class PhySchSetup extends Component {
   }
 
   saveApptSchedule(e) {
-    //console.log("State here :", this.state);
-
-    console.log("Irfan From Date:", this.state.from_date);
-    console.log("Irfan To Date:", this.state.to_date);
-
     e.preventDefault();
     if (this.state.description.length === 0) {
       this.setState({
@@ -552,7 +548,11 @@ class PhySchSetup extends Component {
   }
 
   handleClose() {
-    this.setState({ openScheduler: false, openModifier: false });
+    this.setState({
+      openScheduler: false,
+      openModifier: false,
+      openEdit: false
+    });
     provider_array.length = 0;
     console.log("Provider Array:", provider_array);
   }
@@ -560,7 +560,7 @@ class PhySchSetup extends Component {
   render() {
     return (
       <div className="phy-sch-setup">
-        {/* Modify Modal Start */}
+        {/* Doctor Schedule Modify Modal Start */}
         <Modal open={this.state.openModifier}>
           <div className="algaeh-modal">
             <div className="popupHeader">
@@ -915,7 +915,44 @@ class PhySchSetup extends Component {
             </div>
           </div>
         </Modal>
-        {/* End of Modify Modal */}
+        {/* Doctor Schedule Modify Modal End */}
+
+        {/*Edit Existing Schedule Modal Start */}
+        <Modal open={this.state.openEdit}>
+          <div className="algaeh-modal">
+            <div className="popupHeader">
+              <h4>Edit Schedule</h4>
+            </div>
+            <div className="popupInner">
+              <div className="col-lg-12 divInner">
+                <div className="row">
+                  <div className="col-lg-3 divInnerLeft">Left Screen</div>
+
+                  <div className="col-lg-9 divInnerRight">Right Screen</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="popupFooter">
+              <button
+                type="button"
+                className="btn btn-primary"
+                //                onClick={this.saveApptSchedule.bind(this)}
+              >
+                Update
+              </button>
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={this.handleClose.bind(this)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </Modal>
+
+        {/*Edit Existing Schedule Modal End */}
 
         {/* New Schedule Modal Start */}
         <Modal open={this.state.openScheduler}>
@@ -1472,7 +1509,12 @@ class PhySchSetup extends Component {
                       <i className="fas fa-trash-alt" />
                     </span>
                     <span className="btn btn-green btn-circle active">
-                      <i className="fas fa-pen" />
+                      <i
+                        onClick={() => {
+                          this.setState({ openEdit: true });
+                        }}
+                        className="fas fa-pen"
+                      />
                     </span>
                   </div>
                 ) : null}

@@ -113,7 +113,7 @@ class PatientMRD extends Component {
         {/* Top Bar End */}
 
         {/* Bottom Body Start */}
-        <div className="patientContentArea">
+        <div className="patientContentArea spacing-push">
           <div className="row">
             <div className="col-lg-4">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
