@@ -737,21 +737,29 @@ let addDoctorsSchedule = (req, res, next) => {
                                   next(error);
                                 });
                               }
-                            
-                            
+
                               if (
                                 timeChecking[0].length > 0 ||
                                 timeChecking[1].length > 0
                               ) {
                                 //reject adding to schedule
                                 if (timeChecking[0].length > 0) {
-                                  debugLog("timeChecking inside:", timeChecking[0]);
+                                  debugLog(
+                                    "timeChecking inside:",
+                                    timeChecking[0]
+                                  );
+
+                                  connection.rollback(() => {
+                                    releaseDBConnection(db, connection);
+                                  });
                                   req.records = {
                                     message: `schedule already exist on ${
                                       clashingDate[0]
                                     } for doctor_id:${
                                       input.schedule_detail[doc].provider_id
-                                    } from ${timeChecking[0][0].from_work_hr} to 
+                                    } from ${
+                                      timeChecking[0][0].from_work_hr
+                                    } to 
                                  ${timeChecking[0][0].to_work_hr}`,
                                     schedule_exist: true
                                   };
@@ -762,12 +770,18 @@ let addDoctorsSchedule = (req, res, next) => {
                                       "timeChecking outside ",
                                       timeChecking[1]
                                     );
+
+                                    connection.rollback(() => {
+                                      releaseDBConnection(db, connection);
+                                    });
                                     req.records = {
                                       message: `schedule already exist on ${
                                         clashingDate[0]
                                       } for doctor_id:${
                                         input.schedule_detail[doc].provider_id
-                                      } from ${timeChecking[1][0].from_work_hr} to 
+                                      } from ${
+                                        timeChecking[1][0].from_work_hr
+                                      } to 
                                    ${timeChecking[1][0].to_work_hr}`,
                                       schedule_exist: true
                                     };
@@ -1001,7 +1015,7 @@ let getDoctorsScheduledList = (req, res, next) => {
             for (let i = 0; i < result.length; i++) {
               connection.query(
                 "SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,SH.schedule_description ,\
-                SH.schedule_status deprt_schedule_status,ASD.provider_id,E.first_name,E.last_name,\
+                SH.schedule_status deprt_schedule_status,ASD.provider_id,E.full_name,\
                 clinic_id,AC.description as clinic_description,slot,schedule_date,from_work_hr,\
                  to_work_hr,work_break1,work_break2,\
                  from_break_hr1,to_break_hr1,from_break_hr2,to_break_hr2  ,ASD.schedule_status doctor_schedule_status\
