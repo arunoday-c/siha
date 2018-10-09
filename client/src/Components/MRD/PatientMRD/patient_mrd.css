@@ -168,6 +168,38 @@
         display: block; }
 
 .patient-mrd .patientProfile .patientContentArea {
-  margin: 100px 10px 0;
+  margin: 120px 10px 0;
   z-index: 1;
   width: 100%; }
+  .patient-mrd .patientProfile .patientContentArea .generalInfo, .patient-mrd .patientProfile .patientContentArea .chiefComplaint, .patient-mrd .patientProfile .patientContentArea .vitals, .patient-mrd .patientProfile .patientContentArea .diagnosis, .patient-mrd .patientProfile .patientContentArea .investigation, .patient-mrd .patientProfile .patientContentArea .medication, .patient-mrd .patientProfile .patientContentArea .procedures {
+    border-top: 1px solid #e1e1e1;
+    padding-top: 10px;
+    padding-bottom: 10px; }
+    .patient-mrd .patientProfile .patientContentArea .generalInfo h6, .patient-mrd .patientProfile .patientContentArea .chiefComplaint h6, .patient-mrd .patientProfile .patientContentArea .vitals h6, .patient-mrd .patientProfile .patientContentArea .diagnosis h6, .patient-mrd .patientProfile .patientContentArea .investigation h6, .patient-mrd .patientProfile .patientContentArea .medication h6, .patient-mrd .patientProfile .patientContentArea .procedures h6 {
+      font-size: 0.8rem;
+      font-weight: bold; }
+    .patient-mrd .patientProfile .patientContentArea .generalInfo span, .patient-mrd .patientProfile .patientContentArea .chiefComplaint span, .patient-mrd .patientProfile .patientContentArea .vitals span, .patient-mrd .patientProfile .patientContentArea .diagnosis span, .patient-mrd .patientProfile .patientContentArea .investigation span, .patient-mrd .patientProfile .patientContentArea .medication span, .patient-mrd .patientProfile .patientContentArea .procedures span {
+      font-weight: normal;
+      margin-left: 3px; }
+  .patient-mrd .patientProfile .patientContentArea .generalInfo {
+    border-top: none; }
+  .patient-mrd .patientProfile .patientContentArea .investigation .row .col-lg-12 {
+    border-bottom: 1px dotted #e1e1e1;
+    padding-top: 3px;
+    padding-bottom: 3px; }
+    .patient-mrd .patientProfile .patientContentArea .investigation .row .col-lg-12 h6 span {
+      float: right;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      color: #0066ff; }
+  .patient-mrd .patientProfile .patientContentArea .smallh6 {
+    color: #00bbbd;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    font-weight: normal; }
+  .patient-mrd .patientProfile .patientContentArea .danger {
+    color: #ff5c5c; }
+  .patient-mrd .patientProfile .patientContentArea .borderVitals {
+    border: 1px solid #e1e1e1;
+    margin: 0 3px 5px;
+    border-radius: 5px; }
