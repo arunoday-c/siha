@@ -717,7 +717,7 @@ class DataGrid extends PureComponent {
             <span>
               Total Records:
               {this.state.recordsTotal}
-              ,&nbsp;Current Page
+              , Page
             </span>
           }
           ofText="of"
