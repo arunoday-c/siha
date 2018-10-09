@@ -18,7 +18,9 @@ import {
   getCtrlCode,
   PatientSearch,
   ClearData,
-  Patientchange
+  Patientchange,
+  SavePosEnrty,
+  PostPosEntry
 } from "./PointOfSaleEvents";
 import "./PointOfSale.css";
 import "../../../styles/site.css";
@@ -28,6 +30,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import PosListItems from "./PosListItems/PosListItems";
 import MyContext from "../../../utils/MyContext";
 import POSIOputs from "../../../Models/POS";
+import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails";
 
 class PointOfSale extends Component {
   constructor(props) {
@@ -148,16 +151,16 @@ class PointOfSale extends Component {
                   label={{ forceLabel: "POS Number", returnText: true }}
                 />
               ),
-              value: this.state.patient_code,
-              selectValue: "patient_code",
+              value: this.state.pos_number,
+              selectValue: "pos_number",
               events: {
                 onChange: getCtrlCode.bind(this, this)
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "frontDesk.patients"
+                fieldName: "pointofsaleEntry.POSEntry"
               },
-              searchName: "patients"
+              searchName: "POSEntry"
             }}
             userArea={
               <AlgaehDateHandler
@@ -282,6 +285,8 @@ class PointOfSale extends Component {
               </div>
             </div>
           </div>
+
+          <DisplayInsuranceDetails POSIOputs={this.state} />
           <div className="hptl-phase1-pos-form">
             <MyContext.Provider
               value={{
@@ -301,7 +306,7 @@ class PointOfSale extends Component {
                     <button
                       type="button"
                       className="btn btn-primary"
-                      // onClick={this.SavePatientDetails.bind(this)}
+                      onClick={SavePosEnrty.bind(this, this)}
                       disabled={this.state.saveEnable}
                     >
                       <AlgaehLabel
@@ -327,7 +332,7 @@ class PointOfSale extends Component {
                     <button
                       type="button"
                       className="btn btn-other"
-                      // onClick={this.ShowRefundScreen.bind(this)}
+                      onClick={PostPosEntry.bind(this, this)}
                       disabled={this.state.postEnable}
                     >
                       <AlgaehLabel

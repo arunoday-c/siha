@@ -1,8 +1,10 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import POSIOputs from "../../../Models/POS";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;
@@ -38,12 +40,6 @@ const PatientSearch = ($this, e) => {
     },
     onRowSelect: row => {
       getPatientDetails($this, row.patient_code);
-      // $this.setState({
-
-      //   // patient_code: row.patient_code,
-      //   // patient_id: row.hims_d_patient_id,
-      //   // full_name: row.full_name
-      // });
     }
   });
 };
@@ -126,11 +122,60 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
 };
 
+const SavePosEnrty = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/posEntry/addPosEntry",
+    data: $this.state,
+    onSuccess: response => {
+      debugger;
+      if (response.data.success === true) {
+        $this.setState({
+          pos_number: response.data.records.pos_number,
+          saveEnable: true,
+          postEnable: false
+        });
+        swal("Saved successfully . .", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
+      }
+    }
+  });
+};
+
+const PostPosEntry = $this => {
+  debugger;
+  $this.state.posted = "Y";
+  $this.state.transaction_type = "POS";
+  algaehApiCall({
+    uri: "/posEntry/updatePosEntry",
+    data: $this.state,
+    method: "PUT",
+    onSuccess: response => {
+      debugger;
+      if (response.data.success === true) {
+        $this.setState({
+          postEnable: true
+        });
+        swal("Posted successfully . .", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
+      }
+    }
+  });
+};
+
 export {
   changeTexts,
   getCtrlCode,
   PatientSearch,
   ClearData,
   getPatientDetails,
-  Patientchange
+  Patientchange,
+  SavePosEnrty,
+  PostPosEntry
 };

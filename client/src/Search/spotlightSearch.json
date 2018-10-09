@@ -58,5 +58,25 @@
         "label": "Posted"
       }
     ]
+  },
+  "pointofsaleEntry": {
+    "POSEntry": [
+      {
+        "fieldName": "pos_number",
+        "label": "POS Number"
+      },
+      {
+        "fieldName": "patient_id",
+        "label": "Patient Id"
+      },
+      {
+        "fieldName": "pos_date",
+        "label": "Pos Date"
+      },
+      {
+        "fieldName": "posted",
+        "label": "Posted"
+      }
+    ]
   }
 }

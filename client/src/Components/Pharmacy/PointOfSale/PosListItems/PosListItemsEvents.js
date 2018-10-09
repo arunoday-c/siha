@@ -10,8 +10,8 @@ const discounthandle = ($this, context, ctrl, e) => {
 
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
-
-  if ([e.target.name] === "sheet_discount_percentage") {
+  debugger;
+  if (e.target.name === "sheet_discount_percentage") {
     sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
     sheet_discount_amount = 0;
   } else {
@@ -155,7 +155,7 @@ const AddItems = ($this, context) => {
           icon: "warning"
         });
       } else {
-        let existingservices = $this.state.PrescriptionItemList;
+        let existingservices = $this.state.pharmacy_stock_detail;
 
         if (data.billdetails.length !== 0) {
           data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
@@ -166,11 +166,13 @@ const AddItems = ($this, context) => {
           data.billdetails[0].expiry_date = $this.state.expiry_date;
           data.billdetails[0].batchno = $this.state.batchno;
           data.billdetails[0].uom_id = $this.state.uom_id;
+          data.billdetails[0].operation = "-";
+
           existingservices.splice(0, 0, data.billdetails[0]);
         }
 
         if (context != null) {
-          context.updateState({ PrescriptionItemList: existingservices });
+          context.updateState({ pharmacy_stock_detail: existingservices });
         }
 
         $this.setState({
@@ -204,26 +206,26 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deletePosDetail = ($this, context, e, rowId) => {
-  let PrescriptionItemList = $this.state.PrescriptionItemList;
-  PrescriptionItemList.splice(rowId, 1);
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  pharmacy_stock_detail.splice(rowId, 1);
 
   $this.props.PosHeaderCalculations({
     uri: "/billing/billingCalculations",
     method: "POST",
-    data: { billdetails: PrescriptionItemList },
+    data: { billdetails: pharmacy_stock_detail },
     redux: {
       type: "POS_HEADER_GEN_GET_DATA",
       mappingName: "posheader"
     }
   });
 
-  if (PrescriptionItemList.length === 0) {
+  if (pharmacy_stock_detail.length === 0) {
     if (context !== undefined) {
       context.updateState({
-        PrescriptionItemList: PrescriptionItemList,
+        pharmacy_stock_detail: pharmacy_stock_detail,
         advance_amount: 0,
         discount_amount: 0,
-        sub_total_amount: 0,
+        sub_total: 0,
         total_tax: 0,
         net_total: 0,
         copay_amount: 0,
@@ -238,6 +240,7 @@ const deletePosDetail = ($this, context, e, rowId) => {
         company_res: 0,
         sec_company_res: 0,
         patient_payable: 0,
+        patient_payable_h: 0,
         company_payable: 0,
         sec_company_payable: 0,
         patient_tax: 0,
@@ -255,13 +258,14 @@ const deletePosDetail = ($this, context, e, rowId) => {
         cheque_date: null,
         cheque_amount: 0,
         total_amount: 0,
+        saveEnable: true,
         unbalanced_amount: 0
       });
     }
   } else {
     if (context !== undefined) {
       context.updateState({
-        PrescriptionItemList: PrescriptionItemList
+        pharmacy_stock_detail: pharmacy_stock_detail
       });
     }
   }
@@ -271,7 +275,7 @@ const updatePosDetail = ($this, e) => {
   $this.props.PosHeaderCalculations({
     uri: "/billing/billingCalculations",
     method: "POST",
-    data: { billdetails: $this.state.PrescriptionItemList },
+    data: { billdetails: $this.state.pharmacy_stock_detail },
     redux: {
       type: "posheader",
       mappingName: "posheader"
@@ -284,7 +288,7 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
   debugger;
   e = e || ctrl;
 
-  let PrescriptionItemList = $this.state.PrescriptionItemList;
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   debugger;
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
@@ -324,18 +328,18 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
       data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
       data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
 
-      data.billdetails[0].item_id = $this.state.item_id;
-      data.billdetails[0].item_category = $this.state.item_category;
-      data.billdetails[0].expiry_date = $this.state.expiry_date;
-      data.billdetails[0].batchno = $this.state.batchno;
-      data.billdetails[0].uom_id = $this.state.uom_id;
+      data.billdetails[0].item_id = row.item_id;
+      data.billdetails[0].item_category = row.item_category;
+      data.billdetails[0].expiry_date = row.expiry_date;
+      data.billdetails[0].batchno = row.batchno;
+      data.billdetails[0].uom_id = row.uom_id;
       extend(row, data.billdetails[0]);
-      for (let i = 0; i < PrescriptionItemList.length; i++) {
-        if (PrescriptionItemList[i].service_type_id === row.service_type_id) {
-          PrescriptionItemList[i] = row;
+      for (let i = 0; i < pharmacy_stock_detail.length; i++) {
+        if (pharmacy_stock_detail[i].service_type_id === row.service_type_id) {
+          pharmacy_stock_detail[i] = row;
         }
       }
-      $this.setState({ PrescriptionItemList: PrescriptionItemList });
+      $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
     }
   });
 };

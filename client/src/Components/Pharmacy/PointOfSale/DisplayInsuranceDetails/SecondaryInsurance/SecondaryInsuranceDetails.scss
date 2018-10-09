@@ -1,0 +1,41 @@
+.htpl-phase1-primary-secinsurancedis-form {
+  .primary-details {
+    padding: 5px;
+    border-right: 1px solid #000;
+  }
+
+  label {
+    font-weight: 400;
+    font-size: 11px;
+  }
+  mark {
+    background: none;
+    color: red;
+  }
+
+  .centerAlign {
+    text-align: center;
+    font-weight: 700;
+  }
+  .text_field {
+    width: 100% !important;
+    background-color: #fbfbfb;
+    font-size: "12px";
+    margin-right: "5px";
+  }
+
+  .radio-design {
+    position: absolute;
+    top: 5px;
+    left: 36px;
+  }
+  .refactor-design {
+    min-height: 28px;
+    background-color: #fbfbfb;
+    border: 0px;
+  }
+  .file-name-upload {
+    margin-left: 4%;
+    margin-top: 2%;
+  }
+}
