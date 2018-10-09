@@ -221,9 +221,6 @@ const SaveInitialStock = $this => {
           timer: 2000
         });
       }
-    },
-    onFailure: error => {
-      console.log(error);
     }
   });
 };
@@ -283,9 +280,6 @@ const PostInitialStock = $this => {
           timer: 2000
         });
       }
-    },
-    onFailure: error => {
-      console.log(error);
     }
   });
 };

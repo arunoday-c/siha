@@ -43,7 +43,8 @@ export default {
       receiveable_amount: 0,
       posDetail: [],
       //   selectedLang: "en",
-      PrescriptionItemList: [],
+      pharmacy_stock_detail: [],
+      advance_adjust: 0,
       ItemUOM: [],
 
       insured: "N",
@@ -59,7 +60,31 @@ export default {
       unbalanced_amount: 0,
       receiptdetails: [],
       saveEnable: true,
-      postEnable: true
+      postEnable: true,
+
+      card_number: null,
+      effective_end_date: null,
+      effective_start_date: null,
+      insurance_provider_id: null,
+      insurance_provider_name: null,
+      sub_insurance_provider_id: null,
+      sub_insurance_provider_name: null,
+      network_id: null,
+      network_type: null,
+      policy_number: null,
+      hims_d_insurance_network_office_id: null,
+
+      secondary_card_number: null,
+      secondary_effective_end_date: null,
+      secondary_effective_start_date: null,
+      secondary_insurance_provider_id: null,
+      secondary_insurance_provider_name: null,
+      secondary_network_id: null,
+      secondary_network_type: null,
+      secondary_policy_number: null,
+      secondary_sub_insurance_provider_id: null,
+      secondary_sub_insurance_provider_name: null,
+      secondary_network_office_id: null
     };
     return output;
   }
