@@ -23,7 +23,8 @@ class ItemSetup extends Component {
     this.state = {
       isOpen: false,
       itemPop: {},
-      addNew: true
+      addNew: true,
+      ItemList: []
     };
   }
 
@@ -41,7 +42,7 @@ class ItemSetup extends Component {
       uri: "/pharmacy/getItemGroup",
       method: "GET",
       redux: {
-        type: "ANALYTES_GET_DATA",
+        type: "ITEM_GROUOP_GET_DATA",
         mappingName: "itemgroup"
       }
     });
@@ -50,7 +51,7 @@ class ItemSetup extends Component {
       uri: "/pharmacy/getPharmacyUom",
       method: "GET",
       redux: {
-        type: "ANALYTES_GET_DATA",
+        type: "ITEM_UOM_GET_DATA",
         mappingName: "itemuom"
       }
     });
@@ -59,7 +60,7 @@ class ItemSetup extends Component {
       uri: "/pharmacy/getItemGeneric",
       method: "GET",
       redux: {
-        type: "ANALYTES_GET_DATA",
+        type: "ITEM_GENERIC_GET_DATA",
         mappingName: "itemgeneric"
       }
     });
@@ -68,7 +69,7 @@ class ItemSetup extends Component {
       uri: "/pharmacy/getItemForm",
       method: "GET",
       redux: {
-        type: "ANALYTES_GET_DATA",
+        type: "ITEM_FORM_GET_DATA",
         mappingName: "itemform"
       }
     });
@@ -81,6 +82,21 @@ class ItemSetup extends Component {
         mappingName: "itemstorage"
       }
     });
+
+    if (
+      this.props.itemservices === undefined ||
+      this.props.itemservices.length === 0
+    ) {
+      debugger;
+      this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "itemservices"
+        }
+      });
+    }
 
     getItems(this, this);
   }
@@ -370,7 +386,8 @@ function mapStateToProps(state) {
     itemuom: state.itemuom,
     itemgeneric: state.itemgeneric,
     itemform: state.itemform,
-    itemstorage: state.itemstorage
+    itemstorage: state.itemstorage,
+    itemservices: state.itemservices
   };
 }
 
@@ -383,7 +400,8 @@ function mapDispatchToProps(dispatch) {
       getItemUOM: AlgaehActions,
       getItemGeneric: AlgaehActions,
       getItemForm: AlgaehActions,
-      getItemStorage: AlgaehActions
+      getItemStorage: AlgaehActions,
+      getServices: AlgaehActions
     },
     dispatch
   );

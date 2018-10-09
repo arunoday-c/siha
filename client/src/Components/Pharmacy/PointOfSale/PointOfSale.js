@@ -22,8 +22,7 @@ import {
   datehandle,
   dateFormater,
   getCtrlCode,
-  PatientSearch,
-  processItems
+  PatientSearch
 } from "./PointOfSaleEvents";
 import "./PointOfSale.css";
 import "../../../styles/site.css";
@@ -31,24 +30,19 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import PosListItems from "./PosListItems/PosListItems";
+import MyContext from "../../../utils/MyContext";
+import POSIOputs from "../../../Models/POS";
 
 class PointOfSale extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      itemlist: [],
-      location_id: null,
-      category_id: null,
-      group_id: null,
-      item_id: null,
-      batch_no: null,
-      expirt_date: null,
-      quantity: 0,
-      unit_cost: 0,
-      quantity: 0,
-      initial_stock_date: new Date()
-    };
+    this.state = {};
+  }
+
+  componentWillMount() {
+    let IOputs = POSIOputs.inputParam();
+    this.setState(IOputs);
   }
 
   componentDidMount() {
@@ -65,26 +59,8 @@ class PointOfSale extends Component {
       uri: "/pharmacy/getPharmacyLocation",
       method: "GET",
       redux: {
-        type: "ANALYTES_GET_DATA",
+        type: "LOCATIOS_GET_DATA",
         mappingName: "locations"
-      }
-    });
-
-    this.props.getItemCategory({
-      uri: "/pharmacy/getItemCategory",
-      method: "GET",
-      redux: {
-        type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "itemcategory"
-      }
-    });
-
-    this.props.getItemGroup({
-      uri: "/pharmacy/getItemGroup",
-      method: "GET",
-      redux: {
-        type: "ANALYTES_GET_DATA",
-        mappingName: "itemgroup"
       }
     });
   }
@@ -262,7 +238,16 @@ class PointOfSale extends Component {
             </div>
           </div>
           <div className="hptl-phase1-pos-form">
-            <PosListItems />
+            <MyContext.Provider
+              value={{
+                state: this.state,
+                updateState: obj => {
+                  this.setState({ ...obj });
+                }
+              }}
+            >
+              <PosListItems POSIOputs={this.state} />
+            </MyContext.Provider>
 
             <div className="hptl-phase1-footer">
               <AppBar position="static" className="main">
@@ -320,11 +305,7 @@ class PointOfSale extends Component {
 function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
-    locations: state.locations,
-    itemcategory: state.itemcategory,
-    itemgroup: state.itemgroup,
-    patients: state.patients,
-    medicationlist: state.medicationlist
+    locations: state.locations
   };
 }
 
@@ -332,11 +313,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getItems: AlgaehActions,
-      getLocation: AlgaehActions,
-      getItemCategory: AlgaehActions,
-      getItemGroup: AlgaehActions,
-      getPatientDetails: AlgaehActions,
-      getMedicationList: AlgaehActions
+      getLocation: AlgaehActions
     },
     dispatch
   );
