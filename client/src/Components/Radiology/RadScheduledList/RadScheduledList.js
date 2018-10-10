@@ -118,13 +118,10 @@ class RadScheduledList extends Component {
               }
             ]}
           />
-          <div
-            className="container-fluid"
-            style={{ marginTop: "85px", minHeight: "80vh" }}
-          >
-            <div className="row">
-              <AlgaehDateHandler
-                div={{ className: "col-lg-2" }}
+            <div className="row inner-top-search" style={{marginTop:"75px",paddingBottom:"10px"}}>
+               <div className="col-lg-6">
+              <div className="row"><AlgaehDateHandler
+                div={{ className: "col" }}
                 label={{ fieldName: "from_date" }}
                 textBox={{ className: "txt-fld", name: "from_date" }}
                 events={{
@@ -134,7 +131,7 @@ class RadScheduledList extends Component {
               />
 
               <AlgaehDateHandler
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{ fieldName: "to_date" }}
                 textBox={{ className: "txt-fld", name: "to_date" }}
                 events={{
@@ -143,45 +140,8 @@ class RadScheduledList extends Component {
                 value={this.state.to_date}
               />
 
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "proiorty",
-                  isImp: false
-                }}
-                selector={{
-                  name: "proiorty",
-                  className: "select-fld",
-                  value: this.state.proiorty,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_PRIORITY
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "status"
-                }}
-                selector={{
-                  name: "status",
-                  className: "select-fld",
-                  value: this.state.status,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_RAD_STATUS
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
               <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{
                   fieldName: "patient_code"
                 }}
@@ -201,35 +161,76 @@ class RadScheduledList extends Component {
 
               <div className="col-lg-1 form-group">
                 <span
-                  className="fas fa-search fa-2x"
+                  className="fas fa-search"  style={{fontSize:" 1.2rem", marginTop: "6px",paddingBottom:"10px"}}
                   onClick={PatientSearch.bind(this, this)}
                 />
               </div>
+            </div>
+            </div>
+<div className="col-lg-6">
+<div className="row">
 
-              <div className="col-lg-1" style={{ paddingTop: "4vh" }}>
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "proiorty",
+                  isImp: false
+                }}
+                selector={{
+                  name: "proiorty",
+                  className: "select-fld",
+                  value: this.state.proiorty,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: FORMAT_PRIORITY
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "status"
+                }}
+                selector={{
+                  name: "status",
+                  className: "select-fld",
+                  value: this.state.status,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: FORMAT_RAD_STATUS
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+
+
+              <div className="col" style={{ paddingTop: "21px" }}>
                 <button
                   className="btn btn-primary btn-sm"
                   type="button"
                   onClick={getRadTestList.bind(this, this)}
-                >
-                  Load Data
-                </button>
+                >Load </button>
+
+                 <button
+                  className="btn btn-default btn-sm" style={{marginLeft:"10px"}}
+                  type="button"
+                  onClick={Refresh.bind(this, this)}
+                >Clear</button>
               </div>
-              <div className="col-lg-1">
-                <Tooltip id="tooltip-icon" title="Refresh">
-                  <IconButton className="go-button" color="primary">
-                    <i
-                      className="fas fa-sync-alt"
-                      aria-hidden="true"
-                      onClick={Refresh.bind(this, this)}
-                    />
-                  </IconButton>
-                </Tooltip>
+            </div>
               </div>
             </div>
 
-            <div className="row form-details">
+             <div className="row">
               <div className="col-lg-12">
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
+                */}
+                 <div className="portlet-body">
+                
                 <AlgaehDataGrid
                   id="Scheduled_list_grid"
                   columns={[
@@ -248,14 +249,16 @@ class RadScheduledList extends Component {
                           </span>
                         );
                       },
-                      disabled: false
+                      disabled: false,
+                       others:{maxWidth:200,resizable: false,style:{textAlign:"center"}}
                     },
                     {
                       fieldName: "full_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "patient_name" }} />
                       ),
-                      disabled: true
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"left"}}
                     },
                     {
                       fieldName: "ordered_date",
@@ -267,7 +270,8 @@ class RadScheduledList extends Component {
                           <span>{this.changeDateFormat(row.ordered_date)}</span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
+                       others:{maxWidth:200,resizable: false,style:{textAlign:"center"}}
                     },
                     {
                       fieldName: "status",
@@ -286,7 +290,8 @@ class RadScheduledList extends Component {
                                 : row.status === "RC"
                                   ? "Confirmed"
                                   : "Validated";
-                      }
+                      },
+                       others:{maxWidth:200,resizable: false,style:{textAlign:"center"}}
                     },
                     {
                       fieldName: "scheduled_date_time",
@@ -302,7 +307,8 @@ class RadScheduledList extends Component {
                           </span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
+                       others:{maxWidth:200,resizable: false,style:{textAlign:"center"}}
                     }
                   ]}
                   keyId="patient_code"
@@ -312,11 +318,13 @@ class RadScheduledList extends Component {
                         ? []
                         : this.props.radtestlist
                   }}
+                  noDataText="No data available for selected period"
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
             </div>
-          </div>
+              </div>
+            </div>
           <RadResultEntry
             open={this.state.resultEntry}
             onClose={closeResultEntry.bind(this, this)}
