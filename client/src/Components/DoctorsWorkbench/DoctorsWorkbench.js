@@ -142,7 +142,7 @@ class DoctorsWorkbench extends Component {
     var lastDay = new Date(y, m + 1, 0);
     let endDate = moment(lastDay)._d;
 
-    let generatedLi = new Array();
+    let generatedLi = [];
 
     while (initialDate <= endDate) {
       let dt = moment(initialDate);
@@ -178,7 +178,7 @@ class DoctorsWorkbench extends Component {
   }
 
   generateHorizontalDateBlocks() {
-    let classesCurrentDate = moment().format("YYYYMMDD");
+    // let classesCurrentDate = moment().format("YYYYMMDD");
 
     return (
       <div className="calendar">
@@ -447,7 +447,6 @@ class DoctorsWorkbench extends Component {
                           <span
                             className="pat-code"
                             onClick={() => {
-                              debugger;
                               setGlobal({
                                 "EHR-STD": "PatientProfile",
                                 current_patient: data.patient_id,
@@ -517,7 +516,6 @@ class DoctorsWorkbench extends Component {
                     // }
                   ]}
                   rowClassName={row => {
-                    debugger;
                     //return "testColor";
                   }}
                   keyId="encounter_code"

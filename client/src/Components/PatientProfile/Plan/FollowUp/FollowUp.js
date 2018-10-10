@@ -4,8 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
-import moment from "moment";
-import Options from "../../../../Options.json";
 import {
   AlagehFormGroup,
   AlgaehDateHandler
@@ -107,10 +105,7 @@ class FollowUp extends Component {
               value={this.state.followup_date}
             />
             <div className="actions" style={{ paddingTop: "3.5vh" }}>
-              <a
-                href="javascript:;"
-                className="btn btn-primary btn-circle active"
-              >
+              <a className="btn btn-primary btn-circle active">
                 <i
                   className="fas fa-plus"
                   onClick={addFollowUp.bind(this, this)}

@@ -1,4 +1,3 @@
-"use strict";
 import { algaehApiCall } from "../utils/algaehApiCall";
 export const AlgaehActions = options => dispatch => {
   let settings = {

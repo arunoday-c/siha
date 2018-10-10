@@ -132,7 +132,7 @@ class DisplayOPBilling extends PureComponent {
   displayServiceBills() {
     let servicetype =
       this.props.servicetype === undefined ? [] : this.props.servicetype;
-    if (this.state.billdetails != null) {
+    if (this.state.billdetails !== undefined) {
       return this.state.billdetails.map((row, index) => {
         return {
           ...row,
@@ -185,7 +185,7 @@ class DisplayOPBilling extends PureComponent {
                       value: this.state.service_type_id,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "service_type"
                             : "arabic_service_type",
                         valueField: "hims_d_service_type_id",
@@ -209,7 +209,7 @@ class DisplayOPBilling extends PureComponent {
                       value: this.state.service_type_id,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "service_type"
                             : "arabic_service_type",
                         valueField: "hims_d_service_type_id",
@@ -234,7 +234,7 @@ class DisplayOPBilling extends PureComponent {
                       dataSource: {
                         // textField: "service_name",
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "service_name"
                             : "arabic_service_name",
                         valueField: "hims_d_services_id",

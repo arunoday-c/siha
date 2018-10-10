@@ -1,5 +1,3 @@
-import { getCookie } from "../utils/algaehApiCall.js";
-
 export default {
   inputParam: function() {
     var output;
@@ -59,7 +57,7 @@ export default {
       counter_id: null,
       shift_id: null,
       unbalanced_amount: 0,
-      updated_date: null,
+
       receiptdetails: [],
       services: [],
 

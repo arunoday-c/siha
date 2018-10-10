@@ -6,11 +6,7 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   if (name === "followup_days") {
-    debugger;
-
-    var newdate = new Date();
-
-    newdate.setDate(newdate.getDate() + parseInt(value));
+    var newdate = new Date().setDate(new Date().getDate() + parseInt(value));
 
     $this.setState({
       [name]: value,
@@ -24,7 +20,6 @@ const texthandle = ($this, e) => {
 };
 
 const addFollowUp = $this => {
-  debugger;
   if ($this.state.followup_days === 0) {
     successfulMessage({
       message: "Invalid Input. Please Enter Next visit After",
@@ -80,7 +75,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const radioChange = ($this, e) => {
-  debugger;
   let radioOP = true;
   let radioIP = false;
   if (e.target.value === "OP") {

@@ -1,4 +1,3 @@
-import { getCookie } from "../../../utils/algaehApiCall.js";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 

@@ -16,7 +16,6 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
   getCtrlCode,
-  PatientSearch,
   ClearData,
   Patientchange,
   SavePosEnrty,

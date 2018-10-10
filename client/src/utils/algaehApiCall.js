@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
 import extend from "extend";
@@ -89,7 +88,7 @@ export function algaehApiCall(options) {
   const headerToken = getToken();
   const x_app_user_identity = getCookie("keyResources");
   //console.log("identity", x_app_user_identity);
-  if (settings.uri != null || settings.uri != "") {
+  if (settings.uri !== undefined || settings.uri !== "") {
     if (settings.isfetch) {
       return fetch(settings.baseUrl + settings.uri + queryParametres, {
         method: settings.method,
@@ -129,7 +128,7 @@ export function algaehApiCall(options) {
       ...cancelRequest
     })
       .then(response => {
-        if (typeof settings.onSuccess == "function")
+        if (typeof settings.onSuccess === "function")
           settings.onSuccess(response);
       })
       .catch(function(err) {
@@ -154,7 +153,7 @@ export function algaehApiCall(options) {
             type: "info"
           });
         } else {
-          if (typeof settings.onFailure == "function") settings.onFailure(err);
+          if (typeof settings.onFailure === "function") settings.onFailure(err);
           else {
             swalMessage({
               title: err.message,
@@ -200,14 +199,15 @@ export function SelectFiledData(options) {
   );
   let Data = [];
 
-  if (settings.textField != "" && settings.valueField != "") {
+  if (settings.textField !== "" && settings.valueField !== "") {
     {
-      settings.payload.map((row, index) =>
+      for (let i = 0; i < settings.payload.length; i++) {
+        let row = settings.payload[i];
         Data.push({
           name: row[settings.textField],
           value: row[settings.valueField]
-        })
-      );
+        });
+      }
     }
   }
   return Data;
@@ -277,10 +277,10 @@ export function getCookie(cname) {
   var ca = document.cookie.split(";");
   for (var i = 0; i < ca.length; i++) {
     var c = ca[i];
-    while (c.charAt(0) == " ") {
+    while (c.charAt(0) === " ") {
       c = c.substring(1);
     }
-    if (c.indexOf(name) == 0) {
+    if (c.indexOf(name) === 0) {
       return c.substring(name.length, c.length);
     }
   }

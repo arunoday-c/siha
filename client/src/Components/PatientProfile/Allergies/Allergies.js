@@ -13,7 +13,6 @@ import moment from "moment";
 import {
   texthandle,
   datehandle,
-  updatePatientAllergy,
   getAllAllergies,
   getPatientAllergies
 } from "./AllergiesHandlers";
@@ -23,7 +22,6 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import algaehLoader from "../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 
 class Allergies extends Component {
@@ -624,7 +622,6 @@ class Allergies extends Component {
             </div>
             <div className="actions">
               <a
-                href="javascript:;"
                 className="btn btn-primary btn-circle active"
                 onClick={this.addAllergies}
               >

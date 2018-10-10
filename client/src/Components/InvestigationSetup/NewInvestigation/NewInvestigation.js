@@ -13,7 +13,6 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import { texthandle, InsertLabTest } from "./NewInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
-import Typography from "@material-ui/core/Typography";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import LabInvestigation from "../LabInvestigation/LabInvestigation";
 import RadInvestigation from "../RadInvestigation/RadInvestigation";

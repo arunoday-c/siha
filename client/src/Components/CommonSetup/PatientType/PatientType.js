@@ -121,17 +121,17 @@ class PatientType extends Component {
 
   addPatientType(e) {
     e.preventDefault();
-    if (this.state.patient_type_code.length == 0) {
+    if (this.state.patient_type_code.length === 0) {
       this.setState({
         patient_type_code_error: true,
         patient_type_code_error_txt: "Code cannot be empty"
       });
-    } else if (this.state.patitent_type_desc.length == 0) {
+    } else if (this.state.patitent_type_desc.length === 0) {
       this.setState({
         patient_type_error: true,
         patient_type_error_txt: "Name cannot be empty"
       });
-    } else if (this.state.patitent_type_desc.length == 0) {
+    } else if (this.state.patitent_type_desc.length === 0) {
       this.setState({
         patient_type_arabic_error: true,
         patient_type_arabic_error_txt: "Arabic Name cannot be empty"

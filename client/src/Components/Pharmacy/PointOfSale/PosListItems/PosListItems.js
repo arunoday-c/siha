@@ -19,7 +19,6 @@ import {
   itemchangeText,
   numberchangeTexts,
   AddItems,
-  datehandle,
   deletePosDetail,
   updatePosDetail,
   calculateAmount,

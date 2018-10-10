@@ -115,7 +115,6 @@ const itemchangeText = ($this, e) => {
 };
 
 const AddItems = ($this, context) => {
-  let ListItems = $this.state.ListItems;
   debugger;
   let ItemInput = [
     {
