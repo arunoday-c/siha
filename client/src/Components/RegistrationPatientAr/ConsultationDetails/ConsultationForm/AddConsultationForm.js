@@ -117,12 +117,12 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                         ),
                         displayTemplate: row => {
-                          let display = [];
-                          this.props.deptanddoctors === undefined
-                            ? []
-                            : (display = this.props.deptanddoctors.doctors.filter(
-                                f => f.employee_id === row.doctor_id
-                              ));
+                          const display =
+                            this.props.deptanddoctors === undefined
+                              ? []
+                              : this.props.deptanddoctors.doctors.filter(
+                                  f => f.employee_id === row.doctor_id
+                                );
 
                           return (
                             <span>
@@ -186,13 +186,14 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "department_id" }} />
                         ),
                         displayTemplate: row => {
-                          let display = [];
-                          this.props.deptanddoctors === undefined
-                            ? []
-                            : (display = this.props.deptanddoctors.departmets.filter(
-                                f =>
-                                  f.sub_department_id === row.sub_department_id
-                              ));
+                          const display =
+                            this.props.deptanddoctors === undefined
+                              ? []
+                              : this.props.deptanddoctors.departmets.filter(
+                                  f =>
+                                    f.sub_department_id ===
+                                    row.sub_department_id
+                                );
 
                           return (
                             <span>

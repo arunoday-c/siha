@@ -198,7 +198,7 @@ export default class Login extends Component {
                       Log In
                     </Button>
                     <p className="frgtPass">
-                      <a href="#">Forgot Password?</a>
+                      <a>Forgot Password?</a>
                     </p>
                   </div>
                 </form>

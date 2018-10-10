@@ -1,4 +1,3 @@
-"use strict";
 import React, { PureComponent } from "react";
 import ReactTable from "react-table";
 import withFixedColumns from "react-table-hoc-fixed-columns";
@@ -27,7 +26,8 @@ class DataGrid extends PureComponent {
   onTextHandleEditChange(e) {
     const data = [...this.state.data];
     const _element = e.currentTarget;
-    const _rowIndex = parseInt(_element.getAttribute("row-id"));
+    const _row_ID = _element.getAttribute("row-id");
+    const _rowIndex = parseInt(_row_ID);
     const _colIndex = _element.getAttribute("column-id");
     let _value = "";
     if (typeof data[_rowIndex][_colIndex] === "number")
@@ -719,8 +719,7 @@ class DataGrid extends PureComponent {
           pageText={
             <span>
               Total Records:
-              {this.state.recordsTotal}
-              , Page
+              {this.state.recordsTotal}, Page
             </span>
           }
           ofText="of"

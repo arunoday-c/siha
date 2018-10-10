@@ -87,7 +87,6 @@ class PatientDisplayDetails extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     let output = {};
     let billOut = {};
     if (
@@ -106,7 +105,6 @@ class PatientDisplayDetails extends Component {
   }
 
   getPatientDetails($this, output) {
-    debugger;
     clearInterval(intervalId);
     // let patient_type = "";
     intervalId = setInterval(() => {
@@ -121,7 +119,6 @@ class PatientDisplayDetails extends Component {
           mappingName: "patients"
         },
         afterSuccess: data => {
-          debugger;
           if ($this.state.visit_id !== null) {
             for (let i = 0; i < data.visitDetails.length; i++) {
               if (
@@ -133,16 +130,16 @@ class PatientDisplayDetails extends Component {
             }
             AlgaehLoader({ show: false });
           }
-          debugger;
+
           let x = Enumerable.from($this.props.patienttype)
             .where(
               w =>
-                w.hims_d_patient_type_id ==
+                w.hims_d_patient_type_id ===
                 data.patientRegistration.patient_type
             )
             .toArray();
 
-          if (x != null && x.length > 0) {
+          if (x !== undefined && x.length > 0) {
             data.patientRegistration.patient_type = x[0].patitent_type_desc;
           } else {
             data.patientRegistration.patient_type = "Not Selected";
@@ -189,7 +186,6 @@ class PatientDisplayDetails extends Component {
         mappingName: "bills"
       },
       afterSuccess: data => {
-        debugger;
         data.saveEnable = true;
         $this.setState(data, () => {
           this.getPatientDetails(this, data);
@@ -250,7 +246,7 @@ class PatientDisplayDetails extends Component {
   SaveBill(e) {
     this.GenerateReciept($this => {
       let Inputobj = $this.state;
-      debugger;
+
       Inputobj.patient_payable = $this.state.patient_payable_h;
       AlgaehLoader({ show: true });
       algaehApiCall({
@@ -346,7 +342,6 @@ class PatientDisplayDetails extends Component {
                 label: "Print Receipt",
                 events: {
                   onClick: () => {
-                    debugger;
                     AlgaehReport({
                       report: {
                         fileName: "printreceipt"

@@ -13,9 +13,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   getReviewOfSystems,
   getReviewOfSystemsDetails,
-  getPatientROS,
-  texthandle,
-  updatePatientROS
+  getPatientROS
 } from "./ReviewofSystemsHandlers";
 import swal from "sweetalert2";
 import {

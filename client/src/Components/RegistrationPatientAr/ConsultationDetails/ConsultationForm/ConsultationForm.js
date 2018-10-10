@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import AddConsultationForm from "./AddConsultationForm.js";
-import styles from "./ConsultationForm.css";
 
 export default class ConsultationForm extends Component {
   constructor(props) {

@@ -268,6 +268,7 @@ class AddPatientForm extends PureComponent {
                           >
                             <img
                               //className="preview-image"
+                              alt={require("../../../../assets/images/no-image-icon-6.png")}
                               src={this.state.filePrimaryPreview}
                             />
                             <div className="attach-design text-center">
@@ -299,7 +300,12 @@ class AddPatientForm extends PureComponent {
                           >
                             <img
                               // className="preview-image"
-                              src={this.state.filePreview}
+                              alt={require("../../../../assets/images/nobody_m.original.jpg")}
+                              src={
+                                this.state.filePreview === undefined
+                                  ? require("../../../../assets/images/nobody_m.original.jpg")
+                                  : this.state.filePreview
+                              }
                             />
 
                             <div className="attach-design text-center">

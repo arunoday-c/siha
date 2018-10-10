@@ -175,7 +175,7 @@ class AddAdvanceModal extends PureComponent {
                       value: this.state.counter_id,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "name"
                             : "arabic_name",
                         valueField: "value",
@@ -197,7 +197,7 @@ class AddAdvanceModal extends PureComponent {
                       value: this.state.shift_id,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "name"
                             : "arabic_name",
                         valueField: "value",

@@ -175,7 +175,7 @@ class Examination extends Component {
     // getPhysicalExaminations(this);
     if (
       this.props.allexaminations === undefined ||
-      this.props.allexaminations.length == 0
+      this.props.allexaminations.length === 0
     )
       getAllDepartmentBased(this, detl => {
         this.setState({

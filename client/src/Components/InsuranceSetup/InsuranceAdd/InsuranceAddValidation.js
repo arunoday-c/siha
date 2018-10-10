@@ -1,5 +1,3 @@
-import moment from "moment";
-
 const Validations = ($this, e) => {
   let isError = false;
 

@@ -114,13 +114,13 @@ class LabResult extends Component {
                       fieldName: "status",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                       displayTemplate: row => {
-                        return row.status == "O"
+                        return row.status === "O"
                           ? "Ordered"
-                          : row.status == "CL"
+                          : row.status === "CL"
                             ? "Collected"
-                            : row.status == "CN"
+                            : row.status === "CN"
                               ? "Cancelled"
-                              : row.status == "CF"
+                              : row.status === "CF"
                                 ? "Confirmed"
                                 : "Result Avaiable";
                       }
@@ -262,11 +262,11 @@ class LabResult extends Component {
                         <AlgaehLabel label={{ forceLabel: "Analyte Status" }} />
                       ),
                       displayTemplate: row => {
-                        return row.status == "E"
+                        return row.status === "E"
                           ? "Entered"
-                          : row.status == "C"
+                          : row.status === "C"
                             ? "Confirmed"
-                            : row.status == "V"
+                            : row.status === "V"
                               ? "Validated"
                               : "Not Entered";
                       }

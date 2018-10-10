@@ -220,18 +220,10 @@ class RadOrderedList extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            {/* <Tooltip title="Arrived"> */}
-                            <IconButton
-                              color="primary"
-                              title="Arrived"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <i
+                           <i
                                 className="fas fa-walking"
                                 onClick={UpdateRadOrder.bind(this, this, row)}
                               />
-                            </IconButton>
-                            {/* </Tooltip> */}
                           </span>
                         );
                       },
