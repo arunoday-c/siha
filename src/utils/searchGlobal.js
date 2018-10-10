@@ -41,7 +41,7 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "visit",
         searchQuery:
-          "SELECT full_name, patient_code, pv.visit_code, pv.patient_id, pv.hims_f_patient_visit_id, pv.insured \
+          "SELECT full_name, patient_code, pv.visit_code, pv.visit_date, pv.patient_id, pv.hims_f_patient_visit_id, pv.insured \
           FROM hims_f_patient inner join hims_f_patient_visit pv on pv.patient_id=hims_f_patient.hims_d_patient_id",
         orderBy: "pv.hims_f_patient_visit_id desc"
       },

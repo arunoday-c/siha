@@ -1,10 +1,11 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import POSIOputs from "../../../Models/POS";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;
@@ -26,6 +27,30 @@ const Patientchange = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber) => {
   debugger;
+  AlgaehLoader({ show: true });
+  $this.props.getPosEntry({
+    uri: "/posEntry/getPosEntry",
+    method: "GET",
+    printInput: true,
+    data: { pos_number: docNumber },
+    redux: {
+      type: "POS_ENTRY_GET_DATA",
+      mappingName: "posentry"
+    },
+    afterSuccess: data => {
+      debugger;
+      data.saveEnable = true;
+      data.patient_payable_h = data.patient_payable;
+      if (data.posted === "Y") {
+        data.postEnable = true;
+      } else {
+        data.postEnable = false;
+      }
+      data.dataExitst = true;
+      $this.setState(data);
+      AlgaehLoader({ show: false });
+    }
+  });
 };
 
 const PatientSearch = ($this, e) => {
@@ -169,6 +194,48 @@ const PostPosEntry = $this => {
   });
 };
 
+const VisitSearch = ($this, e) => {
+  debugger;
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.VisitDetails.VisitList
+    },
+    searchName: "visit",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      $this.setState(
+        {
+          visit_code: row.visit_code,
+          patient_code: row.patient_code,
+          full_name: row.full_name,
+          patient_id: row.patient_id,
+          visit_id: row.hims_f_patient_visit_id,
+          insured: row.insured
+        },
+        () => {
+          if ($this.state.insured === "Y") {
+            $this.props.getPatientInsurance({
+              uri: "/insurance/getPatientInsurance",
+              method: "GET",
+              data: {
+                patient_id: $this.state.patient_id,
+                patient_visit_id: $this.state.patient_visit_id
+              },
+              redux: {
+                type: "EXIT_INSURANCE_GET_DATA",
+                mappingName: "existinginsurance"
+              }
+            });
+          }
+        }
+      );
+    }
+  });
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -177,5 +244,6 @@ export {
   getPatientDetails,
   Patientchange,
   SavePosEnrty,
-  PostPosEntry
+  PostPosEntry,
+  VisitSearch
 };

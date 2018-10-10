@@ -78,5 +78,25 @@
         "label": "Posted"
       }
     ]
+  },
+  "VisitDetails": {
+    "VisitList": [
+      {
+        "fieldName": "visit_code",
+        "label": "Visit Code"
+      },
+      {
+        "fieldName": "visit_date",
+        "label": "Visit Date"
+      },
+      {
+        "fieldName": "patient_code",
+        "label": "Patient Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Patient Name"
+      }
+    ]
   }
 }

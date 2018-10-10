@@ -78,7 +78,7 @@ let accessReport = options => {
           }
         }
       }
-
+      console.log("Its coming here");
       // new XMLSerializer().serializeToString(_html.firstElementChild)
       ReactDOM.render(
         <ReportUI>{renderHTML(_html.firstElementChild.innerHTML)}</ReportUI>,

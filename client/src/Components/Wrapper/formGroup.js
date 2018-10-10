@@ -1,7 +1,5 @@
 import React, { PureComponent } from "react";
-// import PropTypes from "prop-types";
-//import TextField from "@material-ui/core/TextField";
-//import NumberFormat from "react-number-format";
+
 import "./wrapper.css";
 import Label from "../Wrapper/label";
 export default class FormGroup extends PureComponent {
@@ -71,20 +69,6 @@ export default class FormGroup extends PureComponent {
       });
     }
   }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   debugger;
-  //   if (
-  //     nextProps.textBox.value !== this.state.value ||
-  //     nextProps.textBox.error !== this.state.error ||
-  //     nextProps.textBox.helperText !== this.state.helperText ||
-  //     nextProps.textBox.disabled !== this.state.disabled
-  //   ) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // }
 
   errorInvoid(e) {
     if (typeof this.props.textBox.helperText === "function") {
@@ -167,18 +151,38 @@ export default class FormGroup extends PureComponent {
           />
         );
       } else {
-        return (
-          <input
-            type="text"
-            name={this.props.textBox.name}
-            value={this.state.value}
-            onChange={this.props.textBox.events.onChange}
-            {..._disabled}
-            {..._required}
-            {..._invalid}
-            {...this.props.textBox.others}
-          />
-        );
+        const _isMultiline =
+          this.props.textBox.others !== undefined
+            ? this.props.textBox.others.multiline !== undefined &&
+              this.props.textBox.others.multiline === true
+              ? true
+              : false
+            : false;
+        if (_isMultiline === false)
+          return (
+            <input
+              type="text"
+              name={this.props.textBox.name}
+              value={this.state.value}
+              onChange={this.props.textBox.events.onChange}
+              {..._disabled}
+              {..._required}
+              {..._invalid}
+              {...this.props.textBox.others}
+            />
+          );
+        else
+          return (
+            <textarea
+              name={this.props.textBox.name}
+              value={this.state.value}
+              onChange={this.props.textBox.events.onChange}
+              {..._disabled}
+              {..._required}
+              {..._invalid}
+              {...this.props.textBox.others}
+            />
+          );
       }
     } else {
       return null;

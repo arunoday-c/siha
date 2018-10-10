@@ -110,7 +110,7 @@ class AddInsuranceForm extends Component {
                             name="image"
                           >
                             <img
-                              // className="preview-image"
+                              alt="Display front side"
                               src={this.state.frontSide}
                               style={{ width: "100%", height: "101px" }}
                             />
@@ -138,7 +138,7 @@ class AddInsuranceForm extends Component {
                             name="image"
                           >
                             <img
-                              // className="preview-image"
+                              alt="Display back side"
                               src={this.state.backSide}
                               style={{ width: "100%", height: "101px" }}
                             />

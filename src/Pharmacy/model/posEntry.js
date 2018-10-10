@@ -210,7 +210,7 @@ let getPosEntry = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from  hims_f_pharmacy_stock_header\
+        "SELECT * from  hims_f_pharmacy_pos_header\
           where record_status='A' AND " +
           where.condition,
         where.values,
@@ -223,12 +223,12 @@ let getPosEntry = (req, res, next) => {
           debugLog("result: ", headerResult);
           if (headerResult.length != 0) {
             debugLog(
-              "hims_f_pharmacy_stock_header_id: ",
-              headerResult[0].hims_f_pharmacy_stock_header_id
+              "hims_f_pharmacy_pos_header_id: ",
+              headerResult[0].hims_f_pharmacy_pos_header_id
             );
             connection.query(
-              "select * from hims_f_pharmacy_stock_detail where pharmacy_stock_header_id=? and record_status='A'",
-              headerResult[0].hims_f_pharmacy_stock_header_id,
+              "select * from hims_f_pharmacy_pos_detail where pharmacy_pos_header_id=? and record_status='A'",
+              headerResult[0].hims_f_pharmacy_pos_header_id,
               (error, pharmacy_stock_detail) => {
                 if (error) {
                   releaseDBConnection(db, connection);

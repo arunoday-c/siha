@@ -369,9 +369,7 @@ class Appointment extends Component {
 
   openEditModal(patient, e) {
     debugger;
-    // let pat_obj = e.currentTarget.getAttribute("data");
     console.log("Edit Pat Data:", patient);
-
     this.setState({ patToEdit: patient, openPatEdit: true });
   }
 
@@ -443,17 +441,25 @@ class Appointment extends Component {
       ? { colSpan: 2, style: { width: "240px" } }
       : {};
 
-    let bg_color = data.mark_as_break ? "#f2f2f2" : "#ffffff";
-
     const patient = this.plotPatients({
       time: data.time,
       slot: data.slot,
       patients: data.patients
     });
 
+    let brk_bg_color = data.mark_as_break ? "#f2f2f2" : "#ffffff";
+
+    let bg_color =
+      patient !== null
+        ? this.getColorCode(patient.appointment_status_id)
+        : "#ffffff";
+
     return (
-      <tr style={{ background: bg_color }} key={data.counter}>
-        <td className="tg-baqh" {...colspan}>
+      <tr
+        style={{ background: brk_bg_color, cursor: "pointer" }}
+        key={data.counter}
+      >
+        <td className="tg-baqh" {...colspan} style={{ background: bg_color }}>
           {data.mark_as_break == false ? (
             <span className="dynSlot">{data.time}</span>
           ) : null}
@@ -598,6 +604,7 @@ class Appointment extends Component {
   }
 
   render() {
+    let pat_edit = this.state.patToEdit;
     return (
       <div className="appointment">
         {/* Edit Pop up Start */}

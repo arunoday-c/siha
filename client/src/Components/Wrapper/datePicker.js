@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import Label from "../Wrapper/label";
 //import DayPickerInput from "react-date-picker";
 import "../Wrapper/wrapper.css";
 import { getCookie } from "../../utils/algaehApiCall.js";
 import moment from "moment";
 import config from "../../utils/config.json";
-export default class DateHandler extends Component {
+export default class DateHandler extends PureComponent {
   generateLabel = () => {
     if (this.props.label != null) {
       return <Label label={this.props.label} />;
@@ -29,16 +29,6 @@ export default class DateHandler extends Component {
     });
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (
-      nextProps.value !== this.state.value ||
-      (nextProps.disabled != null &&
-        nextProps.disabled != this.state.disabled) ||
-      nextState != this.state.value
-    )
-      return true;
-    return false;
-  }
   onDayChange = e => {
     this.props.events !== undefined &&
     typeof this.props.events.onChange === "function"
@@ -59,11 +49,11 @@ export default class DateHandler extends Component {
         ? { max: moment(this.props.maxDate).format(config.formators.date) }
         : {};
     const value =
-      this.state.value !== undefined ||
-      this.state.value !== null ||
-      this.state.value !== ""
-        ? moment(this.state.value).format(config.formators.date)
-        : this.state.value;
+      this.state.value !== undefined
+        ? this.state.value !== null
+          ? moment(this.state.value).format(config.formators.date)
+          : ""
+        : "";
     const name =
       this.props.textBox.name !== undefined
         ? { name: this.props.textBox.name }
