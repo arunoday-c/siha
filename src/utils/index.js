@@ -23,6 +23,10 @@ let whereCondition = options => {
   let i = 0;
   Object.keys(options).forEach(key => {
     condition += "(" + key + '=? or "ALL"=?)';
+    if (options[key] == null || options[key] == "null") {
+      options[key] = "ALL";
+    }
+
     if (i != total - 1) condition += " AND ";
     values.push(options[key]);
     values.push(options[key]);

@@ -77,7 +77,6 @@ class PosListItems extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState(nextProps.POSIOputs);
   }
 
@@ -932,7 +931,6 @@ function mapDispatchToProps(dispatch) {
       getSelectedItemDetais: AlgaehActions,
       getServices: AlgaehActions,
       generateBill: AlgaehActions,
-      billingCalculations: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemUOM: AlgaehActions,
       PosHeaderCalculations: AlgaehActions

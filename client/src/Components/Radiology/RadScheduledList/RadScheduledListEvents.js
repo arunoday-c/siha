@@ -68,7 +68,7 @@ const getRadTestList = $this => {
   if ($this.state.status !== null) {
     inputobj.status = $this.state.status;
   }
-  debugger;
+ 
   $this.props.getRadiologyTestList({
     uri: "/radiology/getRadOrderedServices",
     method: "GET",
@@ -81,7 +81,7 @@ const getRadTestList = $this => {
 };
 
 const openResultEntry = ($this, row) => {
-  debugger;
+ 
 
   $this.props.getTemplateList({
     uri: "/radiology/getRadTemplateList",
@@ -92,7 +92,7 @@ const openResultEntry = ($this, row) => {
       mappingName: "templatelist"
     },
     afterSuccess: data => {
-      debugger;
+     
       let Template = row;
       Template.Templatelist = data;
       $this.setState({

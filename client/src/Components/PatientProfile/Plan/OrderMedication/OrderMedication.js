@@ -46,7 +46,9 @@ class OrderMedication extends Component {
       itemlist: [],
       medicationitems: [],
       start_date: moment(new Date())._d,
-      savebutton: true
+      savebutton: true,
+      uom_id: null,
+      service_id: null
     };
   }
 

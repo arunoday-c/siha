@@ -109,13 +109,11 @@ class ResultEntryList extends Component {
               }
             ]}
           />
-          <div
-            className="container-fluid"
-            style={{ marginTop: "85px", minHeight: "80vh" }}
-          >
-            <div className="row">
+   <div className="row inner-top-search" style={{marginTop:"75px",paddingBottom:"10px"}}>
+            <div className="col-lg-6">
+              <div className="row">
               <AlgaehDateHandler
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{ fieldName: "from_date" }}
                 textBox={{ className: "txt-fld", name: "from_date" }}
                 events={{
@@ -124,7 +122,7 @@ class ResultEntryList extends Component {
                 value={this.state.from_date}
               />
               <AlgaehDateHandler
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{ fieldName: "to_date" }}
                 textBox={{ className: "txt-fld", name: "to_date" }}
                 events={{
@@ -133,7 +131,7 @@ class ResultEntryList extends Component {
                 value={this.state.to_date}
               />
               <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{
                   fieldName: "patient_code"
                 }}
@@ -156,8 +154,12 @@ class ResultEntryList extends Component {
                   onClick={PatientSearch.bind(this, this)}
                 />
               </div>
+          </div>
+            </div>
+<div className="col-lg-6">
+<div className="row">
               <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{
                   fieldName: "proiorty",
                   isImp: false
@@ -175,7 +177,7 @@ class ResultEntryList extends Component {
                 }}
               />
               <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{
                   fieldName: "status",
                   isImp: false
@@ -193,47 +195,69 @@ class ResultEntryList extends Component {
                 }}
               />
 
-              <div className="col-lg-1" style={{ paddingTop: "4vh" }}>
+              <div className="col" style={{ paddingTop: "21px" }}>
                 <button
                   className="btn btn-primary btn-sm"
                   type="button"
                   onClick={getSampleCollectionDetails.bind(this, this)}
+                   >
+                  Load
+                </button>
+              
+                 <button
+                   className="btn btn-default btn-sm" style={{marginLeft:"10px"}}
+                  type="button"
+                  onClick={Refresh.bind(this, this)}
                 >
-                  Load Data
+                  Clear
                 </button>
               </div>
-
-              <div className="col-lg-1">
-                <Tooltip id="tooltip-icon" title="Refresh">
-                  <IconButton className="go-button" color="primary">
-                    <i
-                      className="fas fa-sync-alt"
-                      aria-hidden="true"
-                      onClick={Refresh.bind(this, this)}
-                    />
-                  </IconButton>
-                </Tooltip>
-              </div>
             </div>
+            </div>
+          </div>
 
-            <div className="row form-details">
+         
+            <div className="row">
               <div className="col-lg-12">
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
+                */}
+                 <div className="portlet-body">
                 <AlgaehDataGrid
                   id="samplecollection_grid"
                   columns={[
+
+                    {
+                      fieldName: "action",
+                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                           <i
+                                className="fas fa-file-signature"
+                                aria-hidden="true"
+                                onClick={ResultEntryModel.bind(this, this, row)}
+                              />
+                          </span>
+                        );
+                      },
+                       others:{maxWidth:70,resizable: false,style:{textAlign:"center"}}
+                    },
                     {
                       fieldName: "patient_code",
                       label: (
                         <AlgaehLabel label={{ fieldName: "patient_code" }} />
                       ),
-                      disabled: false
+                      disabled: false,
+                       others:{resizable: false,style:{textAlign:"center"}}
                     },
                     {
                       fieldName: "full_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "patient_name" }} />
                       ),
-                      disabled: true
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"left"}}
                     },
                     {
                       fieldName: "ordered_date",
@@ -245,7 +269,8 @@ class ResultEntryList extends Component {
                           <span>{this.changeDateFormat(row.ordered_date)}</span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"center"}}
                     },
                     {
                       fieldName: "test_type",
@@ -253,7 +278,8 @@ class ResultEntryList extends Component {
                       displayTemplate: row => {
                         return row.test_type == "S" ? "Stat" : "Rotuine";
                       },
-                      disabled: true
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"center"}}
                     },
                     {
                       fieldName: "status",
@@ -269,14 +295,16 @@ class ResultEntryList extends Component {
                                 ? "Confirmed"
                                 : "Validated";
                       },
-                      disabled: true
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"center"}}
                     },
                     {
                       fieldName: "lab_id_number",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />
                       ),
-                      disabled: true
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"center"}}
                     },
                     {
                       fieldName: "sample_status",
@@ -292,39 +320,21 @@ class ResultEntryList extends Component {
                               ? "Rejected"
                               : null;
                       },
-                      disabled: true
-                    },
-                    {
-                      fieldName: "action",
-                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                            <IconButton
-                              color="primary"
-                              title="Accept"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <i
-                                className="fas fa-file-signature"
-                                aria-hidden="true"
-                                onClick={ResultEntryModel.bind(this, this, row)}
-                              />
-                            </IconButton>
-                          </span>
-                        );
-                      }
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"center"}}
                     }
                   ]}
                   keyId="patient_code"
                   dataSource={{
                     data: this.state.sample_collection
                   }}
+                  noDataText="No data available for selected period"
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
             </div>
-          </div>
+              </div>
+            </div>
           <ResultEntry
             open={this.state.isOpen}
             onClose={closeResultEntry.bind(this, this)}

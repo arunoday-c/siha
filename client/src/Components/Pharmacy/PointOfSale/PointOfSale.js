@@ -78,7 +78,6 @@ class PointOfSale extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     // let output = {};
     let posHeaderOut = {};
     // if (
@@ -88,7 +87,6 @@ class PointOfSale extends Component {
     //   output = nextProps.existinsurance[0];
     // }
     if (nextProps.posheader !== undefined && nextProps.posheader.length !== 0) {
-      debugger;
       nextProps.posheader.patient_payable_h =
         nextProps.posheader.patient_payable || this.state.patient_payable;
       nextProps.posheader.sub_total = nextProps.posheader.sub_total_amount;
@@ -109,13 +107,12 @@ class PointOfSale extends Component {
       nextProps.posheader.saveEnable = false;
       posHeaderOut = nextProps.posheader;
     }
-    debugger;
+
     this.setState({ ...this.state, ...posHeaderOut });
     // this.setState({ ...this.state, ...billOut, ...output });
   }
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <div>
@@ -392,7 +389,8 @@ function mapStateToProps(state) {
     locations: state.locations,
     posheader: state.posheader,
     pospatients: state.pospatients,
-    posentry: state.posentry
+    posentry: state.posentry,
+    existinsurance: state.existinsurance
   };
 }
 
@@ -402,7 +400,10 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
       getPatientDetails: AlgaehActions,
-      getPosEntry: AlgaehActions
+      getPosEntry: AlgaehActions,
+      getPatientInsurance: AlgaehActions,
+      getMedicationList: AlgaehActions,
+      generateBill: AlgaehActions
     },
     dispatch
   );
