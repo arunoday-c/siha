@@ -6,6 +6,9 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import POSIOputs from "../../../Models/POS";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
+import { successfulMessage } from "../../../utils/GlobalFunctions";
+import moment from "moment";
+import Options from "../../../Options.json";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;
@@ -195,7 +198,6 @@ const PostPosEntry = $this => {
 };
 
 const VisitSearch = ($this, e) => {
-  debugger;
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.VisitDetails.VisitList
@@ -206,6 +208,7 @@ const VisitSearch = ($this, e) => {
       callBack(text);
     },
     onRowSelect: row => {
+      debugger;
       $this.setState(
         {
           visit_code: row.visit_code,
@@ -213,7 +216,9 @@ const VisitSearch = ($this, e) => {
           full_name: row.full_name,
           patient_id: row.patient_id,
           visit_id: row.hims_f_patient_visit_id,
-          insured: row.insured
+          insured: row.insured,
+          sec_insured: row.sec_insured,
+          episode_id: row.episode_id
         },
         () => {
           if ($this.state.insured === "Y") {
@@ -226,12 +231,127 @@ const VisitSearch = ($this, e) => {
               },
               redux: {
                 type: "EXIT_INSURANCE_GET_DATA",
-                mappingName: "existinginsurance"
+                mappingName: "existinsurance"
+              },
+              afterSuccess: data => {
+                debugger;
+                data.mode_of_pay = "2";
+                $this.setState(data[0]);
               }
             });
           }
+          getMedicationList($this);
         }
       );
+    }
+  });
+};
+
+const getMedicationList = $this => {
+  let inputobj = { episode_id: $this.state.episode_id };
+
+  $this.props.getMedicationList({
+    uri: "/pharmacyGlobal/getVisitPrescriptionDetails",
+    method: "GET",
+    data: inputobj,
+    redux: {
+      type: "MEDICATION_LIST_GET_DATA",
+      mappingName: "medicationlist"
+    },
+    afterSuccess: data => {
+      debugger;
+
+      for (let i = 0; i < data.length; i++) {
+        data[i].insured = $this.state.insured;
+        data[i].vat_applicable = "Y";
+        data[i].hims_d_services_id = $this.state.service_id;
+        data[i].unit_cost = $this.state.unit_cost = data[i].pharmacy_item = "Y";
+
+        data[i].primary_insurance_provider_id =
+          $this.state.primary_insurance_provider_id;
+        data[i].primary_network_office_id =
+          $this.state.primary_network_office_id;
+        data[i].primary_network_id = $this.state.primary_network_id;
+
+        data[i].secondary_insurance_provider_id =
+          $this.state.secondary_insurance_provider_id;
+        data[i].secondary_network_id = $this.state.secondary_network_id;
+        data[i].secondary_network_office_id =
+          $this.state.secondary_network_office_id;
+      }
+      AddItems($this, data);
+    }
+  });
+};
+
+const AddItems = ($this, data) => {
+  let ItemInput = [
+    {
+      quantity: $this.state.quantity,
+      primary_insurance_provider_id: $this.state.primary_insurance_provider_id,
+      primary_network_office_id: $this.state.primary_network_office_id,
+      primary_network_id: $this.state.primary_network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id
+    }
+  ];
+
+  $this.props.generateBill({
+    uri: "/billing/getBillDetails",
+    method: "POST",
+    data: ItemInput,
+    redux: {
+      type: "BILL_GEN_GET_DATA",
+      mappingName: "xxx"
+    },
+    afterSuccess: data => {
+      if (data.billdetails[0].pre_approval === "Y") {
+        successfulMessage({
+          message:
+            "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+          title: "Warning",
+          icon: "warning"
+        });
+      } else {
+        let existingservices = $this.state.pharmacy_stock_detail;
+
+        if (data.billdetails.length !== 0) {
+          data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
+          data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+
+          data.billdetails[0].item_id = $this.state.item_id;
+          data.billdetails[0].item_category = $this.state.item_category;
+          data.billdetails[0].expiry_date = $this.state.expiry_date;
+          data.billdetails[0].batchno = $this.state.batchno;
+          data.billdetails[0].uom_id = $this.state.uom_id;
+          data.billdetails[0].operation = "-";
+
+          existingservices.splice(0, 0, data.billdetails[0]);
+        }
+
+        $this.setState({
+          item_id: null,
+          uom_id: null,
+          batchno: null,
+          expiry_date: null,
+          quantity: 0,
+          unit_cost: 0,
+          service_id: null
+        });
+
+        $this.props.PosHeaderCalculations({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: { billdetails: existingservices },
+          redux: {
+            type: "POS_HEADER_GEN_GET_DATA",
+            mappingName: "posheader"
+          }
+        });
+      }
     }
   });
 };

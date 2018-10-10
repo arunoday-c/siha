@@ -71,7 +71,9 @@ const itemhandle = ($this, ctrl, e) => {
   let value = e.value || e.target.value;
   $this.setState({
     [name]: value,
-    generic_id: e.selected.generic_id
+    generic_id: e.selected.generic_id,
+    service_id: e.selected.service_id,
+    uom_id: e.selected.uom_id
   });
 };
 
@@ -88,6 +90,8 @@ const AddItems = $this => {
     frequency_type: $this.state.frequency_type,
     frequency_time: $this.state.frequency_time,
     start_date: $this.state.start_date,
+    uom_id: $this.state.uom_id,
+    service_id: $this.state.service_id,
     item_status: "A"
   };
   medicationitems.push(medicationobj);

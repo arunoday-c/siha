@@ -15,12 +15,12 @@ export default class AddInsuranceForm extends Component {
   }
 
   componentWillMount() {
-    let InputOutput = this.props.BillingIOputs;
+    let InputOutput = this.props.POSIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.BillingIOputs);
+    this.setState(nextProps.POSIOputs);
   }
 
   render() {

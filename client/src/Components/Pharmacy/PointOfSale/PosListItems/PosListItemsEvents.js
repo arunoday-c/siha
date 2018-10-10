@@ -115,8 +115,6 @@ const itemchangeText = ($this, e) => {
 };
 
 const AddItems = ($this, context) => {
-  let ListItems = $this.state.ListItems;
-  debugger;
   let ItemInput = [
     {
       insured: $this.state.insured,
@@ -145,8 +143,6 @@ const AddItems = ($this, context) => {
       mappingName: "xxx"
     },
     afterSuccess: data => {
-      debugger;
-
       if (data.billdetails[0].pre_approval === "Y") {
         successfulMessage({
           message:
