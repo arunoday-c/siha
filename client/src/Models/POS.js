@@ -61,6 +61,7 @@ export default {
       receiptdetails: [],
       saveEnable: true,
       postEnable: true,
+      episode_id: null,
 
       card_number: null,
       effective_end_date: null,
