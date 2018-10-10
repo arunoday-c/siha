@@ -76,7 +76,7 @@ let getPatientEncounterDetails = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_f_patient_encounter_id, PE.patient_id,P.full_name,PE.provider_id,E.full_name as provider_name, visit_id,V.insured,\
-        V.sub_department_id,SD.hims_d_sub_department_id,\
+        V.sub_department_id,\
         SD.sub_department_name,PE.episode_id,PE.encounter_id,PE.updated_date as encountered_date\
         from hims_f_patient_encounter PE,hims_f_patient P,hims_d_employee E,hims_f_patient_visit V,hims_d_sub_department SD\
         where PE.record_status='A' and P.record_status='A' and E.record_status='A' and V.record_status='A' and SD.record_status='A'\
@@ -100,4 +100,38 @@ let getPatientEncounterDetails = (req, res, next) => {
   }
 };
 
-module.exports = { getPatientMrdList, getPatientEncounterDetails };
+//created by irfan: to get Patient Chief Complaint
+let getPatientChiefComplaint = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_episode_chief_complaint_id ,episode_id,chief_complaint_id,HH.hpi_description as chief_complaint\
+        from hims_f_episode_chief_complaint ECC,hims_d_hpi_header HH\
+        Where ECC.record_status='A' and HH.record_status='A' \
+        and ECC.chief_complaint_id=HH.hims_d_hpi_header_id and episode_id=?",
+        [req.query.episode_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  getPatientMrdList,
+  getPatientEncounterDetails,
+  getPatientChiefComplaint
+};
