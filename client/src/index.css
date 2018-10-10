@@ -12,6 +12,9 @@
   /* Btn Green */ }
   :global .displayInlineBlock {
     display: inline-block; }
+  :global .pat-code:hover {
+    text-decoration: underline;
+    cursor: pointer; }
   :global .bordered-layout {
     border: 1px solid #c1c1c1;
     min-height: 70px;
@@ -94,6 +97,8 @@
     background: #dcac66; }
   :global .margin-top-15 {
     margin-top: 15px; }
+  :global .padding-10 {
+    padding: 10px; }
   :global .margin-bottom-15 {
     margin-bottom: 15px; }
   :global .float-right {

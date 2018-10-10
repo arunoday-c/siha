@@ -85,6 +85,7 @@ class DoctorsWorkbench extends Component {
   }
 
   loadListofData() {
+    debugger;
     algaehLoader({ show: true });
     const dateRange =
       localStorage.getItem("workbenchDateRange") !== null
