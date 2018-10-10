@@ -5,6 +5,11 @@ $forntSize: 0.7rem;
     display: inline-block;
   }
 
+  .pat-code:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
   .bordered-layout {
     border: 1px solid #c1c1c1;
     min-height: 70px;
@@ -133,6 +138,10 @@ $forntSize: 0.7rem;
 
   .margin-top-15 {
     margin-top: 15px;
+  }
+
+  .padding-10 {
+    padding: 10px;
   }
 
   .margin-bottom-15 {

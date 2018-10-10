@@ -139,13 +139,11 @@ class PreApproval extends Component {
           ]}
         />
 
-        <div className="container-fluid">
-          <div
-            className="row box-shadow"
-            style={{ marginTop: 83, background: "#fff", borderRadius: 5 }}
-          >
+         <div className="row inner-top-search" style={{marginTop:"75px",paddingBottom:"10px"}}>
+            <div className="col-lg-12">
+              <div className="row">
             <AlgaehDateHandler
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{ fieldName: "date" }}
               textBox={{ className: "txt-fld", name: "date" }}
               events={{
@@ -155,7 +153,7 @@ class PreApproval extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "insurance_id"
               }}
@@ -176,7 +174,7 @@ class PreApproval extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "dis_status"
               }}
@@ -194,7 +192,7 @@ class PreApproval extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "doctor_id"
               }}
@@ -215,7 +213,7 @@ class PreApproval extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "patient_code"
               }}
@@ -232,15 +230,37 @@ class PreApproval extends Component {
 
             <div className="col-lg-1 form-group print_actions">
               <span
-                className="fas fa-search fa-2x"
-                onClick={PatientSearch.bind(this, this)}
+                 className="fas fa-search"style={{fontSize:" 1.2rem", marginTop: "6px",paddingBottom:"10px"}}
+                  onClick={PatientSearch.bind(this, this)}
               />
             </div>
+          </div></div>
           </div>
-          <div className="row pre_approval_details">
+           <div className="row">
+              <div className="col-lg-12">
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
+                */}
+                 <div className="portlet-body">
             <AlgaehDataGrid
               id="preapproval_grid"
               columns={[
+
+                {
+                  fieldName: "action",
+                  label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                      <i className="fas fa-pen" onClick={this.ShowEditModel.bind(this, row)}></i>
+                        <i className="fas fa-file-export" onClick={this.ShowSubmitModel.bind(this, row)}></i>
+                        <i className="fas fa-check" onClick={VerifyOrderModel.bind(this, this, row)}></i>
+                        
+                      </span>
+                    );
+                  },
+                       others:{maxWidth:120,resizable: false,style:{textAlign:"center"}}
+                },
                 {
                   fieldName: "patient_code",
                   label: <AlgaehLabel label={{ fieldName: "patient_code" }} />
@@ -320,30 +340,6 @@ class PreApproval extends Component {
                           ? "Approved"
                           : "Rejected";
                   }
-                },
-                {
-                  fieldName: "action",
-                  label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        <IconButton color="primary" title="Edit">
-                          <Edit onClick={this.ShowEditModel.bind(this, row)} />
-                        </IconButton>
-                        <IconButton color="primary" title="Submit">
-                          <Send
-                            onClick={this.ShowSubmitModel.bind(this, row)}
-                          />
-                        </IconButton>
-
-                        <IconButton color="primary" title="Process To Bill">
-                          <Update
-                            onClick={VerifyOrderModel.bind(this, this, row)}
-                          />
-                        </IconButton>
-                      </span>
-                    );
-                  }
                 }
               ]}
               keyId="pre_approval_code"
@@ -354,6 +350,8 @@ class PreApproval extends Component {
               paging={{ page: 0, rowsPerPage: 6 }}
             />
           </div>
+        </div>
+        </div>
         </div>
 
         <SubmitRequest

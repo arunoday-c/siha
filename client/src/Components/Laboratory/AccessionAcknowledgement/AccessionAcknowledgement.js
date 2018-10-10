@@ -153,7 +153,7 @@ class AccessionAcknowledgement extends Component {
               />
               <div className="col-lg-1 form-group">
                 <span
-                  className="fas fa-search fa-2x"
+                  className="fas fa-search" style={{fontSize:" 1.2rem", marginTop: "6px",paddingBottom:"10px"}}
                   onClick={PatientSearch.bind(this, this)}
                 />
               </div>

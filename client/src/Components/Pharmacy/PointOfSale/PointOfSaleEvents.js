@@ -7,8 +7,6 @@ import POSIOputs from "../../../Models/POS";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
-import moment from "moment";
-import Options from "../../../Options.json";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;
@@ -198,53 +196,61 @@ const PostPosEntry = $this => {
 };
 
 const VisitSearch = ($this, e) => {
-  AlgaehSearch({
-    searchGrid: {
-      columns: spotlightSearch.VisitDetails.VisitList
-    },
-    searchName: "visit",
-    uri: "/gloabelSearch/get",
-    onContainsChange: (text, serchBy, callBack) => {
-      callBack(text);
-    },
-    onRowSelect: row => {
-      debugger;
-      $this.setState(
-        {
-          visit_code: row.visit_code,
-          patient_code: row.patient_code,
-          full_name: row.full_name,
-          patient_id: row.patient_id,
-          visit_id: row.hims_f_patient_visit_id,
-          insured: row.insured,
-          sec_insured: row.sec_insured,
-          episode_id: row.episode_id
-        },
-        () => {
-          if ($this.state.insured === "Y") {
-            $this.props.getPatientInsurance({
-              uri: "/insurance/getPatientInsurance",
-              method: "GET",
-              data: {
-                patient_id: $this.state.patient_id,
-                patient_visit_id: $this.state.patient_visit_id
-              },
-              redux: {
-                type: "EXIT_INSURANCE_GET_DATA",
-                mappingName: "existinsurance"
-              },
-              afterSuccess: data => {
-                debugger;
-                data.mode_of_pay = "2";
-                $this.setState(data[0]);
-              }
-            });
+  if ($this.state.location_id !== null) {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.VisitDetails.VisitList
+      },
+      searchName: "visit",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        debugger;
+        $this.setState(
+          {
+            visit_code: row.visit_code,
+            patient_code: row.patient_code,
+            full_name: row.full_name,
+            patient_id: row.patient_id,
+            visit_id: row.hims_f_patient_visit_id,
+            insured: row.insured,
+            sec_insured: row.sec_insured,
+            episode_id: row.episode_id
+          },
+          () => {
+            if ($this.state.insured === "Y") {
+              $this.props.getPatientInsurance({
+                uri: "/insurance/getPatientInsurance",
+                method: "GET",
+                data: {
+                  patient_id: $this.state.patient_id,
+                  patient_visit_id: $this.state.patient_visit_id
+                },
+                redux: {
+                  type: "EXIT_INSURANCE_GET_DATA",
+                  mappingName: "existinsurance"
+                },
+                afterSuccess: data => {
+                  debugger;
+                  data.mode_of_pay = "2";
+                  $this.setState(data[0]);
+                }
+              });
+            }
+            getMedicationList($this);
           }
-          getMedicationList($this);
-        }
-      );
-    }
-  });
+        );
+      }
+    });
+  } else {
+    successfulMessage({
+      message: "Invalid Input. Please select Location.",
+      title: "Warning",
+      icon: "warning"
+    });
+  }
 };
 
 const getMedicationList = $this => {
@@ -259,35 +265,20 @@ const getMedicationList = $this => {
       mappingName: "medicationlist"
     },
     afterSuccess: data => {
-      debugger;
-
-      for (let i = 0; i < data.length; i++) {
-        data[i].insured = $this.state.insured;
-        data[i].vat_applicable = "Y";
-        data[i].hims_d_services_id = $this.state.service_id;
-        data[i].unit_cost = $this.state.unit_cost = data[i].pharmacy_item = "Y";
-
-        data[i].primary_insurance_provider_id =
-          $this.state.primary_insurance_provider_id;
-        data[i].primary_network_office_id =
-          $this.state.primary_network_office_id;
-        data[i].primary_network_id = $this.state.primary_network_id;
-
-        data[i].secondary_insurance_provider_id =
-          $this.state.secondary_insurance_provider_id;
-        data[i].secondary_network_id = $this.state.secondary_network_id;
-        data[i].secondary_network_office_id =
-          $this.state.secondary_network_office_id;
-      }
       AddItems($this, data);
     }
   });
 };
 
-const AddItems = ($this, data) => {
-  let ItemInput = [
-    {
-      quantity: $this.state.quantity,
+const AddItems = ($this, ItemInput) => {
+  let inputObj = {};
+  let inputArray = [];
+  for (let i = 0; i < ItemInput.length; i++) {
+    inputObj = {
+      item_id: ItemInput[i].item_id,
+      insured: $this.state.insured,
+      vat_applicable: "Y",
+      hims_d_services_id: ItemInput[i].service_id,
       primary_insurance_provider_id: $this.state.primary_insurance_provider_id,
       primary_network_office_id: $this.state.primary_network_office_id,
       primary_network_id: $this.state.primary_network_id,
@@ -295,63 +286,44 @@ const AddItems = ($this, data) => {
       secondary_insurance_provider_id:
         $this.state.secondary_insurance_provider_id,
       secondary_network_id: $this.state.secondary_network_id,
-      secondary_network_office_id: $this.state.secondary_network_office_id
-    }
-  ];
-
-  $this.props.generateBill({
-    uri: "/billing/getBillDetails",
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+      location_id: $this.state.location_id
+    };
+    inputArray.push(inputObj);
+  }
+  debugger;
+  $this.props.getPrescriptionPOS({
+    uri: "/posEntry/getPrescriptionPOS",
     method: "POST",
-    data: ItemInput,
+    data: inputArray,
     redux: {
-      type: "BILL_GEN_GET_DATA",
+      type: "POS_PRES_GET_DATA",
       mappingName: "xxx"
     },
     afterSuccess: data => {
-      if (data.billdetails[0].pre_approval === "Y") {
-        successfulMessage({
-          message:
-            "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-          title: "Warning",
-          icon: "warning"
-        });
-      } else {
-        let existingservices = $this.state.pharmacy_stock_detail;
+      debugger;
 
-        if (data.billdetails.length !== 0) {
-          data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
-          data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+      let existingservices = $this.state.pharmacy_stock_detail;
 
-          data.billdetails[0].item_id = $this.state.item_id;
-          data.billdetails[0].item_category = $this.state.item_category;
-          data.billdetails[0].expiry_date = $this.state.expiry_date;
-          data.billdetails[0].batchno = $this.state.batchno;
-          data.billdetails[0].uom_id = $this.state.uom_id;
-          data.billdetails[0].operation = "-";
+      if (data.billdetails.length !== 0) {
+        data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
+        data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+        data.billdetails[0].operation = "-";
 
-          existingservices.splice(0, 0, data.billdetails[0]);
-        }
-
-        $this.setState({
-          item_id: null,
-          uom_id: null,
-          batchno: null,
-          expiry_date: null,
-          quantity: 0,
-          unit_cost: 0,
-          service_id: null
-        });
-
-        $this.props.PosHeaderCalculations({
-          uri: "/billing/billingCalculations",
-          method: "POST",
-          data: { billdetails: existingservices },
-          redux: {
-            type: "POS_HEADER_GEN_GET_DATA",
-            mappingName: "posheader"
-          }
-        });
+        existingservices.splice(0, 0, data.billdetails[0]);
       }
+      $this.setState({
+        pharmacy_stock_detail: existingservices
+      });
+      $this.props.PosHeaderCalculations({
+        uri: "/billing/billingCalculations",
+        method: "POST",
+        data: { billdetails: existingservices },
+        redux: {
+          type: "POS_HEADER_GEN_GET_DATA",
+          mappingName: "posheader"
+        }
+      });
     }
   });
 };

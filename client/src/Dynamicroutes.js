@@ -45,7 +45,8 @@ import DoctorCommission from "./Components/DoctorCommission/DoctorCommission";
 import HospitalServiceSetup from "./Components/HospitalServiceSetup/HospitalServiceSetup";
 import PointOfSale from "./Components/Pharmacy/PointOfSale/PointOfSale";
 import OPBillPendingList from "./Components/OPBillPendingList/OPBillPendingList";
-import MRDList from "./Components/MRD/MRDList/MRDList";
+import Mrd from "./Components/MRD/MRD";
+
 // function height() {
 //   let height =
 //     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -100,7 +101,7 @@ const componts = (selectedLang, breadStyle) => {
     ),
     PointOfSale: <PointOfSale SelectLanguage={selectedLang} />,
     OPBillPendingList: <OPBillPendingList SelectLanguage={selectedLang} />,
-    MedicalRecordList: <MRDList SelectLanguage={selectedLang} />
+    MRDList: <Mrd SelectLanguage={selectedLang} />
   };
 };
 
