@@ -233,17 +233,11 @@ class ResultEntryList extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            <IconButton
-                              color="primary"
-                              title="Accept"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <i
+                           <i
                                 className="fas fa-file-signature"
                                 aria-hidden="true"
                                 onClick={ResultEntryModel.bind(this, this, row)}
                               />
-                            </IconButton>
                           </span>
                         );
                       },

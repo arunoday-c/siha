@@ -234,12 +234,7 @@ class AccessionAcknowledgement extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            <IconButton
-                              color="primary"
-                              title="Accept"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <i
+                             <i
                                 className="fa fa-check"
                                 aria-hidden="true"
                                 onClick={AcceptandRejectSample.bind(
@@ -249,12 +244,7 @@ class AccessionAcknowledgement extends Component {
                                   "A"
                                 )}
                               />
-                            </IconButton>
-                            <IconButton
-                              color="primary"
-                              title="Reject"
-                              style={{ maxHeight: "4vh" }}
-                            >
+                            
                               <i
                                 className="fa fa-times"
                                 aria-hidden="true"
@@ -265,7 +255,6 @@ class AccessionAcknowledgement extends Component {
                                   "R"
                                 )}
                               />
-                            </IconButton>
                           </span>
                         );
                       },
