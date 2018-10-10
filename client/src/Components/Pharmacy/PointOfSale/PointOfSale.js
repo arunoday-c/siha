@@ -79,14 +79,9 @@ class PointOfSale extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // let output = {};
     let posHeaderOut = {};
-    // if (
-    //   nextProps.existinsurance !== undefined &&
-    //   nextProps.existinsurance.length !== 0
-    // ) {
-    //   output = nextProps.existinsurance[0];
-    // }
+    debugger;
+
     if (nextProps.posheader !== undefined && nextProps.posheader.length !== 0) {
       nextProps.posheader.patient_payable_h =
         nextProps.posheader.patient_payable || this.state.patient_payable;
@@ -110,7 +105,6 @@ class PointOfSale extends Component {
     }
 
     this.setState({ ...this.state, ...posHeaderOut });
-    // this.setState({ ...this.state, ...billOut, ...output });
   }
 
   render() {
@@ -234,18 +228,23 @@ class PointOfSale extends Component {
                     value: this.state.visit_code,
                     events: {
                       onChange: Patientchange.bind(this, this)
+                    },
+                    others: {
+                      disabled: this.state.case_type === "O" ? true : false
                     }
-                    // others: {
-                    //   disabled: true
-                    // }
                   }}
                 />
-                <div className="col-lg-2 form-group print_actions">
-                  <span
-                    className="fas fa-search fa-2x"
-                    onClick={VisitSearch.bind(this, this)}
-                  />
-                </div>
+
+                {this.state.case_type === "OP" ? (
+                  <div className="col-lg-2 form-group print_actions">
+                    <span
+                      className="fas fa-search fa-2x"
+                      disabled={this.state.case_type === "O" ? false : true}
+                      onClick={VisitSearch.bind(this, this)}
+                    />
+                  </div>
+                ) : null}
+
                 {/* <AlagehFormGroup
                   div={{ className: "col-lg-3" }}
                   label={{
@@ -391,7 +390,8 @@ function mapStateToProps(state) {
     posheader: state.posheader,
     pospatients: state.pospatients,
     posentry: state.posentry,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
+    posheader: state.posheader
   };
 }
 
@@ -404,7 +404,8 @@ function mapDispatchToProps(dispatch) {
       getPosEntry: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       getMedicationList: AlgaehActions,
-      generateBill: AlgaehActions
+      getPrescriptionPOS: AlgaehActions,
+      PosHeaderCalculations: AlgaehActions
     },
     dispatch
   );

@@ -1,7 +1,12 @@
 import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
-import { addPosEntry, getPosEntry, updatePosEntry } from "../model/posEntry";
+import {
+  addPosEntry,
+  getPosEntry,
+  updatePosEntry,
+  getPrescriptionPOS
+} from "../model/posEntry";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -45,6 +50,21 @@ export default ({ config, db }) => {
       res.status(httpStatus.ok).json({
         success: true,
         records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad :to get Prescription POS
+  api.post(
+    "/getPrescriptionPOS",
+    getPrescriptionPOS,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
       });
       next();
     },

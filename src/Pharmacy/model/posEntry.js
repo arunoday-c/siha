@@ -9,7 +9,7 @@ import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../../utils/logging";
 import moment from "moment";
-
+import { getBillDetailsFunctionality } from "../../model/billing";
 import { updateIntoItemLocation } from "./commonFunction";
 import Promise from "bluebird";
 
@@ -348,8 +348,41 @@ let updatePosEntry = (req, res, next) => {
   }
 };
 
+//get Prescription POS
+let getPrescriptionPOS = (req, res, next) => {
+  debugFunction("getPrescriptionPOS");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      //Select Query hims_mitem_location... input item_id and location_id
+      //check then
+      new Promise((resolve, reject) => {
+        try {
+          getBillDetailsFunctionality(req, res, next, resolve);
+        } catch (e) {
+          reject(e);
+        }
+      }).then(result => {
+        //expiry_date, uom_id, and batchno add with the result
+        debugLog("result", result);
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addPosEntry,
   getPosEntry,
-  updatePosEntry
+  updatePosEntry,
+  getPrescriptionPOS
 };
