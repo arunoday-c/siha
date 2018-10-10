@@ -278,15 +278,20 @@ class PointOfSale extends Component {
                       valueField: "value",
                       data: GlobalVariables.MODE_OF_PAY
                     },
-
+                    others: {
+                      disabled: this.state.case_type === "O" ? false : true
+                    },
                     onChange: changeTexts.bind(this, this)
                   }}
                 />
               </div>
             </div>
           </div>
-
-          <DisplayInsuranceDetails POSIOputs={this.state} />
+          <div>
+            {this.state.case_type === "O" ? null : (
+              <DisplayInsuranceDetails POSIOputs={this.state} />
+            )}
+          </div>
           <div className="hptl-phase1-pos-form">
             <MyContext.Provider
               value={{
@@ -358,7 +363,8 @@ function mapStateToProps(state) {
     itemlist: state.itemlist,
     locations: state.locations,
     posheader: state.posheader,
-    pospatients: state.pospatients
+    pospatients: state.pospatients,
+    posentry: state.posentry
   };
 }
 
@@ -367,7 +373,8 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getPatientDetails: AlgaehActions
+      getPatientDetails: AlgaehActions,
+      getPosEntry: AlgaehActions
     },
     dispatch
   );
