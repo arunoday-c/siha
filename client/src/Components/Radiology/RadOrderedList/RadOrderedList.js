@@ -304,7 +304,10 @@ class RadOrderedList extends Component {
                   ]}
                   keyId="patient_code"
                   dataSource={{
-                    data: this.props.radtestlist
+                    data:
+                      this.props.radtestlist === undefined
+                        ? []
+                        : this.props.radtestlist
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />

@@ -109,11 +109,10 @@ class PatientMRD extends Component {
               </button>
             </div>
           </div>
-        </div>
         {/* Top Bar End */}
 
         {/* Bottom Body Start */}
-        <div className="patientContentArea">
+        <div className="patientContentArea spacing-push">
           <div className="row">
             <div className="col-lg-4">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
@@ -485,7 +484,7 @@ class PatientMRD extends Component {
             </div>
           </div>
         </div>
-        {/* Bottom Body End */}
+      </div>
       </div>
       //Main Render End
     );

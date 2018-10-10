@@ -41,7 +41,7 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "visit",
         searchQuery:
-          "SELECT full_name, patient_code, pv.visit_code, pv.patient_id, pv.hims_f_patient_visit_id, pv.insured \
+          "SELECT full_name, patient_code, pv.visit_code, pv.visit_date, pv.patient_id, pv.hims_f_patient_visit_id, pv.insured \
           FROM hims_f_patient inner join hims_f_patient_visit pv on pv.patient_id=hims_f_patient.hims_d_patient_id",
         orderBy: "pv.hims_f_patient_visit_id desc"
       },
@@ -52,6 +52,13 @@ let algaehSearchConfig = searchName => {
           "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_stock_header\
           where record_status ='A'",
         orderBy: "hims_f_pharmacy_stock_header_id desc"
+      },
+      {
+        searchName: "POSEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_pos_header\
+          where record_status ='A'",
+        orderBy: "hims_f_pharmacy_pos_header_id desc"
       }
       // visit
     ]

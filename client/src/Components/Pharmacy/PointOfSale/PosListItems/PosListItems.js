@@ -515,7 +515,7 @@ class PosListItems extends Component {
                             ]}
                             keyId="service_type_id"
                             dataSource={{
-                              data: this.state.PrescriptionItemList
+                              data: this.state.pharmacy_stock_detail
                             }}
                             isEditable={true}
                             paging={{ page: 0, rowsPerPage: 10 }}
@@ -648,8 +648,8 @@ class PosListItems extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.patient_res
-                                  ? "₹" + this.state.patient_res
+                                {this.state.patient_responsibility
+                                  ? "₹" + this.state.patient_responsibility
                                   : "₹0.00"}
                               </h6>
                             </div>
@@ -697,8 +697,8 @@ class PosListItems extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.company_res
-                                  ? "₹" + this.state.company_res
+                                {this.state.company_responsibility
+                                  ? "₹" + this.state.company_responsibility
                                   : "₹0.00"}
                               </h6>
                             </div>
@@ -723,8 +723,8 @@ class PosListItems extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.company_payble
-                                  ? "₹" + this.state.company_payble
+                                {this.state.company_payable
+                                  ? "₹" + this.state.company_payable
                                   : "₹0.00"}
                               </h6>
                             </div>
@@ -745,8 +745,8 @@ class PosListItems extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.sec_company_res
-                                  ? "₹" + this.state.sec_company_res
+                                {this.state.sec_company_responsibility
+                                  ? "₹" + this.state.sec_company_responsibility
                                   : "₹0.00"}
                               </h6>
                             </div>
@@ -771,8 +771,8 @@ class PosListItems extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.sec_company_paybale
-                                  ? "₹" + this.state.sec_company_paybale
+                                {this.state.sec_company_payable
+                                  ? "₹" + this.state.sec_company_payable
                                   : "₹0.00"}
                               </h6>
                             </div>

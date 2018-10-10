@@ -18,7 +18,10 @@ import {
   getCtrlCode,
   PatientSearch,
   ClearData,
-  Patientchange
+  Patientchange,
+  SavePosEnrty,
+  PostPosEntry,
+  VisitSearch
 } from "./PointOfSaleEvents";
 import "./PointOfSale.css";
 import "../../../styles/site.css";
@@ -28,6 +31,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import PosListItems from "./PosListItems/PosListItems";
 import MyContext from "../../../utils/MyContext";
 import POSIOputs from "../../../Models/POS";
+import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails";
 
 class PointOfSale extends Component {
   constructor(props) {
@@ -148,16 +152,16 @@ class PointOfSale extends Component {
                   label={{ forceLabel: "POS Number", returnText: true }}
                 />
               ),
-              value: this.state.patient_code,
-              selectValue: "patient_code",
+              value: this.state.pos_number,
+              selectValue: "pos_number",
               events: {
                 onChange: getCtrlCode.bind(this, this)
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "frontDesk.patients"
+                fieldName: "pointofsaleEntry.POSEntry"
               },
-              searchName: "patients"
+              searchName: "POSEntry"
             }}
             userArea={
               <AlgaehDateHandler
@@ -225,6 +229,29 @@ class PointOfSale extends Component {
                 <AlagehFormGroup
                   div={{ className: "col-lg-3" }}
                   label={{
+                    forceLabel: "Visit Code"
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "visit_code",
+                    value: this.state.visit_code,
+                    events: {
+                      onChange: Patientchange.bind(this, this)
+                    }
+                    // others: {
+                    //   disabled: true
+                    // }
+                  }}
+                />
+                <div className="col-lg-2 form-group print_actions">
+                  <span
+                    className="fas fa-search fa-2x"
+                    onClick={VisitSearch.bind(this, this)}
+                  />
+                </div>
+                {/* <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
                     forceLabel: "Patient Code"
                   }}
                   textBox={{
@@ -238,22 +265,27 @@ class PointOfSale extends Component {
                     //   disabled: true
                     // }
                   }}
-                />
-
-                <div className="col-lg-2 form-group print_actions">
-                  <span
-                    className="fas fa-search fa-2x"
-                    onClick={PatientSearch.bind(this, this)}
-                  />
-                </div>
+                /> */}
               </div>
             </div>
             <div className="col-lg-4">
               <div className="row">
-                <div className="col-lg-6">
+                <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Patient Name"
+                      forceLabel: "Patient Code"
+                    }}
+                  />
+                  <h6>
+                    {this.state.patient_code
+                      ? this.state.patient_code
+                      : "Patient Name"}
+                  </h6>
+                </div>
+                <div className="col-lg-4">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Patient Code"
                     }}
                   />
                   <h6>
@@ -264,7 +296,7 @@ class PointOfSale extends Component {
                 </div>
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-6" }}
+                  div={{ className: "col-lg-4" }}
                   label={{ forceLabel: "Mode of Payment" }}
                   selector={{
                     name: "mode_of_pay",
@@ -275,12 +307,19 @@ class PointOfSale extends Component {
                       valueField: "value",
                       data: GlobalVariables.MODE_OF_PAY
                     },
-
+                    others: {
+                      disabled: this.state.case_type === "O" ? false : true
+                    },
                     onChange: changeTexts.bind(this, this)
                   }}
                 />
               </div>
             </div>
+          </div>
+          <div>
+            {this.state.case_type === "O" ? null : (
+              <DisplayInsuranceDetails POSIOputs={this.state} />
+            )}
           </div>
           <div className="hptl-phase1-pos-form">
             <MyContext.Provider
@@ -301,7 +340,7 @@ class PointOfSale extends Component {
                     <button
                       type="button"
                       className="btn btn-primary"
-                      // onClick={this.SavePatientDetails.bind(this)}
+                      onClick={SavePosEnrty.bind(this, this)}
                       disabled={this.state.saveEnable}
                     >
                       <AlgaehLabel
@@ -327,7 +366,7 @@ class PointOfSale extends Component {
                     <button
                       type="button"
                       className="btn btn-other"
-                      // onClick={this.ShowRefundScreen.bind(this)}
+                      onClick={PostPosEntry.bind(this, this)}
                       disabled={this.state.postEnable}
                     >
                       <AlgaehLabel
@@ -353,7 +392,8 @@ function mapStateToProps(state) {
     itemlist: state.itemlist,
     locations: state.locations,
     posheader: state.posheader,
-    pospatients: state.pospatients
+    pospatients: state.pospatients,
+    posentry: state.posentry
   };
 }
 
@@ -362,7 +402,8 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getPatientDetails: AlgaehActions
+      getPatientDetails: AlgaehActions,
+      getPosEntry: AlgaehActions
     },
     dispatch
   );

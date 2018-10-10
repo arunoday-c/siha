@@ -199,7 +199,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
-  if ([e.target.name] == "sheet_discount_percentage") {
+  if (e.target.name === "sheet_discount_percentage") {
     sheet_discount_percentage = parseFloat(e.target.value);
     sheet_discount_amount = 0;
   } else {

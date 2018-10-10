@@ -38,13 +38,13 @@ const calculateRecipt = ($this, context) => {
 
   clearInterval(intervalId);
   intervalId = setInterval(() => {
-    $this.props.billingCalculations({
+    $this.props.reciptCalculations({
       uri: "/billing/billingCalculations",
       method: "POST",
       data: serviceInput,
       redux: {
         type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
+        mappingName: "posheader"
       }
     });
     clearInterval(intervalId);

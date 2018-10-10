@@ -87,21 +87,9 @@
           "updated_date": "2018-10-08 20:17:54",
           "visa_status": "A",
           "$loki": 7
-        },
-        {
-          "hims_d_visa_type_id": 52,
-          "visa_type_code": "VISA0002",
-          "visa_type": " Multiple Entry Visa",
-          "arabic_visa_type": null,
-          "created_by": 3,
-          "created_date": "2018-10-09 12:19:18",
-          "updated_by": null,
-          "updated_date": "2018-10-08 23:49:17",
-          "visa_status": "A",
-          "$loki": 8
         }
       ],
-      "idIndex": [1, 2, 3, 4, 5, 6, 7, 8],
+      "idIndex": [1, 2, 3, 4, 5, 6, 7],
       "binaryIndices": {},
       "constraints": null,
       "uniqueNames": [],
@@ -122,7 +110,7 @@
       "autoupdate": false,
       "serializableIndices": true,
       "ttl": null,
-      "maxId": 8,
+      "maxId": 7,
       "DynamicViews": [],
       "events": {
         "insert": [],

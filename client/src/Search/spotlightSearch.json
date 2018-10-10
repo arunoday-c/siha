@@ -58,5 +58,45 @@
         "label": "Posted"
       }
     ]
+  },
+  "pointofsaleEntry": {
+    "POSEntry": [
+      {
+        "fieldName": "pos_number",
+        "label": "POS Number"
+      },
+      {
+        "fieldName": "patient_id",
+        "label": "Patient Id"
+      },
+      {
+        "fieldName": "pos_date",
+        "label": "Pos Date"
+      },
+      {
+        "fieldName": "posted",
+        "label": "Posted"
+      }
+    ]
+  },
+  "VisitDetails": {
+    "VisitList": [
+      {
+        "fieldName": "visit_code",
+        "label": "Visit Code"
+      },
+      {
+        "fieldName": "visit_date",
+        "label": "Visit Date"
+      },
+      {
+        "fieldName": "patient_code",
+        "label": "Patient Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Patient Name"
+      }
+    ]
   }
 }

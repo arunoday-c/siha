@@ -187,7 +187,8 @@ class Assessment extends Component {
                               </span>
                             );
                           },
-                          disabled: true
+                          disabled: true,
+                          others:{maxWidth:50}
                         },
                         {
                           fieldName: "diagnosis_type",
