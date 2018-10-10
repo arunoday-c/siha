@@ -2,7 +2,7 @@ import { Router } from "express";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
-import { getPatientMrdList } from "../model/mrd";
+import { getPatientMrdList, getPatientEncounterDetails } from "../model/mrd";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -11,6 +11,21 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientMrdList",
     getPatientMrdList,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to get Patient Encounter Details
+  api.get(
+    "/getPatientEncounterDetails",
+    getPatientEncounterDetails,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

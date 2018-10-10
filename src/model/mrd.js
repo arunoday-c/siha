@@ -14,8 +14,6 @@ import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import { logger, debugFunction, debugLog } from "../utils/logging";
 
-//
-
 //created by irfan: to get Patient Mrd List
 let getPatientMrdList = (req, res, next) => {
   let selectWhere = {
@@ -67,4 +65,39 @@ let getPatientMrdList = (req, res, next) => {
   }
 };
 
-module.exports = { getPatientMrdList };
+//created by irfan: to get Patient Encounter Details
+let getPatientEncounterDetails = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_encounter_id, PE.patient_id,P.full_name,PE.provider_id,E.full_name as provider_name, visit_id,V.insured,\
+        V.sub_department_id,SD.hims_d_sub_department_id,\
+        SD.sub_department_name,PE.episode_id,PE.encounter_id,PE.updated_date as encountered_date\
+        from hims_f_patient_encounter PE,hims_f_patient P,hims_d_employee E,hims_f_patient_visit V,hims_d_sub_department SD\
+        where PE.record_status='A' and P.record_status='A' and E.record_status='A' and V.record_status='A' and SD.record_status='A'\
+         and PE.patient_id=P.hims_d_patient_id and E.hims_d_employee_id=PE.provider_id\
+         and V.hims_f_patient_visit_id=PE.visit_id and V.sub_department_id=SD.hims_d_sub_department_id and\
+         encounter_id <>'null' and PE.patient_id=?\
+         order by encountered_date desc;",
+        [req.query.patient_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { getPatientMrdList, getPatientEncounterDetails };
