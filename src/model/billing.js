@@ -986,10 +986,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
             req.body[m].services_id = servicesDetails.hims_d_services_id;
 
             //Calculation Declarations
-            let unit_cost =
-              servicesDetails.unit_cost === undefined
-                ? 0
-                : servicesDetails.unit_cost;
+            let unit_cost = 0;
 
             let gross_amount = 0,
               net_amout = 0,
@@ -1046,11 +1043,6 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               servicesDetails.approval_limit_yesno === undefined
                 ? "N"
                 : servicesDetails.approval_limit_yesno;
-
-            let PharmacyItem =
-              servicesDetails.pharmacy_item === undefined
-                ? "N"
-                : servicesDetails.pharmacy_item;
 
             let apprv_status =
               servicesDetails.apprv_status === undefined
@@ -1179,6 +1171,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     discount_percentage = (discount_amout / gross_amount) * 100;
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
+                    discount_amout = math.round(discount_amout, 2);
                   }
                   net_amout = gross_amount - discount_amout;
 
@@ -1270,6 +1263,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                       copay_percentage = policydtls.copay_percent;
                     }
                     copay_amount = (net_amout * copay_percentage) / 100;
+
                     debugLog("Copay Amount:", copay_amount);
                   }
 
@@ -1347,11 +1341,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     });
                   }
                 } else {
-                  if (PharmacyItem == "N") {
-                    unit_cost = records.standard_fee;
-                  } else {
-                    unit_cost = unit_cost;
-                  }
+                  unit_cost = records.standard_fee;
 
                   gross_amount = quantity * unit_cost;
 
@@ -1359,6 +1349,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     discount_percentage = (discount_amout / gross_amount) * 100;
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
+                    discount_amout = math.round(discount_amout, 2);
                   }
                   net_amout = gross_amount - discount_amout;
                   patient_resp = net_amout;
@@ -1571,7 +1562,13 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     approval_limit_yesno: approval_limit_yesno,
                     ser_net_amount: ser_net_amount,
                     ser_gross_amt: ser_gross_amt,
-                    icd_code: icd_code
+                    icd_code: icd_code,
+
+                    item_id: records.item_id,
+                    item_category: records.item_category,
+                    expiry_date: records.expiry_date,
+                    batchno: records.batchno,
+                    uom_id: records.uom_id
                   }
                 );
 

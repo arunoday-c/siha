@@ -52,7 +52,6 @@ class CommissionSetup extends Component {
   }
 
   componentDidMount() {
-    debugger;
     this.props.getDoctorServiceTypeCommission({
       uri: "/employee/getDoctorServiceTypeCommission",
       data: { provider_id: this.state.hims_d_employee_id },
@@ -195,10 +194,7 @@ class CommissionSetup extends Component {
                         className="col-lg-1 actions"
                         style={{ paddingTop: "4%" }}
                       >
-                        <a
-                          href="javascript:;"
-                          className="btn btn-primary btn-circle active"
-                        >
+                        <a className="btn btn-primary btn-circle active">
                           <i
                             className="fas fa-plus"
                             onClick={AddSeviceTypeComm.bind(

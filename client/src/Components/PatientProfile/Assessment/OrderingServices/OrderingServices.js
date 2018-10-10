@@ -9,8 +9,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete,
-  Tooltip
+  AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 
 import {

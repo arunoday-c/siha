@@ -120,7 +120,6 @@ class OPBillingAr extends Component {
           mappingName: "patients"
         },
         afterSuccess: data => {
-          debugger;
           if ($this.state.visit_id !== null) {
             for (let i = 0; i < data.visitDetails.length; i++) {
               if (
@@ -132,11 +131,11 @@ class OPBillingAr extends Component {
             }
             AlgaehLoader({ show: false });
           }
-          debugger;
+
           let x = Enumerable.from($this.props.patienttype)
             .where(
               w =>
-                w.hims_d_patient_type_id ==
+                w.hims_d_patient_type_id ===
                 data.patientRegistration.patient_type
             )
             .toArray();
@@ -386,7 +385,6 @@ class OPBillingAr extends Component {
           >
             <PatientDetails BillingIOputs={this.state} />
             <DisplayVisitDetails BillingIOputs={this.state} />
-            {/* <DisplayInsuranceDetails BillingIOputs={this.state} /> */}
             <OPBillingDetails BillingIOputs={this.state} />
           </MyContext.Provider>
         </div>

@@ -1,4 +1,4 @@
-let texthandlerInterval = null;
+//let texthandlerInterval = null;
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;

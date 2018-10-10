@@ -158,17 +158,17 @@ class VisitType extends Component {
 
   addVisit(e) {
     e.preventDefault();
-    if (this.state.visit_type_code.length == 0) {
+    if (this.state.visit_type_code.length === 0) {
       this.setState({
         visit_type_code_error: true,
         visit_type_code_error_txt: "Code Cannot be Empty"
       });
-    } else if (this.state.visit_type_desc.length == 0) {
+    } else if (this.state.visit_type_desc.length === 0) {
       this.setState({
         visit_type_error: true,
         visit_type_error_txt: "Name Cannot be Empty"
       });
-    } else if (this.state.arabic_visit_type_desc.length == 0) {
+    } else if (this.state.arabic_visit_type_desc.length === 0) {
       this.setState({
         arabic_visit_type_error: true,
         arabic_visit_type_error_txt: "Arabic Name Cannot be Empty"
@@ -187,7 +187,7 @@ class VisitType extends Component {
         uri: "/visitType/add",
         data: this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             this.resetState();
             //Handle Successful Add here
             this.props.getVisittypes({
@@ -496,7 +496,7 @@ class VisitType extends Component {
                       fieldName: "visit_status",
                       label: <AlgaehLabel label={{ fieldName: "status" }} />,
                       displayTemplate: row => {
-                        return row.visit_status == "A" ? "Active" : "Inactive";
+                        return row.visit_status === "A" ? "Active" : "Inactive";
                       },
                       editorTemplate: row => {
                         return (

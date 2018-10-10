@@ -47,7 +47,10 @@ class PatientMRD extends Component {
               </button>
             </div>
             <div className="patientImg box-shadow">
-              <img src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" />
+              <img
+                src={require("../../../assets/images/nobody_m.original.jpg")}
+                alt="Patient profile"
+              />
             </div>
             <div className="patientName">
               <h6>
@@ -142,6 +145,7 @@ class PatientMRD extends Component {
               >
                 <img
                   src={require("../../common/BreadCrumb/images/print.png")}
+                  alt="Print icon"
                 />
               </button>
             </div>

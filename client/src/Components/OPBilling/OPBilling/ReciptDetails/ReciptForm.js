@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import AddReciptForm from "./AddReciptForm.js";
-import styles from "./AddReciptForm.scss";
 
 export default class ReciptForm extends Component {
   constructor(props) {

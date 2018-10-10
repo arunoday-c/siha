@@ -1,4 +1,4 @@
-import React, { PureComponent, PropTypes } from "react";
+import React, { PureComponent } from "react";
 
 import RichTextEditor from "react-quill";
 import "react-quill/dist/quill.snow.css";

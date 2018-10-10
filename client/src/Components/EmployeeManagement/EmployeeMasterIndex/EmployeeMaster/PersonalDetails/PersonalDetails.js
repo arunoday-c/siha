@@ -151,7 +151,7 @@ class PersonalDetails extends PureComponent {
                           value: this.state.title_id,
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "title"
                                 : "arabic_title",
                             valueField: "his_d_title_id",
@@ -480,7 +480,10 @@ class PersonalDetails extends PureComponent {
                             multiple={false}
                             name="image"
                           >
-                            <img src={this.state.filePreview} />
+                            <img
+                              src={this.state.filePreview}
+                              alt="File Privew"
+                            />
 
                             <div className="attach-design text-center">
                               <AlgaehLabel

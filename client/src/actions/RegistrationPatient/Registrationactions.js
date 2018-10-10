@@ -1,6 +1,5 @@
 //PatientDetals
 
-"use strict";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function postPatientDetails(dataValue, callback) {
