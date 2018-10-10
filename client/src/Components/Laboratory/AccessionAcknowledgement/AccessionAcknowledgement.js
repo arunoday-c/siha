@@ -111,13 +111,12 @@ class AccessionAcknowledgement extends Component {
               }
             ]}
           />
-          <div
-            className="container-fluid"
-            style={{ marginTop: "85px", minHeight: "80vh" }}
-          >
-            <div className="row">
+         
+            <div className="row inner-top-search" style={{marginTop:"75px",paddingBottom:"10px"}}>
+            <div className="col-lg-6">
+              <div className="row">
               <AlgaehDateHandler
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{ fieldName: "from_date" }}
                 textBox={{ className: "txt-fld", name: "from_date" }}
                 events={{
@@ -126,7 +125,7 @@ class AccessionAcknowledgement extends Component {
                 value={this.state.from_date}
               />
               <AlgaehDateHandler
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{ fieldName: "to_date" }}
                 textBox={{ className: "txt-fld", name: "to_date" }}
                 events={{
@@ -135,7 +134,7 @@ class AccessionAcknowledgement extends Component {
                 value={this.state.to_date}
               />
               <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{
                   fieldName: "patient_code"
                 }}
@@ -158,8 +157,12 @@ class AccessionAcknowledgement extends Component {
                   onClick={PatientSearch.bind(this, this)}
                 />
               </div>
+            </div>
+          </div>
+<div className="col-lg-6">
+<div className="row">
               <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{
                   fieldName: "proiorty",
                   isImp: false
@@ -177,7 +180,7 @@ class AccessionAcknowledgement extends Component {
                 }}
               />
               <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
+                div={{ className: "col" }}
                 label={{
                   fieldName: "status",
                   isImp: false
@@ -195,107 +198,36 @@ class AccessionAcknowledgement extends Component {
                 }}
               />
 
-              <div className="col-lg-1" style={{ paddingTop: "4vh" }}>
+              <div className="col" style={{ paddingTop: "21px" }}>
                 <button
                   className="btn btn-primary btn-sm"
                   type="button"
                   onClick={getSampleCollectionDetails.bind(this, this)}
                 >
-                  Load Data
+                  Load
+                </button>
+                 <button
+                   className="btn btn-default btn-sm" style={{marginLeft:"10px"}}
+                  type="button"
+                  onClick={Refresh.bind(this, this)}
+                >
+                  Clear
                 </button>
               </div>
-
-              <div className="col-lg-1">
-                <Tooltip id="tooltip-icon" title="Refresh">
-                  <IconButton className="go-button" color="primary">
-                    <i
-                      className="fas fa-sync-alt"
-                      aria-hidden="true"
-                      onClick={Refresh.bind(this, this)}
-                    />
-                  </IconButton>
-                </Tooltip>
-              </div>
             </div>
+              </div>
+        </div>
 
-            <div className="row form-details">
+            <div className="row">
               <div className="col-lg-12">
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
+                */}
+                 <div className="portlet-body">
                 <AlgaehDataGrid
                   id="samplecollection_grid"
                   columns={[
-                    {
-                      fieldName: "patient_code",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                      ),
-                      disabled: false
-                    },
-                    {
-                      fieldName: "full_name",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
-                      ),
-                      disabled: true
-                    },
-                    {
-                      fieldName: "ordered_date",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "ordered_date" }} />
-                      ),
-                      displayTemplate: row => {
-                        return (
-                          <span>{this.changeDateFormat(row.ordered_date)}</span>
-                        );
-                      },
-                      disabled: true
-                    },
-                    {
-                      fieldName: "test_type",
-                      label: <AlgaehLabel label={{ fieldName: "proiorty" }} />,
-                      displayTemplate: row => {
-                        return row.test_type == "S" ? "Stat" : "Rotuine";
-                      },
-                      disabled: true
-                    },
-                    {
-                      fieldName: "status",
-                      label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                      displayTemplate: row => {
-                        return row.status == "O"
-                          ? "Ordered"
-                          : row.status == "CL"
-                            ? "Collected"
-                            : row.status == "CN"
-                              ? "Cancelled"
-                              : row.status == "CF"
-                                ? "Confirmed"
-                                : "Validated";
-                      },
-                      disabled: true
-                    },
-                    {
-                      fieldName: "lab_id_number",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />
-                      ),
-                      disabled: true
-                    },
-                    {
-                      fieldName: "sample_status",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Sample Status" }} />
-                      ),
-                      displayTemplate: row => {
-                        return row.sample_status == "N"
-                          ? "Not Done"
-                          : row.sample_status == "A"
-                            ? "Accepted"
-                            : row.sample_status == "R"
-                              ? "Rejected"
-                              : null;
-                      },
-                      disabled: true
-                    },
+
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
@@ -336,18 +268,101 @@ class AccessionAcknowledgement extends Component {
                             </IconButton>
                           </span>
                         );
-                      }
+                      },
+                       others:{maxWidth:120,resizable: false,style:{textAlign:"center"}}
+                    },
+                    {
+                      fieldName: "patient_code",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      ),
+                      disabled: false,
+                       others:{resizable: false,style:{textAlign:"center"}}
+                    },
+                    {
+                      fieldName: "full_name",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                      ),
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"left"}}
+                    },
+                    {
+                      fieldName: "ordered_date",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "ordered_date" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>{this.changeDateFormat(row.ordered_date)}</span>
+                        );
+                      },
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"center"}}
+                    },
+                    {
+                      fieldName: "test_type",
+                      label: <AlgaehLabel label={{ fieldName: "proiorty" }} />,
+                      displayTemplate: row => {
+                        return row.test_type == "S" ? "Stat" : "Rotuine";
+                      },
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"center"}}
+                    },
+                    {
+                      fieldName: "status",
+                      label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                      displayTemplate: row => {
+                        return row.status == "O"
+                          ? "Ordered"
+                          : row.status == "CL"
+                            ? "Collected"
+                            : row.status == "CN"
+                              ? "Cancelled"
+                              : row.status == "CF"
+                                ? "Confirmed"
+                                : "Validated";
+                      },
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"center"}}
+                    },
+                    {
+                      fieldName: "lab_id_number",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />
+                      ),
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"center"}}
+                    },
+                    {
+                      fieldName: "sample_status",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Sample Status" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.sample_status == "N"
+                          ? "Not Done"
+                          : row.sample_status == "A"
+                            ? "Accepted"
+                            : row.sample_status == "R"
+                              ? "Rejected"
+                              : null;
+                      },
+                      disabled: true,
+                       others:{resizable: false,style:{textAlign:"center"}}
                     }
                   ]}
                   keyId="patient_code"
                   dataSource={{
                     data: this.state.sample_collection
                   }}
+                  noDataText="No data available for selected period"
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
             </div>
-          </div>
+              </div>
+            </div>
         </div>
       </React.Fragment>
     );
