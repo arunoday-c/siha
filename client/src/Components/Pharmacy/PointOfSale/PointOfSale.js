@@ -20,7 +20,8 @@ import {
   ClearData,
   Patientchange,
   SavePosEnrty,
-  PostPosEntry
+  PostPosEntry,
+  VisitSearch
 } from "./PointOfSaleEvents";
 import "./PointOfSale.css";
 import "../../../styles/site.css";
@@ -228,6 +229,29 @@ class PointOfSale extends Component {
                 <AlagehFormGroup
                   div={{ className: "col-lg-3" }}
                   label={{
+                    forceLabel: "Visit Code"
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "visit_code",
+                    value: this.state.visit_code,
+                    events: {
+                      onChange: Patientchange.bind(this, this)
+                    }
+                    // others: {
+                    //   disabled: true
+                    // }
+                  }}
+                />
+                <div className="col-lg-2 form-group print_actions">
+                  <span
+                    className="fas fa-search fa-2x"
+                    onClick={VisitSearch.bind(this, this)}
+                  />
+                </div>
+                {/* <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
                     forceLabel: "Patient Code"
                   }}
                   textBox={{
@@ -241,22 +265,27 @@ class PointOfSale extends Component {
                     //   disabled: true
                     // }
                   }}
-                />
-
-                <div className="col-lg-2 form-group print_actions">
-                  <span
-                    className="fas fa-search fa-2x"
-                    onClick={PatientSearch.bind(this, this)}
-                  />
-                </div>
+                /> */}
               </div>
             </div>
             <div className="col-lg-4">
               <div className="row">
-                <div className="col-lg-6">
+                <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Patient Name"
+                      forceLabel: "Patient Code"
+                    }}
+                  />
+                  <h6>
+                    {this.state.patient_code
+                      ? this.state.patient_code
+                      : "Patient Name"}
+                  </h6>
+                </div>
+                <div className="col-lg-4">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Patient Code"
                     }}
                   />
                   <h6>
@@ -267,7 +296,7 @@ class PointOfSale extends Component {
                 </div>
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-6" }}
+                  div={{ className: "col-lg-4" }}
                   label={{ forceLabel: "Mode of Payment" }}
                   selector={{
                     name: "mode_of_pay",
