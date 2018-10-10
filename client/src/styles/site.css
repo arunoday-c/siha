@@ -242,8 +242,7 @@ body {
   margin: 0 auto; }
 
 :global button {
-  cursor: pointer;
-  margin-left: 15px; }
+  cursor: pointer; }
 
 :global .hide {
   display: none; }

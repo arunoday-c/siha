@@ -317,7 +317,7 @@ class DeptMaster extends Component {
                   }
                 }}
                 isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
+                paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   // onDelete: this.deleteVisaType.bind(this),
                   onDelete: row => {},

@@ -13,8 +13,10 @@ import "./styles/site.css";
 
 import { getTokenDetals } from "./actions/Login/Loginactions.js";
 getTokenDetals();
-
-const middleware = applyMiddleware(thunk, logger);
+const middleware =
+  process.env.NODE_ENV === "development"
+    ? applyMiddleware(thunk, logger)
+    : applyMiddleware(thunk);
 
 const theme = createMuiTheme({
   palette: {

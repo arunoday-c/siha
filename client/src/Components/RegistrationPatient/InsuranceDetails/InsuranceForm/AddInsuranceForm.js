@@ -86,7 +86,6 @@ class AddInsuranceForm extends Component {
   }
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -316,7 +315,7 @@ class AddInsuranceForm extends Component {
                             name="image"
                           >
                             <img
-                              // className="preview-image"
+                              alt="Attach back desk"
                               src={this.state.frontSide}
                               style={{ width: "100%", height: "101px" }}
                             />
@@ -344,7 +343,7 @@ class AddInsuranceForm extends Component {
                             name="image"
                           >
                             <img
-                              // className="preview-image"
+                              alt="Attach front side"
                               src={this.state.backSide}
                               style={{ width: "100%", height: "101px" }}
                             />

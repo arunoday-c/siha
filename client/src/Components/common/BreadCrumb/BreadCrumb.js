@@ -125,7 +125,6 @@ class BreadCrumb extends PureComponent {
                 {this.props.printArea.menuitems !== undefined ? (
                   <ul className="printActionMenu">
                     {this.props.printArea.menuitems.map((menu, index) => {
-                      console.log("menu ", menu);
                       return (
                         <li key={index} {...menu.events}>
                           <span>{menu.label}</span>
