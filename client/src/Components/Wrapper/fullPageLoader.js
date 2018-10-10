@@ -1,24 +1,10 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "./loader.css";
-const fullPageLoader = document.getElementById("fullPageLoader");
-
 let AlgaehLoader = options => {
-  options.show === true
-    ? (document.getElementsByTagName("body")[0].style.overflow = "hidden")
-    : (document.getElementsByTagName("body")[0].style.overflow = "");
-
   if (options.show === true) {
-    return ReactDOM.render(
-      <div className="loader-container">
-        <div className="algaeh-progress float shadow">
-          <div className="progress__item">loading</div>
-        </div>
-      </div>,
-      fullPageLoader
-    );
+    //  document.getElementsByTagName("body")[0].style.overflow = "hidden";
+    document.getElementById("fullPageLoader").classList.add("d-block");
   } else {
-    ReactDOM.unmountComponentAtNode(fullPageLoader);
+    // document.getElementsByTagName("body")[0].style.overflow = "";
+    document.getElementById("fullPageLoader").classList.remove("d-block");
   }
 };
 export default AlgaehLoader;

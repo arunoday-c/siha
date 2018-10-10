@@ -22,12 +22,9 @@ import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import { getCookie } from "../../utils/algaehApiCall";
-import { algaehApiCall } from "../../utils/algaehApiCall.js";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import AddAdvanceModal from "../Advance/AdvanceModal";
-import {
-  successfulMessage,
-  imageToByteArray
-} from "../../utils/GlobalFunctions";
+import { imageToByteArray } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
@@ -57,8 +54,6 @@ class RegistrationPatient extends Component {
     setGlobal({ selectedLang: "en" });
   }
   componentDidMount() {
-    debugger;
-
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
 
@@ -89,9 +84,7 @@ class RegistrationPatient extends Component {
   ClearData(e) {
     let IOputs = emptyObject;
     IOputs.visittypeselect = true;
-    this.setState(IOputs, () => {
-      debugger;
-    });
+    this.setState(IOputs);
   }
 
   GenerateReciept(callback) {
@@ -140,7 +133,6 @@ class RegistrationPatient extends Component {
     }
   }
   SavePatientDetails(e) {
-    debugger;
     const err = Validations(this);
 
     if (!err) {
@@ -170,19 +162,17 @@ class RegistrationPatient extends Component {
                   receipt_number: response.data.records.receipt_number,
                   saveEnable: true
                 });
-                successfulMessage({
-                  message: "Done Successfully",
-                  title: "Success",
-                  icon: "success"
+                swalMessage({
+                  title: "Done Successfully",
+                  type: "success"
                 });
               }
             },
             onFailure: error => {
               AlgaehLoader({ show: false });
-              successfulMessage({
-                message: error.message,
-                title: "Error",
-                icon: "error"
+              swalMessage({
+                title: error.message,
+                type: "error"
               });
             }
           });
@@ -199,19 +189,17 @@ class RegistrationPatient extends Component {
                   receipt_number: response.data.records.receipt_number,
                   saveEnable: true
                 });
-                successfulMessage({
-                  message: "Done Successfully",
-                  title: "Success",
-                  icon: "success"
+                swalMessage({
+                  title: "Done Successfully",
+                  type: "success"
                 });
               }
             },
             onFailure: error => {
               AlgaehLoader({ show: false });
-              successfulMessage({
-                message: error.message,
-                title: "Error",
-                icon: "error"
+              swalMessage({
+                title: error.message,
+                type: "error"
               });
             }
           });
@@ -234,10 +222,9 @@ class RegistrationPatient extends Component {
         AdvanceOpen: !this.state.AdvanceOpen
       });
     } else {
-      successfulMessage({
-        message: "Select Patient",
-        title: "Error",
-        icon: "error"
+      swalMessage({
+        title: "Select Patient",
+        type: "error"
       });
     }
   }
@@ -252,10 +239,9 @@ class RegistrationPatient extends Component {
         RefundOpen: !this.state.RefundOpen
       });
     } else {
-      successfulMessage({
-        message: "Select Patient",
-        title: "Warning",
-        icon: "error"
+      swalMessage({
+        title: "Select Patient",
+        type: "error"
       });
     }
   }
@@ -287,14 +273,12 @@ class RegistrationPatient extends Component {
         mappingName: "patients"
       },
       afterSuccess: data => {
-        debugger;
         if (data.response === undefined) {
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.existingPatient = true;
 
-          debugger;
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
           $this.setState(data.patientRegistration);
@@ -314,7 +298,7 @@ class RegistrationPatient extends Component {
             data.patientRegistration.patient_id =
               data.patientRegistration.hims_d_patient_id;
             data.patientRegistration.existingPatient = true;
-            debugger;
+
             data.patientRegistration.filePreview =
               "data:image/png;base64, " + data.patient_Image;
             data.patientRegistration.arabic_name = "No Name";
@@ -332,12 +316,11 @@ class RegistrationPatient extends Component {
               }
             });
           } else {
-            successfulMessage({
-              message: data.response.data.message,
-              title: "Error",
-              icon: "error"
+            swalMessage({
+              title: data.response.data.message,
+              type: "error"
             });
-            debugger;
+
             let IOputs = emptyObject;
             this.setState(IOputs);
           }
@@ -445,7 +428,6 @@ class RegistrationPatient extends Component {
                 label: "Print Receipt",
                 events: {
                   onClick: () => {
-                    debugger;
                     AlgaehReport({
                       report: {
                         fileName: "printreceipt"
