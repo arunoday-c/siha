@@ -49,56 +49,61 @@ export default class VerifyOrders extends PureComponent {
       <React.Fragment>
         <div>
           <Modal
-            style={{
-              margin: "0 auto",
-              width: "100vh"
-              // height: "80vh"
-            }}
             open={this.props.open}
           >
-            <div className="hptl-submit_pre-approval-details">
-              <div className="colorPrimary">
-                <Typography variant="title">
-                  {this.props.HeaderCaption}
-                </Typography>
-              </div>
-              <div className="container-fluid">
-                <div className="row form-details">
-                  <div className="col-lg-3">
+           <div className="algaeh-modal" style={{width:"50%"}}>
+
+     <div className="popupHeader"><div className="row">
+                  <div className="col-lg-8">
+                    <h4>{this.props.HeaderCaption}</h4>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""  
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div></div>
+                <div className="col-lg-12 popupInner" style={{height:"60vh"}}>
+
+
+                <div className="row" style={{marginTop:10,marginBottom:10}}>
+
+
+ <div className="col">
                     <AlgaehLabel
                       label={{
                         fieldName: "patient_code"
                       }}
                     />
+                    <h6>
+                      {this.state.patient_code
+                        ? this.state.patient_code
+                        : "Patient Code"}
+                    </h6>
                   </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    textBox={{
-                      value: this.state.patient_code,
-                      className: "txt-fld",
-                      name: "patient_code",
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "patient_name",
-                      value: this.state.full_name,
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
+
+ <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "patient_name"
+                      }}
+                    />
+                    <h6>
+                      {this.state.full_name
+                        ? this.state.full_name
+                        : "Patient Name"}
+                    </h6>
+                  </div>
+
+
+
+
                 </div>
 
                 <div className="row grid-details">
@@ -107,6 +112,21 @@ export default class VerifyOrders extends PureComponent {
                       <AlgaehDataGrid
                         id="update_order_grid"
                         columns={[
+
+                          {
+                            fieldName: "action",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "action" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                <i className="fas fa-sync-alt" onClick={UpdateOrders.bind(this,row)}></i>
+                                </span>
+                              );
+                            },
+                       others:{maxWidth:70,resizable: false,style:{textAlign:"center"}}
+                          },
                           {
                             fieldName: "service_code",
                             label: (
@@ -139,30 +159,6 @@ export default class VerifyOrders extends PureComponent {
                                     ? "Approved"
                                     : "Rejected";
                             }
-                          },
-                          {
-                            fieldName: "action",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "action" }} />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  <IconButton
-                                    color="primary"
-                                    title="Process To Bill"
-                                  >
-                                    <Update
-                                      onClick={UpdateOrders.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    />
-                                  </IconButton>
-                                </span>
-                              );
-                            }
                           }
                         ]}
                         keyId="service_code"
@@ -175,21 +171,23 @@ export default class VerifyOrders extends PureComponent {
                     </div>
                   </div>
                 </div>
-                <div className="row" position="fixed">
-                  <div className="col-lg-12">
-                    <span className="float-left">
-                      <button
-                        className="htpl1-phase1-btn-others"
-                        onClick={e => {
-                          this.onClose(e);
-                        }}
-                      >
-                        <AlgaehLabel label={{ fieldName: "btnclose" }} />
-                      </button>
-                    </span>
-                  </div>
-                </div>
+
+
+
+
               </div>
+
+
+                <div className="popupFooter">
+                <div className="col-lg-12">
+                <div className="row">
+                <div className="col-lg-12">
+               <button className="btn btn-default" onClick={e => {this.onClose(e)}}>Close</button>
+                </div>
+                </div>
+                </div>
+                </div>
+
             </div>
           </Modal>
         </div>

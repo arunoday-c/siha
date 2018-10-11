@@ -634,6 +634,14 @@ $forntSize: 0.7rem;
     .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
+      .popSubHdg{
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #31afb2;
+        margin-top: 10px;
+        border-bottom: 1px dashed #d3d3d3;
+        padding-bottom: 5px;
+      }
 
       .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
@@ -742,6 +750,18 @@ $forntSize: 0.7rem;
     .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
+
+      border-bottom: 1px dashed #e5e5e5;
+      padding: 10px 0;
+      /* text-transform: uppercase; */
+      .popSubHdg{
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #31afb2;
+        margin-top: 10px;
+        border-bottom: 1px dashed #d3d3d3;
+        padding-bottom: 5px;}
+
 
       .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
