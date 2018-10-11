@@ -40,7 +40,7 @@ class PatientDetails extends PureComponent {
           <div className="hptl-pre-approval-patient-details">
             <div className="tab-container toggle-section">
               <ul className="nav">
-                <li className={"nav-item tab-button active"}>
+                <li className="nav-item tab-button active">
                   Patient Details
                 </li>
               </ul>

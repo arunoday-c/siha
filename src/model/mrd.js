@@ -161,9 +161,77 @@ let getPatientDiagnosis = (req, res, next) => {
   }
 };
 
+//created by irfan: to  get Patient medication
+let getPatientMedication = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_prescription_id, patient_id, encounter_id, provider_id, episode_id,\
+        prescription_date, prescription_status , \
+        hims_f_prescription_detail_id, prescription_id, item_id,IM.item_description, PD.generic_id, IG.generic_name, \
+        dosage, frequency, no_of_days,\
+        dispense, frequency_type, frequency_time, start_date, PD.service_id, uom_id, item_category_id, PD.item_status\
+         from hims_f_prescription P,hims_f_prescription_detail PD,hims_d_item_master IM,hims_d_item_generic IG\
+        where P.record_status='A' and IM.record_status='A' and IG.record_status='A' and \
+        P.hims_f_prescription_id=PD.prescription_id and PD.item_id=IM.hims_d_item_master_id \
+        and PD.generic_id =IG.hims_d_item_generic_id and\
+        P.encounter_id=?",
+        [req.query.encounter_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to  get Patient Investigation
+let getPatientInvestigation = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_ordered_services_id, patient_id, visit_id, doctor_id ,services_id,S.service_name \
+        from hims_f_ordered_services OS , hims_d_services S  where \
+        OS.record_status='A' and S.record_status='A' and \
+        OS.services_id=S.hims_d_services_id and visit_id=?",
+        [req.query.visit_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientMrdList,
   getPatientEncounterDetails,
   getPatientChiefComplaint,
-  getPatientDiagnosis
+  getPatientDiagnosis,
+  getPatientMedication,
+  getPatientInvestigation
 };

@@ -6,7 +6,9 @@ import {
   getPatientMrdList,
   getPatientEncounterDetails,
   getPatientChiefComplaint,
-  getPatientDiagnosis
+  getPatientDiagnosis,
+  getPatientMedication,
+  getPatientInvestigation
 } from "../model/mrd";
 
 export default ({ config, db }) => {
@@ -61,6 +63,36 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientDiagnosis",
     getPatientDiagnosis,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to getPatientMedication
+  api.get(
+    "/getPatientMedication",
+    getPatientMedication,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to get Patient Investigation
+  api.get(
+    "/getPatientInvestigation",
+    getPatientInvestigation,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
