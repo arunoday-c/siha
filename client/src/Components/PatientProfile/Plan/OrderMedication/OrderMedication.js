@@ -48,7 +48,9 @@ class OrderMedication extends Component {
       start_date: moment(new Date())._d,
       savebutton: true,
       uom_id: null,
-      service_id: null
+      service_id: null,
+      item_category_id: null,
+      item_group_id: null
     };
   }
 

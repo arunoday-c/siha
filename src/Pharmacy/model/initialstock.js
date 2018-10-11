@@ -76,9 +76,9 @@ let addPharmacyInitialStock = (req, res, next) => {
               input.description,
               input.posted,
               new Date(),
-              input.created_by,
+              req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              input.updated_by
+              req.userIdentity.algaeh_d_app_user_id
             ],
             (error, headerResult) => {
               if (error) {

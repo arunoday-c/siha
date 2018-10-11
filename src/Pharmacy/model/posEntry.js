@@ -70,8 +70,8 @@ let addPosEntry = (req, res, next) => {
                 location_id, location_type, sub_total, discount_percentage, discount_amount, net_total, copay_amount, patient_responsibility,\
                 patient_tax, patient_payable,company_responsibility,company_tax,company_payable,comments, sec_company_responsibility,\
                 sec_company_tax,sec_company_payable,sec_copay_amount,net_tax,gross_total,sheet_discount_amount,\
-                sheet_discount_percentage,net_amount,credit_amount,receiveable_amount) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                sheet_discount_percentage,net_amount,credit_amount,receiveable_amount, created_date,created_by,updated_date,updated_by) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               documentCode,
               today,
@@ -105,7 +105,11 @@ let addPosEntry = (req, res, next) => {
               input.sheet_discount_percentage,
               input.net_amount,
               input.credit_amount,
-              input.receiveable_amount
+              input.receiveable_amount,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id
             ],
             (error, headerResult) => {
               if (error) {
@@ -284,13 +288,13 @@ let updatePosEntry = (req, res, next) => {
           debugLog("posted", inputParam.posted);
           debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
           connection.query(
-            "UPDATE `hims_f_pharmacy_stock_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
-          WHERE `record_status`='A' and `hims_f_pharmacy_stock_header_id`=?",
+            "UPDATE `hims_f_pharmacy_pos_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
+          WHERE `record_status`='A' and `hims_f_pharmacy_pos_header_id`=?",
             [
               inputParam.posted,
-              inputParam.updated_by,
+              req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              inputParam.hims_f_pharmacy_stock_header_id
+              inputParam.hims_f_pharmacy_pos_header_id
             ],
             (error, result) => {
               debugLog("error", error);
@@ -361,28 +365,28 @@ let getPrescriptionPOS = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection
-        .beginTransaction(error => {
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }
-          const _reqBody = req.body;
-          return new Promise((resolve, reject) => {
-            //Select bachno,exp,itemcat,Query hims_mitem_location... input item_id and location_id
-            connection.query(
-              "select batchno,expirydt from hims_m_item_location where item_id=? and location_id=?",
-              [_reqBody.item_id, _reqBody.location_id],
-              (error, result) => {
-                if (error) {
-                  reject(error);
-                }
-                resolve(result);
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        const _reqBody = req.body;
+        return new Promise((resolve, reject) => {
+          //Select bachno,exp,itemcat,Query hims_mitem_location... input item_id and location_id
+          connection.query(
+            "select batchno, expirydt, grnno, sales_uom from hims_m_item_location where item_id=? and location_id=?",
+            [_reqBody.item_id, _reqBody.location_id],
+            (error, result) => {
+              if (error) {
+                reject(error);
               }
-            );
-          }).then(result => {
+              resolve(result);
+            }
+          );
+        })
+          .then(result => {
             //check then
             new Promise((resolve, reject) => {
               try {
@@ -395,6 +399,8 @@ let getPrescriptionPOS = (req, res, next) => {
               const _result =
                 result != null && result.length > 0 ? result[0] : {};
               if (resultbilling != null && resultbilling.length > 0) {
+                debugLog("_result", _result);
+                debugLog("resultbilling", resultbilling);
                 req.records = {
                   ...resultbilling[0],
                   ..._result
@@ -404,14 +410,14 @@ let getPrescriptionPOS = (req, res, next) => {
                 next();
               }
             });
+          })
+          .catch(e => {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(e);
+            });
           });
-        })
-        .catch(e => {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(e);
-          });
-        });
+      });
     });
   } catch (e) {
     next(e);

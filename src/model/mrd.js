@@ -77,17 +77,28 @@ let getPatientEncounterDetails = (req, res, next) => {
     }
     let db = req.db;
 
+    // select hims_f_patient_encounter_id, PE.patient_id,P.full_name,PE.provider_id,E.full_name as provider_name, visit_id,V.insured,\
+    //     V.sub_department_id,\
+    //     SD.sub_department_name,PE.episode_id,PE.encounter_id,PE.updated_date as encountered_date\
+    //     from hims_f_patient_encounter PE,hims_f_patient P,hims_d_employee E,hims_f_patient_visit V,hims_d_sub_department SD\
+    //     where PE.record_status='A' and P.record_status='A' and E.record_status='A' and V.record_status='A' and SD.record_status='A'\
+    //      and PE.patient_id=P.hims_d_patient_id and E.hims_d_employee_id=PE.provider_id\
+    //      and V.hims_f_patient_visit_id=PE.visit_id and V.sub_department_id=SD.hims_d_sub_department_id and\
+    //      encounter_id <>'null' and PE.patient_id=?\
+    //      order by encountered_date desc
+
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_patient_encounter_id, PE.patient_id,P.full_name,PE.provider_id,E.full_name as provider_name, visit_id,V.insured,\
-        V.sub_department_id,\
-        SD.sub_department_name,PE.episode_id,PE.encounter_id,PE.updated_date as encountered_date\
-        from hims_f_patient_encounter PE,hims_f_patient P,hims_d_employee E,hims_f_patient_visit V,hims_d_sub_department SD\
-        where PE.record_status='A' and P.record_status='A' and E.record_status='A' and V.record_status='A' and SD.record_status='A'\
-         and PE.patient_id=P.hims_d_patient_id and E.hims_d_employee_id=PE.provider_id\
-         and V.hims_f_patient_visit_id=PE.visit_id and V.sub_department_id=SD.hims_d_sub_department_id and\
-         encounter_id <>'null' and PE.patient_id=?\
-         order by encountered_date desc;",
+        "select hims_f_patient_encounter_id, PE.patient_id,P.full_name,PE.provider_id,E.full_name as provider_name, visit_id,\
+        V.insured,V.sec_insured,V.sub_department_id,SD.sub_department_name,PE.episode_id,PE.encounter_id,PE.updated_date as encountered_date,\
+                primary_insurance_provider_id,IP.insurance_provider_name as pri_insurance_provider_name,\
+            secondary_insurance_provider_id,IPR.insurance_provider_name as sec_insurance_provider_name  from hims_f_patient_encounter PE  inner join  hims_f_patient P on\
+             PE.patient_id=P.hims_d_patient_id   inner join hims_d_employee E on E.hims_d_employee_id=PE.provider_id  inner join hims_f_patient_visit V on V.hims_f_patient_visit_id=PE.visit_id\
+                inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id   left join hims_m_patient_insurance_mapping IM on\
+                 V.hims_f_patient_visit_id=IM.patient_visit_id  left join hims_d_insurance_provider IP  on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id   left join hims_d_insurance_provider IPR  on \
+         IM.secondary_insurance_provider_id=IPR.hims_d_insurance_provider_id   where PE.record_status='A' and P.record_status='A' and E.record_status='A' \
+                 and V.record_status='A' and SD.record_status='A' and IM.record_status='A' and IP.record_status='A'   and encounter_id <>'null' and PE.patient_id=?\
+                 order by encountered_date desc;",
         [req.query.patient_id],
         (error, result) => {
           if (error) {

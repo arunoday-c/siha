@@ -70,6 +70,8 @@ let addPatientPrescription = (req, res, next) => {
                 "dosage",
                 "service_id",
                 "uom_id",
+                "item_category_id",
+                "item_group_id",
                 "frequency",
                 "no_of_days",
                 "dispense",

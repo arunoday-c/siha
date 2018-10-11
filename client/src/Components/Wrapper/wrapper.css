@@ -20,7 +20,7 @@
   .ReactTable i.fa-pen,
   .ReactTable i.fa-trash-alt,
   .ReactTable i.fa-save,
-  .ReactTable i.fa-times, .ReactTable .fa-barcode, .ReactTable .fa-check, .ReactTable .fa-flask, .ReactTable .fa-file-signature, .ReactTable .fa-walking, .ReactTable .fa-file-export {
+  .ReactTable i.fa-times, .ReactTable .fa-barcode, .ReactTable .fa-check, .ReactTable .fa-flask, .ReactTable .fa-file-signature, .ReactTable .fa-walking, .ReactTable .fa-file-export, .ReactTable .fa-sync-alt {
     cursor: pointer;
     border: 1px solid #44b8bd;
     height: 28px;
@@ -36,7 +36,7 @@
   .ReactTable i.fa-pen:hover,
   .ReactTable i.fa-trash-alt:hover,
   .ReactTable i.fa-save:hover,
-  .ReactTable i.fa-times:hover, .ReactTable .fa-barcode:hover, .ReactTable .fa-check:hover, .ReactTable .fa-flask:hover, .ReactTable .fa-file-signature:hover, .ReactTable .fa-walking:hover, .ReactTable .fa-file-export:hover {
+  .ReactTable i.fa-times:hover, .ReactTable .fa-barcode:hover, .ReactTable .fa-check:hover, .ReactTable .fa-flask:hover, .ReactTable .fa-file-signature:hover, .ReactTable .fa-walking:hover, .ReactTable .fa-file-export:hover, .ReactTable .fa-sync-alt:hover {
     background: #44b8bd;
     color: #fff; }
   .ReactTable .-pagination .-previous,

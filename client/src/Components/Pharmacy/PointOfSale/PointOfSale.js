@@ -20,7 +20,8 @@ import {
   Patientchange,
   SavePosEnrty,
   PostPosEntry,
-  VisitSearch
+  VisitSearch,
+  LocationchangeTexts
 } from "./PointOfSaleEvents";
 import "./PointOfSale.css";
 import "../../../styles/site.css";
@@ -195,7 +196,7 @@ class PointOfSale extends Component {
                       valueField: "hims_d_pharmacy_location_id",
                       data: this.props.locations
                     },
-                    onChange: changeTexts.bind(this, this)
+                    onChange: LocationchangeTexts.bind(this, this)
                   }}
                 />
 

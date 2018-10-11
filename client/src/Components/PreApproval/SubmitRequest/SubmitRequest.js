@@ -49,68 +49,63 @@ export default class SubmitRequest extends PureComponent {
       <React.Fragment>
         <div>
           <Modal
-            style={{
-              margin: "0 auto",
-              width: "100vh"
-              // height: "80vh"
-            }}
             open={this.props.open}
           >
-            <div className="hptl-submit_pre-approval-details">
-              <div className="colorPrimary">
-                <Typography variant="title">
-                  {this.props.HeaderCaption}
-                </Typography>
-              </div>
-              <div className="container-fluid">
-                <div className="row form-details">
-                  <div className="col-lg-3">
+            <div className="algaeh-modal" style={{width:"50%"}}>
+
+     <div className="popupHeader"><div className="row">
+                  <div className="col-lg-8">
+                    <h4>{this.props.HeaderCaption}</h4>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div></div>
+                <div className="col-lg-12 popupInner" style={{height:"50vh"}}>
+
+<div className="row" style={{marginTop:10,marginBottom:10}}>
+
+
+      <div className="col">
                     <AlgaehLabel
                       label={{
                         fieldName: "patient_code"
                       }}
                     />
+                    <h6>
+                      {this.state.patient_code
+                        ? this.state.patient_code
+                        : "Patient Code"}
+                    </h6>
                   </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    textBox={{
-                      value: this.state.patient_code,
-                      className: "txt-fld",
-                      name: "patient_code",
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "patient_name",
-                      value: this.state.full_name,
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                </div>
-
-                <div className="row form-details">
-                  <div className="col-lg-3">
+                        <div className="col">
                     <AlgaehLabel
+                      label={{
+                        fieldName: "patient_name"
+                      }}
+                    />
+                    <h6>
+                      {this.state.full_name
+                        ? this.state.full_name
+                        : "Patient Name"}
+                    </h6>
+                  </div>
+
+
+
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
                       label={{
                         fieldName: "submission_type"
                       }}
-                    />
-                  </div>
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
                     selector={{
                       name: "submission_type",
                       className: "select-fld",
@@ -123,9 +118,9 @@ export default class SubmitRequest extends PureComponent {
                       onChange: texthandle.bind(this, this)
                     }}
                   />
-                </div>
 
-                <div className="row grid-details">
+                </div>     
+ <div className="row grid-details">
                   <div className="col-lg-12">
                     <div className="">
                       <AlgaehDataGrid
@@ -151,7 +146,8 @@ export default class SubmitRequest extends PureComponent {
                                   </label>
                                 </div>
                               );
-                            }
+                            },
+                       others:{maxWidth:70,resizable: false,style:{textAlign:"center"}}
                           },
                           {
                             fieldName: "service_code",
@@ -180,34 +176,19 @@ export default class SubmitRequest extends PureComponent {
                     </div>
                   </div>
                 </div>
+            
 
-                <div className="row" position="fixed">
-                  <div className="col-lg-12">
-                    <span className="float-left">
-                      <button
-                        className="htpl1-phase1-btn-others"
-                        onClick={e => {
-                          this.onClose(e);
-                        }}
-                      >
-                        <AlgaehLabel label={{ fieldName: "btnclose" }} />
-                      </button>
-                    </span>
-
-                    <span className="float-right">
-                      <button
-                        style={{ marginRight: "15px" }}
-                        className="htpl1-phase1-btn-primary"
-                        onClick={SubmitRequestUpdate.bind(this, this)}
-                      >
-                        <AlgaehLabel
-                          label={{ fieldName: "btnsubmitrequest" }}
-                        />
-                      </button>
-                    </span>
-                  </div>
+            </div>
+                <div className=" popupFooter">
+                <div className="col-lg-12">
+                <div className="row">
+                <div className="col-lg-12">
+                <button className="btn btn-primary" onClick={SubmitRequestUpdate.bind(this, this)}>Submit</button>
+                <button className="btn btn-default" onClick={e => {this.onClose(e)}}>Close</button>
                 </div>
-              </div>
+                </div>
+                </div>
+                </div>
             </div>
           </Modal>
         </div>
