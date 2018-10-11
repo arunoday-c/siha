@@ -31,3 +31,8 @@
     min-height: 27px;
     position: relative;
     background-color: #eaeaea; }
+
+.algaehUploadFile {
+  border: 1px solid #c0c0c0;
+  height: 33px;
+  border-radius: 5px; }

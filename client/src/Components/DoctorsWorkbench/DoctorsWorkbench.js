@@ -463,7 +463,7 @@ class DoctorsWorkbench extends Component {
                         );
                       },
                       className: drow => {
-                        if (drow.checked_in === "N") return "testColor";
+                        if (drow.checked_in === "N") return "greenCell";
                       }
                     },
                     {
@@ -516,7 +516,7 @@ class DoctorsWorkbench extends Component {
                     // }
                   ]}
                   rowClassName={row => {
-                    //return "testColor";
+                    //return "greenCell";
                   }}
                   keyId="encounter_code"
                   dataSource={{

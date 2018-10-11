@@ -8,7 +8,8 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
   AlgaehDateHandler,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 
 import "./../../../../styles/site.css";
@@ -37,66 +38,41 @@ class PatientDetails extends PureComponent {
     return (
       <React.Fragment>
         <div>
-          <div className="hptl-pre-approval-patient-details">
-            <div className="tab-container toggle-section">
-              <ul className="nav">
-                <li className="nav-item tab-button active">
-                  Patient Details
-                </li>
-              </ul>
-            </div>
-            <div className="patient-section">
-              <div className="container-fluid">
+
+
+
+<h6 className="popSubHdg">Patient Details</h6>
                 <div className="row">
                   {/* Patient code */}
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "patient_code"
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "patient_code",
-                      value: this.state.patient_code,
-                      events: {
-                        onChange: null
-                      },
-                      disabled: true
-                    }}
-                  />
 
-                  {/* Patient name */}
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-6" }}
-                    label={{
-                      fieldName: "patient_name"
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "full_name",
-                      value: this.state.full_name,
-                      events: {
-                        onChange: null
-                      },
-                      disabled: true
-                    }}
-                  />
+                      <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "patient_code"
+                      }}
+                    />
+                    <h6>
+                      {this.state.patient_code
+                        ? this.state.patient_code
+                        : "Patient Code"}
+                    </h6>
+                  </div>
 
-                  <AlgaehDateHandler
-                    div={{ className: "col-lg-3" }}
-                    label={{ fieldName: "date" }}
-                    textBox={{ className: "txt-fld" }}
-                    events={{
-                      onChange: null
-                    }}
-                    value={this.state.created_date}
-                    disabled={true}
-                  />
-                  {/* Patient type */}
-                </div>
-                <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+<div className="col">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "date"
+                      }}
+                    />
+                    <h6>
+                      {this.state.created_date
+                        ? this.state.created_date
+                        : "Created Date"}
+                    </h6>
+                  </div>
+                  
+                   <AlagehAutoComplete
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "doctor_id"
                     }}
@@ -118,9 +94,9 @@ class PatientDetails extends PureComponent {
                       onChange: null
                     }}
                   />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                  
+                 <AlagehAutoComplete
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "insurance_id"
                     }}
@@ -141,10 +117,8 @@ class PatientDetails extends PureComponent {
                       },
                       onChange: null
                     }}
-                  />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                  />  <AlagehAutoComplete
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "department_id"
                     }}
@@ -166,26 +140,22 @@ class PatientDetails extends PureComponent {
                       onChange: null
                     }}
                   />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "card_no"
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "card_no",
-                      value: this.state.card_no,
-                      events: {
-                        onChange: null
-                      },
-                      disabled: true
-                    }}
-                  />
+<div className="col">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "card_no"
+                      }}
+                    />
+                    <h6>
+                      {this.state.card_no
+                        ? this.state.card_no
+                        : "Card No."}
+                    </h6>
+                  </div>
+                  
                 </div>
-              </div>
-            </div>
-          </div>
+        
+        
         </div>
       </React.Fragment>
     );

@@ -56,7 +56,6 @@ class ChiefComplaints extends Component {
       interval: "",
       duration: "",
       comment: "",
-      new_chief_complaint: [],
       ifCheckBoxChange: false,
       masterChiefComplaints: []
     };
@@ -125,10 +124,17 @@ class ChiefComplaints extends Component {
     });
   }
 
-  addNewChiefComplaint(callBack) {
+  addNewChiefComplaint() {
+    let _newValues = document.getElementsByName("chief_complaint_id")[0].value;
+    if (_newValues === "") {
+      swalMessage({ title: "No new chief complaint found.", type: "warning" });
+      return;
+    }
+    const new_chief_complaint = _newValues.split(",");
+    let $that = this;
     algaehApiCall({
       uri: "/doctorsWorkBench/addNewChiefComplaint",
-      data: Enumerable.from(this.state.new_chief_complaint)
+      data: Enumerable.from(new_chief_complaint)
         .select(s => {
           return {
             hpi_description: s
@@ -138,13 +144,30 @@ class ChiefComplaints extends Component {
       method: "post",
       onSuccess: response => {
         if (response.data.success) {
-          getAllChiefComplaints(this, callBack);
+          getAllChiefComplaints($that, result => {
+            debugger;
+            let _currentChiefComplaints = $that.state.patientChiefComplains;
+            let _masterChief = result;
+            Enumerable.from(new_chief_complaint)
+              .select(s => {
+                let _firstOrDef = Enumerable.from(result)
+                  .where(w => w.chief_complaint_name === s)
+                  .firstOrDefault();
+                _currentChiefComplaints.push(_firstOrDef);
+                if (_firstOrDef !== undefined)
+                  _masterChief.splice(_firstOrDef, 1);
+              })
+              .toArray();
 
-          //getPatientChiefComplaints(this);
-          //  this.getPatientChiefComplaintsDetails();
+            $that.setState({
+              patientChiefComplains: _currentChiefComplaints.sort((a, b) => {
+                return a.chief_complaint_id - b.chief_complaint_id;
+              }),
+              masterChiefComplaints: _masterChief
+            });
+          });
         }
-      },
-      onFailure: error => {}
+      }
     });
   }
 
@@ -351,6 +374,7 @@ class ChiefComplaints extends Component {
 
   masterChiefComplaintsSortList(patChiefComplain, allmastercomplaints) {
     allmastercomplaints = allmastercomplaints || null;
+
     let allChiefComp =
       allmastercomplaints === null
         ? this.props.allchiefcomplaints
@@ -362,7 +386,8 @@ class ChiefComplaints extends Component {
             w.hims_d_hpi_header_id === patChiefComplain[i]["chief_complaint_id"]
         )
         .firstOrDefault();
-      allChiefComp.splice(allChiefComp.indexOf(idex), 1);
+      if (idex !== undefined)
+        allChiefComp.splice(allChiefComp.indexOf(idex), 1);
     }
     return allChiefComp;
   }
@@ -420,76 +445,35 @@ class ChiefComplaints extends Component {
   }
   addChiefComplainToPatient(list) {
     let patChiefComp = this.state.patientChiefComplains;
-    if (Array.isArray(list)) {
-      this.setState({ new_chief_complaint: list }, () => {
-        const new_chief_complaint = this.state.new_chief_complaint;
 
-        this.addNewChiefComplaint(master => {
-          let newMaster = Enumerable.from(master)
-            .where(
-              w =>
-                moment(w.created_date).format("YYYYMMDD") ===
-                moment(new Date()).format("YYYYMMDD")
-            )
-            .toArray();
-          newMaster = newMaster.message === undefined ? newMaster : [];
-          for (let i = 0; i < new_chief_complaint.length; i++) {
-            let newChiefCompId = Enumerable.from(newMaster)
-              .where(w => w.hpi_description === new_chief_complaint[i])
-              .firstOrDefault();
-            patChiefComp.push({
-              Encounter_Date: new Date(),
-              chief_complaint_id: newChiefCompId.hims_d_hpi_header_id,
-              chief_complaint_name: new_chief_complaint[i],
-              comment: "",
-              duration: 0,
-              episode_id: Window.global["episode_id"],
-              interval: "D",
-              onset_date: new Date(),
-              pain: "NH",
-              score: 0,
-              severity: "MI",
-              patient_id: Window.global["current_patient"],
-              recordState: "insert"
-            });
-          }
-          this.setState({
-            patientChiefComplains: patChiefComp
-          });
+    this.setState(
+      { chief_complaint_id: list.selected.hims_d_hpi_header_id },
+      () => {
+        patChiefComp.push({
+          chief_complaint_id: list.selected.hims_d_hpi_header_id,
+          chief_complaint_name: list.selected.hpi_description,
+          Encounter_Date: new Date(),
+          comment: "",
+          duration: 0,
+          episode_id: Window.global["episode_id"],
+          interval: "D",
+          onset_date: new Date(),
+          pain: "NH",
+          score: 0,
+          severity: "MI",
+          patient_id: Window.global["current_patient"],
+          recordState: "insert"
         });
-      });
-    } else {
-      if (list !== undefined) {
-        this.setState(
-          { chief_complaint_id: list.selected.hims_d_hpi_header_id },
-          () => {
-            patChiefComp.push({
-              chief_complaint_id: list.selected.hims_d_hpi_header_id,
-              chief_complaint_name: list.selected.hpi_description,
-              Encounter_Date: new Date(),
-              comment: "",
-              duration: 0,
-              episode_id: Window.global["episode_id"],
-              interval: "D",
-              onset_date: new Date(),
-              pain: "NH",
-              score: 0,
-              severity: "MI",
-              patient_id: Window.global["current_patient"],
-              recordState: "insert"
-            });
-            this.setState({
-              patientChiefComplains: patChiefComp.sort((a, b) => {
-                return a.chief_complaint_id - b.chief_complaint_id;
-              }),
-              masterChiefComplaints: this.masterChiefComplaintsSortList(
-                patChiefComp
-              )
-            });
-          }
-        );
+        this.setState({
+          patientChiefComplains: patChiefComp.sort((a, b) => {
+            return a.chief_complaint_id - b.chief_complaint_id;
+          }),
+          masterChiefComplaints: this.masterChiefComplaintsSortList(
+            patChiefComp
+          )
+        });
       }
-    }
+    );
   }
 
   settingUpdateChiefComplaints(e) {
@@ -862,10 +846,7 @@ class ChiefComplaints extends Component {
                             valueField: "hims_d_hpi_header_id",
                             data: this.state.masterChiefComplaints
                           },
-                          onChange: this.addChiefComplainToPatient.bind(this),
-                          userList: list => {
-                            this.addChiefComplainToPatient(list);
-                          }
+                          onChange: this.addChiefComplainToPatient.bind(this)
                         }}
                       />
 
@@ -1242,6 +1223,45 @@ class ChiefComplaints extends Component {
               id="complaint-grid"
               columns={[
                 {
+                  fieldName: "actions",
+                  label: <AlgaehLabel label={{ fieldName: "actions" }} />,
+                  displayTemplate: data => {
+                    return (
+                      <span>
+                        <IconButton
+                          color="primary"
+                          title="Edit"
+                          onClick={this.openChiefComplainModal.bind(this, data)}
+                        >
+                          <Edit />
+                        </IconButton>
+
+                        <IconButton
+                          color="primary"
+                          title="HPI"
+                          onClick={this.openHPIAddModal.bind(this, data)}
+                        >
+                          <HPI />
+                        </IconButton>
+
+                        <IconButton
+                          color="primary"
+                          title="Delete"
+                          onClick={this.deleteChiefComplaintFromGrid.bind(
+                            this,
+                            data
+                          )}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </span>
+                    );
+                  },
+                  others: {
+                    fixed: "left"
+                  }
+                },
+                {
                   fieldName: "chief_complaint_name",
                   label: <AlgaehLabel label={{ fieldName: "complaint_name" }} />
                 },
@@ -1311,42 +1331,6 @@ class ChiefComplaints extends Component {
                             : data.interval === "Y"
                               ? "Year(s)"
                               : "";
-                  }
-                },
-                {
-                  fieldName: "actions",
-                  label: <AlgaehLabel label={{ fieldName: "actions" }} />,
-                  displayTemplate: data => {
-                    return (
-                      <span>
-                        <IconButton
-                          color="primary"
-                          title="Edit"
-                          onClick={this.openChiefComplainModal.bind(this, data)}
-                        >
-                          <Edit />
-                        </IconButton>
-
-                        <IconButton
-                          color="primary"
-                          title="HPI"
-                          onClick={this.openHPIAddModal.bind(this, data)}
-                        >
-                          <HPI />
-                        </IconButton>
-
-                        <IconButton
-                          color="primary"
-                          title="Delete"
-                          onClick={this.deleteChiefComplaintFromGrid.bind(
-                            this,
-                            data
-                          )}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </span>
-                    );
                   }
                 }
               ]}

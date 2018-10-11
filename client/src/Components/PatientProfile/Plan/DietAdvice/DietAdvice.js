@@ -55,10 +55,9 @@ class DietAdvice extends Component {
   render() {
     return (
       <div className="hptl-diet-advice-form">
-        <div className="col-lg-12">
           <div className="row" style={{ paddingBottom: "10px" }}>
             <AlgaehDateHandler
-              div={{ className: "col-lg-5" }}
+              div={{ className: "col-lg-3" }}
               label={{ forceLabel: "Till Date" }}
               textBox={{ className: "txt-fld", name: "till_date" }}
               minDate={new Date()}
@@ -68,7 +67,7 @@ class DietAdvice extends Component {
               value={this.state.till_date}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-5" }}
+              div={{ className: "col" }}
               label={{ forceLabel: "Diet" }}
               selector={{
                 name: "diet_id",
@@ -83,7 +82,7 @@ class DietAdvice extends Component {
               }}
             />
 
-            <div className="actions" style={{ paddingTop: "3.5vh" }}>
+            <div className="col-lg-2 actions" style={{ paddingTop: "3.5vh" }}>
               <a
                 href="javascript:;"
                 className="btn btn-primary btn-circle active"
@@ -93,8 +92,8 @@ class DietAdvice extends Component {
             </div>
           </div>
 
-          <div className="col-lg-12">
             <div className="row" style={{ paddingBottom: "10px" }}>
+          <div className="col-lg-12">
               <AlgaehDataGrid
                 id="Lab_Result_grid"
                 columns={[
@@ -105,7 +104,8 @@ class DietAdvice extends Component {
                       return (
                         <span>{this.changeDateFormat(row.created_date)}</span>
                       );
-                    }
+                    },
+                    others:{maxWidth:100,resizable: false,style:{textAlign:"center"}}
                   },
                   {
                     fieldName: "till_date",
@@ -114,7 +114,8 @@ class DietAdvice extends Component {
                       return (
                         <span>{this.changeDateFormat(row.till_date)}</span>
                       );
-                    }
+                    },
+                    others:{maxWidth:100,resizable: false,style:{textAlign:"center"}}
                   },
                   {
                     fieldName: "diet_id",
@@ -134,7 +135,8 @@ class DietAdvice extends Component {
                             : ""}
                         </span>
                       );
-                    }
+                    },
+                    others:{style:{textAlign:"center"}}
                   }
                 ]}
                 keyId="patient_code"
@@ -146,7 +148,6 @@ class DietAdvice extends Component {
               />
             </div>
           </div>
-        </div>
       </div>
     );
   }

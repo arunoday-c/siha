@@ -25,8 +25,8 @@ class OwnMedication extends Component {
   render() {
     return (
       <div className="hptl-phase1-medication-history-form">
-        <div className="col-lg-12">
           <div className="row">
+        <div className="col-lg-12">
             <AlgaehDataGrid
               id="Order_Medication"
               columns={[

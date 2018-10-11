@@ -395,21 +395,53 @@ let getPrescriptionPOS = (req, res, next) => {
         }
         debugLog("req.body", req.body);
         const _reqBody = req.body;
+        const item_ids = new LINQ(_reqBody)
+          .Select(s => {
+            return s.item_id;
+          })
+          .ToArray();
+        const location_ids = new LINQ(_reqBody)
+          .Select(s => {
+            return s.location_id;
+          })
+          .ToArray();
+
         return new Promise((resolve, reject) => {
           //Select bachno,exp,itemcat,Query hims_mitem_location... input item_id and location_id
           connection.query(
-            "select batchno, expirydt, grnno, sales_uom from hims_m_item_location where item_id=? and location_id=?",
-            [_reqBody.item_id, _reqBody.location_id],
+            "select item_id,location_id,batchno, expirydt, grnno, sales_uom from hims_m_item_location where item_id in (?) and location_id in (?) and qtyhand <>0",
+            [item_ids, location_ids],
             (error, result) => {
               if (error) {
                 reject(error);
               }
+              let _req = new LINQ(result)
+                .Select(s => {
+                  return {
+                    ...new LINQ(_reqBody)
+                      .Where(
+                        w =>
+                          w.item_id == s.item_id &&
+                          w.location_id == s.location_id
+                      )
+                      .FirstOrDefault(),
+                    ...{
+                      batchno: s.batchno,
+                      expirydt: s.expirydt,
+                      grnno: s.grnno,
+                      sales_uom: s.sales_uom
+                    }
+                  };
+                })
+                .ToArray();
+              req.body = _req;
               resolve(result);
             }
           );
         })
           .then(result => {
             //check then
+
             new Promise((resolve, reject) => {
               try {
                 getBillDetailsFunctionality(req, res, next, resolve);
@@ -424,7 +456,7 @@ let getPrescriptionPOS = (req, res, next) => {
                 debugLog("_result", _result);
                 debugLog("resultbilling", resultbilling);
                 req.records = {
-                  ...resultbilling[0],
+                  ...resultbilling,
                   ..._result
                 };
                 next();

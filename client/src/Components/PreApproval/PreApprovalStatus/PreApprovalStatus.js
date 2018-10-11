@@ -55,7 +55,7 @@ export default class PreApprovalStatus extends PureComponent {
                     </button>
                   </div>
                 </div></div>
-                <div className="col-lg-12 popupInner" style={{height:"60vh"}}>
+                <div className="col-lg-12 popupInner" style={{height:"75vh"}}>
                   <div className="main_div" position="fixed">
                     <PatientDetails
                       selected_services={this.props.selected_services}
@@ -68,36 +68,14 @@ export default class PreApprovalStatus extends PureComponent {
                     />
                     <Attachments />
                   </div>
-                  <div className="row" position="fixed">
-                    <div className="col-lg-12">
-                      <span className="float-left">
-                        <button
-                          className="htpl1-phase1-btn-others"
-                          onClick={e => {
-                            this.onClose(e);
-                          }}
-                        >
-                          <AlgaehLabel label={{ fieldName: "btnclose" }} />
-                        </button>
-                      </span>
-
-                      <span className="float-right">
-                        <button
-                          style={{ marginRight: "15px" }}
-                          className="htpl1-phase1-btn-primary"
-                          onClick={UpdatePreApproval.bind(this, this)}
-                        >
-                          <AlgaehLabel label={{ fieldName: "btnupdate" }} />
-                        </button>
-                      </span>
-                    </div>
-                  </div>
+                  
                 </div>
                 <div className=" popupFooter">
                 <div className="col-lg-12">
                 <div className="row">
                 <div className="col-lg-12">
-                <button className="btn btn-default"><label className="style_Label ">Close</label></button>
+                <button className="btn btn-primary" onClick={UpdatePreApproval.bind(this, this)}>Update</button>
+                <button className="btn btn-default" onClick={e => {this.onClose(e)}}>Close</button>
                 </div>
                 </div>
                 </div>
