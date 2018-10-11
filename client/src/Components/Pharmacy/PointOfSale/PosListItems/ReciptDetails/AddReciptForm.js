@@ -16,14 +16,12 @@ import {
 import {
   AlgaehDateHandler,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehFormGroup
 } from "../../../../Wrapper/algaehWrapper";
 
 import MyContext from "../../../../../utils/MyContext";
 import "./AddReciptForm.css";
 import "./../../../../../styles/site.css";
-import variableJson from "../../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 
 class AddReciptForm extends Component {

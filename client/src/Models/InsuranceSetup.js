@@ -1,5 +1,3 @@
-import { getCookie } from "../utils/algaehApiCall.js";
-
 export default {
   inputParam: function(param) {
     var output;

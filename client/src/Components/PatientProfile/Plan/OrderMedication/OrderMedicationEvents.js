@@ -73,7 +73,7 @@ const itemhandle = ($this, ctrl, e) => {
     [name]: value,
     generic_id: e.selected.generic_id,
     service_id: e.selected.service_id,
-    uom_id: e.selected.uom_id
+    uom_id: e.selected.stocking_uom_id
   });
 };
 

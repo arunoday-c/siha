@@ -140,7 +140,7 @@ export default class SubmitRequest extends PureComponent {
                                     id={row.hims_f_service_approval_id}
                                     type="checkBox"
                                     defaultChecked={
-                                      row.checkselect == 1 ? true : false
+                                      row.checkselect === 1 ? true : false
                                     }
                                     onClick={this.checkHandle.bind(this, row)}
                                   />

@@ -3,12 +3,10 @@ import { successfulMessage } from "../../../utils/GlobalFunctions";
 import AlgaehReport from "../../Wrapper/printReports";
 
 const CollectSample = ($this, context, row) => {
-  debugger;
   let inputobj = {
     hims_f_lab_order_id: row.hims_f_lab_order_id,
     hims_d_lab_sample_id: row.hims_d_lab_sample_id,
     order_id: row.hims_f_lab_order_id,
-    hims_f_lab_order_id: row.hims_f_lab_order_id,
     sample_id: row.sample_id,
     collected: "Y",
     hims_d_hospital_id: 1,

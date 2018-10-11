@@ -120,8 +120,6 @@ const AddItems = ($this, context) => {
       insured: $this.state.insured,
       vat_applicable: "Y",
       hims_d_services_id: $this.state.service_id,
-      unit_cost: $this.state.unit_cost,
-      pharmacy_item: "Y",
       quantity: $this.state.quantity,
       primary_insurance_provider_id: $this.state.primary_insurance_provider_id,
       primary_network_office_id: $this.state.primary_network_office_id,

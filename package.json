@@ -24,7 +24,7 @@
       "node": true
     },
     "rules": {
-      "no-eval": 0,
+      "no-eval": true,
       "no-console": 0,
       "no-unused-vars": 1,
       "no-script-url": 0

@@ -14,11 +14,11 @@ export function checkToken(callBack) {
         .getAll();
     })
     .then(result => {
-      const reg_date = parseInt(
+      const _date =
         result !== undefined && result.length > 0
           ? momemt(result[0]["auth"]["expiryDate"]).format("YYYYMMDD")
-          : momemt().format("YYYYMMDD")
-      );
+          : momemt().format("YYYYMMDD");
+      const reg_date = parseInt(_date);
       const current_date = parseInt(
         result !== undefined && result.length > 0
           ? momemt().format("YYYYMMDD")

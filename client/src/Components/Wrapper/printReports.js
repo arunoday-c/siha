@@ -1,4 +1,3 @@
-"use strict";
 import JsBarcode from "jsbarcode";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -31,7 +30,7 @@ let accessReport = options => {
               ...barCodeModel,
               ...getReport.options
             });
-            canvasElements[e].onload = function() {
+            canvasElements[e].onload = () => {
               canvas.getContext("2d").drawImage(canvasElements[e], 0, 0);
             };
             canvasElements[e].setAttribute(

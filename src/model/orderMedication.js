@@ -13,7 +13,6 @@ import httpStatus from "../utils/httpStatus";
 //import moment from "moment";
 import { debugFunction, debugLog } from "../utils/logging";
 
-
 //created by irfan: to add Patient Prescription
 let addPatientPrescription = (req, res, next) => {
   // created_by: req.userIdentity.algaeh_d_app_user_id,
@@ -69,6 +68,8 @@ let addPatientPrescription = (req, res, next) => {
                 "item_id",
                 "generic_id",
                 "dosage",
+                "service_id",
+                "uom_id",
                 "frequency",
                 "no_of_days",
                 "dispense",

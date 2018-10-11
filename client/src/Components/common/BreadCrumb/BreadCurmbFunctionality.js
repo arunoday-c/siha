@@ -1,4 +1,3 @@
-"use strict";
 /*jslint evil: true */
 import AlgaehSearch from "../../Wrapper/globalSearch";
 
@@ -7,6 +6,7 @@ const SearchDetails = ($this, context, e) => {
 
   const jsonFileName = $this.props.soptlightSearch.jsonFile.fileName + ".json";
   let lodFile = require("../../../Search/" + jsonFileName);
+
   if (lodFile !== undefined) {
     columnNames = eval(
       "lodFile." + $this.props.soptlightSearch.jsonFile.fieldName

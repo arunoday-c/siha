@@ -197,32 +197,23 @@ class SampleCollectionPatient extends PureComponent {
                                   return (
                                     <span>
                                       {row.collected === "N" ? (
-                                        <IconButton
-                                          color="primary"
-                                          title="Collect"
-                                        >
-                                          <Update
-                                            onClick={CollectSample.bind(
+
+ <i className="fas fa-check"
+                                           onClick={CollectSample.bind(
                                               this,
                                               this,
                                               context,
                                               row
-                                            )}
-                                          />
-                                        </IconButton>
+                                            )}></i>
+
+
                                       ) : (
-                                        <IconButton
-                                          color="primary"
-                                          title="Barcode"
-                                        >
-                                          <Print
+                                        <i className="fas fa-barcode"
                                             onClick={printBarcode.bind(
                                               this,
                                               this,
                                               row
-                                            )}
-                                          />
-                                        </IconButton>
+                                            )}></i>
                                       )}
                                     </span>
                                   );

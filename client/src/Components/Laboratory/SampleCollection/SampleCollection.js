@@ -256,18 +256,10 @@ class SampleCollection extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            <IconButton
-                              color="primary"
-                              title="Collection"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <Collections
-                                onClick={this.ShowCollectionModel.bind(
+                          <i className="fas fa-flask" onClick={this.ShowCollectionModel.bind(
                                   this,
                                   row
-                                )}
-                              />
-                            </IconButton>
+                                )}></i>
                           </span>
                         );
                       },

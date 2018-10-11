@@ -9,7 +9,6 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehDateHandler,
   AlagehAutoComplete,
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
@@ -19,7 +18,6 @@ import "./../../../../styles/site.css";
 import "./RequestDetails.css";
 import {
   texthandle,
-  datehandle,
   updateServices,
   deleteServices
 } from "./RequestDetailsEvents";
