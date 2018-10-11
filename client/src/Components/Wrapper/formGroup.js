@@ -170,7 +170,11 @@ export default class FormGroup extends PureComponent {
               {...this.props.textBox.others}
             />
           );
-        else
+        else {
+          let _others = this.props.textBox.others;
+          if (this.props.textBox.others !== undefined) {
+            delete _others.multiline;
+          }
           return (
             <textarea
               name={this.props.textBox.name}
@@ -179,9 +183,10 @@ export default class FormGroup extends PureComponent {
               {..._disabled}
               {..._required}
               {..._invalid}
-              {...this.props.textBox.others}
+              {..._others}
             />
           );
+        }
       }
     } else {
       return null;

@@ -922,7 +922,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    // let servicesDetails = extend(servicesModel, req.body);
+
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -933,13 +933,10 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
       if (Array.isArray(req.body)) {
         let len = req.body.length;
-        debugLog("len:", len);
         service_ids = new LINQ(req.body).Select(g => g.hims_d_services_id);
-        debugLog("serrvicesidss:", service_ids.items);
 
         for (let i = 1; i < len; i++) {
           questions += ",?";
-          debugLog("ques:", questions);
         }
       }
 
@@ -955,9 +952,6 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
           }
           let outputArray = [];
           for (let m = 0; m < result.length; m++) {
-            debugLog("reslt my lenth:", result.length);
-            debugLog("reslt my:", result[m]);
-
             let servicesDetails = extend(
               {
                 hims_d_services_id: null,
@@ -1110,25 +1104,16 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               }
             })
               .then(policydtls => {
-                debugLog("inside 1st then", policydtls);
-                //Calculation Starts
-
-                // debugLog("Appto", apprv_status);
-                // debugLog("iPre", pre_approval);
-
-                //Not Covered and if approval rejected
                 if (
                   covered === "N" ||
                   (pre_approval === "Y" && apprv_status === "RJ")
                 ) {
-                  // debugLog("not covered", {});
                   insured = "N";
                 }
-                debugLog("Pre approval: ", approval_limit_yesno);
+
                 if (approval_limit_yesno === "Y") {
                   pre_approval = "Y";
                 }
-                debugLog("Pre approval: ", pre_approval);
 
                 if (pre_approval === "N") {
                   pre_approval =
@@ -1137,21 +1122,12 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
                 covered = policydtls !== null ? policydtls.covered : "Y";
 
-                // debugLog("Insured", insured);
-                // debugLog("Pre Approval", pre_approval);
-
-                // debugLog("Limit", approval_limit_yesno);
-
-                // debugLog("Covered", covered);
                 icd_code =
                   policydtls.cpt_code !== null
                     ? policydtls.cpt_code
                     : records.cpt_code;
-                // pre_approval === "N" &&
-                if (insured === "Y" && policydtls.covered === "Y") {
-                  debugLog("Insured:", quantity);
-                  debugLog("Unit cost", policydtls.gross_amt);
 
+                if (insured === "Y" && policydtls.covered === "Y") {
                   ser_net_amount = policydtls.net_amount;
                   ser_gross_amt = policydtls.gross_amt;
 
@@ -1161,11 +1137,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     unit_cost = policydtls.gross_amt;
                   }
 
-                  debugLog("Unit cost", unit_cost);
-
                   gross_amount = quantity * unit_cost;
-
-                  debugLog("Gross:", gross_amount);
 
                   if (discount_amout > 0) {
                     discount_percentage = (discount_amout / gross_amount) * 100;
@@ -1180,12 +1152,10 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     copay_amount = policydtls.copay_amt;
                     copay_percentage = (copay_amount / net_amout) * 100;
                   } else {
-                    debugLog("Consutation", records.service_type_id);
                     if (
                       appsettings.hims_d_service_type.service_type_id
                         .Consultation == records.service_type_id
                     ) {
-                      debugLog("Consutation", policydtls.copay_consultation);
                       copay_percentage = policydtls.copay_consultation;
                     } else if (
                       appsettings.hims_d_service_type.service_type_id
@@ -1207,7 +1177,6 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                       appsettings.hims_d_service_type.service_type_id.Lab ==
                       records.service_type_id
                     ) {
-                      debugLog("Lab: ", policydtls.copay_percent);
                       copay_percentage = policydtls.copay_percent;
                     } else if (
                       appsettings.hims_d_service_type.service_type_id
@@ -1263,16 +1232,12 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                       copay_percentage = policydtls.copay_percent;
                     }
                     copay_amount = (net_amout * copay_percentage) / 100;
-
-                    debugLog("Copay Amount:", copay_amount);
                   }
 
                   patient_resp = copay_amount;
                   comapany_resp = net_amout - patient_resp;
 
-                  debugLog("VAT APPLY:", vat_applicable);
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    debugLog("VAT APPLY:");
                     patient_tax = math.round(
                       (patient_resp * records.vat_percent) / 100,
                       2
@@ -1287,12 +1252,8 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   }
                   total_tax = patient_tax + company_tax;
 
-                  debugLog("Pat VAT APPLY:", patient_tax);
-                  debugLog("Company VAT APPLY:", company_tax);
-                  debugLog("Total VAT APPLY:", total_tax);
                   patient_payable = copay_amount + patient_tax;
-                  debugLog("COmpany Amount:", comapany_resp);
-                  debugLog("Approved:", approved_amount);
+
                   if (
                     approved_amount !== 0 &&
                     approved_amount < comapany_resp
@@ -1304,9 +1265,8 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   }
 
                   company_payble = net_amout - patient_resp;
-                  debugLog("Company Pay Net:", company_payble);
+
                   company_payble = company_payble + company_tax;
-                  debugLog("Company Pay:", company_payble);
 
                   preapp_limit_amount = policydtls.preapp_limit;
                   if (policydtls.preapp_limit !== 0) {
@@ -1354,9 +1314,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   net_amout = gross_amount - discount_amout;
                   patient_resp = net_amout;
 
-                  debugLog("VAT APPLY:", vat_applicable);
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    debugLog("VAT APPLY:");
                     patient_tax = math.round(
                       (patient_resp * records.vat_percent) / 100,
                       2
@@ -1369,8 +1327,6 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               })
 
               .then(secpolicydtls => {
-                debugLog("ander", secpolicydtls);
-
                 if (secpolicydtls != null) {
                   //secondary Insurance
                   sec_unit_cost = patient_resp;
@@ -1387,7 +1343,6 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                       appsettings.hims_d_service_type.service_type_id
                         .Consultation == records.service_type_id
                     ) {
-                      debugLog("Consutation", secpolicydtls.copay_consultation);
                       sec_copay_percntage = secpolicydtls.copay_consultation;
                     } else if (
                       appsettings.hims_d_service_type.service_type_id
@@ -1409,7 +1364,6 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                       appsettings.hims_d_service_type.service_type_id.Lab ==
                       records.service_type_id
                     ) {
-                      debugLog("Lab: ", secpolicydtls.copay_percent);
                       sec_copay_percntage = secpolicydtls.copay_percent;
                     } else if (
                       appsettings.hims_d_service_type.service_type_id
@@ -1472,7 +1426,6 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   sec_company_res = sec_unit_cost - patient_resp;
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    debugLog("VAT APPLY:");
                     patient_tax = math.round(
                       (patient_resp * records.vat_percent) / 100,
                       2
@@ -1572,22 +1525,11 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   }
                 );
 
-                // debugLog("Results are recorded...", result);
-                // outputArray = {
-                //   billdetails: [billingDetailsModel]
-                // };
-                // debugLog("Results are outputArray...", outputArray);
-                // next();
-                debugLog("out Result...", out);
                 outputArray.push(out);
               })
               .then(() => {
                 if (m == result.length - 1) {
-                  //first commented
-                  //  req.records = { billdetails: outputArray };
                   return resolve({ billdetails: outputArray });
-                  debugLog("final Result..", outputArray);
-                  next();
                 }
               })
               .catch(e => {
