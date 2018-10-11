@@ -197,10 +197,41 @@ let getPatientMedication = (req, res, next) => {
   }
 };
 
+//created by irfan: to  get Patient Investigation
+let getPatientInvestigation = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_ordered_services_id, patient_id, visit_id, doctor_id ,services_id,S.service_name \
+        from hims_f_ordered_services OS , hims_d_services S  where \
+        OS.record_status='A' and S.record_status='A' and \
+        OS.services_id=S.hims_d_services_id and visit_id=?",
+        [req.query.visit_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientMrdList,
   getPatientEncounterDetails,
   getPatientChiefComplaint,
   getPatientDiagnosis,
-  getPatientMedication
+  getPatientMedication,
+  getPatientInvestigation
 };
