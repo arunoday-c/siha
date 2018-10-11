@@ -12,6 +12,7 @@ import moment from "moment";
 import { getBillDetailsFunctionality } from "../../model/billing";
 import { updateIntoItemLocation } from "./commonFunction";
 import Promise from "bluebird";
+import { connect } from "pm2";
 
 //created by Nowshad: to Insert POS Entry
 let addPosEntry = (req, res, next) => {
@@ -360,20 +361,57 @@ let getPrescriptionPOS = (req, res, next) => {
       if (error) {
         next(error);
       }
-      //Select Query hims_mitem_location... input item_id and location_id
-      //check then
-      new Promise((resolve, reject) => {
-        try {
-          getBillDetailsFunctionality(req, res, next, resolve);
-        } catch (e) {
-          reject(e);
-        }
-      }).then(result => {
-        //expiry_date, uom_id, and batchno add with the result
-        debugLog("result", result);
-        req.records = result;
-        next();
-      });
+      connection
+        .beginTransaction(error => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+          const _reqBody = req.body;
+          return new Promise((resolve, reject) => {
+            //Select bachno,exp,itemcat,Query hims_mitem_location... input item_id and location_id
+            connection.query(
+              "select batchno,expirydt from hims_m_item_location where item_id=? and location_id=?",
+              [_reqBody.item_id, _reqBody.location_id],
+              (error, result) => {
+                if (error) {
+                  reject(error);
+                }
+                resolve(result);
+              }
+            );
+          }).then(result => {
+            //check then
+            new Promise((resolve, reject) => {
+              try {
+                getBillDetailsFunctionality(req, res, next, resolve);
+              } catch (e) {
+                reject(e);
+              }
+            }).then(resultbilling => {
+              //expiry_date, uom_id, and batchno add with the result
+              const _result =
+                result != null && result.length > 0 ? result[0] : {};
+              if (resultbilling != null && resultbilling.length > 0) {
+                req.records = {
+                  ...resultbilling[0],
+                  ..._result
+                };
+                next();
+              } else {
+                next();
+              }
+            });
+          });
+        })
+        .catch(e => {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(e);
+          });
+        });
     });
   } catch (e) {
     next(e);
