@@ -6,7 +6,6 @@ import RequestDetails from "./RequestDetails/RequestDetails";
 import ApprovalDetails from "./ApprovalDetails/ApprovalDetails";
 import Attachments from "./Attachments/Attachments";
 import { AlgaehLabel, Modal } from "../../Wrapper/algaehWrapper";
-import Paper from "@material-ui/core/Paper";
 import "./../../../styles/site.css";
 import "./PreApprovalStatus.css";
 import MyContext from "../../../utils/MyContext.js";
@@ -29,13 +28,9 @@ export default class PreApprovalStatus extends PureComponent {
       <React.Fragment>
         <div>
           <Modal
-            style={{
-              margin: "0 auto",
-              width: "150vh"
-            }}
             open={this.props.open}
           >
-            <Paper>
+            <div className="algaeh-modal">
               <MyContext.Provider
                 value={{
                   state: this.state,
@@ -43,13 +38,24 @@ export default class PreApprovalStatus extends PureComponent {
                     this.setState({ ...obj });
                   }
                 }}
-              >
-                <div className="hptl-pre-approval-status">
-                  <div className="colorPrimary">
-                    <Typography variant="title">
-                      {this.props.HeaderCaption}
-                    </Typography>
+              >  
+                          <div className="popupHeader"><div className="row">
+                  <div className="col-lg-8">
+                    <h4>{this.props.HeaderCaption}</h4>
                   </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div></div>
+                <div className="col-lg-12 popupInner" style={{height:"60vh"}}>
                   <div className="main_div" position="fixed">
                     <PatientDetails
                       selected_services={this.props.selected_services}
@@ -87,8 +93,18 @@ export default class PreApprovalStatus extends PureComponent {
                     </div>
                   </div>
                 </div>
+                <div className=" popupFooter">
+                <div className="col-lg-12">
+                <div className="row">
+                <div className="col-lg-12">
+                <button className="btn btn-default"><label className="style_Label ">Close</label></button>
+                </div>
+                </div>
+                </div>
+                </div>
+                
               </MyContext.Provider>
-            </Paper>
+            </div>
           </Modal>
         </div>
       </React.Fragment>
