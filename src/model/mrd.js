@@ -222,10 +222,11 @@ let getPatientInvestigation = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_ordered_services_id, patient_id, visit_id, doctor_id ,services_id,S.service_name \
-        from hims_f_ordered_services OS , hims_d_services S  where \
-        OS.record_status='A' and S.record_status='A' and \
-        OS.services_id=S.hims_d_services_id and visit_id=?",
+        "select hims_f_ordered_services_id, OS.patient_id, OS.visit_id,  doctor_id ,services_id,S.service_name,\
+        L.billed as lab_billed, L.status as lab_ord_status,R.billed as rad_billed, R.status as rad_ord_status \
+           from hims_f_ordered_services OS inner join hims_d_services S on  OS.services_id=S.hims_d_services_id \
+           left join hims_f_lab_order L on OS.visit_id=L.visit_id  left join hims_f_rad_order R on OS.visit_id=R.visit_id \
+                        where OS.record_status='A' and S.record_status='A' and OS.visit_id=?",
         [req.query.visit_id],
         (error, result) => {
           if (error) {
