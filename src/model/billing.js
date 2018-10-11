@@ -1004,6 +1004,9 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               sec_company_tax = 0,
               total_tax = 0;
 
+            let conversion_factor= servicesDetails.conversion_factor === undefined
+              ? 0
+              : servicesDetails.conversion_factor;
             let quantity =
               servicesDetails.quantity === undefined
                 ? 1
@@ -1137,6 +1140,9 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     unit_cost = policydtls.gross_amt;
                   }
 
+                  if(conversion_factor !=0){
+                    unit_cost = unit_cost * conversion_factor;
+                  }
                   gross_amount = quantity * unit_cost;
 
                   if (discount_amout > 0) {
@@ -1232,10 +1238,15 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                       copay_percentage = policydtls.copay_percent;
                     }
                     copay_amount = (net_amout * copay_percentage) / 100;
+                    copay_amount = math.round(copay_amount, 2);
                   }
 
+                  debugLog("net_amout: ", net_amout);
+                  debugLog("copay_amount: ", copay_amount);
                   patient_resp = copay_amount;
-                  comapany_resp = net_amout - patient_resp;
+                  comapany_resp =  math.round(net_amout - patient_resp,2);
+                  
+                  debugLog("comapany_resp: ", comapany_resp);
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
                     patient_tax = math.round(
@@ -1263,6 +1274,8 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     patient_resp = patient_resp + diff_val;
                     comapany_resp = approved_amount;
                   }
+
+                  debugLog("comapany_resp 2: ", comapany_resp);
 
                   company_payble = net_amout - patient_resp;
 
@@ -1302,7 +1315,9 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   }
                 } else {
                   unit_cost = records.standard_fee;
-
+                  if(conversion_factor !=0){
+                    unit_cost = unit_cost * conversion_factor;
+                  }
                   gross_amount = quantity * unit_cost;
 
                   if (discount_amout > 0) {
@@ -1420,6 +1435,8 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     }
                     sec_copay_amount =
                       (sec_unit_cost * sec_copay_percntage) / 100;
+
+                    sec_copay_amount = math.round(sec_copay_amount, 2);
                   }
 
                   patient_resp = sec_copay_amount;

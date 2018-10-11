@@ -93,6 +93,7 @@ class PatientDisplayDetails extends Component {
       nextProps.existinsurance !== undefined &&
       nextProps.existinsurance.length !== 0
     ) {
+      debugger;
       output = nextProps.existinsurance[0];
     }
     if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {

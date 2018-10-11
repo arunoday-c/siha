@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
-import "./PosListItems.css";
+import "./ItemListsReturn.css";
 import "./../../../../styles/site.css";
 import {
   AlgaehDataGrid,
@@ -15,22 +15,22 @@ import {
 
 import {
   discounthandle,
+  changeTexts,
   itemchangeText,
   numberchangeTexts,
   AddItems,
   deletePosDetail,
   updatePosDetail,
   calculateAmount,
-  adjustadvance,
-  UomchangeTexts
-} from "./PosListItemsEvents";
+  adjustadvance
+} from "./ItemListsReturnEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Paper from "@material-ui/core/Paper";
 import Options from "../../../../Options.json";
 import moment from "moment";
 
-class PosListItems extends Component {
+class ItemListsReturn extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,8 +41,7 @@ class PosListItems extends Component {
       quantity: 0,
       unit_cost: 0,
       Batch_Items: [],
-      service_id: null,
-      conversion_factor: 1
+      service_id: null
     };
   }
 
@@ -95,7 +94,7 @@ class PosListItems extends Component {
             <div className="hptl-phase1-op-add-billing-form">
               <div className="container-fluid">
                 <div className="row">
-                  <div className="col-lg-12">
+                  {/* <div className="col-lg-12">
                     <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                       <div className="row">
                         <AlagehAutoComplete
@@ -126,7 +125,7 @@ class PosListItems extends Component {
                               data: this.state.ItemUOM
                             },
 
-                            onChange: UomchangeTexts.bind(this, this)
+                            onChange: changeTexts.bind(this, this)
                           }}
                         />
                         <AlagehFormGroup
@@ -218,7 +217,7 @@ class PosListItems extends Component {
                         </button>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="col-lg-12">
                     <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
@@ -934,9 +933,7 @@ function mapDispatchToProps(dispatch) {
       generateBill: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemUOM: AlgaehActions,
-      PosHeaderCalculations: AlgaehActions,
-      getServicesCost: AlgaehActions,
-      getInsuranceServicesCost: AlgaehActions
+      PosHeaderCalculations: AlgaehActions
     },
     dispatch
   );
@@ -946,5 +943,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(PosListItems)
+  )(ItemListsReturn)
 );

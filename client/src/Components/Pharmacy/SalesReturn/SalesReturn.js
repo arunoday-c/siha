@@ -22,18 +22,18 @@ import {
   PostPosEntry,
   VisitSearch,
   LocationchangeTexts
-} from "./PointOfSaleEvents";
-import "./PointOfSale.css";
+} from "./SalesReturnEvents";
+import "./SalesReturn.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import PosListItems from "./PosListItems/PosListItems";
+import ItemListsReturn from "./ItemListsReturn/ItemListsReturn";
 import MyContext from "../../../utils/MyContext";
 import POSIOputs from "../../../Models/POS";
 import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails";
 
-class PointOfSale extends Component {
+class SalesReturn extends Component {
   constructor(props) {
     super(props);
 
@@ -115,7 +115,7 @@ class PointOfSale extends Component {
           <BreadCrumb
             title={
               <AlgaehLabel
-                label={{ forceLabel: "Point Of Sale", align: "ltr" }}
+                label={{ forceLabel: "Sales Return", align: "ltr" }}
               />
             }
             breadStyle={this.props.breadStyle}
@@ -133,7 +133,7 @@ class PointOfSale extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Point Of Sale", align: "ltr" }}
+                    label={{ forceLabel: "Sales Return", align: "ltr" }}
                   />
                 )
               }
@@ -151,16 +151,16 @@ class PointOfSale extends Component {
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "pointofsaleEntry.POSEntry"
+                fieldName: "SalesReturnEntry.POSEntry"
               },
-              searchName: "POSEntry"
+              searchName: "SalesReturn"
             }}
             userArea={
               <AlgaehDateHandler
                 div={{ className: "col" }}
                 label={{
                   forceLabel: (
-                    <AlgaehLabel label={{ forceLabel: "POS Date" }} />
+                    <AlgaehLabel label={{ forceLabel: "Sales Date" }} />
                   ),
                   className: "internal-label"
                 }}
@@ -172,7 +172,7 @@ class PointOfSale extends Component {
                 events={{
                   onChange: null
                 }}
-                value={this.state.pos_date}
+                value={this.state.initial_stock_date}
               />
             }
             selectedLang={this.state.selectedLang}
@@ -231,8 +231,7 @@ class PointOfSale extends Component {
                       onChange: Patientchange.bind(this, this)
                     },
                     others: {
-                      // disabled: this.state.case_type === "O" ? true : false
-                      disabled: true
+                      disabled: this.state.case_type === "O" ? true : false
                     }
                   }}
                 />
@@ -328,7 +327,7 @@ class PointOfSale extends Component {
                 }
               }}
             >
-              <PosListItems POSIOputs={this.state} />
+              <ItemListsReturn POSIOputs={this.state} />
             </MyContext.Provider>
 
             <div className="hptl-phase1-footer">
@@ -417,5 +416,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(PointOfSale)
+  )(SalesReturn)
 );

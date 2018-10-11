@@ -1,6 +1,6 @@
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import extend from "extend";
 
 let texthandlerInterval = null;
@@ -44,17 +44,12 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const UomchangeTexts = ($this, ctrl, e) => {
+const changeTexts = ($this, ctrl, e) => {
   debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let unit_cost = e.selected.conversion_factor * $this.state.unit_cost;
-  $this.setState({
-    [name]: value,
-    conversion_factor: e.selected.conversion_factor,
-    unit_cost: unit_cost
-  });
+  $this.setState({ [name]: value });
 };
 
 const numberchangeTexts = ($this, context, e) => {
@@ -78,211 +73,125 @@ const numberchangeTexts = ($this, context, e) => {
 const itemchangeText = ($this, e) => {
   debugger;
   let name = e.name || e.target.name;
-  if ($this.state.location_id !== null) {
-    let value = e.value || e.target.value;
+  let value = e.value || e.target.value;
 
-    $this.props.getSelectedItemDetais({
-      uri: "/pharmacyGlobal/getUomLocationStock",
-      method: "GET",
-      data: {
-        location_id: $this.state.location_id,
-        item_id: value
-      },
-      redux: {
-        type: "ITEMS_UOM_DETAILS_GET_DATA",
-        mappingName: "itemdetaillist"
-      },
-      afterSuccess: data => {
+  $this.props.getSelectedItemDetais({
+    uri: "/pharmacyGlobal/getUomLocationStock",
+    method: "GET",
+    data: {
+      location_id: $this.state.location_id,
+      item_id: value
+    },
+    redux: {
+      type: "ITEMS_UOM_DETAILS_GET_DATA",
+      mappingName: "itemdetaillist"
+    },
+    afterSuccess: data => {
+      debugger;
+      if (data.locationResult.length > 0) {
         debugger;
-        if (data.locationResult.length > 0) {
-          getUnitCost($this, e.selected.service_id);
-          $this.setState({
-            [name]: value,
-            item_category: e.selected.category_id,
-            group_id: e.selected.group_id,
-            uom_id: e.selected.sales_uom_id,
-            service_id: e.selected.service_id,
-            quantity: 1,
-
-            expiry_date: data.locationResult[0].expirydt,
-            batchno: data.locationResult[0].batchno,
-            ItemUOM: data.uomResult,
-            Batch_Items: data.locationResult
-          });
-        } else {
-          successfulMessage({
-            message: "Invalid Input. No Stock Avaiable for selected Item.",
-            title: "Warning",
-            icon: "warning"
-          });
-        }
-      }
-    });
-  } else {
-    $this.setState(
-      {
-        [name]: null
-      },
-      () => {
+        $this.setState({
+          [name]: value,
+          item_category: e.selected.category_id,
+          group_id: e.selected.group_id,
+          uom_id: e.selected.sales_uom_id,
+          service_id: e.selected.service_id,
+          quantity: 1,
+          unit_cost: data.locationResult[0].avgcost,
+          expiry_date: data.locationResult[0].expirydt,
+          batchno: data.locationResult[0].batchno,
+          ItemUOM: data.uomResult,
+          Batch_Items: data.locationResult
+        });
+      } else {
         successfulMessage({
-          message: "Invalid Input. Please select Location.",
+          message: "Invalid Input. No Stock Avaiable for selected Item.",
           title: "Warning",
           icon: "warning"
         });
       }
-    );
-  }
+    }
+  });
 };
 
-const getUnitCost = ($this, serviceid) => {
-  if ($this.state.insured === "N") {
-    $this.props.getServicesCost({
-      uri: "/serviceType/getService",
-      method: "GET",
-      data: { hims_d_services_id: serviceid },
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "hospitalservices"
-      },
-      afterSuccess: data => {
-        debugger;
-
-        let servdata = Enumerable.from(data)
-          .where(w => w.hims_d_services_id === parseInt(serviceid))
-          .firstOrDefault();
-        if (servdata !== undefined || servdata !== null) {
-          $this.setState({
-            unit_cost: servdata.standard_fee
-          });
-        } else {
-          successfulMessage({
-            message: "Invalid Input. No Service for the selected item.",
-            title: "Warning",
-            icon: "warning"
-          });
-        }
-      }
-    });
-  } else {
-    $this.props.getInsuranceServicesCost({
-      uri: "/insurance/getPriceList",
-      method: "GET",
-      data: {
-        services_id: serviceid,
-        insurance_id: $this.state.insurance_provider_id
-      },
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "hospitalservices"
-      },
-      afterSuccess: data => {
-        debugger;
-
-        if (data !== undefined || data !== null) {
-          $this.setState({
-            unit_cost: data[0].gross_amt
-          });
-        } else {
-          successfulMessage({
-            message: "Invalid Input. No Service for the selected item.",
-            title: "Warning",
-            icon: "warning"
-          });
-        }
-      }
-    });
-  }
-};
 const AddItems = ($this, context) => {
-  if ($this.state.item_id === null) {
-    successfulMessage({
-      message: "Invalid Input. Select Item.",
-      title: "Warning",
-      icon: "warning"
-    });
-  } else {
-    debugger;
-    let ItemInput = [
-      {
-        insured: $this.state.insured,
-        conversion_factor: $this.state.conversion_factor,
-        vat_applicable: "Y",
-        hims_d_services_id: $this.state.service_id,
-        quantity: $this.state.quantity,
-        primary_insurance_provider_id: $this.state.insurance_provider_id,
-        primary_network_office_id:
-          $this.state.hims_d_insurance_network_office_id,
-        primary_network_id: $this.state.network_id,
-        sec_insured: $this.state.sec_insured,
-        secondary_insurance_provider_id:
-          $this.state.secondary_insurance_provider_id,
-        secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id
-      }
-    ];
+  debugger;
+  let ItemInput = [
+    {
+      insured: $this.state.insured,
+      vat_applicable: "Y",
+      hims_d_services_id: $this.state.service_id,
+      quantity: $this.state.quantity,
+      primary_insurance_provider_id: $this.state.insurance_provider_id,
+      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
+      primary_network_id: $this.state.network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id
+    }
+  ];
 
-    $this.props.generateBill({
-      uri: "/billing/getBillDetails",
-      method: "POST",
-      data: ItemInput,
-      redux: {
-        type: "BILL_GEN_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        if (data.billdetails[0].pre_approval === "Y") {
-          successfulMessage({
-            message:
-              "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-            title: "Warning",
-            icon: "warning"
-          });
-        } else {
-          let existingservices = $this.state.pharmacy_stock_detail;
+  $this.props.generateBill({
+    uri: "/billing/getBillDetails",
+    method: "POST",
+    data: ItemInput,
+    redux: {
+      type: "BILL_GEN_GET_DATA",
+      mappingName: "xxx"
+    },
+    afterSuccess: data => {
+      if (data.billdetails[0].pre_approval === "Y") {
+        successfulMessage({
+          message:
+            "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+          title: "Warning",
+          icon: "warning"
+        });
+      } else {
+        let existingservices = $this.state.pharmacy_stock_detail;
 
-          if (data.billdetails.length !== 0) {
-            data.billdetails[0].extended_cost =
-              data.billdetails[0].gross_amount;
-            data.billdetails[0].net_extended_cost =
-              data.billdetails[0].net_amout;
+        if (data.billdetails.length !== 0) {
+          data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
+          data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
 
-            data.billdetails[0].item_id = $this.state.item_id;
-            data.billdetails[0].item_category = $this.state.item_category;
-            data.billdetails[0].expiry_date = $this.state.expiry_date;
-            data.billdetails[0].batchno = $this.state.batchno;
-            data.billdetails[0].uom_id = $this.state.uom_id;
-            data.billdetails[0].operation = "-";
+          data.billdetails[0].item_id = $this.state.item_id;
+          data.billdetails[0].item_category = $this.state.item_category;
+          data.billdetails[0].expiry_date = $this.state.expiry_date;
+          data.billdetails[0].batchno = $this.state.batchno;
+          data.billdetails[0].uom_id = $this.state.uom_id;
+          data.billdetails[0].operation = "-";
 
-            existingservices.splice(0, 0, data.billdetails[0]);
-          }
-
-          if (context != null) {
-            context.updateState({ pharmacy_stock_detail: existingservices });
-          }
-
-          $this.setState({
-            item_id: null,
-            uom_id: null,
-            batchno: null,
-            expiry_date: null,
-            quantity: 0,
-            unit_cost: 0,
-            service_id: null
-          });
-
-          $this.props.PosHeaderCalculations({
-            uri: "/billing/billingCalculations",
-            method: "POST",
-            data: { billdetails: existingservices },
-            redux: {
-              type: "POS_HEADER_GEN_GET_DATA",
-              mappingName: "posheader"
-            }
-          });
+          existingservices.splice(0, 0, data.billdetails[0]);
         }
+
+        if (context != null) {
+          context.updateState({ pharmacy_stock_detail: existingservices });
+        }
+
+        $this.setState({
+          item_id: null,
+          uom_id: null,
+          batchno: null,
+          expiry_date: null,
+          quantity: 0,
+          unit_cost: 0,
+          service_id: null
+        });
+
+        $this.props.PosHeaderCalculations({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: { billdetails: existingservices },
+          redux: {
+            type: "POS_HEADER_GEN_GET_DATA",
+            mappingName: "posheader"
+          }
+        });
       }
-    });
-  }
+    }
+  });
 };
 
 const datehandle = ($this, ctrl, e) => {
@@ -489,7 +398,7 @@ const PosheaderCalculation = ($this, context) => {
 };
 export {
   discounthandle,
-  UomchangeTexts,
+  changeTexts,
   itemchangeText,
   numberchangeTexts,
   AddItems,

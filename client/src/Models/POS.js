@@ -9,6 +9,7 @@ export default {
       patient_code: null,
       full_name: "",
       visit_id: null,
+      visit_code: null,
       ip_id: null,
       pos_date: new Date(),
       recieve_amount: 0,

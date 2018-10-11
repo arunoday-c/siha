@@ -1273,7 +1273,8 @@ let deleteSubInsurance = (req, res, next) => {
 //created by:nowshad,to get list of all Price List of selected insurance
 let getPriceList = (req, res, next) => {
   let priselistWhereCondition = {
-    insurance_id: "ALL"
+    insurance_id: "ALL",
+    services_id: "ALL"
   };
 
   debugFunction("getPriceList");

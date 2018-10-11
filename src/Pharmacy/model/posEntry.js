@@ -70,8 +70,12 @@ let addPosEntry = (req, res, next) => {
                 location_id, location_type, sub_total, discount_percentage, discount_amount, net_total, copay_amount, patient_responsibility,\
                 patient_tax, patient_payable,company_responsibility,company_tax,company_payable,comments, sec_company_responsibility,\
                 sec_company_tax,sec_company_payable,sec_copay_amount,net_tax,gross_total,sheet_discount_amount,\
-                sheet_discount_percentage,net_amount,credit_amount,receiveable_amount, created_date,created_by,updated_date,updated_by) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                sheet_discount_percentage,net_amount,credit_amount,receiveable_amount, card_number,effective_start_date,effective_end_date,\
+                insurance_provider_id, sub_insurance_provider_id, network_id, network_type, network_office_id, policy_number, \
+                secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
+                secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
+                created_date,created_by,updated_date,updated_by) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               documentCode,
               today,
@@ -106,6 +110,23 @@ let addPosEntry = (req, res, next) => {
               input.net_amount,
               input.credit_amount,
               input.receiveable_amount,
+              input.card_number,
+              input.effective_start_date,
+              input.effective_end_date,
+              input.insurance_provider_id,
+              input.sub_insurance_provider_id,
+              input.network_id,
+              input.network_type,
+              input.network_office_id,
+              input.policy_number,
+              input.secondary_card_number,
+              input.secondary_effective_start_date,
+              input.secondary_effective_end_date,
+              input.secondary_insurance_provider_id,
+              input.secondary_network_id,
+              input.secondary_network_type,
+              input.secondary_sub_insurance_provider_id,
+              input.secondary_network_office_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -372,6 +393,7 @@ let getPrescriptionPOS = (req, res, next) => {
             next(error);
           });
         }
+        debugLog("req.body", req.body);
         const _reqBody = req.body;
         return new Promise((resolve, reject) => {
           //Select bachno,exp,itemcat,Query hims_mitem_location... input item_id and location_id
