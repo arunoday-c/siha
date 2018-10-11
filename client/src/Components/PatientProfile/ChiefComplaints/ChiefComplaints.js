@@ -862,10 +862,7 @@ class ChiefComplaints extends Component {
                             valueField: "hims_d_hpi_header_id",
                             data: this.state.masterChiefComplaints
                           },
-                          onChange: this.addChiefComplainToPatient.bind(this),
-                          userList: list => {
-                            this.addChiefComplainToPatient(list);
-                          }
+                          onChange: this.addChiefComplainToPatient.bind(this)
                         }}
                       />
 
