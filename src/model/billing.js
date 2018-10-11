@@ -1518,10 +1518,9 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     icd_code: icd_code,
 
                     item_id: records.item_id,
-                    item_category: records.item_category,
                     expiry_date: records.expiry_date,
                     batchno: records.batchno,
-                    uom_id: records.uom_id
+                    grnno: records.grnno
                   }
                 );
 

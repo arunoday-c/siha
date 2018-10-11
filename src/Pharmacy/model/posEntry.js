@@ -365,28 +365,28 @@ let getPrescriptionPOS = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection
-        .beginTransaction(error => {
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }
-          const _reqBody = req.body;
-          return new Promise((resolve, reject) => {
-            //Select bachno,exp,itemcat,Query hims_mitem_location... input item_id and location_id
-            connection.query(
-              "select batchno,expirydt from hims_m_item_location where item_id=? and location_id=?",
-              [_reqBody.item_id, _reqBody.location_id],
-              (error, result) => {
-                if (error) {
-                  reject(error);
-                }
-                resolve(result);
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        const _reqBody = req.body;
+        return new Promise((resolve, reject) => {
+          //Select bachno,exp,itemcat,Query hims_mitem_location... input item_id and location_id
+          connection.query(
+            "select batchno, expirydt, grnno, sales_uom from hims_m_item_location where item_id=? and location_id=?",
+            [_reqBody.item_id, _reqBody.location_id],
+            (error, result) => {
+              if (error) {
+                reject(error);
               }
-            );
-          }).then(result => {
+              resolve(result);
+            }
+          );
+        })
+          .then(result => {
             //check then
             new Promise((resolve, reject) => {
               try {
@@ -399,6 +399,8 @@ let getPrescriptionPOS = (req, res, next) => {
               const _result =
                 result != null && result.length > 0 ? result[0] : {};
               if (resultbilling != null && resultbilling.length > 0) {
+                debugLog("_result", _result);
+                debugLog("resultbilling", resultbilling);
                 req.records = {
                   ...resultbilling[0],
                   ..._result
@@ -408,14 +410,14 @@ let getPrescriptionPOS = (req, res, next) => {
                 next();
               }
             });
+          })
+          .catch(e => {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(e);
+            });
           });
-        })
-        .catch(e => {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(e);
-          });
-        });
+      });
     });
   } catch (e) {
     next(e);
