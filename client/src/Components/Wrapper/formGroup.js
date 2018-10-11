@@ -153,8 +153,7 @@ export default class FormGroup extends PureComponent {
       } else {
         const _isMultiline =
           this.props.textBox.others !== undefined
-            ? this.props.textBox.others.multiline !== undefined &&
-              this.props.textBox.others.multiline === true
+            ? this.props.textBox.others.multiline !== undefined
               ? true
               : false
             : false;
