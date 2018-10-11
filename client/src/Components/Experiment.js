@@ -99,7 +99,7 @@ export default class RadTemplate extends PureComponent {
         ]}
         rowClassName={row => {
           debugger;
-          return "testColor";
+          return "greenCell";
         }}
         dataSource={{
           data: [
