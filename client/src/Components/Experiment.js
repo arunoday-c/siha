@@ -1,10 +1,63 @@
 import React, { PureComponent } from "react";
-import {
-  AlagehAutoComplete,
-  AlgaehDataGrid,
-  AlgaehLabel
-} from "./Wrapper/algaehWrapper";
-import "../Components/experiment.css";
+
+// Import React Table
+import ReactTable from "react-table";
+import "react-table/react-table.css";
+
+// pull in the HOC
+import treeTableHOC from "react-table/lib/hoc/treeTable";
+
+// wrap ReacTable in it
+// the HOC provides the configuration for the TreeTable
+const TreeTable = treeTableHOC(ReactTable);
+const _data = [
+  {
+    date: "2018-01-01 06:00 AM",
+    oral: 36.8,
+    bpSystole: 120,
+    bpdyastole: 70,
+    pulse: 84,
+    resp: 20,
+    bloodsugar: 98.81,
+    height: 78,
+    weight: 87,
+    bmi: 36.3,
+    duration: "2 week agao",
+    doctor: "Dr. Amina Nazir Hussain",
+    date_doctor: "2018-01-01 06:00 AM - Dr. Amina Nazir Hussain"
+  },
+  {
+    date: "2018-01-01 07:00 AM",
+    oral: 36.8,
+    bpSystole: 120,
+    bpdyastole: 70,
+    pulse: 70,
+    resp: 22,
+    bloodsugar: 100,
+    height: 78,
+    weight: 87,
+    bmi: 36,
+    duration: "2 week agao",
+    doctor: "Dr. Amina Nazir Hussain",
+    date_doctor: "2018-01-01 07:00 AM - Dr. Amina Nazir Hussain"
+  },
+  {
+    date: "2018-01-01 12:00 PM",
+    oral: 36,
+    bpSystole: 100,
+    bpdyastole: 33,
+    pulse: 87,
+    resp: 21,
+    bloodsugar: 60,
+    height: 78,
+    weight: 87,
+    bmi: 36,
+    duration: "2 week agao",
+    doctor: "Dr. Ahmad Mustafa",
+    date_doctor: "2018-01-01 12:00 PM - Dr. Ahmad Mustafa"
+  }
+];
+
 export default class RadTemplate extends PureComponent {
   constructor(props) {
     super(props);
@@ -12,125 +65,58 @@ export default class RadTemplate extends PureComponent {
 
   render() {
     return (
-      <AlgaehDataGrid
-        id="grd_test"
+      <TreeTable
+        //Most recent 3 rows are expanded
+        expanded={{ 0: true, 1: true, 2: true, 3: true }}
+        data={_data}
+        pivotBy={["date_doctor"]}
         columns={[
           {
-            fieldName: "visit_type_code",
-            label: <AlgaehLabel label={{ fieldName: "visit_code" }} />,
-            displayTemplate: row => {
-              return <label>{row.visit_type_code}</label>;
-            },
-            editorTemplate: row => {
-              return (
-                <AlagehAutoComplete
-                  div={{}}
-                  selector={{
-                    name: "visit_status",
-                    className: "select-fld",
-                    value: row.visit_type_code,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: [
-                        { name: "Editing1", value: 1 },
-                        { name: "Editing2", value: 2 },
-                        { name: "Editing3", value: 3 },
-                        { name: "Editing4", value: 4 },
-                        { name: "Editing5", value: 5 }
-                      ]
-                    },
-                    onChange: slectedItem => {
-                      debugger;
-                      row["visit_type_code"] = slectedItem.value;
-                    } //this.onchangegridcol.bind(this, row)
-                  }}
-                />
-              );
-            },
-            className: drow => {
-              if (drow.visit_type_code === 2) return "experiment";
-            }
+            accessor: "date_doctor"
+          },
+
+          {
+            Header: "Temp. Oral",
+            accessor: "oral"
           },
           {
-            fieldName: "visit_desc",
-            label: "Display Name"
+            Header: "BP Systole",
+            accessor: "bpSystole"
           },
           {
-            fieldName: "visit_desc",
-            label: "Display Name"
+            Header: "bp Dyastole",
+            accessor: "bpdyastole"
           },
           {
-            fieldName: "visit_desc",
-            label: "Display Name"
+            Header: "Pulse",
+            accessor: "pulse"
           },
           {
-            fieldName: "visit_desc",
-            label: "Display Name"
+            Header: "Respiratory",
+            accessor: "resp"
           },
           {
-            fieldName: "visit_desc",
-            label: "Display Name"
+            Header: "Blood Sugar",
+            accessor: "bloodsugar"
           },
           {
-            fieldName: "visit_desc",
-            label: "Display Name"
+            Header: "Height",
+            accessor: "height"
           },
           {
-            fieldName: "visit_desc",
-            label: "Display Name"
+            Header: "Weight",
+            accessor: "weight"
           },
           {
-            fieldName: "visit_desc",
-            label: "Display Name"
+            Header: "BMI",
+            accessor: "bmi"
           },
           {
-            fieldName: "visit_desc",
-            label: "Display Name"
-          },
-          {
-            fieldName: "visit_desc",
-            label: "Display Name"
-          },
-          {
-            fieldName: "visit_desc",
-            label: "Display Name"
+            Header: "Duration",
+            accessor: "duration"
           }
         ]}
-        rowClassName={row => {
-          debugger;
-          return "greenCell";
-        }}
-        dataSource={{
-          data: [
-            {
-              visit_type_code: 1,
-              visit_desc: "Free Visit"
-            },
-            {
-              visit_type_code: 2,
-              visit_desc: "Current Visit"
-            },
-            {
-              visit_type_code: 3,
-              visit_desc: "Local Visit"
-            },
-            {
-              visit_type_code: 4,
-              visit_desc: "Non Consultation"
-            },
-            {
-              visit_type_code: 5,
-              visit_desc: "Lab Consultation"
-            }
-          ]
-        }}
-        isEditable={true}
-        events={{
-          onDone: row => {
-            alert(JSON.stringify(row));
-          }
-        }}
+        defaultPageSize={10}
       />
     );
   }
