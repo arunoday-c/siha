@@ -59,16 +59,10 @@ class PatientDetails extends PureComponent {
         <MyContext.Consumer>
           {context => (
             <div>
-              <div className="hptl-pre-approval-approval-details">
-                <div className="tab-container toggle-section">
-                  <ul className="nav">
-                    <li className={"nav-item tab-button active"}>
-                      Approval Details
-                    </li>
-                  </ul>
-                </div>
-                <div className="approval-section">
-                  <div className="container-fluid">
+<h6 className="popSubHdg">Approval Details</h6>
+
+               <div className="row">
+<div className="col-lg-12">
                     <AlgaehDataGrid
                       id="approval_services_grd"
                       columns={[
@@ -276,7 +270,6 @@ class PatientDetails extends PureComponent {
                     />
                   </div>
                 </div>
-              </div>
             </div>
           )}
         </MyContext.Consumer>

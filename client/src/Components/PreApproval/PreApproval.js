@@ -252,7 +252,7 @@ class PreApproval extends Component {
                   displayTemplate: row => {
                     return (
                       <span>
-                      <i className="fas fa-pen" onClick={this.ShowEditModel.bind(this, row)}></i>
+                      <i className="fas fa-pen" onClick={this.ShowEditModel.bind(this, row)} ></i>
                         <i className="fas fa-file-export" onClick={this.ShowSubmitModel.bind(this, row)}></i>
                         <i className="fas fa-check" onClick={VerifyOrderModel.bind(this, this, row)}></i>
                         

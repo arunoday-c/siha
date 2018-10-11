@@ -12,6 +12,10 @@
   /* Btn Green */ }
   :global .displayInlineBlock {
     display: inline-block; }
+  :global .greenCell {
+    background-color: #acffc0 !important; }
+  :global .cursor-pointer {
+    cursor: pointer; }
   :global .pat-code:hover {
     text-decoration: underline;
     cursor: pointer; }
@@ -435,6 +439,13 @@
     :global .algaeh-modal .popupInner {
       overflow-y: auto;
       overflow-x: hidden; }
+      :global .algaeh-modal .popupInner .popSubHdg {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #31afb2;
+        margin-top: 10px;
+        border-bottom: 1px dashed #d3d3d3;
+        padding-bottom: 5px; }
       :global .algaeh-modal .popupInner .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -514,7 +525,17 @@
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0); }
     :global .algaeh-modal-Ar .popupInner {
       overflow-y: auto;
-      overflow-x: hidden; }
+      overflow-x: hidden;
+      border-bottom: 1px dashed #e5e5e5;
+      padding: 10px 0;
+      /* text-transform: uppercase; */ }
+      :global .algaeh-modal-Ar .popupInner .popSubHdg {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #31afb2;
+        margin-top: 10px;
+        border-bottom: 1px dashed #d3d3d3;
+        padding-bottom: 5px; }
       :global .algaeh-modal-Ar .popupInner .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;

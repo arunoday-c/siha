@@ -20,21 +20,16 @@ export default class Attachments extends Component {
 
   render() {
     return (
-      <div className="hptl-phase1-pre-approval-attachment-form">
-        <div className="tab-container toggle-section">
-          <ul className="nav">
-            <li className={"nav-item tab-button active"}>
-              Attachments/Insurance Card
-            </li>
-          </ul>
-        </div>
-        <div className="attachment-section">
-          <div className="container-fluid">
+      <div>
+      <h6 className="popSubHdg">Attachments Details</h6>
+
+               <div className="row">
+<div className="col-lg-12">
             <div className="row">
               <div className="col-lg-3">
+              <label>Attach Documents</label>
                 <div
-                  className="ins-attach-area refactor-design"
-                  style={{ marginTop: "38px" }}
+                  className="ins-attach-area refactor-design algaehUploadFile"
                 >
                   <Dropzone
                     onDrop={this.onDrop.bind(this)}
@@ -42,7 +37,7 @@ export default class Attachments extends Component {
                   >
                     <div>
                       <button
-                        className="htpl1-phase1-btn-primary"
+                        className="btn btn-primary"
                         style={{ float: "right" }}
                       >
                         <AlgaehLabel
@@ -59,28 +54,22 @@ export default class Attachments extends Component {
                 </div>
               </div>
 
-              <div className="col-lg-6">&nbsp;</div>
 
               <div className="col-lg-3">
+              <label>Available Insurance</label>
+
+
                 <div className="image-drop-area">
-                  {/* <Dropzone
-                    id="attach-primary-id"
-                    className="dropzone"
-                    accept="image/*"
-                    multiple={false}
-                    name="image"
-                  > */}
+                  
                   <img
-                    // className="preview-image"
                     src={this.state.frontSide}
                     style={{ width: "100%", height: "101px" }}
                   />
-                  {/* </Dropzone> */}
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+              </div>
+              </div>
+              </div>
       </div>
     );
   }
