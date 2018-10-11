@@ -82,7 +82,7 @@ class Assessment extends Component {
   render() {
     return (
       <div className="hptl-ehr-assetment-details">
-        <div className="col-lg-12">
+     
           <div className="row margin-top-15">
             <div className="col-lg-6">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
@@ -594,7 +594,6 @@ class Assessment extends Component {
               </div>
             </div>
           </div>
-        </div>
       </div>
     );
   }

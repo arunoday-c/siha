@@ -27,8 +27,8 @@ class ActiveMedication extends Component {
   render() {
     return (
       <div className="hptl-active-medication-form">
-        <div className="col-lg-12">
           <div className="row">
+        <div className="col-lg-12">
             <AlgaehDataGrid
               id="Order_Medication"
               columns={[

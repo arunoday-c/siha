@@ -83,7 +83,7 @@ class OrderMedication extends Component {
     return (
       <div className="hptl-phase1-order-medication-form">
         <div className="col-lg-12">
-          <div className="row">
+          <div className="row paddin-bottom-5" style={{marginTop:5}}>
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{ forceLabel: "Generic Name" }}
@@ -133,7 +133,7 @@ class OrderMedication extends Component {
             />
             <AlagehAutoComplete
               div={{ className: "col-lg-2" }}
-              label={{ forceLabel: "&nbsp;" }}
+              label={{ forceLabel: "Freq. Type" }}
               selector={{
                 name: "frequency_type",
                 className: "select-fld",
@@ -148,7 +148,7 @@ class OrderMedication extends Component {
             />
             <AlagehAutoComplete
               div={{ className: "col-lg-2" }}
-              label={{ forceLabel: "&nbsp;" }}
+              label={{ forceLabel: "Consume" }}
               selector={{
                 name: "frequency_time",
                 className: "select-fld",
@@ -162,9 +162,9 @@ class OrderMedication extends Component {
               }}
             />
           </div>
-          <div className="row">
+          <div className="row paddin-bottom-5">
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Dosage"
               }}
@@ -179,7 +179,7 @@ class OrderMedication extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Duration (Days)"
               }}
@@ -194,7 +194,7 @@ class OrderMedication extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Total Quantity"
               }}
@@ -209,35 +209,20 @@ class OrderMedication extends Component {
             />
 
             <AlgaehDateHandler
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{ forceLabel: "Start Date" }}
               textBox={{ className: "txt-fld", name: "start_date" }}
-              maxDate={new Date()}
+              minDate={new Date()}
               events={{
                 onChange: datehandle.bind(this, this)
               }}
               value={this.state.start_date}
             />
-          </div>
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-10" }}
-              label={{
-                forceLabel: "Instructions"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "followup_comments",
-                value: this.state.followup_comments,
-                events: {
-                  onChange: texthandle.bind(this, this)
-                }
-              }}
-            />
 
-            <div className="col-lg-2" style={{ paddingTop: "4vh" }}>
+
+            <div className="col-lg-2" style={{paddingTop:21,paddingLeft: 0}}>
               <button
-                className="btn btn-primary btn-sm"
+                className="btn btn-default btn-sm"
                 type="button"
                 onClick={AddItems.bind(this, this)}
               >
@@ -245,8 +230,9 @@ class OrderMedication extends Component {
               </button>
             </div>
           </div>
-          <div className="col-lg-12">
-            <div className="row">
+          <div className="row">
+          <div className="col-lg-12" style={{marginTop:10}}>
+          
               <AlgaehDataGrid
                 id="Order_Medication"
                 columns={[
@@ -376,25 +362,20 @@ class OrderMedication extends Component {
                   // onDone: this.updateBillDetail.bind(this)
                 }}
               />
-            </div>
           </div>
-        </div>
-        <div
-          className="container-fluid"
-          style={{ marginBottom: "1vh", marginTop: "1vh" }}
-        >
-          <div className="row" position="fixed">
-            <div className="col-lg-12">
-              <span className="float-right">
-                <button
-                  style={{ marginRight: "15px" }}
-                  className="htpl1-phase1-btn-primary"
-                  onClick={SaveMedication.bind(this, this)}
+          </div>
+          <div className="row" style={{marginTop:5,marginBottom:5}}>
+            <div className="col-lg-10">INSTRUCTIONS: {this.state.followup_comments} </div>
+         
+            <div className="col-lg-2">
+ <button
+                className="btn btn-primary btn-sm"
+                type="button"
+                 onClick={SaveMedication.bind(this, this)}
                   disabled={this.state.saved}
-                >
-                  <AlgaehLabel label={{ fieldName: "btnsave" }} />
-                </button>
-              </span>
+              >Save Medication </button>
+
+
             </div>
           </div>
         </div>

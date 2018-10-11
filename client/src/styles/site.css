@@ -188,6 +188,9 @@ body {
     border: none;
     cursor: not-allowed; }
 
+:global .paddin-bottom-5 {
+  padding-bottom: 4px; }
+
 :global .htpl1-phase1-btn-secondary {
   font-size: 0.8rem;
   text-transform: uppercase;

@@ -14,8 +14,7 @@ class Subjective extends Component {
   render() {
     return (
       <div className="subjective">
-        <div className="col-lg-12" style={{ marginTop: "15px" }}>
-          <div className="row">
+        <div className="row margin-top-15">
             <div className="col-lg-8">
               <ChiefComplaints />
               <PatientHistory />
@@ -26,7 +25,6 @@ class Subjective extends Component {
               <ReviewofSystems />
             </div>
           </div>
-        </div>
       </div>
     );
   }

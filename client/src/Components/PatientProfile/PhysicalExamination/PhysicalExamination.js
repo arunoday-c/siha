@@ -17,7 +17,7 @@ class PhysicalExamination extends Component {
   render() {
     return (
       <div className="physical_examination">
-        <div className="col-lg-12">
+       
           <div className="row">
             <div className="col-lg-8">
               <Examination />
@@ -55,7 +55,6 @@ class PhysicalExamination extends Component {
               </div>
             </div>
           </div>
-        </div>
       </div>
     );
   }

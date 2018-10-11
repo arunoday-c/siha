@@ -1,9 +1,7 @@
-.hptl-ehr-assetment-details {
-  background-color: #fbfbfb; }
-  .hptl-ehr-assetment-details .grid-section {
-    background: #ffff;
-    border: 1px solid #d3d3d3;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
-    text-align: center; }
+.hptl-ehr-assetment-details .grid-section {
+  background: #ffff;
+  border: 1px solid #d3d3d3;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  text-align: center; }
