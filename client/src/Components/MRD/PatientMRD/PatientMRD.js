@@ -3,6 +3,7 @@ import "./patient_mrd.css";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import Encounters from "./Encounters/Encounters";
 import HistoricalData from "./HistoricalData/HistoricalData";
+import moment from "moment";
 
 class PatientMRD extends Component {
   constructor(props) {
@@ -54,55 +55,44 @@ class PatientMRD extends Component {
             </div>
             <div className="patientName">
               <h6>
-                {this.props.patient_profile !== undefined
-                  ? this.props.patient_profile[0].full_name
-                  : "Sebastian Tassard"}
+                {Window.global["pat_name"] !== undefined
+                  ? Window.global["pat_name"]
+                  : "Loading . . ."}
               </h6>
               <p>
-                {this.props.patient_profile !== undefined
-                  ? this.props.patient_profile[0].gender
+                {Window.global["gender"] !== undefined
+                  ? Window.global["gender"]
                   : ""}
                 ,{" "}
-                {this.props.patient_profile !== undefined
-                  ? this.props.patient_profile[0].age_in_years
-                  : 0}
-                Y{" "}
-                {this.props.patient_profile !== undefined
-                  ? this.props.patient_profile[0].age_in_months
-                  : 0}
-                M{" "}
-                {this.props.patient_profile !== undefined
-                  ? this.props.patient_profile[0].age_in_days
-                  : 0}
-                D
+                {Window.global["age"] !== undefined ? Window.global["age"] : 0}Y{" "}
               </p>
             </div>
             <div className="patientDemographic">
               <span>
                 DOB:
                 <b>
-                  {/* {moment(
-                  this.props.patient_profile !== undefined
-                    ? this.props.patient_profile[0].date_of_birth
-                    : ""
-                ).format("DD-MM-YYYY")} */}
-                  DD-MM-YYYY
+                  {moment(
+                    Window.global["date_of_birth"] !== undefined
+                      ? Window.global["date_of_birth"]
+                      : ""
+                  ).format("DD-MM-YYYY")}
+                  {/* DD-MM-YYYY */}
                 </b>
               </span>
               <span>
                 Mobile:{" "}
                 <b>
-                  {this.props.patient_profile !== undefined
-                    ? this.props.patient_profile[0].contact_number
-                    : "9098909878"}
+                  {Window.global["contact_number"] !== undefined
+                    ? Window.global["contact_number"]
+                    : ""}
                 </b>
               </span>
               <span>
                 Nationality:{" "}
                 <b>
-                  {this.props.patient_profile !== undefined
-                    ? this.props.patient_profile[0].nationality
-                    : "Indian"}
+                  {Window.global["nationality"] !== undefined
+                    ? Window.global["nationality"]
+                    : ""}
                 </b>
               </span>
             </div>
@@ -110,30 +100,25 @@ class PatientMRD extends Component {
               <span>
                 MRN:{" "}
                 <b>
-                  {this.props.patient_profile !== undefined
-                    ? this.props.patient_profile[0].patient_code
-                    : "000000"}
+                  {Window.global["patient_code"] !== undefined
+                    ? Window.global["patient_code"]
+                    : "Loading . ."}
                 </b>
               </span>
               <span>
-                Encounter:{" "}
+                Primary ID Type:{" "}
                 <b>
-                  {/* {moment(
-                  this.props.patient_profile !== undefined
-                    ? this.props.patient_profile[0].Encounter_Date
-                    : ""
-                ).format("DD-MM-YYYY HH:MM:SS A")} */}
-                  DD-MM-YYYY HH:MM:SS A
+                  {Window.global["primary_id"] !== undefined
+                    ? Window.global["primary_id"]
+                    : "Loading . ."}
                 </b>
               </span>
               <span>
-                Payment:{" "}
+                Primary ID Number:{" "}
                 <b>
-                  {this.props.patient_profile !== undefined
-                    ? this.props.patient_profile[0].payment_type === "I"
-                      ? "Insurance"
-                      : "Self"
-                    : ""}
+                  {Window.global["primary_id_number"] !== undefined
+                    ? Window.global["primary_id_number"]
+                    : "Loading . ."}
                 </b>
               </span>
             </div>

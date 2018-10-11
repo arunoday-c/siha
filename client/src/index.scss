@@ -5,6 +5,14 @@ $forntSize: 0.7rem;
     display: inline-block;
   }
 
+  .greenCell {
+    background-color: #acffc0 !important;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
   .pat-code:hover {
     text-decoration: underline;
     cursor: pointer;

@@ -12,6 +12,10 @@
   /* Btn Green */ }
   :global .displayInlineBlock {
     display: inline-block; }
+  :global .greenCell {
+    background-color: #acffc0 !important; }
+  :global .cursor-pointer {
+    cursor: pointer; }
   :global .pat-code:hover {
     text-decoration: underline;
     cursor: pointer; }

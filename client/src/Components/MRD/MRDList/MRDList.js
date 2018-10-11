@@ -192,8 +192,17 @@ class MRDList extends Component {
                       <span
                         onClick={() => {
                           setGlobal({
-                            "MRD-STD": "PatientMRD"
-                            // mrd_patient : row.patient_id,
+                            "MRD-STD": "PatientMRD",
+                            mrd_patient: row.hims_d_patient_id,
+                            nationality: row.nationality,
+                            primary_id: row.primary_document_name,
+                            primary_id_number: row.primary_id_no,
+                            gender: row.gender,
+                            age: row.age,
+                            date_of_birth: row.date_of_birth,
+                            patient_code: row.patient_code,
+                            contact_number: row.contact_number,
+                            pat_name: row.full_name
                           });
                           document.getElementById("mrd-router").click();
                         }}
@@ -203,36 +212,54 @@ class MRDList extends Component {
                       </span>
                     );
                   },
-                  className: drow => {
-                    return "testColor";
-                  },
                   others: {
-                    styles: 'textAlign : "center"'
+                    style: { textAlign: "center" }
+                  },
+                  className: drow => {
+                    return "greenCell";
                   }
                 },
                 {
                   fieldName: "full_name",
-                  label: "Consult Date & Time"
+                  label: "Consult Date & Time",
+                  others: {
+                    style: { textAlign: "center" }
+                  }
                 },
                 {
                   fieldName: "gender",
-                  label: "Gender"
+                  label: "Gender",
+                  others: {
+                    style: { textAlign: "center" }
+                  }
                 },
                 {
                   fieldName: "date_of_birth",
-                  label: "Date of Birth"
+                  label: "Date of Birth",
+                  others: {
+                    style: { textAlign: "center" }
+                  }
                 },
                 {
                   fieldName: "age",
-                  label: "Age"
+                  label: "Age",
+                  others: {
+                    style: { textAlign: "center" }
+                  }
                 },
                 {
                   fieldName: "contact_number",
-                  label: "Phone Number"
+                  label: "Phone Number",
+                  others: {
+                    style: { textAlign: "center" }
+                  }
                 },
                 {
                   fieldName: "registration_date",
-                  label: "Registration Date"
+                  label: "Registration Date",
+                  others: {
+                    style: { textAlign: "center" }
+                  }
                 }
               ]}
               keyId="index"
