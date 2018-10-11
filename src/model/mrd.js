@@ -130,8 +130,40 @@ let getPatientChiefComplaint = (req, res, next) => {
   }
 };
 
+//created by irfan: to  get Patient Diagnosis
+let getPatientDiagnosis = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id,ICD.icd_code as daignosis_code,\
+        ICD.icd_description as daignosis_description  ,diagnosis_type, final_daignosis,\
+        PD.created_date as diagnosis_date  from hims_f_patient_diagnosis PD,hims_d_icd ICD\
+         where PD.record_status='A' and   ICD.record_status='A'\
+         and PD.daignosis_id=ICD.hims_d_icd_id and  PD.episode_id=? order by diagnosis_date desc",
+        [req.query.episode_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientMrdList,
   getPatientEncounterDetails,
-  getPatientChiefComplaint
+  getPatientChiefComplaint,
+  getPatientDiagnosis
 };

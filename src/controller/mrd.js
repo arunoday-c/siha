@@ -5,7 +5,8 @@ import httpStatus from "../utils/httpStatus";
 import {
   getPatientMrdList,
   getPatientEncounterDetails,
-  getPatientChiefComplaint
+  getPatientChiefComplaint,
+  getPatientDiagnosis
 } from "../model/mrd";
 
 export default ({ config, db }) => {
@@ -45,6 +46,21 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientChiefComplaint",
     getPatientChiefComplaint,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to getPatientDiagnosis
+  api.get(
+    "/getPatientDiagnosis",
+    getPatientDiagnosis,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
