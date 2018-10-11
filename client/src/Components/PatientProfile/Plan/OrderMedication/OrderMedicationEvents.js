@@ -73,7 +73,9 @@ const itemhandle = ($this, ctrl, e) => {
     [name]: value,
     generic_id: e.selected.generic_id,
     service_id: e.selected.service_id,
-    uom_id: e.selected.stocking_uom_id
+    uom_id: e.selected.sales_uom_id,
+    item_category_id: e.selected.category_id,
+    item_group_id: e.selected.group_id
   });
 };
 
@@ -92,6 +94,8 @@ const AddItems = $this => {
     start_date: $this.state.start_date,
     uom_id: $this.state.uom_id,
     service_id: $this.state.service_id,
+    item_category_id: $this.state.item_category_id,
+    item_group_id: $this.state.item_group_id,
     item_status: "A"
   };
   medicationitems.push(medicationobj);

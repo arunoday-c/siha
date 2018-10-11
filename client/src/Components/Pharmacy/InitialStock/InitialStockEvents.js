@@ -251,6 +251,9 @@ const ClearData = $this => {
 const PostInitialStock = $this => {
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
+  $this.state.transaction_id = $this.state.hims_f_pharmacy_stock_header_id;
+  $this.state.transaction_date = $this.state.docdate;
+
   algaehApiCall({
     uri: "/initialstock/updatePharmacyInitialStock",
     data: $this.state,

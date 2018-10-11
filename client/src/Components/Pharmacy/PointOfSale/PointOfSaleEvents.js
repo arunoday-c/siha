@@ -175,6 +175,20 @@ const PostPosEntry = $this => {
   debugger;
   $this.state.posted = "Y";
   $this.state.transaction_type = "POS";
+  $this.state.transaction_id = $this.state.hims_f_pharmacy_pos_header_id;
+  $this.state.transaction_date = $this.state.pos_date;
+  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+    $this.state.pharmacy_stock_detail[i].location_id = $this.state.location_id;
+    $this.state.pharmacy_stock_detail[i].location_type =
+      $this.state.location_type;
+    $this.state.pharmacy_stock_detail[i].operation = "-";
+    $this.state.pharmacy_stock_detail[i].sales_uom =
+      $this.state.pharmacy_stock_detail[i].uom_id;
+    $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
+    $this.state.pharmacy_stock_detail[i].grn_number =
+      $this.state.pharmacy_stock_detail[i].grn_no;
+  }
+  debugger;
   algaehApiCall({
     uri: "/posEntry/updatePosEntry",
     data: $this.state,
@@ -328,6 +342,13 @@ const AddItems = ($this, ItemInput) => {
   });
 };
 
+const LocationchangeTexts = ($this, ctrl, e) => {
+  e = ctrl || e;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  $this.setState({ [name]: value, location_type: e.selected.location_type });
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -337,5 +358,6 @@ export {
   Patientchange,
   SavePosEnrty,
   PostPosEntry,
-  VisitSearch
+  VisitSearch,
+  LocationchangeTexts
 };

@@ -56,10 +56,10 @@ let updateIntoItemLocation = (req, res, next) => {
         req.body.transaction_type +
         "</transaction_type> \
     <transaction_id>" +
-        req.body.hims_f_pharmacy_stock_header_id +
+        req.body.transaction_id +
         "</transaction_id> \
     <transaction_date>" +
-        req.body.docdate +
+        req.body.transaction_date +
         "</transaction_date> \
     <from_location_id>" +
         s.location_id +
@@ -89,7 +89,7 @@ let updateIntoItemLocation = (req, res, next) => {
         s.item_group_id +
         "</item_group_id> \
     <item_code_id>" +
-        s.item_code_id +
+        s.item_id +
         "</item_code_id> \
     <required_batchno>" +
         s.required_batchno +
@@ -129,7 +129,10 @@ let updateIntoItemLocation = (req, res, next) => {
         "</created_by> \
     <updated_by>" +
         req.userIdentity.algaeh_d_app_user_id +
-        "</updated_by>";
+        "</updated_by>\
+    <operation>" +
+        (s.operation == null ? null : s.operation) +
+        "</operation>";
     })
     .ToArray();
   xmlQuery += "</hims_m_item_location>";

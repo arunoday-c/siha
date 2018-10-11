@@ -69,8 +69,8 @@ let addPosEntry = (req, res, next) => {
                 location_id, location_type, sub_total, discount_percentage, discount_amount, net_total, copay_amount, patient_responsibility,\
                 patient_tax, patient_payable,company_responsibility,company_tax,company_payable,comments, sec_company_responsibility,\
                 sec_company_tax,sec_company_payable,sec_copay_amount,net_tax,gross_total,sheet_discount_amount,\
-                sheet_discount_percentage,net_amount,credit_amount,receiveable_amount) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                sheet_discount_percentage,net_amount,credit_amount,receiveable_amount, created_date,created_by,updated_date,updated_by) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               documentCode,
               today,
@@ -104,7 +104,11 @@ let addPosEntry = (req, res, next) => {
               input.sheet_discount_percentage,
               input.net_amount,
               input.credit_amount,
-              input.receiveable_amount
+              input.receiveable_amount,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id
             ],
             (error, headerResult) => {
               if (error) {
@@ -283,13 +287,13 @@ let updatePosEntry = (req, res, next) => {
           debugLog("posted", inputParam.posted);
           debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
           connection.query(
-            "UPDATE `hims_f_pharmacy_stock_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
-          WHERE `record_status`='A' and `hims_f_pharmacy_stock_header_id`=?",
+            "UPDATE `hims_f_pharmacy_pos_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
+          WHERE `record_status`='A' and `hims_f_pharmacy_pos_header_id`=?",
             [
               inputParam.posted,
-              inputParam.updated_by,
+              req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              inputParam.hims_f_pharmacy_stock_header_id
+              inputParam.hims_f_pharmacy_pos_header_id
             ],
             (error, result) => {
               debugLog("error", error);
