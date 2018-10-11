@@ -92,10 +92,12 @@ class ChiefComplaints extends Component {
     swal({
       title: "Are you sure you want to delete this Chief Complaint?",
       type: "warning",
-      buttons: true,
-      dangerMode: true
+
+      showCancelButton: true,
+      cancelButtonText: "No",
+      confirmButtonText: "Yes !"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         let data = { hims_f_episode_chief_complaint_id: id };
         algaehApiCall({
           uri: "/doctorsWorkBench/deletePatientChiefComplaints",

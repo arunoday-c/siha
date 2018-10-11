@@ -31,9 +31,9 @@ class DoctorsWorkbench extends Component {
       selectedLang: "en",
       data: [],
       selectedHDate: moment(dateToday, "YYYYMMDD")._d,
-      fromDate: new Date(),
-      toDate: new Date(),
-      activeDateHeader: new Date()
+      fromDate: moment()._d,
+      toDate: moment()._d,
+      activeDateHeader: moment()._d
     };
 
     this.moveToEncounterList = this.moveToEncounterList.bind(this);
@@ -85,6 +85,7 @@ class DoctorsWorkbench extends Component {
   }
 
   loadListofData() {
+    debugger;
     algaehLoader({ show: true });
     const dateRange =
       localStorage.getItem("workbenchDateRange") !== null
@@ -151,6 +152,7 @@ class DoctorsWorkbench extends Component {
         currentdate: dt._d,
         dayName: dt.format("ddd")
       });
+
       initialDate.setDate(initialDate.getDate() + 1);
     }
     return generatedLi;
@@ -178,27 +180,25 @@ class DoctorsWorkbench extends Component {
   }
 
   generateHorizontalDateBlocks() {
-    // let classesCurrentDate = moment().format("YYYYMMDD");
-
+    const act_date = new Date(this.state.activeDateHeader);
     return (
       <div className="calendar">
         <div className="col-12">
           <div className="row">
             {this.liGenerate().map((row, index) => {
+              const _currDate = moment(row.currentdate).format("YYYYMMDD");
+              const _activeDate = moment(act_date).format("YYYYMMDD");
               return (
                 <div
                   // className="col"
                   key={index}
                   date={row.currentdate}
                   className={
-                    moment(row.currentdate).format("YYYYMMDD") ===
-                    moment(this.state.activeDateHeader).format("YYYYMMDD")
-                      ? moment(row.currentdate).format("YYYYMMDD") ===
-                        moment().format("YYYYMMDD")
+                    _currDate === _activeDate
+                      ? _currDate === moment().format("YYYYMMDD")
                         ? "col activeDate CurrentDate"
                         : "col activeDate"
-                      : moment(row.currentdate).format("YYYYMMDD") ===
-                        moment().format("YYYYMMDD")
+                      : _currDate === moment().format("YYYYMMDD")
                         ? "col CurrentDate"
                         : "col"
                   }
@@ -364,12 +364,12 @@ class DoctorsWorkbench extends Component {
                       className: "txt-fld",
                       name: "from_date"
                     }}
-                    maxDate={new Date()}
+                    maxDate={moment()._d}
                     events={{
                       //onChange: datehandle.bind(this, this)
                       onChange: () => {}
                     }}
-                    value={new Date()}
+                    value={moment()._d}
                   />
 
                   <AlgaehDateHandler
@@ -379,12 +379,12 @@ class DoctorsWorkbench extends Component {
                       className: "txt-fld",
                       name: "to_date"
                     }}
-                    maxDate={new Date()}
+                    maxDate={moment()._d}
                     events={{
                       //onChange: datehandle.bind(this, this)
                       onChange: () => {}
                     }}
-                    value={new Date()}
+                    value={moment()._d}
                   />
 
                   <AlagehFormGroup

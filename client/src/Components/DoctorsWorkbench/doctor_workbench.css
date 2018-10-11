@@ -1,9 +1,6 @@
 .doctor_workbench .panel-layout {
   margin-top: 10px; }
 
-.doctor_workbench .pat-code:hover {
-  text-decoration: underline; }
-
 .doctor_workbench .go-button {
   cursor: pointer;
   margin-top: 15px; }

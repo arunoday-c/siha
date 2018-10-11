@@ -323,10 +323,10 @@
     "icon": "fas fa-paste",
     "subMenu": [
       {
-        "name": "Medical Record List",
+        "name": "MRDList",
         "label": "Medical Record List",
         "arlabel": "قائمة السجلات الطبية",
-        "path": "/MedicalRecordList"
+        "path": "/MRDList"
       }
     ]
   }
