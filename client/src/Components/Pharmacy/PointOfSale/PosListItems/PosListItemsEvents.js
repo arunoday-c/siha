@@ -2,6 +2,7 @@ import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import Enumerable from "linq";
 import extend from "extend";
+import Options from "../../../../Options.json";
 
 let texthandlerInterval = null;
 
@@ -487,6 +488,13 @@ const PosheaderCalculation = ($this, context) => {
     clearInterval(intervalId);
   }, 1000);
 };
+
+const dateFormater = ({ $this, value }) => {
+  if (value !== null) {
+    return moment(value).format(Options.dateFormat);
+  }
+};
+
 export {
   discounthandle,
   UomchangeTexts,
@@ -497,5 +505,6 @@ export {
   deletePosDetail,
   updatePosDetail,
   calculateAmount,
-  adjustadvance
+  adjustadvance,
+  dateFormater
 };

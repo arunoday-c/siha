@@ -85,21 +85,26 @@ class PointOfSale extends Component {
     if (nextProps.posheader !== undefined && nextProps.posheader.length !== 0) {
       nextProps.posheader.patient_payable_h =
         nextProps.posheader.patient_payable || this.state.patient_payable;
-      nextProps.posheader.sub_total = nextProps.posheader.sub_total_amount;
+      nextProps.posheader.sub_total =
+        nextProps.posheader.sub_total_amount || this.state.sub_total;
       nextProps.posheader.patient_responsibility =
-        nextProps.posheader.patient_res;
+        nextProps.posheader.patient_res || this.state.patient_responsibility;
       nextProps.posheader.company_responsibility =
-        nextProps.posheader.company_res;
+        nextProps.posheader.company_res || this.state.company_responsibility;
 
-      nextProps.posheader.company_payable = nextProps.posheader.company_payble;
+      nextProps.posheader.company_payable =
+        nextProps.posheader.company_payble || this.state.company_payable;
       nextProps.posheader.sec_company_responsibility =
-        nextProps.posheader.sec_company_res;
+        nextProps.posheader.sec_company_res ||
+        this.state.sec_company_responsibility;
       nextProps.posheader.sec_company_payable =
-        nextProps.posheader.sec_company_paybale;
+        nextProps.posheader.sec_company_paybale ||
+        this.state.sec_company_payable;
 
-      nextProps.posheader.copay_amount = nextProps.posheader.copay_amount;
+      nextProps.posheader.copay_amount =
+        nextProps.posheader.copay_amount || this.state.copay_amount;
       nextProps.posheader.sec_copay_amount =
-        nextProps.posheader.sec_copay_amount;
+        nextProps.posheader.sec_copay_amount || this.state.sec_copay_amount;
 
       nextProps.posheader.saveEnable = false;
       posHeaderOut = nextProps.posheader;

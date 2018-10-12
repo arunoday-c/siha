@@ -922,15 +922,17 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+    debugLog("req.body");
 
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
       }
+      debugLog("erroe");
       // debugLog("Service ID:",  servicesDetails.hims_d_services_id);
       let service_ids = null;
       let questions = "?";
-
+      debugLog("req.body", req.body);
       if (Array.isArray(req.body)) {
         let len = req.body.length;
         service_ids = new LINQ(req.body).Select(g => g.hims_d_services_id);
@@ -1004,9 +1006,10 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               sec_company_tax = 0,
               total_tax = 0;
 
-            let conversion_factor= servicesDetails.conversion_factor === undefined
-              ? 0
-              : servicesDetails.conversion_factor;
+            let conversion_factor =
+              servicesDetails.conversion_factor === undefined
+                ? 0
+                : servicesDetails.conversion_factor;
             let quantity =
               servicesDetails.quantity === undefined
                 ? 1
@@ -1140,7 +1143,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     unit_cost = policydtls.gross_amt;
                   }
 
-                  if(conversion_factor !=0){
+                  if (conversion_factor != 0) {
                     unit_cost = unit_cost * conversion_factor;
                   }
                   gross_amount = quantity * unit_cost;
@@ -1244,8 +1247,8 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   debugLog("net_amout: ", net_amout);
                   debugLog("copay_amount: ", copay_amount);
                   patient_resp = copay_amount;
-                  comapany_resp =  math.round(net_amout - patient_resp,2);
-                  
+                  comapany_resp = math.round(net_amout - patient_resp, 2);
+
                   debugLog("comapany_resp: ", comapany_resp);
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
@@ -1261,17 +1264,17 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                       2
                     );
                   }
-                  total_tax = patient_tax + company_tax;
+                  total_tax = math.round(patient_tax + company_tax, 2);
 
-                  patient_payable = copay_amount + patient_tax;
+                  patient_payable = math.round(copay_amount + patient_tax, 2);
 
                   if (
                     approved_amount !== 0 &&
                     approved_amount < comapany_resp
                   ) {
                     let diff_val = comapany_resp - approved_amount;
-                    patient_payable = patient_payable + diff_val;
-                    patient_resp = patient_resp + diff_val;
+                    patient_payable = math.round(patient_payable + diff_val, 2);
+                    patient_resp = math.round(patient_resp + diff_val, 2);
                     comapany_resp = approved_amount;
                   }
 
@@ -1279,7 +1282,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
                   company_payble = net_amout - patient_resp;
 
-                  company_payble = company_payble + company_tax;
+                  company_payble = math.round(company_payble + company_tax, 2);
 
                   preapp_limit_amount = policydtls.preapp_limit;
                   if (policydtls.preapp_limit !== 0) {
@@ -1315,7 +1318,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   }
                 } else {
                   unit_cost = records.standard_fee;
-                  if(conversion_factor !=0){
+                  if (conversion_factor != 0) {
                     unit_cost = unit_cost * conversion_factor;
                   }
                   gross_amount = quantity * unit_cost;
@@ -1534,10 +1537,13 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     ser_gross_amt: ser_gross_amt,
                     icd_code: icd_code,
 
-                    item_id: records.item_id,
-                    expiry_date: records.expiry_date,
-                    batchno: records.batchno,
-                    grnno: records.grnno
+                    item_id: servicesDetails.item_id,
+                    expiry_date: servicesDetails.expirydt,
+                    batchno: servicesDetails.batchno,
+                    grnno: servicesDetails.grnno,
+                    uom_id: servicesDetails.sales_uom,
+                    item_category: servicesDetails.item_category_id,
+                    item_group_id: servicesDetails.item_group_id
                   }
                 );
 
@@ -1545,6 +1551,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               })
               .then(() => {
                 if (m == result.length - 1) {
+                  debugLog("outputArray", outputArray);
                   return resolve({ billdetails: outputArray });
                 }
               })

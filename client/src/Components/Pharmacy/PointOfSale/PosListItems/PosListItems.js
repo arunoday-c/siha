@@ -22,13 +22,12 @@ import {
   updatePosDetail,
   calculateAmount,
   adjustadvance,
-  UomchangeTexts
+  UomchangeTexts,
+  dateFormater
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Paper from "@material-ui/core/Paper";
-import Options from "../../../../Options.json";
-import moment from "moment";
 
 class PosListItems extends Component {
   constructor(props) {
@@ -79,12 +78,6 @@ class PosListItems extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.POSIOputs);
-  }
-
-  dateFormater({ value }) {
-    if (value !== null) {
-      return moment(value).format(Options.dateFormat);
-    }
   }
 
   render() {
@@ -333,13 +326,13 @@ class PosListItems extends Component {
                                     label={{ forceLabel: "Expiry Date" }}
                                   />
                                 ),
-                                // displayTemplate: row => {
-                                //   return (
-                                //     <span>
-                                //       {this.dateFormater(row.expiry_date)}
-                                //     </span>
-                                //   );
-                                // },
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {dateFormater(this, row.expiry_date)}
+                                    </span>
+                                  );
+                                },
                                 disabled: true
                               },
                               {
@@ -382,12 +375,20 @@ class PosListItems extends Component {
                                         name: "item_category",
                                         className: "select-fld",
                                         value: row.item_category,
+                                        // dataSource: {
+                                        //   textField: "uom_description",
+                                        //   valueField: "uom_id",
+                                        //   data: this.state.ItemUOM
+                                        // },
                                         dataSource: {
                                           textField: "uom_description",
-                                          valueField: "uom_id",
-                                          data: this.state.ItemUOM
+                                          valueField: "hims_d_pharmacy_uom_id",
+                                          data: this.state.itemuom
                                         },
-                                        onChange: null
+                                        onChange: null,
+                                        others: {
+                                          disabled: true
+                                        }
                                       }}
                                     />
                                   );

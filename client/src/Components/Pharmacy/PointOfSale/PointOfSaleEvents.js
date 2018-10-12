@@ -187,6 +187,8 @@ const PostPosEntry = $this => {
     $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
     $this.state.pharmacy_stock_detail[i].grn_number =
       $this.state.pharmacy_stock_detail[i].grn_no;
+    $this.state.pharmacy_stock_detail[i].item_category_id =
+      $this.state.pharmacy_stock_detail[i].item_category;
   }
   debugger;
   algaehApiCall({
@@ -279,7 +281,7 @@ const getMedicationList = $this => {
       mappingName: "medicationlist"
     },
     afterSuccess: data => {
-      // AddItems($this, data);
+      AddItems($this, data);
     }
   });
 };
@@ -290,6 +292,8 @@ const AddItems = ($this, ItemInput) => {
   for (let i = 0; i < ItemInput.length; i++) {
     inputObj = {
       item_id: ItemInput[i].item_id,
+      item_category_id: ItemInput[i].item_category_id,
+      item_group_id: ItemInput[i].item_group_id,
       insured: $this.state.insured,
       vat_applicable: "Y",
       hims_d_services_id: ItemInput[i].service_id,
@@ -301,7 +305,7 @@ const AddItems = ($this, ItemInput) => {
         $this.state.secondary_insurance_provider_id,
       secondary_network_id: $this.state.secondary_network_id,
       secondary_network_office_id: $this.state.secondary_network_office_id,
-      location_id: $this.state.location_id
+      pharmacy_location_id: $this.state.location_id
     };
     inputArray.push(inputObj);
   }
@@ -320,24 +324,27 @@ const AddItems = ($this, ItemInput) => {
       let existingservices = $this.state.pharmacy_stock_detail;
 
       if (data.billdetails.length !== 0) {
-        data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
-        data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
-        data.billdetails[0].operation = "-";
+        for (let i = 0; i < data.billdetails.length; i++) {
+          data.billdetails[i].extended_cost = data.billdetails[i].gross_amount;
+          data.billdetails[i].net_extended_cost = data.billdetails[i].net_amout;
+          data.billdetails[i].operation = "-";
 
-        existingservices.splice(0, 0, data.billdetails[0]);
-      }
-      $this.setState({
-        pharmacy_stock_detail: existingservices
-      });
-      $this.props.PosHeaderCalculations({
-        uri: "/billing/billingCalculations",
-        method: "POST",
-        data: { billdetails: existingservices },
-        redux: {
-          type: "POS_HEADER_GEN_GET_DATA",
-          mappingName: "posheader"
+          existingservices.splice(0, 0, data.billdetails[i]);
         }
-      });
+
+        $this.setState({
+          pharmacy_stock_detail: existingservices
+        });
+        $this.props.PosHeaderCalculations({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: { billdetails: existingservices },
+          redux: {
+            type: "POS_HEADER_GEN_GET_DATA",
+            mappingName: "posheader"
+          }
+        });
+      }
     }
   });
 };
