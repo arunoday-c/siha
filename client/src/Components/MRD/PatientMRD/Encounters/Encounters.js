@@ -10,12 +10,16 @@ class Encounters extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      patientEncounters: []
+      patientEncounters: [],
+      patientComplaints: [],
+      patientDiagnosis: [],
+      patientMedications: [],
+      patientInvestigations: [],
+      patientVital: {}
     };
   }
 
   setEncounterDetails(e) {
-    debugger;
     const enc_id = e.currentTarget.getAttribute("enc-id");
     const episode_id = e.currentTarget.getAttribute("epi-id");
     const visit_id = e.currentTarget.getAttribute("visit-id");
@@ -24,6 +28,7 @@ class Encounters extends Component {
     this.getPatientDiagnosis(episode_id);
     this.getPatientMedication(enc_id);
     this.getPatientInvestigation(visit_id);
+    this.getPatientVitals(Window.global["mrd_patient"], visit_id);
 
     const general_info = Enumerable.from(this.state.patientEncounters)
       .where(w => w.hims_f_patient_encounter_id === parseInt(enc_id))
@@ -34,6 +39,32 @@ class Encounters extends Component {
     });
   }
 
+  getPatientVitals(patient_id, visit_id) {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientVitals",
+      method: "GET",
+      data: {
+        patient_id: patient_id,
+        visit_id: visit_id
+      },
+      cancelRequestId: "getPatientVitals",
+      onSuccess: response => {
+        algaehLoader({ show: false });
+        if (response.data.success && response.data.records.length !== 0) {
+          console.log("Vital: ", response.data.records[0]);
+          this.setState({ patientVital: response.data.records[0] });
+        }
+      },
+      onFailure: error => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   getPatientChiefComplaint(episode_id) {
     algaehApiCall({
       uri: "/mrd/getPatientChiefComplaint",
@@ -41,6 +72,7 @@ class Encounters extends Component {
       data: {
         episode_id: episode_id
       },
+      cancelRequestId: "getPatientChiefComplaint",
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
@@ -87,6 +119,7 @@ class Encounters extends Component {
       method: "GET",
       data: {
         encounter_id: enc_id
+        //encounter_id: 54
       },
       onSuccess: response => {
         algaehLoader({ show: false });
@@ -109,8 +142,10 @@ class Encounters extends Component {
       uri: "/mrd/getPatientInvestigation",
       method: "GET",
       data: {
+        //visit_id: 502
         visit_id: visit_id
       },
+      cancelRequestId: "getPatientInvestigation",
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
@@ -286,15 +321,26 @@ class Encounters extends Component {
                             forceLabel: "Primary Insurance"
                           }}
                         />
-                        <h6>----------</h6>
+                        <h6>
+                          {this.state.generalInfo !== undefined
+                            ? this.state.generalInfo.pri_insurance_provider_name
+                            : "----------"}
+                        </h6>
                       </div>
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Secondary Insurance"
+                            forceLabel: "Sec. Insurance"
                           }}
                         />
-                        <h6>----------</h6>
+                        <h6>
+                          {" "}
+                          {this.state.generalInfo !== undefined &&
+                          this.state.generalInfo.sec_insurance_provider_name !==
+                            null
+                            ? this.state.generalInfo.sec_insurance_provider_name
+                            : "----------"}
+                        </h6>
                       </div>
                     </div>
                   </div>
@@ -306,7 +352,12 @@ class Encounters extends Component {
                     <div className="row">
                       <div className="col">
                         <h6 className="danger">
-                          History of Convlusion with fever (Febrile Convlusion)
+                          {this.state.patientComplaints.map(
+                            (data, index) =>
+                              data.chief_complaint !== ""
+                                ? data.chief_complaint
+                                : "----------"
+                          )}
                         </h6>
                       </div>
                     </div>
@@ -324,7 +375,84 @@ class Encounters extends Component {
                           }}
                         />
                         <h6>
-                          89
+                          {this.state.patientVital.weight !== undefined
+                            ? this.state.patientVital.weight
+                            : 0}
+                          <span>
+                            {this.state.patientVital.weight_uom !== undefined
+                              ? this.state.patientVital.weight_uom
+                              : ""}
+                          </span>
+                        </h6>
+                      </div>
+
+                      <div className="col borderVitals">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Height"
+                          }}
+                        />
+                        <h6>
+                          {this.state.patientVital.height !== undefined
+                            ? this.state.patientVital.height
+                            : 0}
+                          <span>
+                            {" "}
+                            {this.state.patientVital.height_uom !== undefined
+                              ? this.state.patientVital.height_uom
+                              : ""}
+                          </span>
+                        </h6>
+                      </div>
+
+                      <div className="col borderVitals">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Blood Pressure"
+                          }}
+                        />
+                        <h6>
+                          {this.state.patientVital.systolic !== undefined
+                            ? this.state.patientVital.systolic
+                            : 0}{" "}
+                          /{" "}
+                          {this.state.patientVital.diastolic !== undefined
+                            ? this.state.patientVital.diastolic
+                            : 0}
+                          <span />
+                        </h6>
+                      </div>
+
+                      <div className="col borderVitals">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Temperature"
+                          }}
+                        />
+                        <h6>
+                          {this.state.patientVital.temperature_celsisus !==
+                          undefined
+                            ? this.state.patientVital.temperature_celsisus
+                            : 0}{" "}
+                          ({" "}
+                          {this.state.patientVital.temperature_from !==
+                          undefined
+                            ? this.state.patientVital.temperature_from
+                            : "O"}
+                          )<span>&deg;C</span>
+                        </h6>
+                      </div>
+
+                      <div className="col borderVitals">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Heart Rate"
+                          }}
+                        />
+                        <h6>
+                          {this.state.patientVital.heart_rate !== undefined
+                            ? this.state.patientVital.heart_rate
+                            : 0}
                           <span>kg</span>
                         </h6>
                       </div>
@@ -332,11 +460,14 @@ class Encounters extends Component {
                       <div className="col borderVitals">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Weight"
+                            forceLabel: "Respiratory Rate"
                           }}
                         />
                         <h6>
-                          89
+                          {this.state.patientVital.respiratory_rate !==
+                          undefined
+                            ? this.state.patientVital.respiratory_rate
+                            : 0}
                           <span>kg</span>
                         </h6>
                       </div>
@@ -344,59 +475,13 @@ class Encounters extends Component {
                       <div className="col borderVitals">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Weight"
+                            forceLabel: "O2 Stat"
                           }}
                         />
                         <h6>
-                          89
-                          <span>kg</span>
-                        </h6>
-                      </div>
-
-                      <div className="col borderVitals">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Weight"
-                          }}
-                        />
-                        <h6>
-                          89
-                          <span>kg</span>
-                        </h6>
-                      </div>
-
-                      <div className="col borderVitals">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Weight"
-                          }}
-                        />
-                        <h6>
-                          89
-                          <span>kg</span>
-                        </h6>
-                      </div>
-
-                      <div className="col borderVitals">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Weight"
-                          }}
-                        />
-                        <h6>
-                          89
-                          <span>kg</span>
-                        </h6>
-                      </div>
-
-                      <div className="col borderVitals">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Weight"
-                          }}
-                        />
-                        <h6>
-                          89
+                          {this.state.patientVital.oxysat !== undefined
+                            ? this.state.patientVital.oxysat
+                            : 0}
                           <span>kg</span>
                         </h6>
                       </div>
@@ -410,15 +495,28 @@ class Encounters extends Component {
                     <div className="row">
                       <div className="col">
                         <h6 className="danger">
-                          Primary: History of Convlusion with fever (Febrile
-                          Convlusion)
+                          {this.state.patientDiagnosis.map(
+                            (data, index) =>
+                              data.diagnosis_type === "P"
+                                ? "Primary: " + data.daignosis_description
+                                : "----------"
+                          )}
+
+                          {/* Primary: History of Convlusion with fever (Febrile
+                          Convlusion) */}
                         </h6>
                       </div>
 
                       <div className="col">
                         <h6 className="">
-                          Secondary: History of Convlusion with fever (Febrile
-                          Convlusion)
+                          {this.state.patientDiagnosis.map(
+                            (data, index) =>
+                              data.diagnosis_type === "S"
+                                ? "Secondary: " + data.daignosis_description
+                                : "Secondary : ----------"
+                          )}
+                          {/* Secondary: History of Convlusion with fever (Febrile
+                          Convlusion) */}
                         </h6>
                       </div>
                     </div>
@@ -429,29 +527,106 @@ class Encounters extends Component {
                     <h6 className="smallh6">Investigation</h6>
                     <div className="row">
                       <div className="col-lg-12">
-                        <h6 className="">
-                          History of Convlusion with fever (Febrile Convlusion)
-                          <span>View Report</span>
-                        </h6>
-                      </div>
-
-                      <div className="col-lg-12">
-                        <h6 className="">
-                          History of Convlusion with fever (Febrile Convlusion)
-                          <span>View Report</span>
-                        </h6>
-                      </div>
-                      <div className="col-lg-12">
-                        <h6 className="">
-                          History of Convlusion with fever (Febrile Convlusion)
-                          <span>View Report</span>
-                        </h6>
-                      </div>
-                      <div className="col-lg-12">
-                        <h6 className="">
-                          History of Convlusion with fever (Febrile Convlusion)
-                          <span>View Report</span>
-                        </h6>
+                        <AlgaehDataGrid
+                          id="investigation-grid"
+                          columns={[
+                            {
+                              fieldName: "service_name",
+                              label: "Service Name"
+                            },
+                            {
+                              fieldName: "lab_ord_status",
+                              label: "Lab Order Status",
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.lab_ord_status === "O"
+                                      ? "Ordered"
+                                      : row.lab_ord_status === "CL"
+                                        ? "Sample Collected"
+                                        : row.lab_ord_status === "CN"
+                                          ? "Test Cancelled"
+                                          : row.lab_ord_status === "CF"
+                                            ? "Result Confirmed "
+                                            : row.lab_ord_status === "V"
+                                              ? "Result Validated"
+                                              : "----"}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "lab_billed",
+                              label: "Lab Billed",
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.lab_billed === "Y" ? "Yes" : "----"}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "rad_ord_status",
+                              label: "Radiology Order Status",
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.rad_ord_status === "O"
+                                      ? "Ordered"
+                                      : row.rad_ord_status === "S"
+                                        ? "Scheduled"
+                                        : row.rad_ord_status === "UP"
+                                          ? "Under Process"
+                                          : row.rad_ord_status === "CN"
+                                            ? "Cancelled"
+                                            : row.rad_ord_status === "RC"
+                                              ? "Result Confirmed"
+                                              : row.rad_ord_status === "RA"
+                                                ? "Result Avaiable"
+                                                : "----"}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "rad_billed",
+                              label: "Radiology Billed",
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.rad_billed === "Y" ? "Yes" : "----"}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "hims_f_ordered_services_id",
+                              label: "View Report",
+                              displayTemplate: row => {
+                                return (
+                                  <span
+                                    className="pat-code"
+                                    style={{ color: "#006699" }}
+                                  >
+                                    View Report
+                                  </span>
+                                );
+                              }
+                            }
+                          ]}
+                          keyId="index"
+                          dataSource={{
+                            data: this.state.patientInvestigations
+                          }}
+                          isEditable={false}
+                          paging={{ page: 0, rowsPerPage: 5 }}
+                          events={{
+                            onDelete: row => {},
+                            onEdit: row => {},
+                            onDone: row => {}
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -462,35 +637,46 @@ class Encounters extends Component {
                     <div className="row">
                       <div className="col-lg-12">
                         <AlgaehDataGrid
-                          id="index"
+                          id="medication-grid"
                           columns={[
                             {
-                              fieldName: "index",
-                              label: "Sl. No."
+                              fieldName: "generic_name",
+                              label: "Generic Name"
                             },
                             {
-                              fieldName: "c_d_t",
-                              label: "Consult Date & Time"
+                              fieldName: "item_description",
+                              label: "Item Description"
+                            },
+
+                            {
+                              fieldName: "dosage",
+                              label: "Dosage"
                             },
                             {
-                              fieldName: "doc_name",
-                              label: "Doctor Name"
+                              fieldName: "frequency",
+                              label: "Frequency"
+                            },
+                            {
+                              fieldName: "no_of_days",
+                              label: "No. of Days"
+                            },
+                            {
+                              fieldName: "start_date",
+                              label: "Start date",
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {moment(row.start_date).format(
+                                      "DD-MM-YYYY"
+                                    )}
+                                  </span>
+                                );
+                              }
                             }
                           ]}
                           keyId="index"
                           dataSource={{
-                            data: [
-                              {
-                                c_d_t: "May 22 13:00:00",
-                                doc_name: "Norman John",
-                                index: "1"
-                              },
-                              {
-                                c_d_t: "May 23 13:00:00",
-                                doc_name: "John Morgan",
-                                index: "2"
-                              }
-                            ]
+                            data: this.state.patientMedications
                           }}
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 5 }}
@@ -510,7 +696,7 @@ class Encounters extends Component {
                     <div className="row">
                       <div className="col-lg-12">
                         <AlgaehDataGrid
-                          id="index"
+                          id="procedure-grid"
                           columns={[
                             {
                               fieldName: "index",
