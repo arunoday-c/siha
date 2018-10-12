@@ -76,6 +76,12 @@
         "label": "Hospital Service Setup",
         "arlabel": "إعداد خدمة المستشفى",
         "path": "/HospitalServiceSetup"
+      },
+      {
+        "name": "ProcedureSetup",
+        "label": "Procedure Setup",
+        "arlabel": "إعداد الإجراء",
+        "path": "/Procedure Setup"
       }
     ]
   },
