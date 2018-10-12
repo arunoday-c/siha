@@ -288,10 +288,8 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
     {
-      hims_d_services_id: row.services_id,
+      hims_d_services_id: row.service_id,
       vat_applicable: "Y",
-      unit_cost: row.unit_cost,
-      pharmacy_item: "Y",
       quantity: row.quantity,
       discount_amout:
         e.target.name === "discount_percentage" ? 0 : row.discount_amout,
@@ -323,11 +321,6 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
       data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
       data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
 
-      data.billdetails[0].item_id = row.item_id;
-      data.billdetails[0].item_category = row.item_category;
-      data.billdetails[0].expiry_date = row.expiry_date;
-      data.billdetails[0].batchno = row.batchno;
-      data.billdetails[0].uom_id = row.uom_id;
       extend(row, data.billdetails[0]);
       for (let i = 0; i < pharmacy_stock_detail.length; i++) {
         if (pharmacy_stock_detail[i].service_type_id === row.service_type_id) {

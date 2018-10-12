@@ -209,144 +209,56 @@ const PostPosEntry = $this => {
   });
 };
 
-const VisitSearch = ($this, e) => {
-  if ($this.state.location_id !== null) {
-    AlgaehSearch({
-      searchGrid: {
-        columns: spotlightSearch.VisitDetails.VisitList
-      },
-      searchName: "visit",
-      uri: "/gloabelSearch/get",
-      onContainsChange: (text, serchBy, callBack) => {
-        callBack(text);
-      },
-      onRowSelect: row => {
-        debugger;
-        $this.setState(
-          {
-            visit_code: row.visit_code,
-            patient_code: row.patient_code,
-            full_name: row.full_name,
-            patient_id: row.patient_id,
-            visit_id: row.hims_f_patient_visit_id,
-            insured: row.insured,
-            sec_insured: row.sec_insured,
-            episode_id: row.episode_id
-          },
-          () => {
-            if ($this.state.insured === "Y") {
-              $this.props.getPatientInsurance({
-                uri: "/insurance/getPatientInsurance",
-                method: "GET",
-                data: {
-                  patient_id: $this.state.patient_id,
-                  patient_visit_id: $this.state.visit_id
-                },
-                redux: {
-                  type: "EXIT_INSURANCE_GET_DATA",
-                  mappingName: "existinsurance"
-                },
-                afterSuccess: data => {
-                  debugger;
-                  data[0].mode_of_pay = "2";
-                  $this.setState(data[0]);
-                }
-              });
-            }
-            getMedicationList($this);
-          }
-        );
-      }
-    });
-  } else {
-    successfulMessage({
-      message: "Invalid Input. Please select Location.",
-      title: "Warning",
-      icon: "warning"
-    });
-  }
-};
-
-const getMedicationList = $this => {
-  let inputobj = { episode_id: $this.state.episode_id };
-
-  $this.props.getMedicationList({
-    uri: "/pharmacyGlobal/getVisitPrescriptionDetails",
-    method: "GET",
-    data: inputobj,
-    redux: {
-      type: "MEDICATION_LIST_GET_DATA",
-      mappingName: "medicationlist"
+const POSSearch = ($this, e) => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.pointofsaleEntry.POSEntry
     },
-    afterSuccess: data => {
-      // AddItems($this, data);
+    searchName: "POSEntry",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      debugger;
+      AlgaehLoader({ show: true });
+      $this.setState(
+        {
+          pos_number: row.pos_number
+        },
+        () => {
+          getPosEntry($this);
+        }
+      );
     }
   });
 };
 
-const AddItems = ($this, ItemInput) => {
-  let inputObj = {};
-  let inputArray = [];
-  for (let i = 0; i < ItemInput.length; i++) {
-    inputObj = {
-      item_id: ItemInput[i].item_id,
-      insured: $this.state.insured,
-      vat_applicable: "Y",
-      hims_d_services_id: ItemInput[i].service_id,
-      primary_insurance_provider_id: $this.state.insurance_provider_id,
-      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
-      primary_network_id: $this.state.network_id,
-      sec_insured: $this.state.sec_insured,
-      secondary_insurance_provider_id:
-        $this.state.secondary_insurance_provider_id,
-      secondary_network_id: $this.state.secondary_network_id,
-      secondary_network_office_id: $this.state.secondary_network_office_id,
-      location_id: $this.state.location_id
-    };
-    inputArray.push(inputObj);
-  }
+const getPosEntry = $this => {
   debugger;
-  $this.props.getPrescriptionPOS({
-    uri: "/posEntry/getPrescriptionPOS",
-    method: "POST",
-    data: inputArray,
+
+  $this.props.getPosEntry({
+    uri: "/posEntry/getPosEntry",
+    method: "GET",
+    printInput: true,
+    data: { pos_number: $this.state.pos_number },
     redux: {
-      type: "POS_PRES_GET_DATA",
-      mappingName: "xxx"
+      type: "POS_ENTRY_GET_DATA",
+      mappingName: "posentry"
     },
     afterSuccess: data => {
       debugger;
+      data.patient_payable_h = data.patient_payable;
+      // data.soldqty = data.quantity;
 
-      let existingservices = $this.state.pharmacy_stock_detail;
-
-      if (data.billdetails.length !== 0) {
-        data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
-        data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
-        data.billdetails[0].operation = "-";
-
-        existingservices.splice(0, 0, data.billdetails[0]);
+      for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
+        data.pharmacy_stock_detail[i].soldqty =
+          data.pharmacy_stock_detail[i].quantity;
       }
-      $this.setState({
-        pharmacy_stock_detail: existingservices
-      });
-      $this.props.PosHeaderCalculations({
-        uri: "/billing/billingCalculations",
-        method: "POST",
-        data: { billdetails: existingservices },
-        redux: {
-          type: "POS_HEADER_GEN_GET_DATA",
-          mappingName: "posheader"
-        }
-      });
+      $this.setState(data);
+      AlgaehLoader({ show: false });
     }
   });
-};
-
-const LocationchangeTexts = ($this, ctrl, e) => {
-  e = ctrl || e;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  $this.setState({ [name]: value, location_type: e.selected.location_type });
 };
 
 export {
@@ -358,6 +270,6 @@ export {
   Patientchange,
   SavePosEnrty,
   PostPosEntry,
-  VisitSearch,
-  LocationchangeTexts
+  POSSearch,
+  getPosEntry
 };

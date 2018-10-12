@@ -147,6 +147,9 @@ let addPosEntry = (req, res, next) => {
                 const insurtColumns = [
                   "item_id",
                   "item_category",
+                  "item_group_id",
+                  "service_id",
+                  "grn_no",
                   "barcode",
                   "expiry_date",
                   "batchno",

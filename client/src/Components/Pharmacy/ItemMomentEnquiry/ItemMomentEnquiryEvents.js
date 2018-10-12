@@ -1,6 +1,6 @@
 import moment from "moment";
 import Options from "../../../Options.json";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;
@@ -22,6 +22,7 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 const ProcessItemMoment = $this => {
+  AlgaehLoader({ show: true });
   if ($this.state.location_id === null) {
     $this.setState({
       SnackbarOpen: true,
@@ -41,6 +42,25 @@ const ProcessItemMoment = $this => {
     $this.setState({
       SnackbarOpen: true,
       MandatoryMsg: "Invalid Input. Please select To Date."
+    });
+  } else {
+    $this.props.getItemMoment({
+      uri: "/pharmacyGlobal/getItemMoment",
+      method: "GET",
+      printInput: true,
+      data: {
+        from_location_id: $this.state.location_id,
+        item_code_id: $this.state.item_id,
+        from_date: moment($this.state.from_date).format(Options.dateFormatYear),
+        to_date: moment($this.state.to_date).format(Options.dateFormatYear)
+      },
+      redux: {
+        type: "ITEM_MOMENT_DATA",
+        mappingName: "itemmoment"
+      },
+      afterSuccess: data => {
+        AlgaehLoader({ show: false });
+      }
     });
   }
 };
