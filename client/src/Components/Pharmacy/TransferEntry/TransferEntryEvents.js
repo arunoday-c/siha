@@ -1,0 +1,297 @@
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import FrontDesk from "../../../Search/FrontDesk.json";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
+// import Enumerable from "linq";
+import POSIOputs from "../../../Models/POS";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
+import { successfulMessage } from "../../../utils/GlobalFunctions";
+
+const changeTexts = ($this, ctrl, e) => {
+  debugger;
+  e = ctrl || e;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  $this.setState({ [name]: value });
+};
+
+const getCtrlCode = ($this, docNumber) => {
+  debugger;
+  AlgaehLoader({ show: true });
+  $this.props.getPosEntry({
+    uri: "/posEntry/getPosEntry",
+    method: "GET",
+    printInput: true,
+    data: { pos_number: docNumber },
+    redux: {
+      type: "POS_ENTRY_GET_DATA",
+      mappingName: "posentry"
+    },
+    afterSuccess: data => {
+      debugger;
+      data.saveEnable = true;
+      data.patient_payable_h = data.patient_payable;
+      if (data.posted === "Y") {
+        data.postEnable = true;
+      } else {
+        data.postEnable = false;
+      }
+      if (data.visit_id !== null) {
+        data.case_type = "OP";
+      }
+      data.dataExitst = true;
+      $this.setState(data);
+      AlgaehLoader({ show: false });
+    }
+  });
+};
+
+const ClearData = ($this, e) => {
+  let IOputs = POSIOputs.inputParam();
+  IOputs.patient_payable_h = 0;
+  IOputs.mode_of_pa = "";
+  IOputs.pay_cash = "CA";
+  IOputs.pay_card = "CD";
+  IOputs.pay_cheque = "CH";
+  IOputs.cash_amount = 0;
+  IOputs.card_check_number = "";
+  IOputs.card_date = null;
+  IOputs.card_amount = 0;
+  IOputs.cheque_number = "";
+  IOputs.cheque_date = null;
+  IOputs.cheque_amount = 0;
+  IOputs.advance = 0;
+  $this.setState(IOputs);
+};
+
+const SavePosEnrty = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/posEntry/addPosEntry",
+    data: $this.state,
+    onSuccess: response => {
+      debugger;
+      if (response.data.success === true) {
+        $this.setState({
+          pos_number: response.data.records.pos_number,
+          saveEnable: true,
+          postEnable: false
+        });
+        swal("Saved successfully . .", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
+      }
+    }
+  });
+};
+
+const PostPosEntry = $this => {
+  debugger;
+  $this.state.posted = "Y";
+  $this.state.transaction_type = "POS";
+  $this.state.transaction_id = $this.state.hims_f_pharmacy_pos_header_id;
+  $this.state.transaction_date = $this.state.pos_date;
+  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+    $this.state.pharmacy_stock_detail[i].location_id = $this.state.location_id;
+    $this.state.pharmacy_stock_detail[i].location_type =
+      $this.state.location_type;
+    $this.state.pharmacy_stock_detail[i].operation = "-";
+    $this.state.pharmacy_stock_detail[i].sales_uom =
+      $this.state.pharmacy_stock_detail[i].uom_id;
+    $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
+    $this.state.pharmacy_stock_detail[i].grn_number =
+      $this.state.pharmacy_stock_detail[i].grn_no;
+    $this.state.pharmacy_stock_detail[i].item_category_id =
+      $this.state.pharmacy_stock_detail[i].item_category;
+  }
+  debugger;
+  algaehApiCall({
+    uri: "/posEntry/updatePosEntry",
+    data: $this.state,
+    method: "PUT",
+    onSuccess: response => {
+      debugger;
+      if (response.data.success === true) {
+        $this.setState({
+          postEnable: true
+        });
+        swal("Posted successfully . .", {
+          icon: "success",
+          buttons: false,
+          timer: 2000
+        });
+      }
+    }
+  });
+};
+
+const RequisitionSearch = ($this, e) => {
+  if ($this.state.location_id !== null) {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.VisitDetails.VisitList
+      },
+      searchName: "visit",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        debugger;
+        $this.setState(
+          {
+            visit_code: row.visit_code,
+            patient_code: row.patient_code,
+            full_name: row.full_name,
+            patient_id: row.patient_id,
+            visit_id: row.hims_f_patient_visit_id,
+            insured: row.insured,
+            sec_insured: row.sec_insured,
+            episode_id: row.episode_id
+          },
+          () => {
+            if ($this.state.insured === "Y") {
+              $this.props.getPatientInsurance({
+                uri: "/insurance/getPatientInsurance",
+                method: "GET",
+                data: {
+                  patient_id: $this.state.patient_id,
+                  patient_visit_id: $this.state.visit_id
+                },
+                redux: {
+                  type: "EXIT_INSURANCE_GET_DATA",
+                  mappingName: "existinsurance"
+                },
+                afterSuccess: data => {
+                  debugger;
+                  data[0].mode_of_pay = "2";
+                  $this.setState(data[0]);
+                }
+              });
+            }
+            getMedicationList($this);
+          }
+        );
+      }
+    });
+  } else {
+    successfulMessage({
+      message: "Invalid Input. Please select Location.",
+      title: "Warning",
+      icon: "warning"
+    });
+  }
+};
+
+const getMedicationList = $this => {
+  let inputobj = { episode_id: $this.state.episode_id };
+
+  $this.props.getMedicationList({
+    uri: "/pharmacyGlobal/getVisitPrescriptionDetails",
+    method: "GET",
+    data: inputobj,
+    redux: {
+      type: "MEDICATION_LIST_GET_DATA",
+      mappingName: "medicationlist"
+    },
+    afterSuccess: data => {
+      AddItems($this, data);
+    }
+  });
+};
+
+const AddItems = ($this, ItemInput) => {
+  if (ItemInput.length > 0) {
+    let inputObj = {};
+    let inputArray = [];
+    for (let i = 0; i < ItemInput.length; i++) {
+      inputObj = {
+        item_id: ItemInput[i].item_id,
+        item_category_id: ItemInput[i].item_category_id,
+        item_group_id: ItemInput[i].item_group_id,
+        pharmacy_location_id: $this.state.location_id,
+
+        insured: $this.state.insured,
+        vat_applicable: "Y",
+        hims_d_services_id: ItemInput[i].service_id,
+        primary_insurance_provider_id: $this.state.insurance_provider_id,
+        primary_network_office_id:
+          $this.state.hims_d_insurance_network_office_id,
+        primary_network_id: $this.state.network_id,
+        sec_insured: $this.state.sec_insured,
+        secondary_insurance_provider_id:
+          $this.state.secondary_insurance_provider_id,
+        secondary_network_id: $this.state.secondary_network_id,
+        secondary_network_office_id: $this.state.secondary_network_office_id
+      };
+      inputArray.push(inputObj);
+    }
+    debugger;
+    $this.props.getPrescriptionPOS({
+      uri: "/posEntry/getPrescriptionPOS",
+      method: "POST",
+      data: inputArray,
+      redux: {
+        type: "POS_PRES_GET_DATA",
+        mappingName: "xxx"
+      },
+      afterSuccess: data => {
+        debugger;
+
+        let existingservices = $this.state.pharmacy_stock_detail;
+
+        if (data.billdetails.length !== 0) {
+          for (let i = 0; i < data.billdetails.length; i++) {
+            data.billdetails[i].extended_cost =
+              data.billdetails[i].gross_amount;
+            data.billdetails[i].net_extended_cost =
+              data.billdetails[i].net_amout;
+            data.billdetails[i].operation = "-";
+            data.billdetails[0].service_id = data.billdetails[0].services_id;
+
+            existingservices.splice(0, 0, data.billdetails[i]);
+          }
+
+          $this.setState({
+            pharmacy_stock_detail: existingservices
+          });
+          $this.props.PosHeaderCalculations({
+            uri: "/billing/billingCalculations",
+            method: "POST",
+            data: { billdetails: existingservices },
+            redux: {
+              type: "POS_HEADER_GEN_GET_DATA",
+              mappingName: "posheader"
+            }
+          });
+        }
+      }
+    });
+  }
+};
+
+const LocationchangeTexts = ($this, from, ctrl, e) => {
+  e = ctrl || e;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let type = "";
+  if (from == "From") {
+    type = "from_location_type";
+  } else if (from == "To") {
+    type = "to_location_type";
+  }
+  $this.setState({ [name]: value, [type]: e.selected.location_type });
+};
+
+export {
+  changeTexts,
+  getCtrlCode,
+  ClearData,
+  SavePosEnrty,
+  PostPosEntry,
+  RequisitionSearch,
+  LocationchangeTexts
+};
