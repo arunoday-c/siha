@@ -49,7 +49,7 @@ import Mrd from "./Components/MRD/MRD";
 import ProcedureSetup from "./Components/ProcedureSetup/ProcedureSetup";
 import SalesReturn from "./Components/Pharmacy/SalesReturn/SalesReturn";
 import RequisitionEntry from "./Components/Pharmacy/RequisitionEntry/RequisitionEntry";
-
+import FrontDeskAppt from "./Components/FrontDesk/FrontDesk";
 // function height() {
 //   let height =
 //     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -86,7 +86,7 @@ const componts = (selectedLang, breadStyle) => {
     ResultEntryList: <ResultEntryList SelectLanguage={selectedLang} />,
     InitialStock: <InitialStock SelectLanguage={selectedLang} />,
     PrescriptionList: <PrescriptionList SelectLanguage={selectedLang} />,
-    Appointment: <Appointment SelectLanguage={selectedLang} />,
+    Appointment: <FrontDeskAppt SelectLanguage={selectedLang} />,
     PharmacySetup: <PharmacySetup SelectLanguage={selectedLang} />,
     StockEnquiry: <StockEnquiry SelectLanguage={selectedLang} />,
     ItemMomentEnquiry: <ItemMomentEnquiry SelectLanguage={selectedLang} />,

@@ -300,7 +300,7 @@ class AppointmentStatus extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.FORMAT_YESNO
+                  data: GlobalVariables.FORMAT_APPT_STATUS
                 },
                 onChange: this.dropDownHandler.bind(this)
               }}
@@ -387,7 +387,11 @@ class AppointmentStatus extends Component {
                     <AlgaehLabel label={{ fieldName: "default_status" }} />
                   ),
                   displayTemplate: row => {
-                    return row.default_status === "Y" ? "Yes" : "No";
+                    return row.default_status === "Y"
+                      ? "Yes"
+                      : row.default_status === "N"
+                        ? "No"
+                        : "Create Visit";
                   },
                   editorTemplate: row => {
                     return (
@@ -400,7 +404,7 @@ class AppointmentStatus extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.FORMAT_YESNO
+                            data: GlobalVariables.FORMAT_APPT_STATUS
                           },
                           onChange: this.changeGridEditors.bind(this, row)
                         }}
