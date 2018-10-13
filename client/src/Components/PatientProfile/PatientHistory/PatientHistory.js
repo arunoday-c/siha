@@ -25,7 +25,7 @@ class PatientHistory extends Component {
 
               <div className="portlet-body">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-12" }}
+                  div={{ className: "" }}
                   label={{
                     forceLabel: "",
                     isImp: false
@@ -36,7 +36,7 @@ class PatientHistory extends Component {
                     value: this.state.medical_history,
                     others: {
                       multiline: true,
-                      rows: "10"
+                      rows: "6"
                     },
                     events: {
                       onChange: this.textHandle.bind(this)
@@ -54,7 +54,7 @@ class PatientHistory extends Component {
 
               <div className="portlet-body">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-12" }}
+                  div={{ className: "" }}
                   label={{
                     forceLabel: "",
                     isImp: false
@@ -65,7 +65,7 @@ class PatientHistory extends Component {
                     value: this.state.social_history,
                     others: {
                       multiline: true,
-                      rows: "10"
+                      rows: "6"
                     },
                     events: {
                       onChange: this.textHandle.bind(this)
@@ -83,7 +83,7 @@ class PatientHistory extends Component {
 
               <div className="portlet-body">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-12" }}
+                  div={{ className: "" }}
                   label={{
                     forceLabel: "",
                     isImp: false
@@ -94,7 +94,7 @@ class PatientHistory extends Component {
                     value: this.state.surgical_history,
                     others: {
                       multiline: true,
-                      rows: "10"
+                      rows: "6"
                     },
                     events: {
                       onChange: this.textHandle.bind(this)

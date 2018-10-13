@@ -8,6 +8,12 @@ body {
   .header {
     max-height: 50px;
   }
+  .appLogoOnly{
+    background: url(../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center;
+    height: 40px;
+    width: 195px;
+    background-size: 100%;
+  }
   .btn {
     padding: 5px 10px;
     font-size: 0.8rem;
@@ -702,6 +708,7 @@ textarea {
   padding: 8px 6px 7px !important;
   border: 1px solid #d3d3d3 !important;
   border-radius: 4px !important;
+  width: 100%;
 }
 // Report Styles Start
 

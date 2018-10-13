@@ -378,6 +378,7 @@ class PersistentDrawer extends React.Component {
                   <div className="menuBar-title">
                     <span style={titleStyles.title}>ALGAEH</span>
                     <span style={titleStyles.organisation}>ERP</span>
+                    <div className="appLogoOnly"></div>
                     <i
                       onClick={this.handleDrawerClose}
                       className="fas fa-times-circle sideBarClose"
