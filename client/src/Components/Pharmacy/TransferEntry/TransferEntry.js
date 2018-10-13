@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Enumerable from "linq";
+
 import AppBar from "@material-ui/core/AppBar";
 
 import {
@@ -17,20 +17,21 @@ import {
   changeTexts,
   getCtrlCode,
   ClearData,
-  SaveRequisitionEntry,
+  SavePosEnrty,
   PostPosEntry,
+  RequisitionSearch,
   LocationchangeTexts
-} from "./RequisitionEntryEvents";
-import "./RequisitionEntry.css";
+} from "./TransferEntryEvents";
+import "./TransferEntry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import RequisitionItems from "./RequisitionItems/RequisitionItems";
+import TransferEntryItems from "./TransferEntryItems/TransferEntryItems";
 import MyContext from "../../../utils/MyContext";
-import RequisitionIOputs from "../../../Models/Requisition";
+import POSIOputs from "../../../Models/POS";
 
-class RequisitionEntry extends Component {
+class TransferEntry extends Component {
   constructor(props) {
     super(props);
 
@@ -38,7 +39,7 @@ class RequisitionEntry extends Component {
   }
 
   componentWillMount() {
-    let IOputs = RequisitionIOputs.inputParam();
+    let IOputs = POSIOputs.inputParam();
     this.setState(IOputs);
   }
 
@@ -58,16 +59,6 @@ class RequisitionEntry extends Component {
       redux: {
         type: "LOCATIOS_GET_DATA",
         mappingName: "locations"
-      },
-      afterSuccess: data => {
-        debugger;
-        let sublocation = Enumerable.from(data)
-          .where(w => w.location_type == "MS")
-          .toArray();
-
-        this.setState({
-          sublocation: sublocation
-        });
       }
     });
   }
@@ -79,7 +70,7 @@ class RequisitionEntry extends Component {
           <BreadCrumb
             title={
               <AlgaehLabel
-                label={{ forceLabel: "Requisition Entry", align: "ltr" }}
+                label={{ forceLabel: "Transfer Entry", align: "ltr" }}
               />
             }
             breadStyle={this.props.breadStyle}
@@ -97,7 +88,7 @@ class RequisitionEntry extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Requisition Entry", align: "ltr" }}
+                    label={{ forceLabel: "Transfer Entry", align: "ltr" }}
                   />
                 )
               }
@@ -105,26 +96,26 @@ class RequisitionEntry extends Component {
             soptlightSearch={{
               label: (
                 <AlgaehLabel
-                  label={{ forceLabel: "Requisition Number", returnText: true }}
+                  label={{ forceLabel: "Transfer Number", returnText: true }}
                 />
               ),
-              value: this.state.material_header_number,
-              selectValue: "material_header_number",
+              value: this.state.pos_number,
+              selectValue: "pos_number",
               events: {
                 onChange: getCtrlCode.bind(this, this)
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "RequisitionEntryEntry.POSEntry"
+                fieldName: "TransferEntryEntry.POSEntry"
               },
-              searchName: "RequisitionEntry"
+              searchName: "TransferEntry"
             }}
             userArea={
               <AlgaehDateHandler
                 div={{ className: "col" }}
                 label={{
                   forceLabel: (
-                    <AlgaehLabel label={{ forceLabel: "Requisition Date" }} />
+                    <AlgaehLabel label={{ forceLabel: "Transfer Date" }} />
                   ),
                   className: "internal-label"
                 }}
@@ -136,7 +127,7 @@ class RequisitionEntry extends Component {
                 events={{
                   onChange: null
                 }}
-                value={this.state.requistion_date}
+                value={this.state.pos_date}
               />
             }
             selectedLang={this.state.selectedLang}
@@ -150,8 +141,8 @@ class RequisitionEntry extends Component {
             <div className="col-lg-8">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
-                  label={{ forceLabel: "Location" }}
+                  div={{ className: "col-lg-3" }}
+                  label={{ forceLabel: "From Location" }}
                   selector={{
                     name: "from_location_id",
                     className: "select-fld",
@@ -161,14 +152,11 @@ class RequisitionEntry extends Component {
                       valueField: "hims_d_pharmacy_location_id",
                       data: this.props.locations
                     },
-                    others: {
-                      disabled: this.state.addedItem
-                    },
                     onChange: LocationchangeTexts.bind(this, this, "From")
                   }}
                 />
 
-                <div className="col-lg-4">
+                <div className="col-lg-3">
                   <AlgaehLabel
                     label={{
                       forceLabel: "From Location Type"
@@ -183,29 +171,34 @@ class RequisitionEntry extends Component {
                   </h6>
                 </div>
 
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
-                  label={{ forceLabel: "Requisition Type" }}
-                  selector={{
-                    name: "requistion_type",
-                    className: "select-fld",
-                    value: this.state.requistion_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    forceLabel: "Requisition Number"
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "visit_code",
+                    value: this.state.visit_code,
+                    events: {
+                      onChange: null
                     },
-
-                    onChange: changeTexts.bind(this, this)
+                    others: {
+                      disabled: true
+                    }
                   }}
                 />
-              </div>
-            </div>
-            <div className="col-lg-4">
-              <div className="row">
+
+                <div className="col-lg-2 form-group print_actions">
+                  <span
+                    className="fas fa-search fa-2x"
+                    onClick={RequisitionSearch.bind(this, this)}
+                  />
+                </div>
+
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-6" }}
-                  label={{ forceLabel: "Request To Location" }}
+                  div={{ className: "col-lg-3" }}
+                  label={{ forceLabel: "To Location" }}
                   selector={{
                     name: "to_location_id",
                     className: "select-fld",
@@ -215,14 +208,11 @@ class RequisitionEntry extends Component {
                       valueField: "hims_d_pharmacy_location_id",
                       data: this.props.locations
                     },
-                    others: {
-                      disabled: this.state.addedItem
-                    },
                     onChange: LocationchangeTexts.bind(this, this, "To")
                   }}
                 />
 
-                <div className="col-lg-6">
+                <div className="col-lg-2">
                   <AlgaehLabel
                     label={{
                       forceLabel: "To Location Type"
@@ -249,7 +239,7 @@ class RequisitionEntry extends Component {
                 }
               }}
             >
-              <RequisitionItems RequisitionIOputs={this.state} />
+              <TransferEntryItems POSIOputs={this.state} />
             </MyContext.Provider>
 
             <div className="hptl-phase1-footer">
@@ -259,7 +249,7 @@ class RequisitionEntry extends Component {
                     <button
                       type="button"
                       className="btn btn-primary"
-                      onClick={SaveRequisitionEntry.bind(this, this)}
+                      onClick={SavePosEnrty.bind(this, this)}
                       disabled={this.state.saveEnable}
                     >
                       <AlgaehLabel
@@ -286,11 +276,11 @@ class RequisitionEntry extends Component {
                       type="button"
                       className="btn btn-other"
                       onClick={PostPosEntry.bind(this, this)}
-                      disabled={this.state.authorizeEnable}
+                      disabled={this.state.postEnable}
                     >
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Authorize",
+                          forceLabel: "Post",
                           returnText: true
                         }}
                       />
@@ -338,5 +328,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(RequisitionEntry)
+  )(TransferEntry)
 );

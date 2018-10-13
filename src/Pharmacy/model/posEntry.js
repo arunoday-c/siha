@@ -39,7 +39,7 @@ let addPosEntry = (req, res, next) => {
 
         let requestCounter = 1;
 
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
           runningNumberGen({
             db: connection,
             counter: requestCounter,

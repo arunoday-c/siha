@@ -49,6 +49,7 @@ import Mrd from "./Components/MRD/MRD";
 import ProcedureSetup from "./Components/ProcedureSetup/ProcedureSetup";
 import SalesReturn from "./Components/Pharmacy/SalesReturn/SalesReturn";
 import RequisitionEntry from "./Components/Pharmacy/RequisitionEntry/RequisitionEntry";
+import TransferEntry from "./Components/Pharmacy/TransferEntry/TransferEntry";
 import FrontDeskAppt from "./Components/FrontDesk/FrontDesk";
 // function height() {
 //   let height =
@@ -107,7 +108,8 @@ const componts = (selectedLang, breadStyle) => {
     MRDList: <Mrd SelectLanguage={selectedLang} />,
     SalesReturn: <SalesReturn SelectLanguage={selectedLang} />,
     RequisitionEntry: <RequisitionEntry SelectLanguage={selectedLang} />,
-    ProcedureSetup: <ProcedureSetup SelectLanguage={selectedLang} />
+    ProcedureSetup: <ProcedureSetup SelectLanguage={selectedLang} />,
+    TransferEntry: <TransferEntry SelectLanguage={selectedLang} />
   };
 };
 

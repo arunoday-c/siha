@@ -287,6 +287,12 @@
         "label": "Requisition Entry",
         "arlabel": "طلب دخول",
         "path": "/RequisitionEntry"
+      },
+      {
+        "name": "Transfer Entry",
+        "label": "Transfer Entry",
+        "arlabel": "طلب دخول",
+        "path": "/TransferEntry"
       }
     ]
   },
