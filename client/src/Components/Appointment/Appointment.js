@@ -7,6 +7,7 @@ import {
   AlgaehLabel,
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
+import { setGlobal } from "../../utils/GlobalFunctions";
 import Modal from "@material-ui/core/Modal";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -32,7 +33,8 @@ class Appointment extends Component {
       patient_code: "",
       defaultStatus: {},
       patToEdit: {},
-      openPatEdit: false
+      openPatEdit: false,
+      checkInId: null
     };
   }
 
@@ -274,11 +276,19 @@ class Appointment extends Component {
               .where(w => w.default_status === "Y")
               .firstOrDefault();
 
+            let CreateVisit = Enumerable.from(this.state.appointmentStatus)
+              .where(w => w.default_status === "C")
+              .firstOrDefault();
+
             this.setState({
               defaultStatus: DefaultStatus,
               appointment_status_id:
                 DefaultStatus !== undefined
                   ? DefaultStatus.hims_d_appointment_status_id
+                  : null,
+              checkInId:
+                CreateVisit !== undefined
+                  ? CreateVisit.hims_d_appointment_status_id
                   : null
             });
           });
@@ -479,13 +489,23 @@ class Appointment extends Component {
       data: edit_details,
       onSuccess: response => {
         if (response.data.success) {
-          this.clearSaveState();
-          swalMessage({
-            title: "Appointment Updated Successfully",
-            type: "success"
-          });
-          this.setState({ openPatEdit: false });
-          this.getAppointmentSchedule();
+          debugger;
+          if (edit_details.appointment_status_id === this.state.checkInId) {
+            setGlobal({
+              "FD-STD": "RegistrationPatient",
+              "pat-code": this.state.patient_code
+            });
+
+            document.getElementById("fd-router").click();
+          } else {
+            this.clearSaveState();
+            swalMessage({
+              title: "Appointment Updated Successfully",
+              type: "success"
+            });
+            this.setState({ openPatEdit: false });
+            this.getAppointmentSchedule();
+          }
         }
       },
       onFailure: error => {
