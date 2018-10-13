@@ -17,7 +17,10 @@ class FrontDesk extends Component {
   routeComponents() {
     this.setState(
       {
-        FD_Screen: Window.global["FD-STD"]
+        FD_Screen: Window.global["FD-STD"],
+        patient_code: Window.global["appt-pat-code"],
+        provider_id: Window.global["appt-provider-id"],
+        sub_department_id: Window.global["appt-dept-id"]
       },
       () => {
         this.changeDisplays(Window.global["FD-STD"]);
@@ -32,7 +35,13 @@ class FrontDesk extends Component {
   componentList() {
     return {
       Appointment: <Appointment />,
-      RegistrationPatient: <RegistrationPatient />
+      RegistrationPatient: (
+        <RegistrationPatient
+          patient_code={this.state.patient_code}
+          provider_id={this.state.provider_id}
+          sub_department_id={this.state.sub_department_id}
+        />
+      )
     };
   }
 

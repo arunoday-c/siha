@@ -203,6 +203,7 @@ class Appointment extends Component {
 
     const send_data = {
       patient_id: this.state.patient_id,
+      patient_code: this.state.patient_code,
       provider_id: this.state.apptProvider,
       sub_department_id: this.state.apptSubDept,
       appointment_date: appt_date,
@@ -448,7 +449,15 @@ class Appointment extends Component {
         edit_gender: pat_edit.gender,
         edit_email: pat_edit.email,
         edit_appointment_remarks: pat_edit.appointment_remarks,
-        edit_appointment_id: pat_edit.hims_f_patient_appointment_id
+        edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
+        edit_provider_id: pat_edit.provider_id,
+        edit_patient_id: pat_edit.patient_id,
+        edit_from_time: pat_edit.appointment_from_time,
+        edit_to_time: pat_edit.appointment_to_time,
+        edit_arabic_name: pat_edit.arabic_name,
+        edit_sub_dep_id: pat_edit.sub_department_id,
+        edit_appointment_date: pat_edit.appointment_date,
+        patient_code: pat_edit.patient_code
       });
     });
   }
@@ -458,20 +467,20 @@ class Appointment extends Component {
       hims_f_patient_appointment_id: this.state.edit_appointment_id,
       record_status: "A",
       appointment_status_id: this.state.edit_appointment_status_id,
-      patient_id: 580,
-      provider_id: 2,
-      sub_department_id: 38,
-      appointment_date: "2018-10-13",
-      appointment_from_time: "09:00:00",
-      appointment_to_time: "09:30:00",
-      patient_name: "Sheikh Hasina Wajed",
-      arabic_name: null,
-      date_of_birth: "1993-12-10",
-      age: 24,
-      contact_number: 2147483647,
+      patient_id: this.state.edit_patient_id,
+      provider_id: this.state.edit_provider_id,
+      sub_department_id: this.state.edit_sub_dep_id,
+      appointment_date: this.state.edit_appointment_date,
+      appointment_from_time: this.state.edit_from_time,
+      appointment_to_time: this.state.edit_to_time,
+      patient_name: this.state.edit_patient_name,
+      arabic_name: this.state.edit_arabic_name,
+      date_of_birth: this.state.edit_date_of_birth,
+      age: this.state.edit_age,
+      contact_number: this.state.edit_contact_number,
       email: "",
       send_to_provider: null,
-      gender: "Female",
+      gender: this.state.edit_gender,
       confirmed: null,
       confirmed_by: null,
       comfirmed_date: null,
@@ -493,7 +502,9 @@ class Appointment extends Component {
           if (edit_details.appointment_status_id === this.state.checkInId) {
             setGlobal({
               "FD-STD": "RegistrationPatient",
-              "pat-code": this.state.patient_code
+              "appt-pat-code": this.state.patient_code,
+              "appt-provider-id": this.state.edit_provider_id,
+              "appt-dept-id": this.state.edit_sub_dep_id
             });
 
             document.getElementById("fd-router").click();
