@@ -19,14 +19,16 @@ export default {
 
   mysqlDb: {
     connectionLimit: 20,
-    host: "166.62.10.184",
+    // host: "166.62.10.184",
+    host: "49.206.18.38",
     port: 3306,
     user: "algaeh_root",
     password: "medteam2013",
     database: "algaeh_hims_db",
     multipleStatements: true,
     acquireTimeout: 20000,
-    dateStrings: true
+    dateStrings: true,
+    insecureAuth: true
   },
   //Db Date format
   dbFormat: {
