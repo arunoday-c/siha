@@ -35,7 +35,9 @@ class TransferEntry extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      from_location_id: null
+    };
   }
 
   componentWillMount() {
@@ -178,8 +180,8 @@ class TransferEntry extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "visit_code",
-                    value: this.state.visit_code,
+                    name: "material_header_number",
+                    value: this.state.material_header_number,
                     events: {
                       onChange: null
                     },
@@ -195,9 +197,13 @@ class TransferEntry extends Component {
                     onClick={RequisitionSearch.bind(this, this)}
                   />
                 </div>
+              </div>
+            </div>
 
+            <div className="col-lg-4">
+              <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-lg-6" }}
                   label={{ forceLabel: "To Location" }}
                   selector={{
                     name: "to_location_id",
@@ -212,7 +218,7 @@ class TransferEntry extends Component {
                   }}
                 />
 
-                <div className="col-lg-2">
+                <div className="col-lg-6">
                   <AlgaehLabel
                     label={{
                       forceLabel: "To Location Type"
@@ -300,11 +306,7 @@ function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
     locations: state.locations,
-    posheader: state.posheader,
-    pospatients: state.pospatients,
-    posentry: state.posentry,
-    existinsurance: state.existinsurance,
-    posheader: state.posheader
+    requisitionentry: state.requisitionentry
   };
 }
 
@@ -313,12 +315,7 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getPatientDetails: AlgaehActions,
-      getPosEntry: AlgaehActions,
-      getPatientInsurance: AlgaehActions,
-      getMedicationList: AlgaehActions,
-      getPrescriptionPOS: AlgaehActions,
-      PosHeaderCalculations: AlgaehActions
+      getRequisitionEntry: AlgaehActions
     },
     dispatch
   );

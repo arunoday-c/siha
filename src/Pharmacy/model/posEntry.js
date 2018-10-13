@@ -204,7 +204,7 @@ let addPosEntry = (req, res, next) => {
                           next(error);
                         });
                       }
-                      req.records = { document_number: documentCode };
+                      req.records = { pos_number: documentCode };
                       next();
                     });
                   }

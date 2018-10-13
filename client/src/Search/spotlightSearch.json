@@ -102,5 +102,13 @@
         "label": "Patient Name"
       }
     ]
+  },
+  "RequisitionEntry": {
+    "ReqEntry": [
+      {
+        "fieldName": "material_header_number",
+        "label": "Requisition Number"
+      }
+    ]
   }
 }

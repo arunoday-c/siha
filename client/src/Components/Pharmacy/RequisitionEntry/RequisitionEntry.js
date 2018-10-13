@@ -115,9 +115,9 @@ class RequisitionEntry extends Component {
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "RequisitionEntryEntry.POSEntry"
+                fieldName: "RequisitionEntry.ReqEntry"
               },
-              searchName: "RequisitionEntry"
+              searchName: "REQEntry"
             }}
             userArea={
               <AlgaehDateHandler
@@ -310,11 +310,7 @@ function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
     locations: state.locations,
-    posheader: state.posheader,
-    pospatients: state.pospatients,
-    posentry: state.posentry,
-    existinsurance: state.existinsurance,
-    posheader: state.posheader
+    requisitionentry: state.requisitionentry
   };
 }
 
@@ -323,12 +319,7 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getPatientDetails: AlgaehActions,
-      getPosEntry: AlgaehActions,
-      getPatientInsurance: AlgaehActions,
-      getMedicationList: AlgaehActions,
-      getPrescriptionPOS: AlgaehActions,
-      PosHeaderCalculations: AlgaehActions
+      getRequisitionEntry: AlgaehActions
     },
     dispatch
   );

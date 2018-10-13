@@ -14,16 +14,13 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 
 import {
-  discounthandle,
+  onchangegridcol,
   itemchangeText,
   numberchangeTexts,
   AddItems,
   deletePosDetail,
   updatePosDetail,
-  calculateAmount,
-  adjustadvance,
-  UomchangeTexts,
-  dateFormater
+  UomchangeTexts
 } from "./TransferEntryItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
@@ -74,6 +71,20 @@ class TransferEntryItems extends Component {
         }
       });
     }
+
+    if (
+      this.props.itemgroup === undefined ||
+      this.props.itemgroup.length === 0
+    ) {
+      this.props.getItemGroup({
+        uri: "/pharmacy/getItemGroup",
+        method: "GET",
+        redux: {
+          type: "ITEM_GROUOP_GET_DATA",
+          mappingName: "itemgroup"
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -116,7 +127,7 @@ class TransferEntryItems extends Component {
                             dataSource: {
                               textField: "uom_description",
                               valueField: "uom_id",
-                              data: this.state.ItemUOM
+                              data: this.state.itemuom
                             },
 
                             onChange: UomchangeTexts.bind(this, this)
@@ -203,12 +214,12 @@ class TransferEntryItems extends Component {
                         >
                           Add Item
                         </button>
-                        <button
+                        {/* <button
                           className="btn btn-default"
                           //   onClick={processItems.bind(this, this)}
                         >
                           Select Batch
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>
@@ -218,6 +229,312 @@ class TransferEntryItems extends Component {
                       <div className="row">
                         <div className="col-lg-12">
                           <AlgaehDataGrid
+                            id="REQ_details"
+                            columns={[
+                              {
+                                fieldName: "item_id",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Item Name" }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  let display =
+                                    this.props.itemlist === undefined
+                                      ? []
+                                      : this.props.itemlist.filter(
+                                          f =>
+                                            f.hims_d_item_master_id ===
+                                            row.item_id
+                                        );
+
+                                  return (
+                                    <span>
+                                      {display !== undefined &&
+                                      display.length !== 0
+                                        ? display[0].item_description
+                                        : ""}
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehAutoComplete
+                                      div={{}}
+                                      selector={{
+                                        name: "item_id",
+                                        className: "select-fld",
+                                        value: row.item_id,
+                                        dataSource: {
+                                          textField: "item_description",
+                                          valueField: "hims_d_item_master_id",
+                                          data: this.props.itemlist
+                                        },
+                                        onChange: null,
+                                        others: {
+                                          disabled: true
+                                        }
+                                      }}
+                                    />
+                                  );
+                                },
+                                disabled: true
+                              },
+
+                              {
+                                fieldName: "item_category_id",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Item Category" }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  let display =
+                                    this.props.itemcategory === undefined
+                                      ? []
+                                      : this.props.itemcategory.filter(
+                                          f =>
+                                            f.hims_d_item_category_id ===
+                                            row.item_category_id
+                                        );
+
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].category_desc
+                                        : ""}
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehAutoComplete
+                                      div={{}}
+                                      selector={{
+                                        name: "item_category_id",
+                                        className: "select-fld",
+                                        value: row.item_category_id,
+                                        dataSource: {
+                                          textField: "category_desc",
+                                          valueField: "hims_d_item_category_id",
+                                          data: this.props.itemcategory
+                                        },
+                                        onChange: null,
+                                        others: {
+                                          disabled: true
+                                        }
+                                      }}
+                                    />
+                                  );
+                                },
+                                disabled: true
+                              },
+
+                              {
+                                fieldName: "item_group_id",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Item Category" }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  let display =
+                                    this.props.itemgroup === undefined
+                                      ? []
+                                      : this.props.itemgroup.filter(
+                                          f =>
+                                            f.hims_d_item_group_id ===
+                                            row.item_group_id
+                                        );
+
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].group_description
+                                        : ""}
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehAutoComplete
+                                      div={{}}
+                                      selector={{
+                                        name: "item_group_id",
+                                        className: "select-fld",
+                                        value: row.item_group_id,
+                                        dataSource: {
+                                          textField: "group_description",
+                                          valueField: "hims_d_item_group_id",
+                                          data: this.props.itemgroup
+                                        },
+                                        onChange: null,
+                                        others: {
+                                          disabled: true
+                                        }
+                                      }}
+                                    />
+                                  );
+                                },
+                                disabled: true
+                              },
+
+                              {
+                                fieldName: "item_uom",
+                                label: (
+                                  <AlgaehLabel label={{ forceLabel: "UOM" }} />
+                                ),
+                                displayTemplate: row => {
+                                  let display =
+                                    this.props.itemuom === undefined
+                                      ? []
+                                      : this.props.itemuom.filter(
+                                          f =>
+                                            f.hims_d_pharmacy_uom_id ===
+                                            row.item_uom
+                                        );
+
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].uom_description
+                                        : ""}
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehAutoComplete
+                                      div={{}}
+                                      selector={{
+                                        name: "item_uom",
+                                        className: "select-fld",
+                                        value: row.item_uom,
+
+                                        dataSource: {
+                                          textField: "uom_description",
+                                          valueField: "uom_id",
+                                          data: this.state.ItemUOM
+                                        },
+                                        onChange: null,
+                                        others: {
+                                          disabled: true
+                                        }
+                                      }}
+                                    />
+                                  );
+                                },
+                                disabled: true
+                              },
+
+                              {
+                                fieldName: "quantity_required",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Quantity Required" }}
+                                  />
+                                ),
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        value: row.quantity_required,
+                                        className: "txt-fld",
+                                        name: "quantity_required",
+                                        events: { onChange: null },
+                                        others: {
+                                          disabled: true
+                                        }
+                                      }}
+                                    />
+                                  );
+                                }
+                              },
+                              {
+                                fieldName: "quantity_authorized",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Quantity Authorized"
+                                    }}
+                                  />
+                                ),
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        value: row.quantity_authorized,
+                                        className: "txt-fld",
+                                        name: "quantity_authorized",
+                                        events: {
+                                          onChange: onchangegridcol.bind(
+                                            this,
+                                            this,
+                                            context,
+                                            row
+                                          )
+                                        },
+                                        others: {
+                                          disabled: this.state.authorizeEnable
+                                        }
+                                      }}
+                                    />
+                                  );
+                                }
+                              },
+                              {
+                                fieldName: "quantity_transfered",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Quantity Transfered"
+                                    }}
+                                  />
+                                ),
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        value: row.quantity_transfered,
+                                        className: "txt-fld",
+                                        name: "quantity_transfered",
+                                        events: {
+                                          onChange: onchangegridcol.bind(
+                                            this,
+                                            this,
+                                            context,
+                                            row
+                                          )
+                                        },
+                                        others: {
+                                          disabled: this.state.authorizeEnable
+                                        }
+                                      }}
+                                    />
+                                  );
+                                }
+                              }
+                            ]}
+                            keyId="service_type_id"
+                            dataSource={{
+                              data: this.state.pharmacy_stock_detail
+                            }}
+                            // isEditable={true}
+                            paging={{ page: 0, rowsPerPage: 10 }}
+                            // events={{
+                            //   onDelete: deleteRequisitionDetail.bind(
+                            //     this,
+                            //     this,
+                            //     context
+                            //   ),
+                            //   onEdit: row => {},
+                            //   onDone: updatePosDetail.bind(this, this)
+                            // }}
+                          />
+                          {/* <AlgaehDataGrid
                             id="POS_details"
                             columns={[
                               {
@@ -528,7 +845,7 @@ class TransferEntryItems extends Component {
                               onEdit: row => {},
                               onDone: updatePosDetail.bind(this, this)
                             }}
-                          />
+                          /> */}
                         </div>
                       </div>
                     </div>
@@ -922,7 +1239,7 @@ function mapStateToProps(state) {
     itemdetaillist: state.itemdetaillist,
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
-    posheader: state.posheader
+    itemgroup: state.itemgroup
   };
 }
 
@@ -930,14 +1247,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getSelectedItemDetais: AlgaehActions,
-      getServices: AlgaehActions,
-      getPrescriptionPOS: AlgaehActions,
       getItemCategory: AlgaehActions,
-      getItemUOM: AlgaehActions,
-      PosHeaderCalculations: AlgaehActions,
-      getServicesCost: AlgaehActions,
-      getInsuranceServicesCost: AlgaehActions,
-      generateBill: AlgaehActions
+      getItemGroup: AlgaehActions,
+      getItemUOM: AlgaehActions
     },
     dispatch
   );

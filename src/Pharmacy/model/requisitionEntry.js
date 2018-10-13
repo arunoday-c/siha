@@ -9,9 +9,11 @@ import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../../utils/logging";
 import moment from "moment";
-
+// import { getBillDetailsFunctionality } from "../../model/billing";
 // import { updateIntoItemLocation } from "./commonFunction";
 import Promise from "bluebird";
+import { connect } from "pm2";
+import { LINQ } from "node-linq";
 
 //created by Nowshad: to Insert Requisition Entry
 let addrequisitionEntry = (req, res, next) => {
@@ -22,7 +24,7 @@ let addrequisitionEntry = (req, res, next) => {
     let db = req.db;
     let input = extend({}, req.body);
 
-    debugLog("Data", "add stock");
+    debugLog("Requisition: ", "add Requisition");
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -37,23 +39,25 @@ let addrequisitionEntry = (req, res, next) => {
 
         let requestCounter = 1;
 
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
           runningNumberGen({
             db: connection,
             counter: requestCounter,
             module_desc: ["REQ_NUM"],
             onFailure: error => {
-              debugLog("error", error);
               reject(error);
             },
             onSuccess: result => {
-              debugLog("result", result);
               resolve(result);
             }
           });
         }).then(result => {
           let documentCode = result[0].completeNumber;
+          //   debugLog("connection", JSON.stringify(connection));
           debugLog("documentCode:", documentCode);
+
+          let today = moment().format("YYYY-MM-DD");
+          debugLog("today:", today);
 
           connection.query(
             "INSERT INTO `hims_f_pharamcy_material_header` (material_header_number,requistion_date,from_location_type,\
@@ -97,6 +101,7 @@ let addrequisitionEntry = (req, res, next) => {
               input.cancelled_date
             ],
             (error, headerResult) => {
+              debugLog("error: ", "Check");
               if (error) {
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -141,7 +146,7 @@ let addrequisitionEntry = (req, res, next) => {
                           next(error);
                         });
                       }
-                      req.records = { document_number: documentCode };
+                      req.records = { material_header_number: documentCode };
                       next();
                     });
                   }
@@ -178,7 +183,7 @@ let getrequisitionEntry = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "SELECT * from  hims_f_pharamcy_material_header\
-          where record_status='A' AND " +
+          where " +
           where.condition,
         where.values,
         (error, headerResult) => {
@@ -194,7 +199,7 @@ let getrequisitionEntry = (req, res, next) => {
               headerResult[0].hims_f_pharamcy_material_header_id
             );
             connection.query(
-              "select * from hims_f_pharmacy_material_detail where pharmacy_header_id=? and record_status='A'",
+              "select * from hims_f_pharmacy_material_detail where pharmacy_header_id=?",
               headerResult[0].hims_f_pharamcy_material_header_id,
               (error, pharmacy_stock_detail) => {
                 if (error) {
@@ -251,7 +256,7 @@ let updaterequisitionEntry = (req, res, next) => {
           debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
           connection.query(
             "UPDATE `hims_f_pharmacy_pos_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
-          WHERE `record_status`='A' and `hims_f_pharmacy_pos_header_id`=?",
+          WHERE  and `hims_f_pharmacy_pos_header_id`=?",
             [
               inputParam.posted,
               req.userIdentity.algaeh_d_app_user_id,

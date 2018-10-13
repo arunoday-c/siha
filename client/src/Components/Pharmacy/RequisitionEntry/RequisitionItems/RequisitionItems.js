@@ -220,7 +220,7 @@ class RequisitionItems extends Component {
                       <div className="row">
                         <div className="col-lg-12">
                           <AlgaehDataGrid
-                            id="POS_details"
+                            id="REQ_details"
                             columns={[
                               {
                                 fieldName: "item_id",

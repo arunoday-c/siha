@@ -19,19 +19,19 @@ const changeTexts = ($this, ctrl, e) => {
 const getCtrlCode = ($this, docNumber) => {
   debugger;
   AlgaehLoader({ show: true });
-  $this.props.getPosEntry({
-    uri: "/posEntry/getPosEntry",
+  $this.props.getRequisitionEntry({
+    uri: "/requisitionEntry/getrequisitionEntry",
     method: "GET",
     printInput: true,
-    data: { pos_number: docNumber },
+    data: { material_header_number: docNumber },
     redux: {
       type: "POS_ENTRY_GET_DATA",
-      mappingName: "posentry"
+      mappingName: "requisitionentry"
     },
     afterSuccess: data => {
       debugger;
       data.saveEnable = true;
-      data.patient_payable_h = data.patient_payable;
+
       if (data.posted === "Y") {
         data.postEnable = true;
       } else {
@@ -61,7 +61,7 @@ const SaveRequisitionEntry = $this => {
       debugger;
       if (response.data.success === true) {
         $this.setState({
-          pos_number: response.data.records.pos_number,
+          material_header_number: response.data.records.material_header_number,
           saveEnable: true,
           authorizeEnable: false
         });
