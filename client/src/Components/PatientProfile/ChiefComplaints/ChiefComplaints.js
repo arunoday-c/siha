@@ -20,7 +20,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import Checkbox from "@material-ui/core/Checkbox";
+
 import IconButton from "@material-ui/core/IconButton";
 import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
@@ -54,9 +54,9 @@ class ChiefComplaints extends Component {
       onset_date: new Date(),
       episode_id: "",
       interval: "",
-      duration: "",
+      duration: 0,
       comment: "",
-      ifCheckBoxChange: false,
+      chiefComplaints_Inactive: false,
       masterChiefComplaints: []
     };
 
@@ -145,15 +145,28 @@ class ChiefComplaints extends Component {
       onSuccess: response => {
         if (response.data.success) {
           getAllChiefComplaints($that, result => {
-            debugger;
             let _currentChiefComplaints = $that.state.patientChiefComplains;
             let _masterChief = result;
             Enumerable.from(new_chief_complaint)
               .select(s => {
                 let _firstOrDef = Enumerable.from(result)
-                  .where(w => w.chief_complaint_name === s)
+                  .where(w => w.hpi_description === s)
                   .firstOrDefault();
-                _currentChiefComplaints.push(_firstOrDef);
+                _currentChiefComplaints.push({
+                  Encounter_Date: new Date(),
+                  chief_complaint_id: _firstOrDef.hims_d_hpi_header_id,
+                  chief_complaint_name: _firstOrDef.hpi_description,
+                  comment: "",
+                  duration: 0,
+                  episode_id: Window.global["episode_id"],
+                  interval: "D",
+                  onset_date: new Date(),
+                  pain: "NH",
+                  score: 0,
+                  severity: "MI",
+                  patient_id: Window.global["current_patient"],
+                  recordState: "insert"
+                });
                 if (_firstOrDef !== undefined)
                   _masterChief.splice(_firstOrDef, 1);
               })
@@ -164,6 +177,10 @@ class ChiefComplaints extends Component {
                 return a.chief_complaint_id - b.chief_complaint_id;
               }),
               masterChiefComplaints: _masterChief
+            });
+            swalMessage({
+              title: "New complaint added successfully",
+              type: "success"
             });
           });
         }
@@ -228,15 +245,7 @@ class ChiefComplaints extends Component {
   dropDownHandle(data) {
     const updateScroe =
       data.selected.score !== undefined ? { score: data.selected.score } : {};
-    if (updateScroe.score !== undefined) {
-      var element = document.querySelectorAll("[paintab]");
-      for (var i = 0; i < element.length; i++) {
-        element[i].classList.remove("active");
-      }
-      document
-        .querySelector("li[paintab='" + data.selected.score + "']")
-        .classList.add("active");
-    }
+
     this.setState({ [data.name]: data.value, ...updateScroe }, () => {
       this.settingUpdateChiefComplaints({
         currentTarget: {
@@ -298,8 +307,11 @@ class ChiefComplaints extends Component {
               openHpiModal: false,
               hims_f_episode_chief_complaint_id: null
             });
-            getPatientChiefComplaints();
-            this.getPatientChiefComplaintsDetails();
+            getPatientChiefComplaints(this);
+            swalMessage({
+              title: "New Complaints are updated",
+              type: "success"
+            });
           }
         },
         onFailure: error => {
@@ -334,7 +346,11 @@ class ChiefComplaints extends Component {
               openHpiModal: false,
               hims_f_episode_chief_complaint_id: null
             });
-            this.getPatientChiefComplaintsDetails();
+            swalMessage({
+              title: "Modified Complaints are updated",
+              type: "success"
+            });
+            getPatientChiefComplaints(this);
           }
         },
         onFailure: error => {
@@ -464,6 +480,10 @@ class ChiefComplaints extends Component {
           patient_id: Window.global["current_patient"],
           recordState: "insert"
         });
+        swalMessage({
+          title: "Added chief complaint",
+          type: "success"
+        });
         this.setState({
           patientChiefComplains: patChiefComp.sort((a, b) => {
             return a.chief_complaint_id - b.chief_complaint_id;
@@ -498,6 +518,7 @@ class ChiefComplaints extends Component {
           return a.chief_complaint_id - b.chief_complaint_id;
         })
       });
+      swalMessage({ title: "Complaint added successfully", type: "success" });
     }
   }
 
@@ -538,29 +559,33 @@ class ChiefComplaints extends Component {
                             onChange: this.dropDownHandle.bind(this)
                           }}
                         />
-
-                        <AlagehFormGroup
+                        <AlgaehDateHandler
                           div={{ className: "col" }}
                           label={{
                             forceLabel: "Duration / Onset",
                             isImp: false
                           }}
                           textBox={{
-                            className: "txt-fld",
                             name: "onset_date",
-                            value: this.state.onset_date,
-                            events: {}
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                          maxDate={new Date()}
+                          value={this.state.onset_date}
+                          events={{
+                            onChange: selectDate => {}
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "Timing",
+                            forceLabel: "Location",
                             isImp: false
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "timing",
+                            name: "location",
 
                             //value: this.state.pain,
                             events: {}
@@ -583,12 +608,12 @@ class ChiefComplaints extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "Associated Symptoms",
+                            forceLabel: "Context",
                             isImp: false
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "associated_symptoms",
+                            name: "context",
 
                             //value: this.state.pain,
                             events: {}
@@ -597,12 +622,12 @@ class ChiefComplaints extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "Location",
+                            forceLabel: "Timing",
                             isImp: false
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "location",
+                            name: "timing",
 
                             //value: this.state.pain,
                             events: {}
@@ -625,17 +650,18 @@ class ChiefComplaints extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "Context",
+                            forceLabel: "Associated Symptoms",
                             isImp: false
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "context",
+                            name: "associated_symptoms",
 
                             //value: this.state.pain,
                             events: {}
                           }}
                         />
+
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
@@ -777,6 +803,23 @@ class ChiefComplaints extends Component {
                         />
                       </div>
                     </div>
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Comments",
+                        isImp: false
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "comments",
+                        others: {
+                          multiline: true,
+                          rows: "4"
+                        },
+                        //value: this.state.pain,
+                        events: {}
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -1114,35 +1157,38 @@ class ChiefComplaints extends Component {
                     </div>
                     <hr />
                     <div className="row">
-                      <div className="col">
-                        <Checkbox color="primary" onChange={() => {}} />
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Chronic"
-                          }}
-                        />
+                      <div className="col d-none">
+                        <input type="checkbox" id="chronic" />
+                        <label htmlFor="complaint_inactive_date">
+                          &nbsp;Chronic
+                        </label>
                       </div>
                       <div className="col">
-                        <Checkbox
-                          color="primary"
+                        <input
+                          type="checkbox"
+                          id="complaint_inactive_date"
+                          checked={this.state.chiefComplaints_Inactive}
                           onChange={() => {
-                            this.setState({ inactive_date: new Date() });
+                            this.setState({
+                              inactive_date: new Date(),
+                              chiefComplaints_Inactive: !this.state
+                                .chiefComplaints_Inactive
+                            });
                           }}
                         />
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Inactive"
-                          }}
-                        />
+                        <label htmlFor="complaint_inactive_date">
+                          &nbsp;Inactive
+                        </label>
                       </div>
 
                       <AlgaehDateHandler
                         div={{ className: "col" }}
                         textBox={{
                           className: "txt-fld",
-                          name: ""
+                          name: "inactive_date"
                         }}
                         maxDate={new Date()}
+                        disabled={!this.state.chiefComplaints_Inactive}
                         events={{
                           onChange: selectedDate => {
                             this.setState({ inactive_date: selectedDate });
@@ -1180,13 +1226,6 @@ class ChiefComplaints extends Component {
               <div className="col">
                 <div className="row">
                   <div className="col-lg-12">
-                    {/* <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.handleClose}
-                    >
-                      Save
-                    </button> */}
                     <button
                       type="button"
                       className="btn btn-default"
