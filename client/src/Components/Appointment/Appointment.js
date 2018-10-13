@@ -201,6 +201,13 @@ class Appointment extends Component {
         ? this.state.activeDateHeader
         : new Date();
 
+    //     if(from_time <new Date()){
+    // swalMessage ({
+    //   title: "Cannot create slot for pas ",
+    //   type: "success"
+    // })
+    //     }
+
     const send_data = {
       patient_id: this.state.patient_id,
       patient_code: this.state.patient_code,
@@ -529,38 +536,53 @@ class Appointment extends Component {
   }
 
   showModal(e) {
+    debugger;
     const appt_time = e.currentTarget.getAttribute("appt-time");
-    const to_work_hr = e.currentTarget.getAttribute("to_work_hr");
-    const from_break_hr1 = e.currentTarget.getAttribute("from_break_hr1");
-    const to_break_hr1 = e.currentTarget.getAttribute("to_break_hr1");
-    const from_break_hr2 = e.currentTarget.getAttribute("from_break_hr2");
-    const to_break_hr2 = e.currentTarget.getAttribute("to_break_hr2");
-    const slot = e.currentTarget.getAttribute("slot");
-    const clinic_id = e.currentTarget.getAttribute("clinic_id");
-    const provider_id = e.currentTarget.getAttribute("provider_id");
-    const sch_header_id = e.currentTarget.getAttribute("sch_header_id");
-    const sch_detail_id = e.currentTarget.getAttribute("sch_detail_id");
-    const sub_dept_id = e.currentTarget.getAttribute("sub_dept_id");
-    const sub_dep_name = this.getDeptName(sub_dept_id);
-    const doc_name = this.getDoctorName(provider_id);
 
-    this.setState({
-      showApt: true,
-      apptFromTime: appt_time,
-      apptProvider: provider_id,
-      apptToWorkHr: to_work_hr,
-      apptFromBrk1: from_break_hr1,
-      apptToBrk1: to_break_hr1,
-      apptFromBrk2: from_break_hr2,
-      apptToBrk2: to_break_hr2,
-      apptSlot: slot,
-      apptClinicID: clinic_id,
-      apptSchHdId: sch_header_id,
-      apptSchDtId: sch_detail_id,
-      apptSubDept: sub_dept_id,
-      apptSubDeptName: sub_dep_name,
-      apptProviderName: doc_name
-    });
+    if (
+      moment(appt_time, "HH:mm a").format("HHMM") <
+      moment(new Date()).format("HHMM")
+    ) {
+      swalMessage({
+        title: "Can't create schedule for past time",
+        type: "error"
+      });
+      this.setState({
+        showApt: false
+      });
+    } else {
+      const to_work_hr = e.currentTarget.getAttribute("to_work_hr");
+      const from_break_hr1 = e.currentTarget.getAttribute("from_break_hr1");
+      const to_break_hr1 = e.currentTarget.getAttribute("to_break_hr1");
+      const from_break_hr2 = e.currentTarget.getAttribute("from_break_hr2");
+      const to_break_hr2 = e.currentTarget.getAttribute("to_break_hr2");
+      const slot = e.currentTarget.getAttribute("slot");
+      const clinic_id = e.currentTarget.getAttribute("clinic_id");
+      const provider_id = e.currentTarget.getAttribute("provider_id");
+      const sch_header_id = e.currentTarget.getAttribute("sch_header_id");
+      const sch_detail_id = e.currentTarget.getAttribute("sch_detail_id");
+      const sub_dept_id = e.currentTarget.getAttribute("sub_dept_id");
+      const sub_dep_name = this.getDeptName(sub_dept_id);
+      const doc_name = this.getDoctorName(provider_id);
+
+      this.setState({
+        showApt: true,
+        apptFromTime: appt_time,
+        apptProvider: provider_id,
+        apptToWorkHr: to_work_hr,
+        apptFromBrk1: from_break_hr1,
+        apptToBrk1: to_break_hr1,
+        apptFromBrk2: from_break_hr2,
+        apptToBrk2: to_break_hr2,
+        apptSlot: slot,
+        apptClinicID: clinic_id,
+        apptSchHdId: sch_header_id,
+        apptSchDtId: sch_detail_id,
+        apptSubDept: sub_dept_id,
+        apptSubDeptName: sub_dep_name,
+        apptProviderName: doc_name
+      });
+    }
   }
 
   plotPatients(data) {
