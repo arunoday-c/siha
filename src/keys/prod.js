@@ -25,7 +25,9 @@ export default {
     database: "algaeh_hims_db",
     multipleStatements: true,
     acquireTimeout: 20000,
-    dateStrings: true
+    dateStrings: true,
+    waitForConnections: true, // Default value.
+    queueLimit: 0 // Unlimited - default value.
   },
   //Db Date format
   dbFormat: {

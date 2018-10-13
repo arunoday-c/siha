@@ -28,7 +28,9 @@ export default {
     multipleStatements: true,
     acquireTimeout: 20000,
     dateStrings: true,
-    insecureAuth: true
+    insecureAuth: true,
+    waitForConnections: true, // Default value.
+    queueLimit: 0 // Unlimited - default value.
   },
   //Db Date format
   dbFormat: {

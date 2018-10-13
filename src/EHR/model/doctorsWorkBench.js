@@ -13,7 +13,6 @@ import moment from "moment";
 import { debugFunction, debugLog } from "../../utils/logging";
 import formater from "../../keys/keys";
 import { decryption } from "../../utils/cryptography";
-import { debuglog } from "util";
 
 //created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
@@ -56,9 +55,9 @@ let physicalExaminationHeader = (req, res, next) => {
           input.updated_by
         ],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -107,9 +106,9 @@ let physicalExaminationDetails = (req, res, next) => {
           input.updated_by
         ],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -223,9 +222,9 @@ let addOrder = (req, res, next) => {
           input.updated_by
         ],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -279,9 +278,9 @@ let addSample = (req, res, next) => {
           input.updated_by
         ],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -334,9 +333,9 @@ let addAnalytes = (req, res, next) => {
           input.updated_by
         ],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -424,9 +423,9 @@ let addReviewOfSysDetails = (req, res, next) => {
           input.updated_by
         ],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -504,9 +503,9 @@ let getAllergyDetails = (req, res, next) => {
       }
 
       connection.query("SELECT * FROM hims_d_allergy", (error, results) => {
+        releaseDBConnection(db, connection);
         if (error) {
           next(error);
-          releaseDBConnection(db, connection);
         }
         debugLog("Results fetched");
         req.records = results;
@@ -579,9 +578,9 @@ let getChronicalConditions = (req, res, next) => {
       connection.query(
         "SELECT * FROM hims_d_chronic_conditions;",
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
           }
           debugLog("Results fetched");
           req.records = results;
@@ -664,9 +663,9 @@ let getEncounterReview = (req, res, next) => {
         "SELECT * FROM hims_f_encounter_review where encounter_id=?",
         [encounter_id],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
           }
           debugLog("Results fetched");
           req.records = results;
@@ -845,8 +844,8 @@ inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) in
 PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episode_id=?;",
         [inputData.patient_id, inputData.episode_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -880,10 +879,10 @@ let getPatientVitals = (req, res, next) => {
           where.condition +
           " order by visit_date desc, visit_time desc;",
         where.values,
-        
+
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -912,8 +911,8 @@ let getPatientAllergies = (req, res, next) => {
         and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc;",
         [inputData.patient_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -942,8 +941,8 @@ let getPatientDiet = (req, res, next) => {
         and DM.hims_d_diet_master_id=PD.diet_id",
         [inputData.patient_id, inputData.episode_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -971,8 +970,8 @@ let getPatientDiagnosis = (req, res, next) => {
         and patient_id=? and episode_id=? and pd.daignosis_id=icd.hims_d_icd_id;",
         [inputData.patient_id, inputData.episode_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -998,8 +997,8 @@ let getChiefComplaints = (req, res, next) => {
         "select hims_d_hpi_header_id,hpi_description,created_date from hims_d_hpi_header where sub_department_id=? and record_status='A';",
         [sub_department_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1047,8 +1046,8 @@ let addNewChiefComplaint = (req, res, next) => {
           })
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
 
@@ -1078,8 +1077,8 @@ let getChiefComplaintsElements = (req, res, next) => {
         from hims_d_hpi_details  where hpi_header_id=? and record_status='A';",
         [inputData.hpi_header_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1302,8 +1301,8 @@ let getPatientChiefComplaints = (req, res, next) => {
         where ecc.record_status='A'and ecc.episode_id=? group by chief_complaint_id ",
         [inputData.episode_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1414,8 +1413,8 @@ let getAllAllergies = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1444,8 +1443,8 @@ let getPatientAllergy = (req, res, next) => {
         and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc; ",
         [inputData.patient_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1737,8 +1736,8 @@ let getReviewOfSystem = (req, res, next) => {
           where.values,
 
           (error, result) => {
+            releaseDBConnection(db, connection);
             if (error) {
-              releaseDBConnection(db, connection);
               next(error);
             }
             req.records = result;
@@ -1775,8 +1774,8 @@ let getPatientROS = (req, res, next) => {
           where ER.record_status='A' and ER.patient_id=? and ER.episode_id=?",
         [input.patient_id, input.episode_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -2091,6 +2090,7 @@ let getPhysicalExamination = (req, res, next) => {
             next(error);
           });
         }
+        releaseDBConnection(db, connection);
         debugLog("result", result[1]);
 
         req.records = result;
@@ -2364,8 +2364,8 @@ let getPatientPhysicalExamination = (req, res, next) => {
                    where  EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?",
         [input.patient_id, input.episode_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;

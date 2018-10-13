@@ -275,6 +275,11 @@ class PatientProfile extends Component {
               More
             </button>
           </div>
+          <div>
+            <ul>
+              <li>MRD</li>
+            </ul>
+          </div>
         </div>
         <div className="patientTopNav box-shadow-normal">
           <ul className="nav">
