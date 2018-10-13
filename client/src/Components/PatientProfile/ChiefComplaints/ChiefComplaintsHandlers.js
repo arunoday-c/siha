@@ -14,6 +14,7 @@ const getAllChiefComplaints = ($this, callBack) => {
 };
 
 const getPatientChiefComplaints = $this => {
+  debugger;
   $this.props.getPatientChiefComplaints({
     uri: "/doctorsWorkBench/getPatientChiefComplaints",
     data: {
@@ -27,6 +28,7 @@ const getPatientChiefComplaints = $this => {
       mappingName: "patient_chief_complaints"
     },
     afterSuccess: data => {
+      debugger;
       $this.setState({
         patientChiefComplains: data
       });

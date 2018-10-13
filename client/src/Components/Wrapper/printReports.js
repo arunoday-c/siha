@@ -2,7 +2,8 @@ import JsBarcode from "jsbarcode";
 import React from "react";
 import ReactDOM from "react-dom";
 import ReportUI from "../Wrapper/reportUI";
-import renderHTML from "react-render-html";
+//import renderHTML from "react-render-html";
+let HtmlToReactParser = require("html-to-react").Parser;
 const reportWindow = document.getElementById("reportWindow");
 let accessReport = options => {
   let getReport = options.report;
@@ -77,12 +78,17 @@ let accessReport = options => {
           }
         }
       }
-      console.log("Its coming here");
-      // new XMLSerializer().serializeToString(_html.firstElementChild)
-      ReactDOM.render(
-        <ReportUI>{renderHTML(_html.firstElementChild.innerHTML)}</ReportUI>,
-        reportWindow
+      //  console.log("Its coming here");
+      const htmlToReactParser = new HtmlToReactParser();
+      const reactElement = htmlToReactParser.parse(
+        _html.firstElementChild.innerHTML
       );
+      ReactDOM.render(<ReportUI>{reactElement}</ReportUI>, reportWindow);
+      // new XMLSerializer().serializeToString(_html.firstElementChild)
+      // ReactDOM.render(
+      //   <ReportUI>{renderHTML(_html.firstElementChild.innerHTML)}</ReportUI>,
+      //   reportWindow
+      // );
       const_count = 1;
     }
   };
