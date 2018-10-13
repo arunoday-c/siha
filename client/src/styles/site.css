@@ -9,8 +9,8 @@ body {
 :global .btn {
   padding: 5px 10px;
   font-size: 0.8rem;
-  background-size: 300% 100%;
   text-transform: uppercase;
+  background-size: 300% 100%;
   -moz-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
   -webkit-transition: all 0.2s ease-in-out;

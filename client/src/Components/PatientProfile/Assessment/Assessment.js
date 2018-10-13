@@ -90,6 +90,9 @@ class Assessment extends Component {
                   <div className="col-lg-3 caption">
                     <h3 className="caption-subject">Initial Diagnosis</h3>
                   </div>
+                </div>
+                <div className="portlet-body">
+<div className="row">
                   <div className="col-lg-2">
                     <AlgaehLabel
                       label={{
@@ -97,9 +100,31 @@ class Assessment extends Component {
                       }}
                     />
                   </div>
+<div className="col-lg-4 customRadio">
+              <label className="radio inline">
+                <input
+                  type="radio"
+                  name="daignosis_id"
+                  value="ICD Code"
+                  checked={this.state.radioOP}
+                  //onChange={radioChange.bind(this, this)}
+                />
+                <span>ICD Code</span>
+              </label>
+              <label className="radio inline">
+                <input
+                  type="radio"
+                  name="daignosis_id"
+                  value="ICD Name"
+                  checked={this.state.radioIP}
+                  //onChange={radioChange.bind(this, this)}
+                />
+                <span>ICD Name</span>
+              </label>
+            </div>
 
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-2" }}
+                  {/* <AlagehAutoComplete
+                    div={{ className: "col" }}
                     selector={{
                       name: "search_by",
                       className: "select-fld",
@@ -111,13 +136,10 @@ class Assessment extends Component {
                       },
                       onChange: texthandle.bind(this, this)
                     }}
-                  />
+                  /> */}
 
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "daignosis_id"
-                    }}
+                    div={{ className: "col-lg-4" }}
                     selector={{
                       name: "daignosis_id",
                       className: "select-fld",
@@ -133,7 +155,7 @@ class Assessment extends Component {
                       onChange: texthandle.bind(this, this)
                     }}
                   />
-                  <div className="col-lg-1 actions">
+                  <div className="col actions">
                     <a
                       href="javascript:;"
                       className="btn btn-primary btn-circle active"
@@ -144,24 +166,9 @@ class Assessment extends Component {
                       />
                     </a>
                   </div>
-                </div>
-                <div className="row portlet-title">
-                  <div className="col-lg-4 actions">
-                    <Button
-                      style={{ backgroundColor: "#D5D5D5" }}
-                      size="small"
-                      onClick={addFinalIcd.bind(this, this)}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Add to Final Diagnosis"
-                        }}
-                      />
-                    </Button>
-                  </div>
-                </div>
-                <div className="portlet-body">
-                  <h4>
+</div>
+                  <div className="row" style={{marginTop:10,marginBottom:10}}>
+                  <div className="col-lg-12">
                     <AlgaehDataGrid
                       id="intial_icd"
                       columns={[
@@ -301,7 +308,13 @@ class Assessment extends Component {
                         onDone: updateDiagnosis.bind(this, this)
                       }}
                     />
-                  </h4>
+                    </div>
+                  </div>
+                    <div className="row">
+                  <div className="col-lg-12">
+                    <button className="btn btn-default" onClick={addFinalIcd.bind(this, this)}>Add to Final Diagnosis</button>
+                  </div>
+</div>
                 </div>
               </div>
             </div>

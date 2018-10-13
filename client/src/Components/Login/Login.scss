@@ -19,7 +19,7 @@
     width: 100%;
   }
   .margintop15 {
-    margin-top: 8%;
+    margin-top:12%;
   }
   .row-eq-height {
     display: -webkit-box;
@@ -43,14 +43,46 @@
   .sign-btn {
     box-shadow: 0 5px 0 #2a7688;
     border: 1px solid #48a0bb;
-    background: #3a95aa;
     color: #fff;
+    background-size: 300% 100%;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
   }
   .sign-btn:hover {
     box-shadow: 0 3px 0 #35879a;
     border: 1px solid #48b1ca;
-    background: #3a95aa;
+    background-position: 100% 0;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
   }
+
+
+
+  .btn-primary {
+    color: #fff;
+    background-color: none;
+    background-image: linear-gradient(
+      to right,
+      #34b8bc,
+      #25d8df,
+      #34b8bc,
+      #25d8df
+    );
+    //box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
+    border-color: #44b8bd;
+  }
+
+  .btn-primary:hover {
+    background-color: none;
+    border-color: #44b8bd;
+  }
+
+
+
   .checkbox {
     font-weight: normal;
     margin-bottom: 10px;
@@ -65,3 +97,29 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+.loginTopbar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    .companyLogo{
+      float: left;
+      background: url(../../assets/svg/ALGAEH_LOGO.svg) no-repeat center;
+      height: 70px;
+      background-size: 100%;
+      width: 170px;
+      margin-left: 15px;
+    }
+    .productLogo{
+      float: right;
+      background: url(../../assets/svg/HIMS_LOGO.svg) no-repeat center;
+      height: 70px;
+      background-size: 100%;
+      width: 170px;
+      margin-right: 15px;
+    }
+  
+  }

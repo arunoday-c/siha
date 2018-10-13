@@ -135,6 +135,7 @@ export default class Login extends Component {
             >
                Add Client's Logo and other details here
             </div> */}
+            <div className="loginTopbar"><div className="companyLogo"></div><div className="productLogo"></div></div>
 
             <div id="loginForm" className="loginFormContainer">
               <LinearProgress id="myProg" style={{ display: "none" }} />
@@ -142,7 +143,7 @@ export default class Login extends Component {
               <h3
                 style={{ marginTop: 20, marginBottom: 20, textAlign: "center" }}
               >
-                <span style={{ color: "#3A95AA" }}> ALGAEH</span> HIMS
+                <span style={{ color: "#3A95AA" }}>Login In</span>
               </h3>
               <div>
                 <form onSubmit={this.handleLogin.bind(this)}>
