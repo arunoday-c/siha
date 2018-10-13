@@ -638,21 +638,19 @@ let addDoctorsSchedule = (req, res, next) => {
                 working_days.push(d);
               }
             }
-let nightShift="";
+            let nightShift = "";
 
+            if (input.from_work_hr > input.to_work_hr) {
+              nightShift = 1;
 
-
-
-if(input.from_work_hr>input.to_work_hr){
-  nightShift=1;
-
-  debugLog("nightShift:", nightShift);
-  }
+              debugLog("nightShift:", nightShift);
+            }
 
             let newDateList = getDaysArray(
               new Date(input.from_date),
               new Date(input.to_date),
-              working_days,nightShift
+              working_days,
+              nightShift
             );
             newDateList.map(v => v.toLocaleString());
             //.slice(0, 10)).join("");
@@ -719,7 +717,6 @@ if(input.from_work_hr>input.to_work_hr){
                           appointment_schedule_header_idS
                         );
 
-
                         // SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where ((? BETWEEN time(from_work_hr) AND time(to_work_hr))\
                         //    or  (? BETWEEN time(from_work_hr) AND time(to_work_hr)))\
                         //   and hims_d_appointment_schedule_header_id=?
@@ -730,9 +727,6 @@ if(input.from_work_hr>input.to_work_hr){
                           j < appointment_schedule_header_idS.length;
                           j++
                         ) {
-
-
-
                           connection.query(
                             "SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where\
                             ((time(from_work_hr)<=?   AND time(to_work_hr)>?) or (time(from_work_hr)<=?   AND time(to_work_hr)>?))  and hims_d_appointment_schedule_header_id=?;\
@@ -938,31 +932,28 @@ if(input.from_work_hr>input.to_work_hr){
 };
 
 //[0,1,2,3,4,5,6]
-function getDaysArray(start, end, days,nightShift) {
+function getDaysArray(start, end, days, nightShift) {
   for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
     const dat = new Date(dt);
     const day = new Date(dat).getDay();
-if(nightShift==1){
-  if (days.indexOf(day) > -1) {
-    arr.push(dat);
-    debugLog("dat:", dat);  
+    if (nightShift == 1) {
+      if (days.indexOf(day) > -1) {
+        arr.push(dat);
+        debugLog("dat:", dat);
 
-    dat.setDate((dat.getDate()+1));
-    arr.push(dat);
-    debugLog("dat:", dat);
-  }
-}else{
-  if (days.indexOf(day) > -1) {
-    arr.push(dat);
-  }
-}
-
-    
+        dat.setDate(dat.getDate() + 1);
+        arr.push(dat);
+        debugLog("dat:", dat);
+      }
+    } else {
+      if (days.indexOf(day) > -1) {
+        arr.push(dat);
+      }
+    }
   }
   debugLog("newDatesList:", arr);
   return arr;
 }
-
 
 //[0,1,2,3,4,5,6]
 function BackupgetDaysArray(start, end, days) {
@@ -977,9 +968,6 @@ function BackupgetDaysArray(start, end, days) {
   debugLog("dates:", arr);
   return arr;
 }
-
-
-
 
 //created by irfan: to add appointment leave
 let addLeaveOrModifySchedule = (req, res, next) => {
@@ -1151,7 +1139,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
             for (let i = 0; i < result.length; i++) {
               // if (provider_id != "") {
               connection.query(
-                "select hims_f_patient_appointment_id, patient_id, provider_id, sub_department_id, appointment_date, appointment_from_time,\
+                "select hims_f_patient_appointment_id, patient_id,patient_code, provider_id, sub_department_id, appointment_date, appointment_from_time,\
     appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
     gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
     appointment_remarks, is_stand_by  from hims_f_patient_appointment where record_status='A' and sub_department_id=?\
@@ -1998,12 +1986,13 @@ let addPatientAppointment = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_patient_appointment` (patient_id,provider_id,sub_department_id,appointment_date,appointment_from_time,appointment_to_time,\
+        "INSERT INTO `hims_f_patient_appointment` (patient_id,patient_code,provider_id,sub_department_id,appointment_date,appointment_from_time,appointment_to_time,\
           appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
           created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.patient_id,
+          input.patient_code,
           input.provider_id,
           input.sub_department_id,
           input.appointment_date,
@@ -2088,13 +2077,12 @@ let updatePatientAppointment = (req, res, next) => {
           input.record_status,
           input.hims_f_patient_appointment_id
         ],
-        (error, result) => {
-         
+        (error, results) => {
           if (error) {
             connection.release();
             next(error);
           }
-          req.records = result;
+          req.records = results;
           next();
         }
       );
@@ -2126,7 +2114,7 @@ let getPatientAppointment = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_patient_appointment_id,patient_id,provider_id,sub_department_id,appointment_date,\
+        "select hims_f_patient_appointment_id,patient_id,patient_code,provider_id,sub_department_id,appointment_date,\
             appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,\
         contact_number,email,send_to_provider,gender,confirmed,\
         confirmed_by,comfirmed_date,cancelled,cancelled_by,cancelled_date,cancel_reason\

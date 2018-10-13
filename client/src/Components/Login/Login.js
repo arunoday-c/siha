@@ -135,6 +135,7 @@ export default class Login extends Component {
             >
                Add Client's Logo and other details here
             </div> */}
+            <div className="loginTopbar"><div className="companyLogo"></div><div className="productLogo"></div></div>
 
             <div id="loginForm" className="loginFormContainer">
               <LinearProgress id="myProg" style={{ display: "none" }} />
@@ -142,10 +143,10 @@ export default class Login extends Component {
               <h3
                 style={{ marginTop: 20, marginBottom: 20, textAlign: "center" }}
               >
-                <span style={{ color: "#3A95AA" }}> ALGAEH</span> HIMS
+                <span style={{ color: "#3A95AA" }}>Login In</span>
               </h3>
               <div>
-                <form onSubmit={this.handleLogin.bind(this)}>
+                <form onSubmit={this.handleLogin.bind(this)} style={{margin:" 0 -15px"}}>
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
@@ -204,6 +205,9 @@ export default class Login extends Component {
                 </form>
               </div>
             </div>
+            <div className="loginFooter"><p>COPYRIGHT © 2018. ALL RIGHTS RESERVED. <a href="http://algaeh.com/">ALGAEH TECHNOLOGIES PVT. LTD.</a></p></div>
+
+           
           </div>
         </div>
       </div>

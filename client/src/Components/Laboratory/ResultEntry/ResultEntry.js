@@ -150,19 +150,11 @@ class ResultEntry extends Component {
               </div>
               <div className="row">
                 <div className="col-lg-12">
-                  <div className="col-lg-12">
-                    <div className="row">
-                      <div className="col-lg-12">
-                        <h5 style={{ color: "gray" }}>
-                          {this.state.service_code} -{this.state.service_name}
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" style={{marginTop:15}}>
                     <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                      <div className="col-lg-12">
+                    
                         <div className="row">
+  <div className="col-lg-3" style={{paddingTop:15,color:"grey"}}> {this.state.service_code} -{this.state.service_name}</div>
                           <AlagehAutoComplete
                             div={{ className: "col-lg-3" }}
                             label={{
@@ -224,14 +216,13 @@ class ResultEntry extends Component {
                             }}
                           />
                         </div>
-                      </div>
                     </div>
                   </div>
 
                   <div className="col-lg-12">
-                    <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 next_plain">
-                      <div className="col-lg-12">
-                        <div className="row">
+                    
+                      <div className="row">
+                        <div className="col-lg-12">
                           <AlgaehDataGrid
                             id="Scheduled_list_grid"
                             columns={[
@@ -586,13 +577,13 @@ class ResultEntry extends Component {
                           />
                         </div>
                       </div>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="popupFooter">
+            <div className="col-lg-12">
               <button
                 type="button"
                 className="btn btn-primary"
@@ -640,7 +631,7 @@ class ResultEntry extends Component {
                 }}
               >
                 Cancel
-              </button>
+              </button></div>
             </div>
           </div>
         </Modal>

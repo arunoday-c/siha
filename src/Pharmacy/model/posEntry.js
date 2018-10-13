@@ -39,7 +39,7 @@ let addPosEntry = (req, res, next) => {
 
         let requestCounter = 1;
 
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
           runningNumberGen({
             db: connection,
             counter: requestCounter,
@@ -147,6 +147,9 @@ let addPosEntry = (req, res, next) => {
                 const insurtColumns = [
                   "item_id",
                   "item_category",
+                  "item_group_id",
+                  "service_id",
+                  "grn_no",
                   "barcode",
                   "expiry_date",
                   "batchno",
@@ -201,7 +204,7 @@ let addPosEntry = (req, res, next) => {
                           next(error);
                         });
                       }
-                      req.records = { document_number: documentCode };
+                      req.records = { pos_number: documentCode };
                       next();
                     });
                   }

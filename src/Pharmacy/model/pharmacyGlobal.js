@@ -92,4 +92,57 @@ let getVisitPrescriptionDetails = (req, res, next) => {
   }
 };
 
-module.exports = { getUomLocationStock, getVisitPrescriptionDetails };
+//created by Nowshad: get Item Moment
+let getItemMoment = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let whereOrder = "";
+    if (req.query.from_date != undefined) {
+      whereOrder =
+        "date(transaction_date) between date('" +
+        req.query.from_date +
+        "') AND date('" +
+        req.query.to_date +
+        "')";
+    } else {
+      whereOrder = "date(transaction_date) <= date(now())";
+    }
+    delete req.query.from_date;
+    delete req.query.to_date;
+    let where = whereCondition(extend(req.query));
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      db.query(
+        "SELECT * from hims_f_pharmacy_trans_history  WHERE record_status = 'A' and " +
+          whereOrder +
+          (where.condition == "" ? "" : " AND " + where.condition),
+        where.values,
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  getUomLocationStock,
+  getVisitPrescriptionDetails,
+  getItemMoment
+};

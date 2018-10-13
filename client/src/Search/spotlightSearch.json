@@ -66,6 +66,10 @@
         "label": "POS Number"
       },
       {
+        "fieldName": "visit_id",
+        "label": "Visit Id"
+      },
+      {
         "fieldName": "patient_id",
         "label": "Patient Id"
       },
@@ -96,6 +100,14 @@
       {
         "fieldName": "full_name",
         "label": "Patient Name"
+      }
+    ]
+  },
+  "RequisitionEntry": {
+    "ReqEntry": [
+      {
+        "fieldName": "material_header_number",
+        "label": "Requisition Number"
       }
     ]
   }

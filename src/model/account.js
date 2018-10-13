@@ -40,6 +40,7 @@ let apiAuth = (req, res, next) => {
     }
 
     let inputData = extend(authModel, getUserNamePassWord(authHeader));
+
     if (inputData.username == null || inputData.username == "") {
       next(
         httpStatus.generateError(

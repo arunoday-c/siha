@@ -93,7 +93,8 @@ class PhySchSetup extends Component {
       from_break_hr1: "",
       to_break_hr1: "",
       from_break_hr2: "",
-      to_break_hr2: ""
+      to_break_hr2: "",
+      openScheduler: false
     });
     provider_array.length = 0;
   }
@@ -240,6 +241,11 @@ class PhySchSetup extends Component {
               swalMessage({
                 title: "Schedule added successfully . .",
                 type: "success"
+              });
+            } else if (response.data.success === false) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "warning"
               });
             }
           },

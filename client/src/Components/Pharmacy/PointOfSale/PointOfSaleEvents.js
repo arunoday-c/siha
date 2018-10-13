@@ -47,6 +47,9 @@ const getCtrlCode = ($this, docNumber) => {
       } else {
         data.postEnable = false;
       }
+      if (data.visit_id !== null) {
+        data.case_type = "OP";
+      }
       data.dataExitst = true;
       $this.setState(data);
       AlgaehLoader({ show: false });
@@ -287,66 +290,73 @@ const getMedicationList = $this => {
 };
 
 const AddItems = ($this, ItemInput) => {
-  let inputObj = {};
-  let inputArray = [];
-  for (let i = 0; i < ItemInput.length; i++) {
-    inputObj = {
-      item_id: ItemInput[i].item_id,
-      item_category_id: ItemInput[i].item_category_id,
-      item_group_id: ItemInput[i].item_group_id,
-      insured: $this.state.insured,
-      vat_applicable: "Y",
-      hims_d_services_id: ItemInput[i].service_id,
-      primary_insurance_provider_id: $this.state.insurance_provider_id,
-      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
-      primary_network_id: $this.state.network_id,
-      sec_insured: $this.state.sec_insured,
-      secondary_insurance_provider_id:
-        $this.state.secondary_insurance_provider_id,
-      secondary_network_id: $this.state.secondary_network_id,
-      secondary_network_office_id: $this.state.secondary_network_office_id,
-      pharmacy_location_id: $this.state.location_id
-    };
-    inputArray.push(inputObj);
-  }
-  debugger;
-  $this.props.getPrescriptionPOS({
-    uri: "/posEntry/getPrescriptionPOS",
-    method: "POST",
-    data: inputArray,
-    redux: {
-      type: "POS_PRES_GET_DATA",
-      mappingName: "xxx"
-    },
-    afterSuccess: data => {
-      debugger;
+  if (ItemInput.length > 0) {
+    let inputObj = {};
+    let inputArray = [];
+    for (let i = 0; i < ItemInput.length; i++) {
+      inputObj = {
+        item_id: ItemInput[i].item_id,
+        item_category_id: ItemInput[i].item_category_id,
+        item_group_id: ItemInput[i].item_group_id,
+        pharmacy_location_id: $this.state.location_id,
 
-      let existingservices = $this.state.pharmacy_stock_detail;
-
-      if (data.billdetails.length !== 0) {
-        for (let i = 0; i < data.billdetails.length; i++) {
-          data.billdetails[i].extended_cost = data.billdetails[i].gross_amount;
-          data.billdetails[i].net_extended_cost = data.billdetails[i].net_amout;
-          data.billdetails[i].operation = "-";
-
-          existingservices.splice(0, 0, data.billdetails[i]);
-        }
-
-        $this.setState({
-          pharmacy_stock_detail: existingservices
-        });
-        $this.props.PosHeaderCalculations({
-          uri: "/billing/billingCalculations",
-          method: "POST",
-          data: { billdetails: existingservices },
-          redux: {
-            type: "POS_HEADER_GEN_GET_DATA",
-            mappingName: "posheader"
-          }
-        });
-      }
+        insured: $this.state.insured,
+        vat_applicable: "Y",
+        hims_d_services_id: ItemInput[i].service_id,
+        primary_insurance_provider_id: $this.state.insurance_provider_id,
+        primary_network_office_id:
+          $this.state.hims_d_insurance_network_office_id,
+        primary_network_id: $this.state.network_id,
+        sec_insured: $this.state.sec_insured,
+        secondary_insurance_provider_id:
+          $this.state.secondary_insurance_provider_id,
+        secondary_network_id: $this.state.secondary_network_id,
+        secondary_network_office_id: $this.state.secondary_network_office_id
+      };
+      inputArray.push(inputObj);
     }
-  });
+    debugger;
+    $this.props.getPrescriptionPOS({
+      uri: "/posEntry/getPrescriptionPOS",
+      method: "POST",
+      data: inputArray,
+      redux: {
+        type: "POS_PRES_GET_DATA",
+        mappingName: "xxx"
+      },
+      afterSuccess: data => {
+        debugger;
+
+        let existingservices = $this.state.pharmacy_stock_detail;
+
+        if (data.billdetails.length !== 0) {
+          for (let i = 0; i < data.billdetails.length; i++) {
+            data.billdetails[i].extended_cost =
+              data.billdetails[i].gross_amount;
+            data.billdetails[i].net_extended_cost =
+              data.billdetails[i].net_amout;
+            data.billdetails[i].operation = "-";
+            data.billdetails[0].service_id = data.billdetails[0].services_id;
+
+            existingservices.splice(0, 0, data.billdetails[i]);
+          }
+
+          $this.setState({
+            pharmacy_stock_detail: existingservices
+          });
+          $this.props.PosHeaderCalculations({
+            uri: "/billing/billingCalculations",
+            method: "POST",
+            data: { billdetails: existingservices },
+            redux: {
+              type: "POS_HEADER_GEN_GET_DATA",
+              mappingName: "posheader"
+            }
+          });
+        }
+      }
+    });
+  }
 };
 
 const LocationchangeTexts = ($this, ctrl, e) => {

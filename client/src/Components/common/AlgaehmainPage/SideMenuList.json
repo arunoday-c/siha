@@ -281,6 +281,18 @@
         "label": "Item Moment Enquiry",
         "arlabel": "البند لحظة التحقيق",
         "path": "/ItemMomentEnquiry"
+      },
+      {
+        "name": "Requisition Entry",
+        "label": "Requisition Entry",
+        "arlabel": "طلب دخول",
+        "path": "/RequisitionEntry"
+      },
+      {
+        "name": "Transfer Entry",
+        "label": "Transfer Entry",
+        "arlabel": "طلب دخول",
+        "path": "/TransferEntry"
       }
     ]
   },

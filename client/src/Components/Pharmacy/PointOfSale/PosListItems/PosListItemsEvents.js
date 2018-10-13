@@ -100,13 +100,14 @@ const itemchangeText = ($this, e) => {
           $this.setState({
             [name]: value,
             item_category: e.selected.category_id,
-            group_id: e.selected.group_id,
             uom_id: e.selected.sales_uom_id,
             service_id: e.selected.service_id,
+            item_group_id: e.selected.group_id,
             quantity: 1,
 
             expiry_date: data.locationResult[0].expirydt,
             batchno: data.locationResult[0].batchno,
+            grn_no: data.locationResult[0].grnno,
             ItemUOM: data.uomResult,
             Batch_Items: data.locationResult
           });
@@ -205,6 +206,11 @@ const AddItems = ($this, context) => {
     debugger;
     let ItemInput = [
       {
+        item_id: $this.state.item_id,
+        item_category_id: $this.state.item_category_id,
+        item_group_id: $this.state.item_group_id,
+        pharmacy_location_id: $this.state.location_id,
+
         insured: $this.state.insured,
         conversion_factor: $this.state.conversion_factor,
         vat_applicable: "Y",
@@ -222,8 +228,8 @@ const AddItems = ($this, context) => {
       }
     ];
 
-    $this.props.generateBill({
-      uri: "/billing/getBillDetails",
+    $this.props.getPrescriptionPOS({
+      uri: "/posEntry/getPrescriptionPOS",
       method: "POST",
       data: ItemInput,
       redux: {
@@ -231,6 +237,7 @@ const AddItems = ($this, context) => {
         mappingName: "xxx"
       },
       afterSuccess: data => {
+        debugger;
         if (data.billdetails[0].pre_approval === "Y") {
           successfulMessage({
             message:
@@ -253,7 +260,8 @@ const AddItems = ($this, context) => {
             data.billdetails[0].batchno = $this.state.batchno;
             data.billdetails[0].uom_id = $this.state.uom_id;
             data.billdetails[0].operation = "-";
-
+            data.billdetails[0].grn_no = data.billdetails[0].grnno;
+            data.billdetails[0].service_id = data.billdetails[0].services_id;
             existingservices.splice(0, 0, data.billdetails[0]);
           }
 

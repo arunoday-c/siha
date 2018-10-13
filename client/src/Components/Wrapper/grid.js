@@ -467,7 +467,8 @@ class DataGrid extends PureComponent {
                   </React.Fragment>
                 );
               },
-              style: { textAlign: "center" }
+              style: { textAlign: "center",maxWidth:"70px" },
+              
             });
           }
         }

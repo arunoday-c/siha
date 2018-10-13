@@ -56,6 +56,17 @@ class ItemMomentEnquiry extends Component {
         mappingName: "locations"
       }
     });
+
+    if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
+      this.props.getItemUOM({
+        uri: "/pharmacy/getPharmacyUom",
+        method: "GET",
+        redux: {
+          type: "ITEM_UOM_GET_DATA",
+          mappingName: "itemuom"
+        }
+      });
+    }
   }
 
   handleClose = () => {
@@ -158,141 +169,97 @@ class ItemMomentEnquiry extends Component {
                   </button>
                 </div>
               </div>
-
-              <div className="row form-group">
-                <AlgaehDataGrid
-                  id="initial_stock"
-                  columns={[
-                    {
-                      fieldName: "location_id",
-                      label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
-                      displayTemplate: row => {
-                        let display =
-                          this.props.locations === undefined
-                            ? []
-                            : this.props.locations.filter(
-                                f =>
-                                  f.hims_d_pharmacy_location_id ===
-                                  row.location_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].location_description
-                              : ""}
-                          </span>
-                        );
+              <div className="col-lg-12">
+                <div className="row form-group">
+                  <AlgaehDataGrid
+                    id="initial_stock"
+                    columns={[
+                      {
+                        fieldName: "transaction_type",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Transaction Type" }}
+                          />
+                        )
                       },
-                      disabled: true
-                    },
-
-                    {
-                      fieldName: "category_id",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Item Category" }} />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.itemcategory === undefined
-                            ? []
-                            : this.props.itemcategory.filter(
-                                f =>
-                                  f.hims_d_item_category_id === row.category_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].category_desc
-                              : ""}
-                          </span>
-                        );
+                      {
+                        fieldName: "transaction_date",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Transaction Date" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{dateFormater(row.transaction_date)}</span>
+                          );
+                        }
                       },
-                      disabled: true
-                    },
+                      {
+                        fieldName: "transaction_uom",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Unit of Measure" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.itemuom === undefined
+                              ? []
+                              : this.props.itemuom.filter(
+                                  f =>
+                                    f.hims_d_pharmacy_uom_id ===
+                                    row.transaction_uom
+                                );
 
-                    {
-                      fieldName: "group_id",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Item Group" }} />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.itemgroup === undefined
-                            ? []
-                            : this.props.itemgroup.filter(
-                                f => f.hims_d_item_group_id === row.group_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].group_description
-                              : ""}
-                          </span>
-                        );
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].uom_description
+                                : ""}
+                            </span>
+                          );
+                        }
                       },
-                      disabled: true
-                    },
 
-                    {
-                      fieldName: "item_id",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.itemlist === undefined
-                            ? []
-                            : this.props.itemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].item_description
-                              : ""}
-                          </span>
-                        );
+                      {
+                        fieldName: "batchno",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                        )
                       },
-                      disabled: true
-                    },
-                    {
-                      fieldName: "batch_no",
-                      label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
-                    },
-                    {
-                      fieldName: "expirt_date",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
-                      ),
-                      displayTemplate: row => {
-                        return <span>{dateFormater(row.expirt_date)}</span>;
+                      {
+                        fieldName: "expiry_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return <span>{dateFormater(row.expiry_date)}</span>;
+                        }
+                      },
+                      {
+                        fieldName: "transaction_qty",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                        )
+                      },
+                      {
+                        fieldName: "transaction_cost",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                        )
                       }
-                    },
-                    {
-                      fieldName: "quantity",
-                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                    },
-                    {
-                      fieldName: "unit_cost",
-                      label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
-                    }
-                  ]}
-                  keyId="item_id"
-                  dataSource={{
-                    data: this.state.ListItems
-                  }}
-                  // isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
-                  events={{
-                    //   onDelete: deleteServices.bind(this, this),
-                    onEdit: row => {}
-                    // onDone: this.updateBillDetail.bind(this)
-                  }}
-                />
+                    ]}
+                    keyId="item_id"
+                    dataSource={{
+                      data:
+                        this.props.itemmoment === undefined
+                          ? []
+                          : this.props.itemmoment
+                    }}
+                    paging={{ page: 0, rowsPerPage: 20 }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -310,7 +277,9 @@ class ItemMomentEnquiry extends Component {
 function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
-    locations: state.locations
+    locations: state.locations,
+    itemmoment: state.itemmoment,
+    itemuom: state.itemuom
   };
 }
 
@@ -318,7 +287,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getItems: AlgaehActions,
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
+      getItemMoment: AlgaehActions,
+      getItemUOM: AlgaehActions
     },
     dispatch
   );

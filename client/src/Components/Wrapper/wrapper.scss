@@ -18,13 +18,14 @@
     font-size: 0.8rem;
     min-height: 30px!important;
   }
+
   button {
     margin-left: 0;
   }
   i.fa-pen,
   i.fa-trash-alt,
   i.fa-save,
-  i.fa-times,.fa-barcode,.fa-check,.fa-flask,.fa-file-signature,.fa-walking,.fa-file-export,.fa-sync-alt {
+  i.fa-times,.fa-barcode,.fa-check,.fa-flask,.fa-file-signature,.fa-walking,.fa-file-export,.fa-sync-alt,.fa-file-prescription {
     cursor: pointer;
     border: 1px solid #44b8bd;
     height: 28px;
@@ -42,7 +43,7 @@
   i.fa-pen:hover,
   i.fa-trash-alt:hover,
   i.fa-save:hover,
-  i.fa-times:hover,.fa-barcode:hover,.fa-check:hover,.fa-flask:hover,.fa-file-signature:hover,.fa-walking:hover,.fa-file-export:hover,.fa-sync-alt:hover {
+  i.fa-times:hover,.fa-barcode:hover,.fa-check:hover,.fa-flask:hover,.fa-file-signature:hover,.fa-walking:hover,.fa-file-export:hover,.fa-sync-alt:hover,.fa-file-prescription:hover{
     background: #44b8bd;
     color: #fff;
   }

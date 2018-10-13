@@ -3,7 +3,8 @@ import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
   getUomLocationStock,
-  getVisitPrescriptionDetails
+  getVisitPrescriptionDetails,
+  getItemMoment
 } from "../model/pharmacyGlobal";
 
 export default ({ config, db }) => {
@@ -38,5 +39,21 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by Nowshad :get Item Moment
+  api.get(
+    "/getItemMoment",
+    getItemMoment,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };

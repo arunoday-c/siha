@@ -41,7 +41,9 @@ class PosListItems extends Component {
       unit_cost: 0,
       Batch_Items: [],
       service_id: null,
-      conversion_factor: 1
+      conversion_factor: 1,
+      grn_no: null,
+      item_group_id: null
     };
   }
 
@@ -932,12 +934,13 @@ function mapDispatchToProps(dispatch) {
     {
       getSelectedItemDetais: AlgaehActions,
       getServices: AlgaehActions,
-      generateBill: AlgaehActions,
+      getPrescriptionPOS: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemUOM: AlgaehActions,
       PosHeaderCalculations: AlgaehActions,
       getServicesCost: AlgaehActions,
-      getInsuranceServicesCost: AlgaehActions
+      getInsuranceServicesCost: AlgaehActions,
+      generateBill: AlgaehActions
     },
     dispatch
   );
