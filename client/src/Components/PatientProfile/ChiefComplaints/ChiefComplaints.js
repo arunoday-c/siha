@@ -1267,32 +1267,17 @@ class ChiefComplaints extends Component {
                   displayTemplate: data => {
                     return (
                       <span>
-                        <IconButton
-                          color="primary"
-                          title="Edit"
-                          onClick={this.openChiefComplainModal.bind(this, data)}
-                        >
-                          <Edit />
-                        </IconButton>
+                          <i className="fas fa-pen" 
+                          onClick={this.openChiefComplainModal.bind(this, data)}></i>
 
-                        <IconButton
-                          color="primary"
-                          title="HPI"
-                          onClick={this.openHPIAddModal.bind(this, data)}
-                        >
-                          <HPI />
-                        </IconButton>
+                          <i className="fas fa-file-prescription" 
+                          onClick={this.openHPIAddModal.bind(this, data)}></i>
 
-                        <IconButton
-                          color="primary"
-                          title="Delete"
-                          onClick={this.deleteChiefComplaintFromGrid.bind(
-                            this,
-                            data
-                          )}
-                        >
-                          <Delete />
-                        </IconButton>
+                          <i className="fas fa-trash-alt" 
+                         
+                          onClick={this.deleteChiefComplaintFromGrid.bind(this,data)}></i>
+                       
+                       
                       </span>
                     );
                   },
@@ -1302,7 +1287,10 @@ class ChiefComplaints extends Component {
                 },
                 {
                   fieldName: "chief_complaint_name",
-                  label: <AlgaehLabel label={{ fieldName: "complaint_name" }} />
+                  label:(
+                    <AlgaehLabel label={{ fieldName: "complaint_name" }} />
+                    ),
+                  others:{maxWidth:200,resizable: false,style:{textAlign:"center"}}
                 },
                 {
                   fieldName: "pain",
