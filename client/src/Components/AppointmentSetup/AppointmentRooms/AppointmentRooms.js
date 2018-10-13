@@ -295,6 +295,7 @@ class AppointmentRooms extends Component {
               isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
+                onEdit: () => {},
                 onDelete: this.deleteApptRooms.bind(this),
                 onDone: this.updateApptRooms.bind(this)
               }}
