@@ -3,8 +3,8 @@ import FrontDesk from "../../../Search/FrontDesk.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
-import RequisitionIOputs from "../../../Models/Requisition";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import POSIOputs from "../../../Models/POS";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 
@@ -19,19 +19,19 @@ const changeTexts = ($this, ctrl, e) => {
 const getCtrlCode = ($this, docNumber) => {
   debugger;
   AlgaehLoader({ show: true });
-  $this.props.getRequisitionEntry({
-    uri: "/requisitionEntry/getrequisitionEntry",
+  $this.props.getPosEntry({
+    uri: "/posEntry/getPosEntry",
     method: "GET",
     printInput: true,
-    data: { material_header_number: docNumber },
+    data: { pos_number: docNumber },
     redux: {
       type: "POS_ENTRY_GET_DATA",
-      mappingName: "requisitionentry"
+      mappingName: "posentry"
     },
     afterSuccess: data => {
       debugger;
       data.saveEnable = true;
-
+      data.patient_payable_h = data.patient_payable;
       if (data.posted === "Y") {
         data.postEnable = true;
       } else {
@@ -48,22 +48,35 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const ClearData = ($this, e) => {
-  let IOputs = RequisitionIOputs.inputParam();
+  let IOputs = POSIOputs.inputParam();
+  IOputs.patient_payable_h = 0;
+  IOputs.mode_of_pa = "";
+  IOputs.pay_cash = "CA";
+  IOputs.pay_card = "CD";
+  IOputs.pay_cheque = "CH";
+  IOputs.cash_amount = 0;
+  IOputs.card_check_number = "";
+  IOputs.card_date = null;
+  IOputs.card_amount = 0;
+  IOputs.cheque_number = "";
+  IOputs.cheque_date = null;
+  IOputs.cheque_amount = 0;
+  IOputs.advance = 0;
   $this.setState(IOputs);
 };
 
-const SaveRequisitionEntry = $this => {
+const SavePosEnrty = $this => {
   debugger;
   algaehApiCall({
-    uri: "/requisitionEntry/addrequisitionEntry",
+    uri: "/posEntry/addPosEntry",
     data: $this.state,
     onSuccess: response => {
       debugger;
       if (response.data.success === true) {
         $this.setState({
-          material_header_number: response.data.records.material_header_number,
+          pos_number: response.data.records.pos_number,
           saveEnable: true,
-          authorizeEnable: false
+          postEnable: false
         });
         swal("Saved successfully . .", {
           icon: "success",
@@ -115,41 +128,89 @@ const PostPosEntry = $this => {
   });
 };
 
-const LocationchangeTexts = ($this, location, ctrl, e) => {
+const RequisitionSearch = ($this, e) => {
+  if ($this.state.from_location_id !== null) {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.RequisitionEntry.ReqEntry
+      },
+      searchName: "REQEntry",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        debugger;
+        $this.setState(
+          {
+            material_header_number: row.material_header_number
+          },
+          () => {
+            $this.props.getRequisitionEntry({
+              uri: "/requisitionEntry/getrequisitionEntry",
+              method: "GET",
+              printInput: true,
+              data: { material_header_number: row.material_header_number },
+              redux: {
+                type: "POS_ENTRY_GET_DATA",
+                mappingName: "requisitionentry"
+              },
+              afterSuccess: data => {
+                debugger;
+                data.saveEnable = false;
+
+                if (data.posted === "Y") {
+                  data.postEnable = true;
+                } else {
+                  data.postEnable = false;
+                }
+
+                data.postEnable = true;
+
+                data.dataExitst = true;
+
+                for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
+                  data.pharmacy_stock_detail[i].quantity_transfered =
+                    data.pharmacy_stock_detail[i].quantity_required;
+                  data.pharmacy_stock_detail[i].quantity_authorized =
+                    data.pharmacy_stock_detail[i].quantity_required;
+                }
+                $this.setState(data);
+                AlgaehLoader({ show: false });
+              }
+            });
+          }
+        );
+      }
+    });
+  } else {
+    successfulMessage({
+      message: "Invalid Input. Please select From Location.",
+      title: "Warning",
+      icon: "warning"
+    });
+  }
+};
+
+const LocationchangeTexts = ($this, from, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let type = "";
-  if (location === "From") {
+  if (from == "From") {
     type = "from_location_type";
-    if ($this.state.to_location_id === value) {
-      swalMessage({
-        title: "Invalid Input.From Location and To Location Cannot be Same ",
-        type: "error"
-      });
-      $this.setState({ [name]: null });
-    } else {
-      $this.setState({ [name]: value, [type]: e.selected.location_type });
-    }
-  } else if (location === "To") {
+  } else if (from == "To") {
     type = "to_location_type";
-    if ($this.state.from_location_id === value) {
-      swalMessage({
-        title: "Invalid Input.From Location and To Location Cannot be Same ",
-        type: "error"
-      });
-      $this.setState({ [name]: null });
-    } else {
-      $this.setState({ [name]: value, [type]: e.selected.location_type });
-    }
   }
+  $this.setState({ [name]: value, [type]: e.selected.location_type });
 };
 
 export {
   changeTexts,
   getCtrlCode,
   ClearData,
-  SaveRequisitionEntry,
+  SavePosEnrty,
   PostPosEntry,
+  RequisitionSearch,
   LocationchangeTexts
 };

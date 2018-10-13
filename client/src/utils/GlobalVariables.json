@@ -410,5 +410,10 @@
   "FORMAT_POS_REQUISITION_TYPE": [
     { "name": "Material Requisition", "value": "MR" },
     { "name": "Purchase Requisition", "value": "PR" }
+  ],
+  "FORMAT_APPT_STATUS": [
+    { "name": "No", "arabic_name": "لا", "value": "N" },
+    { "name": "Yes", "arabic_name": "نعم فعلا", "value": "Y" },
+    { "name": "Create Visit", "arabic_name": "خلق زيارة", "value": "C" }
   ]
 }

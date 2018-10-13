@@ -6,6 +6,12 @@ body {
 :global .header {
   max-height: 50px; }
 
+:global .appLogoOnly {
+  background: url(../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center;
+  height: 40px;
+  width: 140px;
+  background-size: 100%; }
+
 :global .btn {
   padding: 5px 10px;
   font-size: 0.8rem;
@@ -557,7 +563,8 @@ textarea {
   font-size: 0.85rem !important;
   padding: 8px 6px 7px !important;
   border: 1px solid #d3d3d3 !important;
-  border-radius: 4px !important; }
+  border-radius: 4px !important;
+  width: 100%; }
 
 .report-section {
   border: 1px solid #d3d3d3;

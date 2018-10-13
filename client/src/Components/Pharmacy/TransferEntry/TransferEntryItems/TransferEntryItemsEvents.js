@@ -19,35 +19,38 @@ const UomchangeTexts = ($this, ctrl, e) => {
   });
 };
 
-const numberchangeTexts = ($this, e) => {
+const numberchangeTexts = ($this, context, e) => {
   debugger;
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({ [name]: value });
 
-  // clearInterval(texthandlerInterval);
-  // texthandlerInterval = setInterval(() => {
-  //   if (context !== undefined) {
-  //     context.updateState({
-  //       [name]: value
-  //     });
-  //   }
-  //   clearInterval(texthandlerInterval);
-  // }, 1000);
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({
+        [name]: value
+      });
+    }
+    clearInterval(texthandlerInterval);
+  }, 1000);
 };
 
 const itemchangeText = ($this, e) => {
   debugger;
   let name = e.name || e.target.name;
-  if ($this.state.to_location_id !== null) {
+  if (
+    $this.state.from_location_id !== null &&
+    $this.state.to_location_id !== null
+  ) {
     let value = e.value || e.target.value;
 
     $this.props.getSelectedItemDetais({
       uri: "/pharmacyGlobal/getUomLocationStock",
       method: "GET",
       data: {
-        location_id: $this.state.to_location_id,
+        location_id: $this.state.from_location_id,
         item_id: value
       },
       redux: {
@@ -59,14 +62,17 @@ const itemchangeText = ($this, e) => {
         if (data.locationResult.length > 0) {
           $this.setState({
             [name]: value,
-            item_category_id: e.selected.category_id,
-            item_uom: e.selected.sales_uom_id,
-
+            item_category: e.selected.category_id,
+            uom_id: e.selected.sales_uom_id,
+            service_id: e.selected.service_id,
             item_group_id: e.selected.group_id,
             quantity: 1,
-            addItemButton: false,
 
-            ItemUOM: data.uomResult
+            expiry_date: data.locationResult[0].expirydt,
+            batchno: data.locationResult[0].batchno,
+            grn_no: data.locationResult[0].grnno,
+            ItemUOM: data.uomResult,
+            Batch_Items: data.locationResult
           });
         } else {
           successfulMessage({
@@ -147,25 +153,82 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const deleteRequisitionDetail = ($this, context, row) => {
+const deletePosDetail = ($this, context, e, rowId) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  pharmacy_stock_detail.splice(rowId, 1);
 
-  for (let i = 0; i < pharmacy_stock_detail.length; i++) {
-    if (pharmacy_stock_detail[i].item_id === row.item_id) {
-      pharmacy_stock_detail.splice(i, 1);
+  $this.props.PosHeaderCalculations({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: { billdetails: pharmacy_stock_detail },
+    redux: {
+      type: "POS_HEADER_GEN_GET_DATA",
+      mappingName: "posheader"
     }
-  }
-  $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+  });
 
-  if (context !== undefined) {
-    context.updateState({
-      pharmacy_stock_detail: pharmacy_stock_detail
-    });
+  if (pharmacy_stock_detail.length === 0) {
+    if (context !== undefined) {
+      context.updateState({
+        pharmacy_stock_detail: pharmacy_stock_detail,
+        advance_amount: 0,
+        discount_amount: 0,
+        sub_total: 0,
+        total_tax: 0,
+        net_total: 0,
+        copay_amount: 0,
+        sec_copay_amount: 0,
+        deductable_amount: 0,
+        sec_deductable_amount: 0,
+        gross_total: 0,
+        sheet_discount_amount: 0,
+        sheet_discount_percentage: 0,
+        net_amount: 0,
+        patient_res: 0,
+        company_res: 0,
+        sec_company_res: 0,
+        patient_payable: 0,
+        patient_payable_h: 0,
+        company_payable: 0,
+        sec_company_payable: 0,
+        patient_tax: 0,
+        company_tax: 0,
+        sec_company_tax: 0,
+        net_tax: 0,
+        credit_amount: 0,
+        receiveable_amount: 0,
+
+        cash_amount: 0,
+        card_number: "",
+        card_date: null,
+        card_amount: 0,
+        cheque_number: "",
+        cheque_date: null,
+        cheque_amount: 0,
+        total_amount: 0,
+        saveEnable: true,
+        unbalanced_amount: 0
+      });
+    }
+  } else {
+    if (context !== undefined) {
+      context.updateState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
+    }
   }
 };
 
 const updatePosDetail = ($this, e) => {
-  debugger;
+  $this.props.PosHeaderCalculations({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: { billdetails: $this.state.pharmacy_stock_detail },
+    redux: {
+      type: "posheader",
+      mappingName: "posheader"
+    }
+  });
 };
 
 const onchangegridcol = ($this, context, row, e) => {
@@ -195,7 +258,7 @@ export {
   numberchangeTexts,
   AddItems,
   datehandle,
-  deleteRequisitionDetail,
+  deletePosDetail,
   updatePosDetail,
   onchangegridcol
 };

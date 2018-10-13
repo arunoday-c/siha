@@ -3,7 +3,7 @@ import "./PatientForm.css";
 import Dropzone from "react-dropzone";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
-
+// import xtz from "../../../assets/images/no-image-icon-6.png"
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -268,7 +268,8 @@ class AddPatientForm extends PureComponent {
                           >
                             <img
                               //className="preview-image"
-                              alt={require("../../../../assets/images/no-image-icon-6.png")}
+                              alt={""}
+                              style={{height:"76px"}}
                               src={this.state.filePrimaryPreview}
                             />
                             <div className="attach-design text-center">
@@ -300,7 +301,8 @@ class AddPatientForm extends PureComponent {
                           >
                             <img
                               // className="preview-image"
-                              alt={require("../../../../assets/images/nobody_m.original.jpg")}
+                              alt={""}
+                              style={{height:"76px"}}
                               src={
                                 this.state.filePreview === undefined
                                   ? require("../../../../assets/images/nobody_m.original.jpg")
