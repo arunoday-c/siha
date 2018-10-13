@@ -146,7 +146,7 @@ export default class Login extends Component {
                 <span style={{ color: "#3A95AA" }}>Login In</span>
               </h3>
               <div>
-                <form onSubmit={this.handleLogin.bind(this)}>
+                <form onSubmit={this.handleLogin.bind(this)} style={{margin:" 0 -15px"}}>
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{

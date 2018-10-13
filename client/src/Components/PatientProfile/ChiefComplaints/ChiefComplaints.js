@@ -874,6 +874,7 @@ class ChiefComplaints extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-4 popLeftDiv">
+                    <div className="row">
                     <div className="complain-box">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-10 displayInlineBlock" }}
@@ -892,7 +893,6 @@ class ChiefComplaints extends Component {
                           onChange: this.addChiefComplainToPatient.bind(this)
                         }}
                       />
-
                       <div className="col-lg-2 displayInlineBlock">
                         <i
                           className="fas fa-plus fa-1x"
@@ -948,6 +948,7 @@ class ChiefComplaints extends Component {
                           </ul>
                         </div>
                       </div>
+                    </div>
                     </div>
                   </div>
 
