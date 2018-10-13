@@ -132,6 +132,46 @@ var _dietmaster = require("../controller/dietmaster");
 
 var _dietmaster2 = _interopRequireDefault(_dietmaster);
 
+var _orderMedication = require("../controller/orderMedication");
+
+var _orderMedication2 = _interopRequireDefault(_orderMedication);
+
+var _organization = require("../controller/organization");
+
+var _organization2 = _interopRequireDefault(_organization);
+
+var _pharmacy = require("../Pharmacy/controller/pharmacy");
+
+var _pharmacy2 = _interopRequireDefault(_pharmacy);
+
+var _appointment = require("../controller/appointment");
+
+var _appointment2 = _interopRequireDefault(_appointment);
+
+var _doctorsCommission = require("../controller/doctorsCommission");
+
+var _doctorsCommission2 = _interopRequireDefault(_doctorsCommission);
+
+var _employeesetups = require("../controller/employeesetups");
+
+var _employeesetups2 = _interopRequireDefault(_employeesetups);
+
+var _initialstock = require("../Pharmacy/controller/initialstock");
+
+var _initialstock2 = _interopRequireDefault(_initialstock);
+
+var _pharmacyGlobal = require("../Pharmacy/controller/pharmacyGlobal");
+
+var _pharmacyGlobal2 = _interopRequireDefault(_pharmacyGlobal);
+
+var _posEntry = require("../Pharmacy/controller/posEntry");
+
+var _posEntry2 = _interopRequireDefault(_posEntry);
+
+var _mrd = require("../controller/mrd");
+
+var _mrd2 = _interopRequireDefault(_mrd);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = (0, _express2.default)();
@@ -170,6 +210,17 @@ var router = (0, _express2.default)();
   router.use("/radiology", (0, _radiology2.default)({ config: _keys2.default, db: db }));
   router.use("/algaehappuser", (0, _algaehappuser2.default)({ config: _keys2.default, db: db }));
   router.use("/dietmaster", (0, _dietmaster2.default)({ config: _keys2.default, db: db }));
+
+  router.use("/orderMedication", (0, _orderMedication2.default)({ config: _keys2.default, db: db }));
+  router.use("/organization", (0, _organization2.default)({ config: _keys2.default, db: db }));
+  router.use("/pharmacy", (0, _pharmacy2.default)({ config: _keys2.default, db: db }));
+  router.use("/appointment", (0, _appointment2.default)({ config: _keys2.default, db: db }));
+  router.use("/doctorsCommission", (0, _doctorsCommission2.default)({ config: _keys2.default, db: db }));
+  router.use("/employeesetups", (0, _employeesetups2.default)({ config: _keys2.default, db: db }));
+  router.use("/initialstock", (0, _initialstock2.default)({ config: _keys2.default, db: db }));
+  router.use("/pharmacyGlobal", (0, _pharmacyGlobal2.default)({ config: _keys2.default, db: db }));
+  router.use("/posEntry", (0, _posEntry2.default)({ config: _keys2.default, db: db }));
+  router.use("/mrd", (0, _mrd2.default)({ config: _keys2.default, db: db }));
 });
 
 exports.default = router;

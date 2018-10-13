@@ -22,7 +22,7 @@ exports.default = function (_ref) {
 
   var api = (0, _express.Router)();
 
-  api.post("/add", _employee.addEmployee, function (req, res, next) {
+  api.post("/addEmployee", _employee.addEmployee, function (req, res, next) {
     var resultBack = req.records;
     if (resultBack.length == 0) {
       next(_httpStatus2.default.generateError(_httpStatus2.default.notFound, "No record found"));
@@ -35,7 +35,7 @@ exports.default = function (_ref) {
 
     next();
   }, _utils.releaseConnection);
-  api.put("/update", _employee.updateEmployee, function (req, res, next) {
+  api.put("/updateEmployee", _employee.updateEmployee, function (req, res, next) {
     var result = req.records;
     res.status(_httpStatus2.default.ok).json({
       success: true,
@@ -52,6 +52,43 @@ exports.default = function (_ref) {
     });
     next();
   }, _utils.releaseConnection);
+
+  api.get("/getEmployeeDetails", _employee.getEmployeeDetails, function (req, res, next) {
+    var result = req.records;
+    res.status(_httpStatus2.default.ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  }, _utils.releaseConnection);
+
+  api.get("/getEmployeeCategory", _employee.getEmployeeCategory, function (req, res, next) {
+    var result = req.records;
+    res.status(_httpStatus2.default.ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  }, _utils.releaseConnection);
+
+  api.get("/getDoctorServiceCommission", _employee.getDoctorServiceCommission, function (req, res, next) {
+    var result = req.records;
+    res.status(_httpStatus2.default.ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  }, _utils.releaseConnection);
+
+  api.get("/getDoctorServiceTypeCommission", _employee.getDoctorServiceTypeCommission, function (req, res, next) {
+    var result = req.records;
+    res.status(_httpStatus2.default.ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  }, _utils.releaseConnection);
+
   return api;
 };
 //# sourceMappingURL=employee.js.map
