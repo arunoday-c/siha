@@ -67,7 +67,7 @@ export default class RadTemplate extends PureComponent {
     return (
       <TreeTable
         //Most recent 3 rows are expanded
-        expanded={{ 0: true, 1: true, 2: true, 3: true }}
+        //expanded={{ 0: true, 1: true, 2: true, 3: true }}
         data={_data}
         pivotBy={["date_doctor"]}
         columns={[

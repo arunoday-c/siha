@@ -76,6 +76,12 @@
         "label": "Hospital Service Setup",
         "arlabel": "إعداد خدمة المستشفى",
         "path": "/HospitalServiceSetup"
+      },
+      {
+        "name": "ProcedureSetup",
+        "label": "Procedure Setup",
+        "arlabel": "إعداد الإجراء",
+        "path": "/Procedure Setup"
       }
     ]
   },
@@ -275,6 +281,12 @@
         "label": "Item Moment Enquiry",
         "arlabel": "البند لحظة التحقيق",
         "path": "/ItemMomentEnquiry"
+      },
+      {
+        "name": "Requisition Entry",
+        "label": "Requisition Entry",
+        "arlabel": "طلب دخول",
+        "path": "/RequisitionEntry"
       }
     ]
   },

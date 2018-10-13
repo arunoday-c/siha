@@ -13,6 +13,7 @@ import { getBillDetailsFunctionality } from "../../model/billing";
 import { updateIntoItemLocation } from "./commonFunction";
 import Promise from "bluebird";
 import { connect } from "pm2";
+import { LINQ } from "node-linq";
 
 //created by Nowshad: to Insert POS Entry
 let addPosEntry = (req, res, next) => {
@@ -146,6 +147,9 @@ let addPosEntry = (req, res, next) => {
                 const insurtColumns = [
                   "item_id",
                   "item_category",
+                  "item_group_id",
+                  "service_id",
+                  "grn_no",
                   "barcode",
                   "expiry_date",
                   "batchno",
@@ -402,34 +406,47 @@ let getPrescriptionPOS = (req, res, next) => {
           .ToArray();
         const location_ids = new LINQ(_reqBody)
           .Select(s => {
-            return s.location_id;
+            return s.pharmacy_location_id;
           })
           .ToArray();
 
         return new Promise((resolve, reject) => {
           //Select bachno,exp,itemcat,Query hims_mitem_location... input item_id and location_id
           connection.query(
-            "select item_id,location_id,batchno, expirydt, grnno, sales_uom from hims_m_item_location where item_id in (?) and location_id in (?) and qtyhand <>0",
+            "select item_id, pharmacy_location_id, batchno, expirydt, grnno, sales_uom from hims_m_item_location where item_id in (?) and pharmacy_location_id in (?) and qtyhand <>0",
             [item_ids, location_ids],
             (error, result) => {
               if (error) {
                 reject(error);
               }
+              debugLog("result", result);
               let _req = new LINQ(result)
                 .Select(s => {
+                  const ItemcatrgoryGroup = new LINQ(_reqBody)
+                    .Where(
+                      w =>
+                        w.item_id == s.item_id &&
+                        w.pharmacy_location_id == s.pharmacy_location_id
+                    )
+                    .FirstOrDefault();
+
+                  debugLog("ItemcatrgoryGroup", ItemcatrgoryGroup);
                   return {
                     ...new LINQ(_reqBody)
                       .Where(
                         w =>
                           w.item_id == s.item_id &&
-                          w.location_id == s.location_id
+                          w.pharmacy_location_id == s.pharmacy_location_id
                       )
                       .FirstOrDefault(),
                     ...{
                       batchno: s.batchno,
                       expirydt: s.expirydt,
                       grnno: s.grnno,
-                      sales_uom: s.sales_uom
+                      sales_uom: s.sales_uom,
+
+                      item_category_id: ItemcatrgoryGroup.item_category_id,
+                      item_group_id: ItemcatrgoryGroup.item_group_id
                     }
                   };
                 })
@@ -441,8 +458,8 @@ let getPrescriptionPOS = (req, res, next) => {
         })
           .then(result => {
             //check then
-
-            new Promise((resolve, reject) => {
+            debugLog("result", result);
+            return new Promise((resolve, reject) => {
               try {
                 getBillDetailsFunctionality(req, res, next, resolve);
               } catch (e) {
@@ -450,19 +467,17 @@ let getPrescriptionPOS = (req, res, next) => {
               }
             }).then(resultbilling => {
               //expiry_date, uom_id, and batchno add with the result
+              debugLog("Check result: ", resultbilling);
               const _result =
                 result != null && result.length > 0 ? result[0] : {};
-              if (resultbilling != null && resultbilling.length > 0) {
-                debugLog("_result", _result);
-                debugLog("resultbilling", resultbilling);
-                req.records = {
-                  ...resultbilling,
-                  ..._result
-                };
-                next();
-              } else {
-                next();
-              }
+              // if (resultbilling != null && resultbilling.length > 0) {
+              debugLog("_result", _result);
+              debugLog("resultbilling", resultbilling);
+              req.records = {
+                ...resultbilling,
+                ..._result
+              };
+              next();
             });
           })
           .catch(e => {

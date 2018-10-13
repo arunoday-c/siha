@@ -406,5 +406,9 @@
     { "name": "3", "value": 3 },
     { "name": "4", "value": 4 },
     { "name": "5", "value": 5 }
+  ],
+  "FORMAT_POS_REQUISITION_TYPE": [
+    { "name": "Material Requisition", "value": "MR" },
+    { "name": "Purchase Requisition", "value": "PR" }
   ]
 }

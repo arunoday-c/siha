@@ -2088,13 +2088,13 @@ let updatePatientAppointment = (req, res, next) => {
           input.record_status,
           input.hims_f_patient_appointment_id
         ],
-        (error, result) => {
+        (error, results) => {
          
           if (error) {
             connection.release();
             next(error);
           }
-          req.records = result;
+          req.records = results;
           next();
         }
       );

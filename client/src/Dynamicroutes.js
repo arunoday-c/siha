@@ -46,6 +46,9 @@ import HospitalServiceSetup from "./Components/HospitalServiceSetup/HospitalServ
 import PointOfSale from "./Components/Pharmacy/PointOfSale/PointOfSale";
 import OPBillPendingList from "./Components/OPBillPendingList/OPBillPendingList";
 import Mrd from "./Components/MRD/MRD";
+import ProcedureSetup from "./Components/ProcedureSetup/ProcedureSetup";
+import SalesReturn from "./Components/Pharmacy/SalesReturn/SalesReturn";
+import RequisitionEntry from "./Components/Pharmacy/RequisitionEntry/RequisitionEntry";
 
 // function height() {
 //   let height =
@@ -101,7 +104,10 @@ const componts = (selectedLang, breadStyle) => {
     ),
     PointOfSale: <PointOfSale SelectLanguage={selectedLang} />,
     OPBillPendingList: <OPBillPendingList SelectLanguage={selectedLang} />,
-    MRDList: <Mrd SelectLanguage={selectedLang} />
+    MRDList: <Mrd SelectLanguage={selectedLang} />,
+    SalesReturn: <SalesReturn SelectLanguage={selectedLang} />,
+    RequisitionEntry: <RequisitionEntry SelectLanguage={selectedLang} />,
+    ProcedureSetup: <ProcedureSetup SelectLanguage={selectedLang} />
   };
 };
 

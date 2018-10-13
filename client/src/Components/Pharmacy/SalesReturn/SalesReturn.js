@@ -20,7 +20,7 @@ import {
   Patientchange,
   SavePosEnrty,
   PostPosEntry,
-  VisitSearch,
+  POSSearch,
   LocationchangeTexts
 } from "./SalesReturnEvents";
 import "./SalesReturn.css";
@@ -141,7 +141,10 @@ class SalesReturn extends Component {
             soptlightSearch={{
               label: (
                 <AlgaehLabel
-                  label={{ forceLabel: "POS Number", returnText: true }}
+                  label={{
+                    forceLabel: "Return Number",
+                    returnText: true
+                  }}
                 />
               ),
               value: this.state.pos_number,
@@ -160,7 +163,7 @@ class SalesReturn extends Component {
                 div={{ className: "col" }}
                 label={{
                   forceLabel: (
-                    <AlgaehLabel label={{ forceLabel: "Sales Date" }} />
+                    <AlgaehLabel label={{ forceLabel: "Return Date" }} />
                   ),
                   className: "internal-label"
                 }}
@@ -183,89 +186,61 @@ class SalesReturn extends Component {
             style={{ marginTop: 76, paddingBottom: 10 }}
           >
             {/* Patient code */}
-            <div className="col-lg-8">
+            <div className="col-lg-7">
               <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
-                  label={{ forceLabel: "Location" }}
-                  selector={{
-                    name: "location_id",
-                    className: "select-fld",
-                    value: this.state.location_id,
-                    dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
-                    },
-                    onChange: LocationchangeTexts.bind(this, this)
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Case Type" }}
-                  selector={{
-                    name: "case_type",
-                    className: "select-fld",
-                    value: this.state.case_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.FORMAT_POS_CASE_TYPE
-                    },
-
-                    onChange: changeTexts.bind(this, this)
-                  }}
-                />
-
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-lg-4" }}
                   label={{
-                    forceLabel: "Visit Code"
+                    forceLabel: "POS Number"
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "visit_code",
-                    value: this.state.visit_code,
+                    name: "pos_number",
+                    value: this.state.pos_number,
                     events: {
-                      onChange: Patientchange.bind(this, this)
+                      onChange: null
                     },
                     others: {
-                      disabled: this.state.case_type === "O" ? true : false
+                      disabled: true
                     }
                   }}
                 />
+                <div className="col-lg-2 form-group print_actions">
+                  <span
+                    className="fas fa-search fa-2x"
+                    disabled={this.state.case_type === "O" ? false : true}
+                    onClick={POSSearch.bind(this, this)}
+                  />
+                </div>
 
-                {this.state.case_type === "OP" ? (
-                  <div className="col-lg-2 form-group print_actions">
-                    <span
-                      className="fas fa-search fa-2x"
-                      disabled={this.state.case_type === "O" ? false : true}
-                      onClick={VisitSearch.bind(this, this)}
-                    />
-                  </div>
-                ) : null}
+                <div className="col-lg-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Location"
+                    }}
+                  />
+                  <h6>
+                    {this.state.patient_code
+                      ? this.state.patient_code
+                      : "Location"}
+                  </h6>
+                </div>
 
-                {/* <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Patient Code"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "patient_code",
-                    value: this.state.patient_code,
-                    events: {
-                      onChange: Patientchange.bind(this, this)
-                    }
-                    // others: {
-                    //   disabled: true
-                    // }
-                  }}
-                /> */}
+                <div className="col-lg-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Visit Code"
+                    }}
+                  />
+                  <h6>
+                    {this.state.patient_code
+                      ? this.state.patient_code
+                      : "Visit Name"}
+                  </h6>
+                </div>
               </div>
             </div>
-            <div className="col-lg-4">
+            <div className="col-lg-5">
               <div className="row">
                 <div className="col-lg-4">
                   <AlgaehLabel
@@ -276,13 +251,13 @@ class SalesReturn extends Component {
                   <h6>
                     {this.state.patient_code
                       ? this.state.patient_code
-                      : "Patient Name"}
+                      : "Patient Code"}
                   </h6>
                 </div>
                 <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Patient Code"
+                      forceLabel: "Patient Name"
                     }}
                   />
                   <h6>
@@ -292,33 +267,25 @@ class SalesReturn extends Component {
                   </h6>
                 </div>
 
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
-                  label={{ forceLabel: "Mode of Payment" }}
-                  selector={{
-                    name: "mode_of_pay",
-                    className: "select-fld",
-                    value: this.state.mode_of_pay,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.MODE_OF_PAY
-                    },
-                    others: {
-                      disabled: this.state.case_type === "O" ? false : true
-                    },
-                    onChange: changeTexts.bind(this, this)
-                  }}
-                />
+                <div className="col-lg-4">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Mode of Payment"
+                    }}
+                  />
+                  <h6>
+                    {this.state.mode_of_pay
+                      ? this.state.mode_of_pay
+                      : "Mode of Payment"}
+                  </h6>
+                </div>
               </div>
             </div>
           </div>
-          <div>
-            {this.state.case_type === "O" ? null : (
-              <DisplayInsuranceDetails POSIOputs={this.state} />
-            )}
-          </div>
-          <div className="hptl-phase1-pos-form">
+
+          <DisplayInsuranceDetails POSIOputs={this.state} />
+
+          <div className="hptl-phase1-sales-form">
             <MyContext.Provider
               value={{
                 state: this.state,

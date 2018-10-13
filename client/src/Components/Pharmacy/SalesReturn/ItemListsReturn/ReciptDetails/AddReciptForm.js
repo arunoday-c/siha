@@ -51,7 +51,7 @@ class AddReciptForm extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-pos-recipt-form">
+            <div className="hptl-phase1-return-recipt-form">
               <div className="container-fluid">
                 <div className="row secondary-box-container">
                   <div className="col-lg-3">

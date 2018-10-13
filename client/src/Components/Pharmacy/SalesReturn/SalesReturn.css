@@ -1,13 +1,17 @@
-.hptl-phase1-pos-form {
+.hptl-phase1-sales-form {
   min-height: 80vh; }
-  .hptl-phase1-pos-form .form-details {
+  .hptl-phase1-sales-form .form-details {
     padding: 5px;
     padding-bottom: 0px; }
-  .hptl-phase1-pos-form mark {
+  .hptl-phase1-sales-form mark {
     background: none;
     color: red; }
-  .hptl-phase1-pos-form .form-group {
-    padding: 2vh; }
-  .hptl-phase1-pos-form .go-button {
+  .hptl-phase1-sales-form .form-group {
+    margin-bottom: 0;
+    margin-top: 4px;
+    padding: 0;
+    padding-top: 20px;
+    cursor: pointer; }
+  .hptl-phase1-sales-form .go-button {
     cursor: pointer;
     margin-top: 2.5vh; }

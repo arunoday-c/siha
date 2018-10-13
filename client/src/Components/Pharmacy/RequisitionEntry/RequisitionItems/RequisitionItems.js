@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
-import "./PosListItems.css";
+import "./RequisitionItems.css";
 import "./../../../../styles/site.css";
 import {
   AlgaehDataGrid,
@@ -24,12 +24,11 @@ import {
   adjustadvance,
   UomchangeTexts,
   dateFormater
-} from "./PosListItemsEvents";
-import ReciptForm from "./ReciptDetails/AddReciptForm";
+} from "./RequisitionItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Paper from "@material-ui/core/Paper";
 
-class PosListItems extends Component {
+class RequisitionItems extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -87,7 +86,7 @@ class PosListItems extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-op-add-billing-form">
+            <div className="hptl-phase1-requisition-item-form">
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-lg-12">
@@ -537,7 +536,7 @@ class PosListItems extends Component {
                   </div>
                 </div>
 
-                <div className="row">
+                {/* <div className="row">
                   <div className="col-lg-7" />
                   <div className="col-lg-5" style={{ textAlign: "right" }}>
                     <div className="row">
@@ -580,9 +579,9 @@ class PosListItems extends Component {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="row">
+                {/* <div className="row">
                   <div className="col-lg-4">
                     <Paper className="Paper">
                       <div className="row">
@@ -598,7 +597,7 @@ class PosListItems extends Component {
                               : "₹0.00"}
                           </h6>
                         </div>
-                        {/* <div className="col-lg-6">
+                        <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Deductable Amount"
@@ -609,7 +608,7 @@ class PosListItems extends Component {
                               ? "₹" + this.state.deductable_amount
                               : "₹0.00"}
                           </h6>
-                        </div> */}
+                        </div>
                         <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
@@ -622,7 +621,7 @@ class PosListItems extends Component {
                               : "₹0.00"}
                           </h6>
                         </div>
-                        {/* <div className="col-lg-6">
+                        <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Sec Deductable Amount"
@@ -633,7 +632,7 @@ class PosListItems extends Component {
                               ? "₹" + this.state.sec_deductable_amount
                               : "₹0.00"}
                           </h6>
-                        </div> */}
+                        </div>
                       </div>
                       <div className="row">
                         <div className="col-lg-12 patientRespo">
@@ -683,7 +682,7 @@ class PosListItems extends Component {
                             </div>
                           </div>
                         </div>
-                        {/* <div className="col-lg-1"> &nbsp; </div> */}
+                        <div className="col-lg-1"> &nbsp; </div>
 
                         <div className="col-lg-12">
                           <AlgaehLabel
@@ -906,10 +905,9 @@ class PosListItems extends Component {
                           </h4>
                         </div>
                       </div>
-                      <ReciptForm POSIOputs={this.state} />
                     </Paper>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           )}
@@ -950,5 +948,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(PosListItems)
+  )(RequisitionItems)
 );

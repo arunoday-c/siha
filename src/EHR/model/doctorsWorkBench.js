@@ -861,17 +861,26 @@ PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episod
 
 //created by irfan: to  get Patient Vitals
 let getPatientVitals = (req, res, next) => {
+  let selectWhere = {
+    patient_id: "ALL",
+    visit_id: "ALL"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let inputData = extend({}, req.query);
+    // let inputData = extend({}, req.query);
+
+    let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select * from hims_f_patient_vitals where patient_id=? and visit_id=? order by visit_date desc, visit_time desc;",
-        [inputData.patient_id, inputData.visit_id],
+        "select * from hims_f_patient_vitals where " +
+          where.condition +
+          " order by visit_date desc, visit_time desc;",
+        where.values,
+        
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
