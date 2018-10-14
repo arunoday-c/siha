@@ -6,6 +6,8 @@ let titleWhere = {
   title: "ALL"
 };
 import { LINQ } from "node-linq";
+import { debuglog } from "util";
+import { debugLog } from "../utils/logging";
 let titleMaster = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -376,8 +378,13 @@ let killDbConnections = (req, res, next) => {
           releaseDBConnection(db, connection);
           next(error);
         }
+        debugLog("result:", result);
+        let idList = new LINQ(result)
+          .Where(w => w.User == "algaeh_root")
+          .Select(s => s.Id)
+          .ToArray();
 
-        let idList = new LINQ(result).Select(s => s.Id).ToArray();
+        debugLog("idList:", idList);
         let qry = "";
         for (let i = 0; i < idList.length; i++) {
           qry += "kill " + idList[i] + ";";
@@ -389,7 +396,7 @@ let killDbConnections = (req, res, next) => {
               next(error);
             }
 
-            req.records = finalResult;
+            req.records = "all process deleted";
             next();
           });
         } else {
