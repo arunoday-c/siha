@@ -165,8 +165,10 @@ let getPatientDiagnosis = (req, res, next) => {
         ICD.icd_description as daignosis_description  ,diagnosis_type, final_daignosis,\
         PD.created_date as diagnosis_date  from hims_f_patient_diagnosis PD,hims_d_icd ICD\
          where PD.record_status='A' and   ICD.record_status='A'\
-         and PD.daignosis_id=ICD.hims_d_icd_id and  PD.episode_id=? order by diagnosis_date desc",
-        [req.query.episode_id],
+         and PD.daignosis_id=ICD.hims_d_icd_id and " +
+          where.condition +
+          " order by diagnosis_date desc",
+        where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
