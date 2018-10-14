@@ -114,6 +114,7 @@ let insertItemHistory = (req, res, next) => {
 
         if (req.options == null) {
           req.records = detailResult;
+          releaseDBConnection(req.db, db);
           next();
         } else {
           req.options.onSuccess(detailResult);

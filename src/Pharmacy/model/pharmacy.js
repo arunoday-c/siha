@@ -101,6 +101,7 @@ let addItemMaster = (req, res, next) => {
                         next(error);
                       });
                     }
+                    releaseDBConnection(db, connection);
                     req.records = detailResult;
                     next();
                   });
@@ -146,8 +147,8 @@ let addItemCategory = (req, res, next) => {
           input.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -184,8 +185,8 @@ let addItemGeneric = (req, res, next) => {
           input.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -224,8 +225,8 @@ let addItemGroup = (req, res, next) => {
           new Date()
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -263,8 +264,8 @@ let addPharmacyUom = (req, res, next) => {
           input.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -304,8 +305,8 @@ let addPharmacyLocation = (req, res, next) => {
           input.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -337,8 +338,8 @@ let getItemMaster = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -366,8 +367,8 @@ let getItemMasterAndItemUom = (req, res, next) => {
         from hims_d_item_master IM,hims_m_item_uom MIU,hims_d_pharmacy_uom PH  where IM.hims_d_item_master_id=MIU.item_master_id  and\
          MIU.uom_id=PH.hims_d_pharmacy_uom_id and MIU.record_status='A'and IM.record_status='A'",
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -399,8 +400,8 @@ let getItemCategory = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -432,8 +433,8 @@ let getItemGeneric = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -465,8 +466,8 @@ let getItemGroup = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -498,8 +499,8 @@ let getPharmacyUom = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -531,8 +532,8 @@ let getPharmacyLocation = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -885,6 +886,7 @@ let updateItemMasterAndUom = (req, res, next) => {
                         next(error);
                       });
                     }
+                    releaseDBConnection(db, connection);
                     req.records = updateUomMapResult;
                     next();
                   });
@@ -897,6 +899,7 @@ let updateItemMasterAndUom = (req, res, next) => {
                       next(error);
                     });
                   }
+                  releaseDBConnection(db, connection);
                   req.records = results;
                   next();
                 });
@@ -910,6 +913,7 @@ let updateItemMasterAndUom = (req, res, next) => {
                   next(error);
                 });
               }
+              releaseDBConnection(db, connection);
               req.records = result;
               next();
             });
@@ -1019,8 +1023,8 @@ let getItemForm = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1053,8 +1057,8 @@ let getItemStorage = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1093,8 +1097,8 @@ let addItemForm = (req, res, next) => {
           input.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1133,8 +1137,8 @@ let addItemStorage = (req, res, next) => {
           input.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;

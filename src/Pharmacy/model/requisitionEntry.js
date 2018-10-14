@@ -146,6 +146,7 @@ let addrequisitionEntry = (req, res, next) => {
                           next(error);
                         });
                       }
+                      releaseDBConnection(db, connection);
                       req.records = { material_header_number: documentCode };
                       next();
                     });
@@ -210,11 +211,13 @@ let getrequisitionEntry = (req, res, next) => {
                   ...headerResult[0],
                   ...{ pharmacy_stock_detail }
                 };
+                releaseDBConnection(db, connection);
                 next();
               }
             );
           } else {
             req.records = headerResult;
+            releaseDBConnection(db, connection);
             next();
           }
         }
@@ -297,6 +300,7 @@ let updaterequisitionEntry = (req, res, next) => {
                     next(error);
                   }
                   req.records = records;
+                  releaseDBConnection(db, connection);
                   next();
                 });
               })

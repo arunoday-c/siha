@@ -9,7 +9,7 @@ import {
 import httpStatus from "../../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../../utils/logging";
 
-//created by irfan: to get
+//created by irfan: to get Uom Location Stock
 let getUomLocationStock = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -32,8 +32,9 @@ let getUomLocationStock = (req, res, next) => {
         [req.query.item_id, req.query.item_id, req.query.location_id],
         (error, result) => {
           debugLog("uomResult", result);
+          releaseDBConnection(db, connection);
+
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = {
