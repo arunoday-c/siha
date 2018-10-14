@@ -72,7 +72,8 @@ export default class RadTemplate extends PureComponent {
         pivotBy={["date_doctor"]}
         columns={[
           {
-            accessor: "date_doctor"
+            accessor: "date_doctor",
+            Cell: props => <span>{props.date_doctor + "Hal lalalalalala"}</span>
           },
 
           {
