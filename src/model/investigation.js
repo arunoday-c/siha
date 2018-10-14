@@ -159,6 +159,7 @@ let addInvestigationTest = (req, res, next) => {
                             releaseDBConnection(db, connection);
                             next(error);
                           }
+                          releaseDBConnection(db, connection);
                           req.records = analyteResult;
                           next();
                         });
@@ -206,6 +207,7 @@ let addInvestigationTest = (req, res, next) => {
                         next(error);
                       });
                     }
+                    releaseDBConnection(db, connection);
                     req.records = radiolgyResult;
                     next();
                   });
@@ -258,8 +260,8 @@ let getInvestigTestList = (req, res, next) => {
         where.values,
 
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -470,6 +472,7 @@ let updateInvestigationTest = (req, res, next) => {
                             next(error);
                           });
                         }
+                        releaseDBConnection(db, connection);
                         req.records = result_anlyt;
                         next();
                       });
@@ -482,6 +485,7 @@ let updateInvestigationTest = (req, res, next) => {
                           next(error);
                         });
                       }
+                      releaseDBConnection(db, connection);
                       req.records = results;
                       next();
                     });
@@ -576,6 +580,7 @@ let updateInvestigationTest = (req, res, next) => {
                         next(error);
                       });
                     }
+                    releaseDBConnection(db, connection);
                     req.records = result_rad_update;
                     next();
                   });
@@ -588,6 +593,7 @@ let updateInvestigationTest = (req, res, next) => {
                       next(error);
                     });
                   }
+                  releaseDBConnection(db, connection);
                   req.records = result;
                   next();
                 });
