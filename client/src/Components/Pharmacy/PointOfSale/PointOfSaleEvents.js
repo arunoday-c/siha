@@ -42,6 +42,7 @@ const getCtrlCode = ($this, docNumber) => {
       debugger;
       data.saveEnable = true;
       data.patient_payable_h = data.patient_payable;
+      data.case_type = "O";
       if (data.posted === "Y") {
         data.postEnable = true;
       } else {
