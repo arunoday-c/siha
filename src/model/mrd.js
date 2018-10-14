@@ -101,8 +101,8 @@ let getPatientEncounterDetails = (req, res, next) => {
                  order by encountered_date desc;",
         [req.query.patient_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -131,8 +131,8 @@ let getPatientChiefComplaint = (req, res, next) => {
         and ECC.chief_complaint_id=HH.hims_d_hpi_header_id and episode_id=?",
         [req.query.episode_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -162,8 +162,8 @@ let getPatientDiagnosis = (req, res, next) => {
          and PD.daignosis_id=ICD.hims_d_icd_id and  PD.episode_id=? order by diagnosis_date desc",
         [req.query.episode_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -198,8 +198,8 @@ let getPatientMedication = (req, res, next) => {
         P.encounter_id=?",
         [req.query.encounter_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -229,8 +229,8 @@ let getPatientInvestigation = (req, res, next) => {
                         where OS.record_status='A' and S.record_status='A' and OS.visit_id=?",
         [req.query.visit_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
