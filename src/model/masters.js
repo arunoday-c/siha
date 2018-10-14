@@ -5,6 +5,7 @@ let titleWhere = {
   his_d_title_id: "ALL",
   title: "ALL"
 };
+import { LINQ } from "node-linq";
 let titleMaster = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -361,6 +362,47 @@ let countryStateCity = (req, res, next) => {
   }
 };
 
+//created by irfan: to  kill all the database-connections
+let killDbConnections = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query("show full processlist", (error, result) => {
+        if (error) {
+          releaseDBConnection(db, connection);
+          next(error);
+        }
+
+        let idList = new LINQ(result).Select(s => s.Id).ToArray();
+        let qry = "";
+        for (let i = 0; i < idList.length; i++) {
+          qry += "kill " + idList[i] + ";";
+        }
+        if (idList.length > 0) {
+          connection.query(qry, (error, finalResult) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            req.records = finalResult;
+            next();
+          });
+        } else {
+          releaseDBConnection(db, connection);
+          req.records = result;
+          next();
+        }
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   titleMaster,
   countryMaster,
@@ -371,5 +413,6 @@ module.exports = {
   autoGenMaster,
   visaMaster,
   clinicalNonClinicalAll,
-  countryStateCity
+  countryStateCity,
+  killDbConnections
 };
