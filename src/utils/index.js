@@ -1,13 +1,11 @@
 import pad from "node-string-pad";
 import config from "../keys/keys";
 import multer from "multer";
-import extend from "extend";
 import path from "path";
 import mkdirp from "mkdirp";
 import { logger, debugFunction, debugLog } from "./logging";
 import fs from "fs";
 import { LINQ } from "node-linq";
-import Promise from "bluebird";
 import _ from "underscore";
 let paging = options => {
   let pageLimit = options.paging.pageNo * options.paging.pageSize;
