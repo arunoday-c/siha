@@ -533,17 +533,31 @@ class ChiefComplaints extends Component {
         {/* HPI Modal Start */}
         <Modal open={this.state.openHpiModal}>
           <div className="algaeh-modal">
-            <div className="popupHeader">
-              <h4>Add / Edit History of Patient Illness</h4>
-            </div>
+
+  <div className="popupHeader">
+                <div className="row">
+                  <div className="col-lg-8">
+                    <h4>
+              <h4>Add / Edit History of Patient Illness</h4></h4>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                       onClick={this.handleClose}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
             <div className="col-lg-12 popupInner">
-              <div className="col-12">
                 <div className="row">
                   <div className="col-lg-4 popLeftDiv">
-                    <div className="card">
-                      <div className="card-body box-shadow-normal">
+                    <div className="row">
                         <AlagehAutoComplete
-                          div={{ className: "col" }}
+                          div={{ className: "col-lg-12" }}
                           label={{
                             forceLabel: "Add Chief Complaint"
                           }}
@@ -560,7 +574,7 @@ class ChiefComplaints extends Component {
                           }}
                         />
                         <AlgaehDateHandler
-                          div={{ className: "col" }}
+                          div={{ className: "col-lg-12" }}
                           label={{
                             forceLabel: "Duration / Onset",
                             isImp: false
@@ -578,7 +592,7 @@ class ChiefComplaints extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-lg-6" }}
                           label={{
                             forceLabel: "Location",
                             isImp: false
@@ -592,7 +606,7 @@ class ChiefComplaints extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-lg-6" }}
                           label={{
                             forceLabel: "Quality",
                             isImp: false
@@ -606,7 +620,7 @@ class ChiefComplaints extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-lg-6" }}
                           label={{
                             forceLabel: "Context",
                             isImp: false
@@ -620,7 +634,7 @@ class ChiefComplaints extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-lg-6" }}
                           label={{
                             forceLabel: "Timing",
                             isImp: false
@@ -634,7 +648,7 @@ class ChiefComplaints extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-lg-12" }}
                           label={{
                             forceLabel: "Modifying Factor",
                             isImp: false
@@ -648,7 +662,7 @@ class ChiefComplaints extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-lg-12" }}
                           label={{
                             forceLabel: "Associated Symptoms",
                             isImp: false
@@ -663,7 +677,7 @@ class ChiefComplaints extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-lg-12" }}
                           label={{
                             forceLabel: "Remarks",
                             isImp: false
@@ -678,13 +692,12 @@ class ChiefComplaints extends Component {
                             //value: this.state.pain,
                             events: {}
                           }}
-                        />
-                      </div>
-                    </div>
+                        /></div>
                   </div>
                   <div className="col-lg-8 popRightDiv">
-                    <div className="card">
-                      <div className="card-body box-shadow-normal">
+                    <div className="row">
+                     
+                    <div className="col-lg-12" id="hpi-grid-popup-cntr">
                         <AlgaehDataGrid
                           id="hpi-grid"
                           columns={[
@@ -794,17 +807,16 @@ class ChiefComplaints extends Component {
                             data: []
                           }}
                           isEditable={false}
-                          paging={{ page: 0, rowsPerPage: 5 }}
+                          paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onDelete: row => {},
                             onEdit: row => {},
                             onDone: row => {}
                           }}
                         />
-                      </div>
                     </div>
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-lg-12" }}
                       label={{
                         forceLabel: "Comments",
                         isImp: false
@@ -820,39 +832,35 @@ class ChiefComplaints extends Component {
                         events: {}
                       }}
                     />
+                    </div>
                   </div>
                 </div>
-              </div>
             </div>
             <div className="popupFooter">
-              <div className="col-lg-4">
-                <Button
-                  variant="raised"
-                  color="secondary"
-                  style={{ backgroundColor: "#24B256" }}
-                  // onClick={        }
-                  size="small"
+              <div className="col-lg-12">
+                <div className="row">
+                <div className="col-lg-4">
+                <button
+                className="btn btn-primary"
                 >
                   Add
-                </Button>
-                <Button
-                  variant="raised"
-                  style={{ backgroundColor: "#D5D5D5" }}
-                  size="small"
+                </button>
+                <button
+                className="btn btn-default"
                 >
                   Clear
-                </Button>
+                </button>
               </div>
               <div className="col-lg-8">
-                <Button
-                  variant="raised"
+                <button
+                className="btn btn-default"
                   onClick={this.handleClose}
-                  style={{ backgroundColor: "#D5D5D5" }}
-                  // onClick={        }
-                  size="small"
                 >
                   Close
-                </Button>
+                </button>
+              </div>
+                
+                </div>
               </div>
             </div>
           </div>
@@ -876,9 +884,7 @@ class ChiefComplaints extends Component {
                     <button
                       type="button"
                       className=""
-                      onClick={e => {
-                        this.onClose(e);
-                      }}
+                       onClick={this.handleClose}
                     >
                       <i className="fas fa-times-circle" />
                     </button>
@@ -1270,6 +1276,7 @@ class ChiefComplaints extends Component {
             </div>
           </div>
           <div className="portlet-body">
+          <div id="hpi-grid-cntr">
             <AlgaehDataGrid
               id="complaint-grid"
               columns={[
@@ -1378,13 +1385,14 @@ class ChiefComplaints extends Component {
                 data: this.props.patient_chief_complaints
               }}
               isEditable={false}
-              paging={{ page: 0, rowsPerPage: 5 }}
+              paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onDelete: row => {},
                 onEdit: row => {},
                 onDone: row => {}
               }}
             />
+          </div>
           </div>
         </div>
         {/* END Portlet PORTLET */}

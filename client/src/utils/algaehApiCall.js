@@ -115,13 +115,17 @@ export function algaehApiCall(options) {
           console.error("request failed", error);
         });
     }
-
+    const _contentType =
+      settings.contentType !== undefined
+        ? { "Content-Type": settings.contentType }
+        : {};
     axios({
       method: settings.method,
       url: settings.baseUrl + settings.uri + queryParametres,
       headers: {
         "x-api-key": headerToken,
-        "x-app-user-identity": x_app_user_identity
+        "x-app-user-identity": x_app_user_identity,
+        ..._contentType
       },
       data: settings.data,
       timeout: settings.timeout !== undefined ? settings.timeout : 20000,

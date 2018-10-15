@@ -244,14 +244,27 @@ class Allergies extends Component {
         {/* Allergy Modal Start*/}
         <Modal open={this.state.openAllergyModal}>
           <div className="algaeh-modal">
-            <div className="popupHeader">
-              <h4>Add Allergy</h4>
-            </div>
+             <div className="popupHeader">
+                <div className="row">
+                  <div className="col-lg-8">
+                    <h4>Add Allergy</h4>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                       onClick={this.handleClose}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             <div className="popupInner">
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-4 popLeftDiv">
-                    <div className="complain-box">
+                    <div className="row">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12" }}
                         label={{
@@ -373,7 +386,7 @@ class Allergies extends Component {
 
                   <div className="col-lg-8 popRightDiv">
                     <h6> List of Allergies</h6>
-                    <hr />
+                    <hr /><div id="patient-allergy-grod-cntr">
                     <AlgaehDataGrid
                       id="patient-allergy-grid"
                       columns={[
@@ -579,10 +592,13 @@ class Allergies extends Component {
                       }}
                     />
                   </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="row popupFooter">
+            <div className="popupFooter">
+              <div className="col-lg-12">
+            <div className="row">
               <div className="col-lg-4">
                 <button
                   onClick={this.addAllergyToPatient.bind(this)}
@@ -594,7 +610,7 @@ class Allergies extends Component {
                 <button
                   onClick={this.resetAllergies.bind(this)}
                   type="button"
-                  className="btn btn-other"
+                  className="btn btn-default"
                 >
                   Clear
                 </button>
@@ -607,7 +623,7 @@ class Allergies extends Component {
                 >
                   Close
                 </button>
-              </div>
+              </div></div></div>
             </div>
           </div>
         </Modal>
@@ -625,13 +641,13 @@ class Allergies extends Component {
                 className="btn btn-primary btn-circle active"
                 onClick={this.addAllergies}
               >
-                <i className="fas fa-edit" />
+                <i className="fas fa-plus" />
               </a>
             </div>
           </div>
           <div
             className="portlet-body"
-            style={{ maxHeight: "25vh", overflow: "auto" }}
+            style={{ height: "25.3vh", overflow: "auto" }}
           >
             {this.state.patientAllergies.map((tables, index) => (
               <table

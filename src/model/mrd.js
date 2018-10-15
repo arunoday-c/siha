@@ -97,7 +97,7 @@ let getPatientEncounterDetails = (req, res, next) => {
                 inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id   left join hims_m_patient_insurance_mapping IM on\
                  V.hims_f_patient_visit_id=IM.patient_visit_id  left join hims_d_insurance_provider IP  on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id   left join hims_d_insurance_provider IPR  on \
          IM.secondary_insurance_provider_id=IPR.hims_d_insurance_provider_id   where PE.record_status='A' and P.record_status='A' and E.record_status='A' \
-                 and V.record_status='A' and SD.record_status='A' and IM.record_status='A' and IP.record_status='A'   and encounter_id <>'null' and PE.patient_id=?\
+                 and V.record_status='A' and SD.record_status='A'   and encounter_id <>'null' and PE.patient_id=?\
                  order by encountered_date desc;",
         [req.query.patient_id],
         (error, result) => {
@@ -147,11 +147,17 @@ let getPatientChiefComplaint = (req, res, next) => {
 
 //created by irfan: to  get Patient Diagnosis
 let getPatientDiagnosis = (req, res, next) => {
+  let selectWhere = {
+    episode_id: "ALL",
+    patient_id: "ALL"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
       connection.query(
@@ -159,8 +165,10 @@ let getPatientDiagnosis = (req, res, next) => {
         ICD.icd_description as daignosis_description  ,diagnosis_type, final_daignosis,\
         PD.created_date as diagnosis_date  from hims_f_patient_diagnosis PD,hims_d_icd ICD\
          where PD.record_status='A' and   ICD.record_status='A'\
-         and PD.daignosis_id=ICD.hims_d_icd_id and  PD.episode_id=? order by diagnosis_date desc",
-        [req.query.episode_id],
+         and PD.daignosis_id=ICD.hims_d_icd_id and " +
+          where.condition +
+          " order by diagnosis_date desc",
+        where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {

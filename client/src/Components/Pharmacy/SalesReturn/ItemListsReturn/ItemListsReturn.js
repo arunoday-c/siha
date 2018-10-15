@@ -13,11 +13,9 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 
 import {
-  discounthandle,
   deletePosDetail,
   updatePosDetail,
-  calculateAmount,
-  adjustadvance
+  calculateAmount
 } from "./ItemListsReturnEvents";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -136,10 +134,10 @@ class ItemListsReturn extends Component {
                                           valueField: "hims_d_item_master_id",
                                           data: this.props.itemlist
                                         },
-                                        onChange: null,
-                                        others: {
-                                          disabled: true
-                                        }
+                                        onChange: null
+                                        // others: {
+                                        //   disabled: true
+                                        // }
                                       }}
                                     />
                                   );
@@ -329,27 +327,7 @@ class ItemListsReturn extends Component {
                                     }}
                                   />
                                 ),
-                                editorTemplate: row => {
-                                  return (
-                                    <AlagehFormGroup
-                                      div={{}}
-                                      textBox={{
-                                        decimal: { allowNegative: false },
-                                        value: row.discount_percentage,
-                                        className: "txt-fld",
-                                        name: "discount_percentage",
-                                        events: {
-                                          onChange: calculateAmount.bind(
-                                            this,
-                                            this,
-                                            row,
-                                            context
-                                          )
-                                        }
-                                      }}
-                                    />
-                                  );
-                                }
+                                disabled: true
                               },
                               {
                                 fieldName: "discount_amout",
@@ -358,27 +336,7 @@ class ItemListsReturn extends Component {
                                     label={{ forceLabel: "discount_amout" }}
                                   />
                                 ),
-                                editorTemplate: row => {
-                                  return (
-                                    <AlagehFormGroup
-                                      div={{}}
-                                      textBox={{
-                                        decimal: { allowNegative: false },
-                                        value: row.discount_amout,
-                                        className: "txt-fld",
-                                        name: "discount_amout",
-                                        events: {
-                                          onChange: calculateAmount.bind(
-                                            this,
-                                            this,
-                                            row,
-                                            context
-                                          )
-                                        }
-                                      }}
-                                    />
-                                  );
-                                }
+                                disabled: true
                               },
 
                               {

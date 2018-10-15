@@ -1117,8 +1117,9 @@ let addChiefComplaintsElement = (req, res, next) => {
           input.updated_by
         ],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
+            
             next(error);
           }
           debugLog("Results are recorded...");

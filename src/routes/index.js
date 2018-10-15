@@ -59,6 +59,7 @@ initializedDb(db => {
   router.use("/frontDesk", frontDesk({ config, db }));
   router.use("/masters/get", getMasters());
   router.use("/masters/set", updateMaster());
+  router.use("/masters", getMasters());
   router.use("/translator", languageTranslator());
   router.use("/visit", visit({ config, db }));
   router.use("/serviceType", serviceType({ config, db }));

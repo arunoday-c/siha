@@ -200,14 +200,27 @@ class ReviewofSystems extends Component {
         {/* ROS Modal Start */}
         <Modal open={this.state.openROSModal}>
           <div className="algaeh-modal">
-            <div className="popupHeader">
+              <div className="popupHeader">
+                <div className="row">
+                  <div className="col-lg-8">
               <h4>Add Review Systems</h4>
-            </div>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                       onClick={this.handleClose}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             <div className="popupInner">
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-4 popLeftDiv">
-                    <div className="complain-box">
+                    <div className="row">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12" }}
                         label={{
@@ -270,6 +283,7 @@ class ReviewofSystems extends Component {
                   <div className="col-lg-8 popRightDiv">
                     <h6> List of Review Systems</h6>
                     <hr />
+                    <div id="ros-grid-cntr">
                     <AlgaehDataGrid
                       id="ros-grid"
                       columns={[
@@ -314,7 +328,7 @@ class ReviewofSystems extends Component {
                         data: this.props.patientros
                       }}
                       isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 5 }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: this.deleteROS.bind(this),
                         onEdit: row => {},
@@ -322,7 +336,8 @@ class ReviewofSystems extends Component {
                       }}
                     />
 
-                    <div>
+                    </div>
+                    <div className="row">
                       <AlagehFormGroup
                         div={{ className: "col-lg-12 margin-top-15" }}
                         label={{
@@ -347,7 +362,9 @@ class ReviewofSystems extends Component {
                 </div>
               </div>
             </div>
-            <div className="row popupFooter">
+            <div className=" popupFooter">
+              <div className="col-lg-12">
+              <div className="row">
               <div className="col-lg-4">
                 <button
                   onClick={this.addPatientROS.bind(this)}
@@ -359,7 +376,7 @@ class ReviewofSystems extends Component {
                 <button
                   onClick={this.resetPatientROS.bind(this)}
                   type="button"
-                  className="btn btn-other"
+                  className="btn btn-default"
                 >
                   Clear
                 </button>
@@ -373,6 +390,8 @@ class ReviewofSystems extends Component {
                   Close
                 </button>
               </div>
+            </div>
+            </div>
             </div>
           </div>
         </Modal>
@@ -390,11 +409,14 @@ class ReviewofSystems extends Component {
                 className="btn btn-primary btn-circle active"
                 onClick={this.addROS.bind(this)}
               >
-                <i className="fas fa-edit" />
+                <i className="fas fa-plus" />
               </a>
             </div>
           </div>
-          <div className="portlet-body">
+          <div
+            className="portlet-body"
+            style={{ height: "25.3vh", overflow: "auto" }}
+          >
             <table className="table table-sm table-bordered customTable">
               <thead className="table-primary">
                 <tr>

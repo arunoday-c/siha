@@ -12,10 +12,10 @@ import path from "path";
 import keys from "./keys/keys";
 import rfs from "rotating-file-stream";
 import httpStatus from "./utils/httpStatus";
-import { logger, debugLog, debugFunction } from "./utils/logging";
+import { logger } from "./utils/logging";
 import jwtDecode from "jwt-decode";
 import { decryption } from "./utils/cryptography";
-import { debuglog } from "util";
+
 let app = express();
 
 if (process.env.NODE_ENV === "production") {
