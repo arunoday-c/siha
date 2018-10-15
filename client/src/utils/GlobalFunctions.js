@@ -1,5 +1,6 @@
 import extend from "extend";
 import { swalMessage } from "../utils/algaehApiCall";
+//import axios from "axios";
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 
@@ -60,4 +61,31 @@ export function imageToByteArray(src) {
   ctx.drawImage(img, 0, 0);
 
   return canvas.toDataURL("image/png");
+}
+export function saveImageOnServer(options) {
+  debugger;
+  const settings = {
+    ...{
+      fileControl: undefined,
+      pageName: ""
+    },
+    ...options
+  };
+  if (settings.fileControl !== undefined) {
+    settings.fileControl.map(file => {
+      return new Promise((resolve, reject) => {
+        debugger;
+        let formData = new FormData();
+        formData.append("file", file);
+
+        // axios.post("upload_file", formData, {
+        //   headers: {
+        //     "Content-Type": "multipart/form-data"
+        //   }
+        // });
+      }).then(result => {
+        debugger;
+      });
+    });
+  }
 }
