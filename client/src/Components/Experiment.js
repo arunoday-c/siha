@@ -13,7 +13,7 @@ class Experiment extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ margin: "auto" }}>
         <button
           className="btn btn-primary"
           onClick={this.closeConnections.bind(this)}
