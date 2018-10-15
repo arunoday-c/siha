@@ -198,7 +198,8 @@ let deletePatientType = (req, res, next) => {
       },
       error => {
         next(error);
-      }
+      },
+      true
     );
   } catch (e) {
     next(e);
