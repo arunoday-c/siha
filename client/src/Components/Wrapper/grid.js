@@ -53,6 +53,8 @@ class DataGrid extends PureComponent {
   renderEditable = (templates, cellInfo) => {
     const editable = this.state.editableRows[cellInfo.index];
     const rowDetail = this.state.data[cellInfo.index];
+    const _disabled =
+      cellInfo.column.disabled !== undefined ? cellInfo.column.disabled : false;
     if (editable === undefined || editable === false) {
       if (templates.displayTemp !== undefined) {
         return templates.displayTemp(rowDetail);
@@ -60,48 +62,52 @@ class DataGrid extends PureComponent {
         return <span>{rowDetail[cellInfo.column.id]}</span>;
       }
     } else {
-      if (templates.editorTemp !== undefined) {
-        return templates.editorTemp(rowDetail);
+      if (_disabled) {
+        return <span>{rowDetail[cellInfo.column.id]}</span>;
       } else {
-        const _value = rowDetail[cellInfo.column.id];
-        const _date = moment(_value).isValid();
-        if (_date && typeof _value !== "number") {
-          return (
-            <AlgaehDateHandler
-              textBox={{
-                className: "txt-fld",
-                name: "effective_start_date"
-              }}
-              events={{
-                onChange: e => {
-                  this.onDateHandleEditChange(
-                    e,
-                    cellInfo.index,
-                    cellInfo.column.id
-                  );
-                }
-              }}
-              value={_value}
-            />
-          );
+        if (templates.editorTemp !== undefined) {
+          return templates.editorTemp(rowDetail);
         } else {
-          const isnumber = typeof _value === "number" ? { number: true } : {};
-          return (
-            <AlagehFormGroup
-              textBox={{
-                className: "txt-fld",
-                value: _value,
-                events: {
-                  onChange: this.onTextHandleEditChange.bind(this)
-                },
-                others: {
-                  "column-id": cellInfo.column.id,
-                  "row-id": cellInfo.index
-                },
-                ...isnumber
-              }}
-            />
-          );
+          const _value = rowDetail[cellInfo.column.id];
+          const _date = moment(_value).isValid();
+          if (_date && typeof _value !== "number") {
+            return (
+              <AlgaehDateHandler
+                textBox={{
+                  className: "txt-fld",
+                  name: "effective_start_date"
+                }}
+                events={{
+                  onChange: e => {
+                    this.onDateHandleEditChange(
+                      e,
+                      cellInfo.index,
+                      cellInfo.column.id
+                    );
+                  }
+                }}
+                value={_value}
+              />
+            );
+          } else {
+            const isnumber = typeof _value === "number" ? { number: true } : {};
+            return (
+              <AlagehFormGroup
+                textBox={{
+                  className: "txt-fld",
+                  value: _value,
+                  events: {
+                    onChange: this.onTextHandleEditChange.bind(this)
+                  },
+                  others: {
+                    "column-id": cellInfo.column.id,
+                    "row-id": cellInfo.index
+                  },
+                  ...isnumber
+                }}
+              />
+            );
+          }
         }
       }
     }
@@ -266,7 +272,8 @@ class DataGrid extends PureComponent {
                 : { accessor: row => s.displayTemplate(row) };
             const _assignClass =
               s.className !== undefined ? row => s.className(row) : "";
-
+            const _disabled =
+              s.disabled !== undefined ? { disabled: s.disabled } : {};
             return {
               Header: s.label,
               id: s.fieldName,
@@ -276,7 +283,8 @@ class DataGrid extends PureComponent {
               }),
               assignTdClass: _assignClass,
               ..._displayTemp,
-              ...s.others
+              ...s.others,
+              ..._disabled
             };
           })
           .toArray();
@@ -467,8 +475,7 @@ class DataGrid extends PureComponent {
                   </React.Fragment>
                 );
               },
-              style: { textAlign: "center",maxWidth:"70px" },
-              
+              style: { textAlign: "center", maxWidth: "70px" }
             });
           }
         }

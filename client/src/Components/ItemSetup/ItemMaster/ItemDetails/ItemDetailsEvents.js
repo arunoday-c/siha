@@ -44,4 +44,15 @@ const radioChange = ($this, context, e) => {
   }
 };
 
-export { texthandle, radioChange };
+const BatchExpRequired = ($this, e) => {
+  let required_batchno_expiry = "N";
+  if (!$this.state.batchexpreq === true) {
+    required_batchno_expiry = "Y";
+  }
+  $this.setState({
+    required_batchno_expiry: required_batchno_expiry,
+    batchexpreq: !$this.state.batchexpreq
+  });
+};
+
+export { texthandle, radioChange, BatchExpRequired };
