@@ -6,6 +6,7 @@ import "react-table/react-table.css";
 import treeTableHOC from "react-table/lib/hoc/treeTable";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import algaehLoader from "../../../Wrapper/fullPageLoader";
+import moment from "moment";
 
 const TreeTable = treeTableHOC(ReactTable);
 
@@ -63,20 +64,19 @@ class HistoricalData extends Component {
     this.state = {};
   }
 
-  getPatientVitals(patient_id, visit_id) {
+  getPatientVitals() {
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientVitals",
       method: "GET",
       data: {
         patient_id: Window.global["mrd_patient"]
-        // visit_id: visit_id
       },
       cancelRequestId: "getPatientVitals",
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
-          console.log("Vital: ", response.data.records);
-          // this.setState({ patientVital: response.data.records[0] });
+          console.log("Vitals: ", response.data.records);
+          this.setState({ patientVitals: response.data.records });
         }
       },
       onFailure: error => {
@@ -105,37 +105,39 @@ class HistoricalData extends Component {
           <div className="portlet-body">
             <TreeTable
               //Most recent 3 rows are expanded
-              //expanded={{ 0: true, 1: true, 2: true, 3: true }}
-              data={_data}
-              pivotBy={["date_doctor"]}
+              //expanded={{ 0: true }}
+              data={this.state.patientVitals}
+              pivotBy={["visit_date"]}
               columns={[
                 {
-                  accessor: "date_doctor"
+                  accessor: "visit_date"
                 },
-
+                {
+                  Header: "Recorded Time",
+                  accessor: "visit_time",
+                  cell: row => {
+                    <span>{moment(row.visit_time).format("HH:mm a")}</span>;
+                  }
+                },
                 {
                   Header: "Temp. Oral",
-                  accessor: "oral"
+                  accessor: "temperature_celsisus"
                 },
                 {
                   Header: "BP Systole",
-                  accessor: "bpSystole"
+                  accessor: "systolic"
                 },
                 {
                   Header: "bp Dyastole",
-                  accessor: "bpdyastole"
+                  accessor: "diastolic"
                 },
                 {
-                  Header: "Pulse",
-                  accessor: "pulse"
+                  Header: "Heart Rate",
+                  accessor: "heart_rate"
                 },
                 {
-                  Header: "Respiratory",
-                  accessor: "resp"
-                },
-                {
-                  Header: "Blood Sugar",
-                  accessor: "bloodsugar"
+                  Header: "Respiratory Rate",
+                  accessor: "respiratory_rate"
                 },
                 {
                   Header: "Height",
@@ -150,8 +152,8 @@ class HistoricalData extends Component {
                   accessor: "bmi"
                 },
                 {
-                  Header: "Duration",
-                  accessor: "duration"
+                  Header: "BSA",
+                  accessor: "bsa"
                 }
               ]}
               defaultPageSize={5}

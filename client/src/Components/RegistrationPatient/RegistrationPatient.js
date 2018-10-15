@@ -84,22 +84,21 @@ class RegistrationPatient extends Component {
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
     ) {
-      debugger;
       this.getCtrlCode(this.props.patient_code);
     }
-    if (
-      this.props.provider_id !== undefined &&
-      this.props.provider_id.length !== 0
-    ) {
-      this.setState({ provider_id: this.props.provider_id });
-    }
+    // if (
+    //   this.props.provider_id !== undefined &&
+    //   this.props.provider_id.length !== 0
+    // ) {
+    //   this.setState({ provider_id: this.props.provider_id });
+    // }
 
-    if (
-      this.props.sub_department_id !== undefined &&
-      this.props.sub_department_id.length !== 0
-    ) {
-      this.setState({ sub_department_id: this.props.sub_department_id });
-    }
+    // if (
+    //   this.props.sub_department_id !== undefined &&
+    //   this.props.sub_department_id.length !== 0
+    // ) {
+    //   this.setState({ sub_department_id: this.props.sub_department_id });
+    // }
   }
 
   ClearData(e) {
