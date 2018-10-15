@@ -272,6 +272,7 @@ let insertLadOrderedServices = (req, res, next) => {
       );
     });
   } else {
+    releaseDBConnection(db, connection);
     next();
   }
 };
@@ -407,6 +408,7 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
                         collected_by: req.userIdentity.algaeh_d_app_user_id,
                         collected_date: new Date()
                       };
+                      releaseDBConnection(db, connection);
                       next();
                     });
                   }
@@ -529,6 +531,7 @@ let updateLabSampleStatus = (req, res, next) => {
                       next(error);
                     });
                   }
+                  releaseDBConnection(db, connection);
                   req.records = result;
                   next();
                 });
@@ -542,6 +545,7 @@ let updateLabSampleStatus = (req, res, next) => {
                   next(error);
                 });
               }
+              releaseDBConnection(db, connection);
               req.records = results;
               next();
             });
@@ -715,6 +719,7 @@ let updateLabResultEntry = (req, res, next) => {
                       next(error);
                     });
                   }
+                  releaseDBConnection(db, connection);
                   req.records = result;
                   next();
                 });
@@ -728,6 +733,7 @@ let updateLabResultEntry = (req, res, next) => {
                   next(error);
                 });
               }
+              releaseDBConnection(db, connection);
               req.records = results;
               next();
             });
