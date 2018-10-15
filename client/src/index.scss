@@ -20,10 +20,9 @@ $forntSize: 0.7rem;
 
   .bordered-layout {
     border: 1px solid #c1c1c1;
-    min-height: 70px;
-    max-height: 150px;
+    height:18vh;
     overflow: auto;
-    border-radius: 0 0 5px 5px;
+    border-radius: 5px;
 
     ul {
       margin: 0px;
@@ -38,6 +37,23 @@ $forntSize: 0.7rem;
 
         &.active {
           background: #eafffd;
+        }
+
+        span{
+
+    width: 80%;
+    font-size: 0.8rem;
+        }
+        i{
+
+    cursor: pointer;
+    padding: 2px 5px 0 0;
+    color: #58595b;
+    font-size: 0.7rem;
+        }
+        i:hover{
+
+    color: red;
         }
       }
 
@@ -546,8 +562,8 @@ $forntSize: 0.7rem;
   }
 
   .pain-scale-ul {
-    margin: auto;
-    padding: auto;
+    margin: 0;
+    padding: 0;
     list-style: none;
 
     li {
@@ -557,7 +573,7 @@ $forntSize: 0.7rem;
       height: 31px;
       display: inline-block;
       cursor: pointer;
-      margin-right: 10px;
+      margin-right: 7px;
     }
 
     .pain-1 {
@@ -673,7 +689,6 @@ $forntSize: 0.7rem;
       padding-top: 4px;
       padding-bottom: 4px;
       height: 40px;
-      margin-top: 15px;
 
       .button-left {
         float: left;
@@ -776,7 +791,7 @@ $forntSize: 0.7rem;
         min-height: 30vh;
         max-height: 70vh;
         overflow: auto;
-        padding: 15px;
+        padding: 15px 15px 0;
       }
 
       .popRightDiv {
@@ -793,7 +808,6 @@ $forntSize: 0.7rem;
       padding-top: 4px;
       padding-bottom: 4px;
       height: 40px;
-      margin-top: 15px;
 
       .button-left {
         float: left;

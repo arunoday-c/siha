@@ -564,7 +564,9 @@ textarea {
   padding: 8px 6px 7px !important;
   border: 1px solid #d3d3d3 !important;
   border-radius: 4px !important;
-  width: 100%; }
+  width: 100%;
+  resize: none;
+  min-height: 85px; }
 
 .report-section {
   border: 1px solid #d3d3d3;

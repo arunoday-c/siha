@@ -192,6 +192,7 @@ let addFrontDesk = (req, res, next) => {
                             debugLog("encounterResult: ", encounterResult);
                             if (requestCounter != 0)
                               requestCounter = requestCounter - 1;
+                            releaseDBConnection(db, connection);
                             next();
                           });
                         });
@@ -277,10 +278,12 @@ let selectFrontDesk = (req, res, next) => {
                   visitDetails: resultFields
                 };
                 req.records = showresult;
+                releaseDBConnection(db, connection);
                 next();
               }
             );
           } else {
+            releaseDBConnection(db, connection);
             req.records = showresult;
             next();
           }
@@ -451,6 +454,7 @@ let updateFrontDesk = (req, res, next) => {
                         req.records = encounterResult;
                         if (updateCounter != 0)
                           updateCounter = updateCounter - 1;
+                        releaseDBConnection(db, connection);
                         next();
                       });
                     });

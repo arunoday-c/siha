@@ -125,6 +125,7 @@ let getDoctorsCommission = (req, res, next) => {
                         }).then(result => {
                           if (i == results.length - 1) {
                             req.records = result;
+                            releaseDBConnection(db, connection);
                             next();
                           }
                         });
@@ -133,11 +134,13 @@ let getDoctorsCommission = (req, res, next) => {
                   }
                 } else {
                   req.records = results;
+                  releaseDBConnection(db, connection);
                   next();
                 }
               }
             );
           } else {
+            releaseDBConnection(db, connection);
             req.records = result;
             next();
           }

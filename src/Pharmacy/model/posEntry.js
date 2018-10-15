@@ -204,6 +204,7 @@ let addPosEntry = (req, res, next) => {
                           next(error);
                         });
                       }
+                      releaseDBConnection(db, connection);
                       req.records = { pos_number: documentCode };
                       next();
                     });
@@ -268,11 +269,13 @@ let getPosEntry = (req, res, next) => {
                   ...headerResult[0],
                   ...{ pharmacy_stock_detail }
                 };
+                releaseDBConnection(db, connection);
                 next();
               }
             );
           } else {
             req.records = headerResult;
+            releaseDBConnection(db, connection);
             next();
           }
         }
@@ -355,6 +358,7 @@ let updatePosEntry = (req, res, next) => {
                     next(error);
                   }
                   req.records = records;
+                  releaseDBConnection(db, connection);
                   next();
                 });
               })
@@ -477,6 +481,7 @@ let getPrescriptionPOS = (req, res, next) => {
                 ...resultbilling,
                 ..._result
               };
+              releaseDBConnection(db, connection);
               next();
             });
           })

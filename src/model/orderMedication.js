@@ -101,9 +101,12 @@ let addPatientPrescription = (req, res, next) => {
 
                   connection.commit(error => {
                     if (error) {
-                      releaseDBConnection(db, connection);
-                      next(error);
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
                     }
+                    releaseDBConnection(db, connection);
                     req.records = detailResult;
                     next();
                   });
