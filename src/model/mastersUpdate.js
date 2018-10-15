@@ -258,7 +258,8 @@ let deleteVisa = (req, res, next) => {
       },
       error => {
         next(error);
-      }
+      },
+      true
     );
     deleteFromCache("visa");
   } catch (e) {
