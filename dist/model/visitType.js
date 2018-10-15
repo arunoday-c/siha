@@ -68,7 +68,7 @@ var addVisit = function addVisit(req, res, next) {
     var inputParam = (0, _extend2.default)(visitType, req.body);
     connection.query("INSERT INTO `hims_d_visit_type` (`visit_type_code`, `visit_type_desc`,`arabic_visit_type_desc`, `consultation` \
       , `created_by` ,`created_date`,`visit_status`) \
-   VALUES ( ?, ?, ?, ?, ?,?)", [inputParam.visit_type_code, inputParam.visit_type_desc, inputParam.arabic_visit_type_desc, inputParam.consultation, inputParam.created_by, new Date(), inputParam.visit_status], function (error, result) {
+   VALUES ( ?, ?, ?, ?, ?, ?, ?)", [inputParam.visit_type_code, inputParam.visit_type_desc, inputParam.arabic_visit_type_desc, inputParam.consultation, inputParam.created_by, new Date(), inputParam.visit_status], function (error, result) {
       (0, _utils.releaseDBConnection)(db, connection);
       if (error) {
         next(error);
