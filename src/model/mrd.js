@@ -178,15 +178,22 @@ let getPatientDiagnosis = (req, res, next) => {
 
 //created by irfan: to  get Patient medication
 let getPatientMedication = (req, res, next) => {
+  let selectWhere = {
+    patient_id: "ALL",
+    encounter_id: "ALL"
+  }
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+   
+
+    let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_prescription_id, patient_id, encounter_id, provider_id, episode_id,\
+        "select  hims_f_prescription_id, patient_id, encounter_id, provider_id, episode_id,\
         prescription_date, prescription_status , \
         hims_f_prescription_detail_id, prescription_id, item_id,IM.item_description, PD.generic_id, IG.generic_name, \
         dosage, frequency, no_of_days,\
@@ -194,9 +201,8 @@ let getPatientMedication = (req, res, next) => {
          from hims_f_prescription P,hims_f_prescription_detail PD,hims_d_item_master IM,hims_d_item_generic IG\
         where P.record_status='A' and IM.record_status='A' and IG.record_status='A' and \
         P.hims_f_prescription_id=PD.prescription_id and PD.item_id=IM.hims_d_item_master_id \
-        and PD.generic_id =IG.hims_d_item_generic_id and\
-        P.encounter_id=?",
-        [req.query.encounter_id],
+        and PD.generic_id =IG.hims_d_item_generic_id and "+ where.condition + " order by prescription_date desc",
+        where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
