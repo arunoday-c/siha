@@ -533,9 +533,25 @@ class ChiefComplaints extends Component {
         {/* HPI Modal Start */}
         <Modal open={this.state.openHpiModal}>
           <div className="algaeh-modal">
-            <div className="popupHeader">
-              <h4>Add / Edit History of Patient Illness</h4>
-            </div>
+
+  <div className="popupHeader">
+                <div className="row">
+                  <div className="col-lg-8">
+                    <h4>
+              <h4>Add / Edit History of Patient Illness</h4></h4>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                       onClick={this.handleClose}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
             <div className="col-lg-12 popupInner">
               <div className="col-12">
                 <div className="row">
@@ -794,7 +810,7 @@ class ChiefComplaints extends Component {
                             data: []
                           }}
                           isEditable={false}
-                          paging={{ page: 0, rowsPerPage: 5 }}
+                          paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onDelete: row => {},
                             onEdit: row => {},
@@ -1270,6 +1286,7 @@ class ChiefComplaints extends Component {
             </div>
           </div>
           <div className="portlet-body">
+          <div id="hpi-grid-cntr">
             <AlgaehDataGrid
               id="complaint-grid"
               columns={[
@@ -1378,13 +1395,14 @@ class ChiefComplaints extends Component {
                 data: this.props.patient_chief_complaints
               }}
               isEditable={false}
-              paging={{ page: 0, rowsPerPage: 5 }}
+              paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onDelete: row => {},
                 onEdit: row => {},
                 onDone: row => {}
               }}
             />
+          </div>
           </div>
         </div>
         {/* END Portlet PORTLET */}
