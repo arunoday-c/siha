@@ -97,7 +97,7 @@ let getPatientEncounterDetails = (req, res, next) => {
                 inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id   left join hims_m_patient_insurance_mapping IM on\
                  V.hims_f_patient_visit_id=IM.patient_visit_id  left join hims_d_insurance_provider IP  on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id   left join hims_d_insurance_provider IPR  on \
          IM.secondary_insurance_provider_id=IPR.hims_d_insurance_provider_id   where PE.record_status='A' and P.record_status='A' and E.record_status='A' \
-                 and V.record_status='A' and SD.record_status='A' and IM.record_status='A' and IP.record_status='A'   and encounter_id <>'null' and PE.patient_id=?\
+                 and V.record_status='A' and SD.record_status='A'   and encounter_id <>'null' and PE.patient_id=?\
                  order by encountered_date desc;",
         [req.query.patient_id],
         (error, result) => {
