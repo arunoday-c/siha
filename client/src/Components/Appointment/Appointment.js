@@ -534,7 +534,7 @@ class Appointment extends Component {
       }
     });
   }
-
+ 
   showModal(e) {
     debugger;
     const appt_time = e.currentTarget.getAttribute("appt-time");
