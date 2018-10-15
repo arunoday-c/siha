@@ -10,65 +10,146 @@ var _httpStatus = require("../utils/httpStatus");
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
+var _logging = require("../utils/logging");
+
+var _bluebird = require("bluebird");
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // api to add employee
 var addEmployee = function addEmployee(req, res, next) {
-  var employeeModel = {
-    hims_d_employee_id: 0,
-    employee_code: null,
-    first_name: null,
-    middle_name: null,
-    last_name: null,
-    arabic_name: null,
-    sex: "MALE",
-    date_of_birth: null,
-    date_of_joining: null,
-    date_of_leaving: null,
-    address: null,
-    primary_contact_no: null,
-    secondary_contact_no: null,
-    email: null,
-    emergancy_contact_person: null,
-    emergancy_contact_no: null,
-    blood_group: null,
-    employee_status: "A",
-    effective_start_date: null,
-    effective_end_date: null,
-    created_date: new Date(),
-    created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_date: new Date(),
-    updated_by: req.userIdentity.algaeh_d_app_user_id
-  };
-
   try {
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
     }
     var db = req.db;
-    var employeeDetails = (0, _extend2.default)(employeeModel, req.body);
+    var input = (0, _extend2.default)({}, req.body);
     db.getConnection(function (error, connection) {
       if (error) {
         next(error);
       }
 
-      connection.query("INSERT hims_d_employee(employee_code,first_name,middle_name,last_name,arabic_name, \
-            sex,date_of_birth,date_of_joining,date_of_leaving,address,primary_contact_no,\
-            secondary_contact_no,email,emergancy_contact_person,emergancy_contact_no,\
-            blood_group,effective_start_date,effective_end_date,created_date,created_by) \
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [employeeDetails.employee_code, employeeDetails.first_name, employeeDetails.middle_name, employeeDetails.last_name, employeeDetails.arabic_name, employeeDetails.sex, employeeDetails.date_of_birth, employeeDetails.date_of_joining, employeeDetails.date_of_leaving, employeeDetails.address, employeeDetails.primary_contact_no, employeeDetails.secondary_contact_no, employeeDetails.email, employeeDetails.emergancy_contact_person, employeeDetails.emergancy_contact_no, employeeDetails.blood_group, employeeDetails.effective_start_date, employeeDetails.effective_end_date, employeeDetails.created_date, employeeDetails.created_by], function (error, result) {
+      connection.beginTransaction(function (error) {
         if (error) {
-          (0, _utils.releaseDBConnection)(db, connection);
-          next(error);
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
         }
 
-        connection.query("SELECT * FROM hims_d_employee WHERE hims_d_employee_id=?", [result["insertId"]], function (error, resultBack) {
-          (0, _utils.releaseDBConnection)(db, connection);
+        connection.query("INSERT hims_d_employee(employee_code,title_id,first_name,middle_name,last_name,\
+          full_name,arabic_name,employee_designation_id,license_number,sex,date_of_birth,date_of_joining,date_of_leaving,address,\
+          address2,pincode,city_id,state_id,country_id,primary_contact_no,secondary_contact_no,email,emergancy_contact_person,emergancy_contact_no,\
+          blood_group,isdoctor,employee_status,effective_start_date,effective_end_date,created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [input.employee_code, input.title_id, input.first_name, input.middle_name, input.last_name, input.full_name, input.arabic_name, input.employee_designation_id, input.license_number, input.sex, input.date_of_birth, input.date_of_joining, input.date_of_leaving, input.address, input.address2, input.pincode, input.city_id, input.state_id, input.country_id, input.primary_contact_no, input.secondary_contact_no, input.email, input.emergancy_contact_person, input.emergancy_contact_no, input.blood_group, input.isdoctor, input.employee_status, input.effective_start_date, input.effective_end_date, new Date(), input.created_by, new Date(), input.updated_by], function (error, result) {
           if (error) {
-            next(error);
+            connection.rollback(function () {
+              (0, _utils.releaseDBConnection)(db, connection);
+              next(error);
+            });
           }
-          req.records = resultBack;
-          next();
+          if (result.insertId != null && req.body.deptDetails.length > 0) {
+            var insurtColumns = ["services_id", "sub_department_id", "category_speciality_id", "user_id", "created_by", "updated_by"];
+
+            connection.query("INSERT INTO hims_m_employee_department_mappings(" + insurtColumns.join(",") + ",employee_id,created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+              sampleInputObject: insurtColumns,
+              arrayObj: req.body.deptDetails,
+              newFieldToInsert: [result.insertId, new Date(), new Date()],
+              req: req
+            })], function (error, departResult) {
+              if (error) {
+                connection.rollback(function () {
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  next(error);
+                });
+              }
+
+              new _bluebird2.default(function (resolve, reject) {
+                try {
+                  if (input.serviceComm.length > 0) {
+                    var _insurtColumns = ["services_id", "service_type_id", "op_cash_commission_percent", "op_credit_commission_percent", "ip_cash_commission_percent", "ip_credit_commission_percent", "created_by", "updated_by"];
+
+                    connection.query("INSERT INTO hims_m_doctor_service_commission(" + _insurtColumns.join(",") + ",provider_id,created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+                      sampleInputObject: _insurtColumns,
+                      arrayObj: req.body.serviceComm,
+                      newFieldToInsert: [result.insertId, new Date(), new Date()],
+                      req: req
+                    })], function (error, serviceCommResult) {
+                      if (error) {
+                        connection.rollback(function () {
+                          (0, _utils.releaseDBConnection)(db, connection);
+                          next(error);
+                        });
+                      }
+                      return resolve(serviceCommResult);
+                    });
+                  } else {
+                    return resolve(departResult);
+                  }
+                } catch (e) {
+                  reject(e);
+                }
+              }).then(function (results) {
+                if (input.servTypeCommission.length > 0) {
+                  var _insurtColumns2 = ["service_type_id", "op_cash_comission_percent", "op_credit_comission_percent", "ip_cash_commission_percent", "ip_credit_commission_percent", "created_by", "updated_by"];
+
+                  connection.query("INSERT INTO hims_m_doctor_service_type_commission(" + _insurtColumns2.join(",") + ",provider_id,created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+                    sampleInputObject: _insurtColumns2,
+                    arrayObj: req.body.servTypeCommission,
+                    newFieldToInsert: [result.insertId, new Date(), new Date()],
+                    req: req
+                  })], function (error, serviceTypeCommResult) {
+                    if (error) {
+                      connection.rollback(function () {
+                        (0, _utils.releaseDBConnection)(db, connection);
+                        next(error);
+                      });
+                    }
+
+                    connection.commit(function (error) {
+                      if (error) {
+                        connection.rollback(function () {
+                          (0, _utils.releaseDBConnection)(db, connection);
+                          next(error);
+                        });
+                      }
+                      req.records = serviceTypeCommResult;
+                      next();
+                    });
+                  });
+                } else {
+                  connection.commit(function (error) {
+                    if (error) {
+                      connection.rollback(function () {
+                        (0, _utils.releaseDBConnection)(db, connection);
+                        next(error);
+                      });
+                    }
+                    req.records = results;
+                    next();
+                  });
+                }
+              });
+            });
+          } else {
+            req.records = result;
+            next();
+          }
+
+          // connection.query(
+          //   "SELECT * FROM hims_d_employee WHERE hims_d_employee_id=?",
+          //   [result["insertId"]],
+          //   (error, resultBack) => {
+          //     releaseDBConnection(db, connection);
+          //     if (error) {
+          //       next(error);
+          //     }
+          //     req.records = resultBack;
+          //     next();
+          //   }
+          // );
         });
       });
     });
@@ -76,7 +157,6 @@ var addEmployee = function addEmployee(req, res, next) {
     next(e);
   }
 };
-
 // api to fetch employee
 var getEmployee = function getEmployee(req, res, next) {
   var employeeWhereCondition = {
@@ -106,26 +186,7 @@ var getEmployee = function getEmployee(req, res, next) {
     var condition = (0, _utils.whereCondition)((0, _extend2.default)(parameters, req.query));
     (0, _utils.selectStatement)({
       db: req.db,
-      query: "SELECT hims_d_employee_id \
-        ,employee_code            	\
-        ,first_name               	\
-        ,middle_name              	\
-        ,last_name                	\
-        ,arabic_name \
-        ,sex                      	\
-        ,date_of_birth            	\
-        ,date_of_joining          	\
-        ,date_of_leaving          	\
-        ,address                  	\
-        ,primary_contact_no       	\
-        ,secondary_contact_no     	\
-        ,email                    	\
-        ,emergancy_contact_person 	\
-        ,emergancy_contact_no     	\
-        ,blood_group              	\
-        ,employee_status          	\
-        ,effective_start_date     	\
-        ,effective_end_date,CONCAT(first_name ,' ', middle_name,' ' ,last_name )as full_name FROM hims_d_employee WHERE record_status ='A' AND " + condition.condition + " " + pagePaging,
+      query: "SELECT * FROM hims_d_employee WHERE record_status ='A' AND " + condition.condition + " " + pagePaging,
       values: condition.values
     }, function (result) {
       req.records = result;
@@ -138,52 +199,227 @@ var getEmployee = function getEmployee(req, res, next) {
   }
 };
 
+//created by irfan: to update Employee
 var updateEmployee = function updateEmployee(req, res, next) {
-  var employeeModel = {
-    hims_d_employee_id: 0,
-    employee_code: null,
-    first_name: null,
-    middle_name: null,
-    last_name: null,
-    arabic_name: null,
-    sex: "MALE",
-    date_of_birth: null,
-    date_of_joining: null,
-    date_of_leaving: null,
-    address: null,
-    primary_contact_no: null,
-    secondary_contact_no: null,
-    email: null,
-    emergancy_contact_person: null,
-    emergancy_contact_no: null,
-    blood_group: null,
-    employee_status: "A",
-    effective_start_date: null,
-    effective_end_date: null,
-    created_date: new Date(),
-    created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_date: new Date(),
-    updated_by: req.userIdentity.algaeh_d_app_user_id
-  };
-
   try {
     if (req.db == null) {
       next(_httpStatus2.default.dataBaseNotInitilizedError());
     }
     var db = req.db;
-    var employeeDetails = (0, _extend2.default)(employeeModel, req.body);
+    var input = (0, _extend2.default)({}, req.body);
     db.getConnection(function (error, connection) {
       if (error) {
         next(error);
       }
-      connection.query("UPDATE hims_d_employee SET first_name=?,middle_name=?\
-                     ,last_name=?,arabic_name=?,sex=?,date_of_birth=?,date_of_joining=?\
-                     ,date_of_leaving=?,address=?,primary_contact_no=?,secondary_contact_no=?\
-                     ,email=?,emergancy_contact_person=?,emergancy_contact_no=?\
-                     ,blood_group=?,employee_status=?,effective_start_date=?,effective_end_date=?\
-                     ,updated_date=now(),updated_by=? WHERE  hims_d_employee_id=?", [employeeDetails.first_name, employeeDetails.middle_name, employeeDetails.last_name, employeeDetails.arabic_name, employeeDetails.sex, employeeDetails.date_of_birth, employeeDetails.date_of_joining, employeeDetails.date_of_leaving, employeeDetails.address, employeeDetails.primary_contact_no, employeeDetails.secondary_contact_no, employeeDetails.email, employeeDetails.emergancy_contact_person, employeeDetails.emergancy_contact_no, employeeDetails.blood_group, employeeDetails.employee_status, employeeDetails.effective_start_date, employeeDetails.effective_end_date, employeeDetails.updated_by, employeeDetails.hims_d_employee_id], function (error, result) {
-        (0, _utils.releaseDBConnection)(db, connection);
+
+      connection.beginTransaction(function (error) {
         if (error) {
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
+        }
+
+        connection.query("UPDATE hims_d_employee SET employee_code=?,title_id=?,first_name=?,middle_name=?,last_name=?,\
+        full_name=?,arabic_name=?,employee_designation_id=?,license_number=?,sex=?,date_of_birth=?,date_of_joining=?\
+        ,date_of_leaving=?,address=?,address2=?,pincode=?,city_id=?,state_id=?,country_id=?,primary_contact_no=?,\
+        secondary_contact_no=?,email=?,emergancy_contact_person=?,emergancy_contact_no=?,blood_group=?,isdoctor=?,\
+        employee_status=?,effective_start_date=?,effective_end_date=?,updated_date=?,updated_by=?,record_status=? WHERE record_status='A' and  hims_d_employee_id=?", [input.employee_code, input.title_id, input.first_name, input.middle_name, input.last_name, input.full_name, input.arabic_name, input.employee_designation_id, input.license_number, input.sex, input.date_of_birth, input.date_of_joining, input.date_of_leaving, input.address, input.address2, input.pincode, input.city_id, input.state_id, input.country_id, input.primary_contact_no, input.secondary_contact_no, input.email, input.emergancy_contact_person, input.emergancy_contact_no, input.blood_group, input.isdoctor, input.employee_status, input.effective_start_date, input.effective_end_date, new Date(), input.updated_by, input.record_status, input.hims_d_employee_id], function (error, result) {
+          if (error) {
+            connection.rollback(function () {
+              (0, _utils.releaseDBConnection)(db, connection);
+              next(error);
+            });
+          }
+          if (result.length != 0) {
+            return new _bluebird2.default(function (resolve, reject) {
+              if (input.insertdeptDetails.length > 0) {
+                var insurtColumns = ["employee_id", "services_id", "sub_department_id", "category_speciality_id", "user_id", "created_by", "updated_by"];
+
+                connection.query("INSERT INTO hims_m_employee_department_mappings(" + insurtColumns.join(",") + ",created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+                  sampleInputObject: insurtColumns,
+                  arrayObj: req.body.insertdeptDetails,
+                  newFieldToInsert: [new Date(), new Date()],
+                  req: req
+                })], function (error, insertDepartResult) {
+                  if (error) {
+                    connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    });
+                  }
+                  return resolve(insertDepartResult);
+                });
+              } else {
+                resolve(result);
+              }
+            }).then(function (resultFrmInsertDept) {
+              (0, _logging.debugLog)("inside 1 then");
+
+              if (input.updatedeptDetails.length > 0) {
+                (0, _logging.debugLog)("inside updatedeptDetails");
+                var inputParam = (0, _extend2.default)([], req.body.updatedeptDetails);
+                var qry = "";
+
+                for (var i = 0; i < req.body.updatedeptDetails.length; i++) {
+                  qry += "UPDATE `hims_m_employee_department_mappings` SET employee_id='" + inputParam[i].employee_id + "', services_id='" + inputParam[i].services_id + "', sub_department_id='" + inputParam[i].sub_department_id + "', category_speciality_id='" + inputParam[i].category_speciality_id + "', user_id='" + inputParam[i].user_id + "', record_status='" + inputParam[i].record_status + "', updated_date='" + new Date().toLocaleString() + "',updated_by=\
+'" + req.body.updated_by + "' WHERE record_status='A' and hims_d_employee_department_id='" + inputParam[i].hims_d_employee_department_id + "';";
+                }
+
+                connection.query(qry, function (error, updateDeptDetailResult) {
+                  if (error) {
+                    connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    });
+                  }
+                });
+              }
+            }).then(function (updateDeptResult) {
+              (0, _logging.debugLog)("inside 2 then");
+
+              if (input.insertserviceComm.length > 0) {
+                (0, _logging.debugLog)("inside insertserviceComm");
+                var insurtColumns = ["provider_id", "services_id", "service_type_id", "op_cash_commission_percent", "op_credit_commission_percent", "ip_cash_commission_percent", "ip_credit_commission_percent", "created_by", "updated_by"];
+
+                connection.query("INSERT INTO hims_m_doctor_service_commission(" + insurtColumns.join(",") + ",created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+                  sampleInputObject: insurtColumns,
+                  arrayObj: req.body.insertserviceComm,
+                  newFieldToInsert: [new Date(), new Date()],
+                  req: req
+                })], function (error, serviceCommResult) {
+                  if (error) {
+                    connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    });
+                  }
+                  //--
+                });
+              }
+            }).then(function (serviceCommResult) {
+              (0, _logging.debugLog)("inside 3 then");
+
+              if (input.updateserviceComm.length > 0) {
+                (0, _logging.debugLog)("inside updateserviceComm");
+                var inputParam = (0, _extend2.default)([], req.body.updateserviceComm);
+                var qry = "";
+
+                for (var i = 0; i < req.body.updateserviceComm.length; i++) {
+                  qry += "UPDATE `hims_m_doctor_service_commission` SET provider_id='" + inputParam[i].provider_id + "', services_id='" + inputParam[i].services_id + "', service_type_id='" + inputParam[i].service_type_id + "', op_cash_commission_percent='" + inputParam[i].op_cash_commission_percent + "', op_credit_commission_percent='" + inputParam[i].op_credit_commission_percent + "', ip_cash_commission_percent='" + inputParam[i].ip_cash_commission_percent + "', ip_credit_commission_percent='" + inputParam[i].ip_credit_commission_percent + "', record_status='" + inputParam[i].record_status + "', updated_date='" + new Date().toLocaleString() + "',updated_by=\
+'" + req.body.updated_by + "' WHERE record_status='A' and hims_m_doctor_service_commission_id='" + inputParam[i].hims_m_doctor_service_commission_id + "';";
+                }
+
+                connection.query(qry, function (error, updateServiceCommResult) {
+                  if (error) {
+                    connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    });
+                  }
+                });
+              }
+            }).then(function (updateServiceCommResult) {
+              (0, _logging.debugLog)("inside 4 then");
+              if (input.insertservTypeCommission.length > 0) {
+                (0, _logging.debugLog)("inside insertservTypeCommission");
+                var insurtColumns = ["provider_id", "service_type_id", "op_cash_comission_percent", "op_credit_comission_percent", "ip_cash_commission_percent", "ip_credit_commission_percent", "created_by", "updated_by"];
+
+                connection.query("INSERT INTO hims_m_doctor_service_type_commission(" + insurtColumns.join(",") + ",created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+                  sampleInputObject: insurtColumns,
+                  arrayObj: req.body.insertservTypeCommission,
+                  newFieldToInsert: [new Date(), new Date()],
+                  req: req
+                })], function (error, insrtServiceTypeCommResult) {
+                  if (error) {
+                    connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    });
+                  }
+                  //-
+                });
+              }
+            }).then(function (insrtServiceTypeCommResult) {
+              (0, _logging.debugLog)("inside 5 then");
+              if (input.updateservTypeCommission.length > 0) {
+                (0, _logging.debugLog)("inside updateservTypeCommission");
+                var inputParam = (0, _extend2.default)([], req.body.updateservTypeCommission);
+                var qry = "";
+
+                for (var i = 0; i < req.body.updateservTypeCommission.length; i++) {
+                  qry += "UPDATE `hims_m_doctor_service_type_commission` SET provider_id='" + inputParam[i].provider_id + "', service_type_id='" + inputParam[i].service_type_id + "', op_cash_comission_percent='" + inputParam[i].op_cash_comission_percent + "', op_credit_comission_percent='" + inputParam[i].op_credit_comission_percent + "', ip_cash_commission_percent='" + inputParam[i].ip_cash_commission_percent + "', ip_credit_commission_percent='" + inputParam[i].ip_credit_commission_percent + "', record_status='" + inputParam[i].record_status + "', updated_date='" + new Date().toLocaleString() + "',updated_by=\
+'" + req.body.updated_by + "' WHERE record_status='A' and hims_m_doctor_service_type_commission_id='" + inputParam[i].hims_m_doctor_service_type_commission_id + "';";
+                }
+
+                connection.query(qry, function (error, updateServiceCommResult) {
+                  if (error) {
+                    connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    });
+                  }
+                });
+              }
+            }).finally(function (allResult) {
+              (0, _logging.debugLog)("inside finally");
+              connection.commit(function (error) {
+                if (error) {
+                  connection.rollback(function () {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next(error);
+                  });
+                }
+                req.records = result;
+                next();
+              });
+            });
+          } else {
+            req.records = result;
+            next();
+          }
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get eployee details
+var getEmployeeDetails = function getEmployeeDetails(req, res, next) {
+  var employeeWhereCondition = {
+    employee_code: "ALL",
+    first_name: "ALL",
+    middle_name: "ALL",
+    last_name: "ALL",
+    sex: "ALL",
+    blood_group: "ALL",
+    employee_status: "ALL",
+    date_of_joining: "ALL",
+    date_of_leaving: "ALL",
+    primary_contact_no: "ALL",
+    email: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    var where = (0, _utils.whereCondition)((0, _extend2.default)(employeeWhereCondition, req.query));
+
+    db.getConnection(function (error, connection) {
+      connection.query("SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.first_name,E.middle_name,E.last_name,E.full_name,E.arabic_name,E.employee_designation_id,\
+        E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_leaving,E.address,E.address2,E.pincode,E.city_id,E.state_id,E.country_id,E.primary_contact_no,\
+        E.secondary_contact_no,E.email,E.emergancy_contact_person,E.emergancy_contact_no,E.blood_group,\
+        E.isdoctor,E.employee_status,E.effective_start_date,E.effective_end_date,\
+        ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id, ED.services_id,CS.hims_m_category_speciality_mappings_id,CS.category_id,CS.speciality_id,\
+        CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date\
+        from hims_d_employee E,hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
+         Where E.record_status='A' and ED.record_status='A' and CS.record_status='A' and E.hims_d_employee_id=ED.employee_id and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id AND " + where.condition, where.values, function (error, result) {
+        if (error) {
+          (0, _utils.releaseDBConnection)(db, connection);
           next(error);
         }
         req.records = result;
@@ -194,9 +430,93 @@ var updateEmployee = function updateEmployee(req, res, next) {
     next(e);
   }
 };
+
+//created by irfan: to get eployee details
+var getEmployeeCategory = function getEmployeeCategory(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    db.getConnection(function (error, connection) {
+      connection.query("select hims_m_category_speciality_mappings_id, category_id, speciality_id ,C.hims_employee_category_id,C.employee_category_code,C.employee_category_name,\
+        C.employee_category_desc from hims_m_category_speciality_mappings CS,hims_d_employee_category C\
+         where CS.record_status='A' and C.record_status='A' and  CS.category_id=C.hims_employee_category_id and speciality_id=?", [req.query.speciality_id], function (error, result) {
+        if (error) {
+          (0, _utils.releaseDBConnection)(db, connection);
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Doctor Service Commission
+var getDoctorServiceCommission = function getDoctorServiceCommission(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    var input = (0, _extend2.default)({}, req.query);
+
+    db.getConnection(function (error, connection) {
+      connection.query("select hims_m_doctor_service_commission_id,provider_id,services_id,service_type_id,op_cash_commission_percent,\
+        op_credit_commission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
+         from hims_m_doctor_service_commission where record_status='A'and provider_id=?", [input.provider_id], function (error, result) {
+        if (error) {
+          (0, _utils.releaseDBConnection)(db, connection);
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Doctor Service  type Commission
+var getDoctorServiceTypeCommission = function getDoctorServiceTypeCommission(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    var input = (0, _extend2.default)({}, req.query);
+
+    db.getConnection(function (error, connection) {
+      connection.query("select hims_m_doctor_service_type_commission_id,provider_id,service_type_id,\
+        op_cash_comission_percent,op_credit_comission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
+         from hims_m_doctor_service_type_commission where record_status='A' and provider_id=?", [input.provider_id], function (error, result) {
+        if (error) {
+          (0, _utils.releaseDBConnection)(db, connection);
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployee: addEmployee,
   getEmployee: getEmployee,
-  updateEmployee: updateEmployee
+  updateEmployee: updateEmployee,
+  getEmployeeDetails: getEmployeeDetails,
+  getEmployeeCategory: getEmployeeCategory,
+  getDoctorServiceCommission: getDoctorServiceCommission,
+  getDoctorServiceTypeCommission: getDoctorServiceTypeCommission
 };
 //# sourceMappingURL=employee.js.map

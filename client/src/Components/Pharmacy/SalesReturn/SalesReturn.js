@@ -8,26 +8,21 @@ import AppBar from "@material-ui/core/AppBar";
 import {
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
-  changeTexts,
   getCtrlCode,
   ClearData,
-  Patientchange,
   SavePosEnrty,
   PostPosEntry,
-  POSSearch,
-  LocationchangeTexts
+  POSSearch
 } from "./SalesReturnEvents";
 import "./SalesReturn.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
 import ItemListsReturn from "./ItemListsReturn/ItemListsReturn";
 import MyContext from "../../../utils/MyContext";
 import POSIOputs from "../../../Models/POS";
@@ -220,8 +215,8 @@ class SalesReturn extends Component {
                     }}
                   />
                   <h6>
-                    {this.state.patient_code
-                      ? this.state.patient_code
+                    {this.state.location_description
+                      ? this.state.location_description
                       : "Location"}
                   </h6>
                 </div>
@@ -233,9 +228,9 @@ class SalesReturn extends Component {
                     }}
                   />
                   <h6>
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : "Visit Name"}
+                    {this.state.visit_code
+                      ? this.state.visit_code
+                      : "Visit Code"}
                   </h6>
                 </div>
               </div>

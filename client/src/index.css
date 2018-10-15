@@ -21,10 +21,9 @@
     cursor: pointer; }
   :global .bordered-layout {
     border: 1px solid #c1c1c1;
-    min-height: 70px;
-    max-height: 150px;
+    height: 18vh;
     overflow: auto;
-    border-radius: 0 0 5px 5px; }
+    border-radius: 5px; }
     :global .bordered-layout ul {
       margin: 0px;
       padding: 0px; }
@@ -36,6 +35,16 @@
         font-size: 0.85rem; }
         :global .bordered-layout ul li.active {
           background: #eafffd; }
+        :global .bordered-layout ul li span {
+          width: 80%;
+          font-size: 0.8rem; }
+        :global .bordered-layout ul li i {
+          cursor: pointer;
+          padding: 2px 5px 0 0;
+          color: #58595b;
+          font-size: 0.7rem; }
+        :global .bordered-layout ul li i:hover {
+          color: red; }
       :global .bordered-layout ul li:nth-child(odd) {
         background: #f2f2f2; }
       :global .bordered-layout ul li:nth-child(even) {
@@ -244,8 +253,6 @@
     color: #333;
     background: #fff;
     border: 0; }
-  :global .portlet-body {
-    min-height: 30vh; }
   :global .actions .btn.btn-circle {
     width: 28px;
     height: 28px;
@@ -373,8 +380,8 @@
   :global .mrgn-tp-auto {
     margin-top: auto; }
   :global .pain-scale-ul {
-    margin: auto;
-    padding: auto;
+    margin: 0;
+    padding: 0;
     list-style: none; }
     :global .pain-scale-ul li {
       background: url("./assets/images/pain_scale.png") no-repeat center transparent;
@@ -382,7 +389,7 @@
       height: 31px;
       display: inline-block;
       cursor: pointer;
-      margin-right: 10px; }
+      margin-right: 3.3%; }
     :global .pain-scale-ul .pain-1 {
       background-position: 0px 0px; }
     :global .pain-scale-ul .pain-2 {
@@ -462,8 +469,7 @@
       border-top: 1px dashed #e0e0e0;
       padding-top: 4px;
       padding-bottom: 4px;
-      height: 40px;
-      margin-top: 15px; }
+      height: 40px; }
       :global .algaeh-modal .popupFooter .button-left {
         float: left;
         margin-right: 10px;
@@ -541,7 +547,7 @@
         min-height: 30vh;
         max-height: 70vh;
         overflow: auto;
-        padding: 15px; }
+        padding: 15px 15px 0; }
       :global .algaeh-modal-Ar .popupInner .popRightDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -552,8 +558,7 @@
       border-top: 1px dashed #e0e0e0;
       padding-top: 4px;
       padding-bottom: 4px;
-      height: 40px;
-      margin-top: 15px; }
+      height: 40px; }
       :global .algaeh-modal-Ar .popupFooter .button-left {
         float: left;
         margin-right: 10px;

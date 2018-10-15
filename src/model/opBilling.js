@@ -110,12 +110,15 @@ let addOpBIlling = (req, res, next) => {
                   .then(receiptData => {
                     connection.commit(error => {
                       if (error) {
-                        releaseDBConnection(db, connection);
-                        next(error);
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
                       }
                       req.records = receiptData;
                       if (billingCounter != 0)
                         billingCounter = billingCounter - 1;
+                      releaseDBConnection(db, connection);
                       next();
                     });
                   })
@@ -240,8 +243,8 @@ let selectBill = (req, res, next) => {
           "'",
 
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -280,8 +283,8 @@ let getPednigBills = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;

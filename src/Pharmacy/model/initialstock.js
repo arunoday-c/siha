@@ -143,6 +143,7 @@ let addPharmacyInitialStock = (req, res, next) => {
                           next(error);
                         });
                       }
+                      releaseDBConnection(db, connection);
                       req.records = { document_number: documentCode };
                       next();
                     });
@@ -208,10 +209,12 @@ let getPharmacyInitialStock = (req, res, next) => {
                   ...headerResult[0],
                   ...{ pharmacy_stock_detail }
                 };
+                releaseDBConnection(db, connection);
                 next();
               }
             );
           } else {
+            releaseDBConnection(db, connection);
             req.records = headerResult;
             next();
           }
@@ -309,6 +312,7 @@ let updatePharmacyInitialStock = (req, res, next) => {
                       releaseDBConnection(db, connection);
                       next(error);
                     }
+                    releaseDBConnection(db, connection);
                     req.records = records;
                     next();
                   });
@@ -408,6 +412,7 @@ let insertintoItemLocation = (req, res, next) => {
 
         if (req.options == null) {
           req.records = detailResult;
+          releaseDBConnection(db, connection);
           next();
         } else {
           req.options.onSuccess(detailResult);

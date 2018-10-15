@@ -249,6 +249,7 @@ const getPosEntry = $this => {
     afterSuccess: data => {
       debugger;
       data.patient_payable_h = data.patient_payable;
+      data.cash_amount = data.receiveable_amount;
       // data.soldqty = data.quantity;
 
       for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {

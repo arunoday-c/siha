@@ -197,6 +197,7 @@ let addEmployee = (req, res, next) => {
                                 next(error);
                               });
                             }
+                            releaseDBConnection(db, connection);
                             req.records = serviceTypeCommResult;
                             next();
                           });
@@ -210,6 +211,7 @@ let addEmployee = (req, res, next) => {
                             next(error);
                           });
                         }
+                        releaseDBConnection(db, connection);
                         req.records = results;
                         next();
                       });
@@ -219,6 +221,7 @@ let addEmployee = (req, res, next) => {
               );
             } else {
               req.records = result;
+              releaseDBConnection(db, connection);
               next();
             }
 
@@ -283,6 +286,10 @@ let getEmployee = (req, res, next) => {
         values: condition.values
       },
       result => {
+        for (let i = 0; i < result.length; i++) {
+          result[i].employee_id = result[i].hims_d_employee_id;
+        }
+
         req.records = result;
         next();
       },
@@ -640,12 +647,14 @@ let updateEmployee = (req, res, next) => {
                         next(error);
                       });
                     }
+                    releaseDBConnection(db, connection);
                     req.records = result;
                     next();
                   });
                 });
             } else {
               req.records = result;
+              releaseDBConnection(db, connection);
               next();
             }
           }
@@ -693,8 +702,8 @@ let getEmployeeDetails = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -722,8 +731,8 @@ let getEmployeeCategory = (req, res, next) => {
          where CS.record_status='A' and C.record_status='A' and  CS.category_id=C.hims_employee_category_id and speciality_id=?",
         [req.query.speciality_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -753,8 +762,8 @@ let getDoctorServiceCommission = (req, res, next) => {
          from hims_m_doctor_service_commission where record_status='A'and provider_id=?",
         [input.provider_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -784,8 +793,8 @@ let getDoctorServiceTypeCommission = (req, res, next) => {
          from hims_m_doctor_service_type_commission where record_status='A' and provider_id=?",
         [input.provider_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;

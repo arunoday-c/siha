@@ -220,7 +220,7 @@ class Encounters extends Component {
                             className="pat-code"
                           >
                             {moment(row.encountered_date).format(
-                              "DD-MM-YYYY HH:mm a"
+                              "DD-MM-YYYY HH:MM A"
                             )}
                           </span>
                         );

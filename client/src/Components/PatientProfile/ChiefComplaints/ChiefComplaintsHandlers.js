@@ -14,7 +14,6 @@ const getAllChiefComplaints = ($this, callBack) => {
 };
 
 const getPatientChiefComplaints = $this => {
-  debugger;
   $this.props.getPatientChiefComplaints({
     uri: "/doctorsWorkBench/getPatientChiefComplaints",
     data: {

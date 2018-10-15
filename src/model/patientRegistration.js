@@ -177,6 +177,7 @@ let insertPatientData = (req, res, next) => {
           if (options != null) options.onSuccess(result);
           else {
             req.records = result;
+            connection.release();
             next();
           }
 
@@ -342,9 +343,11 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
         if (error) {
           if (isCommited) {
             dataBase.rollback(() => {
+              connection.release();
               next(error);
             });
           } else {
+            connection.release();
             next(error);
           }
         }
@@ -479,7 +482,7 @@ let updateData = (dataBase, req, callBack) => {
         new Date(),
         inputparam.hims_d_patient_id
       ],
-      (error, reesult) => {
+      (error, result) => {
         if (typeof callBack == "function") callback(error, result);
       }
     );

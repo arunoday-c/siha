@@ -60,19 +60,21 @@ class AddConsultationForm extends Component {
       });
     }
 
-    if (
-      this.props.frontproviders === undefined ||
-      this.props.frontproviders.length === 0
-    ) {
-      this.props.getProviderDetails({
-        uri: "/employee/get",
-        method: "GET",
-        redux: {
-          type: "DOCTOR_GET_DATA",
-          mappingName: "frontproviders"
-        }
-      });
-    }
+    this.props.getProviderDetails({
+      uri: "/employee/get",
+      method: "GET",
+      redux: {
+        type: "DOCTOR_GET_DATA",
+        mappingName: "frontproviders"
+      },
+      afterSuccess: data => {
+        debugger;
+
+        this.setState({
+          doctors: data
+        });
+      }
+    });
 
     if (
       this.props.viewsubdept === undefined ||
@@ -90,6 +92,7 @@ class AddConsultationForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     this.setState(nextProps.PatRegIOputs);
   }
 

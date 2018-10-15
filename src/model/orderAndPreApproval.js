@@ -147,8 +147,8 @@ let updatePreApproval = (req, res, next) => {
       }
 
       connection.query(qry, (error, result) => {
+        releaseDBConnection(db, connection);
         if (error) {
-          releaseDBConnection(db, connection);
           next(error);
         }
         req.records = result;
@@ -364,6 +364,7 @@ let insertOrderedServices = (req, res, next) => {
                             });
                           }
                           debugLog("Here result ", resultPreAprvl);
+                          releaseDBConnection(db, connection);
                           req.records = resultPreAprvl;
                           next();
                         });
@@ -379,6 +380,7 @@ let insertOrderedServices = (req, res, next) => {
                         });
                       }
                       debugLog("resultOrder ", resultOrder);
+                      releaseDBConnection(db, connection);
                       req.records = resultOrder;
                       next();
                     });
@@ -399,6 +401,7 @@ let insertOrderedServices = (req, res, next) => {
                     next(error);
                   });
                 }
+                releaseDBConnection(db, connection);
                 req.records = resultOrder;
                 next();
               });
@@ -433,8 +436,8 @@ let selectOrderServices = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -516,8 +519,8 @@ let updateOrderedServices = (req, res, next) => {
             input.hims_f_ordered_services_id
           ],
           (error, result) => {
+            releaseDBConnection(db, connection);
             if (error) {
-              releaseDBConnection(db, connection);
               next(error);
             }
             req.records = result;
@@ -575,8 +578,8 @@ let updateOrderedServicesBilled = (req, res, next) => {
       debugLog("Query", qry);
       if (qry != "") {
         connection.query(qry, (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           debugLog("Query Result ", result);

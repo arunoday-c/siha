@@ -130,11 +130,13 @@ let insertRadOrderedServices = (req, res, next) => {
             next(error);
           }
           req.records = result;
+          releaseDBConnection(db, connection);
           next();
         }
       );
     });
   } else {
+    releaseDBConnection(db, connection);
     next();
   }
 };

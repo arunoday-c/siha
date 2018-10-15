@@ -14,7 +14,6 @@ import {
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
-  changeTexts,
   getCtrlCode,
   ClearData,
   SavePosEnrty,
@@ -26,10 +25,10 @@ import "./TransferEntry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
+
 import TransferEntryItems from "./TransferEntryItems/TransferEntryItems";
 import MyContext from "../../../utils/MyContext";
-import POSIOputs from "../../../Models/POS";
+import TransferIOputs from "../../../Models/TransferItem";
 
 class TransferEntry extends Component {
   constructor(props) {
@@ -41,7 +40,7 @@ class TransferEntry extends Component {
   }
 
   componentWillMount() {
-    let IOputs = POSIOputs.inputParam();
+    let IOputs = TransferIOputs.inputParam();
     this.setState(IOputs);
   }
 
@@ -245,7 +244,7 @@ class TransferEntry extends Component {
                 }
               }}
             >
-              <TransferEntryItems POSIOputs={this.state} />
+              <TransferEntryItems TransferIOputs={this.state} />
             </MyContext.Provider>
 
             <div className="hptl-phase1-footer">

@@ -23,7 +23,7 @@ class PatientHistory extends Component {
                 </div>
               </div>
 
-              <div className="portlet-body">
+              <div className="portlet-body" style={{minHeight:"20vh"}}>
                 <AlagehFormGroup
                   div={{ className: "" }}
                   label={{
@@ -52,7 +52,7 @@ class PatientHistory extends Component {
                 </div>
               </div>
 
-              <div className="portlet-body">
+              <div className="portlet-body" style={{minHeight:"20vh"}}>
                 <AlagehFormGroup
                   div={{ className: "" }}
                   label={{
@@ -81,7 +81,7 @@ class PatientHistory extends Component {
                 </div>
               </div>
 
-              <div className="portlet-body">
+              <div className="portlet-body" style={{minHeight:"20vh"}}>
                 <AlagehFormGroup
                   div={{ className: "" }}
                   label={{

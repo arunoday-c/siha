@@ -126,6 +126,47 @@ exports.default = function (_ref) {
     next();
   }, _utils.releaseConnection);
 
+  //created by:irfan to get sub departments doctors and clinic
+  api.get("/selectDoctorsAndClinic", _department.selectDoctorsAndClinic, function (req, res, next) {
+    var result = req.records;
+    var departmets = result.departments;
+    var doctors = result.doctors;
+    var dept_Obj = new Array();
+    var doc_Obj = new Array();
+    var d_keys = Object.keys(departmets);
+    d_keys.forEach(function (item, index) {
+      var firstItem = new _nodeLinq.LINQ(departmets[item]).FirstOrDefault();
+      var subDept = new Object();
+      subDept["department_id"] = firstItem.department_id;
+      subDept["sub_dept_id"] = firstItem.sub_dept_id;
+      subDept["sub_department_name"] = firstItem.sub_department_name;
+      subDept["arabic_sub_department_name"] = firstItem.arabic_sub_department_name;
+      subDept["doctors"] = departmets[item];
+      dept_Obj.push(subDept);
+    });
+
+    var doc_keys = Object.keys(doctors);
+    doc_keys.forEach(function (item, index) {
+      var firstItem = new _nodeLinq.LINQ(doctors[item]).FirstOrDefault();
+      var doc = new Object();
+      doc["provider_id"] = firstItem.provider_id;
+      doc["full_name"] = firstItem.full_name;
+      doc["arabic_name"] = firstItem.arabic_name;
+      doc["services_id"] = firstItem.services_id;
+      doc["departments"] = doctors[item];
+      doc_Obj.push(doc);
+    });
+
+    res.status(_httpStatus2.default.ok).json({
+      success: true,
+      records: {
+        departmets: dept_Obj,
+        doctors: doc_Obj
+      }
+    });
+    next();
+  }, _utils.releaseConnection);
+
   return api;
 };
 //# sourceMappingURL=department.js.map

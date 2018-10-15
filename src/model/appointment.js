@@ -41,8 +41,8 @@ let addAppointmentStatus = (req, res, next) => {
           input.updated_by
         ],
         (error, result) => {
-          if (error) {
-            releaseDBConnection(db, connection);
+          releaseDBConnection(db, connection);
+          if (error) {           
             next(error);
           }
           req.records = result;
@@ -80,8 +80,9 @@ let addAppointmentRoom = (req, res, next) => {
           input.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
+          
             next(error);
           }
           req.records = result;
@@ -122,8 +123,9 @@ let addAppointmentClinic = (req, res, next) => {
           input.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
+           
             next(error);
           }
           req.records = result;
@@ -155,8 +157,9 @@ let getAppointmentStatus = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
+          
             next(error);
           }
           req.records = result;
@@ -188,8 +191,9 @@ let getAppointmentRoom = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
+           
             next(error);
           }
           req.records = result;
@@ -221,8 +225,9 @@ let getAppointmentClinic = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
+           
             next(error);
           }
           req.records = result;
@@ -289,12 +294,14 @@ let updateAppointmentStatus = (req, res, next) => {
                   }
 
                   connection.commit(error => {
+                   
                     if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
+                      connection.rollback(() => { 
+                        releaseDBConnection(db, connection);                      
                         next(error);
                       });
                     }
+                   
                     req.records = result;
                     next();
                   });
@@ -308,6 +315,7 @@ let updateAppointmentStatus = (req, res, next) => {
                     next(error);
                   });
                 }
+                releaseDBConnection(db, connection);
                 req.records = result;
                 next();
               });
@@ -345,7 +353,7 @@ let updateAppointmentRoom = (req, res, next) => {
           input.hims_d_appointment_room_id
         ],
         (error, result) => {
-          connection.release();
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
           }
@@ -385,7 +393,7 @@ let updateAppointmentClinic = (req, res, next) => {
           input.hims_d_appointment_clinic_id
         ],
         (error, result) => {
-          connection.release();
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
           }
@@ -540,6 +548,7 @@ let BACKUPaddDoctorsSchedule = (req, res, next) => {
                             next(error);
                           });
                         }
+                        releaseDBConnection(db, connection);
                         req.records = schedule_detailResult;
                         next();
                       });
@@ -548,6 +557,7 @@ let BACKUPaddDoctorsSchedule = (req, res, next) => {
                 }
               }
             } else {
+              releaseDBConnection(db, connection);
               req.records = { message: "please select doctors" };
               next();
             }
@@ -849,6 +859,7 @@ let addDoctorsSchedule = (req, res, next) => {
                                             next(error);
                                           });
                                         }
+                                        releaseDBConnection(db, connection);
                                         req.records = schedule_detailResult;
                                         next();
                                       });
@@ -904,6 +915,7 @@ let addDoctorsSchedule = (req, res, next) => {
                                     next(error);
                                   });
                                 }
+                                releaseDBConnection(db, connection);
                                 req.records = schedule_detailResult;
                                 next();
                               });
@@ -1001,8 +1013,9 @@ let addLeaveOrModifySchedule = (req, res, next) => {
           input.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
+            
             next(error);
           }
           req.records = result;
@@ -1078,12 +1091,14 @@ let getDoctorsScheduledList = (req, res, next) => {
                   outputArray.push(result[i]);
                   if (i == result.length - 1) {
                     req.records = outputArray;
+                    releaseDBConnection(db, connection);
                     next();
                   }
                 }
               );
             }
           } else {
+            releaseDBConnection(db, connection);
             req.records = result;
             next();
           }
@@ -1162,6 +1177,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
                   outputArray.push(obj);
                   if (i == result.length - 1) {
                     req.records = outputArray;
+                    releaseDBConnection(db, connection);
                     next();
                   }
                 }
@@ -1172,6 +1188,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
               // }
             }
           } else {
+            releaseDBConnection(db, connection);
             req.records = result;
             next();
           }
@@ -1245,15 +1262,17 @@ let getDoctorScheduleToModify = (req, res, next) => {
                     .ToArray();
 
                   req.records = finResult;
-
+                  releaseDBConnection(db, connection);
                   next();
                 } else {
+                  releaseDBConnection(db, connection);
                   req.records = result;
                   next();
                 }
               }
             );
           } else {
+            releaseDBConnection(db, connection);
             req.records = result;
             next();
           }
@@ -1345,7 +1364,7 @@ let updateDoctorScheduleDateWise = (req, res, next) => {
                         next(error);
                       });
                     }
-
+                    releaseDBConnection(db, connection);
                     req.records = updateModResult;
                     next();
                   });
@@ -1387,7 +1406,7 @@ let updateDoctorScheduleDateWise = (req, res, next) => {
                           next(error);
                         });
                       }
-
+                      releaseDBConnection(db, connection);
                       req.records = results;
                       next();
                     });
@@ -1401,7 +1420,7 @@ let updateDoctorScheduleDateWise = (req, res, next) => {
                       next(error);
                     });
                   }
-
+                  releaseDBConnection(db, connection);
                   req.records = result;
                   next();
                 });
@@ -1444,10 +1463,11 @@ let deleteDoctorFromSchedule = (req, res, next) => {
         (error, result) => {
           if (error) {
             connection.rollback(() => {
-              releaseDBConnection(db, connection);
+             
               next(error);
             });
           }
+          releaseDBConnection(db, connection);
           req.records = result;
           next();
         }
@@ -1512,11 +1532,11 @@ let updateSchedule = (req, res, next) => {
         (error, result) => {
           if (error) {
             connection.rollback(() => {
-              releaseDBConnection(db, connection);
+              
               next(error);
             });
           }
-
+          releaseDBConnection(db, connection);
           debugLog("result:", result);
           req.records = result;
           next();
@@ -1650,6 +1670,7 @@ let addDoctorToExistingSchedule = (req, res, next) => {
                           message: "schedule already exist",
                           schedule_exist: true
                         };
+                        releaseDBConnection(db, connection);
                         next();
                       } else {
                         //add to schedule
@@ -1712,6 +1733,7 @@ let addDoctorToExistingSchedule = (req, res, next) => {
                                         next(error);
                                       });
                                     }
+                                    releaseDBConnection(db, connection);
                                     req.records = schedule_detailResult;
                                     next();
                                   });
@@ -1720,6 +1742,7 @@ let addDoctorToExistingSchedule = (req, res, next) => {
                             }
                           }
                         } else {
+                          releaseDBConnection(db, connection);
                           req.records = { message: "please select doctors" };
                           next();
                         }
@@ -1784,6 +1807,7 @@ let addDoctorToExistingSchedule = (req, res, next) => {
                                   next(error);
                                 });
                               }
+                              releaseDBConnection(db, connection);
                               req.records = schedule_detailResult;
                               next();
                             });
@@ -1942,6 +1966,7 @@ let BAckupaddDoctorToExistingSchedule = (req, res, next) => {
                           next(error);
                         });
                       }
+                      releaseDBConnection(db, connection);
                       req.records = schedule_detailResult;
                       next();
                       // connection.commit(error => {
@@ -1959,6 +1984,7 @@ let BAckupaddDoctorToExistingSchedule = (req, res, next) => {
                 }
               }
             } else {
+              releaseDBConnection(db, connection);
               req.records = { message: "please select doctors" };
               next();
             }
@@ -2015,8 +2041,9 @@ let addPatientAppointment = (req, res, next) => {
           input.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
+            
             next(error);
           }
           req.records = result;
@@ -2078,8 +2105,9 @@ let updatePatientAppointment = (req, res, next) => {
           input.hims_f_patient_appointment_id
         ],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            connection.release();
+         
             next(error);
           }
           req.records = results;
@@ -2124,8 +2152,9 @@ let getPatientAppointment = (req, res, next) => {
           where.condition,
         where.values,
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
+           
             next(error);
           }
           req.records = result;

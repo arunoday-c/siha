@@ -77,11 +77,9 @@ let getPatientInsurance = (req, res, next) => {
             patientInsuranceModel.patient_visit_id
           ],
           (error, result) => {
+            releaseDBConnection(db, connection);
             if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
+              next(error);
             }
             req.records = result;
             next();
@@ -115,11 +113,9 @@ let getPatientInsurance = (req, res, next) => {
 
           [patientInsuranceModel.patient_id, patientInsuranceModel.patient_id],
           (error, result) => {
+            releaseDBConnection(db, connection);
             if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
+              next(error);
             }
             req.records = result;
             next();
@@ -219,6 +215,7 @@ let addPatientInsuranceData = (req, res, next) => {
         } else {
           if (req.options == null) {
             req.records = resdata;
+            releaseDBConnection(db, connection);
             next();
           } else {
             req.options.onSuccess(resdata);
@@ -300,11 +297,9 @@ let addPatientInsurance = (connection, req, res, next) => {
         new Date()
       ],
       (error, resdata) => {
+        releaseDBConnection(db, connection);
         if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
+          next(error);
         }
         req.records = resdata;
         next();
@@ -341,8 +336,8 @@ let getListOfInsuranceProvider = (req, res, next) => {
         where.values,
 
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -382,8 +377,8 @@ let getSubInsurance = (req, res, next) => {
         where.values,
 
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -473,8 +468,8 @@ let addInsuranceProvider = (req, res, next) => {
           inputparam.created_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -562,8 +557,8 @@ let updateInsuranceProvider = (req, res, next) => {
           inputparam.hims_d_insurance_provider_id
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -723,8 +718,8 @@ let addNetwork = (req, res, next) => {
           inputparam.record_status
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -885,8 +880,8 @@ let NetworkOfficeMaster = (req, res, next) => {
           inputparam.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1222,6 +1217,7 @@ let addPlanAndPolicy = (req, res, next) => {
                           next(error);
                         });
                       }
+                      releaseDBConnection(db, connection);
                       req.records = resultoff;
                       next();
                     });
@@ -1256,8 +1252,8 @@ let deleteSubInsurance = (req, res, next) => {
          updated_by=?,updated_date=? WHERE hims_d_insurance_sub_id=?",
         [req.body.updated_by, new Date(), req.body.hims_d_insurance_sub_id],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1297,8 +1293,8 @@ let getPriceList = (req, res, next) => {
         where.values,
 
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1341,8 +1337,9 @@ let getNetworkAndNetworkOfficRecords = (req, res, next) => {
         and net.record_status='A' and netoff.record_status='A';",
         [insuranceProviderId],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
+            
             next(error);
           }
           req.records = result;
@@ -1611,6 +1608,7 @@ let updateNetworkAndNetworkOffice = (req, res, next) => {
                         next(error);
                       });
                     }
+                    releaseDBConnection(db, connection);
                     req.records = results;
                     next();
                   });

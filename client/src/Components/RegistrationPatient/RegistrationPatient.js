@@ -84,22 +84,21 @@ class RegistrationPatient extends Component {
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
     ) {
-      debugger;
       this.getCtrlCode(this.props.patient_code);
     }
-    if (
-      this.props.provider_id !== undefined &&
-      this.props.provider_id.length !== 0
-    ) {
-      this.setState({ provider_id: this.props.provider_id });
-    }
+    // if (
+    //   this.props.provider_id !== undefined &&
+    //   this.props.provider_id.length !== 0
+    // ) {
+    //   this.setState({ provider_id: this.props.provider_id });
+    // }
 
-    if (
-      this.props.sub_department_id !== undefined &&
-      this.props.sub_department_id.length !== 0
-    ) {
-      this.setState({ sub_department_id: this.props.sub_department_id });
-    }
+    // if (
+    //   this.props.sub_department_id !== undefined &&
+    //   this.props.sub_department_id.length !== 0
+    // ) {
+    //   this.setState({ sub_department_id: this.props.sub_department_id });
+    // }
   }
 
   ClearData(e) {
@@ -281,6 +280,7 @@ class RegistrationPatient extends Component {
     AlgaehLoader({ show: false });
   }
   getCtrlCode(patcode) {
+    debugger;
     let $this = this;
 
     AlgaehLoader({ show: true });
@@ -294,15 +294,24 @@ class RegistrationPatient extends Component {
         mappingName: "patients"
       },
       afterSuccess: data => {
+        debugger;
         if (data.response === undefined) {
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.existingPatient = true;
+          debugger;
+          data.patientRegistration.provider_id = this.props.provider_id || null;
+          data.patientRegistration.doctor_id = this.props.provider_id || null;
+          data.patientRegistration.sub_department_id =
+            this.props.sub_department_id || null;
 
+          // this.props.provider_id
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
-          $this.setState(data.patientRegistration);
+          $this.setState(data.patientRegistration, () => {
+            debugger;
+          });
 
           $this.props.getPatientInsurance({
             uri: "/insurance/getPatientInsurance",
@@ -319,6 +328,10 @@ class RegistrationPatient extends Component {
             data.patientRegistration.patient_id =
               data.patientRegistration.hims_d_patient_id;
             data.patientRegistration.existingPatient = true;
+            data.patientRegistration.provider_id =
+              this.props.provider_id || null;
+
+            data.patientRegistration.doctor_id = this.props.provider_id || null;
 
             data.patientRegistration.filePreview =
               "data:image/png;base64, " + data.patient_Image;

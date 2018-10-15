@@ -11,12 +11,14 @@ import {
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext.js";
-import { texthandle, radioChange } from "./ItemDetailsEvents";
+import { texthandle, radioChange, BatchExpRequired } from "./ItemDetailsEvents";
 
 class ItemDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      batchexpreq: false
+    };
   }
 
   componentWillMount() {
@@ -197,7 +199,7 @@ class ItemDetails extends Component {
                 </div>
                 <div className="row card-deck panel-layout">
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-2" }}
                     label={{
                       fieldName: "form_id"
                     }}
@@ -215,7 +217,7 @@ class ItemDetails extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-2" }}
                     label={{
                       fieldName: "storage_id"
                     }}
@@ -232,7 +234,7 @@ class ItemDetails extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-2" }}
                     label={{
                       fieldName: "service_id"
                     }}
@@ -251,7 +253,22 @@ class ItemDetails extends Component {
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
-                  <div className="col-lg-3" style={{ marginTop: "23px" }}>
+
+                  <div
+                    className="customCheckbox col-lg-2"
+                    style={{ border: "none", marginTop: "28px" }}
+                  >
+                    <label className="checkbox" style={{ color: "#212529" }}>
+                      <input
+                        type="checkbox"
+                        name="Allow POS"
+                        checked={this.state.batchexpreq}
+                        onChange={BatchExpRequired.bind(this, this)}
+                      />
+                      <span style={{ fontSize: "0.8rem" }}>Allow POS</span>
+                    </label>
+                  </div>
+                  <div className="col-lg-2" style={{ marginTop: "23px" }}>
                     <div className="customRadio">
                       <label className="radio inline">
                         <input
