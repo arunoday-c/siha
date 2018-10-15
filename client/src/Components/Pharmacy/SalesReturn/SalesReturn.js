@@ -215,8 +215,8 @@ class SalesReturn extends Component {
                     }}
                   />
                   <h6>
-                    {this.state.patient_code
-                      ? this.state.patient_code
+                    {this.state.location_description
+                      ? this.state.location_description
                       : "Location"}
                   </h6>
                 </div>
@@ -228,9 +228,9 @@ class SalesReturn extends Component {
                     }}
                   />
                   <h6>
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : "Visit Name"}
+                    {this.state.visit_code
+                      ? this.state.visit_code
+                      : "Visit Code"}
                   </h6>
                 </div>
               </div>

@@ -43,7 +43,7 @@ class TransferEntryItems extends Component {
   }
 
   componentWillMount() {
-    let InputOutput = this.props.POSIOputs;
+    let InputOutput = this.props.TransferIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
@@ -88,7 +88,7 @@ class TransferEntryItems extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.POSIOputs);
+    this.setState(nextProps.TransferIOputs);
   }
 
   render() {
