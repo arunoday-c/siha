@@ -1,12 +1,12 @@
-import AlgaehSearch from "../../Wrapper/globalSearch";
-import FrontDesk from "../../../Search/FrontDesk.json";
-import spotlightSearch from "../../../Search/spotlightSearch.json";
+// import AlgaehSearch from "../../Wrapper/globalSearch";
+// import FrontDesk from "../../../Search/FrontDesk.json";
+// import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import RequisitionIOputs from "../../../Models/Requisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
+// import { successfulMessage } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;

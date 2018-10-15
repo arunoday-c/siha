@@ -56,6 +56,10 @@ var whereCondition = function whereCondition(options) {
   var i = 0;
   Object.keys(options).forEach(function (key) {
     condition += "(" + key + '=? or "ALL"=?)';
+    if (options[key] == null || options[key] == "null") {
+      options[key] = "ALL";
+    }
+
     if (i != total - 1) condition += " AND ";
     values.push(options[key]);
     values.push(options[key]);

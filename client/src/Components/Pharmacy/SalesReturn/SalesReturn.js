@@ -8,26 +8,21 @@ import AppBar from "@material-ui/core/AppBar";
 import {
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
-  changeTexts,
   getCtrlCode,
   ClearData,
-  Patientchange,
   SavePosEnrty,
   PostPosEntry,
-  POSSearch,
-  LocationchangeTexts
+  POSSearch
 } from "./SalesReturnEvents";
 import "./SalesReturn.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
 import ItemListsReturn from "./ItemListsReturn/ItemListsReturn";
 import MyContext from "../../../utils/MyContext";
 import POSIOputs from "../../../Models/POS";

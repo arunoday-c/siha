@@ -29,20 +29,16 @@ exports.default = function (_ref) {
       db = _ref.db;
 
   var api = (0, _express.Router)();
-  api.post("/add", _frontDesk.addFrontDesk,
-  // (req, res, next) => {
-  //   debugLog("Data:");
-  //   if (req.body.patient_Image != null) {
-  //     downloadImage(
-  //       req.body.patient_Image,
-  //       req.body.patient_code,
-  //       req.body.patient_code
-  //     );
-  //     delete req.body.patient_Image;
-  //   }
-  //   next();
-  // },
-  function (req, res, next) {
+  api.post("/add", _frontDesk.addFrontDesk, function (req, res, next) {
+    (0, _logging.debugLog)("Data: ", req.body.patient_Image);
+    (0, _logging.debugLog)("req.body: ", req.body);
+    if (req.body.patient_Image != null) {
+      (0, _logging.debugLog)("Download Image : ");
+      (0, _images.downloadImage)(req.body.patient_Image, req.body.patient_code, req.body.patient_code);
+      delete req.body.patient_Image;
+    }
+    next();
+  }, function (req, res, next) {
     (0, _logging.debugLog)("Data1:");
     res.status(_httpStatus2.default.ok).json({
       success: true,
