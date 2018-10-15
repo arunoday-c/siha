@@ -172,6 +172,10 @@ var _mrd = require("../controller/mrd");
 
 var _mrd2 = _interopRequireDefault(_mrd);
 
+var _requisitionEntry = require("../Pharmacy/controller/requisitionEntry");
+
+var _requisitionEntry2 = _interopRequireDefault(_requisitionEntry);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = (0, _express2.default)();
@@ -221,6 +225,7 @@ var router = (0, _express2.default)();
   router.use("/pharmacyGlobal", (0, _pharmacyGlobal2.default)({ config: _keys2.default, db: db }));
   router.use("/posEntry", (0, _posEntry2.default)({ config: _keys2.default, db: db }));
   router.use("/mrd", (0, _mrd2.default)({ config: _keys2.default, db: db }));
+  router.use("/requisitionEntry", (0, _requisitionEntry2.default)({ config: _keys2.default, db: db }));
 });
 
 exports.default = router;

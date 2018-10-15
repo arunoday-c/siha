@@ -45,6 +45,7 @@ var apiAuth = function apiAuth(req, res, next) {
     }
 
     var inputData = (0, _extend2.default)(authModel, getUserNamePassWord(authHeader));
+
     if (inputData.username == null || inputData.username == "") {
       next(_httpStatus2.default.generateError(_httpStatus2.default.badRequest, "User name can not blank"));
     }
