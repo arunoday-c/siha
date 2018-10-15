@@ -709,6 +709,8 @@ textarea {
   border: 1px solid #d3d3d3 !important;
   border-radius: 4px !important;
   width: 100%;
+  resize: none;
+  min-height: 85px;
 }
 // Report Styles Start
 
