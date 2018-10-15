@@ -317,16 +317,19 @@ let addVisit = (req, res, next) => {
           insertVisitData(connection, req, res, (error, result) => {
             if (error) {
               connection.rollback(() => {
+                releaseDBConnection(req.db, connection);
                 next(error);
               });
             }
             connection.commit(error => {
               if (error) {
                 connection.rollback(() => {
+                  releaseDBConnection(req.db, connection);
                   next(error);
                 });
               }
               req.records = result;
+              releaseDBConnection(req.db, connection);
               next();
             });
           });
@@ -353,15 +356,18 @@ let addVisit = (req, res, next) => {
                 insertVisitData(connection, req, res, (error, result) => {
                   if (error) {
                     connection.rollback(() => {
+                      releaseDBConnection(req.db, connection);
                       next(error);
                     });
                   }
                   connection.commit(error => {
                     if (error) {
                       connection.rollback(() => {
+                        releaseDBConnection(req.db, connection);
                         next(error);
                       });
                     }
+                    releaseDBConnection(req.db, connection);
                     req.records = result;
                     next();
                   });

@@ -152,7 +152,8 @@ let deleteVisitType = (req, res, next) => {
       },
       error => {
         next(error);
-      }
+      },
+      true
     );
   } catch (e) {
     next(e);
