@@ -147,11 +147,17 @@ let getPatientChiefComplaint = (req, res, next) => {
 
 //created by irfan: to  get Patient Diagnosis
 let getPatientDiagnosis = (req, res, next) => {
+  let selectWhere = {
+    episode_id: "ALL",
+    patient_id: "ALL"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
       connection.query(
