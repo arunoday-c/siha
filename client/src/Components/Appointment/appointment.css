@@ -5,6 +5,12 @@
 
 .appointment .appointment-inner-cntr {
   width: 2900px; }
+  .appointment .appointment-inner-cntr span.noDoctor {
+    display: inline-block;
+    font-size: 1.4rem;
+    margin: 5% 0 6% 16%;
+    text-align: center;
+    color: #a7a7a7; }
 
 .appointment .my-calendar {
   text-align: center;
