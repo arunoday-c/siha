@@ -286,6 +286,10 @@ let getEmployee = (req, res, next) => {
         values: condition.values
       },
       result => {
+        for (let i = 0; i < result.length; i++) {
+          result[i].employee_id = result[i].hims_d_employee_id;
+        }
+
         req.records = result;
         next();
       },

@@ -110,14 +110,21 @@ class HistoricalData extends Component {
               pivotBy={["visit_date"]}
               columns={[
                 {
-                  accessor: "visit_date"
+                  accessor: "visit_date",
+                  Cell: props => (
+                    <span>{moment(props.visit_date).format("DD-MM-YYYY")}</span>
+                  )
                 },
                 {
                   Header: "Recorded Time",
-                  accessor: "visit_time",
-                  cell: row => {
-                    <span>{moment(row.visit_time).format("HH:mm a")}</span>;
-                  }
+                  accessor: "visit_time"
+                  // Cell: row => {
+                  //   return (
+                  //     <span>
+                  //       {moment(row.visit_time, "HH:MM:SS").format("HH:MM A")}
+                  //     </span>
+                  //   );
+                  // }
                 },
                 {
                   Header: "Temp. Oral",
