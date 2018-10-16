@@ -2021,7 +2021,7 @@ let addPatientAppointment = (req, res, next) => {
           input.patient_code,
           input.provider_id,
           input.sub_department_id,
-          input.appointment_date,
+         input.appointment_date,
           input.appointment_from_time,
           input.appointment_to_time,
           input.appointment_status_id,

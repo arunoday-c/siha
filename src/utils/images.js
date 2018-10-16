@@ -1,6 +1,8 @@
 import { debugLog } from "../utils/logging";
 import fs from "fs";
 import path from "path";
+import multer from "multer";
+import mkdirp from "mkdirp";
 let logDirectory = path.join(__dirname, "../../Documents");
 if (!fs.existsSync(logDirectory)) {
   fs.mkdirSync(logDirectory);
@@ -38,8 +40,41 @@ function readFileToBase64(folderName, imageName) {
   //PAT-A-0000377 convert binary data to base64 encoded string
   return bufferFile;
 }
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const _path = path.join(
+      __dirname,
+      "../" + req.ip + "/" + req.body.created_by + "/" + req.body.pageName
+    );
+    mkdirp(_path, error => {
+      if (error) {
+        debugLog("Problem in folder creation to save file ,", error);
+        req.error = error;
+      } else {
+        cb(null, _path);
+      }
+    });
+  },
+  filename: (req, file, cb) => {
+    cb(null, file);
+  }
+});
+const upload = multer({ storage: storage });
+const saveImageInTemp = (req, res, next) => {
+  upload(req, res, error => {
+    if (error) {
+      next(error);
+    }
+    if (req.error != null) {
+      next(req.error);
+    } else {
+      debugLog("Added file", req);
+    }
+  });
+};
 
 module.exports = {
   downloadImage,
-  readFileToBase64
+  readFileToBase64,
+  saveImageInTemp
 };

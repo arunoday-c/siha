@@ -89,8 +89,62 @@ class HistoricalData extends Component {
     });
   }
 
+  //
+
+  getPatientDiagnosis() {
+    algaehApiCall({
+      uri: "/mrd/getPatientDiagnosis",
+      method: "GET",
+      data: {
+        patient_id: Window.global["mrd_patient"]
+      },
+      cancelRequestId: "getPatientDiagnosis",
+      onSuccess: response => {
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          console.log("Diagnosis: ", response.data.records);
+          this.setState({ patientDiagnosis: response.data.records });
+        }
+      },
+      onFailure: error => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getPatientMedication() {
+    algaehApiCall({
+      uri: "/mrd/getPatientMedication",
+      method: "GET",
+      data: {
+        patient_id: Window.global["mrd_patient"]
+      },
+      cancelRequestId: "getPatientMedication",
+      onSuccess: response => {
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          console.log("patientMedication: ", response.data.records);
+          this.setState({ patientMedication: response.data.records });
+        }
+      },
+      onFailure: error => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   componentDidMount() {
     this.getPatientVitals();
+    this.getPatientDiagnosis();
+    this.getPatientMedication();
   }
 
   render() {
@@ -110,14 +164,21 @@ class HistoricalData extends Component {
               pivotBy={["visit_date"]}
               columns={[
                 {
-                  accessor: "visit_date"
+                  accessor: "visit_date",
+                  Cell: props => (
+                    <span>{moment(props.visit_date).format("DD-MM-YYYY")}</span>
+                  )
                 },
                 {
                   Header: "Recorded Time",
-                  accessor: "visit_time",
-                  cell: row => {
-                    <span>{moment(row.visit_time).format("HH:mm a")}</span>;
-                  }
+                  accessor: "visit_time"
+                  // Cell: row => {
+                  //   return (
+                  //     <span>
+                  //       {moment(row.visit_time, "HH:MM:SS").format("HH:MM A")}
+                  //     </span>
+                  //   );
+                  // }
                 },
                 {
                   Header: "Temp. Oral",
@@ -173,52 +234,31 @@ class HistoricalData extends Component {
                 <TreeTable
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
-                  data={_data}
-                  pivotBy={["date_doctor"]}
+                  data={this.state.patientDiagnosis}
+                  pivotBy={["diagnosis_date"]}
                   columns={[
                     {
-                      accessor: "date_doctor"
+                      accessor: "diagnosis_date",
+                      Cell: props => (
+                        <span>{props.diagnosis_date + "HAllalalal"}</span>
+                      )
+                    },
+                    {
+                      Header: "Diagnosis",
+                      accessor: "daignosis_description"
+                    },
+                    {
+                      Header: "Diagnosis Code",
+                      accessor: "daignosis_code"
                     },
 
                     {
-                      Header: "Temp. Oral",
-                      accessor: "oral"
+                      Header: "Diagnosis Type",
+                      accessor: "diagnosis_type"
                     },
                     {
-                      Header: "BP Systole",
-                      accessor: "bpSystole"
-                    },
-                    {
-                      Header: "bp Dyastole",
-                      accessor: "bpdyastole"
-                    },
-                    {
-                      Header: "Pulse",
-                      accessor: "pulse"
-                    },
-                    {
-                      Header: "Respiratory",
-                      accessor: "resp"
-                    },
-                    {
-                      Header: "Blood Sugar",
-                      accessor: "bloodsugar"
-                    },
-                    {
-                      Header: "Height",
-                      accessor: "height"
-                    },
-                    {
-                      Header: "Weight",
-                      accessor: "weight"
-                    },
-                    {
-                      Header: "BMI",
-                      accessor: "bmi"
-                    },
-                    {
-                      Header: "Duration",
-                      accessor: "duration"
+                      Header: "Final Diagnosis",
+                      accessor: "final_daignosis"
                     }
                   ]}
                   defaultPageSize={5}
@@ -306,52 +346,32 @@ class HistoricalData extends Component {
                 <TreeTable
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
-                  data={_data}
-                  pivotBy={["date_doctor"]}
+                  data={this.state.patientMedication}
+                  pivotBy={["start_date"]}
                   columns={[
                     {
-                      accessor: "date_doctor"
+                      accessor: "start_date"
+                    },
+                    {
+                      fieldName: "generic_name",
+                      label: "Generic Name"
+                    },
+                    {
+                      fieldName: "item_description",
+                      label: "Item Description"
                     },
 
                     {
-                      Header: "Temp. Oral",
-                      accessor: "oral"
+                      fieldName: "dosage",
+                      label: "Dosage"
                     },
                     {
-                      Header: "BP Systole",
-                      accessor: "bpSystole"
+                      fieldName: "frequency",
+                      label: "Frequency"
                     },
                     {
-                      Header: "bp Dyastole",
-                      accessor: "bpdyastole"
-                    },
-                    {
-                      Header: "Pulse",
-                      accessor: "pulse"
-                    },
-                    {
-                      Header: "Respiratory",
-                      accessor: "resp"
-                    },
-                    {
-                      Header: "Blood Sugar",
-                      accessor: "bloodsugar"
-                    },
-                    {
-                      Header: "Height",
-                      accessor: "height"
-                    },
-                    {
-                      Header: "Weight",
-                      accessor: "weight"
-                    },
-                    {
-                      Header: "BMI",
-                      accessor: "bmi"
-                    },
-                    {
-                      Header: "Duration",
-                      accessor: "duration"
+                      fieldName: "no_of_days",
+                      label: "No. of Days"
                     }
                   ]}
                   defaultPageSize={5}

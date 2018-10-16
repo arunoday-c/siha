@@ -1,4 +1,5 @@
 import moment from "moment";
+import { saveImageOnServer } from "../../../../../utils/GlobalFunctions";
 let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
   let name = e.name || e.target.name;
@@ -100,7 +101,10 @@ const numberSet = ($this, context, cntrl, e) => {
 };
 
 const onDrop = ($this, file, context, fileType) => {
-  $this.setState({ [file]: fileType[0].preview });
+  debugger;
+  $this.setState({ [file]: fileType[0].preview }, () => {
+    saveImageOnServer({ fileControl: fileType });
+  });
   if (context !== undefined) {
     context.updateState({ [file]: fileType[0].preview });
   }

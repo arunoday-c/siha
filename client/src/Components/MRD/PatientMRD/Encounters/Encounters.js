@@ -121,6 +121,7 @@ class Encounters extends Component {
         encounter_id: enc_id
         //encounter_id: 54
       },
+      cancelRequestId: "getPatientMedication",
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
@@ -220,7 +221,7 @@ class Encounters extends Component {
                             className="pat-code"
                           >
                             {moment(row.encountered_date).format(
-                              "DD-MM-YYYY HH:mm a"
+                              "DD-MM-YYYY HH:MM A"
                             )}
                           </span>
                         );

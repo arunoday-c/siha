@@ -22,7 +22,8 @@ export default {
       ItemList: [],
       updateUomMapResult: [],
       insertItemUomMap: [],
-      service_id: null
+      service_id: null,
+      required_batchno_expiry: "N"
     };
     return output;
   }

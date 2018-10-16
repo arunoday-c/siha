@@ -213,8 +213,10 @@ class Appointment extends Component {
       patient_code: this.state.patient_code,
       provider_id: this.state.apptProvider,
       sub_department_id: this.state.apptSubDept,
-      appointment_date: appt_date,
-      appointment_from_time: this.state.apptFromTime,
+      appointment_date: moment(appt_date).format("YYYY-MM-DD"),
+      appointment_from_time: moment(this.state.apptFromTime, "hh:mm a").format(
+        "HH:mm:ss"
+      ),
       appointment_to_time: to_time,
       appointment_status_id: this.state.appointment_status_id,
       patient_name: this.state.patient_name,
@@ -534,7 +536,7 @@ class Appointment extends Component {
       }
     });
   }
- 
+
   showModal(e) {
     debugger;
     const appt_time = e.currentTarget.getAttribute("appt-time");
@@ -1554,27 +1556,31 @@ class Appointment extends Component {
               <div className="appointment-outer-cntr">
                 <div className="appointment-inner-cntr">
                   {/* Table Start */}
-                  {this.state.appointmentSchedule.length !== 0
-                    ? this.state.appointmentSchedule.map((data, index) => (
-                        <table key={index} className="tg">
-                          <thead>
-                            <tr>
-                              {/* <th className="tg-c3ow">Time</th> */}
-                              <th className="tg-amwm" colSpan="2">
-                                {data.first_name + " " + data.last_name}
-                                {/* Dr. Norman John */}
-                              </th>
-                            </tr>
-                            <tr>
-                              {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
-                              <th className="tbl-subHdg">BOOKED</th>
-                              <th className="tbl-subHdg">STANDBY</th>
-                            </tr>
-                          </thead>
-                          <tbody>{this.generateTimeslots(data)}</tbody>
-                        </table>
-                      ))
-                    : <span className="noDoctor">No Doctors available for the selected criteria</span>}
+                  {this.state.appointmentSchedule.length !== 0 ? (
+                    this.state.appointmentSchedule.map((data, index) => (
+                      <table key={index} className="tg">
+                        <thead>
+                          <tr>
+                            {/* <th className="tg-c3ow">Time</th> */}
+                            <th className="tg-amwm" colSpan="2">
+                              {data.first_name + " " + data.last_name}
+                              {/* Dr. Norman John */}
+                            </th>
+                          </tr>
+                          <tr>
+                            {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                            <th className="tbl-subHdg">BOOKED</th>
+                            <th className="tbl-subHdg">STANDBY</th>
+                          </tr>
+                        </thead>
+                        <tbody>{this.generateTimeslots(data)}</tbody>
+                      </table>
+                    ))
+                  ) : (
+                    <span className="noDoctor">
+                      No Doctors available for the selected criteria
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
