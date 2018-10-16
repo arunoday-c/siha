@@ -158,9 +158,9 @@ let physicalExaminationSubDetails = (req, res, next) => {
           input.updated_by
         ],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -375,9 +375,9 @@ let addReviewOfSysHeader = (req, res, next) => {
               ?,?,?)",
         [input.description, input.created_by, input.updated_by],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -472,9 +472,9 @@ let addAllergy = (req, res, next) => {
           input.updated_by
         ],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -545,9 +545,10 @@ let addChronicalConditions = (req, res, next) => {
               ?,?,?)",
         [input.name, input.created_by, input.updated_by],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
+           
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -629,9 +630,10 @@ let addEncounterReview = (req, res, next) => {
           input.updated_by
         ],
         (error, results) => {
+          releaseDBConnection(db, connection);
           if (error) {
             next(error);
-            releaseDBConnection(db, connection);
+           
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -810,6 +812,7 @@ let updatdePatEncntrStatus = (req, res, next) => {
                           next(error);
                         });
                       }
+                      releaseDBConnection(db, connection);
                       req.records = result;
                       next();
                     }
@@ -1119,7 +1122,6 @@ let addChiefComplaintsElement = (req, res, next) => {
         (error, results) => {
           releaseDBConnection(db, connection);
           if (error) {
-            
             next(error);
           }
           debugLog("Results are recorded...");
@@ -1218,7 +1220,6 @@ let addPatientChiefComplaints = (req, res, next) => {
         (error, Result) => {
           releaseDBConnection(db, connection);
           if (error) {
-            
             next(error);
           }
           req.records = Result;
@@ -1336,8 +1337,8 @@ let deletePatientChiefComplaints = (req, res, next) => {
           req.body.hims_f_episode_chief_complaint_id
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1381,8 +1382,8 @@ let addPatientNewAllergy = (req, res, next) => {
           inputparam.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1534,6 +1535,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
                 next(error);
               });
             }
+            releaseDBConnection(db, connection);
             req.records = updateResult;
             next();
           });
@@ -1581,8 +1583,8 @@ let addPatientDiagnosis = (req, res, next) => {
           })
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1624,8 +1626,8 @@ let addPatientROS = (req, res, next) => {
           inputparam.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1686,6 +1688,7 @@ let updatePatientDiagnosis = (req, res, next) => {
                 next(error);
               });
             }
+            releaseDBConnection(db, connection);
             req.records = result;
             next();
           });
@@ -1721,8 +1724,8 @@ let getReviewOfSystem = (req, res, next) => {
         connection.query(
           "SELECT hims_d_review_of_system_header_id, description FROM hims_d_review_of_system_header where record_status='A'",
           (error, result) => {
+            releaseDBConnection(db, connection);
             if (error) {
-              releaseDBConnection(db, connection);
               next(error);
             }
             req.records = result;
@@ -1843,6 +1846,7 @@ let updatePatientROS = (req, res, next) => {
                 next(error);
               });
             }
+            releaseDBConnection(db, connection);
             req.records = result;
             next();
           });
@@ -1908,8 +1912,8 @@ let addPatientVitals = (req, res, next) => {
           inputparam.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -1953,8 +1957,8 @@ let addPatientPhysicalExamination = (req, res, next) => {
           inputparam.updated_by
         ],
         (error, result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
             next(error);
           }
           req.records = result;
@@ -2019,6 +2023,7 @@ let updatePatientAllergy = (req, res, next) => {
                 next(error);
               });
             }
+            releaseDBConnection(db, connection);
             req.records = result;
             next();
           });
@@ -2436,6 +2441,7 @@ let updatePatientPhysicalExam = (req, res, next) => {
               });
             }
             req.records = result;
+            releaseDBConnection(db, connection);
             next();
           });
         });
