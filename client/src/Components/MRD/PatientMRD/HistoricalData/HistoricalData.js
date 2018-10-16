@@ -347,31 +347,35 @@ class HistoricalData extends Component {
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
                   data={this.state.patientMedication}
-                  pivotBy={["start_date"]}
+                  pivotBy={["prescription_date"]}
                   columns={[
                     {
-                      accessor: "start_date"
+                      accessor: "prescription_date"
                     },
                     {
-                      fieldName: "generic_name",
-                      label: "Generic Name"
+                      accessor: "start_date",
+                      Header: "Start Date"
                     },
                     {
-                      fieldName: "item_description",
-                      label: "Item Description"
+                      accessor: "generic_name",
+                      Header: "Generic Name"
+                    },
+                    {
+                      accessor: "item_description",
+                      Header: "Item Description"
                     },
 
                     {
-                      fieldName: "dosage",
-                      label: "Dosage"
+                      accessor: "dosage",
+                      Header: "Dosage"
                     },
                     {
-                      fieldName: "frequency",
-                      label: "Frequency"
+                      accessor: "frequency",
+                      Header: "Frequency"
                     },
                     {
-                      fieldName: "no_of_days",
-                      label: "No. of Days"
+                      accessor: "no_of_days",
+                      Header: "No. of Days"
                     }
                   ]}
                   defaultPageSize={5}
@@ -384,6 +388,123 @@ class HistoricalData extends Component {
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Nurse's Notes</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <TreeTable
+                  //Most recent 3 rows are expanded
+                  //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  data={_data}
+                  pivotBy={["date_doctor"]}
+                  columns={[
+                    {
+                      accessor: "date_doctor"
+                    },
+                    {
+                      Header: "Temp. Oral",
+                      accessor: "oral"
+                    },
+                    {
+                      Header: "BP Systole",
+                      accessor: "bpSystole"
+                    },
+                    {
+                      Header: "bp Dyastole",
+                      accessor: "bpdyastole"
+                    },
+                    {
+                      Header: "Pulse",
+                      accessor: "pulse"
+                    },
+                    {
+                      Header: "Respiratory",
+                      accessor: "resp"
+                    },
+                    {
+                      Header: "Blood Sugar",
+                      accessor: "bloodsugar"
+                    },
+                    {
+                      Header: "Height",
+                      accessor: "height"
+                    },
+                    {
+                      Header: "Weight",
+                      accessor: "weight"
+                    },
+                    {
+                      Header: "BMI",
+                      accessor: "bmi"
+                    },
+                    {
+                      Header: "Duration",
+                      accessor: "duration"
+                    }
+                  ]}
+                  defaultPageSize={5}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Second Two Sections End */}
+
+        {/* Third Two Sections Start */}
+
+        <div className="row">
+          <div className="col-lg-6">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Attachments</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <TreeTable
+                  //Most recent 3 rows are expanded
+                  //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  data={this.state.patientMedication}
+                  pivotBy={["prescription_date"]}
+                  columns={[
+                    {
+                      accessor: "prescription_date"
+                    },
+                    {
+                      accessor: "start_date",
+                      Header: "Start Date"
+                    },
+                    {
+                      accessor: "generic_name",
+                      Header: "Generic Name"
+                    },
+                    {
+                      accessor: "item_description",
+                      Header: "Item Description"
+                    },
+
+                    {
+                      accessor: "dosage",
+                      Header: "Dosage"
+                    },
+                    {
+                      accessor: "frequency",
+                      Header: "Frequency"
+                    },
+                    {
+                      accessor: "no_of_days",
+                      Header: "No. of Days"
+                    }
+                  ]}
+                  defaultPageSize={5}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Investigations</h3>
                 </div>
               </div>
               <div className="portlet-body">
@@ -445,7 +566,76 @@ class HistoricalData extends Component {
           </div>
         </div>
 
-        {/* Second Two Sections End */}
+        {/* Third Two Sections End */}
+
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Payment History</h3>
+            </div>
+          </div>
+          <div className="portlet-body">
+            <ReactTable
+              data={_data}
+              //pivotBy={["date"]}
+              columns={[
+                {
+                  Header: "Visit Date",
+                  accessor: "date"
+                },
+                {
+                  Header: "Gross Amount",
+                  //accessor: "net_amount"
+                  accessor: "pulse"
+                },
+                {
+                  Header: "Patient Share",
+                  //accessor: "patient_payable"
+                  accessor: "pulse"
+                },
+                {
+                  Header: "Amount Paid",
+                  // accessor: "receivable"
+                  accessor: "pulse"
+                },
+                {
+                  Header: "Due",
+                  // accessor: "credit_amt"
+                  accessor: "pulse"
+                },
+                {
+                  Header: "Primary Insurance",
+                  columns: [
+                    {
+                      Header: "Name"
+                      // accessor: "doctor"
+                    },
+                    {
+                      Header: "Amount"
+                      //accessor: "height"
+                      // accessor: d => d.height
+                    }
+                  ]
+                },
+                {
+                  Header: "Secondary Insurance",
+                  columns: [
+                    {
+                      Header: "Name"
+                      // accessor: "doctor"
+                    },
+                    {
+                      Header: "Amount"
+                      //accessor: "height"
+                      // accessor: d => d.height
+                    }
+                  ]
+                }
+              ]}
+              defaultPageSize={5}
+            />
+          </div>
+        </div>
       </div>
     );
   }

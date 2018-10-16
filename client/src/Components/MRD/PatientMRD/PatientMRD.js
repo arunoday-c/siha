@@ -4,14 +4,52 @@ import { setGlobal } from "../../../utils/GlobalFunctions";
 import Encounters from "./Encounters/Encounters";
 import HistoricalData from "./HistoricalData/HistoricalData";
 import moment from "moment";
+import Enumerable from "linq";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 class PatientMRD extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "encounters"
+      pageDisplay: "encounters",
+      patientAllergies: []
     };
     this.changeTabs = this.changeTabs.bind(this);
+  }
+
+  getPatientAllergies() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientAllergies",
+      method: "GET",
+      data: { patient_id: Window.global["mrd_patient"] },
+      onSuccess: response => {
+        let data = response.data.records;
+        let _allergies = Enumerable.from(data)
+          .groupBy("$.allergy_type", null, (k, g) => {
+            return {
+              allergy_type: k,
+              allergy_type_desc:
+                k === "F"
+                  ? "Food"
+                  : k === "A"
+                    ? "Airborne"
+                    : k === "AI"
+                      ? "Animal  &  Insect"
+                      : k === "C"
+                        ? "Chemical & Others"
+                        : "",
+              allergyList: g.getSource()
+            };
+          })
+          .toArray();
+        this.setState({ patientAllergies: _allergies });
+      },
+      onError: error => {}
+    });
+  }
+
+  componentDidMount() {
+    this.getPatientAllergies();
   }
 
   changeTabs(e) {
@@ -158,6 +196,40 @@ class PatientMRD extends Component {
                   Historical Data
                 </span>
               </li>
+
+              <ul className="float-right patient-quick-info">
+                <li>
+                  <i className="fas fa-allergies" />
+                  <p>
+                    <b>Allergies:</b>
+
+                    {this.state.patientAllergies.map((data, index) => (
+                      <React.Fragment key={index}>
+                        <b>{data.allergy_type_desc}</b>
+                        {data.allergyList.map((allergy, aIndex) => (
+                          <span
+                            key={aIndex}
+                            className={
+                              "listofA-D-D " +
+                              (allergy.allergy_inactive === "Y" ? "red" : "")
+                            }
+                            title={
+                              "Onset Date : " +
+                              allergy.onset_date +
+                              "\n Comment : " +
+                              allergy.comment +
+                              "\n Severity : " +
+                              allergy.severity
+                            }
+                          >
+                            {allergy.allergy_name}
+                          </span>
+                        ))}
+                      </React.Fragment>
+                    ))}
+                  </p>
+                </li>
+              </ul>
             </ul>
           </div>
           {/* Tabs End */}

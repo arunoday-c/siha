@@ -34,7 +34,8 @@ class Appointment extends Component {
       defaultStatus: {},
       patToEdit: {},
       openPatEdit: false,
-      checkInId: null
+      checkInId: null,
+      sub_department_id: null
     };
   }
 
@@ -315,31 +316,42 @@ class Appointment extends Component {
     });
   }
 
-  getAppointmentSchedule() {
-    algaehLoader({ show: true });
-    algaehApiCall({
-      uri: "/appointment/getDoctorScheduleDateWise",
-      method: "GET",
-      data: {
-        sub_dept_id: this.state.sub_department_id,
-        schedule_date: moment(this.state.activeDateHeader).format("YYYY-MM-DD"),
-        provider_id: this.state.provider_id
-      },
-      onSuccess: response => {
-        algaehLoader({ show: false });
-        if (response.data.success) {
-          console.log("Appt Schedule:", response.data.records);
-          this.setState({ appointmentSchedule: response.data.records });
+  getAppointmentSchedule(e) {
+    e.preventDefault();
+
+    if (this.state.sub_department_id === null) {
+      swalMessage({
+        title: "Please Select a Department",
+        type: "warning"
+      });
+    } else {
+      algaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/appointment/getDoctorScheduleDateWise",
+        method: "GET",
+        data: {
+          sub_dept_id: this.state.sub_department_id,
+          schedule_date: moment(this.state.activeDateHeader).format(
+            "YYYY-MM-DD"
+          ),
+          provider_id: this.state.provider_id
+        },
+        onSuccess: response => {
+          algaehLoader({ show: false });
+          if (response.data.success) {
+            console.log("Appt Schedule:", response.data.records);
+            this.setState({ appointmentSchedule: response.data.records });
+          }
+        },
+        onFailure: error => {
+          algaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
-      },
-      onFailure: error => {
-        algaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
+      });
+    }
   }
 
   onSelectedDateHandler(e) {
@@ -1477,54 +1489,59 @@ class Appointment extends Component {
           {/* Calendar Component Ends */}
 
           {/* Filter Bar Start */}
-          <div className="row inner-top-search">
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "department_name"
-              }}
-              selector={{
-                name: "sub_department_id",
-                className: "select-fld",
-                value: this.state.sub_department_id,
-                dataSource: {
-                  textField: "sub_department_name",
-                  valueField: "sub_dept_id",
-                  data: this.state.departments
-                },
-                onChange: this.deptDropDownHandler.bind(this)
-              }}
-              error={this.state.department_error}
-              helperText={this.state.department_error_text}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Filter by Doctor"
-              }}
-              selector={{
-                name: "provider_id",
-                className: "select-fld",
-                value: this.state.provider_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "provider_id",
-                  data: this.state.doctors
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
-
-            <div className="col-lg-1 form-group margin-top-15">
-              <span
-                onClick={this.getAppointmentSchedule.bind(this)}
-                style={{ cursor: "pointer" }}
-                className="fas fa-search fa-2x"
+          <form onSubmit={this.getAppointmentSchedule.bind(this)}>
+            <div className="row inner-top-search">
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "department_name",
+                  isImp: true
+                }}
+                selector={{
+                  name: "sub_department_id",
+                  className: "select-fld",
+                  value: this.state.sub_department_id,
+                  dataSource: {
+                    textField: "sub_department_name",
+                    valueField: "sub_dept_id",
+                    data: this.state.departments
+                  },
+                  onChange: this.deptDropDownHandler.bind(this)
+                }}
+                error={this.state.department_error}
+                helperText={this.state.department_error_text}
               />
+
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3" }}
+                label={{
+                  forceLabel: "Filter by Doctor"
+                }}
+                selector={{
+                  name: "provider_id",
+                  className: "select-fld",
+                  value: this.state.provider_id,
+                  dataSource: {
+                    textField: "full_name",
+                    valueField: "provider_id",
+                    data: this.state.doctors
+                  },
+                  onChange: this.dropDownHandle.bind(this)
+                }}
+              />
+
+              <div className="col-lg-1 form-group margin-top-15">
+                <button
+                  type="submit"
+                  //onClick={this.getAppointmentSchedule.bind(this)}
+                  className="btn btn-primary"
+                >
+                  Load
+                </button>
+              </div>
             </div>
-            <div className="col-lg-5" />
-          </div>
+          </form>
+
           {/* Filter Bar End */}
 
           <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
