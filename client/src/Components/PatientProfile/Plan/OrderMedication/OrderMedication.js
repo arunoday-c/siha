@@ -179,7 +179,7 @@ class OrderMedication extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col" }}
+              div={{ className: "col-lg-3" }}
               label={{
                 forceLabel: "Duration (Days)"
               }}
@@ -196,7 +196,7 @@ class OrderMedication extends Component {
             <AlagehFormGroup
               div={{ className: "col" }}
               label={{
-                forceLabel: "Total Quantity"
+                forceLabel: "Total Qty."
               }}
               textBox={{
                 className: "txt-fld",
@@ -365,9 +365,9 @@ class OrderMedication extends Component {
           </div>
           </div>
           <div className="row" style={{marginTop:5,marginBottom:5}}>
-            <div className="col-lg-10">INSTRUCTIONS: {this.state.followup_comments} </div>
+            <div className="col-lg-9">Instructions: {this.state.followup_comments} </div>
          
-            <div className="col-lg-2">
+            <div className="col-lg-3">
  <button
                 className="btn btn-primary btn-sm"
                 type="button"

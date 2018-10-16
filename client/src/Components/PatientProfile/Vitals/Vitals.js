@@ -473,7 +473,7 @@ class Vitals extends Component {
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
-                    forceLabel: "."
+                    forceLabel: "°C"
                   }}
                   textBox={{
                     className: "txt-fld",
