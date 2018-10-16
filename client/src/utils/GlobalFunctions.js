@@ -1,6 +1,12 @@
 import extend from "extend";
-import { swalMessage } from "../utils/algaehApiCall";
-//import axios from "axios";
+import {
+  swalMessage,
+  algaehApiCall,
+  getToken,
+  getCookie
+} from "../utils/algaehApiCall";
+import axios from "axios";
+import config from "../utils/config.json";
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 
@@ -67,7 +73,7 @@ export function saveImageOnServer(options) {
   const settings = {
     ...{
       fileControl: undefined,
-      pageName: ""
+      pageName: "ABC"
     },
     ...options
   };
@@ -75,8 +81,39 @@ export function saveImageOnServer(options) {
     settings.fileControl.map(file => {
       return new Promise((resolve, reject) => {
         debugger;
+        console.log("File", file);
         let formData = new FormData();
-        formData.append("file", file);
+
+        formData.append("file", file.preview);
+        const headerToken = getToken();
+        const x_app_user_identity = getCookie("keyResources");
+        axios
+          .post(config.baseUrl + "/masters/imageSave", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "x-api-key": headerToken,
+              "x-app-user-identity": x_app_user_identity
+            }
+          })
+          .then(function() {
+            console.log("SUCCESS!!");
+          })
+          .catch(function() {
+            console.log("FAILURE!!");
+          });
+
+        // algaehApiCall({
+        //   contentType: "multipart/form-data",
+        //   data: formData,
+        //   method: "POST",
+        //   uri: "/masters/imageSave",
+        //   onSuccess: result => {
+        //     debugger;
+        //   },
+        //   onFailure: er => {
+        //     debugger;
+        //   }
+        // });
 
         // axios.post("upload_file", formData, {
         //   headers: {

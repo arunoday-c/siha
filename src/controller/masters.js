@@ -18,10 +18,11 @@ import { LINQ } from "node-linq";
 import path from "path";
 import fs from "fs";
 import { getCacheData, setCacheData } from "../utils/caching";
-import { debugLog } from "../utils/logging";
+import { saveImageInTemp } from "../utils/images";
 export default () => {
   let api = Router();
 
+  api.post("/imageSave", saveImageInTemp);
   api.get(
     "/subDeptClinicalNonClinicalAll",
     (req, res, next) => {
