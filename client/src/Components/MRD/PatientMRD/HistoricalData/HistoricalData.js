@@ -141,13 +141,40 @@ class HistoricalData extends Component {
     });
   }
 
+  getPatientPaymentDetails() {
+    algaehApiCall({
+      uri: "/mrd/getPatientPaymentDetails",
+      method: "GET",
+      data: {
+        patient_id: Window.global["mrd_patient"]
+      },
+      cancelRequestId: "getPatientPaymentDetails",
+      onSuccess: response => {
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          console.log("patientMedication: ", response.data.records);
+          this.setState({ patientPayments: response.data.records });
+        }
+      },
+      onFailure: error => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   componentDidMount() {
     this.getPatientVitals();
     this.getPatientDiagnosis();
     this.getPatientMedication();
+    this.getPatientPaymentDetails();
   }
 
   render() {
+    const _patientVitals = this.state.patientVitals;
     return (
       <div className="historical-data">
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
@@ -160,7 +187,7 @@ class HistoricalData extends Component {
             <TreeTable
               //Most recent 3 rows are expanded
               //expanded={{ 0: true }}
-              data={this.state.patientVitals}
+              data={_patientVitals}
               pivotBy={["visit_date"]}
               columns={[
                 {
@@ -171,14 +198,16 @@ class HistoricalData extends Component {
                 },
                 {
                   Header: "Recorded Time",
-                  accessor: "visit_time"
-                  // Cell: row => {
-                  //   return (
-                  //     <span>
-                  //       {moment(row.visit_time, "HH:MM:SS").format("HH:MM A")}
-                  //     </span>
-                  //   );
-                  // }
+                  accessor: "visit_time",
+                  Cell: row => {
+                    console.log("Visit Time", row.value);
+                    debugger;
+                    return (
+                      <span>
+                        {moment(row.value, "HH:MM:SS").format("HH:MM A")}
+                      </span>
+                    );
+                  }
                 },
                 {
                   Header: "Temp. Oral",
@@ -575,61 +604,52 @@ class HistoricalData extends Component {
             </div>
           </div>
           <div className="portlet-body">
-            <ReactTable
-              data={_data}
-              //pivotBy={["date"]}
+            <TreeTable
+              data={this.state.patientPayments}
+              pivotBy={["bill_date"]}
               columns={[
                 {
-                  Header: "Visit Date",
-                  accessor: "date"
+                  accessor: "bill_date"
+                },
+                {
+                  Header: "Bill No.",
+                  accessor: "bill_number"
+                },
+                {
+                  Header: "Doctor",
+                  accessor: "provider_name"
                 },
                 {
                   Header: "Gross Amount",
-                  //accessor: "net_amount"
-                  accessor: "pulse"
+                  accessor: "net_amount"
                 },
                 {
                   Header: "Patient Share",
-                  //accessor: "patient_payable"
-                  accessor: "pulse"
+                  accessor: "patient_payable"
                 },
                 {
                   Header: "Amount Paid",
-                  // accessor: "receivable"
-                  accessor: "pulse"
+                  accessor: "receiveable_amount"
                 },
                 {
                   Header: "Due",
-                  // accessor: "credit_amt"
-                  accessor: "pulse"
+                  accessor: "credit_amount"
                 },
                 {
-                  Header: "Primary Insurance",
-                  columns: [
-                    {
-                      Header: "Name"
-                      // accessor: "doctor"
-                    },
-                    {
-                      Header: "Amount"
-                      //accessor: "height"
-                      // accessor: d => d.height
-                    }
-                  ]
+                  Header: "Primary Insurar",
+                  accessor: "pri_insurance_provider_name"
                 },
                 {
-                  Header: "Secondary Insurance",
-                  columns: [
-                    {
-                      Header: "Name"
-                      // accessor: "doctor"
-                    },
-                    {
-                      Header: "Amount"
-                      //accessor: "height"
-                      // accessor: d => d.height
-                    }
-                  ]
+                  Header: "Primary Insurar Payable",
+                  accessor: "pri_company_payble"
+                },
+                {
+                  Header: "Secondary Insurar",
+                  accessor: "sec_insurance_provider_name"
+                },
+                {
+                  Header: "Secondary Insurar Payable",
+                  accessor: "sec_company_payable"
                 }
               ]}
               defaultPageSize={5}

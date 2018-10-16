@@ -347,8 +347,8 @@ let getPatientPaymentDetails = (req, res, next) => {
                             debugLog("inside insurance:", insResult);
                             outputArray.push({
                               ...billHeadResult[k],
-                              receipt: resultRCPT,
-                              insurance: insResult
+                              ...insResult[0],
+                              receipt: resultRCPT
                             });
                             if (i == allVisits.length - 1) {
                               releaseDBConnection(db, connection);

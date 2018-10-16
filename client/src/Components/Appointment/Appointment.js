@@ -84,32 +84,22 @@ class Appointment extends Component {
       },
       onRowSelect: row => {
         console.log("Selected Row:", row);
-        this.setState(
-          {
-            patient_code: row.patient_code,
-            patient_id: row.hims_d_patient_id,
-            patient_name: row.full_name,
-            age: row.age,
-            date_of_birth: row.date_of_birth,
-            gender: row.gender,
-            contact_number: row.contact_number,
-            email: row.email
-          }
-          // ,
-          // () => {
-          //   setGlobal({
-          //     "FD-STD": "RegistrationPatient",
-          //     "pat-code": this.state.patient_code
-          //   });
-          //   document.getElementById("fd-router").click();
-          // }
-        );
+        this.setState({
+          patient_code: row.patient_code,
+          patient_id: row.hims_d_patient_id,
+          patient_name: row.full_name,
+          age: row.age,
+          date_of_birth: row.date_of_birth,
+          gender: row.gender,
+          contact_number: row.contact_number,
+          email: row.email
+        });
       }
     });
   }
 
-  getPatient(e) {
-    e.preventDefault();
+  getPatient() {
+    //  e.preventDefault();
     if (this.state.patient_code.length === 0) {
       swalMessage({
         title: "Please Enter the Patient Code",
@@ -189,6 +179,7 @@ class Appointment extends Component {
   }
 
   addPatientAppointment(e) {
+    debugger;
     e.preventDefault();
 
     let from_time = this.state.apptFromTime;
