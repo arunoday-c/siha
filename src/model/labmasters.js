@@ -154,7 +154,8 @@ let deleteSection = (req, res, next) => {
       },
       error => {
         next(error);
-      }
+      },
+      true
     );
   } catch (e) {
     next(e);
@@ -310,7 +311,8 @@ let deleteContainer = (req, res, next) => {
       },
       error => {
         next(error);
-      }
+      },
+      true
     );
   } catch (e) {
     next(e);
@@ -468,7 +470,8 @@ let deleteSpecimen = (req, res, next) => {
       },
       error => {
         next(error);
-      }
+      },
+      true
     );
   } catch (e) {
     next(e);
@@ -631,7 +634,8 @@ let deleteAnalytes = (req, res, next) => {
       },
       error => {
         next(error);
-      }
+      },
+      true
     );
   } catch (e) {
     next(e);
@@ -787,7 +791,8 @@ let deleteTestCategory = (req, res, next) => {
       },
       error => {
         next(error);
-      }
+      },
+      true
     );
   } catch (e) {
     next(e);
