@@ -7,6 +7,7 @@ import treeTableHOC from "react-table/lib/hoc/treeTable";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import algaehLoader from "../../../Wrapper/fullPageLoader";
 import moment from "moment";
+import Enumerable from "linq";
 
 const TreeTable = treeTableHOC(ReactTable);
 
@@ -175,6 +176,17 @@ class HistoricalData extends Component {
 
   render() {
     const _patientVitals = this.state.patientVitals;
+    const _groupData = Enumerable.from(this.state.patientPayments)
+      .groupBy("$.prov_date", null, (k, g) => {
+        const _get = Enumerable.from(g.getSource()).firstOrDefault();
+        return {
+          bill_date: _get.bill_date,
+          provider_name: _get.provider_name,
+          list: g.getSource()
+        };
+      })
+      .toArray();
+
     return (
       <div className="historical-data">
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
@@ -604,55 +616,156 @@ class HistoricalData extends Component {
             </div>
           </div>
           <div className="portlet-body">
-            <TreeTable
-              data={this.state.patientPayments}
-              pivotBy={["bill_date"]}
+            <ReactTable
               columns={[
                 {
+                  Header: "Date",
                   accessor: "bill_date"
-                },
-                {
-                  Header: "Bill No.",
-                  accessor: "bill_number"
                 },
                 {
                   Header: "Doctor",
                   accessor: "provider_name"
                 },
                 {
-                  Header: "Gross Amount",
-                  accessor: "net_amount"
+                  Header: "Bill Details",
+                  columns: [
+                    {
+                      Header: "Bill No.",
+                      id: "bill_number",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, index) => (
+                              <div key={index}>{r.bill_number}</div>
+                            ))}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Gross Amt.",
+                      id: "net_amount",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, index) => (
+                              <div key={index}>{r.net_amount}</div>
+                            ))}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Amount Paid",
+                      id: "receiveable_amount",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, index) => (
+                              <div key={index}>{r.receiveable_amount}</div>
+                            ))}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Due",
+                      id: "credit_amount",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, index) => (
+                              <div key={index}>{r.credit_amount}</div>
+                            ))}
+                          </React.Fragment>
+                        );
+                      }
+                    }
+                  ]
                 },
                 {
-                  Header: "Patient Share",
-                  accessor: "patient_payable"
-                },
-                {
-                  Header: "Amount Paid",
-                  accessor: "receiveable_amount"
-                },
-                {
-                  Header: "Due",
-                  accessor: "credit_amount"
-                },
-                {
-                  Header: "Primary Insurar",
-                  accessor: "pri_insurance_provider_name"
-                },
-                {
-                  Header: "Primary Insurar Payable",
-                  accessor: "pri_company_payble"
-                },
-                {
-                  Header: "Secondary Insurar",
-                  accessor: "sec_insurance_provider_name"
-                },
-                {
-                  Header: "Secondary Insurar Payable",
-                  accessor: "sec_company_payable"
+                  Header: "Receipt Details",
+                  columns: [
+                    {
+                      Header: "Receipt Date",
+                      id: "receipt_date",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, i) => {
+                              return (
+                                <React.Fragment key={i}>
+                                  {r.receipt.map((m, index) => (
+                                    <div key={index}>{m.receipt_date}</div>
+                                  ))}
+                                </React.Fragment>
+                              );
+                            })}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Receipt No.",
+                      id: "receipt_number",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, i) => {
+                              return (
+                                <React.Fragment key={i}>
+                                  {r.receipt.map((m, index) => (
+                                    <div key={index}>{m.receipt_number}</div>
+                                  ))}
+                                </React.Fragment>
+                              );
+                            })}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Total Amt.",
+                      id: "total_amount",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, i) => {
+                              return (
+                                <React.Fragment key={i}>
+                                  {r.receipt.map((m, index) => (
+                                    <div key={index}>{m.total_amount}</div>
+                                  ))}
+                                </React.Fragment>
+                              );
+                            })}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Amount Paid",
+                      id: "receiveable_amount",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, i) => {
+                              return (
+                                <React.Fragment key={i}>
+                                  {r.receipt.map((m, index) => (
+                                    <div key={index}>{m.total_amount}</div>
+                                  ))}
+                                </React.Fragment>
+                              );
+                            })}
+                          </React.Fragment>
+                        );
+                      }
+                    }
+                  ]
                 }
               ]}
-              defaultPageSize={5}
+              data={_groupData}
             />
           </div>
         </div>

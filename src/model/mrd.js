@@ -347,6 +347,12 @@ let getPatientPaymentDetails = (req, res, next) => {
                             debugLog("inside insurance:", insResult);
                             outputArray.push({
                               ...billHeadResult[k],
+                              prov_date:
+                                moment(billHeadResult[k].bill_date).format(
+                                  "DD-MM-YYYY"
+                                ) +
+                                " " +
+                                billHeadResult[k].provider_name,
                               ...insResult[0],
                               receipt: resultRCPT
                             });
