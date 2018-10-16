@@ -179,8 +179,21 @@ class Vitals extends Component {
         <Modal open={this.state.openVitalModal}>
           <div className="algaeh-modal">
             <div className="popupHeader">
+                <div className="row">
+                  <div className="col-lg-8">
               <h4>Patient Vitals</h4>
-            </div>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                       onClick={this.handleClose}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             <div className="col-lg-12 popupInner">
               <div
                 className="row"
@@ -290,9 +303,21 @@ class Vitals extends Component {
               </div>
             </div>
             <div className="popupFooter">
-              <button className="btn btn-default" onClick={this.handleClose}>
-                Close
-              </button>
+            <div className="col-lg-12">
+            
+              <div className="row">  
+
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={this.handleClose}
+                >
+                  Close
+                </button>
+              </div>
+              </div>
+            </div>
             </div>
           </div>
         </Modal>
@@ -314,7 +339,6 @@ class Vitals extends Component {
           </div>
 
           <div className="portlet-body">
-            <div className="col-lg-12">
               <div className="row margin-bottom-15">
                 <AlagehFormGroup
                   div={{ className: "col-lg-2" }}
@@ -393,7 +417,7 @@ class Vitals extends Component {
                 <AlagehFormGroup
                   div={{ className: "col-lg-2 vitalTopFld20" }}
                   label={{
-                    forceLabel: "Heart Rate(bpm)",
+                    forceLabel: "HR (bpm)",
                     isImp: false
                   }}
                   textBox={{
@@ -411,7 +435,7 @@ class Vitals extends Component {
                 <AlagehFormGroup
                   div={{ className: "col-lg-2 vitalTopFld25" }}
                   label={{
-                    forceLabel: "Respiratory Rate",
+                    forceLabel: "RR (rpm)",
                     isImp: false
                   }}
                   textBox={{
@@ -427,11 +451,11 @@ class Vitals extends Component {
                   }}
                 />
               </div>
-              <div className="row">
+              <div className="row margin-bottom-15">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-2" }}
+                  div={{ className: "col-lg-3" }}
                   label={{
-                    forceLabel: "Temperature From"
+                    forceLabel: "Temp. From"
                   }}
                   selector={{
                     name: "temperature_from",
@@ -447,9 +471,9 @@ class Vitals extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-lg-1" }}
+                  div={{ className: "col" }}
                   label={{
-                    forceLabel: "&nbsp;"
+                    forceLabel: "."
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -465,9 +489,9 @@ class Vitals extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-2" }}
+                  div={{ className: "col-lg-3" }}
                   label={{
-                    forceLabel: "Blood Pressure",
+                    forceLabel: "BP",
                     fieldName: "sample"
                   }}
                   selector={{
@@ -484,7 +508,7 @@ class Vitals extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-1" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Sys"
                   }}
@@ -502,7 +526,7 @@ class Vitals extends Component {
                 />
                 {/* <span className="margin-top-15">/</span> */}
                 <AlagehFormGroup
-                  div={{ className: "col-lg-1" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Dia"
                   }}
@@ -518,10 +542,12 @@ class Vitals extends Component {
                     }
                   }}
                 />
+              </div>
+              <div className="row margin-bottom-15">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-1" }}
+                  div={{ className: "col" }}
                   label={{
-                    forceLabel: "Glucose FBS"
+                    forceLabel: "FBS"
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -536,9 +562,9 @@ class Vitals extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-lg-1" }}
+                  div={{ className: "col" }}
                   label={{
-                    forceLabel: "Glucose RBS"
+                    forceLabel: "RBS"
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -553,9 +579,9 @@ class Vitals extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-lg-1" }}
+                  div={{ className: "col" }}
                   label={{
-                    forceLabel: "Glucose PBS"
+                    forceLabel: "PBS"
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -569,10 +595,8 @@ class Vitals extends Component {
                     }
                   }}
                 />
-              </div>
-              <div className="row">
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-lg-3" }}
                   label={{ forceLabel: "Recorded Date", isImp: true }}
                   textBox={{
                     className: "txt-fld",
@@ -588,7 +612,7 @@ class Vitals extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col-lg-3" }}
                   label={{
                     isImp: true,
                     forceLabel: "Recorded Time"
@@ -605,24 +629,25 @@ class Vitals extends Component {
                     }
                   }}
                 />
-                <div className="col margin-top-15">
-                  <button
-                    onClick={this.resetVitals.bind(this)}
-                    type="button"
-                    className="btn btn-default"
-                  >
-                    Cancel
-                  </button>
+              </div>
+              <div className="row">
+                <div className="col margin-top-15 pullRight">
                   <button
                     onClick={this.addPatientVitals.bind(this)}
                     type="button"
                     className="btn btn-primary"
+                    style={{marginleft:10}}
                   >
                     Add new Vitals
                   </button>
-                </div>
-              </div>
-            </div>
+                  <button
+                    onClick={this.resetVitals.bind(this)}
+                    type="button"
+                    className="btn btn-default" 
+                  >
+                    Clear
+                  </button>
+                </div></div>
           </div>
         </div>
       </React.Fragment>
