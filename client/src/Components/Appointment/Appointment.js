@@ -213,7 +213,7 @@ class Appointment extends Component {
       patient_code: this.state.patient_code,
       provider_id: this.state.apptProvider,
       sub_department_id: this.state.apptSubDept,
-      appointment_date: appt_date,
+      appointment_date: moment(appt_date).format("YYYY-MM-DD"),
       appointment_from_time: moment(this.state.apptFromTime, "hh:mm a").format(
         "HH:mm:ss"
       ),

@@ -213,3 +213,33 @@
     width: 100%;
   }
 }
+
+.moreActionUl{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid #e1e1e1;
+  position: absolute;
+  right: 11px;
+  border-radius: 5px 0px 5px 5px;
+  background: #fff;
+  display:none;min-width:100px ;
+  overflow: hidden;
+  li{
+    margin: 0; 
+    padding: 0;
+    list-style: none;
+    span{     
+    padding: 7px 10px;
+    text-align: left;
+    font-size: 0.8rem;
+    display: block;
+    cursor: pointer;
+      
+    }span:hover{
+      color: #fff;
+      background: #34b8bc;
+    }
+  }
+}
+.moreAction:hover .moreActionUl{display: block}

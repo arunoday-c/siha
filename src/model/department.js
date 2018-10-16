@@ -243,7 +243,8 @@ let deleteDepartment = (req, res, next) => {
       },
       error => {
         next(error);
-      }
+      },
+      true
     );
   } catch (e) {
     next(e);
@@ -411,6 +412,7 @@ let addSubDepartment = (req, res, next) => {
               }
             );
           } else {
+            releaseDBConnection(db, connection);
             next(
               httpStatus.generateError(
                 httpStatus.notFound,

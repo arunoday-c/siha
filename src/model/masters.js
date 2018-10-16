@@ -373,6 +373,7 @@ let killDbConnections = (req, res, next) => {
     let db = req.db;
 
     db.getConnection((error, connection) => {
+      debugLog("killDbConnections:");
       connection.query("show full processlist", (error, result) => {
         if (error) {
           releaseDBConnection(db, connection);
@@ -387,7 +388,7 @@ let killDbConnections = (req, res, next) => {
         debugLog("idList:", idList);
         let qry = "";
         for (let i = 0; i < idList.length; i++) {
-          qry += "kill " + idList[i] + ";";
+          qry += "kill " + idList[i] + ";"
         }
         if (idList.length > 0) {
           connection.query(qry, (error, finalResult) => {

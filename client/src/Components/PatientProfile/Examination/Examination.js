@@ -211,7 +211,9 @@ class Examination extends Component {
     this.setState({ [value.name]: value.value });
   }
 
-  changeGeneralOrSpecific(e) {}
+  changeGeneralOrSpecific(e) {
+    debugger;
+  }
 
   render() {
     return (
@@ -221,8 +223,18 @@ class Examination extends Component {
         <Modal open={this.state.openExamnModal}>
           <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Add Examination</h4>
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4>Add Examination</h4>
+                </div>
+                <div className="col-lg-4">
+                  <button type="button" className="" onClick={this.handleClose}>
+                    <i className="fas fa-times-circle" />
+                  </button>
+                </div>
+              </div>
             </div>
+
             <div className="popupInner">
               <div className="col-lg-12">
                 <div className="row">
@@ -240,7 +252,7 @@ class Examination extends Component {
                       />
                       <span className="switch-handle" />
                     </label>
-                    <div className="complain-box">
+                    <div className="row">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12" }}
                         label={{
@@ -379,31 +391,35 @@ class Examination extends Component {
                 </div>
               </div>
             </div>
-            <div className="row popupFooter">
-              <div className="col-lg-4">
-                <button
-                  onClick={this.addExaminationToPatient.bind(this)}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  Add Examination
-                </button>
-                <button
-                  onClick={this.resetExmnState.bind(this)}
-                  type="button"
-                  className="btn btn-other"
-                >
-                  Clear
-                </button>
-              </div>
-              <div className="col-lg-8">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.handleClose}
-                >
-                  Close
-                </button>
+            <div className=" popupFooter">
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-4">
+                    <button
+                      onClick={this.addExaminationToPatient.bind(this)}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      Add Examination
+                    </button>
+                    <button
+                      onClick={this.resetExmnState.bind(this)}
+                      type="button"
+                      className="btn btn-default"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="col-lg-8">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={this.handleClose}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -415,7 +431,6 @@ class Examination extends Component {
             <div className="caption">
               <h3 className="caption-subject">Physical Examination</h3>
             </div>
-
             <div className="actions">
               <a className="btn btn-primary btn-circle active">
                 <i
@@ -427,62 +442,39 @@ class Examination extends Component {
           </div>
 
           <div className="portlet-body">
-            <div className="col-lg-12">
-              <div className="row" style={{ marginBottom: "10px" }}>
-                <div className="col-4">
-                  {/* <div className="form-group">
-                          <label>Search</label>
-                          <div className="input-group">
-                            <input type="text" className="form-control" />
-                            <div className="input-group-append">
-                              <span className="input-group-text">
-                                <i className="fas fa-search" />
-                              </span>
-                            </div>
-                          </div>
-                        </div> */}
-                </div>
+            <div className="row">
+              <div className="col-lg-12" id="physicalExamination-grid-cntr">
+                <AlgaehDataGrid
+                  id="patient-examn-grid"
+                  columns={[
+                    {
+                      fieldName: "header_description",
+                      label: "Examination Type"
+                    },
+                    {
+                      fieldName: "detail_description",
+                      label: "Examination Description"
+                    },
+                    {
+                      fieldName: "subdetail_description",
+                      label: "Examination"
+                    },
+
+                    {
+                      fieldName: "comments",
+                      label: "Comments"
+                    }
+                  ]}
+                  keyId="hims_f_episode_examination_id"
+                  dataSource={{
+                    data: this.props.all_patient_examinations
+                  }}
+                  isEditable={false}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{}}
+                />
               </div>
             </div>
-
-            <AlgaehDataGrid
-              id="patient-examn-grid"
-              columns={[
-                {
-                  fieldName: "header_description",
-                  label: "Examination Type"
-                },
-                {
-                  fieldName: "detail_description",
-                  label: "Examination Description"
-                },
-                {
-                  fieldName: "subdetail_description",
-                  label: "Examination"
-                },
-
-                {
-                  fieldName: "comments",
-                  label: "Comments"
-                }
-              ]}
-              keyId="hims_f_episode_examination_id"
-              dataSource={{
-                data: this.props.all_patient_examinations
-              }}
-              isEditable={false}
-              paging={{ page: 0, rowsPerPage: 5 }}
-              events={
-                {
-                  // onDelete: this.deleteVisaType.bind(this),
-                  // onEdit: row => {},
-                  // onDone: row => {
-                  //   alert(JSON.stringify(row));
-                  // }
-                  // onDone: this.updateVisaTypes.bind(this)
-                }
-              }
-            />
           </div>
         </div>
       </React.Fragment>

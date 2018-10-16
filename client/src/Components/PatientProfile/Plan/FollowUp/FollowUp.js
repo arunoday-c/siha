@@ -61,6 +61,8 @@ class FollowUp extends Component {
               </label>
             </div>
           </div>
+
+        </div>
           <div className="row" style={{ paddingBottom: "10px" }}>
             <AlagehFormGroup
               div={{ className: "col-lg-12" }}
@@ -113,7 +115,6 @@ class FollowUp extends Component {
               </a>
             </div>
           </div>
-        </div>
       </div>
     );
   }

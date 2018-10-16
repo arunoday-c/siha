@@ -273,6 +273,7 @@ let addBillData = (req, res, next) => {
               }
               if (req.options == null) {
                 req.records = headerResult;
+                releaseDBConnection(req.db, db);
                 next();
               } else {
                 req.options.onSuccess(headerResult);
@@ -1784,6 +1785,7 @@ let patientAdvanceRefund = (req, res, next) => {
                                         req.records = {
                                           receipt_number: newNumber
                                         };
+                                        releaseDBConnection(db, connection);
                                         next();
                                       });
                                     }
@@ -2038,12 +2040,14 @@ created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_t
 
                                       //commit comes here
                                       connection.commit(error => {
-                                        releaseDBConnection(db, connection);
+                                        
                                         if (error) {
                                           connection.rollback(() => {
+                                            releaseDBConnection(db, connection);
                                             next(error);
                                           });
                                         }
+                                        releaseDBConnection(db, connection);
                                         req.records = { payment_no: newNumber };
                                         next();
                                       });
@@ -2439,6 +2443,7 @@ let getBillDetails = (req, res, next) => {
       }).then(result => {
         debugLog("result", result);
         req.records = result;
+        releaseDBConnection(db, connection);
         next();
       });
     });

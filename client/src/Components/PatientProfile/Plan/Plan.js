@@ -191,6 +191,19 @@ class Plan extends Component {
                       <span>Physician</span>
                     </label>
                   </div>
+                  <div className="row">
+                   {/* <AlagehFormGroup
+              div={{ className: "col-lg-12" }}
+              label={{
+                forceLabel: "Enter Remarks"
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "hospital_name"
+              }}
+            /> */}
+                  
+                  </div>
                 </div>
               </div>
               {/* END Portlet PORTLET */}

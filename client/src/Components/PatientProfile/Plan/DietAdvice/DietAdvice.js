@@ -57,7 +57,7 @@ class DietAdvice extends Component {
       <div className="hptl-diet-advice-form">
           <div className="row" style={{ paddingBottom: "10px" }}>
             <AlgaehDateHandler
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{ forceLabel: "Till Date" }}
               textBox={{ className: "txt-fld", name: "till_date" }}
               minDate={new Date()}

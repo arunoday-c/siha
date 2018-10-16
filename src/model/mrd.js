@@ -165,8 +165,10 @@ let getPatientDiagnosis = (req, res, next) => {
         ICD.icd_description as daignosis_description  ,diagnosis_type, final_daignosis,\
         PD.created_date as diagnosis_date  from hims_f_patient_diagnosis PD,hims_d_icd ICD\
          where PD.record_status='A' and   ICD.record_status='A'\
-         and PD.daignosis_id=ICD.hims_d_icd_id and  PD.episode_id=? order by diagnosis_date desc",
-        [req.query.episode_id],
+         and PD.daignosis_id=ICD.hims_d_icd_id and " +
+          where.condition +
+          " order by diagnosis_date desc",
+        where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
@@ -184,15 +186,21 @@ let getPatientDiagnosis = (req, res, next) => {
 
 //created by irfan: to  get Patient medication
 let getPatientMedication = (req, res, next) => {
+  let selectWhere = {
+    patient_id: "ALL",
+    encounter_id: "ALL"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
 
+    let where = whereCondition(extend(selectWhere, req.query));
+
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_prescription_id, patient_id, encounter_id, provider_id, episode_id,\
+        "select  hims_f_prescription_id, patient_id, encounter_id, provider_id, episode_id,\
         prescription_date, prescription_status , \
         hims_f_prescription_detail_id, prescription_id, item_id,IM.item_description, PD.generic_id, IG.generic_name, \
         dosage, frequency, no_of_days,\
@@ -200,9 +208,10 @@ let getPatientMedication = (req, res, next) => {
          from hims_f_prescription P,hims_f_prescription_detail PD,hims_d_item_master IM,hims_d_item_generic IG\
         where P.record_status='A' and IM.record_status='A' and IG.record_status='A' and \
         P.hims_f_prescription_id=PD.prescription_id and PD.item_id=IM.hims_d_item_master_id \
-        and PD.generic_id =IG.hims_d_item_generic_id and\
-        P.encounter_id=?",
-        [req.query.encounter_id],
+        and PD.generic_id =IG.hims_d_item_generic_id and " +
+          where.condition +
+          " order by prescription_date desc",
+        where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
@@ -249,11 +258,127 @@ let getPatientInvestigation = (req, res, next) => {
   }
 };
 
+//created by irfan: to  getPatientPaymentDetails
+let getPatientPaymentDetails = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_billing_header_id, patient_id,  visit_id from hims_f_billing_header where record_status='A' and patient_id=? order by visit_id desc;",
+        [req.query.patient_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          let allVisits = new LINQ(result).Select(s => s.visit_id).ToArray();
+
+          debugLog("allVisits:", allVisits);
+
+          let outputArray = [];
+          if (result.length > 0) {
+            //bill for each visit
+            for (let i = 0; i < allVisits.length; i++) {
+              connection.query(
+                "select hims_f_billing_header_id ,patient_id,visit_id,E.full_name provider_name,incharge_or_provider,bill_date,\
+              net_amount,patient_payable,receiveable_amount,credit_amount from hims_f_billing_header BH,hims_d_employee E where BH.record_status='A' and\
+               E.record_status='A' and BH.incharge_or_provider=E.hims_d_employee_id and visit_id=? order by bill_date desc;",
+                [allVisits[i]],
+                (error, billHeadResult) => {
+                  if (error) {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  }
+                  debugLog("inside billHeadResult:", billHeadResult);
+                  if (billHeadResult.length > 0) {
+                    for (let k = 0; k < billHeadResult.length; k++) {
+                      new Promise((resolve, reject) => {
+                        try {
+                          if (billHeadResult.length == 0) {
+                            return resolve(billHeadResult);
+                          } else {
+                            connection.query(
+                              "select hims_f_receipt_header_id, receipt_number, receipt_date, billing_header_id, total_amount\
+                          from hims_f_receipt_header where record_status='A' and billing_header_id=?;",
+                              [billHeadResult[k].hims_f_billing_header_id],
+                              (error, recptResult) => {
+                                if (error) {
+                                  releaseDBConnection(db, connection);
+                                  next(error);
+                                }
+
+                                return resolve(recptResult);
+                              }
+                            );
+                          }
+                        } catch (e) {
+                          reject(e);
+                        }
+                      }).then(resultRCPT => {
+                        // if (i == results.length - 1) {
+                        //   req.records = result;
+                        //   releaseDBConnection(db, connection);
+                        //   next();
+                        // }
+                        // patient insurance
+                        connection.query(
+                          "select  BD.hims_f_billing_header_id,hims_f_billing_details_id,company_payble as pri_company_payble,\
+                       sec_company_paybale,hims_f_patient_insurance_mapping_id,IM.patient_id,primary_insurance_provider_id,IP.insurance_provider_name as pri_insurance_provider_name,\
+                      secondary_insurance_provider_id,IPR.insurance_provider_name as sec_insurance_provider_name \
+                      from hims_f_billing_details BD inner join hims_f_billing_header BH on \
+                      BH.hims_f_billing_header_id=BD.hims_f_billing_header_id\
+                       inner join hims_m_patient_insurance_mapping IM on  BH.visit_id=IM.patient_visit_id \
+                       left join hims_d_insurance_provider IP  on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id  \
+                       left join hims_d_insurance_provider IPR  on  IM.secondary_insurance_provider_id=IPR.hims_d_insurance_provider_id  \
+                      where BH.record_status='A' and   IM.record_status='A' and   BH.hims_f_billing_header_id=?",
+                          [billHeadResult[k].hims_f_billing_header_id],
+                          (error, insResult) => {
+                            if (error) {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            }
+
+                            outputArray.push({
+                              ...billHeadResult[i],
+                              receipt: resultRCPT,
+                              insurance: insResult
+                            });
+                            if (i == allVisits.length - 1) {
+                              releaseDBConnection(db, connection);
+                              req.records = outputArray;
+                              next();
+                            }
+                          }
+                        );
+                      });
+                    }
+                  }
+                }
+              );
+            }
+          } else {
+            releaseDBConnection(db, connection);
+            req.records = result;
+            next();
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientMrdList,
   getPatientEncounterDetails,
   getPatientChiefComplaint,
   getPatientDiagnosis,
   getPatientMedication,
-  getPatientInvestigation
+  getPatientInvestigation,
+  getPatientPaymentDetails
 };

@@ -105,3 +105,13 @@
   -moz-transition: All 0.3s ease;
   -o-transition: All 0.3s ease;
 }
+
+
+#physicalExamination-grid-cntr{
+  .ReactTable{
+    max-height: 200px!important;
+  }
+}
+.pullRight{
+  button{float:right;    margin-left:15px; }
+}

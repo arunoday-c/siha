@@ -32,6 +32,7 @@ class PhysicalExamination extends Component {
                 </div>
 
                 <div className="portlet-body">
+                <div className="row">
                   <AlagehFormGroup
                     div={{ className: "col-lg-12" }}
                     label={{
@@ -51,6 +52,7 @@ class PhysicalExamination extends Component {
                       }
                     }}
                   />
+                </div>
                 </div>
               </div>
             </div>
