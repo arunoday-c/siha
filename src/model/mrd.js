@@ -285,7 +285,7 @@ let getPatientPaymentDetails = (req, res, next) => {
             for (let i = 0; i < allVisits.length; i++) {
               connection.query(
                 "select hims_f_billing_header_id ,patient_id,visit_id,E.full_name provider_name,incharge_or_provider,bill_date,\
-              net_amount,receiveable_amount,credit_amount from hims_f_billing_header BH,hims_d_employee E where BH.record_status='A' and\
+              net_amount,patient_payable,receiveable_amount,credit_amount from hims_f_billing_header BH,hims_d_employee E where BH.record_status='A' and\
                E.record_status='A' and BH.incharge_or_provider=E.hims_d_employee_id and visit_id=? order by bill_date desc;",
                 [allVisits[i]],
                 (error, billHeadResult) => {
@@ -310,7 +310,7 @@ let getPatientPaymentDetails = (req, res, next) => {
                                   releaseDBConnection(db, connection);
                                   next(error);
                                 }
-                                debugLog("inside recptResult:", recptResult);
+
                                 return resolve(recptResult);
                               }
                             );
@@ -341,7 +341,7 @@ let getPatientPaymentDetails = (req, res, next) => {
                               releaseDBConnection(db, connection);
                               next(error);
                             }
-                            debugLog("inside insurance res:", insResult);
+
                             outputArray.push({
                               ...billHeadResult[i],
                               receipt: resultRCPT,
