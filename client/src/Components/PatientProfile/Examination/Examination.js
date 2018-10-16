@@ -211,7 +211,9 @@ class Examination extends Component {
     this.setState({ [value.name]: value.value });
   }
 
-  changeGeneralOrSpecific(e) {}
+  changeGeneralOrSpecific(e) {
+    debugger;
+  }
 
   render() {
     return (
@@ -220,24 +222,18 @@ class Examination extends Component {
 
         <Modal open={this.state.openExamnModal}>
           <div className="algaeh-modal">
-
- <div className="popupHeader">
-                <div className="row">
-                  <div className="col-lg-8">
-              <h4>Add Examination</h4>
-                  </div>
-                  <div className="col-lg-4">
-                    <button
-                      type="button"
-                      className=""
-                       onClick={this.handleClose}
-                    >
-                      <i className="fas fa-times-circle" />
-                    </button>
-                  </div>
+            <div className="popupHeader">
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4>Add Examination</h4>
+                </div>
+                <div className="col-lg-4">
+                  <button type="button" className="" onClick={this.handleClose}>
+                    <i className="fas fa-times-circle" />
+                  </button>
                 </div>
               </div>
-
+            </div>
 
             <div className="popupInner">
               <div className="col-lg-12">
@@ -397,34 +393,34 @@ class Examination extends Component {
             </div>
             <div className=" popupFooter">
               <div className="col-lg-12">
-              <div className="row">
-              <div className="col-lg-4">
-                <button
-                  onClick={this.addExaminationToPatient.bind(this)}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  Add Examination
-                </button>
-                <button
-                  onClick={this.resetExmnState.bind(this)}
-                  type="button"
-                  className="btn btn-default"
-                >
-                  Clear
-                </button>
+                <div className="row">
+                  <div className="col-lg-4">
+                    <button
+                      onClick={this.addExaminationToPatient.bind(this)}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      Add Examination
+                    </button>
+                    <button
+                      onClick={this.resetExmnState.bind(this)}
+                      type="button"
+                      className="btn btn-default"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="col-lg-8">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={this.handleClose}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="col-lg-8">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.handleClose}
-                >
-                  Close
-                </button>
-              </div>
-              </div>
-            </div>
             </div>
           </div>
         </Modal>
@@ -447,38 +443,38 @@ class Examination extends Component {
 
           <div className="portlet-body">
             <div className="row">
-            <div className="col-lg-12" id="physicalExamination-grid-cntr">
-            <AlgaehDataGrid
-              id="patient-examn-grid"
-              columns={[
-                {
-                  fieldName: "header_description",
-                  label: "Examination Type"
-                },
-                {
-                  fieldName: "detail_description",
-                  label: "Examination Description"
-                },
-                {
-                  fieldName: "subdetail_description",
-                  label: "Examination"
-                },
+              <div className="col-lg-12" id="physicalExamination-grid-cntr">
+                <AlgaehDataGrid
+                  id="patient-examn-grid"
+                  columns={[
+                    {
+                      fieldName: "header_description",
+                      label: "Examination Type"
+                    },
+                    {
+                      fieldName: "detail_description",
+                      label: "Examination Description"
+                    },
+                    {
+                      fieldName: "subdetail_description",
+                      label: "Examination"
+                    },
 
-                {
-                  fieldName: "comments",
-                  label: "Comments"
-                }
-              ]}
-              keyId="hims_f_episode_examination_id"
-              dataSource={{
-                data: this.props.all_patient_examinations
-              }}
-              isEditable={false}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{}}
-            />
-          </div>
-          </div>
+                    {
+                      fieldName: "comments",
+                      label: "Comments"
+                    }
+                  ]}
+                  keyId="hims_f_episode_examination_id"
+                  dataSource={{
+                    data: this.props.all_patient_examinations
+                  }}
+                  isEditable={false}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{}}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </React.Fragment>

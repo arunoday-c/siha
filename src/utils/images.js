@@ -41,34 +41,46 @@ function readFileToBase64(folderName, imageName) {
   return bufferFile;
 }
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const _path = path.join(
-      __dirname,
-      "../" + req.ip + "/" + req.body.created_by + "/" + req.body.pageName
-    );
-    mkdirp(_path, error => {
-      if (error) {
-        debugLog("Problem in folder creation to save file ,", error);
-        req.error = error;
-      } else {
-        cb(null, _path);
-      }
-    });
+  // destination: (req, file, cb) => {
+  //   // const _path = path.join(
+  //   //   __dirname,
+  //   //   "../Files/" + req.ip + "/" + req.body.created_by + "/" + req.body.pageName
+  //   // );
+  //   debugLog(
+  //     "../Files/" + req.ip + "/" + req.body.created_by + "/" + req.body.pageName
+  //   );
+  //   const _path = path.join(__dirname, "../Files/");
+  //   mkdirp(_path, error => {
+  //     if (error) {
+  //       debugLog("Problem in folder creation to save file ,", error);
+  //       req.error = error;
+  //     } else {
+  //       cb(null, _path);
+  //     }
+  //   });
+  // },
+  // filename: (req, file, cb) => {
+  //   cb(null, file);
+  // }
+  destination: function(req, file, next) {
+    next(null, "./uploads");
   },
-  filename: (req, file, cb) => {
-    cb(null, file);
+  filename: function(req, file, next) {
+    next(null, "avatar-" + Date.now() + ".jpg");
   }
 });
-const upload = multer({ storage: storage });
+let upload = multer({ storage: storage });
+let fUpload = upload.fields([{ name: "photo", maxCount: 1 }]);
 const saveImageInTemp = (req, res, next) => {
-  upload(req, res, error => {
-    if (error) {
-      next(error);
-    }
-    if (req.error != null) {
-      next(req.error);
+  debugLog("Saving Image");
+  // Field data
+  debugLog("body", req.body);
+  // Error handling
+  fUpload(req, res, function(err) {
+    if (err) {
+      debugLog("An error occurred when uploading", err);
     } else {
-      debugLog("Added file", req);
+      res.send("Form data saved!");
     }
   });
 };
