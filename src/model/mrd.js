@@ -275,7 +275,11 @@ let getPatientPaymentDetails = (req, res, next) => {
             releaseDBConnection(db, connection);
             next(error);
           }
-          let allVisits = new LINQ(result).Select(s => s.visit_id).ToArray();
+
+          let allVisits = new LINQ(result)
+            .Where(w => w.visit_id != null)
+            .Select(s => s.visit_id)
+            .ToArray();
 
           debugLog("allVisits:", allVisits);
 
@@ -284,7 +288,7 @@ let getPatientPaymentDetails = (req, res, next) => {
             //bill for each visit
             for (let i = 0; i < allVisits.length; i++) {
               connection.query(
-                "select hims_f_billing_header_id ,patient_id,visit_id,E.full_name provider_name,incharge_or_provider,bill_date,\
+                "select hims_f_billing_header_id ,bill_number,patient_id,visit_id,E.full_name provider_name,incharge_or_provider,bill_date,\
               net_amount,patient_payable,receiveable_amount,credit_amount from hims_f_billing_header BH,hims_d_employee E where BH.record_status='A' and\
                E.record_status='A' and BH.incharge_or_provider=E.hims_d_employee_id and visit_id=? order by bill_date desc;",
                 [allVisits[i]],
@@ -326,22 +330,21 @@ let getPatientPaymentDetails = (req, res, next) => {
                         // }
                         // patient insurance
                         connection.query(
-                          "select  BD.hims_f_billing_header_id,hims_f_billing_details_id,company_payble as pri_company_payble,\
-                       sec_company_paybale,hims_f_patient_insurance_mapping_id,IM.patient_id,primary_insurance_provider_id,IP.insurance_provider_name as pri_insurance_provider_name,\
-                      secondary_insurance_provider_id,IPR.insurance_provider_name as sec_insurance_provider_name \
-                      from hims_f_billing_details BD inner join hims_f_billing_header BH on \
-                      BH.hims_f_billing_header_id=BD.hims_f_billing_header_id\
-                       inner join hims_m_patient_insurance_mapping IM on  BH.visit_id=IM.patient_visit_id \
-                       left join hims_d_insurance_provider IP  on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id  \
-                       left join hims_d_insurance_provider IPR  on  IM.secondary_insurance_provider_id=IPR.hims_d_insurance_provider_id  \
-                      where BH.record_status='A' and   IM.record_status='A' and   BH.hims_f_billing_header_id=?",
+                          "select BH.hims_f_billing_header_id,company_payable as pri_company_payble, sec_company_payable,\
+                          hims_f_patient_insurance_mapping_id,IM.patient_id,primary_insurance_provider_id,IP.insurance_provider_name as pri_insurance_provider_name,\
+                          secondary_insurance_provider_id,IPR.insurance_provider_name as sec_insurance_provider_name \
+                          from  hims_f_billing_header BH \
+                           inner join hims_m_patient_insurance_mapping IM on  BH.visit_id=IM.patient_visit_id           \
+                           left join hims_d_insurance_provider IP  on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id   \
+                           left join hims_d_insurance_provider IPR  on  IM.secondary_insurance_provider_id=IPR.hims_d_insurance_provider_id   \
+                          where BH.record_status='A' and   IM.record_status='A' and   BH.hims_f_billing_header_id=?",
                           [billHeadResult[k].hims_f_billing_header_id],
                           (error, insResult) => {
                             if (error) {
                               releaseDBConnection(db, connection);
                               next(error);
                             }
-
+                            debugLog("inside insurance:", insResult);
                             outputArray.push({
                               ...billHeadResult[i],
                               receipt: resultRCPT,
@@ -355,6 +358,13 @@ let getPatientPaymentDetails = (req, res, next) => {
                           }
                         );
                       });
+                    }
+                  } else {
+                    if (i == allVisits.length - 1) {
+                      debugLog("inside else no bill head:");
+                      releaseDBConnection(db, connection);
+                      req.records = outputArray;
+                      next();
                     }
                   }
                 }
