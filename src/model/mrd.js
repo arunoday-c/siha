@@ -268,7 +268,7 @@ let getPatientPaymentDetails = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_billing_header_id, patient_id,  visit_id from hims_f_billing_header where record_status='A' and patient_id=? order by visit_id desc;",
+        "select distinct  visit_id from hims_f_billing_header where record_status='A' and patient_id=? order by visit_id desc;",
         [req.query.patient_id],
         (error, result) => {
           if (error) {
@@ -346,7 +346,7 @@ let getPatientPaymentDetails = (req, res, next) => {
                             }
                             debugLog("inside insurance:", insResult);
                             outputArray.push({
-                              ...billHeadResult[i],
+                              ...billHeadResult[k],
                               receipt: resultRCPT,
                               insurance: insResult
                             });
