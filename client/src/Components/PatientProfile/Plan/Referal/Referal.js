@@ -85,6 +85,7 @@ class Referal extends Component {
               </label>
             </div>
           </div>
+        </div>
           <div className="row" style={{ paddingBottom: "10px" }}>
             <AlagehAutoComplete
               div={{ className: "col-lg-5" }}
@@ -142,7 +143,7 @@ class Referal extends Component {
 
           <div className="row">
             <AlagehFormGroup
-              div={{ className: "col-lg-12" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Hospital Name"
               }}
@@ -155,11 +156,8 @@ class Referal extends Component {
                 }
               }}
             />
-          </div>
-
-          <div className="row">
             <AlagehFormGroup
-              div={{ className: "col-lg-12" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Reason"
               }}
@@ -173,7 +171,6 @@ class Referal extends Component {
               }}
             />
           </div>
-        </div>
       </div>
     );
   }

@@ -274,10 +274,8 @@ class PatientProfile extends Component {
               <i className="fas fa-caret-square-down fa-lg" />
               More
             </button>
-          </div>
-          <div>
-            <ul>
-              <li>MRD</li>
+            <ul className="moreActionUl">
+              <li><span>Open MRD</span></li>
             </ul>
           </div>
         </div>

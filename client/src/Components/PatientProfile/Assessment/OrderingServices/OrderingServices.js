@@ -148,7 +148,7 @@ class OrderingServices extends Component {
     return (
       <div className="hptl-phase1-ordering-services-form">
         {/* <div className="main-details" /> */}
-        <div className="col-lg-12" style={{ minHeight: "30vh" }}>
+        <div className="col-lg-12">
           <div className="row form-details">
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
@@ -202,11 +202,11 @@ class OrderingServices extends Component {
               </button>
             </div>
 
-            <div className="col-lg-3"> &nbsp; </div>
           </div>
           <div className="row">
-            <div className="col-lg-12">
-              <AlgaehDataGrid
+            <div className="col-md-10 col-lg-12">
+              
+<AlgaehDataGrid
                 id="Services_Ordering"
                 columns={[
                   {
@@ -438,7 +438,7 @@ class OrderingServices extends Component {
                   data: this.state.orderservicesdata
                 }}
                 isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
+                paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteServices.bind(this, this),
                   onEdit: row => {},
@@ -531,18 +531,15 @@ class OrderingServices extends Component {
               </div>
             </div>
           </div>
-
-          <div className="row" position="fixed" style={{ marginTop: "2vh" }}>
+<hr/>
+          <div className="row" style={{ marginTop: "2vh",marginBottom: "2vh" }}>
             <div className="col-lg-12">
               <span className="float-right">
                 <button
-                  style={{ marginRight: "15px" }}
-                  className="htpl1-phase1-btn-primary"
+                  className="btn btn-primary"
                   onClick={SaveOrdersServices.bind(this, this)}
                   disabled={this.state.saved}
-                >
-                  <AlgaehLabel label={{ fieldName: "btnsave" }} />
-                </button>
+                >Save                </button>
               </span>
             </div>
           </div>
