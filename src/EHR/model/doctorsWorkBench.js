@@ -1216,8 +1216,9 @@ let addPatientChiefComplaints = (req, res, next) => {
           })
         ],
         (error, Result) => {
+          releaseDBConnection(db, connection);
           if (error) {
-            releaseDBConnection(db, connection);
+            
             next(error);
           }
           req.records = Result;
