@@ -13,8 +13,8 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 
 import {
-  deletePosDetail,
-  updatePosDetail,
+  deleteSalesReturnDetail,
+  updateSalesReturnDetail,
   calculateAmount
 } from "./ItemListsReturnEvents";
 
@@ -27,20 +27,11 @@ import ReciptForm from "./ReciptDetails/AddReciptForm";
 class ItemListsReturn extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      item_id: null,
-      uom_id: null,
-      batchno: null,
-      expiry_date: null,
-      quantity: 0,
-      unit_cost: 0,
-      Batch_Items: [],
-      service_id: null
-    };
+    this.state = {};
   }
 
   componentWillMount() {
-    let InputOutput = this.props.POSIOputs;
+    let InputOutput = this.props.SALESRETURNIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
@@ -71,7 +62,7 @@ class ItemListsReturn extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.POSIOputs);
+    this.setState(nextProps.SALESRETURNIOputs);
   }
 
   dateFormater({ value }) {
@@ -93,7 +84,7 @@ class ItemListsReturn extends Component {
                       <div className="row">
                         <div className="col-lg-12">
                           <AlgaehDataGrid
-                            id="POS_details"
+                            id="RETURN_details"
                             columns={[
                               {
                                 fieldName: "item_id",
@@ -272,16 +263,16 @@ class ItemListsReturn extends Component {
                                 disabled: true
                               },
                               {
-                                fieldName: "soldqty",
+                                fieldName: "quantity",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "SOld Quantity" }}
+                                    label={{ forceLabel: "Sold Quantity" }}
                                   />
                                 ),
                                 disabled: true
                               },
                               {
-                                fieldName: "quantity",
+                                fieldName: "return_quantity",
                                 label: (
                                   <AlgaehLabel
                                     label={{ forceLabel: "Return Quantity" }}
@@ -292,9 +283,9 @@ class ItemListsReturn extends Component {
                                     <AlagehFormGroup
                                       div={{}}
                                       textBox={{
-                                        value: row.quantity,
+                                        value: row.return_quantity,
                                         className: "txt-fld",
-                                        name: "quantity",
+                                        name: "return_quantity",
                                         events: {
                                           onChange: calculateAmount.bind(
                                             this,
@@ -356,13 +347,13 @@ class ItemListsReturn extends Component {
                             isEditable={true}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
-                              onDelete: deletePosDetail.bind(
+                              onDelete: deleteSalesReturnDetail.bind(
                                 this,
                                 this,
                                 context
                               ),
                               onEdit: row => {},
-                              onDone: updatePosDetail.bind(this, this)
+                              onDone: updateSalesReturnDetail.bind(this, this)
                             }}
                           />
                         </div>
@@ -708,13 +699,13 @@ class ItemListsReturn extends Component {
                             }}
                           />
                           <h4>
-                            {this.state.receiveable_amount
-                              ? "₹" + this.state.receiveable_amount
+                            {this.state.payable_amount
+                              ? "₹" + this.state.payable_amount
                               : "₹0.00"}
                           </h4>
                         </div>
                       </div>
-                      <ReciptForm POSIOputs={this.state} />
+                      <ReciptForm SALESRETURNIOputs={this.state} />
                     </Paper>
                   </div>
                 </div>
@@ -733,7 +724,7 @@ function mapStateToProps(state) {
     itemdetaillist: state.itemdetaillist,
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
-    posheader: state.posheader
+    salesReturn: state.salesReturn
   };
 }
 
@@ -745,7 +736,7 @@ function mapDispatchToProps(dispatch) {
       generateBill: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemUOM: AlgaehActions,
-      PosHeaderCalculations: AlgaehActions
+      SalesReturnCalculations: AlgaehActions
     },
     dispatch
   );

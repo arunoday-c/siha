@@ -51,6 +51,8 @@ import SalesReturn from "./Components/Pharmacy/SalesReturn/SalesReturn";
 import RequisitionEntry from "./Components/Pharmacy/RequisitionEntry/RequisitionEntry";
 import TransferEntry from "./Components/Pharmacy/TransferEntry/TransferEntry";
 import FrontDeskAppt from "./Components/FrontDesk/FrontDesk";
+import RequisitionList from "./Components/Pharmacy/RequisitionList/RequisitionList";
+
 // function height() {
 //   let height =
 //     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -109,7 +111,8 @@ const componts = (selectedLang, breadStyle) => {
     SalesReturn: <SalesReturn SelectLanguage={selectedLang} />,
     RequisitionEntry: <RequisitionEntry SelectLanguage={selectedLang} />,
     ProcedureSetup: <ProcedureSetup SelectLanguage={selectedLang} />,
-    TransferEntry: <TransferEntry SelectLanguage={selectedLang} />
+    TransferEntry: <TransferEntry SelectLanguage={selectedLang} />,
+    RequisitionList: <RequisitionList SelectLanguage={selectedLang} />
   };
 };
 

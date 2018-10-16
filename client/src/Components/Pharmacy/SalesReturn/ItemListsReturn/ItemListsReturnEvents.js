@@ -31,7 +31,7 @@ const discounthandle = ($this, context, ctrl, e) => {
         sheet_discount_amount: sheet_discount_amount
       },
       () => {
-        PosheaderCalculation($this, context);
+        SalesReturnheaderCalculation($this, context);
       }
     );
 
@@ -161,13 +161,26 @@ const AddItems = ($this, context) => {
           data.billdetails[0].expiry_date = $this.state.expiry_date;
           data.billdetails[0].batchno = $this.state.batchno;
           data.billdetails[0].uom_id = $this.state.uom_id;
-          data.billdetails[0].operation = "-";
+          data.billdetails[0].operation = "+";
 
           existingservices.splice(0, 0, data.billdetails[0]);
         }
 
         if (context != null) {
-          context.updateState({ pharmacy_stock_detail: existingservices });
+          context.updateState({
+            pharmacy_stock_detail: existingservices,
+            item_id: null,
+            uom_id: null,
+            batchno: null,
+            expiry_date: null,
+            quantity: 0,
+            unit_cost: 0,
+            Batch_Items: [],
+            service_id: null,
+            conversion_factor: 1,
+            grn_no: null,
+            item_group_id: null
+          });
         }
 
         $this.setState({
@@ -177,16 +190,20 @@ const AddItems = ($this, context) => {
           expiry_date: null,
           quantity: 0,
           unit_cost: 0,
-          service_id: null
+          Batch_Items: [],
+          service_id: null,
+          conversion_factor: 1,
+          grn_no: null,
+          item_group_id: null
         });
 
-        $this.props.PosHeaderCalculations({
+        $this.props.SalesReturnCalculations({
           uri: "/billing/billingCalculations",
           method: "POST",
           data: { billdetails: existingservices },
           redux: {
-            type: "POS_HEADER_GEN_GET_DATA",
-            mappingName: "posheader"
+            type: "RETURN_HEADER_GEN_GET_DATA",
+            mappingName: "salesReturn"
           }
         });
       }
@@ -200,17 +217,17 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const deletePosDetail = ($this, context, e, rowId) => {
+const deleteSalesReturnDetail = ($this, context, e, rowId) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   pharmacy_stock_detail.splice(rowId, 1);
 
-  $this.props.PosHeaderCalculations({
+  $this.props.SalesReturnCalculations({
     uri: "/billing/billingCalculations",
     method: "POST",
     data: { billdetails: pharmacy_stock_detail },
     redux: {
-      type: "POS_HEADER_GEN_GET_DATA",
-      mappingName: "posheader"
+      type: "RETURN_HEADER_GEN_GET_DATA",
+      mappingName: "salesReturn"
     }
   });
 
@@ -266,14 +283,14 @@ const deletePosDetail = ($this, context, e, rowId) => {
   }
 };
 
-const updatePosDetail = ($this, e) => {
-  $this.props.PosHeaderCalculations({
+const updateSalesReturnDetail = ($this, e) => {
+  $this.props.SalesReturnCalculations({
     uri: "/billing/billingCalculations",
     method: "POST",
     data: { billdetails: $this.state.pharmacy_stock_detail },
     redux: {
-      type: "posheader",
-      mappingName: "posheader"
+      type: "RETURN_HEADER_GEN_GET_DATA",
+      mappingName: "salesReturn"
     }
   });
 };
@@ -290,7 +307,7 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
     {
       hims_d_services_id: row.service_id,
       vat_applicable: "Y",
-      quantity: row.quantity,
+      quantity: row.return_quantity,
       discount_amout:
         e.target.name === "discount_percentage" ? 0 : row.discount_amout,
       discount_percentage:
@@ -320,10 +337,11 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
       debugger;
       data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
       data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+      data.billdetails[0].quantity = row.quantity;
 
       extend(row, data.billdetails[0]);
       for (let i = 0; i < pharmacy_stock_detail.length; i++) {
-        if (pharmacy_stock_detail[i].service_type_id === row.service_type_id) {
+        if (pharmacy_stock_detail[i].item_id === row.item_id) {
           pharmacy_stock_detail[i] = row;
         }
       }
@@ -348,7 +366,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
         [e.target.name]: e.target.value
       },
       () => {
-        PosheaderCalculation($this, context);
+        SalesReturnheaderCalculation($this, context);
       }
     );
 
@@ -360,7 +378,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
   }
 };
 
-const PosheaderCalculation = ($this, context) => {
+const SalesReturnheaderCalculation = ($this, context) => {
   debugger;
   var intervalId;
   let ItemInput = {
@@ -377,13 +395,13 @@ const PosheaderCalculation = ($this, context) => {
   clearInterval(intervalId);
 
   intervalId = setInterval(() => {
-    $this.props.PosHeaderCalculations({
+    $this.props.SalesReturnCalculations({
       uri: "/billing/billingCalculations",
       method: "POST",
       data: ItemInput,
       redux: {
-        type: "POS_HEADER_GEN_GET_DATA",
-        mappingName: "posheader"
+        type: "RETURN_HEADER_GEN_GET_DATA",
+        mappingName: "salesReturn"
       }
     });
     clearInterval(intervalId);
@@ -396,8 +414,8 @@ export {
   numberchangeTexts,
   AddItems,
   datehandle,
-  deletePosDetail,
-  updatePosDetail,
+  deleteSalesReturnDetail,
+  updateSalesReturnDetail,
   calculateAmount,
   adjustadvance
 };

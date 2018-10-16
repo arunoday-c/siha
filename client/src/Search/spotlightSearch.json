@@ -106,8 +106,16 @@
   "RequisitionEntry": {
     "ReqEntry": [
       {
-        "fieldName": "material_header_number",
+        "fieldName": "material_requisition_number",
         "label": "Requisition Number"
+      }
+    ]
+  },
+  "SalesReturnEntry": {
+    "ReturnEntry": [
+      {
+        "fieldName": "sales_return_number",
+        "label": "Sales Return Number"
       }
     ]
   }
