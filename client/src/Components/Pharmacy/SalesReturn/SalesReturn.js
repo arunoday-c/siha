@@ -15,8 +15,8 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   getCtrlCode,
   ClearData,
-  SavePosEnrty,
-  PostPosEntry,
+  SaveSalesReturn,
+  PostSalesReturn,
   POSSearch
 } from "./SalesReturnEvents";
 import "./SalesReturn.css";
@@ -25,7 +25,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 import ItemListsReturn from "./ItemListsReturn/ItemListsReturn";
 import MyContext from "../../../utils/MyContext";
-import POSIOputs from "../../../Models/POS";
+import SALESRETURNIOputs from "../../../Models/SalesReturn";
 import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails";
 
 class SalesReturn extends Component {
@@ -49,7 +49,7 @@ class SalesReturn extends Component {
   }
 
   componentWillMount() {
-    let IOputs = POSIOputs.inputParam();
+    let IOputs = SALESRETURNIOputs.inputParam();
     this.setState(IOputs);
   }
 
@@ -74,33 +74,39 @@ class SalesReturn extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let posHeaderOut = {};
+    let SalesHeaderOut = {};
     debugger;
 
-    if (nextProps.posheader !== undefined && nextProps.posheader.length !== 0) {
-      nextProps.posheader.patient_payable_h =
-        nextProps.posheader.patient_payable || this.state.patient_payable;
-      nextProps.posheader.sub_total = nextProps.posheader.sub_total_amount;
-      nextProps.posheader.patient_responsibility =
-        nextProps.posheader.patient_res;
-      nextProps.posheader.company_responsibility =
-        nextProps.posheader.company_res;
+    if (
+      nextProps.salesReturn !== undefined &&
+      nextProps.salesReturn.length !== 0
+    ) {
+      nextProps.salesReturn.payable_amount =
+        nextProps.salesReturn.receiveable_amount;
+      nextProps.salesReturn.patient_payable_h =
+        nextProps.salesReturn.patient_payable || this.state.patient_payable;
+      nextProps.salesReturn.sub_total = nextProps.salesReturn.sub_total_amount;
+      nextProps.salesReturn.patient_responsibility =
+        nextProps.salesReturn.patient_res;
+      nextProps.salesReturn.company_responsibility =
+        nextProps.salesReturn.company_res;
 
-      nextProps.posheader.company_payable = nextProps.posheader.company_payble;
-      nextProps.posheader.sec_company_responsibility =
-        nextProps.posheader.sec_company_res;
-      nextProps.posheader.sec_company_payable =
-        nextProps.posheader.sec_company_paybale;
+      nextProps.salesReturn.company_payable =
+        nextProps.salesReturn.company_payble;
+      nextProps.salesReturn.sec_company_responsibility =
+        nextProps.salesReturn.sec_company_res;
+      nextProps.salesReturn.sec_company_payable =
+        nextProps.salesReturn.sec_company_paybale;
 
-      nextProps.posheader.copay_amount = nextProps.posheader.copay_amount;
-      nextProps.posheader.sec_copay_amount =
-        nextProps.posheader.sec_copay_amount;
+      nextProps.salesReturn.copay_amount = nextProps.salesReturn.copay_amount;
+      nextProps.salesReturn.sec_copay_amount =
+        nextProps.salesReturn.sec_copay_amount;
 
-      nextProps.posheader.saveEnable = false;
-      posHeaderOut = nextProps.posheader;
+      nextProps.salesReturn.saveEnable = false;
+      SalesHeaderOut = nextProps.salesReturn;
     }
 
-    this.setState({ ...this.state, ...posHeaderOut });
+    this.setState({ ...this.state, ...SalesHeaderOut });
   }
 
   render() {
@@ -137,19 +143,19 @@ class SalesReturn extends Component {
               label: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Return Number",
+                    forceLabel: "Sales Return Number",
                     returnText: true
                   }}
                 />
               ),
-              value: this.state.pos_number,
-              selectValue: "pos_number",
+              value: this.state.sales_return_number,
+              selectValue: "sales_return_number",
               events: {
                 onChange: getCtrlCode.bind(this, this)
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "SalesReturnEntry.POSEntry"
+                fieldName: "SalesReturnEntry.ReturnEntry"
               },
               searchName: "SalesReturn"
             }}
@@ -170,7 +176,7 @@ class SalesReturn extends Component {
                 events={{
                   onChange: null
                 }}
-                value={this.state.initial_stock_date}
+                value={this.state.sales_return_date}
               />
             }
             selectedLang={this.state.selectedLang}
@@ -278,7 +284,7 @@ class SalesReturn extends Component {
             </div>
           </div>
 
-          <DisplayInsuranceDetails POSIOputs={this.state} />
+          <DisplayInsuranceDetails SALESRETURNIOputs={this.state} />
 
           <div className="hptl-phase1-sales-form">
             <MyContext.Provider
@@ -289,7 +295,7 @@ class SalesReturn extends Component {
                 }
               }}
             >
-              <ItemListsReturn POSIOputs={this.state} />
+              <ItemListsReturn SALESRETURNIOputs={this.state} />
             </MyContext.Provider>
 
             <div className="hptl-phase1-footer">
@@ -299,7 +305,7 @@ class SalesReturn extends Component {
                     <button
                       type="button"
                       className="btn btn-primary"
-                      onClick={SavePosEnrty.bind(this, this)}
+                      onClick={SaveSalesReturn.bind(this, this)}
                       disabled={this.state.saveEnable}
                     >
                       <AlgaehLabel
@@ -325,7 +331,7 @@ class SalesReturn extends Component {
                     <button
                       type="button"
                       className="btn btn-other"
-                      onClick={PostPosEntry.bind(this, this)}
+                      onClick={PostSalesReturn.bind(this, this)}
                       disabled={this.state.postEnable}
                     >
                       <AlgaehLabel
@@ -350,11 +356,9 @@ function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
     locations: state.locations,
-    posheader: state.posheader,
-    pospatients: state.pospatients,
-    posentry: state.posentry,
+    salesReturn: state.salesReturn,
     existinsurance: state.existinsurance,
-    posheader: state.posheader
+    salesReturnEntry: state.salesReturnEntry
   };
 }
 
@@ -363,12 +367,8 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getPatientDetails: AlgaehActions,
-      getPosEntry: AlgaehActions,
-      getPatientInsurance: AlgaehActions,
-      getMedicationList: AlgaehActions,
-      getPrescriptionPOS: AlgaehActions,
-      PosHeaderCalculations: AlgaehActions
+      getPOSEntry: AlgaehActions,
+      getSalesReturn: AlgaehActions
     },
     dispatch
   );

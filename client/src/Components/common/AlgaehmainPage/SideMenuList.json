@@ -289,6 +289,12 @@
         "path": "/RequisitionEntry"
       },
       {
+        "name": "Requisition List",
+        "label": "Requisition List",
+        "arlabel": "قائمة الطلبات",
+        "path": "/RequisitionList"
+      },
+      {
         "name": "Transfer Entry",
         "label": "Transfer Entry",
         "arlabel": "طلب دخول",

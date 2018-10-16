@@ -31,7 +31,21 @@ export default {
       addedItem: false,
 
       saveEnable: true,
-      authorizeEnable: true
+      authorizeEnable: true,
+
+      addItemButton: true,
+      item_id: null,
+      uom_id: null,
+      batchno: null,
+      expiry_date: null,
+      quantity_required: 0,
+      unit_cost: 0,
+      Batch_Items: [],
+      service_id: null,
+      conversion_factor: 1,
+      grn_no: null,
+      item_group_id: null,
+      item_category: null
     };
     return output;
   }

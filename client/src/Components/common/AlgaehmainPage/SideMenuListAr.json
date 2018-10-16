@@ -227,6 +227,22 @@
         "name": "Item Moment Enquiry",
         "label": "البند لحظة التحقيق",
         "path": "/ItemMomentEnquiry"
+      },
+
+      {
+        "name": "Requisition Entry",
+        "label": "طلب دخول",
+        "path": "/RequisitionEntry"
+      },
+      {
+        "name": "Requisition List",
+        "label": "قائمة الطلبات",
+        "path": "/RequisitionList"
+      },
+      {
+        "name": "Transfer Entry",
+        "label": "طلب دخول",
+        "path": "/TransferEntry"
       }
     ]
   },

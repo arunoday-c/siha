@@ -1,10 +1,9 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
-import FrontDesk from "../../../Search/FrontDesk.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import POSIOputs from "../../../Models/POS";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 
@@ -143,14 +142,16 @@ const RequisitionSearch = ($this, e) => {
         debugger;
         $this.setState(
           {
-            material_header_number: row.material_header_number
+            material_requisition_number: row.material_requisition_number
           },
           () => {
             $this.props.getRequisitionEntry({
-              uri: "/requisitionEntry/getrequisitionEntry",
+              uri: "/transferEntry/getrequisitionEntryTransfer",
               method: "GET",
               printInput: true,
-              data: { material_header_number: row.material_header_number },
+              data: {
+                material_requisition_number: row.material_requisition_number
+              },
               redux: {
                 type: "POS_ENTRY_GET_DATA",
                 mappingName: "requisitionentry"
@@ -192,17 +193,34 @@ const RequisitionSearch = ($this, e) => {
   }
 };
 
-const LocationchangeTexts = ($this, from, ctrl, e) => {
+const LocationchangeTexts = ($this, location, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let type = "";
-  if (from == "From") {
+  if (location === "From") {
     type = "from_location_type";
-  } else if (from == "To") {
+    if ($this.state.to_location_id === value) {
+      swalMessage({
+        title: "Invalid Input.From Location and To Location Cannot be Same ",
+        type: "error"
+      });
+      $this.setState({ [name]: null });
+    } else {
+      $this.setState({ [name]: value, [type]: e.selected.location_type });
+    }
+  } else if (location === "To") {
     type = "to_location_type";
+    if ($this.state.from_location_id === value) {
+      swalMessage({
+        title: "Invalid Input.From Location and To Location Cannot be Same ",
+        type: "error"
+      });
+      $this.setState({ [name]: null });
+    } else {
+      $this.setState({ [name]: value, [type]: e.selected.location_type });
+    }
   }
-  $this.setState({ [name]: value, [type]: e.selected.location_type });
 };
 
 export {

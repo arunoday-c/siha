@@ -28,7 +28,7 @@ import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 
 import TransferEntryItems from "./TransferEntryItems/TransferEntryItems";
 import MyContext from "../../../utils/MyContext";
-import TransferIOputs from "../../../Models/TransferItem";
+import TransferIOputs from "../../../Models/TransferEntry";
 
 class TransferEntry extends Component {
   constructor(props) {
@@ -179,8 +179,8 @@ class TransferEntry extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "material_header_number",
-                    value: this.state.material_header_number,
+                    name: "material_requisition_number",
+                    value: this.state.material_requisition_number,
                     events: {
                       onChange: null
                     },

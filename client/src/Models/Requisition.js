@@ -4,7 +4,7 @@ export default {
 
     output = {
       hims_f_pharamcy_material_header_id: null,
-      material_header_number: null,
+      material_requisition_number: null,
       from_location_type: null,
       from_location_id: null,
       requistion_date: new Date(),
@@ -40,7 +40,27 @@ export default {
       addedItem: false,
 
       saveEnable: true,
-      authorizeEnable: true
+      authorizeEnable: true,
+
+      item_category_id: null,
+      item_group_id: null,
+      item_id: null,
+      quantity_required: 0,
+
+      item_uom: null,
+
+      completed: null,
+
+      quantity_authorized: 0,
+
+      quantity_recieved: 0,
+      quantity_outstanding: 0,
+      po_created_date: null,
+      po_created: null,
+      po_created_quantity: null,
+      po_outstanding_quantity: null,
+      po_completed: null,
+      addItemButton: true
     };
     return output;
   }
