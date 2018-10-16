@@ -8,7 +8,8 @@ import {
   getPatientChiefComplaint,
   getPatientDiagnosis,
   getPatientMedication,
-  getPatientInvestigation
+  getPatientInvestigation,
+  getPatientPaymentDetails
 } from "../model/mrd";
 
 export default ({ config, db }) => {
@@ -93,6 +94,21 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientInvestigation",
     getPatientInvestigation,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to  getPatientPaymentDetails
+  api.get(
+    "/getPatientPaymentDetails",
+    getPatientPaymentDetails,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
