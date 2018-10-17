@@ -109,7 +109,8 @@ const itemchangeText = ($this, e) => {
             batchno: data.locationResult[0].batchno,
             grn_no: data.locationResult[0].grnno,
             ItemUOM: data.uomResult,
-            Batch_Items: data.locationResult
+            Batch_Items: data.locationResult,
+            addItemButton: false
           });
         } else {
           successfulMessage({
@@ -266,7 +267,20 @@ const AddItems = ($this, context) => {
           }
 
           if (context != null) {
-            context.updateState({ pharmacy_stock_detail: existingservices });
+            context.updateState({
+              pharmacy_stock_detail: existingservices,
+              item_id: null,
+              uom_id: null,
+              batchno: null,
+              expiry_date: null,
+              quantity: 0,
+              unit_cost: 0,
+              Batch_Items: [],
+              service_id: null,
+              conversion_factor: 1,
+              grn_no: null,
+              item_group_id: null
+            });
           }
 
           $this.setState({
@@ -276,7 +290,11 @@ const AddItems = ($this, context) => {
             expiry_date: null,
             quantity: 0,
             unit_cost: 0,
-            service_id: null
+            Batch_Items: [],
+            service_id: null,
+            conversion_factor: 1,
+            grn_no: null,
+            item_group_id: null
           });
 
           $this.props.PosHeaderCalculations({
@@ -388,7 +406,7 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
     {
-      hims_d_services_id: row.services_id,
+      hims_d_services_id: row.service_id,
       vat_applicable: "Y",
       unit_cost: row.unit_cost,
       pharmacy_item: "Y",

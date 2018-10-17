@@ -108,8 +108,8 @@ class RequisitionEntry extends Component {
                   label={{ forceLabel: "Requisition Number", returnText: true }}
                 />
               ),
-              value: this.state.material_header_number,
-              selectValue: "material_header_number",
+              value: this.state.material_requisition_number,
+              selectValue: "material_requisition_number",
               events: {
                 onChange: getCtrlCode.bind(this, this)
               },

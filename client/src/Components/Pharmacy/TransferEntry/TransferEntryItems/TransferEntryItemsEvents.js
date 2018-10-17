@@ -72,7 +72,8 @@ const itemchangeText = ($this, e) => {
             batchno: data.locationResult[0].batchno,
             grn_no: data.locationResult[0].grnno,
             ItemUOM: data.uomResult,
-            Batch_Items: data.locationResult
+            Batch_Items: data.locationResult,
+            addItemButton: false
           });
         } else {
           successfulMessage({
@@ -106,44 +107,93 @@ const AddItems = ($this, context) => {
       title: "Warning",
       icon: "warning"
     });
-  } else if ($this.state.quantity_required === 0) {
-    successfulMessage({
-      message: "Invalid Input. Please enter Quantity Required .",
-      title: "Warning",
-      icon: "warning"
-    });
   } else {
     debugger;
     let ItemInput = [
       {
-        completed: "N",
+        item_id: $this.state.item_id,
         item_category_id: $this.state.item_category_id,
         item_group_id: $this.state.item_group_id,
-        item_id: $this.state.item_id,
-        quantity_required: $this.state.quantity_required,
-        quantity_authorized: 0,
-        item_uom: $this.state.item_uom
+        pharmacy_location_id: $this.state.location_id,
+
+        insured: $this.state.insured,
+        conversion_factor: $this.state.conversion_factor,
+        vat_applicable: "Y",
+        hims_d_services_id: $this.state.service_id,
+        quantity: $this.state.quantity
       }
     ];
 
-    $this.setState({
-      pharmacy_stock_detail: ItemInput,
-      addedItem: true,
-      item_category_id: null,
-      item_group_id: null,
-      item_id: null,
-      quantity_required: 0,
+    $this.props.getTransferData({
+      uri: "/posEntry/getPrescriptionPOS",
+      method: "POST",
+      data: ItemInput,
+      redux: {
+        type: "BILL_GEN_GET_DATA",
+        mappingName: "xxx"
+      },
+      afterSuccess: data => {
+        debugger;
+        if (data.billdetails[0].pre_approval === "Y") {
+          successfulMessage({
+            message:
+              "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+            title: "Warning",
+            icon: "warning"
+          });
+        } else {
+          let existingservices = $this.state.pharmacy_stock_detail;
 
-      item_uom: null
+          if (data.billdetails.length !== 0) {
+            data.billdetails[0].extended_cost =
+              data.billdetails[0].gross_amount;
+            data.billdetails[0].net_extended_cost =
+              data.billdetails[0].net_amout;
+
+            data.billdetails[0].item_id = $this.state.item_id;
+            data.billdetails[0].item_category = $this.state.item_category;
+            data.billdetails[0].expiry_date = $this.state.expiry_date;
+            data.billdetails[0].batchno = $this.state.batchno;
+            data.billdetails[0].uom_id = $this.state.uom_id;
+            data.billdetails[0].operation = "-";
+            data.billdetails[0].grn_no = data.billdetails[0].grnno;
+            data.billdetails[0].service_id = data.billdetails[0].services_id;
+            existingservices.splice(0, 0, data.billdetails[0]);
+          }
+
+          if (context != null) {
+            context.updateState({
+              pharmacy_stock_detail: existingservices,
+              item_id: null,
+              uom_id: null,
+              batchno: null,
+              expiry_date: null,
+              quantity: 0,
+              unit_cost: 0,
+              Batch_Items: [],
+              service_id: null,
+              conversion_factor: 1,
+              grn_no: null,
+              item_group_id: null
+            });
+          }
+
+          $this.setState({
+            item_id: null,
+            uom_id: null,
+            batchno: null,
+            expiry_date: null,
+            quantity: 0,
+            unit_cost: 0,
+            Batch_Items: [],
+            service_id: null,
+            conversion_factor: 1,
+            grn_no: null,
+            item_group_id: null
+          });
+        }
+      }
     });
-
-    if (context !== undefined) {
-      context.updateState({
-        pharmacy_stock_detail: ItemInput,
-        addedItem: true,
-        saveEnable: false
-      });
-    }
   }
 };
 
@@ -252,6 +302,12 @@ const onchangegridcol = ($this, context, row, e) => {
   }
 };
 
+const dateFormater = ({ $this, value }) => {
+  if (value !== null) {
+    return moment(value).format(Options.dateFormat);
+  }
+};
+
 export {
   UomchangeTexts,
   itemchangeText,
@@ -260,5 +316,6 @@ export {
   datehandle,
   deletePosDetail,
   updatePosDetail,
-  onchangegridcol
+  onchangegridcol,
+  dateFormater
 };

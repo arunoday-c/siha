@@ -7,6 +7,7 @@ import treeTableHOC from "react-table/lib/hoc/treeTable";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import algaehLoader from "../../../Wrapper/fullPageLoader";
 import moment from "moment";
+import Enumerable from "linq";
 
 const TreeTable = treeTableHOC(ReactTable);
 
@@ -141,13 +142,51 @@ class HistoricalData extends Component {
     });
   }
 
+  getPatientPaymentDetails() {
+    algaehApiCall({
+      uri: "/mrd/getPatientPaymentDetails",
+      method: "GET",
+      data: {
+        patient_id: Window.global["mrd_patient"]
+      },
+      cancelRequestId: "getPatientPaymentDetails",
+      onSuccess: response => {
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          console.log("patientMedication: ", response.data.records);
+          this.setState({ patientPayments: response.data.records });
+        }
+      },
+      onFailure: error => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   componentDidMount() {
     this.getPatientVitals();
     this.getPatientDiagnosis();
     this.getPatientMedication();
+    this.getPatientPaymentDetails();
   }
 
   render() {
+    const _patientVitals = this.state.patientVitals;
+    const _groupData = Enumerable.from(this.state.patientPayments)
+      .groupBy("$.prov_date", null, (k, g) => {
+        const _get = Enumerable.from(g.getSource()).firstOrDefault();
+        return {
+          bill_date: _get.bill_date,
+          provider_name: _get.provider_name,
+          list: g.getSource()
+        };
+      })
+      .toArray();
+
     return (
       <div className="historical-data">
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
@@ -160,7 +199,7 @@ class HistoricalData extends Component {
             <TreeTable
               //Most recent 3 rows are expanded
               //expanded={{ 0: true }}
-              data={this.state.patientVitals}
+              data={_patientVitals}
               pivotBy={["visit_date"]}
               columns={[
                 {
@@ -171,14 +210,16 @@ class HistoricalData extends Component {
                 },
                 {
                   Header: "Recorded Time",
-                  accessor: "visit_time"
-                  // Cell: row => {
-                  //   return (
-                  //     <span>
-                  //       {moment(row.visit_time, "HH:MM:SS").format("HH:MM A")}
-                  //     </span>
-                  //   );
-                  // }
+                  accessor: "visit_time",
+                  Cell: row => {
+                    console.log("Visit Time", row.value);
+                    debugger;
+                    return (
+                      <span>
+                        {moment(row.value, "HH:MM:SS").format("HH:MM A")}
+                      </span>
+                    );
+                  }
                 },
                 {
                   Header: "Temp. Oral",
@@ -347,31 +388,35 @@ class HistoricalData extends Component {
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
                   data={this.state.patientMedication}
-                  pivotBy={["start_date"]}
+                  pivotBy={["prescription_date"]}
                   columns={[
                     {
-                      accessor: "start_date"
+                      accessor: "prescription_date"
                     },
                     {
-                      fieldName: "generic_name",
-                      label: "Generic Name"
+                      accessor: "start_date",
+                      Header: "Start Date"
                     },
                     {
-                      fieldName: "item_description",
-                      label: "Item Description"
+                      accessor: "generic_name",
+                      Header: "Generic Name"
+                    },
+                    {
+                      accessor: "item_description",
+                      Header: "Item Description"
                     },
 
                     {
-                      fieldName: "dosage",
-                      label: "Dosage"
+                      accessor: "dosage",
+                      Header: "Dosage"
                     },
                     {
-                      fieldName: "frequency",
-                      label: "Frequency"
+                      accessor: "frequency",
+                      Header: "Frequency"
                     },
                     {
-                      fieldName: "no_of_days",
-                      label: "No. of Days"
+                      accessor: "no_of_days",
+                      Header: "No. of Days"
                     }
                   ]}
                   defaultPageSize={5}
@@ -384,6 +429,123 @@ class HistoricalData extends Component {
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Nurse's Notes</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <TreeTable
+                  //Most recent 3 rows are expanded
+                  //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  data={_data}
+                  pivotBy={["date_doctor"]}
+                  columns={[
+                    {
+                      accessor: "date_doctor"
+                    },
+                    {
+                      Header: "Temp. Oral",
+                      accessor: "oral"
+                    },
+                    {
+                      Header: "BP Systole",
+                      accessor: "bpSystole"
+                    },
+                    {
+                      Header: "bp Dyastole",
+                      accessor: "bpdyastole"
+                    },
+                    {
+                      Header: "Pulse",
+                      accessor: "pulse"
+                    },
+                    {
+                      Header: "Respiratory",
+                      accessor: "resp"
+                    },
+                    {
+                      Header: "Blood Sugar",
+                      accessor: "bloodsugar"
+                    },
+                    {
+                      Header: "Height",
+                      accessor: "height"
+                    },
+                    {
+                      Header: "Weight",
+                      accessor: "weight"
+                    },
+                    {
+                      Header: "BMI",
+                      accessor: "bmi"
+                    },
+                    {
+                      Header: "Duration",
+                      accessor: "duration"
+                    }
+                  ]}
+                  defaultPageSize={5}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Second Two Sections End */}
+
+        {/* Third Two Sections Start */}
+
+        <div className="row">
+          <div className="col-lg-6">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Attachments</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <TreeTable
+                  //Most recent 3 rows are expanded
+                  //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  data={this.state.patientMedication}
+                  pivotBy={["prescription_date"]}
+                  columns={[
+                    {
+                      accessor: "prescription_date"
+                    },
+                    {
+                      accessor: "start_date",
+                      Header: "Start Date"
+                    },
+                    {
+                      accessor: "generic_name",
+                      Header: "Generic Name"
+                    },
+                    {
+                      accessor: "item_description",
+                      Header: "Item Description"
+                    },
+
+                    {
+                      accessor: "dosage",
+                      Header: "Dosage"
+                    },
+                    {
+                      accessor: "frequency",
+                      Header: "Frequency"
+                    },
+                    {
+                      accessor: "no_of_days",
+                      Header: "No. of Days"
+                    }
+                  ]}
+                  defaultPageSize={5}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Investigations</h3>
                 </div>
               </div>
               <div className="portlet-body">
@@ -445,7 +607,168 @@ class HistoricalData extends Component {
           </div>
         </div>
 
-        {/* Second Two Sections End */}
+        {/* Third Two Sections End */}
+
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Payment History</h3>
+            </div>
+          </div>
+          <div className="portlet-body">
+            <ReactTable
+              columns={[
+                {
+                  Header: "Date",
+                  accessor: "bill_date"
+                },
+                {
+                  Header: "Doctor",
+                  accessor: "provider_name"
+                },
+                {
+                  Header: "Bill Details",
+                  columns: [
+                    {
+                      Header: "Bill No.",
+                      id: "bill_number",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, index) => (
+                              <div key={index}>{r.bill_number}</div>
+                            ))}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Gross Amt.",
+                      id: "net_amount",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, index) => (
+                              <div key={index}>{r.net_amount}</div>
+                            ))}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Amount Paid",
+                      id: "receiveable_amount",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, index) => (
+                              <div key={index}>{r.receiveable_amount}</div>
+                            ))}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Due",
+                      id: "credit_amount",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, index) => (
+                              <div key={index}>{r.credit_amount}</div>
+                            ))}
+                          </React.Fragment>
+                        );
+                      }
+                    }
+                  ]
+                },
+                {
+                  Header: "Receipt Details",
+                  columns: [
+                    {
+                      Header: "Receipt Date",
+                      id: "receipt_date",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, i) => {
+                              return (
+                                <React.Fragment key={i}>
+                                  {r.receipt.map((m, index) => (
+                                    <div key={index}>{m.receipt_date}</div>
+                                  ))}
+                                </React.Fragment>
+                              );
+                            })}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Receipt No.",
+                      id: "receipt_number",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, i) => {
+                              return (
+                                <React.Fragment key={i}>
+                                  {r.receipt.map((m, index) => (
+                                    <div key={index}>{m.receipt_number}</div>
+                                  ))}
+                                </React.Fragment>
+                              );
+                            })}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Total Amt.",
+                      id: "total_amount",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, i) => {
+                              return (
+                                <React.Fragment key={i}>
+                                  {r.receipt.map((m, index) => (
+                                    <div key={index}>{m.total_amount}</div>
+                                  ))}
+                                </React.Fragment>
+                              );
+                            })}
+                          </React.Fragment>
+                        );
+                      }
+                    },
+                    {
+                      Header: "Amount Paid",
+                      id: "receiveable_amount",
+                      accessor: acc => {
+                        return (
+                          <React.Fragment>
+                            {acc.list.map((r, i) => {
+                              return (
+                                <React.Fragment key={i}>
+                                  {r.receipt.map((m, index) => (
+                                    <div key={index}>{m.total_amount}</div>
+                                  ))}
+                                </React.Fragment>
+                              );
+                            })}
+                          </React.Fragment>
+                        );
+                      }
+                    }
+                  ]
+                }
+              ]}
+              data={_groupData}
+            />
+          </div>
+        </div>
       </div>
     );
   }

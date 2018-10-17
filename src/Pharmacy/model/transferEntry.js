@@ -14,7 +14,7 @@ import moment from "moment";
 import Promise from "bluebird";
 
 //created by Nowshad: to Insert Requisition Entry
-let addrequisitionEntry = (req, res, next) => {
+let addtransferEntry = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -54,46 +54,41 @@ let addrequisitionEntry = (req, res, next) => {
           //   debugLog("connection", JSON.stringify(connection));
           debugLog("documentCode:", documentCode);
 
+          let year = moment().format("YYYY");
+          debugLog("onlyyear:", year);
+
           let today = moment().format("YYYY-MM-DD");
           debugLog("today:", today);
 
+          let month = moment().format("MM");
+          debugLog("month:", month);
+          let period = month;
+
           connection.query(
-            "INSERT INTO `hims_f_pharamcy_material_header` (material_requisition_number,requistion_date,from_location_type,\
-                from_location_id, expiration_date,required_date,requested_by,on_hold, to_location_id, \
-                to_location_type, description, comment, is_completed, completed_date, completed_lines,requested_lines, \
-                purchase_created_lines,status,requistion_type,no_of_transfers,no_of_po, authorize1,authorize1_date, \
-                authorize1_by,authorie2,authorize2_date,authorize2_by,cancelled, cancelled_by,cancelled_date) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO `hims_f_pharmacy_transfer_header` (transfer_number,transfer_date,`year`,period,\
+                from_location_type,from_location_id, material_requisition_number, to_location_id, \
+                to_location_type, description, completed, completed_date, completed_lines, \
+                transfer_quantity,requested_quantity,recieved_quantity,outstanding_quantity, \
+                cancelled, cancelled_by,cancelled_date) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               documentCode,
               today,
+              year,
+              period,
               input.from_location_type,
               input.from_location_id,
-              input.expiration_date,
-              input.required_date,
-              req.userIdentity.algaeh_d_app_user_id,
-              input.on_hold,
+              input.material_requisition_number,
               input.to_location_id,
               input.to_location_type,
               input.description,
-              input.comment,
-              input.is_completed,
+              input.completed,
               input.completed_date,
               input.completed_lines,
-              input.requested_lines,
-              input.purchase_created_lines,
-
-              input.status,
-              input.requistion_type,
-              input.no_of_transfers,
-
-              input.no_of_po,
-              input.authorize1,
-              input.authorize1_date,
-              input.authorize1_by,
-              input.authorie2,
-              input.authorize2_date,
-              input.authorize2_by,
+              input.transfer_quantity,
+              input.requested_quantity,
+              input.recieved_quantity,
+              input.outstanding_quantity,
               input.cancelled,
               input.cancelled_by,
               input.cancelled_date
@@ -114,13 +109,24 @@ let addrequisitionEntry = (req, res, next) => {
                   "item_id",
                   "item_category_id",
                   "item_group_id",
-                  "quantity_required"
+                  "batchno",
+                  "expiry_date",
+                  "quantity_requested",
+                  "quantity_authorized",
+                  "uom_requested_id",
+                  "quantity_transferred",
+                  "uom_transferred_id",
+                  "quantity_recieved",
+                  "uom_recieved_id",
+                  "quantity_outstanding",
+                  "material_requisition_header_id",
+                  "material_requisition_detail_id"
                 ];
 
                 connection.query(
                   "INSERT INTO hims_f_pharmacy_material_detail(" +
                     insurtColumns.join(",") +
-                    ",pharmacy_header_id) VALUES ?",
+                    ",transfer_header_id) VALUES ?",
                   [
                     jsonArrayToObject({
                       sampleInputObject: insurtColumns,
@@ -169,13 +175,9 @@ let addrequisitionEntry = (req, res, next) => {
 };
 
 //created by Nowshad: to get Pharmacy Requisition Entry
-let getrequisitionEntry = (req, res, next) => {
+let gettransferEntry = (req, res, next) => {
   let selectWhere = {
-    material_requisition_number: "ALL",
-    from_location_id: "ALL",
-    to_location_id: "ALL",
-    authorize1: "ALL",
-    authorie2: "ALL"
+    material_requisition_number: "ALL"
   };
   try {
     if (req.db == null) {
@@ -211,12 +213,10 @@ let getrequisitionEntry = (req, res, next) => {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
-                req.records = [
-                  {
-                    ...headerResult[0],
-                    ...{ pharmacy_stock_detail }
-                  }
-                ];
+                req.records = {
+                  ...headerResult[0],
+                  ...{ pharmacy_stock_detail }
+                };
                 releaseDBConnection(db, connection);
                 next();
               }
@@ -235,8 +235,8 @@ let getrequisitionEntry = (req, res, next) => {
 };
 
 //created by Nowshad: to Post Requisition Entry
-let updaterequisitionEntry = (req, res, next) => {
-  let RequisitionEntry = {
+let updatetransferEntry = (req, res, next) => {
+  let TransferEntry = {
     posted: null,
     updated_by: req.userIdentity.algaeh_d_app_user_id
   };
@@ -259,7 +259,7 @@ let updaterequisitionEntry = (req, res, next) => {
           });
         }
         return new Promise((resolve, reject) => {
-          let inputParam = extend(RequisitionEntry, req.body);
+          let inputParam = extend(TransferEntry, req.body);
 
           debugLog("posted", inputParam.posted);
           debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
@@ -330,8 +330,69 @@ let updaterequisitionEntry = (req, res, next) => {
   }
 };
 
+//created by Nowshad: to get Pharmacy Requisition Entry to transfer
+let getrequisitionEntryTransfer = (req, res, next) => {
+  let selectWhere = {
+    material_requisition_number: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT * from  hims_f_pharamcy_material_header\
+            where " +
+          where.condition,
+        where.values,
+        (error, headerResult) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          debugLog("result: ", headerResult);
+          if (headerResult.length != 0) {
+            debugLog(
+              "hims_f_pharamcy_material_header_id: ",
+              headerResult[0].hims_f_pharamcy_material_header_id
+            );
+            connection.query(
+              "select * from hims_f_pharmacy_material_detail where pharmacy_header_id=?",
+              headerResult[0].hims_f_pharamcy_material_header_id,
+              (error, pharmacy_stock_detail) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+                req.records = {
+                  ...headerResult[0],
+                  ...{ pharmacy_stock_detail }
+                };
+                releaseDBConnection(db, connection);
+                next();
+              }
+            );
+          } else {
+            req.records = headerResult;
+            releaseDBConnection(db, connection);
+            next();
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
-  addrequisitionEntry,
-  getrequisitionEntry,
-  updaterequisitionEntry
+  addtransferEntry,
+  gettransferEntry,
+  updatetransferEntry,
+  getrequisitionEntryTransfer
 };

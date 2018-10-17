@@ -64,9 +64,16 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "REQEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'N' and authorie2 = 'N'",
         orderBy: "hims_f_pharamcy_material_header_id desc"
+      },
+      {
+        searchName: "SalesReturn",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmcy_sales_return_header",
+        orderBy: "hims_f_pharmcy_sales_return_header_id desc"
       }
+
       // visit
     ]
   };

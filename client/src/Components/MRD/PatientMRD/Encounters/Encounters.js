@@ -15,6 +15,7 @@ class Encounters extends Component {
       patientDiagnosis: [],
       patientMedications: [],
       patientInvestigations: [],
+      patientProcedures: [],
       patientVital: {}
     };
   }
@@ -523,222 +524,228 @@ class Encounters extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="row investigation">
-                  <div className="col-lg-12">
-                    <h6 className="smallh6">Investigation</h6>
-                    <div className="row">
-                      <div className="col-lg-12">
-                        <AlgaehDataGrid
-                          id="investigation-grid"
-                          columns={[
-                            {
-                              fieldName: "service_name",
-                              label: "Service Name"
-                            },
-                            {
-                              fieldName: "lab_ord_status",
-                              label: "Lab Order Status",
-                              displayTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.lab_ord_status === "O"
-                                      ? "Ordered"
-                                      : row.lab_ord_status === "CL"
-                                        ? "Sample Collected"
-                                        : row.lab_ord_status === "CN"
-                                          ? "Test Cancelled"
-                                          : row.lab_ord_status === "CF"
-                                            ? "Result Confirmed "
-                                            : row.lab_ord_status === "V"
-                                              ? "Result Validated"
-                                              : "----"}
-                                  </span>
-                                );
-                              }
-                            },
-                            {
-                              fieldName: "lab_billed",
-                              label: "Lab Billed",
-                              displayTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.lab_billed === "Y" ? "Yes" : "----"}
-                                  </span>
-                                );
-                              }
-                            },
-                            {
-                              fieldName: "rad_ord_status",
-                              label: "Radiology Order Status",
-                              displayTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.rad_ord_status === "O"
-                                      ? "Ordered"
-                                      : row.rad_ord_status === "S"
-                                        ? "Scheduled"
-                                        : row.rad_ord_status === "UP"
-                                          ? "Under Process"
-                                          : row.rad_ord_status === "CN"
-                                            ? "Cancelled"
-                                            : row.rad_ord_status === "RC"
-                                              ? "Result Confirmed"
-                                              : row.rad_ord_status === "RA"
-                                                ? "Result Avaiable"
-                                                : "----"}
-                                  </span>
-                                );
-                              }
-                            },
-                            {
-                              fieldName: "rad_billed",
-                              label: "Radiology Billed",
-                              displayTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.rad_billed === "Y" ? "Yes" : "----"}
-                                  </span>
-                                );
-                              }
-                            },
-                            {
-                              fieldName: "hims_f_ordered_services_id",
-                              label: "View Report",
-                              displayTemplate: row => {
-                                return (
-                                  <span
-                                    className="pat-code"
-                                    style={{ color: "#006699" }}
-                                  >
-                                    View Report
-                                  </span>
-                                );
-                              }
-                            }
-                          ]}
-                          keyId="index"
-                          dataSource={{
-                            data: this.state.patientInvestigations
-                          }}
-                          isEditable={false}
-                          paging={{ page: 0, rowsPerPage: 5 }}
-                          events={{
-                            onDelete: row => {},
-                            onEdit: row => {},
-                            onDone: row => {}
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="row medication">
-                  <div className="col-lg-12">
-                    <h6 className="smallh6">Medication</h6>
-                    <div className="row">
-                      <div className="col-lg-12">
-                        <AlgaehDataGrid
-                          id="medication-grid"
-                          columns={[
-                            {
-                              fieldName: "generic_name",
-                              label: "Generic Name"
-                            },
-                            {
-                              fieldName: "item_description",
-                              label: "Item Description"
-                            },
-
-                            {
-                              fieldName: "dosage",
-                              label: "Dosage"
-                            },
-                            {
-                              fieldName: "frequency",
-                              label: "Frequency"
-                            },
-                            {
-                              fieldName: "no_of_days",
-                              label: "No. of Days"
-                            },
-                            {
-                              fieldName: "start_date",
-                              label: "Start date",
-                              displayTemplate: row => {
-                                return (
-                                  <span>
-                                    {moment(row.start_date).format(
-                                      "DD-MM-YYYY"
-                                    )}
-                                  </span>
-                                );
-                              }
-                            }
-                          ]}
-                          keyId="index"
-                          dataSource={{
-                            data: this.state.patientMedications
-                          }}
-                          isEditable={false}
-                          paging={{ page: 0, rowsPerPage: 5 }}
-                          events={{
-                            onDelete: row => {},
-                            onEdit: row => {},
-                            onDone: row => {}
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="row procedures">
-                  <div className="col-lg-12">
-                    <h6 className="smallh6">Procedures</h6>
-                    <div className="row">
-                      <div className="col-lg-12">
-                        <AlgaehDataGrid
-                          id="procedure-grid"
-                          columns={[
-                            {
-                              fieldName: "index",
-                              label: "Sl. No."
-                            },
-                            {
-                              fieldName: "c_d_t",
-                              label: "Consult Date & Time"
-                            },
-                            {
-                              fieldName: "doc_name",
-                              label: "Doctor Name"
-                            }
-                          ]}
-                          keyId="index"
-                          dataSource={{
-                            data: [
+                {this.state.patientInvestigations.length !== 0 ? (
+                  <div className="row investigation">
+                    <div className="col-lg-12">
+                      <h6 className="smallh6">Investigation</h6>
+                      <div className="row">
+                        <div className="col-lg-12">
+                          <AlgaehDataGrid
+                            id="investigation-grid"
+                            columns={[
                               {
-                                c_d_t: "May 22 13:00:00",
-                                doc_name: "Norman John",
-                                index: "1"
+                                fieldName: "service_name",
+                                label: "Service Name"
                               },
                               {
-                                c_d_t: "May 23 13:00:00",
-                                doc_name: "John Morgan",
-                                index: "2"
+                                fieldName: "lab_ord_status",
+                                label: "Lab Order Status",
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {row.lab_ord_status === "O"
+                                        ? "Ordered"
+                                        : row.lab_ord_status === "CL"
+                                          ? "Sample Collected"
+                                          : row.lab_ord_status === "CN"
+                                            ? "Test Cancelled"
+                                            : row.lab_ord_status === "CF"
+                                              ? "Result Confirmed "
+                                              : row.lab_ord_status === "V"
+                                                ? "Result Validated"
+                                                : "----"}
+                                    </span>
+                                  );
+                                }
+                              },
+                              {
+                                fieldName: "lab_billed",
+                                label: "Lab Billed",
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {row.lab_billed === "Y" ? "Yes" : "----"}
+                                    </span>
+                                  );
+                                }
+                              },
+                              {
+                                fieldName: "rad_ord_status",
+                                label: "Radiology Order Status",
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {row.rad_ord_status === "O"
+                                        ? "Ordered"
+                                        : row.rad_ord_status === "S"
+                                          ? "Scheduled"
+                                          : row.rad_ord_status === "UP"
+                                            ? "Under Process"
+                                            : row.rad_ord_status === "CN"
+                                              ? "Cancelled"
+                                              : row.rad_ord_status === "RC"
+                                                ? "Result Confirmed"
+                                                : row.rad_ord_status === "RA"
+                                                  ? "Result Avaiable"
+                                                  : "----"}
+                                    </span>
+                                  );
+                                }
+                              },
+                              {
+                                fieldName: "rad_billed",
+                                label: "Radiology Billed",
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {row.rad_billed === "Y" ? "Yes" : "----"}
+                                    </span>
+                                  );
+                                }
+                              },
+                              {
+                                fieldName: "hims_f_ordered_services_id",
+                                label: "View Report",
+                                displayTemplate: row => {
+                                  return (
+                                    <span
+                                      className="pat-code"
+                                      style={{ color: "#006699" }}
+                                    >
+                                      View Report
+                                    </span>
+                                  );
+                                }
                               }
-                            ]
-                          }}
-                          isEditable={false}
-                          paging={{ page: 0, rowsPerPage: 5 }}
-                          events={{
-                            onDelete: row => {},
-                            onEdit: row => {},
-                            onDone: row => {}
-                          }}
-                        />
+                            ]}
+                            keyId="index"
+                            dataSource={{
+                              data: this.state.patientInvestigations
+                            }}
+                            isEditable={false}
+                            paging={{ page: 0, rowsPerPage: 5 }}
+                            events={{
+                              onDelete: row => {},
+                              onEdit: row => {},
+                              onDone: row => {}
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                ) : null}
+                {this.state.patientMedications.length !== 0 ? (
+                  <div className="row medication">
+                    <div className="col-lg-12">
+                      <h6 className="smallh6">Medication</h6>
+                      <div className="row">
+                        <div className="col-lg-12">
+                          <AlgaehDataGrid
+                            id="medication-grid"
+                            columns={[
+                              {
+                                fieldName: "generic_name",
+                                label: "Generic Name"
+                              },
+                              {
+                                fieldName: "item_description",
+                                label: "Item Description"
+                              },
+
+                              {
+                                fieldName: "dosage",
+                                label: "Dosage"
+                              },
+                              {
+                                fieldName: "frequency",
+                                label: "Frequency"
+                              },
+                              {
+                                fieldName: "no_of_days",
+                                label: "No. of Days"
+                              },
+                              {
+                                fieldName: "start_date",
+                                label: "Start date",
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {moment(row.start_date).format(
+                                        "DD-MM-YYYY"
+                                      )}
+                                    </span>
+                                  );
+                                }
+                              }
+                            ]}
+                            keyId="index"
+                            dataSource={{
+                              data: this.state.patientMedications
+                            }}
+                            isEditable={false}
+                            paging={{ page: 0, rowsPerPage: 5 }}
+                            events={{
+                              onDelete: row => {},
+                              onEdit: row => {},
+                              onDone: row => {}
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+                {this.state.patientProcedures.length !== 0 ? (
+                  <div className="row procedures">
+                    <div className="col-lg-12">
+                      <h6 className="smallh6">Procedures</h6>
+                      <div className="row">
+                        <div className="col-lg-12">
+                          <AlgaehDataGrid
+                            id="procedure-grid"
+                            columns={[
+                              {
+                                fieldName: "index",
+                                label: "Sl. No."
+                              },
+                              {
+                                fieldName: "c_d_t",
+                                label: "Consult Date & Time"
+                              },
+                              {
+                                fieldName: "doc_name",
+                                label: "Doctor Name"
+                              }
+                            ]}
+                            keyId="index"
+                            dataSource={{
+                              data: [
+                                {
+                                  c_d_t: "May 22 13:00:00",
+                                  doc_name: "Norman John",
+                                  index: "1"
+                                },
+                                {
+                                  c_d_t: "May 23 13:00:00",
+                                  doc_name: "John Morgan",
+                                  index: "2"
+                                }
+                              ]
+                            }}
+                            isEditable={false}
+                            paging={{ page: 0, rowsPerPage: 5 }}
+                            events={{
+                              onDelete: row => {},
+                              onEdit: row => {},
+                              onDone: row => {}
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

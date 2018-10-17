@@ -136,6 +136,7 @@ class MRDList extends Component {
                 maxDate={new Date()}
                 events={{
                   onChange: selectedDate => {
+                    debugger;
                     this.setState({
                       date_of_birth: moment(selectedDate).format("YYYY-MM-DD")
                     });
@@ -154,6 +155,7 @@ class MRDList extends Component {
                 maxDate={new Date()}
                 events={{
                   onChange: selectedDate => {
+                    debugger;
                     this.setState({
                       registration_date: moment(selectedDate).format(
                         "YYYY-MM-DD"

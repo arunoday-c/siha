@@ -16,115 +16,30 @@ const changeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value });
 };
 
-const Patientchange = ($this, ctrl, e) => {
-  debugger;
-  e = ctrl || e;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  $this.setState({ [name]: value }, () => {
-    getPatientDetails($this, {});
-  });
-};
-
 const getCtrlCode = ($this, docNumber) => {
   debugger;
   AlgaehLoader({ show: true });
-  $this.props.getPosEntry({
-    uri: "/posEntry/getPosEntry",
+  $this.props.getSalesReturn({
+    uri: "/salesReturn/getsalesReturn",
     method: "GET",
     printInput: true,
-    data: { pos_number: docNumber },
+    data: { sales_return_number: docNumber },
     redux: {
-      type: "POS_ENTRY_GET_DATA",
-      mappingName: "posentry"
+      type: "RETURN_ENTRY_GET_DATA",
+      mappingName: "salesReturnEntry"
     },
     afterSuccess: data => {
       debugger;
       data.saveEnable = true;
       data.patient_payable_h = data.patient_payable;
+
       if (data.posted === "Y") {
         data.postEnable = true;
       } else {
         data.postEnable = false;
       }
-      data.dataExitst = true;
+
       $this.setState(data);
-      AlgaehLoader({ show: false });
-    }
-  });
-};
-
-const PatientSearch = ($this, e) => {
-  AlgaehSearch({
-    searchGrid: {
-      columns: FrontDesk
-    },
-    searchName: "patients",
-    uri: "/gloabelSearch/get",
-    onContainsChange: (text, serchBy, callBack) => {
-      callBack(text);
-    },
-    onRowSelect: row => {
-      getPatientDetails($this, row.patient_code);
-    }
-  });
-};
-
-const getPatientDetails = ($this, output) => {
-  debugger;
-
-  AlgaehLoader({ show: true });
-  $this.props.getPatientDetails({
-    uri: "/frontDesk/get",
-    method: "GET",
-    printInput: true,
-    data: { patient_code: $this.state.patient_code || output.patient_code },
-    redux: {
-      type: "PAT_GET_DATA",
-      mappingName: "pospatients"
-    },
-    afterSuccess: data => {
-      if (data.length !== 0) {
-        debugger;
-        // if ($this.state.visit_id !== null) {
-        //   for (let i = 0; i < data.visitDetails.length; i++) {
-        //     if (
-        //       data.visitDetails[i].hims_f_patient_visit_id ===
-        //       $this.state.visit_id
-        //     ) {
-        //       data.visitDetails[i].radioselect = 1;
-        //     }
-        //   }
-        //   AlgaehLoader({ show: false });
-        // }
-        debugger;
-        // let x = Enumerable.from($this.props.patienttype)
-        //   .where(
-        //     w => w.hims_d_patient_type_id == data.patientRegistration.patient_type
-        //   )
-        //   .toArray();
-
-        // data.patientRegistration.visitDetails = data.visitDetails;
-        data.patientRegistration.patient_id =
-          data.patientRegistration.hims_d_patient_id;
-        data.patientRegistration.mode_of_pay = "1";
-        //Insurance
-        data.patientRegistration.insurance_provider_name = null;
-        data.patientRegistration.sub_insurance_provider_name = null;
-        data.patientRegistration.network_type = null;
-        data.patientRegistration.policy_number = null;
-        data.patientRegistration.card_number = null;
-        data.patientRegistration.effective_end_date = null;
-        //Sec
-        data.patientRegistration.secondary_insurance_provider_name = null;
-        data.patientRegistration.secondary_sub_insurance_provider_name = null;
-        data.patientRegistration.secondary_network_type = null;
-        data.patientRegistration.secondary_policy_number = null;
-        data.patientRegistration.card_number = null;
-        data.patientRegistration.secondary_effective_end_date = null;
-
-        $this.setState(data.patientRegistration);
-      }
       AlgaehLoader({ show: false });
     }
   });
@@ -148,16 +63,16 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
 };
 
-const SavePosEnrty = $this => {
+const SaveSalesReturn = $this => {
   debugger;
   algaehApiCall({
-    uri: "/posEntry/addPosEntry",
+    uri: "/salesReturn/addsalesReturn",
     data: $this.state,
     onSuccess: response => {
       debugger;
       if (response.data.success === true) {
         $this.setState({
-          pos_number: response.data.records.pos_number,
+          sales_return_number: response.data.records.sales_return_number,
           saveEnable: true,
           postEnable: false
         });
@@ -171,7 +86,7 @@ const SavePosEnrty = $this => {
   });
 };
 
-const PostPosEntry = $this => {
+const PostSalesReturn = $this => {
   debugger;
   $this.state.posted = "Y";
   $this.state.transaction_type = "POS";
@@ -224,20 +139,22 @@ const POSSearch = ($this, e) => {
       AlgaehLoader({ show: true });
       $this.setState(
         {
-          pos_number: row.pos_number
+          pos_number: row.pos_number,
+          from_pos_id: row.hims_f_pharmacy_pos_header_id,
+          saveEnable: false
         },
         () => {
-          getPosEntry($this);
+          getPOSEntry($this);
         }
       );
     }
   });
 };
 
-const getPosEntry = $this => {
+const getPOSEntry = $this => {
   debugger;
 
-  $this.props.getPosEntry({
+  $this.props.getPOSEntry({
     uri: "/posEntry/getPosEntry",
     method: "GET",
     printInput: true,
@@ -250,11 +167,13 @@ const getPosEntry = $this => {
       debugger;
       data.patient_payable_h = data.patient_payable;
       data.cash_amount = data.receiveable_amount;
-      // data.soldqty = data.quantity;
+      data.payable_amount = data.receiveable_amount;
 
       for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
-        data.pharmacy_stock_detail[i].soldqty =
+        data.pharmacy_stock_detail[i].return_quantity =
           data.pharmacy_stock_detail[i].quantity;
+
+        data.pharmacy_stock_detail[i].operation = "+";
       }
       $this.setState(data);
       AlgaehLoader({ show: false });
@@ -265,12 +184,9 @@ const getPosEntry = $this => {
 export {
   changeTexts,
   getCtrlCode,
-  PatientSearch,
   ClearData,
-  getPatientDetails,
-  Patientchange,
-  SavePosEnrty,
-  PostPosEntry,
+  SaveSalesReturn,
+  PostSalesReturn,
   POSSearch,
-  getPosEntry
+  getPOSEntry
 };

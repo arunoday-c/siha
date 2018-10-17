@@ -32,19 +32,7 @@ import Paper from "@material-ui/core/Paper";
 class PosListItems extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      item_id: null,
-      uom_id: null,
-      batchno: null,
-      expiry_date: null,
-      quantity: 0,
-      unit_cost: 0,
-      Batch_Items: [],
-      service_id: null,
-      conversion_factor: 1,
-      grn_no: null,
-      item_group_id: null
-    };
+    this.state = {};
   }
 
   componentWillMount() {
@@ -66,6 +54,21 @@ class PosListItems extends Component {
         }
       });
     }
+
+    if (
+      this.props.itemgroup === undefined ||
+      this.props.itemgroup.length === 0
+    ) {
+      this.props.getItemGroup({
+        uri: "/pharmacy/getItemGroup",
+        method: "GET",
+        redux: {
+          type: "ITEM_GROUOP_GET_DATA",
+          mappingName: "itemgroup"
+        }
+      });
+    }
+
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
       this.props.getItemUOM({
         uri: "/pharmacy/getPharmacyUom",
@@ -106,6 +109,42 @@ class PosListItems extends Component {
                               data: this.props.itemlist
                             },
                             onChange: itemchangeText.bind(this, this)
+                          }}
+                        />
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          label={{ forceLabel: "Item Category" }}
+                          selector={{
+                            name: "item_category",
+                            className: "select-fld",
+                            value: this.state.item_category,
+                            dataSource: {
+                              textField: "category_desc",
+                              valueField: "hims_d_item_category_id",
+                              data: this.props.itemcategory
+                            },
+                            others: {
+                              disabled: true
+                            },
+                            onChange: null
+                          }}
+                        />
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          label={{ forceLabel: "Item Group" }}
+                          selector={{
+                            name: "item_group_id",
+                            className: "select-fld",
+                            value: this.state.item_group_id,
+                            dataSource: {
+                              textField: "group_description",
+                              valueField: "hims_d_item_group_id",
+                              data: this.props.itemgroup
+                            },
+                            others: {
+                              disabled: true
+                            },
+                            onChange: null
                           }}
                         />
                         <AlagehAutoComplete
@@ -202,6 +241,7 @@ class PosListItems extends Component {
                         <button
                           className="btn btn-primary"
                           onClick={AddItems.bind(this, this, context)}
+                          disabled={this.state.addItemButton}
                         >
                           Add Item
                         </button>
@@ -925,7 +965,8 @@ function mapStateToProps(state) {
     itemdetaillist: state.itemdetaillist,
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
-    posheader: state.posheader
+    posheader: state.posheader,
+    itemgroup: state.itemgroup
   };
 }
 
@@ -940,7 +981,8 @@ function mapDispatchToProps(dispatch) {
       PosHeaderCalculations: AlgaehActions,
       getServicesCost: AlgaehActions,
       getInsuranceServicesCost: AlgaehActions,
-      generateBill: AlgaehActions
+      generateBill: AlgaehActions,
+      getItemGroup: AlgaehActions
     },
     dispatch
   );

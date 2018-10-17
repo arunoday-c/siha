@@ -135,7 +135,12 @@ const AddItems = ($this, context) => {
       context.updateState({
         pharmacy_stock_detail: ItemInput,
         addedItem: true,
-        saveEnable: false
+        saveEnable: false,
+        item_category_id: null,
+        item_group_id: null,
+        item_id: null,
+        quantity_required: 0,
+        item_uom: null
       });
     }
   }

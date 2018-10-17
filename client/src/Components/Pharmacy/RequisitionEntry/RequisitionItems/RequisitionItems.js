@@ -26,23 +26,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 class RequisitionItems extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      completed: null,
-      item_category_id: null,
-      item_group_id: null,
-      item_id: null,
-      quantity_required: 0,
-      quantity_authorized: 0,
-      item_uom: null,
-      quantity_recieved: 0,
-      quantity_outstanding: 0,
-      po_created_date: null,
-      po_created: null,
-      po_created_quantity: null,
-      po_outstanding_quantity: null,
-      po_completed: null,
-      addItemButton: true
-    };
+    this.state = {};
   }
 
   componentWillMount() {
@@ -171,7 +155,7 @@ class RequisitionItems extends Component {
                             others: {
                               disabled: true
                             },
-                            onChange: UomchangeTexts.bind(this, this)
+                            onChange: null
                           }}
                         />
 

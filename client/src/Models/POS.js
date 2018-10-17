@@ -86,7 +86,21 @@ export default {
       secondary_policy_number: null,
       secondary_sub_insurance_provider_id: null,
       secondary_sub_insurance_provider_name: null,
-      secondary_network_office_id: null
+      secondary_network_office_id: null,
+
+      addItemButton: true,
+      item_id: null,
+      uom_id: null,
+      batchno: null,
+      expiry_date: null,
+      quantity: 0,
+      unit_cost: 0,
+      Batch_Items: [],
+      service_id: null,
+      conversion_factor: 1,
+      grn_no: null,
+      item_group_id: null,
+      item_category: null
     };
     return output;
   }

@@ -23,25 +23,25 @@ const getCtrlCode = ($this, docNumber) => {
     uri: "/requisitionEntry/getrequisitionEntry",
     method: "GET",
     printInput: true,
-    data: { material_header_number: docNumber },
+    data: { material_requisition_number: docNumber },
     redux: {
       type: "POS_ENTRY_GET_DATA",
       mappingName: "requisitionentry"
     },
     afterSuccess: data => {
       debugger;
-      data.saveEnable = true;
+      data[0].saveEnable = true;
 
-      if (data.posted === "Y") {
-        data.postEnable = true;
+      if (data[0].posted === "Y") {
+        data[0].postEnable = true;
       } else {
-        data.postEnable = false;
+        data[0].postEnable = false;
       }
-      if (data.visit_id !== null) {
-        data.case_type = "OP";
+      if (data[0].visit_id !== null) {
+        data[0].case_type = "OP";
       }
-      data.dataExitst = true;
-      $this.setState(data);
+      data[0].dataExitst = true;
+      $this.setState(data[0]);
       AlgaehLoader({ show: false });
     }
   });
@@ -61,7 +61,8 @@ const SaveRequisitionEntry = $this => {
       debugger;
       if (response.data.success === true) {
         $this.setState({
-          material_header_number: response.data.records.material_header_number,
+          material_requisition_number:
+            response.data.records.material_requisition_number,
           saveEnable: true,
           authorizeEnable: false
         });

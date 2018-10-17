@@ -34,7 +34,8 @@ class Appointment extends Component {
       defaultStatus: {},
       patToEdit: {},
       openPatEdit: false,
-      checkInId: null
+      checkInId: null,
+      sub_department_id: null
     };
   }
 
@@ -83,32 +84,22 @@ class Appointment extends Component {
       },
       onRowSelect: row => {
         console.log("Selected Row:", row);
-        this.setState(
-          {
-            patient_code: row.patient_code,
-            patient_id: row.hims_d_patient_id,
-            patient_name: row.full_name,
-            age: row.age,
-            date_of_birth: row.date_of_birth,
-            gender: row.gender,
-            contact_number: row.contact_number,
-            email: row.email
-          }
-          // ,
-          // () => {
-          //   setGlobal({
-          //     "FD-STD": "RegistrationPatient",
-          //     "pat-code": this.state.patient_code
-          //   });
-          //   document.getElementById("fd-router").click();
-          // }
-        );
+        this.setState({
+          patient_code: row.patient_code,
+          patient_id: row.hims_d_patient_id,
+          patient_name: row.full_name,
+          age: row.age,
+          date_of_birth: row.date_of_birth,
+          gender: row.gender,
+          contact_number: row.contact_number,
+          email: row.email
+        });
       }
     });
   }
 
-  getPatient(e) {
-    e.preventDefault();
+  getPatient() {
+    //  e.preventDefault();
     if (this.state.patient_code.length === 0) {
       swalMessage({
         title: "Please Enter the Patient Code",
@@ -188,6 +179,7 @@ class Appointment extends Component {
   }
 
   addPatientAppointment(e) {
+    debugger;
     e.preventDefault();
 
     let from_time = this.state.apptFromTime;
@@ -315,31 +307,42 @@ class Appointment extends Component {
     });
   }
 
-  getAppointmentSchedule() {
-    algaehLoader({ show: true });
-    algaehApiCall({
-      uri: "/appointment/getDoctorScheduleDateWise",
-      method: "GET",
-      data: {
-        sub_dept_id: this.state.sub_department_id,
-        schedule_date: moment(this.state.activeDateHeader).format("YYYY-MM-DD"),
-        provider_id: this.state.provider_id
-      },
-      onSuccess: response => {
-        algaehLoader({ show: false });
-        if (response.data.success) {
-          console.log("Appt Schedule:", response.data.records);
-          this.setState({ appointmentSchedule: response.data.records });
+  getAppointmentSchedule(e) {
+    e.preventDefault();
+
+    if (this.state.sub_department_id === null) {
+      swalMessage({
+        title: "Please Select a Department",
+        type: "warning"
+      });
+    } else {
+      algaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/appointment/getDoctorScheduleDateWise",
+        method: "GET",
+        data: {
+          sub_dept_id: this.state.sub_department_id,
+          schedule_date: moment(this.state.activeDateHeader).format(
+            "YYYY-MM-DD"
+          ),
+          provider_id: this.state.provider_id
+        },
+        onSuccess: response => {
+          algaehLoader({ show: false });
+          if (response.data.success) {
+            console.log("Appt Schedule:", response.data.records);
+            this.setState({ appointmentSchedule: response.data.records });
+          }
+        },
+        onFailure: error => {
+          algaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
-      },
-      onFailure: error => {
-        algaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
+      });
+    }
   }
 
   onSelectedDateHandler(e) {
@@ -1477,54 +1480,59 @@ class Appointment extends Component {
           {/* Calendar Component Ends */}
 
           {/* Filter Bar Start */}
-          <div className="row inner-top-search">
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "department_name"
-              }}
-              selector={{
-                name: "sub_department_id",
-                className: "select-fld",
-                value: this.state.sub_department_id,
-                dataSource: {
-                  textField: "sub_department_name",
-                  valueField: "sub_dept_id",
-                  data: this.state.departments
-                },
-                onChange: this.deptDropDownHandler.bind(this)
-              }}
-              error={this.state.department_error}
-              helperText={this.state.department_error_text}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Filter by Doctor"
-              }}
-              selector={{
-                name: "provider_id",
-                className: "select-fld",
-                value: this.state.provider_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "provider_id",
-                  data: this.state.doctors
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
-
-            <div className="col-lg-1 form-group margin-top-15">
-              <span
-                onClick={this.getAppointmentSchedule.bind(this)}
-                style={{ cursor: "pointer" }}
-                className="fas fa-search fa-2x"
+          <form onSubmit={this.getAppointmentSchedule.bind(this)}>
+            <div className="row inner-top-search">
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "department_name",
+                  isImp: true
+                }}
+                selector={{
+                  name: "sub_department_id",
+                  className: "select-fld",
+                  value: this.state.sub_department_id,
+                  dataSource: {
+                    textField: "sub_department_name",
+                    valueField: "sub_dept_id",
+                    data: this.state.departments
+                  },
+                  onChange: this.deptDropDownHandler.bind(this)
+                }}
+                error={this.state.department_error}
+                helperText={this.state.department_error_text}
               />
+
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3" }}
+                label={{
+                  forceLabel: "Filter by Doctor"
+                }}
+                selector={{
+                  name: "provider_id",
+                  className: "select-fld",
+                  value: this.state.provider_id,
+                  dataSource: {
+                    textField: "full_name",
+                    valueField: "provider_id",
+                    data: this.state.doctors
+                  },
+                  onChange: this.dropDownHandle.bind(this)
+                }}
+              />
+
+              <div className="col-lg-1 form-group margin-top-15">
+                <button
+                  type="submit"
+                  //onClick={this.getAppointmentSchedule.bind(this)}
+                  className="btn btn-primary"
+                >
+                  Load
+                </button>
+              </div>
             </div>
-            <div className="col-lg-5" />
-          </div>
+          </form>
+
           {/* Filter Bar End */}
 
           <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">

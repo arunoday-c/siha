@@ -52,10 +52,14 @@ export default class DisplayInsuranceDetails extends Component {
         </div>
         <div className="display-insurance-section">
           {this.state.actionPrimaryDesign ? (
-            <PrimaryInsurance POSIOputs={this.props.POSIOputs} />
+            <PrimaryInsurance
+              SALESRETURNIOputs={this.props.SALESRETURNIOputs}
+            />
           ) : null}
           {this.state.actionSecondaryDesign ? null : (
-            <SecondaryInsurance POSIOputs={this.props.POSIOputs} />
+            <SecondaryInsurance
+              SALESRETURNIOputs={this.props.SALESRETURNIOputs}
+            />
           )}
         </div>
       </div>
