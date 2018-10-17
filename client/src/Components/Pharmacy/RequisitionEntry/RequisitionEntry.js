@@ -70,6 +70,14 @@ class RequisitionEntry extends Component {
         });
       }
     });
+
+    if (
+      this.props.material_requisition_number !== undefined &&
+      this.props.material_requisition_number.length !== 0
+    ) {
+      debugger;
+      getCtrlCode(this, this.props.material_requisition_number);
+    }
   }
 
   render() {
@@ -195,6 +203,9 @@ class RequisitionEntry extends Component {
                       valueField: "value",
                       data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
                     },
+                    others: {
+                      disabled: this.state.addedItem
+                    },
 
                     onChange: changeTexts.bind(this, this)
                   }}
@@ -290,7 +301,20 @@ class RequisitionEntry extends Component {
                     >
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Authorize",
+                          forceLabel: "Authorize1",
+                          returnText: true
+                        }}
+                      />
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      onClick={PostPosEntry.bind(this, this)}
+                      disabled={this.state.authorizeEnable}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Authorize2",
                           returnText: true
                         }}
                       />

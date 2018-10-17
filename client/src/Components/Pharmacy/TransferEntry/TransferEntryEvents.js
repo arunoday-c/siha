@@ -2,7 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
-import POSIOputs from "../../../Models/POS";
+import TransferIOputs from "../../../Models/TransferEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
@@ -47,33 +47,20 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const ClearData = ($this, e) => {
-  let IOputs = POSIOputs.inputParam();
-  IOputs.patient_payable_h = 0;
-  IOputs.mode_of_pa = "";
-  IOputs.pay_cash = "CA";
-  IOputs.pay_card = "CD";
-  IOputs.pay_cheque = "CH";
-  IOputs.cash_amount = 0;
-  IOputs.card_check_number = "";
-  IOputs.card_date = null;
-  IOputs.card_amount = 0;
-  IOputs.cheque_number = "";
-  IOputs.cheque_date = null;
-  IOputs.cheque_amount = 0;
-  IOputs.advance = 0;
+  let IOputs = TransferIOputs.inputParam();
   $this.setState(IOputs);
 };
 
-const SavePosEnrty = $this => {
+const SaveTransferEntry = $this => {
   debugger;
   algaehApiCall({
-    uri: "/posEntry/addPosEntry",
+    uri: "/transferEntry/addtransferEntry",
     data: $this.state,
     onSuccess: response => {
       debugger;
       if (response.data.success === true) {
         $this.setState({
-          pos_number: response.data.records.pos_number,
+          transfer_number: response.data.records.transfer_number,
           saveEnable: true,
           postEnable: false
         });
@@ -140,48 +127,50 @@ const RequisitionSearch = ($this, e) => {
       },
       onRowSelect: row => {
         debugger;
-        $this.setState(
-          {
-            material_requisition_number: row.material_requisition_number
+        $this.props.getRequisitionEntry({
+          uri: "/transferEntry/getrequisitionEntryTransfer",
+          method: "GET",
+          printInput: true,
+          data: {
+            material_requisition_number: row.material_requisition_number,
+            from_location_id: $this.state.from_location_id
           },
-          () => {
-            $this.props.getRequisitionEntry({
-              uri: "/transferEntry/getrequisitionEntryTransfer",
-              method: "GET",
-              printInput: true,
-              data: {
-                material_requisition_number: row.material_requisition_number
-              },
-              redux: {
-                type: "POS_ENTRY_GET_DATA",
-                mappingName: "requisitionentry"
-              },
-              afterSuccess: data => {
-                debugger;
-                data.saveEnable = false;
+          redux: {
+            type: "POS_ENTRY_GET_DATA",
+            mappingName: "requisitionentry"
+          },
+          afterSuccess: data => {
+            debugger;
+            data.saveEnable = false;
 
-                if (data.posted === "Y") {
-                  data.postEnable = true;
-                } else {
-                  data.postEnable = false;
-                }
+            if (data.posted === "Y") {
+              data.postEnable = true;
+            } else {
+              data.postEnable = false;
+            }
 
-                data.postEnable = true;
+            data.postEnable = true;
 
-                data.dataExitst = true;
+            data.dataExitst = true;
 
-                for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
-                  data.pharmacy_stock_detail[i].quantity_transfered =
-                    data.pharmacy_stock_detail[i].quantity_required;
-                  data.pharmacy_stock_detail[i].quantity_authorized =
-                    data.pharmacy_stock_detail[i].quantity_required;
-                }
-                $this.setState(data);
-                AlgaehLoader({ show: false });
-              }
-            });
+            for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
+              data.pharmacy_stock_detail[i].quantity_transfered =
+                data.pharmacy_stock_detail[i].quantity_required;
+              data.pharmacy_stock_detail[i].quantity_authorized =
+                data.pharmacy_stock_detail[i].quantity_required;
+            }
+            $this.setState(data);
+            AlgaehLoader({ show: false });
           }
-        );
+        });
+        // $this.setState(
+        //   {
+        //     material_requisition_number: row.material_requisition_number
+        //   },
+        //   () => {
+
+        //   }
+        // );
       }
     });
   } else {
@@ -227,7 +216,7 @@ export {
   changeTexts,
   getCtrlCode,
   ClearData,
-  SavePosEnrty,
+  SaveTransferEntry,
   PostPosEntry,
   RequisitionSearch,
   LocationchangeTexts

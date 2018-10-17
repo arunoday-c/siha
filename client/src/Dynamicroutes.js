@@ -51,7 +51,7 @@ import SalesReturn from "./Components/Pharmacy/SalesReturn/SalesReturn";
 import RequisitionEntry from "./Components/Pharmacy/RequisitionEntry/RequisitionEntry";
 import TransferEntry from "./Components/Pharmacy/TransferEntry/TransferEntry";
 import FrontDeskAppt from "./Components/FrontDesk/FrontDesk";
-import RequisitionList from "./Components/Pharmacy/RequisitionList/RequisitionList";
+import RequisitionSwitch from "./Components/Pharmacy/RequisitionList/RequisitionSwitch";
 
 // function height() {
 //   let height =
@@ -112,7 +112,7 @@ const componts = (selectedLang, breadStyle) => {
     RequisitionEntry: <RequisitionEntry SelectLanguage={selectedLang} />,
     ProcedureSetup: <ProcedureSetup SelectLanguage={selectedLang} />,
     TransferEntry: <TransferEntry SelectLanguage={selectedLang} />,
-    RequisitionList: <RequisitionList SelectLanguage={selectedLang} />
+    RequisitionList: <RequisitionSwitch SelectLanguage={selectedLang} />
   };
 };
 
