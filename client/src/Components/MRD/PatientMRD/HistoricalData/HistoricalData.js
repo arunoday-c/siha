@@ -182,10 +182,16 @@ class HistoricalData extends Component {
         return {
           bill_date: _get.bill_date,
           provider_name: _get.provider_name,
+          pri_insurance_provider_name: _get.pri_insurance_provider_name,
+          pri_company_payble: _get.pri_company_payble,
+          sec_insurance_provider_name: _get.sec_insurance_provider_name,
+          sec_company_payable: _get.sec_company_payable,
           list: g.getSource()
         };
       })
       .toArray();
+
+    console.log("Group Data:", _groupData);
 
     return (
       <div className="historical-data">
@@ -201,6 +207,7 @@ class HistoricalData extends Component {
               //expanded={{ 0: true }}
               data={_patientVitals}
               pivotBy={["visit_date"]}
+              noDataText="No Vitals Captured"
               columns={[
                 {
                   accessor: "visit_date",
@@ -212,7 +219,6 @@ class HistoricalData extends Component {
                   Header: "Recorded Time",
                   accessor: "visit_time",
                   Cell: row => {
-                    console.log("Visit Time", row.value);
                     debugger;
                     return (
                       <span>
@@ -273,10 +279,9 @@ class HistoricalData extends Component {
               </div>
               <div className="portlet-body">
                 <TreeTable
-                  //Most recent 3 rows are expanded
-                  //expanded={{ 0: true, 1: true, 2: true, 3: true }}
                   data={this.state.patientDiagnosis}
                   pivotBy={["diagnosis_date"]}
+                  noDataText="No Diagnosis Found"
                   columns={[
                     {
                       accessor: "diagnosis_date",
@@ -620,7 +625,10 @@ class HistoricalData extends Component {
               columns={[
                 {
                   Header: "Date",
-                  accessor: "bill_date"
+                  accessor: "bill_date",
+                  Cell: row => (
+                    <span>{moment(row.bill_date).format("DD-MM-YYYY")}</span>
+                  )
                 },
                 {
                   Header: "Doctor",
@@ -696,7 +704,11 @@ class HistoricalData extends Component {
                               return (
                                 <React.Fragment key={i}>
                                   {r.receipt.map((m, index) => (
-                                    <div key={index}>{m.receipt_date}</div>
+                                    <div key={index}>
+                                      {moment(m.receipt_date).format(
+                                        "DD-MM-YYYY"
+                                      )}
+                                    </div>
                                   ))}
                                 </React.Fragment>
                               );
@@ -763,9 +775,36 @@ class HistoricalData extends Component {
                       }
                     }
                   ]
+                },
+                {
+                  Header: "Primary Insurar",
+                  columns: [
+                    {
+                      Header: "Name",
+                      accessor: "pri_insurance_provider_name"
+                    },
+                    {
+                      Header: "Amt.",
+                      accessor: "pri_company_payble"
+                    }
+                  ]
+                },
+                {
+                  Header: "Secondary Insurar",
+                  columns: [
+                    {
+                      Header: "Name",
+                      accessor: "sec_insurance_provider_name"
+                    },
+                    {
+                      Header: "Amt.",
+                      accessor: "sec_company_payable"
+                    }
+                  ]
                 }
               ]}
               data={_groupData}
+              defaultPageSize={5}
             />
           </div>
         </div>
