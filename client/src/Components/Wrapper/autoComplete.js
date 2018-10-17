@@ -1,10 +1,10 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Label from "../Wrapper/label";
 
 import Enumerable from "linq";
 
-class AutoComplete extends Component {
+class AutoComplete extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,7 +15,11 @@ class AutoComplete extends Component {
 
   componentWillReceiveProps(props) {
     if (props.selector.dataSource.data !== undefined) {
-      if (props.selector.value === null || props.selector.value === undefined) {
+      if (
+        props.selector.value === null ||
+        props.selector.value === undefined ||
+        props.selector.value === ""
+      ) {
         this.setState({ single: "" });
       } else {
         const item = new Enumerable.from(props.selector.dataSource.data)
@@ -67,16 +71,16 @@ class AutoComplete extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (
-      nextProps.selector.value !== this.state.single ||
-      (nextProps.selector.others != null &&
-        nextProps.selector.others.disabled !== this.state.disabled) ||
-      nextState !== this.state.single
-    )
-      return true;
-    return false;
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (
+  //     nextProps.selector.value !== this.state.single ||
+  //     (nextProps.selector.others != null &&
+  //       nextProps.selector.others.disabled !== this.state.disabled) ||
+  //     nextState !== this.state.single
+  //   )
+  //     return true;
+  //   return false;
+  // }
 
   bluringEvent(e) {
     if (this.props.selector.userList !== undefined) {
@@ -121,7 +125,11 @@ class AutoComplete extends Component {
     }
   }
   clearInput(e) {
-    this.setState({ single: "" });
+    this.setState({ single: "" }, () => {
+      if (this.props.selector.onClear !== undefined) {
+        this.props.selector.onClear();
+      }
+    });
   }
   renderAutoComplete = () => {
     const data =

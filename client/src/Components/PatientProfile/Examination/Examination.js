@@ -20,7 +20,7 @@ import {
   swalMessage
 } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
-
+import Enumerable from "linq";
 class Examination extends Component {
   constructor(props) {
     super(props);
@@ -32,7 +32,9 @@ class Examination extends Component {
       examination_comment: "",
       depaertmentBasedSpecility: [],
       patientPhysicalExamination: [],
-      examType: "G"
+      specilityDetail: [],
+      specilitySubDetail: [],
+      examination_type: "G"
     };
     this.handleClose = this.handleClose.bind(this);
   }
@@ -76,9 +78,10 @@ class Examination extends Component {
     if (
       this.props.all_patient_examinations === undefined ||
       this.props.all_patient_examinations.length === 0
-    )
+    ) {
       getPatientPhysicalExamination(this);
-    else {
+      getAllDepartmentBased(this);
+    } else {
       this.setState({
         patientPhysicalExamination: this.props.all_patient_examinations
       });
@@ -136,12 +139,14 @@ class Examination extends Component {
     });
   }
 
-  resetExmnState() {
+  resetExmnState(clear) {
+    clear =
+      clear === undefined ? { hims_d_physical_examination_header_id: "" } : {};
     this.setState({
-      hims_d_physical_examination_header_id: "",
       hims_d_physical_examination_details_id: "",
       hims_d_physical_examination_subdetails_id: "",
-      examination_comment: ""
+      examination_comment: "",
+      ...clear
     });
   }
 
@@ -161,7 +166,7 @@ class Examination extends Component {
       onSuccess: response => {
         if (response.data.success) {
           getPatientPhysicalExamination(this);
-          this.resetExmnState();
+          this.resetExmnState(true);
           swalMessage({
             title: "Examination added successfully . .",
             type: "success"
@@ -179,7 +184,6 @@ class Examination extends Component {
     )
       getAllDepartmentBased(this, detl => {
         this.setState({
-          depaertmentBasedSpecility: detl,
           openExamnModal: true
         });
       });
@@ -212,10 +216,79 @@ class Examination extends Component {
   }
 
   changeGeneralOrSpecific(e) {
-    debugger;
+    this.setState({
+      examination_type: e.target.checked ? "S" : "G"
+    });
   }
-
+  onChangePhysicalExamination(selected) {
+    this.setState({
+      specilityDetail: Enumerable.from(selected.selected.list)
+        .groupBy("$.hims_d_physical_examination_details_id ", null, (k, g) => {
+          const _firs = Enumerable.from(g.getSource()).firstOrDefault();
+          return {
+            hims_d_physical_examination_details_id: k,
+            detail_description: _firs.dtl_description,
+            list: g.getSource()
+          };
+        })
+        .toArray(),
+      hims_d_physical_examination_header_id: selected.value
+    });
+  }
+  onChangePhysicalExamitionDetail(selected) {
+    this.setState({
+      specilitySubDetail: Enumerable.from(selected.selected.list)
+        .groupBy(
+          "$.hims_d_physical_examination_subdetails_id ",
+          null,
+          (k, g) => {
+            const _firs = Enumerable.from(g.getSource()).firstOrDefault();
+            return {
+              hims_d_physical_examination_subdetails_id: k,
+              sub_detail_description: _firs.sub_dtl_description
+            };
+          }
+        )
+        .toArray(),
+      hims_d_physical_examination_details_id: selected.value
+    });
+  }
+  onClearPhysicalExam() {
+    this.setState({
+      hims_d_physical_examination_header_id: null,
+      hims_d_physical_examination_details_id: null,
+      hims_d_physical_examination_subdetails_id: null,
+      specilityDetail: [],
+      specilitySubDetail: []
+    });
+  }
+  onClearPhysicalExamDetail() {
+    this.setState({
+      hims_d_physical_examination_details_id: null,
+      hims_d_physical_examination_subdetails_id: null,
+      specilitySubDetail: []
+    });
+  }
   render() {
+    const _specility =
+      this.state.depaertmentBasedSpecility !== undefined &&
+      this.state.depaertmentBasedSpecility.length !== 0
+        ? Enumerable.from(this.state.depaertmentBasedSpecility)
+            .where(w => w.examination_type === this.state.examination_type)
+            .groupBy(
+              "$.hims_d_physical_examination_header_id",
+              null,
+              (k, g) => {
+                return {
+                  hims_d_physical_examination_header_id: k,
+                  description: Enumerable.from(g.getSource()).firstOrDefault()
+                    .description,
+                  list: g.getSource()
+                };
+              }
+            )
+            .toArray()
+        : [];
     return (
       <React.Fragment>
         {/* Examination Modal Start*/}
@@ -264,11 +337,12 @@ class Examination extends Component {
                           value: this.state
                             .hims_d_physical_examination_header_id,
                           dataSource: {
-                            textField: "header_description",
+                            textField: "description",
                             valueField: "hims_d_physical_examination_header_id",
-                            data: this.state.depaertmentBasedSpecility
+                            data: _specility
                           },
-                          onChange: this.headerDropDownHandle.bind(this)
+                          onChange: this.onChangePhysicalExamination.bind(this),
+                          onClear: this.onClearPhysicalExam.bind(this)
                         }}
                       />
 
@@ -286,9 +360,12 @@ class Examination extends Component {
                             textField: "detail_description",
                             valueField:
                               "hims_d_physical_examination_details_id",
-                            data: this.props.allexaminationsdetails
+                            data: this.state.specilityDetail
                           },
-                          onChange: this.detailDropDownHandle.bind(this)
+                          onChange: this.onChangePhysicalExamitionDetail.bind(
+                            this
+                          ),
+                          onClear: this.onClearPhysicalExamDetail.bind(this)
                         }}
                       />
 
@@ -306,7 +383,7 @@ class Examination extends Component {
                             textField: "sub_detail_description",
                             valueField:
                               "hims_d_physical_examination_subdetails_id",
-                            data: this.props.allexaminationsubdetails
+                            data: this.state.specilitySubDetail
                           },
                           onChange: this.dropDownHandle.bind(this)
                         }}
