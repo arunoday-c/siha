@@ -235,14 +235,32 @@ let getPatientInvestigation = (req, res, next) => {
     }
     let db = req.db;
 
+    // select hims_f_ordered_services_id, OS.patient_id, OS.visit_id,  doctor_id ,services_id,S.service_name,\
+    //     L.billed as lab_billed, L.status as lab_ord_status,R.billed as rad_billed, R.status as rad_ord_status \
+    //        from hims_f_ordered_services OS inner join hims_d_services S on  OS.services_id=S.hims_d_services_id \
+    //        left join hims_f_lab_order L on OS.visit_id=L.visit_id  left join hims_f_rad_order R on OS.visit_id=R.visit_id \
+    //                     where OS.record_status='A' and S.record_status='A' and OS.visit_id=?
+
+    let conString = "";
+
+    if (req.query.patient_id != null && req.query.patient_id != "null") {
+      conString = "patient_id=" + req.query.patient_id;
+    } else if (req.query.visit_id != null && req.query.visit_id != "null") {
+      conString = "visit_id=" + req.query.visit_id;
+    }
+
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_ordered_services_id, OS.patient_id, OS.visit_id,  doctor_id ,services_id,S.service_name,\
+        "select hims_f_ordered_services_id, OS.patient_id, OS.visit_id, visit_date, OS.doctor_id ,E.full_name, services_id,S.service_name,\
         L.billed as lab_billed, L.status as lab_ord_status,R.billed as rad_billed, R.status as rad_ord_status \
-           from hims_f_ordered_services OS inner join hims_d_services S on  OS.services_id=S.hims_d_services_id \
-           left join hims_f_lab_order L on OS.visit_id=L.visit_id  left join hims_f_rad_order R on OS.visit_id=R.visit_id \
-                        where OS.record_status='A' and S.record_status='A' and OS.visit_id=?",
-        [req.query.visit_id],
+         from hims_f_ordered_services OS inner join hims_d_services S on  OS.services_id=S.hims_d_services_id \
+         inner join hims_d_employee E on OS.doctor_id=E.hims_d_employee_id\
+         inner join hims_f_patient_visit V on OS.visit_id=V.hims_f_patient_visit_id\
+        left join hims_f_lab_order L on OS.visit_id=L.visit_id  left join hims_f_rad_order R on OS.visit_id=R.visit_id \
+        where OS.record_status='A' and S.record_status='A' and OS." +
+          conString +
+          " order by OS.visit_id desc",
+
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
