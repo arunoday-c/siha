@@ -328,13 +328,13 @@ let updatesalesReturn = (req, res, next) => {
           debugLog("posted", inputParam.posted);
           debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
           connection.query(
-            "UPDATE `hims_f_pharmacy_pos_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
-          WHERE `record_status`='A' and `hims_f_pharmacy_pos_header_id`=?",
+            "UPDATE `hims_f_pharmcy_sales_return_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
+          WHERE `record_status`='A' and `hims_f_pharmcy_sales_return_header_id`=?",
             [
               inputParam.posted,
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              inputParam.hims_f_pharmacy_pos_header_id
+              inputParam.hims_f_pharmcy_sales_return_header_id
             ],
             (error, result) => {
               debugLog("error", error);
@@ -349,7 +349,23 @@ let updatesalesReturn = (req, res, next) => {
         })
           .then(output => {
             return new Promise((resolve, reject) => {
-              debugLog("output", output);
+              debugLog("output", posoutput);
+              req.options = {
+                db: connection,
+                onFailure: error => {
+                  reject(error);
+                },
+                onSuccess: result => {
+                  resolve(result);
+                }
+              };
+
+              updatePOSDetail(req, res, next);
+            });
+          })
+          .then(posoutput => {
+            return new Promise((resolve, reject) => {
+              debugLog("output", posoutput);
               req.options = {
                 db: connection,
                 onFailure: error => {
@@ -362,7 +378,6 @@ let updatesalesReturn = (req, res, next) => {
 
               updateIntoItemLocation(req, res, next);
             })
-
               .then(records => {
                 connection.commit(error => {
                   if (error) {

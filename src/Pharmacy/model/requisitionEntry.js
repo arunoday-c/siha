@@ -114,6 +114,7 @@ let addrequisitionEntry = (req, res, next) => {
                   "item_id",
                   "item_category_id",
                   "item_group_id",
+                  "item_uom",
                   "quantity_required"
                 ];
 
@@ -185,6 +186,7 @@ let getrequisitionEntry = (req, res, next) => {
 
     let where = whereCondition(extend(selectWhere, req.query));
 
+    debugLog("where", where);
     db.getConnection((error, connection) => {
       connection.query(
         "SELECT * from  hims_f_pharamcy_material_header\
@@ -264,13 +266,15 @@ let updaterequisitionEntry = (req, res, next) => {
           debugLog("posted", inputParam.posted);
           debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
           connection.query(
-            "UPDATE `hims_f_pharmacy_pos_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
-          WHERE  and `hims_f_pharmacy_pos_header_id`=?",
+            "UPDATE `hims_f_pharamcy_material_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
+          WHERE  and `hims_f_pharamcy_material_header_id`=?",
             [
-              inputParam.posted,
+              inputParam.authorize1,
+              // authorize2_date
+              inputParam.authorie2,
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              inputParam.hims_f_pharmacy_pos_header_id
+              inputParam.hims_f_pharamcy_material_header_id
             ],
             (error, result) => {
               debugLog("error", error);
@@ -330,8 +334,49 @@ let updaterequisitionEntry = (req, res, next) => {
   }
 };
 
+//created by Nowshad: to get Pharmacy Requisition Entry
+let getAuthrequisitionList = (req, res, next) => {
+  let selectWhere = {
+    from_location_id: "ALL",
+    to_location_id: "ALL",
+    authorize1: "ALL",
+    authorie2: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    debugLog("where", where);
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT * from  hims_f_pharamcy_material_header\
+          where " +
+          where.condition,
+        where.values,
+        (error, headerResult) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          debugLog("result: ", headerResult);
+          req.records = headerResult;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addrequisitionEntry,
   getrequisitionEntry,
-  updaterequisitionEntry
+  updaterequisitionEntry,
+  getAuthrequisitionList
 };

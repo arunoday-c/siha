@@ -41,6 +41,7 @@ export default {
 
       saveEnable: true,
       authorizeEnable: true,
+      ItemDisable: false,
 
       item_category_id: null,
       item_group_id: null,
