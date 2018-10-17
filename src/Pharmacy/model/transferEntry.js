@@ -41,7 +41,7 @@ let addtransferEntry = (req, res, next) => {
           runningNumberGen({
             db: connection,
             counter: requestCounter,
-            module_desc: ["REQ_NUM"],
+            module_desc: ["TRAN_NUM"],
             onFailure: error => {
               reject(error);
             },
@@ -124,7 +124,7 @@ let addtransferEntry = (req, res, next) => {
                 ];
 
                 connection.query(
-                  "INSERT INTO hims_f_pharmacy_material_detail(" +
+                  "INSERT INTO hims_f_pharmacy_transfer_detail(" +
                     insurtColumns.join(",") +
                     ",transfer_header_id) VALUES ?",
                   [
@@ -152,7 +152,7 @@ let addtransferEntry = (req, res, next) => {
                       }
                       releaseDBConnection(db, connection);
                       req.records = {
-                        material_requisition_number: documentCode
+                        transfer_number: documentCode
                       };
                       next();
                     });
@@ -177,7 +177,7 @@ let addtransferEntry = (req, res, next) => {
 //created by Nowshad: to get Pharmacy Requisition Entry
 let gettransferEntry = (req, res, next) => {
   let selectWhere = {
-    material_requisition_number: "ALL"
+    transfer_number: "ALL"
   };
   try {
     if (req.db == null) {
@@ -189,7 +189,7 @@ let gettransferEntry = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from  hims_f_pharamcy_material_header\
+        "SELECT * from  hims_f_pharmacy_transfer_header\
           where " +
           where.condition,
         where.values,
@@ -202,12 +202,12 @@ let gettransferEntry = (req, res, next) => {
           debugLog("result: ", headerResult);
           if (headerResult.length != 0) {
             debugLog(
-              "hims_f_pharamcy_material_header_id: ",
-              headerResult[0].hims_f_pharamcy_material_header_id
+              "hims_f_pharmacy_transfer_header_id: ",
+              headerResult[0].hims_f_pharmacy_transfer_header_id
             );
             connection.query(
-              "select * from hims_f_pharmacy_material_detail where pharmacy_header_id=?",
-              headerResult[0].hims_f_pharamcy_material_header_id,
+              "select * from hims_f_pharmacy_transfer_detail where transfer_header_id=?",
+              headerResult[0].hims_f_pharmacy_transfer_header_id,
               (error, pharmacy_stock_detail) => {
                 if (error) {
                   releaseDBConnection(db, connection);
@@ -335,20 +335,25 @@ let getrequisitionEntryTransfer = (req, res, next) => {
   let selectWhere = {
     material_requisition_number: "ALL"
   };
+  let RequisitionEntry = {
+    material_requisition_number: null,
+    from_location_id: null
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
 
-    let where = whereCondition(extend(selectWhere, req.query));
+    // let where = whereCondition(extend(selectWhere, req.query));
+    let inputParam = extend(RequisitionEntry, req.query);
 
+    debugLog("inputParam: ", inputParam);
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from  hims_f_pharamcy_material_header\
-            where " +
-          where.condition,
-        where.values,
+        "SELECT * from  hims_f_pharamcy_material_header \
+            where material_requisition_number=?",
+        [inputParam.material_requisition_number],
         (error, headerResult) => {
           if (error) {
             releaseDBConnection(db, connection);
@@ -361,9 +366,17 @@ let getrequisitionEntryTransfer = (req, res, next) => {
               "hims_f_pharamcy_material_header_id: ",
               headerResult[0].hims_f_pharamcy_material_header_id
             );
+            debugLog("from_location_id: ", inputParam.from_location_id);
+
+            debugLog("to_location_id: ", headerResult[0].to_location_id);
             connection.query(
-              "select * from hims_f_pharmacy_material_detail where pharmacy_header_id=?",
-              headerResult[0].hims_f_pharamcy_material_header_id,
+              "select * from hims_f_pharmacy_material_detail p left outer join hims_m_item_location l \
+                on l.item_id =p.item_id where pharmacy_header_id=? and l.record_status='A'and l.pharmacy_location_id=? \
+                and l.expirydt > now()  order by l.expirydt asc limit 0,1",
+              [
+                headerResult[0].hims_f_pharamcy_material_header_id,
+                headerResult[0].to_location_id
+              ],
               (error, pharmacy_stock_detail) => {
                 if (error) {
                   releaseDBConnection(db, connection);

@@ -102,6 +102,9 @@ class RequisitionItems extends Component {
                               valueField: "hims_d_item_master_id",
                               data: this.props.itemlist
                             },
+                            others: {
+                              disabled: this.state.ItemDisable
+                            },
                             onChange: itemchangeText.bind(this, this)
                           }}
                         />
@@ -116,6 +119,9 @@ class RequisitionItems extends Component {
                               textField: "uom_description",
                               valueField: "uom_id",
                               data: this.state.ItemUOM
+                            },
+                            others: {
+                              disabled: this.state.ItemDisable
                             },
 
                             onChange: UomchangeTexts.bind(this, this)
@@ -174,6 +180,9 @@ class RequisitionItems extends Component {
                             value: this.state.quantity_required,
                             events: {
                               onChange: numberchangeTexts.bind(this, this)
+                            },
+                            others: {
+                              disabled: this.state.ItemDisable
                             }
                           }}
                         />
@@ -360,10 +369,12 @@ class RequisitionItems extends Component {
                                 ),
                                 displayTemplate: row => {
                                   let display =
-                                    this.state.ItemUOM === undefined
+                                    this.props.itemuom === undefined
                                       ? []
-                                      : this.state.ItemUOM.filter(
-                                          f => f.uom_id === row.item_uom
+                                      : this.props.itemuom.filter(
+                                          f =>
+                                            f.hims_d_pharmacy_uom_id ===
+                                            row.item_uom
                                         );
 
                                   return (

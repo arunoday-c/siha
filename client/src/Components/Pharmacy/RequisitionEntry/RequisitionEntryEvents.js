@@ -30,6 +30,14 @@ const getCtrlCode = ($this, docNumber) => {
     },
     afterSuccess: data => {
       debugger;
+      if (
+        $this.props.material_requisition_number !== undefined ||
+        $this.props.material_requisition_number !== null
+      ) {
+        data[0].authorizeEnable = false;
+        data[0].addedItem = true;
+        data[0].ItemDisable = true;
+      }
       data[0].saveEnable = true;
 
       if (data[0].posted === "Y") {
@@ -63,8 +71,8 @@ const SaveRequisitionEntry = $this => {
         $this.setState({
           material_requisition_number:
             response.data.records.material_requisition_number,
-          saveEnable: true,
-          authorizeEnable: false
+          saveEnable: true
+          // authorizeEnable: false
         });
         swal("Saved successfully . .", {
           icon: "success",
