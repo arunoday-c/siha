@@ -10,21 +10,23 @@ const getAllDepartmentBased = ($this, callBack) => {
       mappingName: "allexaminations"
     },
     afterSuccess: data => {
-      const detl = getPhysicalExaminationOnSpecility({
-        data: data,
-        examType: $this.state.examType
+      // const detl = getPhysicalExaminationOnSpecility({
+      //   data: data,
+      //   examType: $this.state.examType
+      // });
+
+      $this.setState({
+        depaertmentBasedSpecility: data
       });
-      debugger;
-      if (typeof callBack === "function") callBack(detl);
+
+      if (typeof callBack === "function") callBack();
     }
   });
 };
 const getPhysicalExaminationOnSpecility = options => {
-  debugger;
   return Enumerable.from(options.data)
     .where(w => w.examination_type === options.examType)
     .groupBy("$.hims_d_physical_examination_header_id", null, (k, g) => {
-      debugger;
       const source = Enumerable.from(g.getSource())
         .where(w => w.hims_d_physical_examination_header_id === k)
         .firstOrDefault();

@@ -548,7 +548,6 @@ let addChronicalConditions = (req, res, next) => {
           releaseDBConnection(db, connection);
           if (error) {
             next(error);
-           
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -633,7 +632,6 @@ let addEncounterReview = (req, res, next) => {
           releaseDBConnection(db, connection);
           if (error) {
             next(error);
-           
           }
           debugLog("Results are recorded...");
           req.records = results;
@@ -2124,17 +2122,15 @@ let getAllPhysicalExamination = (req, res, next) => {
 
       let queryBuilder =
         "SELECT hims_d_physical_examination_header_id,\
-      examination_type,hims_d_physical_examination_header.description,assesment_type,\
-      hims_d_physical_examination_header.mandatory,hims_d_physical_examination_details_id,\
-      hims_d_physical_examination_details.description as dtl_description,\
-      hims_d_physical_examination_subdetails_id,hims_d_physical_examination_subdetails.description as sub_dtl_description,\
-      hims_d_physical_examination_subdetails.mandatory \
-      FROM hims_d_physical_examination_header,\
-      hims_d_physical_examination_details,hims_d_physical_examination_subdetails\
-      where hims_d_physical_examination_header.record_status='A'\
-      and hims_d_physical_examination_details.physical_examination_header_id=hims_d_physical_examination_header_id\
-      and hims_d_physical_examination_subdetails.physical_examination_details_id =\
-      hims_d_physical_examination_details.hims_d_physical_examination_details_id and sub_department_id=?";
+      examination_type,h.description,assesment_type,\
+      h.mandatory,hims_d_physical_examination_details_id,\
+      d.description as dtl_description,\
+      sd.description as sub_dtl_description,\
+      sd.mandatory ,sd.hims_d_physical_examination_subdetails_id FROM hims_d_physical_examination_header h left outer join  hims_d_physical_examination_details d \
+      on h.hims_d_physical_examination_header_id = d.physical_examination_header_id left outer join \
+      hims_d_physical_examination_subdetails sd  on sd.physical_examination_details_id=d.hims_d_physical_examination_details_id \
+       where \
+      h.record_status='A' and sub_department_id=?";
       connection.query(
         queryBuilder,
         [req.userIdentity.sub_department_id],

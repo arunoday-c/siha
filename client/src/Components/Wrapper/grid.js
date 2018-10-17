@@ -519,7 +519,8 @@ class DataGrid extends PureComponent {
         data: props.dataSource.data,
         totalPages: _total,
         rowsPerPage: props.paging.rowsPerPage,
-        recordsTotal: props.dataSource.data.length
+        recordsTotal:
+          props.dataSource.data !== undefined ? props.dataSource.data.length : 0
       });
     }
   }
