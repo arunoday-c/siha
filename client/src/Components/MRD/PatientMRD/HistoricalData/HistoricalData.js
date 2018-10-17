@@ -62,6 +62,11 @@ const _data = [
 class HistoricalData extends Component {
   constructor(props) {
     super(props);
+    this.getPatientVitals();
+    this.getPatientDiagnosis();
+    this.getPatientMedication();
+    this.getPatientPaymentDetails();
+    this.getPatientInvestigation();
     this.state = {};
   }
 
@@ -167,11 +172,29 @@ class HistoricalData extends Component {
     });
   }
 
-  componentDidMount() {
-    this.getPatientVitals();
-    this.getPatientDiagnosis();
-    this.getPatientMedication();
-    this.getPatientPaymentDetails();
+  getPatientInvestigation() {
+    algaehApiCall({
+      uri: "/mrd/getPatientInvestigation",
+      method: "GET",
+      data: {
+        patient_id: Window.global["mrd_patient"]
+      },
+      cancelRequestId: "getPatientInvestigation",
+      onSuccess: response => {
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          this.setState({ patientInvestigations: response.data.records });
+          console.log("Investigations:", response.data.records);
+        }
+      },
+      onFailure: error => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   render() {
@@ -557,52 +580,36 @@ class HistoricalData extends Component {
                 <TreeTable
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
-                  data={_data}
-                  pivotBy={["date_doctor"]}
+                  data={this.state.patientInvestigations}
+                  pivotBy={["visit_date"]}
                   columns={[
                     {
-                      accessor: "date_doctor"
+                      accessor: "visit_date"
                     },
 
                     {
-                      Header: "Temp. Oral",
-                      accessor: "oral"
+                      Header: "Service Name",
+                      accessor: "service_name"
                     },
                     {
-                      Header: "BP Systole",
-                      accessor: "bpSystole"
+                      Header: "Doctor Name",
+                      accessor: "provider_name"
                     },
                     {
-                      Header: "bp Dyastole",
-                      accessor: "bpdyastole"
+                      Header: "Lab Order Status",
+                      accessor: "lab_ord_status"
                     },
                     {
-                      Header: "Pulse",
-                      accessor: "pulse"
+                      Header: "Lab Billed",
+                      accessor: "lab_billed"
                     },
                     {
-                      Header: "Respiratory",
-                      accessor: "resp"
+                      Header: "Radiology Order Status",
+                      accessor: "rad_ord_status"
                     },
                     {
-                      Header: "Blood Sugar",
-                      accessor: "bloodsugar"
-                    },
-                    {
-                      Header: "Height",
-                      accessor: "height"
-                    },
-                    {
-                      Header: "Weight",
-                      accessor: "weight"
-                    },
-                    {
-                      Header: "BMI",
-                      accessor: "bmi"
-                    },
-                    {
-                      Header: "Duration",
-                      accessor: "duration"
+                      Header: "Radiology Billed",
+                      accessor: "rad_billed"
                     }
                   ]}
                   defaultPageSize={5}
