@@ -41,18 +41,19 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
 };
 
 const getRequisitionList = $this => {
+  debugger;
   let inpObj = {};
-  if ($this.state.from_location_id === null) {
+  if ($this.state.from_location_id !== null) {
     inpObj.from_location_id = $this.state.from_location_id;
   }
-  if ($this.state.to_location_id === null) {
+  if ($this.state.to_location_id !== null) {
     inpObj.to_location_id = $this.state.to_location_id;
   }
 
   inpObj.authorize1 = "N";
   inpObj.authorie2 = "N";
   $this.props.getRequisitionList({
-    uri: "/requisitionEntry/getrequisitionEntry",
+    uri: "/requisitionEntry/getAuthrequisitionList",
     method: "GET",
     printInput: true,
     data: inpObj,

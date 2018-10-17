@@ -16,7 +16,7 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   getCtrlCode,
   ClearData,
-  SavePosEnrty,
+  SaveTransferEntry,
   PostPosEntry,
   RequisitionSearch,
   LocationchangeTexts
@@ -100,14 +100,14 @@ class TransferEntry extends Component {
                   label={{ forceLabel: "Transfer Number", returnText: true }}
                 />
               ),
-              value: this.state.pos_number,
-              selectValue: "pos_number",
+              value: this.state.transfer_number,
+              selectValue: "transfer_number",
               events: {
                 onChange: getCtrlCode.bind(this, this)
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "TransferEntryEntry.POSEntry"
+                fieldName: "TransferEntry.TransEntry"
               },
               searchName: "TransferEntry"
             }}
@@ -254,7 +254,7 @@ class TransferEntry extends Component {
                     <button
                       type="button"
                       className="btn btn-primary"
-                      onClick={SavePosEnrty.bind(this, this)}
+                      onClick={SaveTransferEntry.bind(this, this)}
                       disabled={this.state.saveEnable}
                     >
                       <AlgaehLabel

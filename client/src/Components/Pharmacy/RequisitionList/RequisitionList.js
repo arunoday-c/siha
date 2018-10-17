@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-
+import { setGlobal } from "../../../utils/GlobalFunctions";
 import "./RequisitionList.css";
 import "./../../../styles/site.css";
 
@@ -38,10 +38,6 @@ class RequisitionList extends Component {
         mappingName: "locations"
       }
     });
-  }
-
-  componentWillReceiveProps(newProps) {
-    debugger;
   }
 
   render() {
@@ -130,7 +126,17 @@ class RequisitionList extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              <i className="fas fa-flask" />
+                              <i
+                                className="fas fa-flask"
+                                onClick={() => {
+                                  setGlobal({
+                                    "RQ-STD": "RequisitionEntry",
+                                    material_requisition_number:
+                                      row.material_requisition_number
+                                  });
+                                  document.getElementById("rq-router").click();
+                                }}
+                              />
                             </span>
                           );
                         },

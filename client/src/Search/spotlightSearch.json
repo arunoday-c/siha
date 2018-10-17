@@ -118,5 +118,13 @@
         "label": "Sales Return Number"
       }
     ]
+  },
+  "TransferEntry": {
+    "TransEntry": [
+      {
+        "fieldName": "transfer_number",
+        "label": "Transfer Number"
+      }
+    ]
   }
 }

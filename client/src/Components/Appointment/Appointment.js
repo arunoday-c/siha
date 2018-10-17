@@ -308,7 +308,7 @@ class Appointment extends Component {
   }
 
   getAppointmentSchedule(e) {
-    e.preventDefault();
+    //  e.preventDefault();
 
     if (this.state.sub_department_id === null) {
       swalMessage({

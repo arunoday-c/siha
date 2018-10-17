@@ -107,21 +107,20 @@ const AddItems = ($this, context) => {
       icon: "warning"
     });
   } else {
+    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     debugger;
-    let ItemInput = [
-      {
-        completed: "N",
-        item_category_id: $this.state.item_category_id,
-        item_group_id: $this.state.item_group_id,
-        item_id: $this.state.item_id,
-        quantity_required: $this.state.quantity_required,
-        quantity_authorized: 0,
-        item_uom: $this.state.item_uom
-      }
-    ];
-
+    let ItemInput = {
+      completed: "N",
+      item_category_id: $this.state.item_category_id,
+      item_group_id: $this.state.item_group_id,
+      item_id: $this.state.item_id,
+      quantity_required: $this.state.quantity_required,
+      quantity_authorized: 0,
+      item_uom: $this.state.item_uom
+    };
+    pharmacy_stock_detail.push(ItemInput);
     $this.setState({
-      pharmacy_stock_detail: ItemInput,
+      pharmacy_stock_detail: pharmacy_stock_detail,
       addedItem: true,
       item_category_id: null,
       item_group_id: null,
@@ -133,7 +132,7 @@ const AddItems = ($this, context) => {
 
     if (context !== undefined) {
       context.updateState({
-        pharmacy_stock_detail: ItemInput,
+        pharmacy_stock_detail: pharmacy_stock_detail,
         addedItem: true,
         saveEnable: false,
         item_category_id: null,
