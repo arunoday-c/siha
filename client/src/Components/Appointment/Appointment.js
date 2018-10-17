@@ -308,7 +308,7 @@ class Appointment extends Component {
   }
 
   getAppointmentSchedule(e) {
-    //  e.preventDefault();
+    if (e !== undefined) e.preventDefault();
 
     if (this.state.sub_department_id === null) {
       swalMessage({
@@ -1480,7 +1480,8 @@ class Appointment extends Component {
           {/* Calendar Component Ends */}
 
           {/* Filter Bar Start */}
-          <form onSubmit={this.getAppointmentSchedule.bind(this)}>
+          {/* <form onSubmit={this.getAppointmentSchedule.bind(this)}> */}
+          <form action="none">
             <div className="row inner-top-search">
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
@@ -1499,8 +1500,6 @@ class Appointment extends Component {
                   },
                   onChange: this.deptDropDownHandler.bind(this)
                 }}
-                error={this.state.department_error}
-                helperText={this.state.department_error_text}
               />
 
               <AlagehAutoComplete
@@ -1524,6 +1523,7 @@ class Appointment extends Component {
               <div className="col-lg-1 form-group margin-top-15">
                 <button
                   type="submit"
+                  onClick={this.getAppointmentSchedule.bind(this)}
                   //onClick={this.getAppointmentSchedule.bind(this)}
                   className="btn btn-primary"
                 >
@@ -1595,18 +1595,6 @@ class Appointment extends Component {
           </div>
         </div>
         {/* Appointment Module End */}
-
-        {/* <div
-          id="patient-registration"
-          className="d-none"
-          style={{ display: "none" }}
-        >
-          <RegistrationPatient
-            patient_code={this.state.patient_code}
-            provider_id={this.state.provider_id}
-            dept_id={this.state.sub_department_id}
-          />
-        </div> */}
       </div>
     );
   }
