@@ -251,15 +251,17 @@ let getPatientInvestigation = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_ordered_services_id, OS.patient_id, OS.visit_id, visit_date, OS.doctor_id ,E.full_name, services_id,S.service_name,\
-        L.billed as lab_billed, L.status as lab_ord_status,R.billed as rad_billed, R.status as rad_ord_status \
-         from hims_f_ordered_services OS inner join hims_d_services S on  OS.services_id=S.hims_d_services_id \
-         inner join hims_d_employee E on OS.doctor_id=E.hims_d_employee_id\
-         inner join hims_f_patient_visit V on OS.visit_id=V.hims_f_patient_visit_id\
-        left join hims_f_lab_order L on OS.visit_id=L.visit_id  left join hims_f_rad_order R on OS.visit_id=R.visit_id \
-        where OS.record_status='A' and S.record_status='A' and OS." +
+        "select hims_f_ordered_services_id, OS.patient_id, OS.visit_id,visit_date, OS.doctor_id, OS.service_type_id,\
+                services_id,S.service_name,hims_f_lab_order_id, L.billed as lab_billed, \
+        L.status as lab_ord_status,R.hims_f_rad_order_id,R.billed as rad_billed, R.status as rad_ord_status\
+        from  hims_f_ordered_services OS \
+         inner join hims_d_services S on  OS.services_id=S.hims_d_services_id \
+          inner join hims_f_patient_visit V on OS.visit_id=V.hims_f_patient_visit_id\
+         left join  hims_f_lab_order L on OS.visit_id=L.visit_id and OS.services_id= L.service_id\
+         left join hims_f_rad_order R on OS.visit_id=R.visit_id  and OS.services_id=R.service_id\
+         where OS." +
           conString +
-          " order by OS.visit_id desc",
+          " group by hims_f_ordered_services_id order by OS.visit_id desc",
 
         (error, result) => {
           releaseDBConnection(db, connection);

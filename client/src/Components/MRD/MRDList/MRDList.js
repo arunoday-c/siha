@@ -90,7 +90,7 @@ class MRDList extends Component {
   render() {
     return (
       <div className="mrd-list">
-        <div className="card margin-top-15 col-lg-12">
+        <div className="row inner-top-search">
           <form onSubmit={this.getPatientMrdList.bind(this)}>
             <div className="row padding-10">
               <AlagehFormGroup
@@ -183,9 +183,9 @@ class MRDList extends Component {
                 value={this.state.registration_date}
               />
 
-              <div className="col-lg-1 form-group margin-top-15">
+              <div className="col-lg-1">
                 <button
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor:"pointer",fontSize:" 1.4rem",margin:" 24px 0 0",padding: 0,background:"none",border:"none"}}
                   type="submit"
                   className="fas fa-search fa-2x"
                 />
@@ -199,10 +199,15 @@ class MRDList extends Component {
               <h3 className="caption-subject">Patient List</h3>
             </div>
           </div>
-          <div className="portlet-body">
+          <div className="portlet-body" id="mrdList-Cntr">
             <AlgaehDataGrid
               id="index"
               columns={[
+                {
+                  fieldName: "registration_date",
+                  label: "Registration Date",
+                  others:{maxWidth:150,resizable: false,style:{textAlign:"center"}}
+                },
                 {
                   fieldName: "patient_code",
                   label: "Patient Code",
@@ -231,54 +236,35 @@ class MRDList extends Component {
                       </span>
                     );
                   },
-                  others: {
-                    style: { textAlign: "center" }
-                  },
+                  others:{maxWidth:120,resizable: false,style:{textAlign:"center"}},
                   className: drow => {
                     return "greenCell";
                   }
                 },
                 {
                   fieldName: "full_name",
-                  label: "Consult Date & Time",
-                  others: {
-                    style: { textAlign: "center" }
-                  }
+                  label: "Patient Name",
+                  others:{resizable: false,style:{textAlign:"left"}}
                 },
                 {
                   fieldName: "gender",
                   label: "Gender",
-                  others: {
-                    style: { textAlign: "center" }
-                  }
+                  others:{maxWidth:90,resizable: false,style:{textAlign:"center"}}
                 },
                 {
                   fieldName: "date_of_birth",
                   label: "Date of Birth",
-                  others: {
-                    style: { textAlign: "center" }
-                  }
+                  others:{maxWidth:120,resizable: false,style:{textAlign:"center"}}
                 },
                 {
                   fieldName: "age",
                   label: "Age",
-                  others: {
-                    style: { textAlign: "center" }
-                  }
+                  others:{maxWidth:60,resizable: false,style:{textAlign:"center"}}
                 },
                 {
                   fieldName: "contact_number",
                   label: "Phone Number",
-                  others: {
-                    style: { textAlign: "center" }
-                  }
-                },
-                {
-                  fieldName: "registration_date",
-                  label: "Registration Date",
-                  others: {
-                    style: { textAlign: "center" }
-                  }
+                  others:{maxWidth:150,resizable: false,style:{textAlign:"center"}}
                 }
               ]}
               keyId="index"
@@ -286,7 +272,7 @@ class MRDList extends Component {
                 data: this.state.patientData
               }}
               isEditable={false}
-              paging={{ page: 0, rowsPerPage: 5 }}
+              paging={{ page: 0, rowsPerPage: 20 }}
               events={{
                 onDelete: row => {},
                 onEdit: row => {},

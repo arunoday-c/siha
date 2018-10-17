@@ -227,9 +227,10 @@ class Encounters extends Component {
                           </span>
                         );
                       },
-                      others: {
-                        style: { textAlign: "center" }
-                      }
+                      others:{maxWidth:150,resizable: false,style:{textAlign:"center"}},
+                  className: drow => {
+                    return "greenCell";
+                  }
                     },
                     {
                       fieldName: "provider_name",
@@ -247,7 +248,7 @@ class Encounters extends Component {
                     data: this.state.patientEncounters
                   }}
                   isEditable={false}
-                  paging={{ page: 0, rowsPerPage: 5 }}
+                  paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onDelete: row => {},
                     onEdit: row => {},
