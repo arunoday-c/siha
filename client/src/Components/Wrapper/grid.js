@@ -19,7 +19,8 @@ class DataGrid extends PureComponent {
       showLoading: false,
       rowsPerPage: 10,
       selectionChanged: false,
-      recordsTotal: 0
+      recordsTotal: 0,
+      inputParam: {}
     };
     this.tmp = new Set();
   }
@@ -218,11 +219,12 @@ class DataGrid extends PureComponent {
     }
   };
 
-  apiCallingFunction = ($this, page, callBack, inputProps) => {
+  apiCallingFunction = ($this, page, callBack, inputProps, pageSizeP) => {
     inputProps = inputProps || $this.state.inputParam;
+    pageSizeP = pageSizeP || $this.state.rowsPerPage;
     let input = {
       ...inputProps,
-      ...{ pageSize: $this.state.rowsPerPage, pageNo: page }
+      ...{ pageSize: pageSizeP, pageNo: page }
     };
 
     new Promise((resolve, reject) => {
@@ -480,7 +482,8 @@ class DataGrid extends PureComponent {
           }
         }
         this.setState({
-          columns: _columns
+          columns: _columns,
+          inputParam: props.dataSource.inputParam
         });
       }
 
@@ -529,6 +532,7 @@ class DataGrid extends PureComponent {
       this.props.dataSource.uri !== undefined &&
       this.props.dataSource.responseSchema.totalPages !== undefined
     ) {
+      this.setState({ showLoading: true });
       this.apiCallingFunction(this, pageIndex, (data, totalPages) => {
         const _total = Math.ceil(
           this.props.dataSource.responseSchema.totalPages === undefined
@@ -539,18 +543,23 @@ class DataGrid extends PureComponent {
         this.setState({
           data: data,
           totalPages: _total,
-          recordsTotal: totalPages
+          recordsTotal: totalPages,
+          showLoading: false
         });
       });
     }
   }
   pageSizeChange(pageSize) {
-    this.setState({ rowsPerPage: pageSize }, () => {
-      if (
-        this.props.dataSource.uri !== undefined &&
-        this.props.dataSource.responseSchema.totalPages !== undefined
-      ) {
-        this.apiCallingFunction(this, 0, (data, totalPages) => {
+    if (
+      this.props.dataSource.uri !== undefined &&
+      this.props.dataSource.responseSchema.totalPages !== undefined
+    ) {
+      this.setState({ showLoading: true, rowsPerPage: pageSize });
+
+      this.apiCallingFunction(
+        this,
+        0,
+        (data, totalPages) => {
           const _total = Math.ceil(
             this.props.dataSource.responseSchema.totalPages === undefined
               ? data.length / this.state.rowsPerPage
@@ -560,11 +569,22 @@ class DataGrid extends PureComponent {
           this.setState({
             data: data,
             totalPages: _total,
-            recordsTotal: totalPages
+            recordsTotal: totalPages,
+            rowsPerPage: pageSize,
+            showLoading: false
           });
-        });
-      }
-    });
+        },
+        null,
+        pageSize
+      );
+    } else {
+      const _data = this.state.data !== undefined ? this.state.data.length : 0;
+      const _total = Math.ceil(_data / pageSize);
+      this.setState({
+        rowsPerPage: pageSize,
+        totalPages: _total
+      });
+    }
   }
   isRowSelected = rowID => {
     return this.tmp.has(rowID);
@@ -675,7 +695,16 @@ class DataGrid extends PureComponent {
             : {}
           : {}
         : {};
-
+    const _decissionShowPaging =
+      this.state.recordsTotal >= 10
+        ? this.props.paging !== undefined
+          ? this.props.paging.showPagination !== undefined
+            ? this.props.paging.showPagination
+            : true
+          : true
+        : false;
+    const _manual =
+      this.props.dataSource.uri !== undefined ? { manual: true } : {};
     return (
       <React.Fragment>
         <ReactTableFixedColumns
@@ -687,13 +716,7 @@ class DataGrid extends PureComponent {
           pages={this.state.totalPages}
           noDataText={_noDataText}
           loading={this.state.showLoading}
-          showPagination={
-            this.props.paging !== undefined
-              ? this.props.paging.showPagination !== undefined
-                ? this.props.paging.showPagination
-                : true
-              : true
-          }
+          showPagination={_decissionShowPaging}
           showPaginationTop={
             this.props.paging !== undefined
               ? this.props.paging.showPaginationTop !== undefined
@@ -740,6 +763,7 @@ class DataGrid extends PureComponent {
           style={{ maxHeight: "400px", minHeight: "120px" }}
           getTdProps={this.getTdHandler.bind(this)}
           getTrProps={this.getTrHandler.bind(this)}
+          {..._manual}
         />
       </React.Fragment>
     );

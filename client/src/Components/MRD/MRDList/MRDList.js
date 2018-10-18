@@ -32,7 +32,23 @@ class MRDList extends Component {
 
   getPatientMrdList(e) {
     e.preventDefault();
-
+    // if (
+    //   this.state.patient_code === null ||
+    //   this.state.patient_code.length === 0 ||
+    //   this.state.full_name === null ||
+    //   this.state.full_name.length === 0 ||
+    //   this.state.contact_number === null ||
+    //   this.state.contact_number.length === 0 ||
+    //   this.state.date_of_birth === null ||
+    //   this.state.date_of_birth.length === 0 ||
+    //   this.state.registration_date === null ||
+    //   this.state.registration_date.length === 0
+    // ) {
+    //   swalMessage({
+    //     title: "Please select at least one search criteria",
+    //     type: "warning"
+    //   });
+    // } else {
     algaehLoader({ show: true });
 
     algaehApiCall({
@@ -68,6 +84,7 @@ class MRDList extends Component {
         });
       }
     });
+    // }
   }
 
   render() {
