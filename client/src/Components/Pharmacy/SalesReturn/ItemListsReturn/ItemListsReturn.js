@@ -95,9 +95,9 @@ class ItemListsReturn extends Component {
                                 ),
                                 displayTemplate: row => {
                                   let display =
-                                    this.props.itemlist === undefined
+                                    this.props.salesitemlist === undefined
                                       ? []
-                                      : this.props.itemlist.filter(
+                                      : this.props.salesitemlist.filter(
                                           f =>
                                             f.hims_d_item_master_id ===
                                             row.item_id
@@ -123,7 +123,7 @@ class ItemListsReturn extends Component {
                                         dataSource: {
                                           textField: "item_description",
                                           valueField: "hims_d_item_master_id",
-                                          data: this.props.itemlist
+                                          data: this.props.salesitemlist
                                         },
                                         onChange: null
                                         // others: {
@@ -720,7 +720,7 @@ class ItemListsReturn extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemlist: state.itemlist,
+    salesitemlist: state.salesitemlist,
     itemdetaillist: state.itemdetaillist,
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,

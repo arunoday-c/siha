@@ -87,8 +87,9 @@ const SaveSalesReturn = $this => {
 const PostSalesReturn = $this => {
   debugger;
   $this.state.posted = "Y";
-  $this.state.transaction_type = "POS";
-  $this.state.transaction_id = $this.state.hims_f_pharmacy_pos_header_id;
+  $this.state.transaction_type = "SRT";
+  $this.state.transaction_id =
+    $this.state.hims_f_pharmcy_sales_return_header_id;
   $this.state.transaction_date = $this.state.pos_date;
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
     $this.state.pharmacy_stock_detail[i].location_id = $this.state.location_id;

@@ -72,28 +72,22 @@ const SaveTransferEntry = $this => {
   });
 };
 
-const PostPosEntry = $this => {
+const PostTransferEntry = $this => {
   debugger;
   $this.state.posted = "Y";
-  $this.state.transaction_type = "POS";
+  $this.state.transaction_type = "ST";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_pos_header_id;
   $this.state.transaction_date = $this.state.pos_date;
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-    $this.state.pharmacy_stock_detail[i].location_id = $this.state.location_id;
+    $this.state.pharmacy_stock_detail[i].location_id =
+      $this.state.from_location_id;
     $this.state.pharmacy_stock_detail[i].location_type =
-      $this.state.location_type;
+      $this.state.from_location_type;
     $this.state.pharmacy_stock_detail[i].operation = "-";
-    $this.state.pharmacy_stock_detail[i].sales_uom =
-      $this.state.pharmacy_stock_detail[i].uom_id;
-    $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
-    $this.state.pharmacy_stock_detail[i].grn_number =
-      $this.state.pharmacy_stock_detail[i].grn_no;
-    $this.state.pharmacy_stock_detail[i].item_category_id =
-      $this.state.pharmacy_stock_detail[i].item_category;
   }
   debugger;
   algaehApiCall({
-    uri: "/posEntry/updatePosEntry",
+    uri: "/transferEntry/updatetransferEntry",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
@@ -215,7 +209,7 @@ export {
   getCtrlCode,
   ClearData,
   SaveTransferEntry,
-  PostPosEntry,
+  PostTransferEntry,
   RequisitionSearch,
   LocationchangeTexts
 };

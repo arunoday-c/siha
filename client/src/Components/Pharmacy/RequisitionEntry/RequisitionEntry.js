@@ -43,33 +43,29 @@ class RequisitionEntry extends Component {
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
-      }
-    });
-
-    this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      method: "GET",
-      redux: {
-        type: "LOCATIOS_GET_DATA",
-        mappingName: "locations"
-      },
-      afterSuccess: data => {
-        debugger;
-        let sublocation = Enumerable.from(data)
-          .where(w => w.location_type == "MS")
-          .toArray();
-
-        this.setState({
-          sublocation: sublocation
-        });
-      }
-    });
+    if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
+      this.props.getItems({
+        uri: "/pharmacy/getItemMaster",
+        method: "GET",
+        redux: {
+          type: "ITEM_GET_DATA",
+          mappingName: "itemlist"
+        }
+      });
+    }
+    if (
+      this.props.poslocations === undefined ||
+      this.props.poslocations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/pharmacy/getPharmacyLocation",
+        method: "GET",
+        redux: {
+          type: "LOCATIOS_GET_DATA",
+          mappingName: "locations"
+        }
+      });
+    }
 
     if (
       this.props.material_requisition_number !== undefined &&

@@ -17,7 +17,7 @@ import {
   getCtrlCode,
   ClearData,
   SaveTransferEntry,
-  PostPosEntry,
+  PostTransferEntry,
   RequisitionSearch,
   LocationchangeTexts
 } from "./TransferEntryEvents";
@@ -45,23 +45,30 @@ class TransferEntry extends Component {
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
-      }
-    });
+    if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
+      this.props.getItems({
+        uri: "/pharmacy/getItemMaster",
+        method: "GET",
+        redux: {
+          type: "ITEM_GET_DATA",
+          mappingName: "itemlist"
+        }
+      });
+    }
 
-    this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      method: "GET",
-      redux: {
-        type: "LOCATIOS_GET_DATA",
-        mappingName: "locations"
-      }
-    });
+    if (
+      this.props.locations === undefined ||
+      this.props.locations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/pharmacy/getPharmacyLocation",
+        method: "GET",
+        redux: {
+          type: "LOCATIOS_GET_DATA",
+          mappingName: "locations"
+        }
+      });
+    }
   }
 
   render() {
@@ -280,7 +287,7 @@ class TransferEntry extends Component {
                     <button
                       type="button"
                       className="btn btn-other"
-                      onClick={PostPosEntry.bind(this, this)}
+                      onClick={PostTransferEntry.bind(this, this)}
                       disabled={this.state.postEnable}
                     >
                       <AlgaehLabel

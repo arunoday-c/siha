@@ -59,23 +59,33 @@ class PointOfSale extends Component {
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
-      }
-    });
+    if (
+      this.props.positemlist === undefined ||
+      this.props.positemlist.length === 0
+    ) {
+      this.props.getItems({
+        uri: "/pharmacy/getItemMaster",
+        method: "GET",
+        redux: {
+          type: "ITEM_GET_DATA",
+          mappingName: "positemlist"
+        }
+      });
+    }
 
-    this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      method: "GET",
-      redux: {
-        type: "LOCATIOS_GET_DATA",
-        mappingName: "locations"
-      }
-    });
+    if (
+      this.props.poslocations === undefined ||
+      this.props.poslocations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/pharmacy/getPharmacyLocation",
+        method: "GET",
+        redux: {
+          type: "LOCATIOS_GET_DATA",
+          mappingName: "poslocations"
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -200,7 +210,7 @@ class PointOfSale extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      data: this.props.poslocations
                     },
                     onChange: LocationchangeTexts.bind(this, this)
                   }}
@@ -392,8 +402,8 @@ class PointOfSale extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemlist: state.itemlist,
-    locations: state.locations,
+    positemlist: state.positemlist,
+    poslocations: state.poslocations,
     posheader: state.posheader,
     pospatients: state.pospatients,
     posentry: state.posentry,
