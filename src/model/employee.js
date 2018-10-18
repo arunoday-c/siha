@@ -7,6 +7,7 @@ import {
   jsonArrayToObject
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
+import moment from "moment";
 import { logger, debugFunction, debugLog } from "../utils/logging";
 import Promise from "bluebird";
 // api to add employee
@@ -47,7 +48,9 @@ let addEmployee = (req, res, next) => {
             input.employee_designation_id,
             input.license_number,
             input.sex,
-            input.date_of_birth,
+            input.date_of_birth != null
+              ? new Date(input.date_of_birth)
+              : input.date_of_birth,
             input.date_of_joining,
             input.date_of_leaving,
             input.address,
@@ -64,8 +67,12 @@ let addEmployee = (req, res, next) => {
             input.blood_group,
             input.isdoctor,
             input.employee_status,
-            input.effective_start_date,
-            input.effective_end_date,
+            input.effective_start_date != null
+              ? new Date(input.effective_start_date)
+              : input.effective_start_date,
+            input.effective_end_date != null
+              ? new Date(input.effective_end_date)
+              : input.effective_end_date,
             new Date(),
             input.created_by,
             new Date(),

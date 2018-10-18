@@ -9,7 +9,6 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
-import Radio from "@material-ui/core/Radio";
 
 import {
   texthandle,
@@ -28,8 +27,8 @@ import OrderingServices from "./OrderingServices/OrderingServices";
 import LabResults from "./LabResult/LabResult";
 import RadResults from "./RadResult/RadResult";
 import { AlgaehActions } from "../../../actions/algaehActions";
-
-import { DIAG_TYPE, SEARCH_BY_ICD } from "../../../utils/GlobalVariables.json";
+import Enumerable from "linq";
+import { DIAG_TYPE } from "../../../utils/GlobalVariables.json";
 
 class Assessment extends Component {
   constructor(props) {
@@ -49,21 +48,27 @@ class Assessment extends Component {
       patient_id: Window.global["current_patient"],
       episode_id: Window.global["episode_id"],
       search_by: "C",
-      f_search_by: "C"
+      f_search_by: "C",
+      showInitialDiagnosisLoader: true,
+      showFinalDiagnosisLoader: true
     };
-  }
 
-  componentDidMount() {
-    this.props.getIcdCodes({
-      uri: "/icdcptcodes/selectIcdcptCodes",
-      method: "GET",
-      redux: {
-        type: "ICDCODES_GET_DATA",
-        mappingName: "icdcodes"
-      }
-    });
-
-    getPatientDiagnosis(this);
+    if (props.icdcodes === undefined || props.icdcodes.length === 0) {
+      this.props.getIcdCodes({
+        uri: "/icdcptcodes/selectIcdcptCodes",
+        method: "GET",
+        redux: {
+          type: "ICDCODES_GET_DATA",
+          mappingName: "icdcodes"
+        }
+      });
+    }
+    if (
+      props.patientdiagnosis === undefined ||
+      props.patientdiagnosis.length === 0
+    ) {
+      getPatientDiagnosis(this);
+    }
   }
 
   openTab(e) {
@@ -77,8 +82,61 @@ class Assessment extends Component {
       pageDisplay: specified
     });
   }
-
+  radioChange(e) {
+    const _type = e.currentTarget.getAttribute("search_by");
+    this.setState({
+      search_by: _type,
+      f_search_by: _type
+    });
+  }
+  radioFinalDiagnosisChange(e) {
+    this.setState({
+      f_search_by: e.currentTarget.getAttribute("search_by")
+    });
+  }
   render() {
+    let _initalDiagnosis = [];
+    let _finalDiagnosis = [];
+    if (this.props.icdcodes !== undefined) {
+      _initalDiagnosis = Enumerable.from(this.state.InitialICDS)
+        .select(s => {
+          const _rowICD = Enumerable.from(this.props.icdcodes)
+            .where(w => w.hims_d_icd_id === s.daignosis_id)
+            .firstOrDefault();
+          const _records =
+            _rowICD !== undefined
+              ? {
+                  daignosis_id: _rowICD.icd_code,
+                  icd_description: _rowICD.icd_description
+                }
+              : {};
+          return {
+            ...s,
+            ..._records
+          };
+        })
+        .toArray();
+
+      _finalDiagnosis = Enumerable.from(this.state.finalICDS)
+        .select(s => {
+          const _rowICD = Enumerable.from(this.props.icdcodes)
+            .where(w => w.hims_d_icd_id === s.daignosis_id)
+            .firstOrDefault();
+          const _records =
+            _rowICD !== undefined
+              ? {
+                  daignosis_id: _rowICD.icd_code,
+                  icd_description: _rowICD.icd_description
+                }
+              : {};
+          return {
+            ...s,
+            ..._records
+          };
+        })
+        .toArray();
+    }
+
     return (
       <div className="hptl-ehr-assetment-details">
         <div className="row margin-top-15">
@@ -104,8 +162,9 @@ class Assessment extends Component {
                         type="radio"
                         name="daignosis_id"
                         value="ICD Code"
-                        checked={this.state.radioOP}
-                        //onChange={radioChange.bind(this, this)}
+                        search_by="C"
+                        checked={this.state.search_by === "C" ? true : false}
+                        onChange={this.radioChange.bind(this)}
                       />
                       <span>ICD Code</span>
                     </label>
@@ -114,27 +173,13 @@ class Assessment extends Component {
                         type="radio"
                         name="daignosis_id"
                         value="ICD Name"
-                        checked={this.state.radioIP}
-                        //onChange={radioChange.bind(this, this)}
+                        search_by="D"
+                        checked={this.state.search_by !== "C" ? true : false}
+                        onChange={this.radioChange.bind(this)}
                       />
                       <span>ICD Name</span>
                     </label>
                   </div>
-
-                  {/* <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    selector={{
-                      name: "search_by",
-                      className: "select-fld",
-                      value: this.state.search_by,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: SEARCH_BY_ICD
-                      },
-                      onChange: texthandle.bind(this, this)
-                    }}
-                  /> */}
 
                   <AlagehAutoComplete
                     div={{ className: "col-lg-4" }}
@@ -184,19 +229,25 @@ class Assessment extends Component {
                           ),
                           displayTemplate: row => {
                             return (
-                              <span>
-                                <Radio
-                                  style={{ maxHeight: "10px" }}
-                                  name="select"
-                                  color="primary"
-                                  onChange={selectdIcd.bind(this, this, row)}
-                                  checked={row.radioselect === 1 ? true : false}
-                                />
-                              </span>
+                              // <label className="radio inline">
+                              //   <input
+                              //     type="radio"
+                              //     name="select"
+                              //     value="ICD Name"
+                              //     search_by="D"
+                              //     checked={row.radioselect === 1 ? true : false}
+                              //     onChange={selectdIcd.bind(this, this, row)}
+                              //   />
+                              // </label>
+                              <button
+                                onChange={selectdIcd.bind(this, this, row)}
+                              >
+                                Move to Final
+                              </button>
                             );
                           },
                           disabled: true,
-                          others: { maxWidth: 50 }
+                          others: { maxWidth: 50, align: "center" }
                         },
                         {
                           fieldName: "diagnosis_type",
@@ -245,26 +296,7 @@ class Assessment extends Component {
                               }}
                             />
                           ),
-                          displayTemplate: row => {
-                            let display = [];
-                            this.props.icdcodes !== undefined
-                              ? (display =
-                                  this.props.icdcodes === undefined
-                                    ? []
-                                    : this.props.icdcodes.filter(
-                                        f =>
-                                          f.hims_d_icd_id === row.daignosis_id
-                                      ))
-                              : [];
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].icd_code
-                                  : ""}
-                              </span>
-                            );
-                          },
                           disabled: true
                         },
                         {
@@ -276,40 +308,23 @@ class Assessment extends Component {
                               }}
                             />
                           ),
-                          displayTemplate: row => {
-                            let display = [];
-                            this.props.icdcodes !== undefined
-                              ? (display =
-                                  this.props.icdcodes === undefined
-                                    ? []
-                                    : this.props.icdcodes.filter(
-                                        f =>
-                                          f.hims_d_icd_id === row.daignosis_id
-                                      ))
-                              : [];
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].icd_description
-                                  : ""}
-                              </span>
-                            );
-                          },
                           disabled: true
                         }
                       ]}
                       keyId="code"
                       dataSource={{
-                        data: this.state.InitialICDS
+                        data: _initalDiagnosis
                       }}
                       isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 3 }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteDiagnosis.bind(this, this),
                         onEdit: row => {},
                         onDone: updateDiagnosis.bind(this, this)
                       }}
+                      loading={this.state.showInitialDiagnosisLoader}
+                      noDataText="No initial diagnosis added"
                     />
                   </div>
                 </div>
@@ -340,21 +355,30 @@ class Assessment extends Component {
                     }}
                   />
                 </div>
-
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  selector={{
-                    name: "f_search_by",
-                    className: "select-fld",
-                    value: this.state.f_search_by,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: SEARCH_BY_ICD
-                    },
-                    onChange: texthandle.bind(this, this)
-                  }}
-                />
+                <div className="col-lg-4 customRadio">
+                  <label className="radio inline">
+                    <input
+                      type="radio"
+                      name="finaldaignosis_id"
+                      value="ICD Code"
+                      search_by="C"
+                      checked={this.state.f_search_by === "C" ? true : false}
+                      onChange={this.radioFinalDiagnosisChange.bind(this)}
+                    />
+                    <span>ICD Code</span>
+                  </label>
+                  <label className="radio inline">
+                    <input
+                      type="radio"
+                      name="finaldaignosis_id"
+                      value="ICD Name"
+                      search_by="D"
+                      checked={this.state.f_search_by !== "C" ? true : false}
+                      onChange={this.radioFinalDiagnosisChange.bind(this)}
+                    />
+                    <span>ICD Name</span>
+                  </label>
+                </div>
 
                 <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
@@ -392,7 +416,7 @@ class Assessment extends Component {
               <div className="portlet-body">
                 <h4>
                   <AlgaehDataGrid
-                    id="intial_icd"
+                    id="Finalintial_icd"
                     columns={[
                       {
                         fieldName: "diagnosis_type",
@@ -441,25 +465,6 @@ class Assessment extends Component {
                             }}
                           />
                         ),
-                        displayTemplate: row => {
-                          let display = [];
-                          this.props.icdcodes !== undefined
-                            ? (display =
-                                this.props.icdcodes === undefined
-                                  ? []
-                                  : this.props.icdcodes.filter(
-                                      f => f.hims_d_icd_id === row.daignosis_id
-                                    ))
-                            : [];
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].icd_code
-                                : ""}
-                            </span>
-                          );
-                        },
                         disabled: false
                       },
                       {
@@ -471,31 +476,12 @@ class Assessment extends Component {
                             }}
                           />
                         ),
-                        displayTemplate: row => {
-                          let display = [];
-                          this.props.icdcodes !== undefined
-                            ? (display =
-                                this.props.icdcodes === undefined
-                                  ? []
-                                  : this.props.icdcodes.filter(
-                                      f => f.hims_d_icd_id === row.daignosis_id
-                                    ))
-                            : [];
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].icd_description
-                                : ""}
-                            </span>
-                          );
-                        },
                         disabled: false
                       }
                     ]}
                     keyId="code"
                     dataSource={{
-                      data: this.state.finalICDS
+                      data: _finalDiagnosis
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 3 }}
@@ -505,6 +491,7 @@ class Assessment extends Component {
 
                       onDone: updateDiagnosis.bind(this, this)
                     }}
+                    loading={this.state.showInitialDiagnosisLoader}
                   />
                 </h4>
               </div>

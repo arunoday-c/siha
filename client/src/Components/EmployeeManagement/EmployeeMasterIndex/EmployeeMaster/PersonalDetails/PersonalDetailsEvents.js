@@ -112,7 +112,7 @@ const onDrop = ($this, file, context, fileType) => {
 
 const datehandle = ($this, context, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: ctrl
   });
 
   clearInterval(texthandlerInterval);

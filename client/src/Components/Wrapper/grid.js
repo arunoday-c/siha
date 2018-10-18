@@ -381,6 +381,10 @@ class DataGrid extends PureComponent {
                 ? this.props.dataSource.data
                 : []
               : [];
+          const _loading =
+            this.props.loading !== undefined
+              ? { showLoading: this.props.loading }
+              : {};
           this.setState({
             columns: _columns,
             data: _data,
@@ -391,7 +395,8 @@ class DataGrid extends PureComponent {
                   ? this.props.paging.rowsPerPage
                   : 10
                 : 10,
-            recordsTotal: _data.length
+            recordsTotal: _data.length,
+            ..._loading
           });
         }
       }
@@ -518,12 +523,19 @@ class DataGrid extends PureComponent {
             : 0
           : 0 / props.paging.rowsPerPage
       );
+      const _loading =
+        this.props.loading !== undefined
+          ? { showLoading: this.props.loading }
+          : {};
       this.setState({
         data: props.dataSource.data,
         totalPages: _total,
         rowsPerPage: props.paging.rowsPerPage,
         recordsTotal:
-          props.dataSource.data !== undefined ? props.dataSource.data.length : 0
+          props.dataSource.data !== undefined
+            ? props.dataSource.data.length
+            : 0,
+        ..._loading
       });
     }
   }

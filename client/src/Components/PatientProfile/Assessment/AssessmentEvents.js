@@ -42,15 +42,11 @@ const insertFinalICDS = $this => {
     };
 
     finalICDS.push(FinalICDSobj);
-
-    $this.setState(
-      {
-        finalICDS: finalICDS
-      },
-      () => {
-        saveDiagnosis($this, $this.state.finalICDS);
-      }
-    );
+    saveDiagnosis($this, finalICDS);
+    $this.setState({
+      finalICDS: finalICDS,
+      showFinalDiagnosisLoader: true
+    });
   } else {
     swalMessage({
       title: "Invalid Input. Please select Diagnosis",
@@ -61,37 +57,29 @@ const insertFinalICDS = $this => {
 
 const insertInitialICDS = $this => {
   if ($this.state.icd_id !== null) {
-    let InitialICDS = $this.state.InitialICDS;
-    let insertInitialDiad = $this.state.insertInitialDiad;
-    let diagnosis_type = "";
-
-    if (InitialICDS.length > 0) {
-      diagnosis_type = "S";
-    } else {
-      diagnosis_type = "P";
+    const _initalId = Enumerable.from($this.state.InitialICDS)
+      .where(w => w.daignosis_id === $this.state.daignosis_id)
+      .firstOrDefault();
+    if (_initalId !== undefined) {
+      swalMessage({
+        title: "Invalid Input. Selected diagnosis already exists",
+        type: "warning"
+      });
+      return;
     }
 
-    let InitialICDSobj = {
+    let insertInitialDiad = [];
+    insertInitialDiad.push({
       radioselect: 0,
       patient_id: Window.global["current_patient"],
       episode_id: Window.global["episode_id"],
       visit_id: Window.global["visit_id"],
       daignosis_id: $this.state.daignosis_id,
-      diagnosis_type: diagnosis_type,
+      diagnosis_type: $this.state.InitialICDS.length > 0 ? "S" : "P",
       final_daignosis: "N"
-    };
-    insertInitialDiad.push(InitialICDSobj);
-    InitialICDS.push(InitialICDSobj);
+    });
 
-    $this.setState(
-      {
-        InitialICDS: InitialICDS,
-        insertInitialDiad: insertInitialDiad
-      },
-      () => {
-        saveDiagnosis($this, $this.state.insertInitialDiad);
-      }
-    );
+    saveDiagnosis($this, insertInitialDiad);
   } else {
     swalMessage({
       title: "Invalid Input. Please select Diagnosis",
@@ -101,23 +89,38 @@ const insertInitialICDS = $this => {
 };
 
 const selectdIcd = ($this, row, e) => {
-  let x = Enumerable.from($this.state.InitialICDS)
-    .where(w => w.radioselect === 1)
-    .toArray();
-  var index;
+  debugger;
+  // let x = Enumerable.from($this.state.InitialICDS)
+  //   .where(w => w.radioselect === 1)
+  //   .toArray();
+  // var index;
 
-  if (x != null && x.length > 0) {
-    index = $this.state.InitialICDS.indexOf(x[0]);
-    if (index > -1) {
-      $this.state.InitialICDS[index]["radioselect"] = 0;
-    }
+  // if (x != null && x.length > 0) {
+  //   index = $this.state.InitialICDS.indexOf(x[0]);
+  //   if (index > -1) {
+  //     $this.state.InitialICDS[index]["radioselect"] = 0;
+  //   }
+  // }
+  // index = $this.state.InitialICDS.indexOf(row);
+  // $this.state.InitialICDS[index]["radioselect"] = 1;
+
+  // $this.setState({
+  //   selectdIcd: [row]
+  // });
+  const _finalList = Enumerable.from($this.state.finalICDS)
+    .where(w => w.daignosis_id === row.daignosis_id)
+    .firstOrDefault();
+  if (_finalList !== undefined) {
+    swalMessage({
+      title:
+        "Diagnosis '" +
+        row.icd_description +
+        "' already exists in final diagnosis ",
+      type: "warning"
+    });
+    return;
   }
-  index = $this.state.InitialICDS.indexOf(row);
-  $this.state.InitialICDS[index]["radioselect"] = 1;
-
-  $this.setState({
-    selectdIcd: [row]
-  });
+  updateDiagnosis($this, { ...row, ...{ final_daignosis: "Y" } });
 };
 
 const addFinalIcd = $this => {
@@ -129,16 +132,11 @@ const addFinalIcd = $this => {
     } else {
       selecteddata[0].diagnosis_type = "P";
     }
+
     selecteddata[0].final_daignosis = "Y";
-    $this.setState(
-      {
-        finalICDS: selecteddata
-      },
-      () => {
-        selecteddata[0].record_status = "A";
-        updateDiagnosis($this, selecteddata[0]);
-      }
-    );
+    selecteddata[0].record_status = "A";
+    $this.setState({ showInitialDiagnosisLoader: true });
+    updateDiagnosis($this, selecteddata[0]);
   } else {
     swalMessage({
       title: "Invalid Input. Please select Diagnosis",
@@ -154,6 +152,7 @@ const saveDiagnosis = ($this, data) => {
     method: "POST",
     onSuccess: response => {
       if (response.data.success === true) {
+        getPatientDiagnosis($this);
         swalMessage({
           title: "Record Added successfully . .",
           type: "success"
@@ -214,10 +213,13 @@ const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this Diagnosis?",
     type: "warning",
-    buttons: true,
-    dangerMode: true
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes",
+    cancelButtonText: "Cancel"
   }).then(willDelete => {
-    if (willDelete) {
+    if (willDelete.value) {
       let data = {
         hims_f_patient_diagnosis_id: row.hims_f_patient_diagnosis_id,
         diagnosis_type: row.diagnosis_type,
@@ -256,14 +258,16 @@ const getPatientDiagnosis = $this => {
       mappingName: "patientdiagnosis"
     },
     afterSuccess: data => {
-      // let InitialICDS = Enumerable.from(data)
-      //   .where(w => w.final_daignosis === "N")
-      //   .toArray();
       let finalICDS = Enumerable.from(data)
         .where(w => w.final_daignosis === "Y")
         .toArray();
 
-      $this.setState({ InitialICDS: data, finalICDS: finalICDS });
+      $this.setState({
+        InitialICDS: data,
+        finalICDS: finalICDS,
+        showInitialDiagnosisLoader: false,
+        showFinalDiagnosisLoader: false
+      });
     }
   });
 };
