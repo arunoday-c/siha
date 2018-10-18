@@ -240,8 +240,9 @@ let getPosEntry = (req, res, next) => {
     let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
+      // PH.recieve_amount
       connection.query(
-        "SELECT hims_f_pharmacy_pos_header_id,PH.pos_number,PH.patient_id,P.patient_code,P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.pos_date,PH.recieve_amount,PH.year,\
+        "SELECT hims_f_pharmacy_pos_header_id,PH.pos_number,PH.patient_id,P.patient_code,P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.pos_date,PH.year,\
         PH.period,PH.location_id,L.location_description,PH.location_type,PH.sub_total,PH.discount_percentage,PH.discount_amount,PH.net_total,\
         PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,PH.company_tax,\
         PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,PH.sec_company_payable,\

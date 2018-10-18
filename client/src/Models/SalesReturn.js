@@ -5,6 +5,7 @@ export default {
     output = {
       hims_f_pharmcy_sales_return_header_id: null,
       sales_return_number: null,
+      pos_number: null,
       patient_id: null,
       patient_code: null,
       full_name: "",
@@ -23,6 +24,7 @@ export default {
       net_total: 0,
       copay_amount: 0,
       patient_responsibility: 0,
+      location_description: null,
 
       patient_tax: 0,
       patient_payable: 0,

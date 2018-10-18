@@ -106,9 +106,9 @@ class PosListItems extends Component {
                             dataSource: {
                               textField: "item_description",
                               valueField: "hims_d_item_master_id",
-                              data: this.props.itemlist
+                              data: this.props.positemlist
                             },
-                            onChange: itemchangeText.bind(this, this)
+                            onChange: itemchangeText.bind(this, this, context)
                           }}
                         />
                         <AlagehAutoComplete
@@ -271,9 +271,9 @@ class PosListItems extends Component {
                                 ),
                                 displayTemplate: row => {
                                   let display =
-                                    this.props.itemlist === undefined
+                                    this.props.positemlist === undefined
                                       ? []
-                                      : this.props.itemlist.filter(
+                                      : this.props.positemlist.filter(
                                           f =>
                                             f.hims_d_item_master_id ===
                                             row.item_id
@@ -299,7 +299,7 @@ class PosListItems extends Component {
                                         dataSource: {
                                           textField: "item_description",
                                           valueField: "hims_d_item_master_id",
-                                          data: this.props.itemlist
+                                          data: this.props.positemlist
                                         },
                                         onChange: null,
                                         others: {
@@ -961,7 +961,7 @@ class PosListItems extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemlist: state.itemlist,
+    positemlist: state.positemlist,
     itemdetaillist: state.itemdetaillist,
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,

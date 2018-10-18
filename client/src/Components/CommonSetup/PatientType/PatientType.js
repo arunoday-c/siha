@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
 import "./patient_type.css";
 import Button from "@material-ui/core/Button";
 import moment from "moment";
@@ -191,15 +190,10 @@ class PatientType extends Component {
   render() {
     return (
       <div className="patient_type">
-        <Paper className="container-fluid">
+        <div className="container-fluid">
           <form>
             <div
               className="row"
-              style={{
-                padding: 20,
-                marginLeft: "auto",
-                marginRight: "auto"
-              }}
             >
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
@@ -254,17 +248,16 @@ class PatientType extends Component {
                   helperText: this.state.patient_type_arabic_error_txt
                 }}
               />
-
-              <div className="col-lg-3 align-middle">
-                <br />
-                <Button
-                  onClick={this.addPatientType.bind(this)}
-                  variant="raised"
-                  color="primary"
+ <div
+                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
                 >
-                  ADD TO LIST
-                </Button>
-              </div>
+                  <button
+                  onClick={this.addPatientType.bind(this)}
+                    className="btn btn-primary"
+                  >
+                    Add to list
+                  </button>
+                </div>
             </div>
           </form>
 
@@ -392,7 +385,7 @@ class PatientType extends Component {
               />
             </div>
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }

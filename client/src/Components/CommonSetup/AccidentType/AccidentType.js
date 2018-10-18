@@ -34,7 +34,7 @@ class AccidentType extends Component {
   render() {
     return (
       <div className="accident_type">
-        <Paper className="container-fluid">
+        <div className="container-fluid">
           <form>
             <div
               className="row"
@@ -138,7 +138,7 @@ class AccidentType extends Component {
               </table> */}
             </div>
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }

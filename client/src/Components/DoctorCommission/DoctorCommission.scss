@@ -1,8 +1,4 @@
 .hptl-phase1-doctor-commission-form {
-  background: #ffff;
-  border-radius: 5px;
-  margin-top: 12vh;
-  min-height: 80vh;
   .form-details {
     padding: 5px;
     padding-bottom: 0px;
@@ -20,5 +16,12 @@
   .go-button {
     cursor: pointer;
     margin-top: 2.5vh;
+  }
+}
+
+#Doc_Com_grid_cntr{
+  width: 98vw!important;
+  .ReactTable{
+    max-height: 250px!important
   }
 }

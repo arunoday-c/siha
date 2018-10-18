@@ -76,7 +76,7 @@ const numberchangeTexts = ($this, context, e) => {
   }, 1000);
 };
 
-const itemchangeText = ($this, e) => {
+const itemchangeText = ($this, context, e) => {
   debugger;
   let name = e.name || e.target.name;
   if ($this.state.location_id !== null) {
@@ -96,7 +96,7 @@ const itemchangeText = ($this, e) => {
       afterSuccess: data => {
         debugger;
         if (data.locationResult.length > 0) {
-          getUnitCost($this, e.selected.service_id);
+          getUnitCost($this, context, e.selected.service_id);
           $this.setState({
             [name]: value,
             item_category: e.selected.category_id,
@@ -112,6 +112,24 @@ const itemchangeText = ($this, e) => {
             Batch_Items: data.locationResult,
             addItemButton: false
           });
+
+          if (context !== undefined) {
+            context.updateState({
+              [name]: value,
+              item_category: e.selected.category_id,
+              uom_id: e.selected.sales_uom_id,
+              service_id: e.selected.service_id,
+              item_group_id: e.selected.group_id,
+              quantity: 1,
+
+              expiry_date: data.locationResult[0].expirydt,
+              batchno: data.locationResult[0].batchno,
+              grn_no: data.locationResult[0].grnno,
+              ItemUOM: data.uomResult,
+              Batch_Items: data.locationResult,
+              addItemButton: false
+            });
+          }
         } else {
           successfulMessage({
             message: "Invalid Input. No Stock Avaiable for selected Item.",
@@ -137,7 +155,7 @@ const itemchangeText = ($this, e) => {
   }
 };
 
-const getUnitCost = ($this, serviceid) => {
+const getUnitCost = ($this, context, serviceid) => {
   if ($this.state.insured === "N") {
     $this.props.getServicesCost({
       uri: "/serviceType/getService",
@@ -157,6 +175,12 @@ const getUnitCost = ($this, serviceid) => {
           $this.setState({
             unit_cost: servdata.standard_fee
           });
+
+          if (context !== undefined) {
+            context.updateState({
+              unit_cost: servdata.standard_fee
+            });
+          }
         } else {
           successfulMessage({
             message: "Invalid Input. No Service for the selected item.",
@@ -208,7 +232,7 @@ const AddItems = ($this, context) => {
     let ItemInput = [
       {
         item_id: $this.state.item_id,
-        item_category_id: $this.state.item_category_id,
+        item_category: $this.state.item_category_id,
         item_group_id: $this.state.item_group_id,
         pharmacy_location_id: $this.state.location_id,
 
@@ -263,6 +287,7 @@ const AddItems = ($this, context) => {
             data.billdetails[0].operation = "-";
             data.billdetails[0].grn_no = data.billdetails[0].grnno;
             data.billdetails[0].service_id = data.billdetails[0].services_id;
+            data.billdetails[0].patient_resp = data.billdetails[0].services_id;
             existingservices.splice(0, 0, data.billdetails[0]);
           }
 

@@ -72,7 +72,6 @@ class CommonSetup extends Component {
           <ul className="nav">
             <li
               algaehtabs={"VisitType"}
-              style={{ marginRight: 2 }}
               className={"nav-item tab-button active"}
               onClick={this.openTab.bind(this)}
             >
@@ -85,7 +84,7 @@ class CommonSetup extends Component {
               }
             </li>
             <li
-              style={{ marginRight: 2 }}
+              
               algaehtabs={"VisaType"}
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
@@ -99,7 +98,7 @@ class CommonSetup extends Component {
               }
             </li>
             <li
-              style={{ marginRight: 2 }}
+              
               algaehtabs={"IDType"}
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
@@ -114,7 +113,7 @@ class CommonSetup extends Component {
             </li>
             <li
               algaehtabs={"PatientType"}
-              style={{ marginRight: 2 }}
+              
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
@@ -126,34 +125,6 @@ class CommonSetup extends Component {
                 />
               }
             </li>
-            {/* <li
-              algaehtabs={"AccidentType"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "accident_type"
-                  }}
-                />
-              }
-            </li>
-            <li
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              algaehtabs={"EquipmentType"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "equipment_type"
-                  }}
-                />
-              }
-            </li> */}
           </ul>
         </div>
 

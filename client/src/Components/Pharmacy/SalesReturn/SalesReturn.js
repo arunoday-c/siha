@@ -54,23 +54,33 @@ class SalesReturn extends Component {
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
-      }
-    });
+    if (
+      this.props.salesitemlist === undefined ||
+      this.props.salesitemlist.length === 0
+    ) {
+      this.props.getItems({
+        uri: "/pharmacy/getItemMaster",
+        method: "GET",
+        redux: {
+          type: "ITEM_GET_DATA",
+          mappingName: "salesitemlist"
+        }
+      });
+    }
 
-    this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      method: "GET",
-      redux: {
-        type: "LOCATIOS_GET_DATA",
-        mappingName: "locations"
-      }
-    });
+    if (
+      this.props.locations === undefined ||
+      this.props.locations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/pharmacy/getPharmacyLocation",
+        method: "GET",
+        redux: {
+          type: "LOCATIOS_GET_DATA",
+          mappingName: "locations"
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -354,7 +364,7 @@ class SalesReturn extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemlist: state.itemlist,
+    salesitemlist: state.salesitemlist,
     locations: state.locations,
     salesReturn: state.salesReturn,
     existinsurance: state.existinsurance,

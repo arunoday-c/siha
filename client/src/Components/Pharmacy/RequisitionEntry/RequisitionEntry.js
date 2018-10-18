@@ -18,7 +18,7 @@ import {
   getCtrlCode,
   ClearData,
   SaveRequisitionEntry,
-  PostPosEntry,
+  AuthorizeRequisitionEntry,
   LocationchangeTexts
 } from "./RequisitionEntryEvents";
 import "./RequisitionEntry.css";
@@ -43,33 +43,29 @@ class RequisitionEntry extends Component {
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
-      }
-    });
-
-    this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      method: "GET",
-      redux: {
-        type: "LOCATIOS_GET_DATA",
-        mappingName: "locations"
-      },
-      afterSuccess: data => {
-        debugger;
-        let sublocation = Enumerable.from(data)
-          .where(w => w.location_type == "MS")
-          .toArray();
-
-        this.setState({
-          sublocation: sublocation
-        });
-      }
-    });
+    if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
+      this.props.getItems({
+        uri: "/pharmacy/getItemMaster",
+        method: "GET",
+        redux: {
+          type: "ITEM_GET_DATA",
+          mappingName: "itemlist"
+        }
+      });
+    }
+    if (
+      this.props.poslocations === undefined ||
+      this.props.poslocations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/pharmacy/getPharmacyLocation",
+        method: "GET",
+        redux: {
+          type: "LOCATIOS_GET_DATA",
+          mappingName: "locations"
+        }
+      });
+    }
 
     if (
       this.props.material_requisition_number !== undefined &&
@@ -287,38 +283,53 @@ class RequisitionEntry extends Component {
                       type="button"
                       className="btn btn-default"
                       onClick={ClearData.bind(this, this)}
+                      disabled={this.state.ClearDisable}
                     >
                       <AlgaehLabel
                         label={{ forceLabel: "Clear", returnText: true }}
                       />
                     </button>
 
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      onClick={PostPosEntry.bind(this, this)}
-                      disabled={this.state.authorizeEnable}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Authorize1",
-                          returnText: true
-                        }}
-                      />
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      onClick={PostPosEntry.bind(this, this)}
-                      disabled={this.state.authorizeEnable}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Authorize2",
-                          returnText: true
-                        }}
-                      />
-                    </button>
+                    {this.state.authorize1 === "N" ? (
+                      <button
+                        type="button"
+                        className="btn btn-other"
+                        onClick={AuthorizeRequisitionEntry.bind(
+                          this,
+                          this,
+                          "authorize1"
+                        )}
+                        disabled={this.state.authorizeEnable}
+                      >
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Authorize1",
+                            returnText: true
+                          }}
+                        />
+                      </button>
+                    ) : null}
+                    {this.state.authorize1 === "Y" ? (
+                      this.state.authorie2 === "N" ? (
+                        <button
+                          type="button"
+                          className="btn btn-other"
+                          onClick={AuthorizeRequisitionEntry.bind(
+                            this,
+                            this,
+                            "authorize2"
+                          )}
+                          disabled={this.state.authorizeEnable}
+                        >
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Authorize2",
+                              returnText: true
+                            }}
+                          />
+                        </button>
+                      ) : null
+                    ) : null}
                   </div>
                 </div>
               </AppBar>

@@ -1,11 +1,6 @@
 .common_setup .common-section {
   border: 1px solid #d3d3d3;
-  margin: 10px;
-  margin-top: 0px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  border-top-right-radius: 5px; }
-
-.common_setup .toggle-section {
-  margin: 10px;
-  margin-bottom: 0px; }
+  border-top-right-radius: 5px;
+  background: #fff; }

@@ -235,16 +235,10 @@ class VisaType extends Component {
     return (
       <div className="visa_type">
         <LinearProgress id="myProg" style={{ display: "none" }} />
-        <Paper className="container-fluid">
+        <div className="container-fluid">
           <form>
             <div
-              className="row"
-              style={{
-                padding: 20,
-                marginLeft: "auto",
-                marginRight: "auto"
-              }}
-            >
+              className="row">
               {/* <AlgaehOptions
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -316,16 +310,16 @@ class VisaType extends Component {
                 }}
               />
 
-              <div className="col-lg-3 align-middle">
-                <br />
-                <Button
-                  onClick={this.addVisaType.bind(this)}
-                  variant="raised"
-                  color="primary"
+                <div
+                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
                 >
-                  {this.state.buttonText}
-                </Button>
-              </div>
+                  <button
+                  onClick={this.addVisaType.bind(this)}
+                    className="btn btn-primary"
+                  >
+                    {this.state.buttonText}
+                  </button>
+                </div>
             </div>
           </form>
 
@@ -456,7 +450,7 @@ class VisaType extends Component {
               />
             </div>
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }
