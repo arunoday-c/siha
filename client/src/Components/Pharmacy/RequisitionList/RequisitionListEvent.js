@@ -50,8 +50,8 @@ const getRequisitionList = $this => {
     inpObj.to_location_id = $this.state.to_location_id;
   }
 
-  inpObj.authorize1 = "N";
-  inpObj.authorie2 = "N";
+  // inpObj.authorize1 = "N";
+  // inpObj.authorie2 = "N";
   $this.props.getRequisitionList({
     uri: "/requisitionEntry/getAuthrequisitionList",
     method: "GET",

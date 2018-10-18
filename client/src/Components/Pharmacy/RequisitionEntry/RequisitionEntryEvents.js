@@ -31,25 +31,33 @@ const getCtrlCode = ($this, docNumber) => {
     afterSuccess: data => {
       debugger;
       if (
-        $this.props.material_requisition_number !== undefined ||
-        $this.props.material_requisition_number !== null
+        $this.props.material_requisition_number !== undefined &&
+        $this.props.material_requisition_number.length !== 0
       ) {
-        data[0].authorizeEnable = false;
-        data[0].addedItem = true;
-        data[0].ItemDisable = true;
-      }
-      data[0].saveEnable = true;
+        data.authorizeEnable = false;
+        data.ItemDisable = true;
+        data.ClearDisable = true;
 
-      if (data[0].posted === "Y") {
-        data[0].postEnable = true;
+        for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
+          data.pharmacy_stock_detail[i].quantity_authorized =
+            data.pharmacy_stock_detail[i].quantity_required;
+
+          data.pharmacy_stock_detail[i].operation = "+";
+        }
+      }
+      data.saveEnable = true;
+
+      if (data.posted === "Y") {
+        data.postEnable = true;
       } else {
-        data[0].postEnable = false;
+        data.postEnable = false;
       }
-      if (data[0].visit_id !== null) {
-        data[0].case_type = "OP";
+      if (data.visit_id !== null) {
+        data.case_type = "OP";
       }
-      data[0].dataExitst = true;
-      $this.setState(data[0]);
+
+      data.addedItem = true;
+      $this.setState(data);
       AlgaehLoader({ show: false });
     }
   });
@@ -84,28 +92,18 @@ const SaveRequisitionEntry = $this => {
   });
 };
 
-const PostPosEntry = $this => {
+const AuthorizeRequisitionEntry = ($this, authorize) => {
   debugger;
-  $this.state.posted = "Y";
-  $this.state.transaction_type = "POS";
-  $this.state.transaction_id = $this.state.hims_f_pharmacy_pos_header_id;
-  $this.state.transaction_date = $this.state.pos_date;
-  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-    $this.state.pharmacy_stock_detail[i].location_id = $this.state.location_id;
-    $this.state.pharmacy_stock_detail[i].location_type =
-      $this.state.location_type;
-    $this.state.pharmacy_stock_detail[i].operation = "-";
-    $this.state.pharmacy_stock_detail[i].sales_uom =
-      $this.state.pharmacy_stock_detail[i].uom_id;
-    $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
-    $this.state.pharmacy_stock_detail[i].grn_number =
-      $this.state.pharmacy_stock_detail[i].grn_no;
-    $this.state.pharmacy_stock_detail[i].item_category_id =
-      $this.state.pharmacy_stock_detail[i].item_category;
+
+  if (authorize === "authorize1") {
+    $this.state.authorize1 = "Y";
+  } else if (authorize === "authorize2") {
+    $this.state.authorize = "Y";
   }
+
   debugger;
   algaehApiCall({
-    uri: "/posEntry/updatePosEntry",
+    uri: "/requisitionEntry/updaterequisitionEntry",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
@@ -114,7 +112,7 @@ const PostPosEntry = $this => {
         $this.setState({
           postEnable: true
         });
-        swal("Posted successfully . .", {
+        swal("Authorized successfully . .", {
           icon: "success",
           buttons: false,
           timer: 2000
@@ -159,6 +157,6 @@ export {
   getCtrlCode,
   ClearData,
   SaveRequisitionEntry,
-  PostPosEntry,
+  AuthorizeRequisitionEntry,
   LocationchangeTexts
 };

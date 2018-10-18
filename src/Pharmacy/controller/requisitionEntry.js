@@ -4,6 +4,7 @@ import httpStatus from "../../utils/httpStatus";
 import {
   addrequisitionEntry,
   getrequisitionEntry,
+  updaterequisitionEntry,
   getAuthrequisitionList
 } from "../model/requisitionEntry";
 
@@ -19,6 +20,21 @@ export default ({ config, db }) => {
       res.status(httpStatus.ok).json({
         success: true,
         records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad :update Item Storage and POS
+  api.put(
+    "/updaterequisitionEntry",
+    updaterequisitionEntry,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
       });
       next();
     },

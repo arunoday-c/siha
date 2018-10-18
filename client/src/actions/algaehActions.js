@@ -18,6 +18,7 @@ export const AlgaehActions = options => dispatch => {
   };
 
   if (settings.redux.data === undefined) {
+    debugger;
     settings.onSuccess = response => {
       if (eval(settings.schema.successField)) {
         const redux_data = eval(settings.schema.data);
@@ -43,6 +44,7 @@ export const AlgaehActions = options => dispatch => {
     };
     algaehApiCall(settings);
   } else {
+    debugger;
     dispatch({
       type: "ALGAEH_" + settings.redux.type,
       payload: settings.redux.data,

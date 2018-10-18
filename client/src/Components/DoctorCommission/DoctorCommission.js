@@ -95,9 +95,7 @@ class DoctorCommission extends Component {
   }
 
   dateFormater(value) {
-    debugger;
     if (value !== null) {
-      debugger;
       return moment(value).format(Options.dateFormat);
     }
   }
@@ -320,7 +318,6 @@ class DoctorCommission extends Component {
                         <AlgaehLabel label={{ forceLabel: "Bill Date" }} />
                       ),
                       displayTemplate: row => {
-                        debugger;
                         return <span>{this.dateFormater(row.bill_date)}</span>;
                       }
                     },
