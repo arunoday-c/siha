@@ -38,10 +38,11 @@ export default {
       cancelled_date: null,
       pharmacy_stock_detail: [],
       addedItem: false,
-
+      transaction_type: "MR",
       saveEnable: true,
       authorizeEnable: true,
       ItemDisable: false,
+      ClearDisable: false,
 
       item_category_id: null,
       item_group_id: null,

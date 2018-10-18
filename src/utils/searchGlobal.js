@@ -64,10 +64,10 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "REQEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'Y' and authorie2 = 'Y'",
         orderBy: "hims_f_pharamcy_material_header_id desc"
       },
-      // where authorize1 = 'N' and authorie2 = 'N'
+      //
       {
         searchName: "SalesReturn",
         searchQuery:
