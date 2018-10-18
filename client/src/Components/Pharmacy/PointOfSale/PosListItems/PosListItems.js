@@ -108,7 +108,7 @@ class PosListItems extends Component {
                               valueField: "hims_d_item_master_id",
                               data: this.props.itemlist
                             },
-                            onChange: itemchangeText.bind(this, this)
+                            onChange: itemchangeText.bind(this, this, context)
                           }}
                         />
                         <AlagehAutoComplete

@@ -314,7 +314,8 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getRequisitionEntry: AlgaehActions
+      getRequisitionEntry: AlgaehActions,
+      getTransferEntry: AlgaehActions
     },
     dispatch
   );

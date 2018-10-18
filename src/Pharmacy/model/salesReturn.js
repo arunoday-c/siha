@@ -242,7 +242,7 @@ let getsalesReturn = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT hims_f_pharmcy_sales_return_header_id,PH.sales_return_number,PH.patient_id,P.patient_code,P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.sales_return_date,PH.year,\
+        "SELECT hims_f_pharmcy_sales_return_header_id, PH.from_pos_id, PH.sales_return_number,PH.patient_id,P.patient_code,P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.sales_return_date,PH.year,\
         PH.period,PH.location_id,L.location_description,PH.location_type,PH.sub_total,PH.discount_percentage,PH.discount_amount,PH.net_total,\
         PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,PH.company_tax,\
         PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,PH.sec_company_payable,\
@@ -298,7 +298,7 @@ let getsalesReturn = (req, res, next) => {
   }
 };
 
-//created by Nowshad: to Post POS Entry
+//created by Nowshad: to Update  Sales Return Entry
 let updatesalesReturn = (req, res, next) => {
   let salesReturn = {
     posted: null,
@@ -349,7 +349,7 @@ let updatesalesReturn = (req, res, next) => {
         })
           .then(output => {
             return new Promise((resolve, reject) => {
-              debugLog("output", posoutput);
+              debugLog("output", output);
               req.options = {
                 db: connection,
                 onFailure: error => {
@@ -365,7 +365,7 @@ let updatesalesReturn = (req, res, next) => {
           })
           .then(posoutput => {
             return new Promise((resolve, reject) => {
-              debugLog("output", posoutput);
+              debugLog("posoutput", posoutput);
               req.options = {
                 db: connection,
                 onFailure: error => {
@@ -403,6 +403,70 @@ let updatesalesReturn = (req, res, next) => {
             });
           });
       });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by nowshad: insert item moment history
+let updatePOSDetail = (req, res, next) => {
+  let db = req.options == null ? req.db : req.options.db;
+  try {
+    let inputParam = extend({}, req.body);
+    debugLog("inputParam", inputParam);
+    const newDtls = inputParam.pharmacy_stock_detail;
+    debugLog("before History Insert Data", newDtls);
+
+    let updateString = "";
+
+    for (let i = 0; i < newDtls.length; i++) {
+      updateString +=
+        "UPDATE hims_f_pharmacy_pos_detail SET `return_quantity`='" +
+        newDtls[i].return_quantity +
+        "',\
+    `return_extended_cost` = '" +
+        newDtls[i].return_extended_cost +
+        "',`return_discount_amt`='" +
+        newDtls[i].return_discount_amt +
+        "',\
+    `return_net_extended_cost`='" +
+        newDtls[i].return_net_extended_cost +
+        "',`return_pat_responsibility`='" +
+        newDtls[i].return_pat_responsibility +
+        "',\
+    `return_company_responsibility`='" +
+        newDtls[i].return_company_responsibility +
+        "',`return_sec_company_responsibility`='" +
+        newDtls[i].return_sec_company_responsibility +
+        "',`return_done`='Y' WHERE \
+    `pharmacy_pos_header_id`='" +
+        inputParam.from_pos_id +
+        "' AND `item_id`='" +
+        newDtls[i].item_id +
+        "' ;";
+    }
+    debugLog("updateString", updateString);
+    db.query(updateString, (error, detailResult) => {
+      debugLog("error", detailResult);
+      if (error) {
+        if (req.options == null) {
+          db.rollback(() => {
+            releaseDBConnection(req.db, db);
+            next(error);
+          });
+        } else {
+          req.options.onFailure(error);
+        }
+      }
+
+      if (req.options == null) {
+        req.records = detailResult;
+        releaseDBConnection(req.db, db);
+        next();
+      } else {
+        req.options.onSuccess(detailResult);
+      }
     });
   } catch (e) {
     next(e);

@@ -1,12 +1,10 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
-import FrontDesk from "../../../Search/FrontDesk.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
-import POSIOputs from "../../../Models/POS";
+import SalesReturnputs from "../../../Models/SalesReturn";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;
@@ -46,7 +44,7 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const ClearData = ($this, e) => {
-  let IOputs = POSIOputs.inputParam();
+  let IOputs = SalesReturnputs.inputParam();
   IOputs.patient_payable_h = 0;
   IOputs.mode_of_pa = "";
   IOputs.pay_cash = "CA";
@@ -102,10 +100,25 @@ const PostSalesReturn = $this => {
     $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
     $this.state.pharmacy_stock_detail[i].grn_number =
       $this.state.pharmacy_stock_detail[i].grn_no;
+
+    $this.state.pharmacy_stock_detail[i].return_extended_cost =
+      $this.state.pharmacy_stock_detail[i].extended_cost || 0;
+    $this.state.pharmacy_stock_detail[i].return_discount_amt =
+      $this.state.pharmacy_stock_detail[i].discount_amount || 0;
+    $this.state.pharmacy_stock_detail[i].return_net_extended_cost =
+      $this.state.pharmacy_stock_detail[i].net_extended_cost || 0;
+    $this.state.pharmacy_stock_detail[i].return_pat_responsibility =
+      $this.state.pharmacy_stock_detail[i].patient_responsibility || 0;
+    $this.state.pharmacy_stock_detail[i].return_company_responsibility =
+      $this.state.pharmacy_stock_detail[i].company_responsibility || 0;
+    $this.state.pharmacy_stock_detail[i].return_sec_company_responsibility =
+      $this.state.pharmacy_stock_detail[i].sec_company_responsibility || 0;
+
+    $this.state.pharmacy_stock_detail[i].operation = "+";
   }
   debugger;
   algaehApiCall({
-    uri: "/posEntry/updatePosEntry",
+    uri: "/salesReturn/updatesalesReturn",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
@@ -172,8 +185,6 @@ const getPOSEntry = $this => {
       for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
         data.pharmacy_stock_detail[i].return_quantity =
           data.pharmacy_stock_detail[i].quantity;
-
-        data.pharmacy_stock_detail[i].operation = "+";
       }
       $this.setState(data);
       AlgaehLoader({ show: false });

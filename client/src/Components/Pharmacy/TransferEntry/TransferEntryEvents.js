@@ -18,27 +18,25 @@ const changeTexts = ($this, ctrl, e) => {
 const getCtrlCode = ($this, docNumber) => {
   debugger;
   AlgaehLoader({ show: true });
-  $this.props.getPosEntry({
-    uri: "/posEntry/getPosEntry",
+  $this.props.getTransferEntry({
+    uri: "/transferEntry/gettransferEntry",
     method: "GET",
     printInput: true,
-    data: { pos_number: docNumber },
+    data: { transfer_number: docNumber },
     redux: {
-      type: "POS_ENTRY_GET_DATA",
-      mappingName: "posentry"
+      type: "TRNS_ENTRY_GET_DATA",
+      mappingName: "tranferEntry"
     },
     afterSuccess: data => {
       debugger;
       data.saveEnable = true;
-      data.patient_payable_h = data.patient_payable;
+
       if (data.posted === "Y") {
         data.postEnable = true;
       } else {
         data.postEnable = false;
       }
-      if (data.visit_id !== null) {
-        data.case_type = "OP";
-      }
+
       data.dataExitst = true;
       $this.setState(data);
       AlgaehLoader({ show: false });
