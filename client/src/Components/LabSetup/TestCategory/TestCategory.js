@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import "./TestCategory.css";
 import Button from "@material-ui/core/Button";
@@ -67,15 +66,10 @@ class TestCategory extends Component {
     return (
       <div className="lab_section">
         <LinearProgress id="myProg" style={{ display: "none" }} />
-        <Paper className="container-fluid">
+        <div className="container-fluid">
           <form>
             <div
               className="row"
-              style={{
-                padding: 20,
-                marginLeft: "auto",
-                marginRight: "auto"
-              }}
             >
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
@@ -94,17 +88,18 @@ class TestCategory extends Component {
                   }
                 }}
               />
-
-              <div className="col-lg-3 align-middle">
-                <br />
-                <Button
-                  onClick={insertTestCategory.bind(this, this)}
-                  variant="raised"
-                  color="primary"
+<div
+                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
                 >
-                  <AlgaehLabel label={{ fieldName: "Addbutton" }} />
-                </Button>
-              </div>
+                  <button
+                  onClick={insertTestCategory.bind(this, this)}
+                    className="btn btn-primary"
+                  >
+                    Add to List
+                  </button>
+                </div>
+
+             
             </div>
           </form>
 
@@ -211,7 +206,7 @@ class TestCategory extends Component {
               />
             </div>
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }

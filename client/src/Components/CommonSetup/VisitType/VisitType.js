@@ -285,36 +285,14 @@ class VisitType extends Component {
     return (
       <div>
         <div className="visit_type">
-          <Paper className="container-fluid">
+          <div className="container-fluid">
             <form>
               <div
                 className="row"
-                style={{
-                  padding: 20,
-                  marginLeft: "auto",
-                  marginRight: "auto"
-                }}
               >
-                {/* <AlgaehOptions
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "status",
-                    isImp: true
-                  }}
-                  optionsType="radio"
-                  group={{
-                    name: "Status",
-                    value: this.state.visit_status,
-                    controls: [
-                      { label: "Active", value: "A" },
-                      { label: "Inactive", value: "I" }
-                    ],
-                    events: { onChange: this.changeStatus.bind(this) }
-                  }}
-                /> */}
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-2" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "type_code",
                     isImp: true
@@ -332,7 +310,7 @@ class VisitType extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "type_desc",
                     isImp: true
@@ -350,7 +328,7 @@ class VisitType extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "arabic_type_desc",
                     isImp: true
@@ -368,7 +346,7 @@ class VisitType extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-2" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "consultation"
                   }}
@@ -389,17 +367,14 @@ class VisitType extends Component {
                 />
 
                 <div
-                  className="col-lg-2 align-middle"
-                  style={{ marginBottom: "2px" }}
+                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
                 >
-                  <br />
-                  <Button
+                  <button
                     onClick={this.addVisit.bind(this)}
-                    variant="raised"
-                    color="primary"
+                    className="btn btn-primary"
                   >
                     {this.state.buttonText}
-                  </Button>
+                  </button>
                 </div>
               </div>
             </form>
@@ -535,7 +510,7 @@ class VisitType extends Component {
                 />
               </div>
             </div>
-          </Paper>
+          </div>
         </div>
       </div>
     );

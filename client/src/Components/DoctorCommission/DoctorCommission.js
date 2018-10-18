@@ -176,12 +176,11 @@ class DoctorCommission extends Component {
             selectedLang={this.state.selectedLang}
           />
 
-          <div className="hptl-phase1-initial-stock-form">
-            {/* description */}
-            <div className="col-lg-12">
-              <div className="row">
+          <div className="hptl-phase1-doctor-commission-form">
+          
+            <div className="row inner-top-search" style={{marginTop: 76,paddingBottom:10}}>
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-2" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Doctor"
                   }}
@@ -200,7 +199,7 @@ class DoctorCommission extends Component {
                 />
 
                 <AlgaehDateHandler
-                  div={{ className: "col-lg-2" }}
+                  div={{ className: "col" }}
                   label={{ forceLabel: "Form Date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   maxDate={new Date()}
@@ -211,7 +210,7 @@ class DoctorCommission extends Component {
                 />
 
                 <AlgaehDateHandler
-                  div={{ className: "col-lg-2" }}
+                  div={{ className: "col" }}
                   label={{ forceLabel: "To Date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   maxDate={new Date()}
@@ -222,7 +221,7 @@ class DoctorCommission extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-2" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Select Type"
                   }}
@@ -239,9 +238,28 @@ class DoctorCommission extends Component {
                     onChange: changeTexts.bind(this, this)
                   }}
                 />
-
+<AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Service Type"
+                  }}
+                  selector={{
+                    name: "select_service",
+                    className: "select-fld",
+                    value: this.state.select_service,
+                    dataSource: {
+                      textField: "service_type",
+                      valueField: "hims_d_service_type_id",
+                      data: this.props.servicetype
+                    },
+                    others: {
+                      disabled: this.state.select_type === "AS" ? true : false
+                    },
+                    onChange: changeTexts.bind(this, this)
+                  }}
+                />
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-1" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Case Type"
                   }}
@@ -261,7 +279,7 @@ class DoctorCommission extends Component {
                   }}
                 />
 
-                <div className="col-lg-2">
+                <div className="col">
                   <button
                     className="btn btn-primary"
                     style={{ marginTop: "24px" }}
@@ -271,51 +289,22 @@ class DoctorCommission extends Component {
                   </button>
                 </div>
               </div>
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Service Type"
-                  }}
-                  selector={{
-                    name: "select_service",
-                    className: "select-fld",
-                    value: this.state.select_service,
-                    dataSource: {
-                      textField: "service_type",
-                      valueField: "hims_d_service_type_id",
-                      data: this.props.servicetype
-                    },
-                    others: {
-                      disabled: this.state.select_type === "AS" ? true : false
-                    },
-                    onChange: changeTexts.bind(this, this)
-                  }}
-                />
-
-                <div className="col-lg-2">
-                  <button
-                    className="btn btn-primary"
-                    style={{ marginTop: "24px" }}
-                    onClick={CalculateCommission.bind(this, this)}
-                  >
-                    Calculate Commission
-                  </button>
-                </div>
-
-                {/* <div className="col-lg-2">
-                  <button
-                    className="btn btn-primary"
-                    style={{ marginTop: "24px" }}
-                    onClick={LoadBills.bind(this, this)}
-                  >
-                    Load Bills
-                  </button>
-                </div> */}
-              </div>
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Bill Lists</h3>
             </div>
-            <div className="col-lg-12" style={{ maxWidth: "75%" }}>
-              <div className="row form-group">
+            <div className="actions">
+              <a className="btn btn-primary btn-circle active" onClick={CalculateCommission.bind(this, this)}>
+                <i className="fas fa-calculator" />
+              </a>
+            </div>
+          </div>
+          <div
+            className="portlet-body"
+          >
+          <div className="row">
+            <div className="col-lg-12" id="Doc_Com_grid_cntr">
                 <AlgaehDataGrid
                   id="initial_stock"
                   columns={[
@@ -495,12 +484,13 @@ class DoctorCommission extends Component {
                   }}
                 />
               </div>
-            </div>
+              </div>
+              </div>
+              </div>
 
-            <div className="row">
-              <div className="col-lg-5" style={{ textAlign: "right" }}>
+           
                 <div className="row">
-                  <div className="col-lg-4">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "OP Commision"
@@ -512,7 +502,7 @@ class DoctorCommission extends Component {
                         : "₹0.00"}
                     </h6>
                   </div>
-                  <div className="col-lg-4">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "OP Credit Comission"
@@ -525,33 +515,7 @@ class DoctorCommission extends Component {
                     </h6>
                   </div>
 
-                  {/* <div className="col-lg-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "IP Comission"
-                      }}
-                    />
-                    <h6>
-                      {this.state.ip_comission
-                        ? "₹" + this.state.ip_comission
-                        : "₹0.00"}
-                    </h6>
-                  </div>
-
-                  <div className="col-lg-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "IP Credit Comission"
-                      }}
-                    />
-                    <h6>
-                      {this.state.ip_credit_comission
-                        ? "₹" + this.state.ip_credit_comission
-                        : "₹0.00"}
-                    </h6>
-                  </div> */}
-
-                  <div className="col-lg-4">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Gross Comission"
@@ -567,7 +531,7 @@ class DoctorCommission extends Component {
                   </div>
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-4" }}
+                    div={{ className: "col" }}
                     label={{
                       forceLabel: "Adjust Amount"
                     }}
@@ -586,7 +550,7 @@ class DoctorCommission extends Component {
                     }}
                   />
 
-                  <div className="col-lg-4">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Comission Payable"
@@ -598,11 +562,8 @@ class DoctorCommission extends Component {
                         : "₹0.00"}
                     </h6>
 
-                    {/* adjust_amount */}
                   </div>
                 </div>
-              </div>
-            </div>
 
             <div className="hptl-phase1-footer">
               <AppBar position="static" className="main">
@@ -642,7 +603,7 @@ class DoctorCommission extends Component {
                     >
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Post",
+                          forceLabel: "Generate Payment",
                           returnText: true
                         }}
                       />

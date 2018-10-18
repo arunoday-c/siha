@@ -188,7 +188,7 @@ class EmployeeMaster extends Component {
       <div className="hims_employee_master">
         <Modal className="model-set" open={this.props.open}>
           <div className="hims_employee_master">
-            <div className="algaeh-modal" style={{ width: "100%" }}>
+            <div className="algaeh-modal">
               <div className="popupHeader">
                 <div className="row">
                   <div className="col-lg-8">

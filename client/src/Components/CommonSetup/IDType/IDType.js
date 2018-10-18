@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
 import "./id_type.css";
 import Button from "@material-ui/core/Button";
 import moment from "moment";
@@ -202,16 +201,9 @@ class IDType extends Component {
   render() {
     return (
       <div className="id_type">
-        <Paper className="container-fluid">
+        <div className="container-fluid">
           <form>
-            <div
-              className="row"
-              style={{
-                padding: 20,
-                marginLeft: "auto",
-                marginRight: "auto"
-              }}
-            >
+            <div className="row">
               {/* <AlgaehOptions
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -285,16 +277,16 @@ class IDType extends Component {
                 }}
               />
 
-              <div className="col-lg-3 align-middle">
-                <br />
-                <Button
-                  onClick={this.addIDType.bind(this)}
-                  variant="raised"
-                  color="primary"
+ <div
+                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
                 >
-                  ADD TO LIST
-                </Button>
-              </div>
+                  <button
+                  onClick={this.addIDType.bind(this)}
+                    className="btn btn-primary"
+                  >
+                    Add to List
+                  </button>
+                </div>
             </div>
           </form>
 
@@ -420,7 +412,7 @@ class IDType extends Component {
               />
             </div>
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }
