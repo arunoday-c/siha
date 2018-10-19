@@ -248,6 +248,7 @@ const showconfirmDialog = ($this, row) => {
 const getPatientDiagnosis = $this => {
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",
+    cancelRequestId: "getPatientDiagnosis",
     data: {
       patient_id: $this.state.patient_id,
       episode_id: $this.state.episode_id

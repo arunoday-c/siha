@@ -144,7 +144,6 @@ class OrderingServices extends Component {
   }
 
   render() {
-    debugger;
     return (
       <div className="hptl-phase1-ordering-services-form">
         {/* <div className="main-details" /> */}
@@ -201,12 +200,10 @@ class OrderingServices extends Component {
                 Add New Service
               </button>
             </div>
-
           </div>
           <div className="row">
             <div className="col-md-10 col-lg-12">
-              
-<AlgaehDataGrid
+              <AlgaehDataGrid
                 id="Services_Ordering"
                 columns={[
                   {
@@ -531,15 +528,20 @@ class OrderingServices extends Component {
               </div>
             </div>
           </div>
-<hr/>
-          <div className="row" style={{ marginTop: "2vh",marginBottom: "2vh" }}>
+          <hr />
+          <div
+            className="row"
+            style={{ marginTop: "2vh", marginBottom: "2vh" }}
+          >
             <div className="col-lg-12">
               <span className="float-right">
                 <button
                   className="btn btn-primary"
                   onClick={SaveOrdersServices.bind(this, this)}
                   disabled={this.state.saved}
-                >Save                </button>
+                >
+                  Save{" "}
+                </button>
               </span>
             </div>
           </div>

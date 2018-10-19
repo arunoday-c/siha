@@ -64,6 +64,7 @@ const ProcessService = ($this, e) => {
     uri: "/billing/getBillDetails",
     method: "POST",
     data: serviceInput,
+    cancelRequestId: "getBillDetails",
     redux: {
       type: "BILL_GEN_GET_DATA",
       mappingName: "orderservices"

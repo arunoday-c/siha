@@ -53,16 +53,17 @@ class Assessment extends Component {
       showFinalDiagnosisLoader: true
     };
 
-    if (props.icdcodes === undefined || props.icdcodes.length === 0) {
-      this.props.getIcdCodes({
-        uri: "/icdcptcodes/selectIcdcptCodes",
-        method: "GET",
-        redux: {
-          type: "ICDCODES_GET_DATA",
-          mappingName: "icdcodes"
-        }
-      });
-    }
+    // if (props.icdcodes === undefined || props.icdcodes.length === 0) {
+    //   this.props.getIcdCodes({
+    //     uri: "/icdcptcodes/selectIcdcptCodes",
+    //     cancelRequestId: "selectIcdcptCodes",
+    //     method: "GET",
+    //     redux: {
+    //       type: "ICDCODES_GET_DATA",
+    //       mappingName: "icdcodes"
+    //     }
+    //   });
+    // }
     if (
       props.patientdiagnosis === undefined ||
       props.patientdiagnosis.length === 0
