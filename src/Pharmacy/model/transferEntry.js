@@ -237,7 +237,7 @@ let gettransferEntry = (req, res, next) => {
 //created by Nowshad: to Post Requisition Entry
 let updatetransferEntry = (req, res, next) => {
   let TransferEntry = {
-    posted: null,
+    completed: null,
     updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
@@ -261,14 +261,13 @@ let updatetransferEntry = (req, res, next) => {
         return new Promise((resolve, reject) => {
           let inputParam = extend(TransferEntry, req.body);
 
-          debugLog("posted", inputParam.posted);
+          debugLog("completed", inputParam.completed);
           debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
           connection.query(
-            "UPDATE `hims_f_pharmacy_transfer_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
-          WHERE  and `hims_f_pharmacy_transfer_header_id`=?",
+            "UPDATE `hims_f_pharmacy_transfer_header` SET `completed`=?, `completed_date`=? \
+          WHERE `hims_f_pharmacy_transfer_header_id`=?",
             [
-              inputParam.posted,
-              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.completed,
               new Date(),
               inputParam.hims_f_pharmacy_transfer_header_id
             ],

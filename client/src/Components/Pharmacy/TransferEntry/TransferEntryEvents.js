@@ -74,9 +74,9 @@ const SaveTransferEntry = $this => {
 
 const PostTransferEntry = $this => {
   debugger;
-  $this.state.posted = "Y";
+  $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
-  $this.state.transaction_id = $this.state.hims_f_pharmacy_pos_header_id;
+  $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
   $this.state.transaction_date = $this.state.pos_date;
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
     $this.state.pharmacy_stock_detail[i].location_id =
