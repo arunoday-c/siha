@@ -110,7 +110,9 @@ let addBillData = (req, res, next) => {
         inputParam.visit_id,
         inputParam.bill_number,
         inputParam.incharge_or_provider,
-        inputParam.bill_date,
+        inputParam.bill_date != null
+          ? new Date(inputParam.bill_date)
+          : inputParam.bill_date,
         inputParam.advance_amount,
         inputParam.advance_adjust,
         inputParam.discount_amount,
@@ -133,9 +135,9 @@ let addBillData = (req, res, next) => {
         inputParam.credit_amount,
         inputParam.receiveable_amount,
         inputParam.created_by,
-        inputParam.created_date,
+        new Date(),
         inputParam.updated_by,
-        inputParam.updated_date,
+        new Date(),
         inputParam.copay_amount,
         inputParam.deductable_amount
       ],
@@ -220,7 +222,7 @@ let addBillData = (req, res, next) => {
                 copay_amount: s.copay_amount,
                 deductable_amount: s.deductable_amount,
                 deductable_percentage: s.deductable_percentage,
-                tax_inclusive: s.tax_inclusive,
+                tax_inclusive: s.tax_inclusive == 0 ? "N" : s.tax_inclusive,
                 patient_tax: s.patient_tax,
                 company_tax: s.company_tax,
                 total_tax: s.total_tax,
@@ -228,7 +230,7 @@ let addBillData = (req, res, next) => {
                 patient_payable: s.patient_payable,
                 comapany_resp: s.comapany_resp,
                 company_payble: s.company_payble,
-                sec_company: s.sec_company,
+                sec_company: s.sec_company == 0 ? "N" : s.sec_company,
                 sec_deductable_percentage: s.sec_deductable_percentage,
                 sec_deductable_amount: s.sec_deductable_amount,
                 sec_company_res: s.sec_company_res,
@@ -2040,7 +2042,6 @@ created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_t
 
                                       //commit comes here
                                       connection.commit(error => {
-                                        
                                         if (error) {
                                           connection.rollback(() => {
                                             releaseDBConnection(db, connection);

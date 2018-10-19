@@ -13,7 +13,6 @@ import moment from "moment";
 
 import httpStatus from "../utils/httpStatus";
 
-
 import { logger, debugFunction, debugLog } from "../utils/logging";
 
 //created by:irfan,to get patient insurence details by patient id
@@ -185,14 +184,23 @@ let addPatientInsuranceData = (req, res, next) => {
         input.primary_network_id,
         input.primary_inc_card_path,
         input.primary_policy_num,
-        input.primary_effective_start_date,
-        input.primary_effective_end_date,
+        input.primary_effective_start_date != null
+          ? new Date(input.primary_effective_start_date)
+          : input.primary_effective_start_date,
+        input.primary_effective_end_date != null
+          ? new Date(input.primary_effective_end_date)
+          : input.primary_effective_end_date,
         input.primary_card_number,
         input.secondary_insurance_provider_id,
         input.secondary_sub_id,
         input.secondary_network_id,
-        input.secondary_effective_start_date,
-        input.secondary_effective_end_date,
+        input.secondary_effective_start_date != null
+          ? new Date(input.secondary_effective_start_date)
+          : input.secondary_effective_start_date,
+        input.secondary_effective_end_date != null
+          ? new Date(input.secondary_effective_end_date)
+          : input.secondary_effective_end_date,
+        ,
         input.secondary_card_number,
         input.secondary_inc_card_path,
         input.secondary_policy_num,
@@ -1339,7 +1347,6 @@ let getNetworkAndNetworkOfficRecords = (req, res, next) => {
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
-            
             next(error);
           }
           req.records = result;

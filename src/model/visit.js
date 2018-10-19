@@ -85,7 +85,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
           inputParam.age_in_days,
           inputParam.insured,
           inputParam.sec_insured,
-          inputParam.visit_date,
+          new Date(),
           inputParam.department_id,
           inputParam.sub_department_id,
           inputParam.doctor_id,
@@ -93,11 +93,15 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
           inputParam.is_mlc,
           inputParam.mlc_accident_reg_no,
           inputParam.mlc_police_station,
-          inputParam.mlc_wound_certified_date,
+          inputParam.mlc_wound_certified_date != null
+            ? new Date(inputParam.mlc_wound_certified_date)
+            : inputParam.mlc_wound_certified_date,
           inputParam.created_by,
           new Date(),
           inputParam.visit_code,
-          inputParam.visit_expiery_date,
+          inputParam.visit_expiery_date != null
+            ? new Date(inputParam.visit_expiery_date)
+            : inputParam.visit_expiery_date,
           inputParam.episode_id,
           inputParam.appointment_id
         ],
