@@ -133,6 +133,7 @@ const RequisitionSearch = ($this, e) => {
           },
           afterSuccess: data => {
             debugger;
+            AlgaehLoader({ show: true });
             data.saveEnable = false;
 
             if (data.posted === "Y") {
@@ -146,23 +147,34 @@ const RequisitionSearch = ($this, e) => {
             data.dataExitst = true;
 
             for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
-              data.pharmacy_stock_detail[i].quantity_transfered =
+              data.pharmacy_stock_detail[i].material_requisition_header_id =
+                data.hims_f_pharamcy_material_header_id;
+
+              data.pharmacy_stock_detail[i].material_requisition_detail_id =
+                data.pharmacy_stock_detail[
+                  i
+                ].hims_f_pharmacy_material_detail_id;
+
+              data.pharmacy_stock_detail[i].quantity_transferred =
+                data.pharmacy_stock_detail[i].quantity_required;
+
+              data.pharmacy_stock_detail[i].expiry_date =
+                data.pharmacy_stock_detail[i].expirydt;
+
+              data.pharmacy_stock_detail[i].quantity_requested =
                 data.pharmacy_stock_detail[i].quantity_required;
               data.pharmacy_stock_detail[i].quantity_authorized =
                 data.pharmacy_stock_detail[i].quantity_required;
+
+              data.pharmacy_stock_detail[i].uom_requested_id =
+                data.pharmacy_stock_detail[i].item_uom;
+              data.pharmacy_stock_detail[i].uom_transferred_id =
+                data.pharmacy_stock_detail[i].item_uom;
             }
             $this.setState(data);
             AlgaehLoader({ show: false });
           }
         });
-        // $this.setState(
-        //   {
-        //     material_requisition_number: row.material_requisition_number
-        //   },
-        //   () => {
-
-        //   }
-        // );
       }
     });
   } else {
