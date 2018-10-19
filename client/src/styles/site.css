@@ -589,7 +589,8 @@ textarea {
     width: 99%;
     text-transform: uppercase;
     border: 1px solid #d3d3d3;
-    border-radius: 4px; }
+    border-radius: 4px;
+    background: #fff; }
   .algaeh-datePicker input[type="date"]::-webkit-calendar-picker-indicator {
     color: rgba(0, 0, 0, 0);
     opacity: 1;

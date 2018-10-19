@@ -250,7 +250,6 @@ class SearchModule extends Component {
                 <MicOff />
               )}
             </IconButton>
-
             <select
               onChange={this.handleOnchnageSearchBy.bind(this)}
               value={this.state.searchBy}
@@ -264,6 +263,10 @@ class SearchModule extends Component {
                   {row["label"]}
                 </option>
               ))}
+            </select>
+            <select>
+              <option>Starts with</option>
+              <option>contains</option>
             </select>
           </div>
           {this.loadContentDivision()}
