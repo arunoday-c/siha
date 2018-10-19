@@ -7,10 +7,10 @@ import {
 } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
-import { logger, debugFunction, debugLog } from "../../utils/logging";
+import { debugLog } from "../../utils/logging";
 import moment from "moment";
 // import { getBillDetailsFunctionality } from "../../model/billing";
-// import { updateIntoItemLocation } from "./commonFunction";
+import { updateIntoItemLocation } from "./commonFunction";
 import Promise from "bluebird";
 
 //created by Nowshad: to Insert Requisition Entry
@@ -237,7 +237,7 @@ let gettransferEntry = (req, res, next) => {
 //created by Nowshad: to Post Requisition Entry
 let updatetransferEntry = (req, res, next) => {
   let TransferEntry = {
-    posted: null,
+    completed: null,
     updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
@@ -261,14 +261,13 @@ let updatetransferEntry = (req, res, next) => {
         return new Promise((resolve, reject) => {
           let inputParam = extend(TransferEntry, req.body);
 
-          debugLog("posted", inputParam.posted);
+          debugLog("completed", inputParam.completed);
           debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
           connection.query(
-            "UPDATE `hims_f_pharmacy_transfer_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
-          WHERE  and `hims_f_pharmacy_transfer_header_id`=?",
+            "UPDATE `hims_f_pharmacy_transfer_header` SET `completed`=?, `completed_date`=? \
+          WHERE `hims_f_pharmacy_transfer_header_id`=?",
             [
-              inputParam.posted,
-              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.completed,
               new Date(),
               inputParam.hims_f_pharmacy_transfer_header_id
             ],
@@ -284,38 +283,96 @@ let updatetransferEntry = (req, res, next) => {
           );
         })
           .then(output => {
-            return new Promise((resolve, reject) => {
-              debugLog("output", output);
-              req.options = {
-                db: connection,
-                onFailure: error => {
-                  reject(error);
-                },
-                onSuccess: result => {
-                  resolve(result);
-                }
-              };
+            // return new Promise((resolve, reject) => {
+            //   debugLog("output", output);
+            //   req.options = {
+            //     db: connection,
+            //     onFailure: error => {
+            //       reject(error);
+            //     },
+            //     onSuccess: result => {
+            //       resolve(result);
+            //     }
+            //   };
+            //   //Update From Location
+            //   updateIntoItemLocation(req, res, next);
+            // });
+            req.options = {
+              db: connection,
+              onFailure: error => {
+                return Promise.reject(error);
+              }
+            };
+            //Update From Location
+            updateIntoItemLocation(req, res, next);
+          })
+          .then(output => {
+            // return new Promise((resolve, reject) => {
+            //   debugLog("output", output);
+            //   req.options = {
+            //     db: connection,
+            //     onFailure: error => {
+            //       reject(error);
+            //     },
+            //     onSuccess: result => {
+            //       resolve(result);
+            //     }
+            //   };
+            //   //Update To location
+            //   for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
+            //     req.body.pharmacy_stock_detail[i].location_id =
+            //       req.body.pharmacy_stock_detail[i].to_location_id;
+            //     req.body.pharmacy_stock_detail[i].location_type =
+            //       req.body.pharmacy_stock_detail[i].to_location_type;
+            //   }
 
-              //   updateIntoItemLocation(req, res, next);
-            })
+            //   updateIntoItemLocation(req, res, next);
+            // })
 
-              .then(records => {
+            //   .then(records => {
+            //     connection.commit(error => {
+            //       if (error) {
+            //         releaseDBConnection(db, connection);
+            //         next(error);
+            //       }
+            //       req.records = records;
+            //       releaseDBConnection(db, connection);
+            //       next();
+            //     });
+            //   })
+            //   .catch(error => {
+            //     connection.rollback(() => {
+            //       releaseDBConnection(db, connection);
+            //       next(error);
+            //     });
+            //   });
+
+            req.options = {
+              db: connection,
+              onFailure: error => {
+                return Promise.reject(error);
+              },
+              onSuccess: result => {
                 connection.commit(error => {
                   if (error) {
                     releaseDBConnection(db, connection);
                     next(error);
                   }
-                  req.records = records;
+                  req.records = result;
                   releaseDBConnection(db, connection);
                   next();
                 });
-              })
-              .catch(error => {
-                connection.rollback(() => {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                });
-              });
+              }
+            };
+            //Update To location
+            for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
+              req.body.pharmacy_stock_detail[i].location_id =
+                req.body.pharmacy_stock_detail[i].to_location_id;
+              req.body.pharmacy_stock_detail[i].location_type =
+                req.body.pharmacy_stock_detail[i].to_location_type;
+            }
+
+            updateIntoItemLocation(req, res, next);
           })
           .catch(error => {
             connection.rollback(() => {

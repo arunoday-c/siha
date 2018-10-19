@@ -411,6 +411,55 @@ let getPatientPaymentDetails = (req, res, next) => {
   }
 };
 
+//created by irfan: to  get Patient procedures or treatments
+let getPatientTreatments = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_service_type_id from hims_d_service_type  where \
+        record_status='A' and service_type='Procedure'",
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          if (result.length > 0) {
+            connection.query(
+              "select hims_f_ordered_services_id,OS.patient_id,OS.doctor_id,E.full_name as doctor_name,OS.service_type_id,V.visit_date,services_id,\
+        S.service_name,S.service_desc from hims_f_ordered_services OS ,hims_f_patient_visit V,hims_d_services S,hims_d_employee E\
+        where OS.record_status='A' and V.record_status='A' and S.record_status='A' and E.record_status='A' and \
+        OS.visit_id=V.hims_f_patient_visit_id and OS.services_id=S.hims_d_services_id and OS.doctor_id=E.hims_d_employee_id \
+        and OS.service_type_id=? and OS.patient_id=? order by visit_date desc",
+              [result[0].hims_d_service_type_id, req.query.patient_id],
+
+              (error, procResult) => {
+                releaseDBConnection(db, connection);
+                if (error) {
+                  next(error);
+                }
+                req.records = procResult;
+                next();
+              }
+            );
+          } else {
+            req.records = result;
+            releaseDBConnection(db, connection);
+            next();
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientMrdList,
   getPatientEncounterDetails,
@@ -418,5 +467,6 @@ module.exports = {
   getPatientDiagnosis,
   getPatientMedication,
   getPatientInvestigation,
-  getPatientPaymentDetails
+  getPatientPaymentDetails,
+  getPatientTreatments
 };

@@ -15,12 +15,12 @@ import {
 
 import {
   onchangegridcol,
-  itemchangeText,
-  numberchangeTexts,
-  AddItems,
-  deletePosDetail,
-  updatePosDetail,
-  UomchangeTexts,
+  // itemchangeText,
+  // numberchangeTexts,
+  // AddItems,
+  deleteTransEntryDetail,
+  updateTransEntryDetail,
+  // UomchangeTexts,
   dateFormater
 } from "./TransferEntryItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -529,7 +529,7 @@ class TransferEntryItems extends Component {
                               }
                             },
                             {
-                              fieldName: "quantity_transfered",
+                              fieldName: "quantity_transferred",
                               label: (
                                 <AlgaehLabel
                                   label={{
@@ -542,9 +542,9 @@ class TransferEntryItems extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      value: row.quantity_transfered,
+                                      value: row.quantity_transferred,
                                       className: "txt-fld",
-                                      name: "quantity_transfered",
+                                      name: "quantity_transferred",
                                       events: {
                                         onChange: onchangegridcol.bind(
                                           this,
@@ -566,17 +566,17 @@ class TransferEntryItems extends Component {
                           dataSource={{
                             data: this.state.pharmacy_stock_detail
                           }}
-                          // isEditable={true}
+                          isEditable={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
-                          // events={{
-                          //   onDelete: deleteRequisitionDetail.bind(
-                          //     this,
-                          //     this,
-                          //     context
-                          //   ),
-                          //   onEdit: row => {},
-                          //   onDone: updatePosDetail.bind(this, this)
-                          // }}
+                          events={{
+                            onDelete: deleteTransEntryDetail.bind(
+                              this,
+                              this,
+                              context
+                            ),
+                            onEdit: row => {},
+                            onDone: updateTransEntryDetail.bind(this, this)
+                          }}
                         />
                       </div>
                     </div>

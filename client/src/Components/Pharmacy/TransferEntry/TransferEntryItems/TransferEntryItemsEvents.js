@@ -203,7 +203,7 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const deletePosDetail = ($this, context, e, rowId) => {
+const deleteTransEntryDetail = ($this, context, e, rowId) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   pharmacy_stock_detail.splice(rowId, 1);
 
@@ -269,7 +269,7 @@ const deletePosDetail = ($this, context, e, rowId) => {
   }
 };
 
-const updatePosDetail = ($this, e) => {
+const updateTransEntryDetail = ($this, e) => {
   $this.props.PosHeaderCalculations({
     uri: "/billing/billingCalculations",
     method: "POST",
@@ -314,8 +314,8 @@ export {
   numberchangeTexts,
   AddItems,
   datehandle,
-  deletePosDetail,
-  updatePosDetail,
+  deleteTransEntryDetail,
+  updateTransEntryDetail,
   onchangegridcol,
   dateFormater
 };
