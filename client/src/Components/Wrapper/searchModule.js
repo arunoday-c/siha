@@ -35,11 +35,11 @@ class SearchModule extends Component {
   };
 
   componentDidMount() {
-    document.addEventListener("keyup", function(e) {
-      if (e.keyCode == 27) {
-        document.getElementById("closeSearch").click();
-      }
-    });
+    // document.addEventListener("keyup", function(e) {
+    //   if (e.keyCode == 27) {
+    //     document.getElementById("closeSearch").click();
+    //   }
+    // });
 
     this.getUserSelectedValue(
       { searchName: this.props.searchName },
@@ -227,11 +227,16 @@ class SearchModule extends Component {
         id="spotlight_wrapper"
         className={this.state.open === true ? "d-block" : "d-none"}
       >
-        <button
-          id="closeSearch"
-          className="d-none"
-          onClick={this.handleClose.bind()}
-        />
+        <div className="helpText">
+          {/* <span>press [esc] to close window</span> */}
+          <span
+            className="globalSearch-Close"
+            onClick={this.handleClose.bind()}
+          >
+            <i className="fas fa-times" />
+          </span>
+        </div>
+
         <div className="row spotlightContainer">
           <input
             id="spotlightInput"
@@ -270,9 +275,6 @@ class SearchModule extends Component {
             </select>
           </div>
           {this.loadContentDivision()}
-        </div>
-        <div className="helpText">
-          <span>press [esc] to close window</span>
         </div>
       </div>
     );
