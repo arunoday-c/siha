@@ -25,6 +25,7 @@ import {
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
+import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
 
 class PersonalDetails extends PureComponent {
   constructor(props) {
@@ -530,6 +531,15 @@ class PersonalDetails extends PureComponent {
                       />
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div
+                className="row card-deck panel-layout"
+                style={{ padding: "10px" }}
+              >
+                <div className="col-lg-12 card box-shadow-normal">
+                  <DeptUserDetails EmpMasterIOputs={this.state} />
                 </div>
               </div>
               <AHSnackbar

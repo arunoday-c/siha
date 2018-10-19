@@ -304,6 +304,7 @@ let updatetransferEntry = (req, res, next) => {
               }
             };
             //Update From Location
+            debugLog("From", "Data");
             updateIntoItemLocation(req, res, next);
           })
           .then(output => {
@@ -367,11 +368,16 @@ let updatetransferEntry = (req, res, next) => {
             //Update To location
             for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
               req.body.pharmacy_stock_detail[i].location_id =
-                req.body.pharmacy_stock_detail[i].to_location_id;
+                req.body.to_location_id;
               req.body.pharmacy_stock_detail[i].location_type =
-                req.body.pharmacy_stock_detail[i].to_location_type;
-            }
+                req.body.to_location_type;
 
+              req.body.pharmacy_stock_detail[i].uom_id =
+                req.body.pharmacy_stock_detail[i].uom_transferred_id;
+              req.body.pharmacy_stock_detail[i].sales_uom =
+                req.body.pharmacy_stock_detail[i].uom_transferred_id;
+            }
+            debugLog("To ", "Data");
             updateIntoItemLocation(req, res, next);
           })
           .catch(error => {

@@ -84,6 +84,12 @@ const PostTransferEntry = $this => {
     $this.state.pharmacy_stock_detail[i].location_type =
       $this.state.from_location_type;
     $this.state.pharmacy_stock_detail[i].operation = "-";
+
+    $this.state.pharmacy_stock_detail[i].uom_id =
+      $this.state.pharmacy_stock_detail[i].uom_transferred_id;
+
+    $this.state.pharmacy_stock_detail[i].sales_uom =
+      $this.state.pharmacy_stock_detail[i].uom_transferred_id;
   }
   debugger;
   algaehApiCall({
