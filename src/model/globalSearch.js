@@ -38,7 +38,7 @@ let searchData = (req, res, next) => {
         ? " "
         : " and upper(" +
           req.query.fieldName +
-          ") like  upper('%" +
+          ") like  upper('" +
           req.query.fieldContains +
           "%')";
     whereCondition +=
