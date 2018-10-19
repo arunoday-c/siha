@@ -176,6 +176,7 @@ class RadInvestigation extends Component {
                                     row
                                   )}
                                 />
+                                ""
                               </span>
                             );
                           },
