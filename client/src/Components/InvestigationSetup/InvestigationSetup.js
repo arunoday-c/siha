@@ -166,8 +166,12 @@ class InvestigationSetup extends Component {
             }
           ]}
         />
-        <div className="row">
-          <div className="col-lg-12" style={{ marginTop: "75px" }}>
+
+        <div
+          className="row inner-top-search"
+          style={{ marginTop: 57, paddingBottom: 10 }}
+        >
+          <div className="col-lg-12">
             <div className="row">
               <AlagehAutoComplete
                 div={{ className: "col" }}
@@ -259,12 +263,44 @@ class InvestigationSetup extends Component {
                 }}
               />
             </div>
-            <hr />
+          </div>
+        </div>
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Investigation Lists</h3>
+            </div>
+            <div className="actions" />
+          </div>
+          <div className="portlet-body">
             <div className="row">
-              <div className="col-lg-12">
+              <div className="col-lg-12" id="">
                 <AlgaehDataGrid
                   id="investigation_grid"
                   columns={[
+                    {
+                      fieldName: "action",
+                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              className="fas fa-pen"
+                              onClick={EditInvestigationTest.bind(
+                                this,
+                                this,
+                                row
+                              )}
+                            />
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 65,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
                     {
                       fieldName: "investigation_type",
                       label: (
@@ -355,29 +391,6 @@ class InvestigationSetup extends Component {
                                 ? display[0].description
                                 : display[0].description
                               : ""}
-                          </span>
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "action",
-                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                            <IconButton
-                              color="primary"
-                              title="Add Template"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <Edit
-                                onClick={EditInvestigationTest.bind(
-                                  this,
-                                  this,
-                                  row
-                                )}
-                              />
-                            </IconButton>
                           </span>
                         );
                       }

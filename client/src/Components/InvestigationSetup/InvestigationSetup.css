@@ -14,3 +14,6 @@
   .hims_investigationsetup th,
   .hims_investigationsetup td {
     border-right: 1px solid #e6e6e6; }
+
+#invest_grid_cntr .ReactTable {
+  height: 43vh !important; }

@@ -67,7 +67,13 @@ class HistoricalData extends Component {
     this.getPatientMedication();
     this.getPatientPaymentDetails();
     this.getPatientInvestigation();
-    this.state = {};
+    this.state = {
+      patientVitals: [],
+      patientDiagnosis: [],
+      patientMedication: [],
+      patientPayments: [],
+      patientInvestigations: []
+    };
   }
 
   getPatientVitals() {
@@ -214,8 +220,6 @@ class HistoricalData extends Component {
       })
       .toArray();
 
-    console.log("Group Data:", _groupData);
-
     return (
       <div className="historical-data">
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
@@ -226,8 +230,10 @@ class HistoricalData extends Component {
           </div>
           <div className="portlet-body">
             <TreeTable
-              //Most recent 3 rows are expanded
-              //expanded={{ 0: true }}
+              //Expand All rows
+              expanded={this.state.patientVitals.map((data, index) => {
+                return { index: true };
+              })}
               data={_patientVitals}
               pivotBy={["visit_date"]}
               noDataText="No Vitals Captured"
@@ -302,6 +308,9 @@ class HistoricalData extends Component {
               </div>
               <div className="portlet-body">
                 <TreeTable
+                  expanded={this.state.patientDiagnosis.map((data, index) => {
+                    return { index: true };
+                  })}
                   data={this.state.patientDiagnosis}
                   pivotBy={["diagnosis_date"]}
                   noDataText="No Diagnosis Found"
@@ -346,6 +355,9 @@ class HistoricalData extends Component {
                 <TreeTable
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  expanded={_data.map((data, index) => {
+                    return { index: true };
+                  })}
                   data={_data}
                   pivotBy={["date_doctor"]}
                   columns={[
@@ -414,7 +426,9 @@ class HistoricalData extends Component {
               <div className="portlet-body">
                 <TreeTable
                   //Most recent 3 rows are expanded
-                  //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  expanded={this.state.patientMedication.map((data, index) => {
+                    return { index: true };
+                  })}
                   data={this.state.patientMedication}
                   pivotBy={["prescription_date"]}
                   columns={[
@@ -463,6 +477,9 @@ class HistoricalData extends Component {
                 <TreeTable
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  expanded={_data.map((data, index) => {
+                    return { index: true };
+                  })}
                   data={_data}
                   pivotBy={["date_doctor"]}
                   columns={[
@@ -532,6 +549,9 @@ class HistoricalData extends Component {
                 <TreeTable
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  expanded={this.state.patientMedication.map((data, index) => {
+                    return { index: true };
+                  })}
                   data={this.state.patientMedication}
                   pivotBy={["prescription_date"]}
                   columns={[
@@ -580,6 +600,11 @@ class HistoricalData extends Component {
                 <TreeTable
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  expanded={this.state.patientInvestigations.map(
+                    (data, index) => {
+                      return { index: true };
+                    }
+                  )}
                   data={this.state.patientInvestigations}
                   pivotBy={["visit_date"]}
                   columns={[
