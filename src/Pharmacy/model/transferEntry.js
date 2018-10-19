@@ -295,8 +295,31 @@ let updatetransferEntry = (req, res, next) => {
                   resolve(result);
                 }
               };
+              //Update From Location
+              updateIntoItemLocation(req, res, next);
+            });
+          })
+          .then(output => {
+            return new Promise((resolve, reject) => {
+              debugLog("output", output);
+              req.options = {
+                db: connection,
+                onFailure: error => {
+                  reject(error);
+                },
+                onSuccess: result => {
+                  resolve(result);
+                }
+              };
+              //Update To location
+              for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
+                req.body.pharmacy_stock_detail[i].location_id =
+                  req.body.pharmacy_stock_detail[i].to_location_id;
+                req.body.pharmacy_stock_detail[i].location_type =
+                  req.body.pharmacy_stock_detail[i].to_location_type;
+              }
 
-              //   updateIntoItemLocation(req, res, next);
+              updateIntoItemLocation(req, res, next);
             })
 
               .then(records => {

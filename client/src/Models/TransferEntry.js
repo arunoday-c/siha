@@ -11,7 +11,7 @@ export default {
       year: null,
       period: null,
       material_requisition_number: null,
-
+      material_requisition_header_id: null,
       to_location_id: null,
       to_location_type: null,
 
