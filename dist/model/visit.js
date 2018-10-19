@@ -245,16 +245,19 @@ var addVisit = function addVisit(req, res, next) {
           insertVisitData(connection, req, res, function (error, result) {
             if (error) {
               connection.rollback(function () {
+                (0, _utils.releaseDBConnection)(req.db, connection);
                 next(error);
               });
             }
             connection.commit(function (error) {
               if (error) {
                 connection.rollback(function () {
+                  (0, _utils.releaseDBConnection)(req.db, connection);
                   next(error);
                 });
               }
               req.records = result;
+              (0, _utils.releaseDBConnection)(req.db, connection);
               next();
             });
           });
@@ -275,15 +278,18 @@ var addVisit = function addVisit(req, res, next) {
               insertVisitData(connection, req, res, function (error, result) {
                 if (error) {
                   connection.rollback(function () {
+                    (0, _utils.releaseDBConnection)(req.db, connection);
                     next(error);
                   });
                 }
                 connection.commit(function (error) {
                   if (error) {
                     connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(req.db, connection);
                       next(error);
                     });
                   }
+                  (0, _utils.releaseDBConnection)(req.db, connection);
                   req.records = result;
                   next();
                 });

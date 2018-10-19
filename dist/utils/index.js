@@ -12,10 +12,6 @@ var _multer = require("multer");
 
 var _multer2 = _interopRequireDefault(_multer);
 
-var _extend = require("extend");
-
-var _extend2 = _interopRequireDefault(_extend);
-
 var _path = require("path");
 
 var _path2 = _interopRequireDefault(_path);
@@ -31,10 +27,6 @@ var _fs = require("fs");
 var _fs2 = _interopRequireDefault(_fs);
 
 var _nodeLinq = require("node-linq");
-
-var _bluebird = require("bluebird");
-
-var _bluebird2 = _interopRequireDefault(_bluebird);
 
 var _underscore = require("underscore");
 

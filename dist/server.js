@@ -60,11 +60,10 @@ var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
 var _cryptography = require("./utils/cryptography");
 
-var _util = require("util");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var LocalStrategy = require("passport-local").Strategy;
+
 
 var app = (0, _express2.default)();
 

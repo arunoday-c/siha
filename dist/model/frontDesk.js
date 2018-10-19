@@ -194,6 +194,7 @@ var addFrontDesk = function addFrontDesk(req, res, next) {
                         req.records = encounterResult;
                         (0, _logging.debugLog)("encounterResult: ", encounterResult);
                         if (requestCounter != 0) requestCounter = requestCounter - 1;
+                        (0, _utils.releaseDBConnection)(db, connection);
                         next();
                       });
                     });
@@ -270,9 +271,11 @@ var selectFrontDesk = function selectFrontDesk(req, res, next) {
               visitDetails: resultFields
             };
             req.records = showresult;
+            (0, _utils.releaseDBConnection)(db, connection);
             next();
           });
         } else {
+          (0, _utils.releaseDBConnection)(db, connection);
           req.records = showresult;
           next();
         }
@@ -440,6 +443,7 @@ var updateFrontDesk = function updateFrontDesk(req, res, next) {
                       }
                       req.records = encounterResult;
                       if (updateCounter != 0) updateCounter = updateCounter - 1;
+                      (0, _utils.releaseDBConnection)(db, connection);
                       next();
                     });
                   });

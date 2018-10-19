@@ -204,7 +204,7 @@ var deleteVisa = function deleteVisa(req, res, next) {
       next();
     }, function (error) {
       next(error);
-    });
+    }, true);
     (0, _caching.deleteFromCache)("visa");
   } catch (e) {
     next(e);

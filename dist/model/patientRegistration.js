@@ -137,6 +137,7 @@ var insertPatientData = function insertPatientData(req, res, next) {
         req.body.patient_id = req.patient_id;
         if (options != null) options.onSuccess(result);else {
           req.records = result;
+          connection.release();
           next();
         }
 
@@ -262,9 +263,11 @@ var insertData = function insertData(dataBase, req, res, callBack, isCommited, n
       if (error) {
         if (isCommited) {
           dataBase.rollback(function () {
+            connection.release();
             next(error);
           });
         } else {
+          connection.release();
           next(error);
         }
       }
@@ -353,7 +356,7 @@ var updateData = function updateData(dataBase, req, callBack) {
   `visa_type_id`=?, `nationality_id`=?, `postal_code`=?, `primary_identity_id`=?, \
   `primary_id_no`=?, `secondary_identity_id`=?, `secondary_id_no`=?, `photo_file`=?, \
   `primary_id_file`=?, `secondary_id_file`=?, `updated_by`=?, `updated_date`=?\
-  WHERE `hims_d_patient_id`=?;", [inputparam.title_id, inputparam.first_name, inputparam.middle_name, inputparam.last_name, inputparam.full_name, inputparam.arabic_name, inputparam.gender, inputparam.religion_id, inputparam.date_of_birth, inputparam.age, inputparam.marital_status, inputparam.address1, inputparam.address2, inputparam.contact_number, inputparam.secondary_contact_number, inputparam.email, inputparam.emergency_contact_name, inputparam.emergency_contact_number, inputparam.relationship_with_patient, inputparam.visa_type_id, inputparam.nationality_id, inputparam.postal_code, inputparam.primary_identity_id, inputparam.primary_id_no, inputparam.secondary_identity_id, inputparam.secondary_id_no, inputparam.photo_file, inputparam.primary_id_file, inputparam.secondary_id_file, inputparam.updated_by, new Date(), inputparam.hims_d_patient_id], function (error, reesult) {
+  WHERE `hims_d_patient_id`=?;", [inputparam.title_id, inputparam.first_name, inputparam.middle_name, inputparam.last_name, inputparam.full_name, inputparam.arabic_name, inputparam.gender, inputparam.religion_id, inputparam.date_of_birth, inputparam.age, inputparam.marital_status, inputparam.address1, inputparam.address2, inputparam.contact_number, inputparam.secondary_contact_number, inputparam.email, inputparam.emergency_contact_name, inputparam.emergency_contact_number, inputparam.relationship_with_patient, inputparam.visa_type_id, inputparam.nationality_id, inputparam.postal_code, inputparam.primary_identity_id, inputparam.primary_id_no, inputparam.secondary_identity_id, inputparam.secondary_id_no, inputparam.photo_file, inputparam.primary_id_file, inputparam.secondary_id_file, inputparam.updated_by, new Date(), inputparam.hims_d_patient_id], function (error, result) {
       if (typeof callBack == "function") callback(error, result);
     });
   } catch (e) {
