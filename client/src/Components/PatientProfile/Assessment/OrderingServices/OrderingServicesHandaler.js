@@ -40,6 +40,7 @@ const serviceHandeler = ($this, e) => {
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
+  debugger;
   let preserviceInput = $this.state.preserviceInput || [];
   let serviceInput = [
     {

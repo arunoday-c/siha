@@ -59,12 +59,12 @@ class CommissionSetup extends Component {
       redux: {
         type: "EMP_SPECILITY_GET_DATA",
         mappingName: "servTypeCommission"
-      },
-      afterSuccess: data => {
-        this.setState({
-          servTypeCommission: data
-        });
       }
+      // afterSuccess: data => {
+      //   this.setState({
+      //     servTypeCommission: data
+      //   });
+      // }
     });
 
     this.props.getDoctorServiceCommission({
@@ -74,12 +74,12 @@ class CommissionSetup extends Component {
       redux: {
         type: "EMP_SPECILITY_GET_DATA",
         mappingName: "serviceComm"
-      },
-      afterSuccess: data => {
-        this.setState({
-          serviceComm: data
-        });
       }
+      // afterSuccess: data => {
+      //   this.setState({
+      //     serviceComm: data
+      //   });
+      // }
     });
   }
 
@@ -315,7 +315,10 @@ class CommissionSetup extends Component {
                           ]}
                           keyId="service_type_id"
                           dataSource={{
-                            data: this.state.servTypeCommission
+                            data:
+                              this.props.servTypeCommission === undefined
+                                ? []
+                                : this.props.servTypeCommission
                           }}
                           paging={{ page: 0, rowsPerPage: 5 }}
                         />
@@ -588,7 +591,10 @@ class CommissionSetup extends Component {
                           ]}
                           keyId="service_type_id"
                           dataSource={{
-                            data: this.state.serviceComm
+                            data:
+                              this.props.serviceComm === undefined
+                                ? []
+                                : this.props.serviceComm
                           }}
                           paging={{ page: 0, rowsPerPage: 5 }}
                         />
@@ -614,7 +620,7 @@ function mapStateToProps(state) {
   return {
     services: state.services,
     servicetype: state.servicetype,
-    services: state.services,
+    // services: state.services,
     serviceslist: state.serviceslist,
     servicetypelist: state.servicetypelist,
     servTypeCommission: state.servTypeCommission,
@@ -625,9 +631,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getItemUOM: AlgaehActions,
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
+      // getServiceTypes: AlgaehActions,
+      // getServices: AlgaehActions,
       getDoctorServiceTypeCommission: AlgaehActions,
       getDoctorServiceCommission: AlgaehActions
     },

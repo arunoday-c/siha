@@ -92,14 +92,19 @@ class OrderingServices extends Component {
       });
     }
 
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
-    });
+    if (
+      this.props.serviceslist === undefined ||
+      this.props.serviceslist.length === 0
+    ) {
+      this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "serviceslist"
+        }
+      });
+    }
 
     this.props.getPatientInsurance({
       uri: "/insurance/getPatientInsurance",
