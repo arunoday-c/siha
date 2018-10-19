@@ -523,10 +523,6 @@ input[type="time"] {
   background: #fff;
   width: 100%; }
 
-input[type="number"] {
-  text-align: right;
-  direction: rtl; }
-
 input[type="color"] {
   font-size: 0.85rem;
   -webkit-appearance: none;
@@ -616,7 +612,21 @@ textarea {
 
 .autoselect-Div {
   position: relative; }
-  .autoselect-Div i {
+  .autoselect-Div .loadingSelect {
+    display: none;
+    width: 100%;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.2);
+    height: 100%;
+    border-radius: 5px; }
+    .autoselect-Div .loadingSelect i.fa-sync {
+      color: #7f8284;
+      position: absolute;
+      top: 8px;
+      left: 45%;
+      cursor: pointer;
+      font-size: 13px; }
+  .autoselect-Div i.fa-times-circle {
     display: none;
     color: #7f8284;
     position: absolute;
@@ -625,7 +635,7 @@ textarea {
     cursor: pointer;
     font-size: 13px; }
 
-.autoselect-Div:hover i {
+.autoselect-Div:hover i.fa-times-circle {
   display: block; }
 
 .mandatory input[type="text"],

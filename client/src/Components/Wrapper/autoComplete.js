@@ -143,6 +143,9 @@ class AutoComplete extends PureComponent {
         : false;
     return (
       <div className="autoselect-Div">
+        <span className="loadingSelect">
+          <i class="fas fa-sync fa-spin" />
+        </span>
         <input
           className="autoselect-input"
           list={this.props.selector.name}

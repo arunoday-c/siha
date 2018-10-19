@@ -268,6 +268,9 @@ class SearchModule extends Component {
           </div>
           {this.loadContentDivision()}
         </div>
+        <div className="helpText">
+          <span>press [esc] to close window</span>
+        </div>
       </div>
     );
   }

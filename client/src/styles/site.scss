@@ -8,7 +8,7 @@ body {
   .header {
     max-height: 50px;
   }
-  .appLogoOnly{
+  .appLogoOnly {
     background: url(../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center;
     height: 40px;
     width: 140px;
@@ -639,10 +639,7 @@ body {
       background: #000000;
     }
   }
-
-
 }
-
 
 label {
   margin-bottom: 0px;
@@ -665,10 +662,6 @@ input[type="time"] {
   width: 100%;
 }
 
-input[type="number"] {
-  text-align: right;
-  direction: rtl;
-}
 input[type="color"] {
   font-size: $textFontSize;
   -webkit-appearance: none;
@@ -773,7 +766,24 @@ textarea {
 }
 .autoselect-Div {
   position: relative;
-  i {
+  .loadingSelect {
+    display: none;
+    width: 100%;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.2);
+    height: 100%;
+    border-radius: 5px;
+    i.fa-sync {
+      color: #7f8284;
+      position: absolute;
+      top: 8px;
+      left: 45%;
+      cursor: pointer;
+      font-size: 13px;
+    }
+  }
+
+  i.fa-times-circle {
     display: none;
     color: #7f8284;
     position: absolute;
@@ -784,7 +794,7 @@ textarea {
   }
 }
 .autoselect-Div:hover {
-  i {
+  i.fa-times-circle {
     display: block;
   }
 }
@@ -1315,14 +1325,14 @@ th {
     margin-left: 10px;
   }
 }
-.swal2-container{
-  z-index: 99999!important;
+.swal2-container {
+  z-index: 99999 !important;
 }
 
 /* Add this attribute to the element that needs a tooltip */
 [data-tooltip] {
   position: relative;
-  z-index:999999;
+  z-index: 999999;
   cursor: pointer;
 }
 

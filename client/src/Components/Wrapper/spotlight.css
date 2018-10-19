@@ -8,7 +8,7 @@
   z-index: 999999999; }
 
 .spotlightContainer {
-  width: 700px;
+  width: 80vw;
   position: relative;
   margin: auto;
   box-shadow: 0 25px 60px 10px rgba(0, 0, 0, 0.3);
@@ -53,3 +53,16 @@
   overflow: auto; }
   #spotlightResultArea .ReactTable {
     max-height: 349px !important; }
+
+.helpText {
+  width: 80vw;
+  margin: 10px auto 0;
+  text-align: center; }
+  .helpText span {
+    background: #000000;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    border: 2px solid red; }
