@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Paper from "@material-ui/core/Paper";
 
 import IconButton from "@material-ui/core/IconButton";
 import Edit from "@material-ui/icons/Edit";
@@ -58,11 +57,11 @@ class RadInvestigation extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-add-rad-investigation-form">
-              <div className="col-12 popRightDiv">
+            <div className="row hptl-phase1-add-rad-investigation-form">
+              <div className="col-lg-4 popLeftDiv">
                 <div className="row ">
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-12" }}
                     label={{
                       fieldName: "category_id",
                       isImp: true
@@ -80,7 +79,7 @@ class RadInvestigation extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-12" }}
                     label={{
                       fieldName: "film_category",
                       isImp: true
@@ -101,7 +100,7 @@ class RadInvestigation extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-12" }}
                     label={{
                       fieldName: "screening_test"
                     }}
@@ -121,7 +120,7 @@ class RadInvestigation extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-12" }}
                     label={{
                       fieldName: "film_used",
                       isImp: true
@@ -142,91 +141,92 @@ class RadInvestigation extends Component {
                     }}
                   />
                 </div>
+              </div>
 
-                <Paper className="Paper">
-                  <div className="row ">
-                    <div className="col-lg-12">
-                      <button
-                        className="htpl1-phase1-btn-primary"
-                        style={{ margin: "10px" }}
-                        onClick={ShowTemplate.bind(this, this)}
-                      >
-                        Select Template
-                      </button>
-                    </div>
+              <div className="col-lg-8 popRightDiv">
+                <div className="row ">
+                  <div className="col-lg-12">
+                    <button
+                      className="htpl1-phase1-btn-primary"
+                      style={{ margin: "10px" }}
+                      onClick={ShowTemplate.bind(this, this)}
+                    >
+                      Select Template
+                    </button>
                   </div>
-                  <div className="row ">
-                    <div className="col-lg-12">
-                      <AlgaehDataGrid
-                        id="template_grid"
-                        columns={[
-                          {
-                            fieldName: "template_name",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "template_name" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "action",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "action" }} />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  <IconButton
-                                    color="primary"
-                                    title="View & Edit"
-                                  >
-                                    <Edit
-                                      onClick={ViewEditTemplate.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    />
-                                  </IconButton>
-                                </span>
-                              );
-                            }
-                          }
-                        ]}
-                        keyId="analyte_id"
-                        dataSource={{
-                          data: this.state.RadTemplate
-                        }}
-                        isEditable={true}
-                        paging={{ page: 0, rowsPerPage: 10 }}
-                        events={{
-                          onDelete: deleteRadInvestigation.bind(
-                            this,
-                            this,
-                            context
+                </div>
+                <div className="row ">
+                  <div className="col-lg-12">
+                    <AlgaehDataGrid
+                      id="template_grid"
+                      columns={[
+                        {
+                          fieldName: "action",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "action" }} />
                           ),
-                          onEdit: row => {},
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                <i
+                                  className="fas fa-pen"
+                                  onClick={ViewEditTemplate.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )}
+                                />
+                              </span>
+                            );
+                          },
+                          others: {
+                            maxWidth: 65,
+                            resizable: false,
+                            style: { textAlign: "center" }
+                          }
+                        },
+                        {
+                          fieldName: "template_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "template_name" }}
+                            />
+                          )
+                        }
+                      ]}
+                      keyId="analyte_id"
+                      dataSource={{
+                        data: this.state.RadTemplate
+                      }}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 4 }}
+                      events={{
+                        onDelete: deleteRadInvestigation.bind(
+                          this,
+                          this,
+                          context
+                        ),
+                        onEdit: row => {},
 
-                          onDone: updateRadInvestigation.bind(this, this)
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <MyContext.Provider
-                    value={{
-                      state: this.state,
-                      updateState: obj => {
-                        this.setState({ ...obj });
-                      }
-                    }}
-                  >
-                    <RadTemplate
-                      openTemplate={this.state.openTemplate}
-                      onClose={CloseTemplate.bind(this, this)}
-                      radTempobj={this.state.radTempobj}
+                        onDone: updateRadInvestigation.bind(this, this)
+                      }}
                     />
-                  </MyContext.Provider>
-                </Paper>
+                  </div>
+                </div>
+                <MyContext.Provider
+                  value={{
+                    state: this.state,
+                    updateState: obj => {
+                      this.setState({ ...obj });
+                    }
+                  }}
+                >
+                  <RadTemplate
+                    openTemplate={this.state.openTemplate}
+                    onClose={CloseTemplate.bind(this, this)}
+                    radTempobj={this.state.radTempobj}
+                  />
+                </MyContext.Provider>
               </div>
             </div>
           )}
