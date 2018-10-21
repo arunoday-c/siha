@@ -1,10 +1,5 @@
 import extend from "extend";
-import {
-  swalMessage,
-  algaehApiCall,
-  getToken,
-  getCookie
-} from "../utils/algaehApiCall";
+import { swalMessage, getToken, getCookie } from "../utils/algaehApiCall";
 import axios from "axios";
 import config from "../utils/config.json";
 export function successfulMessage(options) {
@@ -79,50 +74,61 @@ export function saveImageOnServer(options) {
   };
   if (settings.fileControl !== undefined) {
     settings.fileControl.map(file => {
-      return new Promise((resolve, reject) => {
-        debugger;
-        console.log("File", file);
-        let formData = new FormData();
-
-        formData.append("file", file.preview);
-        const headerToken = getToken();
-        const x_app_user_identity = getCookie("keyResources");
-        axios
-          .post(config.baseUrl + "/masters/imageSave", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              "x-api-key": headerToken,
-              "x-app-user-identity": x_app_user_identity
-            }
-          })
-          .then(function() {
-            console.log("SUCCESS!!");
-          })
-          .catch(function() {
-            console.log("FAILURE!!");
-          });
-
-        // algaehApiCall({
-        //   contentType: "multipart/form-data",
-        //   data: formData,
-        //   method: "POST",
-        //   uri: "/masters/imageSave",
-        //   onSuccess: result => {
-        //     debugger;
-        //   },
-        //   onFailure: er => {
-        //     debugger;
-        //   }
-        // });
-
-        // axios.post("upload_file", formData, {
-        //   headers: {
-        //     "Content-Type": "multipart/form-data"
-        //   }
-        // });
-      }).then(result => {
-        debugger;
+      settings.thisState.stateName.setState({
+        [settings.thisState.stateProgressName]: 0
       });
+      const formData = new FormData();
+      formData.append("file", file);
+      const headerToken = getToken();
+      const x_app_user_identity = getCookie("keyResources");
+      axios
+        .post(config.baseUrl + "/masters/imageSave", formData, {
+          headers: {
+            "content-type": "multipart/form-data",
+            "x-api-key": headerToken,
+            "x-app-user-identity": x_app_user_identity
+          },
+          onUploadProgress: progressEvent => {
+            let percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+
+            if (percentCompleted >= 100) {
+              settings.thisState.stateName.setState({
+                [settings.thisState.stateProgressName]: 100,
+                [settings.thisState.filePreview]: file.preview
+              });
+            } else {
+              settings.thisState.stateName.setState({
+                [settings.thisState.stateProgressName]: percentCompleted
+              });
+            }
+          }
+        })
+        .then(data => {
+          if (settings.onSuccess !== undefined) {
+            settings.onSuccess({
+              fileName: settings.thisState.filePreview,
+              preview: file.preview
+            });
+          }
+        })
+        .catch(error => {
+          if (settings.onFailure !== undefined) {
+            settings.onFailure(error);
+          } else {
+            console.error(
+              "Error in uploading file '" +
+                settings.thisState.filePreview +
+                "'",
+              error
+            );
+          }
+
+          settings.thisState.stateName.setState({
+            [settings.thisState.stateProgressName]: 0
+          });
+        });
     });
   }
 }

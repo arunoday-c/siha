@@ -102,12 +102,26 @@ const numberSet = ($this, context, cntrl, e) => {
 
 const onDrop = ($this, file, context, fileType) => {
   debugger;
-  $this.setState({ [file]: fileType[0].preview }, () => {
-    saveImageOnServer({ fileControl: fileType });
+  $this.setState({ percent: 0 });
+
+  //$this.setState({ [file]: fileType[0].preview });
+  saveImageOnServer({
+    fileControl: fileType,
+    thisState: {
+      stateName: $this,
+      stateProgressName: "percent",
+      filePreview: file
+    },
+    onSuccess: ImageObj => {
+      $this.setState({
+        [ImageObj.fileName]: ImageObj.preview
+      });
+
+      if (context !== undefined) {
+        context.updateState({ [ImageObj.fileName]: ImageObj.preview });
+      }
+    }
   });
-  if (context !== undefined) {
-    context.updateState({ [file]: fileType[0].preview });
-  }
 };
 
 const datehandle = ($this, context, ctrl, e) => {
