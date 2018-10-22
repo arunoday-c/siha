@@ -34,144 +34,155 @@ export function algaehApiCall(options) {
     }
   }
 
-  var settings = extend(
-    {
-      uri: null,
-      data: null,
-      method: "POST",
-      token: null,
-      onSuccess: null,
-      onFailure: null,
-      baseUrl: config.baseUrl,
-      printInput: false,
-      isfetch: false,
-      cancelRequestId: null
-    },
-    options
-  );
-  let queryParametres = "";
+  new Promise((resolve, reject) => {
+    getLocalIP(myIP => {
+      if (myIP !== undefined) {
+        resolve(myIP);
+      }
+    });
+  }).then(myIP => {
+    var settings = extend(
+      {
+        uri: null,
+        data: null,
+        method: "POST",
+        token: null,
+        onSuccess: null,
+        onFailure: null,
+        baseUrl: config.baseUrl,
+        printInput: false,
+        isfetch: false,
+        cancelRequestId: null
+      },
+      options
+    );
+    let queryParametres = "";
 
-  if (String(settings.method).toUpperCase() === "GET") {
-    let str = [];
-    for (let p in settings.data) {
-      if (settings.data.hasOwnProperty(p)) {
-        if (settings.data[p] !== undefined)
-          str.push(
-            encodeURIComponent(p) + "=" + encodeURIComponent(settings.data[p])
-          );
+    if (String(settings.method).toUpperCase() === "GET") {
+      let str = [];
+      for (let p in settings.data) {
+        if (settings.data.hasOwnProperty(p)) {
+          if (settings.data[p] !== undefined)
+            str.push(
+              encodeURIComponent(p) + "=" + encodeURIComponent(settings.data[p])
+            );
+        }
+      }
+      settings.data = {};
+      queryParametres = "?" + str.join("&");
+      if (settings.printInput) {
+        console.log(
+          "Input data :",
+          settings.baseUrl + settings.uri + queryParametres
+        );
       }
     }
-    settings.data = {};
-    queryParametres = "?" + str.join("&");
     if (settings.printInput) {
-      console.log(
-        "Input data :",
-        settings.baseUrl + settings.uri + queryParametres
-      );
+      console.log("Input data :", settings.data);
     }
-  }
-  if (settings.printInput) {
-    console.log("Input data :", settings.data);
-  }
-  let cancelRequest = {};
+    let cancelRequest = {};
 
-  if (settings.cancelRequestId !== null) {
-    axiosCancel(axios, {
-      debug: false
-    });
+    if (settings.cancelRequestId !== null) {
+      axiosCancel(axios, {
+        debug: false
+      });
 
-    cancelRequest = {
-      requestId: settings.cancelRequestId
-    };
-  }
+      cancelRequest = {
+        requestId: settings.cancelRequestId
+      };
+    }
 
-  const headerToken = getToken();
-  const x_app_user_identity = getCookie("keyResources");
-  //console.log("identity", x_app_user_identity);
-  if (settings.uri !== undefined || settings.uri !== "") {
-    if (settings.isfetch) {
-      return fetch(settings.baseUrl + settings.uri + queryParametres, {
+    const headerToken = getToken();
+    const x_app_user_identity = getCookie("keyResources");
+    //console.log("identity", x_app_user_identity);
+    if (settings.uri !== undefined || settings.uri !== "") {
+      if (settings.isfetch) {
+        return fetch(settings.baseUrl + settings.uri + queryParametres, {
+          method: settings.method,
+          headers: {
+            "x-api-key": headerToken,
+            "x-app-user-identity": x_app_user_identity,
+            "x-client-ip": myIP
+          },
+          body: JSON.stringify(settings.data),
+          ...cancelRequest
+        })
+          .then(response => {
+            if (response.status >= 200 && response.status < 300) {
+              if (typeof settings.onSuccess === "function")
+                settings.onSuccess(response);
+            } else {
+              const error = new Error(response.statusText);
+              error.response = response;
+              if (typeof settings.onFailure === "function")
+                settings.onFailure(error);
+              throw error;
+            }
+          })
+          .catch(error => {
+            console.error("request failed", error);
+          });
+      }
+      const _contentType =
+        settings.contentType !== undefined
+          ? { "Content-Type": settings.contentType }
+          : {};
+      axios({
         method: settings.method,
+        url: settings.baseUrl + settings.uri + queryParametres,
         headers: {
           "x-api-key": headerToken,
-          "x-app-user-identity": x_app_user_identity
+          "x-app-user-identity": x_app_user_identity,
+          "x-client-ip": myIP,
+          ..._contentType
         },
-        body: JSON.stringify(settings.data),
+        data: settings.data,
+        timeout: settings.timeout !== undefined ? settings.timeout : 20000,
         ...cancelRequest
       })
         .then(response => {
-          if (response.status >= 200 && response.status < 300) {
-            if (typeof settings.onSuccess === "function")
-              settings.onSuccess(response);
-          } else {
-            const error = new Error(response.statusText);
-            error.response = response;
-            if (typeof settings.onFailure === "function")
-              settings.onFailure(error);
-            throw error;
-          }
+          if (typeof settings.onSuccess === "function")
+            settings.onSuccess(response);
         })
-        .catch(error => {
-          console.error("request failed", error);
+        .catch(function(err) {
+          if (
+            settings.cancelRequestId !== undefined ||
+            settings.cancelRequestId !== null ||
+            settings.cancelRequestId !== ""
+          ) {
+            if (axios.isCancel(err)) {
+              console.warn("Request canceled :", err.message);
+            }
+          }
+          if (err.code === "ECONNABORTED") {
+            console.error(
+              "Error Message : \n" +
+                err.message +
+                " \n Detail Info : \n" +
+                JSON.stringify(err)
+            );
+            swalMessage({
+              title: "Request taking long time to process....!",
+              type: "info"
+            });
+          } else {
+            if (typeof settings.onFailure === "function")
+              settings.onFailure(err);
+            else {
+              swalMessage({
+                title: err.message,
+                type: "error",
+                position: "top"
+              });
+            }
+          }
+
+          ReactDOM.unmountComponentAtNode(
+            document.getElementById("fullPageLoader")
+          );
         });
     }
-    const _contentType =
-      settings.contentType !== undefined
-        ? { "Content-Type": settings.contentType }
-        : {};
-    axios({
-      method: settings.method,
-      url: settings.baseUrl + settings.uri + queryParametres,
-      headers: {
-        "x-api-key": headerToken,
-        "x-app-user-identity": x_app_user_identity,
-        ..._contentType
-      },
-      data: settings.data,
-      timeout: settings.timeout !== undefined ? settings.timeout : 20000,
-      ...cancelRequest
-    })
-      .then(response => {
-        if (typeof settings.onSuccess === "function")
-          settings.onSuccess(response);
-      })
-      .catch(function(err) {
-        if (
-          settings.cancelRequestId !== undefined ||
-          settings.cancelRequestId !== null ||
-          settings.cancelRequestId !== ""
-        ) {
-          if (axios.isCancel(err)) {
-            console.warn("Request canceled :", err.message);
-          }
-        }
-        if (err.code === "ECONNABORTED") {
-          console.error(
-            "Error Message : \n" +
-              err.message +
-              " \n Detail Info : \n" +
-              JSON.stringify(err)
-          );
-          swalMessage({
-            title: "Request taking long time to process....!",
-            type: "info"
-          });
-        } else {
-          if (typeof settings.onFailure === "function") settings.onFailure(err);
-          else {
-            swalMessage({
-              title: err.message,
-              type: "error",
-              position: "top"
-            });
-          }
-        }
-
-        ReactDOM.unmountComponentAtNode(
-          document.getElementById("fullPageLoader")
-        );
-      });
-  }
+  });
 }
 
 export function swalMessage(options) {
@@ -289,4 +300,29 @@ export function getCookie(cname) {
     }
   }
   return "";
+}
+
+export function getLocalIP(callback) {
+  window.RTCPeerConnection =
+    window.RTCPeerConnection ||
+    window.mozRTCPeerConnection ||
+    window.webkitRTCPeerConnection; //compatibility for Firefox and chrome
+
+  let pc = new RTCPeerConnection({ iceServers: [] }),
+    noop = function(myIP) {
+      if (myIP !== undefined) {
+        callback(myIP);
+      }
+    };
+  pc.createDataChannel(""); //create a bogus data channel
+  pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
+  pc.onicecandidate = function(ice) {
+    if (ice && ice.candidate && ice.candidate.candidate) {
+      let myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
+        ice.candidate.candidate
+      )[1];
+
+      pc.onicecandidate = noop(myIP);
+    }
+  };
 }

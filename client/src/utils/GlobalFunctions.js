@@ -1,5 +1,10 @@
 import extend from "extend";
-import { swalMessage, getToken, getCookie } from "../utils/algaehApiCall";
+import {
+  swalMessage,
+  getToken,
+  getCookie,
+  getLocalIP
+} from "../utils/algaehApiCall";
 import axios from "axios";
 import config from "../utils/config.json";
 export function successfulMessage(options) {
@@ -68,7 +73,8 @@ export function saveImageOnServer(options) {
   const settings = {
     ...{
       fileControl: undefined,
-      pageName: "ABC"
+      pageName: "",
+      fileName: ""
     },
     ...options
   };
@@ -78,57 +84,69 @@ export function saveImageOnServer(options) {
         [settings.thisState.stateProgressName]: 0
       });
       const formData = new FormData();
+      file["tempFileName"] = settings.fileName;
+      file["pageName"] = settings.pageName;
       formData.append("file", file);
       const headerToken = getToken();
       const x_app_user_identity = getCookie("keyResources");
-      axios
-        .post(config.baseUrl + "/masters/imageSave", formData, {
-          headers: {
-            "content-type": "multipart/form-data",
-            "x-api-key": headerToken,
-            "x-app-user-identity": x_app_user_identity
-          },
-          onUploadProgress: progressEvent => {
-            let percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
 
-            if (percentCompleted >= 100) {
-              settings.thisState.stateName.setState({
-                [settings.thisState.stateProgressName]: 100,
-                [settings.thisState.filePreview]: file.preview
-              });
-            } else {
-              settings.thisState.stateName.setState({
-                [settings.thisState.stateProgressName]: percentCompleted
+      new Promise((resolve, reject) => {
+        getLocalIP(myIP => {
+          if (myIP !== undefined) {
+            resolve(myIP);
+          }
+        });
+      }).then(myIP => {
+        axios
+          .post(config.baseUrl + "/masters/imageSave", formData, {
+            headers: {
+              "content-type": "multipart/form-data",
+              "x-api-key": headerToken,
+              "x-app-user-identity": x_app_user_identity,
+              "x-client-ip": myIP
+            },
+            onUploadProgress: progressEvent => {
+              let percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+
+              if (percentCompleted >= 100) {
+                settings.thisState.stateName.setState({
+                  [settings.thisState.stateProgressName]: 100,
+                  [settings.thisState.filePreview]: file.preview
+                });
+              } else {
+                settings.thisState.stateName.setState({
+                  [settings.thisState.stateProgressName]: percentCompleted
+                });
+              }
+            }
+          })
+          .then(data => {
+            if (settings.onSuccess !== undefined) {
+              settings.onSuccess({
+                fileName: settings.thisState.filePreview,
+                preview: file.preview
               });
             }
-          }
-        })
-        .then(data => {
-          if (settings.onSuccess !== undefined) {
-            settings.onSuccess({
-              fileName: settings.thisState.filePreview,
-              preview: file.preview
-            });
-          }
-        })
-        .catch(error => {
-          if (settings.onFailure !== undefined) {
-            settings.onFailure(error);
-          } else {
-            console.error(
-              "Error in uploading file '" +
-                settings.thisState.filePreview +
-                "'",
-              error
-            );
-          }
+          })
+          .catch(error => {
+            if (settings.onFailure !== undefined) {
+              settings.onFailure(error);
+            } else {
+              console.error(
+                "Error in uploading file '" +
+                  settings.thisState.filePreview +
+                  "'",
+                error
+              );
+            }
 
-          settings.thisState.stateName.setState({
-            [settings.thisState.stateProgressName]: 0
+            settings.thisState.stateName.setState({
+              [settings.thisState.stateProgressName]: 0
+            });
           });
-        });
+      });
     });
   }
 }

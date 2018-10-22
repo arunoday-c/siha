@@ -70,6 +70,7 @@ const storage = multer.diskStorage({
     next(null, _path);
   },
   filename: function(req, file, next) {
+    debugLog("Req -- ", req.headers["x-client-ip"]);
     next(null, "avatar-" + Date.now() + ".jpg");
   }
 });

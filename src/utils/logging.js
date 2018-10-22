@@ -35,6 +35,27 @@ let debugLog = (message, obj) => {
     else logger.log("debug", message + "%j", obj);
   }
 };
+const wLogger = new winston.Logger({
+  transports: [
+    new rotatingDate({
+      filename: `${logDirectory}/hims-app-req-track-%DATE%.log`,
+      // timestamp: tsFormat,
+      datePattern: keys.logFileDatePatter,
+      prepend: true,
+      maxSize: keys.logFileSize,
+      level: keys.logLevel,
+      showLevel: false,
+      timestamp: false,
+      eol: ",\r\n"
+    })
+  ]
+});
+const requestTracking = (message, Obj) => {
+  Obj = Obj || null;
+  console.log("Error Here Logger");
+  wLogger.info(message + "%j", Obj);
+  console.log("after Error Here Logger");
+};
 
 //winston.add(winston.transports.Http, rotatingDate);
-module.exports = { logger, debugLog, debugFunction };
+module.exports = { logger, debugLog, debugFunction, requestTracking };
