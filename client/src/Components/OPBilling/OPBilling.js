@@ -255,7 +255,7 @@ class PatientDisplayDetails extends Component {
   SaveBill(e) {
     this.GenerateReciept($this => {
       let Inputobj = $this.state;
-
+      debugger;
       Inputobj.patient_payable = $this.state.patient_payable_h;
       AlgaehLoader({ show: true });
       algaehApiCall({

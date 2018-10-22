@@ -75,13 +75,16 @@ class DisplayOPBilling extends PureComponent {
       });
     }
 
-    if (this.props.services === undefined || this.props.services.length === 0) {
+    if (
+      this.props.billservices === undefined ||
+      this.props.billservices.length === 0
+    ) {
       this.props.getServices({
         uri: "/serviceType/getService",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "services"
+          mappingName: "billservices"
         }
       });
     }
@@ -129,16 +132,32 @@ class DisplayOPBilling extends PureComponent {
     );
   };
 
+  // displayServiceBills() {
+  //   let servicetype =
+  //     this.props.servicetype === undefined ? [] : this.props.servicetype;
+  //   if (this.state.billdetails !== undefined) {
+  //     return this.state.billdetails.map((row, index) => {
+  //       return {
+  //         ...row,
+  //         ...servicetype.find(
+  //           f => f.hims_d_service_type_id === row.service_type_id
+  //         )
+  //       };
+  //     });
+  //   } else {
+  //     return [];
+  //   }
+  // }
+
   displayServiceBills() {
-    let servicetype =
-      this.props.servicetype === undefined ? [] : this.props.servicetype;
+    debugger;
+    let billservices =
+      this.props.billservices === undefined ? [] : this.props.billservices;
     if (this.state.billdetails !== undefined) {
       return this.state.billdetails.map((row, index) => {
         return {
           ...row,
-          ...servicetype.find(
-            f => f.hims_d_service_type_id === row.service_type_id
-          )
+          ...billservices.find(f => f.hims_d_services_id === row.services_id)
         };
       });
     } else {
@@ -184,11 +203,16 @@ class DisplayOPBilling extends PureComponent {
                       className: "select-fld",
                       value: this.state.service_type_id,
                       dataSource: {
+                        // textField:
+                        //   this.state.selectedLang === "en"
+                        //     ? "service_type"
+                        //     : "arabic_service_type",
+                        // valueField: "hims_d_service_type_id",
                         textField:
                           this.state.selectedLang === "en"
-                            ? "service_type"
-                            : "arabic_service_type",
-                        valueField: "hims_d_service_type_id",
+                            ? "service_name"
+                            : "arabic_service_name",
+                        valueField: "hims_d_services_id",
                         data: this.displayServiceBills()
                       },
                       onChange: selector => {
@@ -238,7 +262,7 @@ class DisplayOPBilling extends PureComponent {
                             ? "service_name"
                             : "arabic_service_name",
                         valueField: "hims_d_services_id",
-                        data: this.props.services
+                        data: this.props.billservices
                       },
                       onChange: null,
                       others: {
@@ -657,7 +681,7 @@ class DisplayOPBilling extends PureComponent {
 function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
-    services: state.services
+    billservices: state.billservices
   };
 }
 
