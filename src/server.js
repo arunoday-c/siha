@@ -12,7 +12,7 @@ import path from "path";
 import keys from "./keys/keys";
 import rfs from "rotating-file-stream";
 import httpStatus from "./utils/httpStatus";
-import { logger } from "./utils/logging";
+import { logger, requestTracking } from "./utils/logging";
 import jwtDecode from "jwt-decode";
 import { decryption } from "./utils/cryptography";
 
@@ -79,9 +79,24 @@ app.use((req, res, next) => {
     }
   }
 
-  logger.log("info", "%j", {
-    requestClient: req.ip,
-    requestUser: reqUser,
+  // logger.log("info", "%j", {
+  //   requestClient: reqH["x-client-ip"],
+  //   requestUser: reqUser,
+  //   requestUrl: req.originalUrl,
+  //   requestHeader: {
+  //     host: reqH.host,
+  //     "user-agent": reqH["user-agent"],
+  //     "cache-control": reqH["cache-control"],
+  //     origin: reqH.origin
+  //   },
+  //   requestMethod: req.method
+  // });
+
+  requestTracking("", {
+    dateTime: new Date().toLocaleString(),
+    requestClient: reqH["x-client-ip"],
+    requestAPIUser: reqUser,
+    reqUserIdentity: req.userIdentity,
     requestUrl: req.originalUrl,
     requestHeader: {
       host: reqH.host,
@@ -89,13 +104,9 @@ app.use((req, res, next) => {
       "cache-control": reqH["cache-control"],
       origin: reqH.origin
     },
+
     requestMethod: req.method
   });
-
-  // debugLog("Request Data :", {
-  //   requestBody: req.body,
-  //   requestQuery: req.query
-  // });
 
   next();
 });

@@ -2,7 +2,7 @@
 
 "use strict";
 import axios from "axios";
-import { setToken, setCookie } from "../../utils/algaehApiCall";
+import { setToken, getLocalIP } from "../../utils/algaehApiCall";
 import config from "../../utils/config.json";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 export function getTokenDetals() {
@@ -11,20 +11,31 @@ export function getTokenDetals() {
   var password = config.apiAuth.password;
   var basicAuth = "Basic " + btoa(username + ":" + password);
 
-  axios({
-    method: "GET",
-    url: auth_url,
-    headers: { Authorization: basicAuth }
-  })
-    .then(response => {
-      setToken(response.data.token, response.data.days);
-    })
-    .catch(err => {
-      console.error("Error : ", err.message);
-      successfulMessage({
-        message: err.message,
-        title: "Error",
-        icon: "error"
-      });
+  new Promise((resolve, reject) => {
+    getLocalIP(myIP => {
+      if (myIP !== undefined) {
+        resolve(myIP);
+      }
     });
+  }).then(myIP => {
+    axios({
+      method: "GET",
+      url: auth_url,
+      headers: {
+        Authorization: basicAuth,
+        "x-client-ip": myIP
+      }
+    })
+      .then(response => {
+        setToken(response.data.token, response.data.days);
+      })
+      .catch(err => {
+        console.error("Error : ", err.message);
+        successfulMessage({
+          message: err.message,
+          title: "Error",
+          icon: "error"
+        });
+      });
+  });
 }

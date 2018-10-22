@@ -121,6 +121,7 @@ class PatientDisplayDetails extends Component {
         },
         afterSuccess: data => {
           if ($this.state.visit_id !== null) {
+            debugger;
             for (let i = 0; i < data.visitDetails.length; i++) {
               if (
                 data.visitDetails[i].hims_f_patient_visit_id ===
@@ -146,6 +147,12 @@ class PatientDisplayDetails extends Component {
             data.patientRegistration.patient_type = "Not Selected";
           }
 
+          if (
+            output.patient_code !== undefined &&
+            output.patient_code !== null
+          ) {
+            data.patientRegistration.Billexists = true;
+          }
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
@@ -189,6 +196,7 @@ class PatientDisplayDetails extends Component {
       afterSuccess: data => {
         data.saveEnable = true;
         $this.setState(data, () => {
+          debugger;
           this.getPatientDetails(this, data);
         });
       }
@@ -247,7 +255,7 @@ class PatientDisplayDetails extends Component {
   SaveBill(e) {
     this.GenerateReciept($this => {
       let Inputobj = $this.state;
-
+      debugger;
       Inputobj.patient_payable = $this.state.patient_payable_h;
       AlgaehLoader({ show: true });
       algaehApiCall({
