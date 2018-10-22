@@ -53,7 +53,7 @@ class OrderingServices extends Component {
       primary_insurance_provider_id: null,
       primary_network_office_id: null,
       primary_network_id: null,
-      sec_insured: null,
+      sec_insured: "N",
       secondary_insurance_provider_id: null,
       secondary_network_id: null,
       secondary_network_office_id: null
@@ -545,7 +545,7 @@ class OrderingServices extends Component {
                   onClick={SaveOrdersServices.bind(this, this)}
                   disabled={this.state.saved}
                 >
-                  Save{" "}
+                  Save
                 </button>
               </span>
             </div>
