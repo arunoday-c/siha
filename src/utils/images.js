@@ -63,20 +63,25 @@ const storage = multer.diskStorage({
   //   cb(null, file);
   // }
   destination: function(req, file, next) {
-    next(null, "./uploads");
+    const _path = path.join(__dirname, "../../Documents/TempStore");
+    if (!fs.existsSync(_path)) {
+      fs.mkdirSync(_path);
+    }
+    next(null, _path);
   },
   filename: function(req, file, next) {
     next(null, "avatar-" + Date.now() + ".jpg");
   }
 });
 let upload = multer({ storage: storage });
-let fUpload = upload.fields([{ name: "photo", maxCount: 1 }]);
+let Fupload = upload.fields([{ name: "file", maxCount: 12 }]);
 const saveImageInTemp = (req, res, next) => {
   debugLog("Saving Image");
   // Field data
   debugLog("body", req.body);
+  debugLog("files", req.files);
   // Error handling
-  fUpload(req, res, function(err) {
+  Fupload(req, res, err => {
     if (err) {
       debugLog("An error occurred when uploading", err);
     } else {

@@ -26,13 +26,15 @@ import {
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
-
+import { Line } from "rc-progress";
+import noImage from "../../../../../assets/images/images.png";
 class PersonalDetails extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      Applicable: false
+      Applicable: false,
+      percent: 0
     };
   }
 
@@ -52,7 +54,7 @@ class PersonalDetails extends PureComponent {
         }
       });
     }
-    debugger;
+
     if (
       this.props.countries === undefined ||
       this.props.countries.length === 0
@@ -63,18 +65,13 @@ class PersonalDetails extends PureComponent {
         redux: {
           type: "CTRY_GET_DATA",
           mappingName: "countries"
-        },
-        afterSuccess: data => {
-          debugger;
         }
       });
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState(nextProps.EmpMasterIOputs, () => {
-      debugger;
       if (this.state.country_id === null) return;
       if (this.state.country_id !== nextProps.country_id) {
         let country = Enumerable.from(this.props.countries)
@@ -484,7 +481,17 @@ class PersonalDetails extends PureComponent {
                             multiple={false}
                             name="image"
                           >
-                            <img src={this.state.filePreview} alt="" />
+                            <img
+                              src={
+                                this.state.filePreview
+                                  ? this.state.filePreview
+                                  : noImage
+                              }
+                              alt="Employee Profile Picture"
+                              onError={e => {
+                                e.target.src = noImage;
+                              }}
+                            />
 
                             <div className="attach-design text-center">
                               <AlgaehLabel
@@ -494,6 +501,12 @@ class PersonalDetails extends PureComponent {
                                 }}
                               />
                             </div>
+                            <Line
+                              percent={this.state.percent}
+                              strokeWidth="1"
+                              strokeColor="#2db7f5"
+                              strokeLinecap="square"
+                            />
                           </Dropzone>
                         </div>
                       </div>
