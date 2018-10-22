@@ -30,9 +30,9 @@ let getPatientMrdList = (req, res, next) => {
     }
     let db = req.db;
 
-    let patientNmae = "";
+    let patientName = "";
     if (req.query.full_name != "null" && req.query.full_name != null) {
-      patientNmae = `and full_name like '%${req.query.full_name}%'`;
+      patientName = `and full_name like '%${req.query.full_name}%'`;
     }
     delete req.query.full_name;
 
@@ -50,7 +50,7 @@ let getPatientMrdList = (req, res, next) => {
         from hims_f_patient P, hims_d_nationality N,hims_d_identity_document DOC\
         where P.record_status='A' and N.record_status='A' and DOC.record_status='A' and\
         P.nationality_id=N.hims_d_nationality_id and P.primary_identity_id=DOC.hims_d_identity_document_id  " +
-          patientNmae +
+          patientName +
           " AND " +
           where.condition,
         where.values,

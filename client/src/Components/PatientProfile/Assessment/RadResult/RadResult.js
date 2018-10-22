@@ -159,7 +159,7 @@ class LabResult extends Component {
                               title="View Report"
                               style={{ maxHeight: "4vh" }}
                             >
-                              <i class="fas fa-file-alt" />
+                              <i className="fas fa-file-alt" />
                             </IconButton>
 
                             <IconButton
@@ -167,7 +167,7 @@ class LabResult extends Component {
                               title="View PACS"
                               style={{ maxHeight: "4vh" }}
                             >
-                              <i class="fas fa-file-image" />
+                              <i className="fas fa-file-image" />
                             </IconButton>
                           </span>
                         );

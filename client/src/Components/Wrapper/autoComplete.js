@@ -144,7 +144,7 @@ class AutoComplete extends PureComponent {
     return (
       <div className="autoselect-Div">
         <span className="loadingSelect">
-          <i class="fas fa-sync fa-spin" />
+          <i className="fas fa-sync fa-spin" />
         </span>
         <input
           className="autoselect-input"
