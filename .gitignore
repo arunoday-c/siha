@@ -117,6 +117,10 @@ typings/
 # production
 /dist
 
+#ignore algaeh_users file
+algaeh_users.json
+2
+ipaddress.txt
 ### VisualStudioCode ###
 .vscode/*
 .vscode/settings.json

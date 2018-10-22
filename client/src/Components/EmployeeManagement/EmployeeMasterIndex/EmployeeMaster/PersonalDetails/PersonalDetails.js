@@ -26,13 +26,15 @@ import {
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
-
+import { Line } from "rc-progress";
+import noImage from "../../../../../assets/images/images.png";
 class PersonalDetails extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      Applicable: false
+      Applicable: false,
+      percent: 0
     };
   }
 
@@ -52,7 +54,7 @@ class PersonalDetails extends PureComponent {
         }
       });
     }
-    debugger;
+
     if (
       this.props.countries === undefined ||
       this.props.countries.length === 0
@@ -63,18 +65,13 @@ class PersonalDetails extends PureComponent {
         redux: {
           type: "CTRY_GET_DATA",
           mappingName: "countries"
-        },
-        afterSuccess: data => {
-          debugger;
         }
       });
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState(nextProps.EmpMasterIOputs, () => {
-      debugger;
       if (this.state.country_id === null) return;
       if (this.state.country_id !== nextProps.country_id) {
         let country = Enumerable.from(this.props.countries)
@@ -245,22 +242,20 @@ class PersonalDetails extends PureComponent {
                       <AlagehFormGroup
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
-                          fieldName: "license_number",
+                          fieldName: "email",
                           isImp: true
                         }}
                         textBox={{
-                          value: this.state.license_number,
+                          value: this.state.email,
                           className: "txt-fld",
-                          name: "license_number",
+                          name: "email",
 
                           events: {
                             onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            tabIndex: "6"
                           }
                         }}
                       />
+
                       <AlagehFormGroup
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
@@ -427,23 +422,6 @@ class PersonalDetails extends PureComponent {
                   </div>
                   <div className="col-lg-4 secondary-details">
                     <div className="row secondary-box-container">
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-8 mandatory" }}
-                        label={{
-                          fieldName: "email",
-                          isImp: true
-                        }}
-                        textBox={{
-                          value: this.state.email,
-                          className: "txt-fld",
-                          name: "email",
-
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          }
-                        }}
-                      />
-
                       <div
                         className="col-lg-4 customCheckbox"
                         style={{ paddingTop: "20px" }}
@@ -461,6 +439,28 @@ class PersonalDetails extends PureComponent {
                           </span>
                         </label>
                       </div>
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-8 mandatory" }}
+                        label={{
+                          fieldName: "license_number",
+                          isImp: true
+                        }}
+                        textBox={{
+                          value: this.state.license_number,
+                          className: "txt-fld",
+                          name: "license_number",
+
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled:
+                              this.state.isdoctor === "Y" ? false : true,
+                            tabIndex: "6"
+                          }
+                        }}
+                      />
                     </div>
                     <div
                       className="row secondary-box-container"
@@ -482,8 +482,15 @@ class PersonalDetails extends PureComponent {
                             name="image"
                           >
                             <img
-                              src={this.state.filePreview}
-                              alt="File Privew"
+                              src={
+                                this.state.filePreview
+                                  ? this.state.filePreview
+                                  : noImage
+                              }
+                              alt="Employee Profile Picture"
+                              onError={e => {
+                                e.target.src = noImage;
+                              }}
                             />
 
                             <div className="attach-design text-center">
@@ -494,6 +501,12 @@ class PersonalDetails extends PureComponent {
                                 }}
                               />
                             </div>
+                            <Line
+                              percent={this.state.percent}
+                              strokeWidth="1"
+                              strokeColor="#2db7f5"
+                              strokeLinecap="square"
+                            />
                           </Dropzone>
                         </div>
                       </div>

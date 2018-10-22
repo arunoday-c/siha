@@ -87,10 +87,6 @@ class DeptUserDetails extends Component {
     }
   }
 
-  // handleClose = () => {
-  //   this.setState({ open: false });
-  // };
-
   render() {
     return (
       <React.Fragment>

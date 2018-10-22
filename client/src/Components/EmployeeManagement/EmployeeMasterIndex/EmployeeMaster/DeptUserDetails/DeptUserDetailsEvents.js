@@ -96,7 +96,10 @@ const AddDeptUser = ($this, context) => {
       deptDetails: deptDetails,
       sub_department_id: null,
       insertdeptDetails: insertdeptDetails,
-      user_id: null
+      user_id: null,
+      speciality_id: null,
+      category_id: null,
+      services_id: null
     });
 
     if (context !== undefined) {
@@ -107,7 +110,7 @@ const AddDeptUser = ($this, context) => {
     }
   } else {
     swalMessage({
-      title: "Invalid Input. Selected Depsrtment already defined",
+      title: "Invalid Input. Selected Department already defined",
       type: "warning"
     });
   }
