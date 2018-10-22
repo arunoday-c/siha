@@ -303,6 +303,11 @@ export function getCookie(cname) {
 }
 
 export function getLocalIP(callback) {
+  if (window.myIP !== undefined) {
+    callback(window.myIP);
+    return;
+  }
+
   window.RTCPeerConnection =
     window.RTCPeerConnection ||
     window.mozRTCPeerConnection ||
@@ -311,6 +316,7 @@ export function getLocalIP(callback) {
   let pc = new RTCPeerConnection({ iceServers: [] }),
     noop = function(myIP) {
       if (myIP !== undefined) {
+        window.myIP = myIP;
         callback(myIP);
       }
     };

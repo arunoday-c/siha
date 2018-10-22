@@ -94,9 +94,11 @@ app.use((req, res, next) => {
 
   requestTracking("", {
     dateTime: new Date().toLocaleString(),
-    requestClient: reqH["x-client-ip"],
-    requestAPIUser: reqUser,
-    reqUserIdentity: req.userIdentity,
+    requestIdentity: {
+      requestClient: reqH["x-client-ip"],
+      requestAPIUser: reqUser,
+      reqUserIdentity: req.userIdentity
+    },
     requestUrl: req.originalUrl,
     requestHeader: {
       host: reqH.host,
