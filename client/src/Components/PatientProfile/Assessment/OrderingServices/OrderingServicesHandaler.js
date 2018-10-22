@@ -115,7 +115,7 @@ const ProcessService = ($this, e) => {
                   data.billdetails[i].policy_number = $this.state.policy_number;
                   data.billdetails[i].insurance_service_name =
                     $this.state.insurance_service_name;
-
+                  data.billdetails[i].sec_company = $this.state.sec_insured;
                   // data.billdetails[i].icd_code === data.billdetails[0].icd_code;
                   // Approval Table
 
@@ -125,7 +125,7 @@ const ProcessService = ($this, e) => {
                   data.billdetails[i].requested_quantity =
                     data.billdetails[i].quantity;
                 }
-
+                debugger;
                 $this.setState({
                   orderservicesdata: data.billdetails,
                   approval_amt: approval_amt,
@@ -183,7 +183,7 @@ const ProcessService = ($this, e) => {
 
         data.billdetails[0].requested_quantity = data.billdetails[0].quantity;
         data.billdetails[0].doctor_id = Window.global["provider_id"];
-
+        data.billdetails[0].sec_company = $this.state.sec_insured;
         //If pre-approval required for selected service
 
         if (
@@ -330,6 +330,7 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
+  debugger;
   algaehApiCall({
     uri: "/orderAndPreApproval/insertOrderedServices",
     data: $this.state.orderservicesdata,

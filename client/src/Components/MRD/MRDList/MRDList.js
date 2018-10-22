@@ -32,23 +32,7 @@ class MRDList extends Component {
 
   getPatientMrdList(e) {
     e.preventDefault();
-    // if (
-    //   this.state.patient_code === null ||
-    //   this.state.patient_code.length === 0 ||
-    //   this.state.full_name === null ||
-    //   this.state.full_name.length === 0 ||
-    //   this.state.contact_number === null ||
-    //   this.state.contact_number.length === 0 ||
-    //   this.state.date_of_birth === null ||
-    //   this.state.date_of_birth.length === 0 ||
-    //   this.state.registration_date === null ||
-    //   this.state.registration_date.length === 0
-    // ) {
-    //   swalMessage({
-    //     title: "Please select at least one search criteria",
-    //     type: "warning"
-    //   });
-    // } else {
+
     algaehLoader({ show: true });
 
     algaehApiCall({
@@ -84,7 +68,6 @@ class MRDList extends Component {
         });
       }
     });
-    // }
   }
 
   render() {
@@ -185,7 +168,14 @@ class MRDList extends Component {
 
               <div className="col-lg-1">
                 <button
-                  style={{ cursor:"pointer",fontSize:" 1.4rem",margin:" 24px 0 0",padding: 0,background:"none",border:"none"}}
+                  style={{
+                    cursor: "pointer",
+                    fontSize: " 1.4rem",
+                    margin: " 24px 0 0",
+                    padding: 0,
+                    background: "none",
+                    border: "none"
+                  }}
                   type="submit"
                   className="fas fa-search fa-2x"
                 />
@@ -206,7 +196,11 @@ class MRDList extends Component {
                 {
                   fieldName: "registration_date",
                   label: "Registration Date",
-                  others:{maxWidth:150,resizable: false,style:{textAlign:"center"}}
+                  others: {
+                    maxWidth: 150,
+                    resizable: false,
+                    style: { textAlign: "center" }
+                  }
                 },
                 {
                   fieldName: "patient_code",
@@ -236,7 +230,11 @@ class MRDList extends Component {
                       </span>
                     );
                   },
-                  others:{maxWidth:120,resizable: false,style:{textAlign:"center"}},
+                  others: {
+                    maxWidth: 120,
+                    resizable: false,
+                    style: { textAlign: "center" }
+                  },
                   className: drow => {
                     return "greenCell";
                   }
@@ -244,27 +242,43 @@ class MRDList extends Component {
                 {
                   fieldName: "full_name",
                   label: "Patient Name",
-                  others:{resizable: false,style:{textAlign:"left"}}
+                  others: { resizable: false, style: { textAlign: "left" } }
                 },
                 {
                   fieldName: "gender",
                   label: "Gender",
-                  others:{maxWidth:90,resizable: false,style:{textAlign:"center"}}
+                  others: {
+                    maxWidth: 90,
+                    resizable: false,
+                    style: { textAlign: "center" }
+                  }
                 },
                 {
                   fieldName: "date_of_birth",
                   label: "Date of Birth",
-                  others:{maxWidth:120,resizable: false,style:{textAlign:"center"}}
+                  others: {
+                    maxWidth: 120,
+                    resizable: false,
+                    style: { textAlign: "center" }
+                  }
                 },
                 {
                   fieldName: "age",
                   label: "Age",
-                  others:{maxWidth:60,resizable: false,style:{textAlign:"center"}}
+                  others: {
+                    maxWidth: 60,
+                    resizable: false,
+                    style: { textAlign: "center" }
+                  }
                 },
                 {
                   fieldName: "contact_number",
                   label: "Phone Number",
-                  others:{maxWidth:150,resizable: false,style:{textAlign:"center"}}
+                  others: {
+                    maxWidth: 150,
+                    resizable: false,
+                    style: { textAlign: "center" }
+                  }
                 }
               ]}
               keyId="index"

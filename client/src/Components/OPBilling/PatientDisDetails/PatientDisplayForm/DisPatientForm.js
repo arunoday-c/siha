@@ -63,6 +63,9 @@ class DisPatientForm extends Component {
                         events: {
                           onChange: texthandle.bind(this, this, context)
                         },
+                        others: {
+                          disabled: this.state.Billexists
+                        },
                         error: this.state.open,
                         helperText: this.state.userErrorText
                       }}

@@ -1,8 +1,9 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 
 const Validations = $this => {
   let isError = false;
-
+  debugger;
   if ($this.state.employee_code.length <= 0) {
     isError = true;
     $this.setState({
@@ -38,7 +39,10 @@ const Validations = $this => {
       MandatoryMsg: "Invalid Input. Please Select Designation."
     });
     return isError;
-  } else if ($this.state.license_number.length <= 0) {
+  } else if (
+    $this.state.license_number.length <= 0 &&
+    $this.state.isdoctor === "Y"
+  ) {
     isError = true;
     $this.setState({
       open: true,
@@ -84,8 +88,7 @@ const Validations = $this => {
     isError = true;
     $this.setState({
       open: true,
-      MandatoryMsg: "Invalid Input. Atleast one department to attach.",
-      pageDisplay: "DeptUserDetails"
+      MandatoryMsg: "Invalid Input. Atleast one department to attach."
     });
     return isError;
   }
@@ -127,4 +130,10 @@ const InsertUpdateEmployee = $this => {
   }
 };
 
-export { InsertUpdateEmployee };
+const ClearEmployee = $this => {
+  let IOputs = EmpMasterIOputs.inputParam();
+  IOputs.pageDisplay = "PersonalDetails";
+  $this.setState(IOputs);
+};
+
+export { InsertUpdateEmployee, ClearEmployee };

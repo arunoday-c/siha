@@ -242,22 +242,20 @@ class PersonalDetails extends PureComponent {
                       <AlagehFormGroup
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
-                          fieldName: "license_number",
+                          fieldName: "email",
                           isImp: true
                         }}
                         textBox={{
-                          value: this.state.license_number,
+                          value: this.state.email,
                           className: "txt-fld",
-                          name: "license_number",
+                          name: "email",
 
                           events: {
                             onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            tabIndex: "6"
                           }
                         }}
                       />
+
                       <AlagehFormGroup
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
@@ -424,23 +422,6 @@ class PersonalDetails extends PureComponent {
                   </div>
                   <div className="col-lg-4 secondary-details">
                     <div className="row secondary-box-container">
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-8 mandatory" }}
-                        label={{
-                          fieldName: "email",
-                          isImp: true
-                        }}
-                        textBox={{
-                          value: this.state.email,
-                          className: "txt-fld",
-                          name: "email",
-
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          }
-                        }}
-                      />
-
                       <div
                         className="col-lg-4 customCheckbox"
                         style={{ paddingTop: "20px" }}
@@ -458,6 +439,28 @@ class PersonalDetails extends PureComponent {
                           </span>
                         </label>
                       </div>
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-8 mandatory" }}
+                        label={{
+                          fieldName: "license_number",
+                          isImp: true
+                        }}
+                        textBox={{
+                          value: this.state.license_number,
+                          className: "txt-fld",
+                          name: "license_number",
+
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled:
+                              this.state.isdoctor === "Y" ? false : true,
+                            tabIndex: "6"
+                          }
+                        }}
+                      />
                     </div>
                     <div
                       className="row secondary-box-container"
