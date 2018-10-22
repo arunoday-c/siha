@@ -89,7 +89,6 @@ class AddOPBillingForm extends Component {
   }
 
   ProcessToBill(context, e) {
-    debugger;
     let $this = this;
     if (this.state.patient_id !== null && this.state.visit_id !== null) {
       let serviceInput = [
@@ -118,7 +117,6 @@ class AddOPBillingForm extends Component {
           mappingName: "xxx"
         },
         afterSuccess: data => {
-          debugger;
           if (data.billdetails[0].pre_approval === "Y") {
             successfulMessage({
               message:
@@ -160,7 +158,6 @@ class AddOPBillingForm extends Component {
   }
   //Calculate Row Detail
   calculateAmount(row, context, ctrl, e) {
-    debugger;
     e = e || ctrl;
     let $this = this;
     let billdetails = this.state.billdetails;
@@ -443,7 +440,6 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
                           displayTemplate: row => {
-                            debugger;
                             let display =
                               this.props.serviceslist === undefined
                                 ? []
