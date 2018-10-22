@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 import Enumerable from "linq";
+import { algaehApiCall } from "../utils/algaehApiCall";
 const _data = [
   {
     hims_f_billing_header_id: 626,
@@ -114,157 +115,30 @@ class Experiment extends Component {
       })
       .toArray();
     return (
-      <ReactTable
-        columns={[
-          {
-            Header: "Date",
-            accessor: "bill_date"
-          },
-          {
-            Header: "Doctor",
-            accessor: "provider_name"
-          },
-          {
-            Header: "Bill Details",
-            columns: [
-              {
-                Header: "Bill No.",
-                id: "bill_number",
-                accessor: acc => {
-                  return (
-                    <React.Fragment>
-                      {acc.list.map((r, index) => (
-                        <div key={index}>{r.bill_number}</div>
-                      ))}
-                    </React.Fragment>
-                  );
-                }
-              },
-              {
-                Header: "Gross Amt.",
-                id: "net_amount",
-                accessor: acc => {
-                  return (
-                    <React.Fragment>
-                      {acc.list.map((r, index) => (
-                        <div key={index}>{r.net_amount}</div>
-                      ))}
-                    </React.Fragment>
-                  );
-                }
-              },
-              {
-                Header: "Amount Paid",
-                id: "receiveable_amount",
-                accessor: acc => {
-                  return (
-                    <React.Fragment>
-                      {acc.list.map((r, index) => (
-                        <div key={index}>{r.receiveable_amount}</div>
-                      ))}
-                    </React.Fragment>
-                  );
-                }
-              },
-              {
-                Header: "Due",
-                id: "credit_amount",
-                accessor: acc => {
-                  return (
-                    <React.Fragment>
-                      {acc.list.map((r, index) => (
-                        <div key={index}>{r.credit_amount}</div>
-                      ))}
-                    </React.Fragment>
-                  );
-                }
-              }
-            ]
-          },
-          {
-            Header: "Receipt Details",
-            columns: [
-              {
-                Header: "Receipt Date",
-                id: "receipt_date",
-                accessor: acc => {
-                  return (
-                    <React.Fragment>
-                      {acc.list.map((r, i) => {
-                        return (
-                          <React.Fragment key={i}>
-                            {r.receipt.map((m, index) => (
-                              <div key={index}>{m.receipt_date}</div>
-                            ))}
-                          </React.Fragment>
-                        );
-                      })}
-                    </React.Fragment>
-                  );
-                }
-              },
-              {
-                Header: "Receipt No.",
-                id: "receipt_number",
-                accessor: acc => {
-                  return (
-                    <React.Fragment>
-                      {acc.list.map((r, i) => {
-                        return (
-                          <React.Fragment key={i}>
-                            {r.receipt.map((m, index) => (
-                              <div key={index}>{m.receipt_number}</div>
-                            ))}
-                          </React.Fragment>
-                        );
-                      })}
-                    </React.Fragment>
-                  );
-                }
-              },
-              {
-                Header: "Total Amt.",
-                id: "total_amount",
-                accessor: acc => {
-                  return (
-                    <React.Fragment>
-                      {acc.list.map((r, i) => {
-                        return (
-                          <React.Fragment key={i}>
-                            {r.receipt.map((m, index) => (
-                              <div key={index}>{m.total_amount}</div>
-                            ))}
-                          </React.Fragment>
-                        );
-                      })}
-                    </React.Fragment>
-                  );
-                }
-              },
-              {
-                Header: "Amount Paid",
-                id: "receiveable_amount",
-                accessor: acc => {
-                  return (
-                    <React.Fragment>
-                      {acc.list.map((r, i) => {
-                        return (
-                          <React.Fragment key={i}>
-                            {r.receipt.map((m, index) => (
-                              <div key={index}>{m.total_amount}</div>
-                            ))}
-                          </React.Fragment>
-                        );
-                      })}
-                    </React.Fragment>
-                  );
-                }
-              }
-            ]
-          }
-        ]}
-        data={_groupData}
-      />
+      <div style={{ textAlign: "center" }}>
+        Kill the connections by clicking on this button
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <button
+          className="btn btn-primary"
+          //style={{ marginLeft: "200px", marginRight: "auto" }}
+          onClick={() => {
+            algaehApiCall({
+              uri: "/masters/killDbConnections",
+              method: "GET"
+            });
+          }}
+        >
+          KILL CONNECTIONS
+        </button>
+        <div>
+          After the click the request will crash , Don't worry .. It Works that
+          way!!
+        </div>
+      </div>
     );
   }
 }
