@@ -128,6 +128,7 @@ const isDoctorChange = ($this, context, e) => {
   debugger;
   let Applicable = false;
   let Value = "N";
+  let name = e.target.name;
 
   if ($this.state.Applicable === true) {
     Applicable = false;
@@ -137,10 +138,19 @@ const isDoctorChange = ($this, context, e) => {
     Value = "Y";
   }
   $this.setState({
-    [e.target.name]: Value,
-    Applicable: Applicable,
-    vat_percent: 0
+    [name]: Value,
+    Applicable: Applicable
   });
+
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({
+        [name]: Value
+      });
+    }
+    clearInterval(texthandlerInterval);
+  }, 500);
 };
 
 export {

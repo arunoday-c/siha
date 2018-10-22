@@ -15,15 +15,14 @@ import MyContext from "../../../../utils/MyContext";
 import AHSnackbar from "../../../common/Inputs/AHSnackbar";
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
-import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
+import { InsertUpdateEmployee, ClearEmployee } from "./EmployeeMasterEvents";
 
 class EmployeeMaster extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      pageDisplay: "PersonalDetails",
-      sidBarOpen: true
+      pageDisplay: "PersonalDetails"
     };
   }
 
@@ -158,9 +157,13 @@ class EmployeeMaster extends Component {
   render() {
     return (
       <div className="hims_employee_master">
-        <Modal className="model-set" open={this.props.open}>
-          <div className="hims_employee_master">
-            <div className="algaeh-modal">
+        <Modal
+          className="model-set"
+          open={this.props.open}
+          style={{ width: "100%" }}
+        >
+          <div className="algaeh-modal">
+            <div className="hims_employee_master">
               <div className="popupHeader">
                 <div className="row">
                   <div className="col-lg-8">
@@ -180,7 +183,7 @@ class EmployeeMaster extends Component {
                 </div>
               </div>
 
-              <div className="popupInner">
+              <div className="col-lg-12 popupInner" style={{ height: "75vh" }}>
                 <div className="tab-container toggle-section">
                   <ul className="nav">
                     <li
@@ -211,20 +214,6 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
-                    {/* <li
-                      style={{ marginRight: 2 }}
-                      algaehtabs={"DeptUserDetails"}
-                      className={"nav-item tab-button"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "deptuser_details"
-                          }}
-                        />
-                      }
-                    </li> */}
                   </ul>
                 </div>
                 <MyContext.Provider
@@ -240,11 +229,8 @@ class EmployeeMaster extends Component {
                       <PersonalDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "CommissionSetup" ? (
                       <CommissionSetup EmpMasterIOputs={this.state} />
-                    ) : // ) : this.state.pageDisplay === "DeptUserDetails" ? (
-                    //   <DeptUserDetails EmpMasterIOputs={this.state} />
-                    null}
+                    ) : null}
                   </div>
-                  {/*  */}
                 </MyContext.Provider>
               </div>
 
@@ -264,6 +250,13 @@ class EmployeeMaster extends Component {
                         ) : (
                           <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
                         )}
+                      </button>
+                      <button
+                        onClick={ClearEmployee.bind(this, this)}
+                        type="button"
+                        className="btn btn-default"
+                      >
+                        <AlgaehLabel label={{ fieldName: "btn_clear" }} />
                       </button>
                       <button
                         onClick={e => {
