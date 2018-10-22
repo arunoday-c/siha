@@ -1520,7 +1520,7 @@ class Appointment extends Component {
                 }}
               />
 
-              <div className="col-lg-1 form-group margin-top-15">
+              <div className="col-lg-1 form-group" style={{ marginTop: 22 }}>
                 <button
                   type="submit"
                   onClick={this.getAppointmentSchedule.bind(this)}
@@ -1560,7 +1560,7 @@ class Appointment extends Component {
             </div>
             {/* Portlet Top Bar End */}
 
-            <div className="portlet-body">
+            <div className="portlet-body" style={{ maxHeight: "53vh" }}>
               <div className="appointment-outer-cntr">
                 <div className="appointment-inner-cntr">
                   {/* Table Start */}

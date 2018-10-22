@@ -67,7 +67,15 @@ class HistoricalData extends Component {
     this.getPatientMedication();
     this.getPatientPaymentDetails();
     this.getPatientInvestigation();
-    this.state = {};
+    this.getPatientTreatments();
+    this.state = {
+      patientVitals: [],
+      patientDiagnosis: [],
+      patientMedication: [],
+      patientPayments: [],
+      patientInvestigations: [],
+      patientTreatements: []
+    };
   }
 
   getPatientVitals() {
@@ -83,6 +91,31 @@ class HistoricalData extends Component {
         if (response.data.success) {
           console.log("Vitals: ", response.data.records);
           this.setState({ patientVitals: response.data.records });
+        }
+      },
+      onFailure: error => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getPatientTreatments() {
+    algaehApiCall({
+      uri: "/mrd/getPatientTreatments",
+      method: "GET",
+      data: {
+        patient_id: Window.global["mrd_patient"]
+      },
+      cancelRequestId: "getPatientTreatments",
+      onSuccess: response => {
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          console.log("Treatements: ", response.data.records);
+          this.setState({ patientTreatements: response.data.records });
         }
       },
       onFailure: error => {
@@ -214,8 +247,6 @@ class HistoricalData extends Component {
       })
       .toArray();
 
-    console.log("Group Data:", _groupData);
-
     return (
       <div className="historical-data">
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
@@ -226,8 +257,10 @@ class HistoricalData extends Component {
           </div>
           <div className="portlet-body">
             <TreeTable
-              //Most recent 3 rows are expanded
-              //expanded={{ 0: true }}
+              //Expand All rows
+              expanded={this.state.patientVitals.map((data, index) => {
+                return { index: true };
+              })}
               data={_patientVitals}
               pivotBy={["visit_date"]}
               noDataText="No Vitals Captured"
@@ -240,15 +273,15 @@ class HistoricalData extends Component {
                 },
                 {
                   Header: "Recorded Time",
-                  accessor: "visit_time",
-                  Cell: row => {
-                    debugger;
-                    return (
-                      <span>
-                        {moment(row.value, "HH:MM:SS").format("HH:MM A")}
-                      </span>
-                    );
-                  }
+                  accessor: "visit_time"
+                  // Cell: row => {
+                  //   debugger;
+                  //   return (
+                  //     <span>
+                  //       {moment(row.value, "HH:MM:SS").format("HH:MM A")}
+                  //     </span>
+                  //   );
+                  // }
                 },
                 {
                   Header: "Temp. Oral",
@@ -302,6 +335,9 @@ class HistoricalData extends Component {
               </div>
               <div className="portlet-body">
                 <TreeTable
+                  expanded={this.state.patientDiagnosis.map((data, index) => {
+                    return { index: true };
+                  })}
                   data={this.state.patientDiagnosis}
                   pivotBy={["diagnosis_date"]}
                   noDataText="No Diagnosis Found"
@@ -339,59 +375,34 @@ class HistoricalData extends Component {
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Treatement</h3>
+                  <h3 className="caption-subject">Treatements</h3>
                 </div>
               </div>
               <div className="portlet-body">
                 <TreeTable
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
-                  data={_data}
-                  pivotBy={["date_doctor"]}
+                  expanded={this.state.patientTreatements.map((data, index) => {
+                    return { index: true };
+                  })}
+                  data={this.state.patientTreatements}
+                  pivotBy={["visit_date"]}
                   columns={[
                     {
-                      accessor: "date_doctor"
+                      accessor: "visit_date"
                     },
 
                     {
-                      Header: "Temp. Oral",
-                      accessor: "oral"
+                      Header: "Doctor Name",
+                      accessor: "doctor_name"
                     },
                     {
-                      Header: "BP Systole",
-                      accessor: "bpSystole"
+                      Header: "Service Name",
+                      accessor: "service_name"
                     },
                     {
-                      Header: "bp Dyastole",
-                      accessor: "bpdyastole"
-                    },
-                    {
-                      Header: "Pulse",
-                      accessor: "pulse"
-                    },
-                    {
-                      Header: "Respiratory",
-                      accessor: "resp"
-                    },
-                    {
-                      Header: "Blood Sugar",
-                      accessor: "bloodsugar"
-                    },
-                    {
-                      Header: "Height",
-                      accessor: "height"
-                    },
-                    {
-                      Header: "Weight",
-                      accessor: "weight"
-                    },
-                    {
-                      Header: "BMI",
-                      accessor: "bmi"
-                    },
-                    {
-                      Header: "Duration",
-                      accessor: "duration"
+                      Header: "Service Description",
+                      accessor: "service_desc"
                     }
                   ]}
                   defaultPageSize={5}
@@ -414,7 +425,9 @@ class HistoricalData extends Component {
               <div className="portlet-body">
                 <TreeTable
                   //Most recent 3 rows are expanded
-                  //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  expanded={this.state.patientMedication.map((data, index) => {
+                    return { index: true };
+                  })}
                   data={this.state.patientMedication}
                   pivotBy={["prescription_date"]}
                   columns={[
@@ -463,6 +476,9 @@ class HistoricalData extends Component {
                 <TreeTable
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  expanded={_data.map((data, index) => {
+                    return { index: true };
+                  })}
                   data={_data}
                   pivotBy={["date_doctor"]}
                   columns={[
@@ -532,6 +548,9 @@ class HistoricalData extends Component {
                 <TreeTable
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  expanded={this.state.patientMedication.map((data, index) => {
+                    return { index: true };
+                  })}
                   data={this.state.patientMedication}
                   pivotBy={["prescription_date"]}
                   columns={[
@@ -580,6 +599,11 @@ class HistoricalData extends Component {
                 <TreeTable
                   //Most recent 3 rows are expanded
                   //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                  expanded={this.state.patientInvestigations.map(
+                    (data, index) => {
+                      return { index: true };
+                    }
+                  )}
                   data={this.state.patientInvestigations}
                   pivotBy={["visit_date"]}
                   columns={[

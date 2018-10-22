@@ -40,7 +40,8 @@ export default class Login extends Component {
       const cookie = cookies[i];
       const eqPos = cookie.indexOf("=");
       const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      if (String(name).trim() !== "authToken")
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
   }
 
@@ -135,7 +136,10 @@ export default class Login extends Component {
             >
                Add Client's Logo and other details here
             </div> */}
-            <div className="loginTopbar"><div className="companyLogo"></div><div className="productLogo"></div></div>
+            <div className="loginTopbar">
+              <div className="companyLogo" />
+              <div className="productLogo" />
+            </div>
 
             <div id="loginForm" className="loginFormContainer">
               <LinearProgress id="myProg" style={{ display: "none" }} />
@@ -146,7 +150,10 @@ export default class Login extends Component {
                 <span style={{ color: "#3A95AA" }}>Login In</span>
               </h3>
               <div>
-                <form onSubmit={this.handleLogin.bind(this)} style={{margin:" 0 -15px"}}>
+                <form
+                  onSubmit={this.handleLogin.bind(this)}
+                  style={{ margin: " 0 -15px" }}
+                >
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
@@ -205,9 +212,12 @@ export default class Login extends Component {
                 </form>
               </div>
             </div>
-            <div className="loginFooter"><p>COPYRIGHT © 2018. ALL RIGHTS RESERVED. <a href="http://algaeh.com/">ALGAEH TECHNOLOGIES PVT. LTD.</a></p></div>
-
-           
+            <div className="loginFooter">
+              <p>
+                COPYRIGHT © 2018. ALL RIGHTS RESERVED.{" "}
+                <a href="http://algaeh.com/">ALGAEH TECHNOLOGIES PVT. LTD.</a>
+              </p>
+            </div>
           </div>
         </div>
       </div>

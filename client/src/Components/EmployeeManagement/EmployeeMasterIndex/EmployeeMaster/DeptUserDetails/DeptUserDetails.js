@@ -87,9 +87,9 @@ class DeptUserDetails extends Component {
     }
   }
 
-  handleClose = () => {
-    this.setState({ open: false });
-  };
+  // handleClose = () => {
+  //   this.setState({ open: false });
+  // };
 
   render() {
     return (
@@ -216,7 +216,7 @@ class DeptUserDetails extends Component {
                 </div>
               </div>
               <div className="row">
-                <div className="col-lg-12 ">
+                <div className="col-lg-12" style={{ paddingTop: "10px" }}>
                   <AlgaehDataGrid
                     id="dpet_user_grid"
                     columns={[
@@ -397,8 +397,7 @@ function mapStateToProps(state) {
     empcategory: state.empcategory,
     specimapcategory: state.specimapcategory,
     empdepspeciality: state.empdepspeciality,
-    depservices: state.depservices,
-    depserviceslist: state.depserviceslist
+    depservices: state.depservices
   };
 }
 

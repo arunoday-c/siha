@@ -1,22 +1,32 @@
 #spotlight_wrapper {
   position: fixed;
-  top: 15%;
+  top: 0;
+  height: 100%;
   left: 0;
   right: 0;
   width: 100%;
-  display: block;
-  z-index: 999999999; }
+  background: rgba(0, 0, 0, 0.3);
+  display: none;
+  z-index: 999999999;
+  padding-top: 10vh; }
 
 .spotlightContainer {
-  width: 700px;
+  width: 70vw;
   position: relative;
   margin: auto;
   box-shadow: 0 25px 60px 10px rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
+  border-radius: 5px 0 5px 5px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   background-color: #f8f5f4;
   overflow: hidden;
-  opacity: 1; }
+  opacity: 1;
+  animation: createBox 0.25s; }
+
+@keyframes createBox {
+  from {
+    transform: scale(0); }
+  to {
+    transform: scale(1); } }
 
 #spotlightInput {
   display: block;
@@ -25,7 +35,7 @@
   margin: auto;
   outline: none;
   font-size: 1.6rem;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   color: #000;
   background-color: #f8f5f4;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkViZW5lXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjIuNyAyMi41IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAyMi43IDIyLjUiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxjaXJjbGUgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNjY2NzY2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgY3g9IjguMSIgY3k9IjguNCIgcj0iNi44Ii8+PGxpbmUgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNjY2NzY2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgeDE9IjEzLjIiIHkxPSIxMi45IiB4Mj0iMjEuNSIgeTI9IjIxLjQiLz48L3N2Zz4=);
@@ -53,3 +63,21 @@
   overflow: auto; }
   #spotlightResultArea .ReactTable {
     max-height: 349px !important; }
+
+.helpText {
+  height: 35px;
+  width: 70vw;
+  margin: 0 auto;
+  text-align: right;
+  cursor: pointer; }
+  .helpText .globalSearch-Close {
+    background: #f7f5f4;
+    border-radius: 5px 5px 0 0;
+    color: #8c8c8c;
+    font-size: 1.2rem;
+    padding: 6px 15px;
+    text-transform: uppercase;
+    border: 1px solid #c8c6c5;
+    line-height: 35px;
+    text-shadow: 0 1px 1px #ffffff;
+    cursor: pointer; }

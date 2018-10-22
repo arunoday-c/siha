@@ -123,7 +123,9 @@ let insertPatientData = (req, res, next) => {
      VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
       [
         inputparam.patient_code,
-        inputparam.registration_date,
+        inputparam.registration_date != null
+          ? new Date(inputparam.registration_date)
+          : inputparam.registration_date,
         inputparam.title_id,
         inputparam.first_name,
         inputparam.middle_name,
@@ -132,7 +134,9 @@ let insertPatientData = (req, res, next) => {
         inputparam.arabic_name,
         inputparam.gender,
         inputparam.religion_id,
-        inputparam.date_of_birth,
+        inputparam.date_of_birth != null
+          ? new Date(inputparam.date_of_birth)
+          : inputparam.date_of_birth,
         inputparam.age,
         inputparam.marital_status,
         inputparam.address1,

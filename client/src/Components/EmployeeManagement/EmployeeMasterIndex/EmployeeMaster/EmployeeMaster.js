@@ -7,7 +7,7 @@ import "./EmployeeMaster.css";
 
 import CommissionSetup from "./CommissionSetup/CommissionSetup";
 import PersonalDetails from "./PersonalDetails/PersonalDetails";
-import DeptUserDetails from "./DeptUserDetails/DeptUserDetails";
+// import DeptUserDetails from "./DeptUserDetails/DeptUserDetails";
 
 import { AlgaehLabel, Modal } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -143,43 +143,15 @@ class EmployeeMaster extends Component {
 
   componentWillReceiveProps(newProps) {
     debugger;
-    if (newProps.employeeDetailsPop.hims_d_employee_id !== undefined) {
+    if (
+      newProps.employeeDetailsPop.hims_d_employee_id !== undefined ||
+      this.state.full_name !== null
+    ) {
       let IOputs = newProps.employeeDetailsPop;
-      this.setState({ ...this.state, ...IOputs }, () => {
-        // this.props.getDoctorServiceTypeCommission({
-        //   uri: "/employee/getDoctorServiceTypeCommission",
-        //   data: { provider_id: this.state.hims_d_employee_id },
-        //   method: "GET",
-        //   redux: {
-        //     type: "SERVICE_TYPE_COMM_GET_DATA",
-        //     mappingName: "servTypeCommission"
-        //   },
-        //   afterSuccess: data => {
-        //     debugger;
-        //     this.setState({
-        //       servTypeCommission: data
-        //     });
-        //   }
-        // });
-        // this.props.getDoctorServiceCommission({
-        //   uri: "/employee/getDoctorServiceCommission",
-        //   method: "GET",
-        //   data: { provider_id: this.state.hims_d_employee_id },
-        //   redux: {
-        //     type: "SERVICE_COMM_GET_DATA",
-        //     mappingName: "serviceComm"
-        //   },
-        //   afterSuccess: data => {
-        //     debugger;
-        //     this.setState({
-        //       serviceComm: data
-        //     });
-        //   }
-        // });
-      });
+      this.setState({ ...this.state, ...IOputs });
     } else {
-      let IOputs = EmpMasterIOputs.inputParam();
-      this.setState(IOputs);
+      // let IOputs = EmpMasterIOputs.inputParam();
+      // this.setState(IOputs);
     }
   }
 
@@ -239,7 +211,7 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
-                    <li
+                    {/* <li
                       style={{ marginRight: 2 }}
                       algaehtabs={"DeptUserDetails"}
                       className={"nav-item tab-button"}
@@ -252,7 +224,7 @@ class EmployeeMaster extends Component {
                           }}
                         />
                       }
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
                 <MyContext.Provider
@@ -268,9 +240,9 @@ class EmployeeMaster extends Component {
                       <PersonalDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "CommissionSetup" ? (
                       <CommissionSetup EmpMasterIOputs={this.state} />
-                    ) : this.state.pageDisplay === "DeptUserDetails" ? (
-                      <DeptUserDetails EmpMasterIOputs={this.state} />
-                    ) : null}
+                    ) : // ) : this.state.pageDisplay === "DeptUserDetails" ? (
+                    //   <DeptUserDetails EmpMasterIOputs={this.state} />
+                    null}
                   </div>
                   {/*  */}
                 </MyContext.Provider>
@@ -300,7 +272,7 @@ class EmployeeMaster extends Component {
                         type="button"
                         className="btn btn-default"
                       >
-                        Cancel
+                        <AlgaehLabel label={{ fieldName: "btnCancel" }} />
                       </button>
                       <AHSnackbar
                         open={this.state.open}

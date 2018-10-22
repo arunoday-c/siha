@@ -41,11 +41,16 @@ let searchData = (req, res, next) => {
           ") like  upper('%" +
           req.query.fieldContains +
           "%')";
+
+    const _groupby =
+      queryConfig.groupBy != null ? " " + queryConfig.groupBy + " " : "";
+
     whereCondition +=
       req.query.inputs == null ? "" : " and " + req.query.inputs;
     let query =
       queryConfig.searchQuery +
       whereCondition +
+      _groupby +
       " order by " +
       queryConfig.orderBy +
       " limit " +
