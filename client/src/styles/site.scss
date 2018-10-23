@@ -733,7 +733,7 @@ textarea {
 
   input[type="date"] {
     font-size: 0.8rem;
-    padding: 4px 3px 3px;
+    padding: 4px 0px 3px 3px;
     width: 99%;
     text-transform: uppercase;
     border: 1px solid #d3d3d3;
@@ -745,7 +745,7 @@ textarea {
     opacity: 1;
     display: block;
     background: url(../assets/svg/calendar-alt-regular.svg) no-repeat center;
-    width: 18px;
+    width: 12px;
     height: 15px;
     border-width: thin;
     background-size: 60%;
