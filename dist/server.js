@@ -121,9 +121,13 @@ app.use(function (req, res, next) {
     }
   }
 
-  _logging.logger.log("info", "%j", {
-    requestClient: req.ip,
-    requestUser: reqUser,
+  (0, _logging.requestTracking)("", {
+    dateTime: new Date().toLocaleString(),
+    requestIdentity: {
+      requestClient: reqH["x-client-ip"],
+      requestAPIUser: reqUser,
+      reqUserIdentity: req.userIdentity
+    },
     requestUrl: req.originalUrl,
     requestHeader: {
       host: reqH.host,
@@ -131,13 +135,9 @@ app.use(function (req, res, next) {
       "cache-control": reqH["cache-control"],
       origin: reqH.origin
     },
+
     requestMethod: req.method
   });
-
-  // debugLog("Request Data :", {
-  //   requestBody: req.body,
-  //   requestQuery: req.query
-  // });
 
   next();
 });
@@ -173,9 +173,15 @@ app.use(function (error, req, res, next) {
   error.status = error.status || _httpStatus2.default.internalServer;
   res.status(error.status).json({
     success: false,
-    message: error.message
+    message: error.sqlMessage != null ? error.sqlMessage : error.message
   });
-  _logging.logger.log("error", "%j", error);
+  var _error = {
+    source: req.originalUrl,
+    requestClient: req.headers["x-client-ip"],
+    reqUserIdentity: req.userIdentity,
+    errorDescription: error
+  };
+  _logging.logger.log("error", "%j", _error);
 });
 
 app.server.listen(_keys2.default.port);

@@ -86,10 +86,10 @@ let insertLadOrderedServices = (req, res, next) => {
     "visit_id",
     "provider_id",
     "service_id",
-    "billed",
-    "ordered_date"
+    "billed"
+   
   ];
-
+// "ordered_date"
   const labServices = new LINQ(req.body.billdetails)
     .Where(
       w =>
@@ -122,7 +122,7 @@ let insertLadOrderedServices = (req, res, next) => {
       connection.query(
         "INSERT INTO hims_f_lab_order(" +
           insurtColumns.join(",") +
-          ",created_by,updated_by)  VALUES ?",
+          ",created_by,updated_by,ordered_date)  VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -130,7 +130,9 @@ let insertLadOrderedServices = (req, res, next) => {
             req: req,
             newFieldToInsert: [
               req.userIdentity.algaeh_d_app_user_id,
-              req.userIdentity.algaeh_d_app_user_id
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(labServices[0].ordered_date)
+
             ]
           })
         ],
@@ -272,7 +274,7 @@ let insertLadOrderedServices = (req, res, next) => {
       );
     });
   } else {
-    releaseDBConnection(db, connection);
+    
     next();
   }
 };
