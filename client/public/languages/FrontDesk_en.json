@@ -143,5 +143,8 @@
   "card_number": "Card Number",
   "bill_date": "Bill Date",
   "bill_details": "Bill Details",
-  "patient_type": "Patient Type"
+  "patient_type": "Patient Type",
+  "payby_cash": "Pay By Cash",
+  "payby_card": "Pay By Card",
+  "payby_check": "Pay By Cheque"
 }
