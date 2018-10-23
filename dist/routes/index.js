@@ -176,6 +176,14 @@ var _requisitionEntry = require("../Pharmacy/controller/requisitionEntry");
 
 var _requisitionEntry2 = _interopRequireDefault(_requisitionEntry);
 
+var _salesReturn = require("../Pharmacy/controller/salesReturn");
+
+var _salesReturn2 = _interopRequireDefault(_salesReturn);
+
+var _transferEntry = require("../Pharmacy/controller/transferEntry");
+
+var _transferEntry2 = _interopRequireDefault(_transferEntry);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = (0, _express2.default)();
@@ -195,6 +203,7 @@ var router = (0, _express2.default)();
   router.use("/frontDesk", (0, _frontDesk2.default)({ config: _keys2.default, db: db }));
   router.use("/masters/get", (0, _masters2.default)());
   router.use("/masters/set", (0, _updateMasters2.default)());
+  router.use("/masters", (0, _masters2.default)());
   router.use("/translator", (0, _languageTranslator2.default)());
   router.use("/visit", (0, _visit2.default)({ config: _keys2.default, db: db }));
   router.use("/serviceType", (0, _serviceType2.default)({ config: _keys2.default, db: db }));
@@ -226,6 +235,8 @@ var router = (0, _express2.default)();
   router.use("/posEntry", (0, _posEntry2.default)({ config: _keys2.default, db: db }));
   router.use("/mrd", (0, _mrd2.default)({ config: _keys2.default, db: db }));
   router.use("/requisitionEntry", (0, _requisitionEntry2.default)({ config: _keys2.default, db: db }));
+  router.use("/salesReturn", (0, _salesReturn2.default)({ config: _keys2.default, db: db }));
+  router.use("/transferEntry", (0, _transferEntry2.default)({ config: _keys2.default, db: db }));
 });
 
 exports.default = router;

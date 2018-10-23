@@ -150,7 +150,6 @@ class DisplayOPBilling extends PureComponent {
   // }
 
   displayServiceBills() {
-    debugger;
     let billservices =
       this.props.billservices === undefined ? [] : this.props.billservices;
     if (this.state.billdetails !== undefined) {

@@ -159,7 +159,7 @@ var deleteIdentity = function deleteIdentity(req, res, next) {
       next();
     }, function (error) {
       next(error);
-    });
+    }, true);
   } catch (e) {
     next(e);
   }

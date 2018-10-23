@@ -26,13 +26,14 @@ var _fs2 = _interopRequireDefault(_fs);
 
 var _caching = require("../utils/caching");
 
-var _logging = require("../utils/logging");
+var _images = require("../utils/images");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function () {
   var api = (0, _express.Router)();
 
+  api.post("/imageSave", _images.saveImageInTemp);
   api.get("/subDeptClinicalNonClinicalAll", function (req, res, next) {
     (0, _caching.getCacheData)({ key: "subDeptClinicalNonClinicalAll" }, function (result) {
       if (result != null) {
@@ -227,6 +228,15 @@ exports.default = function () {
     });
   }, _utils.releaseConnection);
   api.get("/autogen", _masters.autoGenMaster, function (req, res, next) {
+    var result = req.records;
+    res.status(_httpStatus2.default.ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  }, _utils.releaseConnection);
+
+  api.get("/killDbConnections", _masters.killDbConnections, function (req, res, next) {
     var result = req.records;
     res.status(_httpStatus2.default.ok).json({
       success: true,

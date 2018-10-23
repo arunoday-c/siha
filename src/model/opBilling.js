@@ -29,6 +29,8 @@ let addOpBIlling = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+
+    debugLog("db:",req.db);
     if (req.query["data"] != null) {
       req.query = JSON.parse(req.query["data"]);
       req.body = req.query;

@@ -108,9 +108,3 @@
 
 .print-area .printActionMenu:hover {
   display: block; }
-
-.third-position {
-  padding-top: 0.4%; }
-  .third-position .internal-label label {
-    font-family: "Trebuchet MS", " Helvetica, sans-serif";
-    font-size: 0.9rem; }

@@ -79,24 +79,13 @@ app.use((req, res, next) => {
     }
   }
 
-  // logger.log("info", "%j", {
-  //   requestClient: reqH["x-client-ip"],
-  //   requestUser: reqUser,
-  //   requestUrl: req.originalUrl,
-  //   requestHeader: {
-  //     host: reqH.host,
-  //     "user-agent": reqH["user-agent"],
-  //     "cache-control": reqH["cache-control"],
-  //     origin: reqH.origin
-  //   },
-  //   requestMethod: req.method
-  // });
-
   requestTracking("", {
     dateTime: new Date().toLocaleString(),
-    requestClient: reqH["x-client-ip"],
-    requestAPIUser: reqUser,
-    reqUserIdentity: req.userIdentity,
+    requestIdentity: {
+      requestClient: reqH["x-client-ip"],
+      requestAPIUser: reqUser,
+      reqUserIdentity: req.userIdentity
+    },
     requestUrl: req.originalUrl,
     requestHeader: {
       host: reqH.host,
@@ -142,9 +131,15 @@ app.use((error, req, res, next) => {
   error.status = error.status || httpStatus.internalServer;
   res.status(error.status).json({
     success: false,
-    message: error.message
+    message: error.sqlMessage != null ? error.sqlMessage : error.message
   });
-  logger.log("error", "%j", error);
+  const _error = {
+    source: req.originalUrl,
+    requestClient: req.headers["x-client-ip"],
+    reqUserIdentity: req.userIdentity,
+    errorDescription: error
+  };
+  logger.log("error", "%j", _error);
 });
 
 app.server.listen(config.port);

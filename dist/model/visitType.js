@@ -129,7 +129,7 @@ var deleteVisitType = function deleteVisitType(req, res, next) {
       next();
     }, function (error) {
       next(error);
-    });
+    }, true);
   } catch (e) {
     next(e);
   }

@@ -91,6 +91,7 @@ export function algaehApiCall(options) {
         requestId: settings.cancelRequestId
       };
     }
+    const _contentType = settings.header !== undefined ? settings.header : {};
 
     const headerToken = getToken();
     const x_app_user_identity = getCookie("keyResources");
@@ -102,8 +103,10 @@ export function algaehApiCall(options) {
           headers: {
             "x-api-key": headerToken,
             "x-app-user-identity": x_app_user_identity,
-            "x-client-ip": myIP
+            "x-client-ip": myIP,
+            ..._contentType
           },
+          ...settings.others,
           body: JSON.stringify(settings.data),
           ...cancelRequest
         })
@@ -112,6 +115,7 @@ export function algaehApiCall(options) {
               if (typeof settings.onSuccess === "function")
                 settings.onSuccess(response);
             } else {
+              debugger;
               const error = new Error(response.statusText);
               error.response = response;
               if (typeof settings.onFailure === "function")
@@ -123,10 +127,7 @@ export function algaehApiCall(options) {
             console.error("request failed", error);
           });
       }
-      const _contentType =
-        settings.contentType !== undefined
-          ? { "Content-Type": settings.contentType }
-          : {};
+
       axios({
         method: settings.method,
         url: settings.baseUrl + settings.uri + queryParametres,
@@ -136,6 +137,7 @@ export function algaehApiCall(options) {
           "x-client-ip": myIP,
           ..._contentType
         },
+        ...settings.others,
         data: settings.data,
         timeout: settings.timeout !== undefined ? settings.timeout : 20000,
         ...cancelRequest
@@ -144,7 +146,8 @@ export function algaehApiCall(options) {
           if (typeof settings.onSuccess === "function")
             settings.onSuccess(response);
         })
-        .catch(function(err) {
+        .catch(err => {
+          debugger;
           if (
             settings.cancelRequestId !== undefined ||
             settings.cancelRequestId !== null ||
@@ -169,11 +172,19 @@ export function algaehApiCall(options) {
             if (typeof settings.onFailure === "function")
               settings.onFailure(err);
             else {
-              swalMessage({
-                title: err.message,
-                type: "error",
-                position: "top"
-              });
+              if (err.response.data !== undefined) {
+                swalMessage({
+                  title: err.response.data.message,
+                  type: "error",
+                  position: "top"
+                });
+              } else {
+                swalMessage({
+                  title: err.message,
+                  type: "error",
+                  position: "top"
+                });
+              }
             }
           }
 
@@ -303,6 +314,11 @@ export function getCookie(cname) {
 }
 
 export function getLocalIP(callback) {
+  if (window.myIP !== undefined) {
+    callback(window.myIP);
+    return;
+  }
+
   window.RTCPeerConnection =
     window.RTCPeerConnection ||
     window.mozRTCPeerConnection ||
@@ -311,6 +327,7 @@ export function getLocalIP(callback) {
   let pc = new RTCPeerConnection({ iceServers: [] }),
     noop = function(myIP) {
       if (myIP !== undefined) {
+        window.myIP = myIP;
         callback(myIP);
       }
     };
