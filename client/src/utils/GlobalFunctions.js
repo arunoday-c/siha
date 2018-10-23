@@ -1,12 +1,5 @@
 import extend from "extend";
-import {
-  swalMessage,
-  getToken,
-  getCookie,
-  getLocalIP
-} from "../utils/algaehApiCall";
-import axios from "axios";
-import config from "../utils/config.json";
+import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 
@@ -74,7 +67,8 @@ export function saveImageOnServer(options) {
     ...{
       fileControl: undefined,
       pageName: "",
-      fileName: ""
+      fileName: "",
+      saveDirectly: false
     },
     ...options
   };
@@ -83,70 +77,102 @@ export function saveImageOnServer(options) {
       settings.thisState.stateName.setState({
         [settings.thisState.stateProgressName]: 0
       });
+      if (settings.saveDirectly === false && settings.fileName === "") {
+        settings.fileName = getCookie("ScreenName").replace("/", "");
+      }
       const formData = new FormData();
-      file["tempFileName"] = settings.fileName;
-      file["pageName"] = settings.pageName;
+
       formData.append("file", file);
-      const headerToken = getToken();
-      const x_app_user_identity = getCookie("keyResources");
-
-      new Promise((resolve, reject) => {
-        getLocalIP(myIP => {
-          if (myIP !== undefined) {
-            resolve(myIP);
-          }
-        });
-      }).then(myIP => {
-        axios
-          .post(config.baseUrl + "/masters/imageSave", formData, {
-            headers: {
-              "content-type": "multipart/form-data",
-              "x-api-key": headerToken,
-              "x-app-user-identity": x_app_user_identity,
-              "x-client-ip": myIP
-            },
-            onUploadProgress: progressEvent => {
-              let percentCompleted = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-              );
-
-              if (percentCompleted >= 100) {
-                settings.thisState.stateName.setState({
-                  [settings.thisState.stateProgressName]: 100,
-                  [settings.thisState.filePreview]: file.preview
-                });
-              } else {
-                settings.thisState.stateName.setState({
-                  [settings.thisState.stateProgressName]: percentCompleted
-                });
-              }
-            }
+      algaehApiCall({
+        uri: "/masters/imageSave",
+        data: formData,
+        method: "POST",
+        header: {
+          "content-type": "application/json",
+          "x-file-details": JSON.stringify({
+            tempFileName: settings.fileName,
+            pageName: settings.pageName,
+            saveDirectly: settings.saveDirectly,
+            destinationName: settings.destinationName,
+            fileType: settings.fileType
           })
-          .then(data => {
-            if (settings.onSuccess !== undefined) {
-              settings.onSuccess({
-                fileName: settings.thisState.filePreview,
-                preview: file.preview
+        },
+        others: {
+          onUploadProgress: progressEvent => {
+            let percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+
+            if (percentCompleted >= 100) {
+              settings.thisState.stateName.setState({
+                [settings.thisState.stateProgressName]: 100,
+                [settings.thisState.filePreview]: file.preview
+              });
+            } else {
+              settings.thisState.stateName.setState({
+                [settings.thisState.stateProgressName]: percentCompleted
               });
             }
-          })
-          .catch(error => {
-            if (settings.onFailure !== undefined) {
-              settings.onFailure(error);
-            } else {
-              console.error(
-                "Error in uploading file '" +
-                  settings.thisState.filePreview +
-                  "'",
-                error
-              );
-            }
-
-            settings.thisState.stateName.setState({
-              [settings.thisState.stateProgressName]: 0
-            });
-          });
+          }
+        }
       });
+      // new Promise((resolve, reject) => {
+      //   getLocalIP(myIP => {
+      //     if (myIP !== undefined) {
+      //       resolve(myIP);
+      //     }
+      //   });
+      // }).then(myIP => {
+      //   axios
+      //     .post(config.baseUrl + "/masters/imageSave", formData, {
+      //       headers: {
+      //         "content-type": "multipart/form-data",
+      //         "x-api-key": headerToken,
+      //         "x-app-user-identity": x_app_user_identity,
+      //         "x-client-ip": myIP
+      //       },
+      //       onUploadProgress: progressEvent => {
+      //         let percentCompleted = Math.round(
+      //           (progressEvent.loaded * 100) / progressEvent.total
+      //         );
+
+      //         if (percentCompleted >= 100) {
+      //           settings.thisState.stateName.setState({
+      //             [settings.thisState.stateProgressName]: 100,
+      //             [settings.thisState.filePreview]: file.preview
+      //           });
+      //         } else {
+      //           settings.thisState.stateName.setState({
+      //             [settings.thisState.stateProgressName]: percentCompleted
+      //           });
+      //         }
+      //       }
+      //     })
+      //     .then(data => {
+      //       if (settings.onSuccess !== undefined) {
+      //         settings.onSuccess({
+      //           fileName: settings.thisState.filePreview,
+      //           preview: file.preview
+      //         });
+      //       }
+      //     })
+      //     .catch(error => {
+      //       if (settings.onFailure !== undefined) {
+      //         settings.onFailure(error);
+      //       } else {
+      //         console.error(
+      //           "Error in uploading file '" +
+      //             settings.thisState.filePreview +
+      //             "'",
+      //           error
+      //         );
+      //       }
+
+      //       settings.thisState.stateName.setState({
+      //         [settings.thisState.stateProgressName]: 0
+      //       });
+      //     });
+      // });
     });
   }
 }

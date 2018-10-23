@@ -102,7 +102,6 @@ const numberSet = ($this, context, cntrl, e) => {
 
 const onDrop = ($this, file, context, fileType) => {
   debugger;
-  $this.setState({ percent: 0 });
 
   //$this.setState({ [file]: fileType[0].preview });
   saveImageOnServer({
@@ -112,6 +111,8 @@ const onDrop = ($this, file, context, fileType) => {
       stateProgressName: "percent",
       filePreview: file
     },
+    fileName: "employeeImage",
+    pageName: "EmployeeMasterIndex",
     onSuccess: ImageObj => {
       $this.setState({
         [ImageObj.fileName]: ImageObj.preview
