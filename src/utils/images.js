@@ -2,7 +2,7 @@ import { debugLog } from "../utils/logging";
 import fs from "fs";
 import path from "path";
 import multer from "multer";
-import mkdirp from "mkdirp";
+import httpStatus from "../utils/httpStatus";
 let logDirectory = path.join(__dirname, "../../Documents");
 if (!fs.existsSync(logDirectory)) {
   fs.mkdirSync(logDirectory);
@@ -41,52 +41,54 @@ function readFileToBase64(folderName, imageName) {
   return bufferFile;
 }
 const storage = multer.diskStorage({
-  // destination: (req, file, cb) => {
-  //   // const _path = path.join(
-  //   //   __dirname,
-  //   //   "../Files/" + req.ip + "/" + req.body.created_by + "/" + req.body.pageName
-  //   // );
-  //   debugLog(
-  //     "../Files/" + req.ip + "/" + req.body.created_by + "/" + req.body.pageName
-  //   );
-  //   const _path = path.join(__dirname, "../Files/");
-  //   mkdirp(_path, error => {
-  //     if (error) {
-  //       debugLog("Problem in folder creation to save file ,", error);
-  //       req.error = error;
-  //     } else {
-  //       cb(null, _path);
-  //     }
-  //   });
-  // },
-  // filename: (req, file, cb) => {
-  //   cb(null, file);
-  // }
   destination: function(req, file, next) {
-    const _path = path.join(__dirname, "../../Documents/TempStore");
-    if (!fs.existsSync(_path)) {
-      fs.mkdirSync(_path);
+    const _ip = req.headers["x-client-ip"];
+    if (_ip != null && _ip != "") {
+      const _fileDetails = JSON.parse(req.headers["x-file-details"]);
+      let _filePath = "../../Documents";
+      if (_fileDetails.saveDirectly) {
+        _filePath +=
+          "/" + _fileDetails.fileType + "/" + _fileDetails.destinationName;
+      } else {
+        _filePath += "/TempStore/" + _ip;
+      }
+
+      const _path = path.join(__dirname, _filePath);
+      if (!fs.existsSync(_path)) {
+        fs.mkdirSync(_path);
+      }
+
+      next(null, _path);
+    } else {
+      throw "Unknow client IP not recorded";
     }
-    next(null, _path);
   },
   filename: function(req, file, next) {
-    debugLog("Req -- ", req.headers["x-client-ip"]);
-    next(null, "avatar-" + Date.now() + ".jpg");
+    const _fileDetails = JSON.parse(req.headers["x-file-details"]);
+    const _fileExtention = path.extname(file.originalname);
+    let _fileName = _fileDetails.saveDirectly
+      ? _fileDetails.tempFileName + "." + _fileExtention
+      : _fileDetails.pageName +
+        "_" +
+        _fileDetails.tempFileName +
+        "." +
+        _fileExtention;
+
+    next(null, _fileName);
   }
 });
 let upload = multer({ storage: storage });
 let Fupload = upload.fields([{ name: "file", maxCount: 12 }]);
 const saveImageInTemp = (req, res, next) => {
-  debugLog("Saving Image");
-  // Field data
-  debugLog("body", req.body);
-  debugLog("files", req.files);
-  // Error handling
   Fupload(req, res, err => {
     if (err) {
       debugLog("An error occurred when uploading", err);
+      next(httpStatus.generateError(500, err));
     } else {
-      res.send("Form data saved!");
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: "Successfully uploaded image"
+      });
     }
   });
 };

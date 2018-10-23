@@ -413,24 +413,20 @@ class RegistrationPatient extends Component {
             searchName: "patients"
           }}
           userArea={
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{
-                forceLabel: (
-                  <AlgaehLabel label={{ fieldName: "registration_date" }} />
-                ),
-                className: "internal-label"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "bread_registration_date"
-              }}
-              disabled={true}
-              events={{
-                onChange: null
-              }}
-              value={this.state.registration_date}
-            />
+            <div className="row">
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "registered_date"
+                  }}
+                />
+                <h6>
+                  {this.state.registration_date
+                    ? moment(this.state.registration_date).format("DD-MM-YYYY")
+                    : "DD/MM/YYYY"}
+                </h6>
+              </div>
+            </div>
           }
           printArea={{
             menuitems: [

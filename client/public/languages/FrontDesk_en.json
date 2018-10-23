@@ -1,6 +1,7 @@
 {
   "patient_code": "Patient Code",
   "registration_date": "Registration Date",
+  "registered_date": "Registered Date",
   "title_id": "Title",
   "first_name": "First Name",
   "middle_name": "Middle Name",
