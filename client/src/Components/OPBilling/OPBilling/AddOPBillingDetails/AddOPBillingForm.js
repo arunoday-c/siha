@@ -863,7 +863,9 @@ class AddOPBillingForm extends Component {
                             value: this.state.advance_adjust,
                             className: "txt-fld",
                             name: "advance_adjust",
-
+                            others: {
+                              disabled: this.state.Billexists
+                            },
                             events: {
                               onChange: adjustadvance.bind(this, this, context)
                             }
@@ -879,7 +881,9 @@ class AddOPBillingForm extends Component {
                             value: this.state.sheet_discount_percentage,
                             className: "txt-fld",
                             name: "sheet_discount_percentage",
-
+                            others: {
+                              disabled: this.state.Billexists
+                            },
                             events: {
                               onChange: discounthandle.bind(this, this, context)
                             }
@@ -896,7 +900,9 @@ class AddOPBillingForm extends Component {
                             value: this.state.sheet_discount_amount,
                             className: "txt-fld",
                             name: "sheet_discount_amount",
-
+                            others: {
+                              disabled: this.state.Billexists
+                            },
                             events: {
                               onChange: discounthandle.bind(this, this, context)
                             }
@@ -945,7 +951,9 @@ class AddOPBillingForm extends Component {
                             value: this.state.credit_amount,
                             className: "txt-fld",
                             name: "state_credit_amount",
-
+                            others: {
+                              disabled: this.state.Billexists
+                            },
                             events: {
                               onChange: null
                             }

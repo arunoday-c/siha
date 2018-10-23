@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
+
 import "./visit_type.css";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
@@ -10,8 +10,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel,
-  Button
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import swal from "sweetalert2";
@@ -287,10 +286,7 @@ class VisitType extends Component {
         <div className="visit_type">
           <div className="container-fluid">
             <form>
-              <div
-                className="row"
-              >
-
+              <div className="row">
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
@@ -367,7 +363,8 @@ class VisitType extends Component {
                 />
 
                 <div
-                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
+                  className="col-lg-2 align-middle"
+                  style={{ paddingTop: 21 }}
                 >
                   <button
                     onClick={this.addVisit.bind(this)}

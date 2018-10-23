@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./id_type.css";
-import Button from "@material-ui/core/Button";
+
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -277,16 +277,14 @@ class IDType extends Component {
                 }}
               />
 
- <div
-                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
-                >
-                  <button
+              <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+                <button
                   onClick={this.addIDType.bind(this)}
-                    className="btn btn-primary"
-                  >
-                    Add to List
-                  </button>
-                </div>
+                  className="btn btn-primary"
+                >
+                  Add to List
+                </button>
+              </div>
             </div>
           </form>
 

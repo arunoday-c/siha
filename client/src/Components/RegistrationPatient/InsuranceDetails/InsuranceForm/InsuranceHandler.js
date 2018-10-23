@@ -1,6 +1,7 @@
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Insurance from "../../../../Search/Insurance.json";
+import { swalMessage } from "../../../../utils/algaehApiCall.js";
 
 let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
@@ -120,4 +121,58 @@ const InsuranceDetails = ($this, context, e) => {
   });
 };
 
-export { insurancehandle, texthandle, datehandle, InsuranceDetails };
+const radioChange = ($this, context, e) => {
+  if ($this.state.doctor_id !== null) {
+    let PatType = null;
+    let saveEnable = false;
+    let ProcessInsure = false;
+    let value = e.target.value;
+    let radioNo, radioYes;
+    if ((value = "Y")) {
+      PatType = "I";
+    } else {
+      PatType = "S";
+    }
+    // this.state.saveEnable === false &&
+    if (value === "Y") {
+      saveEnable = true;
+      ProcessInsure = false;
+      radioNo = false;
+      radioYes = true;
+    } else {
+      saveEnable = false;
+      ProcessInsure = true;
+      radioNo = true;
+      radioYes = false;
+    }
+    $this.setState({
+      [e.target.name]: e.target.value,
+      insuranceYes: !$this.state.insuranceYes,
+      saveEnable: saveEnable,
+      radioNo: radioNo,
+      radioYes: radioYes
+    });
+
+    if (context != null) {
+      context.updateState({
+        [e.target.name]: e.target.value,
+        insuranceYes: !$this.state.insuranceYes,
+        payment_type: PatType,
+        saveEnable: saveEnable,
+        ProcessInsure: ProcessInsure
+      });
+    }
+  } else {
+    swalMessage({
+      title: "Invalid Input. Please select the consultant doctor.",
+      type: "warning"
+    });
+  }
+};
+export {
+  insurancehandle,
+  texthandle,
+  datehandle,
+  InsuranceDetails,
+  radioChange
+};

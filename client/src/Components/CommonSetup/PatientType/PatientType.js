@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./patient_type.css";
-import Button from "@material-ui/core/Button";
+
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import {
@@ -87,7 +87,7 @@ class PatientType extends Component {
               });
 
               this.props.getPatienttypes({
-                uri: "/patientType/get",
+                uri: "/patientType/getPatientType",
                 method: "GET",
                 redux: {
                   type: "PAT_TYP_GET_DATA",
@@ -184,7 +184,7 @@ class PatientType extends Component {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    row.onChangeFinish(row);
+    this.resetState();
   }
 
   render() {
@@ -192,9 +192,7 @@ class PatientType extends Component {
       <div className="patient_type">
         <div className="container-fluid">
           <form>
-            <div
-              className="row"
-            >
+            <div className="row">
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -248,16 +246,14 @@ class PatientType extends Component {
                   helperText: this.state.patient_type_arabic_error_txt
                 }}
               />
- <div
-                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
-                >
-                  <button
+              <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+                <button
                   onClick={this.addPatientType.bind(this)}
-                    className="btn btn-primary"
-                  >
-                    Add to list
-                  </button>
-                </div>
+                  className="btn btn-primary"
+                >
+                  Add to list
+                </button>
+              </div>
             </div>
           </form>
 

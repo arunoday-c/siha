@@ -83,7 +83,13 @@ export default {
       secondary_policy_number: null,
       secondary_sub_insurance_provider_id: null,
       secondary_sub_insurance_provider_name: null,
-      secondary_network_office_id: null
+      secondary_network_office_id: null,
+
+      Cashchecked: true,
+      Cardchecked: false,
+      Checkchecked: false,
+      billdetail: true,
+      ProcessInsure: true
     };
     return output;
   }
