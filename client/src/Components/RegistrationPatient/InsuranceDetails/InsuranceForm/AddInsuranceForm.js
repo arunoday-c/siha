@@ -22,20 +22,18 @@ import {
   insurancehandle,
   texthandle,
   datehandle,
-  InsuranceDetails
+  InsuranceDetails,
+  radioChange
 } from "./InsuranceHandler";
-
-const INSURANCE_DECISION = [
-  { label: "Yes", value: "Y" },
-  { label: "No", value: "N" }
-];
 
 class AddInsuranceForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       frontSide: null,
-      backSide: null
+      backSide: null,
+      radioNo: true,
+      radioYes: false
     };
   }
 
@@ -48,37 +46,6 @@ class AddInsuranceForm extends Component {
     this.setState({
       [fileName]: file[0].preview
     });
-  }
-
-  selectedValueInsurance(value, context, e) {
-    let PatType = null;
-    let saveEnable = false;
-    if ((value = "Y")) {
-      PatType = "I";
-    } else {
-      PatType = "S";
-    }
-
-    if (this.state.saveEnable === false && value === "Y") {
-      saveEnable = true;
-    } else {
-      saveEnable = false;
-    }
-    this.setState({
-      insured: value,
-      insuranceYes: !this.state.insuranceYes,
-      saveEnable: saveEnable
-    });
-
-    if (context != null) {
-      context.updateState({
-        insured: value,
-        insuranceYes: !this.state.insuranceYes,
-        patient_type: PatType,
-        payment_type: PatType,
-        saveEnable: saveEnable
-      });
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -98,35 +65,28 @@ class AddInsuranceForm extends Component {
                       <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 ">
                         <label>Insurance</label>
                         <br />
-                        <div className="row moveRadioButtons">
-                          {INSURANCE_DECISION.map((data, idx) => {
-                            return (
-                              <div
-                                className="col-lg-6"
-                                key={"index_value" + idx}
-                              >
-                                <input
-                                  type="radio"
-                                  name="INSURANCE_DECISION"
-                                  className="htpl-phase1-radio-btn"
-                                  value={data.value}
-                                  onChange={this.selectedValueInsurance.bind(
-                                    this,
-                                    data.value,
-                                    context
-                                  )}
-                                  defaultChecked={
-                                    data.value === this.state.insured
-                                      ? true
-                                      : false
-                                  }
-                                />
-                                <label className="radio-design">
-                                  {data.label}
-                                </label>
-                              </div>
-                            );
-                          })}
+
+                        <div className="customRadio">
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              name="insured"
+                              value="Y"
+                              checked={this.state.radioYes}
+                              onChange={radioChange.bind(this, this, context)}
+                            />
+                            <span>Yes</span>
+                          </label>
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              name="insured"
+                              value="N"
+                              checked={this.state.radioNo}
+                              onChange={radioChange.bind(this, this, context)}
+                            />
+                            <span>No</span>
+                          </label>
                         </div>
                       </div>
                       <div className="col-lg-1">

@@ -24,20 +24,18 @@ import {
   insurancehandle,
   texthandle,
   datehandle,
-  InsuranceDetails
+  InsuranceDetails,
+  radioChange
 } from "./SecInsuranceHandler";
-
-const INSURANCE_DECISION = [
-  { label: "Yes", value: "Y" },
-  { label: "No", value: "N" }
-];
 
 class AddSecInsuranceForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       frontSide: null,
-      backSide: null
+      backSide: null,
+      radioNo: true,
+      radioYes: false
     };
   }
 
@@ -92,7 +90,29 @@ class AddSecInsuranceForm extends Component {
                       <div className="col-lg-2">
                         <label>Insurance</label>
                         <br />
-                        <div className="row moveRadioButtons">
+                        <div className="customRadio">
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              name="sec_insured"
+                              value="Y"
+                              checked={this.state.radioYes}
+                              onChange={radioChange.bind(this, this, context)}
+                            />
+                            <span>Yes</span>
+                          </label>
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              name="sec_insured"
+                              value="N"
+                              checked={this.state.radioNo}
+                              onChange={radioChange.bind(this, this, context)}
+                            />
+                            <span>No</span>
+                          </label>
+                        </div>
+                        {/* <div className="row moveRadioButtons">
                           {INSURANCE_DECISION.map((data, idx) => {
                             return (
                               <div
@@ -121,7 +141,7 @@ class AddSecInsuranceForm extends Component {
                               </div>
                             );
                           })}
-                        </div>
+                        </div> */}
                       </div>
                       <div className="col-lg-1">
                         <Tooltip id="tooltip-icon" title="Add New">

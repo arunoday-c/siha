@@ -7,7 +7,6 @@ import "./BillDetails.css";
 import "./../../styles/site.css";
 import {
   AlgaehLabel,
-  AlagehFormGroup,
   AlagehAutoComplete,
   Modal
 } from "../Wrapper/algaehWrapper";
@@ -51,13 +50,25 @@ class DisplayOPBilling extends PureComponent {
       sec_company_paybale: 0,
       sec_copay_percntage: 0,
       sec_copay_amount: 0,
-      billservicevalue: null
+      billservicevalue: null,
+      frontDesk: null
     };
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     let InputOutput = nextProps.BillingIOputs;
-    this.setState({ ...this.state, ...InputOutput });
+    if (InputOutput.frontDesk === true) {
+      // InputOutput.billdetails[0].frontDesk = InputOutput.frontDesk;
+      this.setState({
+        ...this.state,
+        ...InputOutput.billdetails[0],
+        selectedLang: InputOutput.selectedLang,
+        frontDesk: InputOutput.frontDesk
+      });
+    } else {
+      this.setState({ ...this.state, ...InputOutput });
+    }
   }
 
   componentDidMount() {
@@ -192,34 +203,36 @@ class DisplayOPBilling extends PureComponent {
               <div className="col-lg-12 popupInner">
                 {/* Services Details */}
                 <div className="row form-details" style={{ paddingBottom: 0 }}>
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "present-bill-services"
-                    }}
-                    selector={{
-                      name: "service_type_id",
-                      className: "select-fld",
-                      value: this.state.service_type_id,
-                      dataSource: {
-                        // textField:
-                        //   this.state.selectedLang === "en"
-                        //     ? "service_type"
-                        //     : "arabic_service_type",
-                        // valueField: "hims_d_service_type_id",
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_name"
-                            : "arabic_service_name",
-                        valueField: "hims_d_services_id",
-                        data: this.displayServiceBills()
-                      },
-                      onChange: selector => {
-                        let row = selector.selected;
-                        this.setState({ ...this.state, ...row });
-                      }
-                    }}
-                  />
+                  {this.state.frontDesk === null ? (
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "present-bill-services"
+                      }}
+                      selector={{
+                        name: "service_type_id",
+                        className: "select-fld",
+                        value: this.state.service_type_id,
+                        dataSource: {
+                          // textField:
+                          //   this.state.selectedLang === "en"
+                          //     ? "service_type"
+                          //     : "arabic_service_type",
+                          // valueField: "hims_d_service_type_id",
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "service_name"
+                              : "arabic_service_name",
+                          valueField: "hims_d_services_id",
+                          data: this.displayServiceBills()
+                        },
+                        onChange: selector => {
+                          let row = selector.selected;
+                          this.setState({ ...this.state, ...row });
+                        }
+                      }}
+                    />
+                  ) : null}
 
                   <AlagehAutoComplete
                     div={{ className: "col" }}
@@ -269,13 +282,13 @@ class DisplayOPBilling extends PureComponent {
                       }
                     }}
                   />
-                  <AlagehFormGroup
+                  {/* <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
                       fieldName: "tax_inclusive"
                     }}
                     textBox={{
-                      value: this.state.tax_inclusive,
+                      value: this.state.tax_inclusive === "N" ? "No" : "Yes",
                       className: "txt-fld",
                       name: "tax_inclusive",
 
@@ -286,7 +299,7 @@ class DisplayOPBilling extends PureComponent {
                         disabled: true
                       }
                     }}
-                  />
+                  /> */}
                 </div>
                 <hr />
                 {/* Amount Details */}
