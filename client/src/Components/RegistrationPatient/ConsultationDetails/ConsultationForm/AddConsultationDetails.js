@@ -101,7 +101,8 @@ const doctorselectedHandeler = ($this, context, e) => {
                   incharge_or_provider: e.value,
                   provider_id: e.value,
                   doctor_name: doctor_name,
-                  saveEnable: false
+                  saveEnable: false,
+                  billdetail: false
                 },
                 () => {
                   generateBillDetails($this, context);
@@ -114,7 +115,8 @@ const doctorselectedHandeler = ($this, context, e) => {
                   incharge_or_provider: e.value,
                   provider_id: e.value,
                   doctor_name: doctor_name,
-                  saveEnable: false
+                  saveEnable: false,
+                  billdetail: false
                 });
               }
             } else {

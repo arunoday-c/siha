@@ -27,7 +27,6 @@ import AddAdvanceModal from "../Advance/AdvanceModal";
 import { imageToByteArray } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import AlgaehReport from "../Wrapper/printReports";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
@@ -108,36 +107,49 @@ class RegistrationPatient extends Component {
   }
 
   GenerateReciept(callback) {
-    if (this.state.total_amount > 0) {
-      let obj = [];
+    let obj = [];
 
-      if (this.state.cash_amount > 0) {
+    if (
+      this.state.Cashchecked === false &&
+      this.state.Cardchecked === false &&
+      this.state.Checkchecked === false
+    ) {
+      swalMessage({
+        title: "Invalid Input. Please select receipt type.",
+        type: "error"
+      });
+    } else {
+      if (this.state.cash_amount > 0 || this.state.Cashchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: null,
           expiry_date: null,
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
+          updated_date: null,
           card_type: null
         });
       }
-      if (this.state.card_amount > 0) {
+
+      if (this.state.card_amount > 0 || this.state.Cardchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
-          card_check_number: this.state.card_number,
+          card_check_number: this.state.card_check_number,
           expiry_date: this.state.card_date,
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
+          updated_date: null,
           card_type: null
         });
       }
-      if (this.state.cheque_amount > 0) {
+      if (this.state.cheque_amount > 0 || this.state.Checkchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: this.state.cheque_number,
           expiry_date: this.state.cheque_date,
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
+          updated_date: null,
           card_type: null
         });
       }
@@ -152,79 +164,87 @@ class RegistrationPatient extends Component {
       );
     }
   }
+
   SavePatientDetails(e) {
     const err = Validations(this);
 
     if (!err) {
-      this.GenerateReciept($this => {
-        AlgaehLoader({ show: true });
-        if ($this.state.hims_d_patient_id === null) {
-          let patientdata = {};
+      if (this.state.unbalanced_amount === 0) {
+        this.GenerateReciept($this => {
+          AlgaehLoader({ show: true });
+          if ($this.state.hims_d_patient_id === null) {
+            let patientdata = {};
 
-          if ($this.state.filePreview !== null) {
-            patientdata = {
-              ...$this.state,
-              patient_Image: imageToByteArray(this.state.filePreview)
-            };
+            if ($this.state.filePreview !== null) {
+              patientdata = {
+                ...$this.state,
+                patient_Image: imageToByteArray(this.state.filePreview)
+              };
+            } else {
+              patientdata = $this.state;
+            }
+            algaehApiCall({
+              uri: "/frontDesk/add",
+              data: patientdata,
+              method: "POST",
+              onSuccess: response => {
+                AlgaehLoader({ show: false });
+                if (response.data.success) {
+                  $this.setState({
+                    patient_code: response.data.records.patient_code,
+                    bill_number: response.data.records.bill_number,
+                    receipt_number: response.data.records.receipt_number,
+                    saveEnable: true
+                  });
+                  swalMessage({
+                    title: "Done Successfully",
+                    type: "success"
+                  });
+                }
+              },
+              onFailure: error => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
           } else {
-            patientdata = $this.state;
+            algaehApiCall({
+              uri: "/frontDesk/update",
+              data: $this.state,
+              method: "POST",
+              onSuccess: response => {
+                AlgaehLoader({ show: false });
+                if (response.data.success) {
+                  $this.setState({
+                    bill_number: response.data.records.bill_number,
+                    receipt_number: response.data.records.receipt_number,
+                    saveEnable: true
+                  });
+                  swalMessage({
+                    title: "Done Successfully",
+                    type: "success"
+                  });
+                }
+              },
+              onFailure: error => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
           }
-          algaehApiCall({
-            uri: "/frontDesk/add",
-            data: patientdata,
-            method: "POST",
-            onSuccess: response => {
-              AlgaehLoader({ show: false });
-              if (response.data.success) {
-                $this.setState({
-                  patient_code: response.data.records.patient_code,
-                  bill_number: response.data.records.bill_number,
-                  receipt_number: response.data.records.receipt_number,
-                  saveEnable: true
-                });
-                swalMessage({
-                  title: "Done Successfully",
-                  type: "success"
-                });
-              }
-            },
-            onFailure: error => {
-              AlgaehLoader({ show: false });
-              swalMessage({
-                title: error.message,
-                type: "error"
-              });
-            }
-          });
-        } else {
-          algaehApiCall({
-            uri: "/frontDesk/update",
-            data: $this.state,
-            method: "POST",
-            onSuccess: response => {
-              AlgaehLoader({ show: false });
-              if (response.data.success) {
-                $this.setState({
-                  bill_number: response.data.records.bill_number,
-                  receipt_number: response.data.records.receipt_number,
-                  saveEnable: true
-                });
-                swalMessage({
-                  title: "Done Successfully",
-                  type: "success"
-                });
-              }
-            },
-            onFailure: error => {
-              AlgaehLoader({ show: false });
-              swalMessage({
-                title: error.message,
-                type: "error"
-              });
-            }
-          });
-        }
-      });
+        });
+      } else {
+        swalMessage({
+          title: "Invalid Input. Please recive the amount.",
+          type: "error"
+        });
+      }
     }
   }
 
@@ -274,7 +294,12 @@ class RegistrationPatient extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
+    debugger;
+    if (
+      nextProps.genbill !== undefined &&
+      nextProps.genbill.length !== 0 &&
+      this.state.doctor_id !== null
+    ) {
       this.setState({ ...this.state, ...nextProps.genbill });
     }
     AlgaehLoader({ show: false });
@@ -300,13 +325,12 @@ class RegistrationPatient extends Component {
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.existingPatient = true;
-          debugger;
+
           data.patientRegistration.provider_id = this.props.provider_id || null;
           data.patientRegistration.doctor_id = this.props.provider_id || null;
           data.patientRegistration.sub_department_id =
             this.props.sub_department_id || null;
 
-          // this.props.provider_id
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
           $this.setState(data.patientRegistration, () => {
@@ -328,10 +352,12 @@ class RegistrationPatient extends Component {
             data.patientRegistration.patient_id =
               data.patientRegistration.hims_d_patient_id;
             data.patientRegistration.existingPatient = true;
+
             data.patientRegistration.provider_id =
               this.props.provider_id || null;
-
             data.patientRegistration.doctor_id = this.props.provider_id || null;
+            data.patientRegistration.sub_department_id =
+              this.props.sub_department_id || null;
 
             data.patientRegistration.filePreview =
               "data:image/png;base64, " + data.patient_Image;
@@ -413,24 +439,20 @@ class RegistrationPatient extends Component {
             searchName: "patients"
           }}
           userArea={
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{
-                forceLabel: (
-                  <AlgaehLabel label={{ fieldName: "registration_date" }} />
-                ),
-                className: "internal-label"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "bread_registration_date"
-              }}
-              disabled={true}
-              events={{
-                onChange: null
-              }}
-              value={this.state.registration_date}
-            />
+            <div className="row">
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "registered_date"
+                  }}
+                />
+                <h6>
+                  {this.state.registration_date
+                    ? moment(this.state.registration_date).format("DD-MM-YYYY")
+                    : "DD/MM/YYYY"}
+                </h6>
+              </div>
+            </div>
           }
           printArea={{
             menuitems: [

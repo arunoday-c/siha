@@ -136,7 +136,7 @@ let insertRadOrderedServices = (req, res, next) => {
       );
     });
   } else {
-    releaseDBConnection(db, connection);
+  
     next();
   }
 };

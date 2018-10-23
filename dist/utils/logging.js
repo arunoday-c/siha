@@ -49,7 +49,26 @@ var debugLog = function debugLog(message, obj) {
     if ((typeof obj === "undefined" ? "undefined" : _typeof(obj)) != "object") logger.log("debug", message + "%s", obj);else logger.log("debug", message + "%j", obj);
   }
 };
+var wLogger = new _winston2.default.Logger({
+  transports: [new rotatingDate({
+    filename: logDirectory + "/hims-app-req-track-%DATE%.log",
+    // timestamp: tsFormat,
+    datePattern: _keys2.default.logFileDatePatter,
+    prepend: true,
+    maxSize: _keys2.default.logFileSize,
+    level: _keys2.default.logLevel,
+    showLevel: false,
+    timestamp: false,
+    eol: ",\r\n"
+  })]
+});
+var requestTracking = function requestTracking(message, Obj) {
+  Obj = Obj || null;
+  console.log("Error Here Logger");
+  wLogger.info(message + "%j", Obj);
+  console.log("after Error Here Logger");
+};
 
 //winston.add(winston.transports.Http, rotatingDate);
-module.exports = { logger: logger, debugLog: debugLog, debugFunction: debugFunction };
+module.exports = { logger: logger, debugLog: debugLog, debugFunction: debugFunction, requestTracking: requestTracking };
 //# sourceMappingURL=logging.js.map

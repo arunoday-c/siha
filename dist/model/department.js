@@ -207,7 +207,7 @@ var deleteDepartment = function deleteDepartment(req, res, next) {
       next();
     }, function (error) {
       next(error);
-    });
+    }, true);
   } catch (e) {
     next(e);
   }
@@ -336,6 +336,7 @@ var addSubDepartment = function addSubDepartment(req, res, next) {
             next();
           });
         } else {
+          (0, _utils.releaseDBConnection)(db, connection);
           next(_httpStatus2.default.generateError(_httpStatus2.default.notFound, "No such deparment exists"));
         }
       });

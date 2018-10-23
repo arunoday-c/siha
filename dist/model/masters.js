@@ -10,12 +10,19 @@ var _httpStatus = require("../utils/httpStatus");
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
+var _nodeLinq = require("node-linq");
+
+var _util = require("util");
+
+var _logging = require("../utils/logging");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var titleWhere = {
   his_d_title_id: "ALL",
   title: "ALL"
 };
+
 var titleMaster = function titleMaster(req, res, next) {
   try {
     if (req.db == null) {
@@ -324,6 +331,54 @@ var countryStateCity = function countryStateCity(req, res, next) {
   }
 };
 
+//created by irfan: to  kill all the database-connections
+var killDbConnections = function killDbConnections(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    db.getConnection(function (error, connection) {
+      (0, _logging.debugLog)("killDbConnections:");
+      connection.query("show full processlist", function (error, result) {
+        if (error) {
+          (0, _utils.releaseDBConnection)(db, connection);
+          next(error);
+        }
+        (0, _logging.debugLog)("result:", result);
+        var idList = new _nodeLinq.LINQ(result).Where(function (w) {
+          return w.User == "algaeh_root";
+        }).Select(function (s) {
+          return s.Id;
+        }).ToArray();
+
+        (0, _logging.debugLog)("idList:", idList);
+        var qry = "";
+        for (var i = 0; i < idList.length; i++) {
+          qry += "kill " + idList[i] + ";";
+        }
+        if (idList.length > 0) {
+          connection.query(qry, function (error, finalResult) {
+            (0, _utils.releaseDBConnection)(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            req.records = "all process deleted";
+            next();
+          });
+        } else {
+          (0, _utils.releaseDBConnection)(db, connection);
+          req.records = result;
+          next();
+        }
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   titleMaster: titleMaster,
   countryMaster: countryMaster,
@@ -334,6 +389,7 @@ module.exports = {
   autoGenMaster: autoGenMaster,
   visaMaster: visaMaster,
   clinicalNonClinicalAll: clinicalNonClinicalAll,
-  countryStateCity: countryStateCity
+  countryStateCity: countryStateCity,
+  killDbConnections: killDbConnections
 };
 //# sourceMappingURL=masters.js.map

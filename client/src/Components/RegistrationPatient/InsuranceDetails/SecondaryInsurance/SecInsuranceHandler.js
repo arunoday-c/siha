@@ -1,6 +1,7 @@
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Insurance from "../../../../Search/Insurance.json";
+import { swalMessage } from "../../../../utils/algaehApiCall.js";
 
 const texthandle = ($this, context, e) => {
   let name;
@@ -116,4 +117,54 @@ const InsuranceDetails = ($this, context, e) => {
   });
 };
 
-export { insurancehandle, texthandle, datehandle, InsuranceDetails };
+const radioChange = ($this, context, e) => {
+  if ($this.state.insured == "Y") {
+    let saveEnable = false;
+    let ProcessInsure = false;
+    let value = e.target.value;
+    let radioNo, radioYes;
+
+    // this.state.saveEnable === false &&
+    if (value === "Y") {
+      saveEnable = true;
+      ProcessInsure = false;
+      radioNo = false;
+      radioYes = true;
+    } else {
+      saveEnable = false;
+      ProcessInsure = true;
+      radioNo = true;
+      radioYes = false;
+    }
+    $this.setState({
+      [e.target.name]: e.target.value,
+      sec_insuranceYes: !$this.state.sec_insuranceYes,
+      saveEnable: saveEnable,
+      radioNo: radioNo,
+      radioYes: radioYes
+    });
+
+    if (context != null) {
+      context.updateState({
+        [e.target.name]: e.target.value,
+        sec_insuranceYes: !$this.state.sec_insuranceYes,
+        saveEnable: saveEnable,
+        ProcessInsure: ProcessInsure
+      });
+    }
+  } else {
+    swalMessage({
+      title:
+        "Invalid Input. With out primary insurance cannot select secondary insurance",
+      type: "warning"
+    });
+  }
+};
+
+export {
+  insurancehandle,
+  texthandle,
+  datehandle,
+  InsuranceDetails,
+  radioChange
+};

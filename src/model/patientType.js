@@ -178,6 +178,10 @@ let deletePatientType = (req, res, next) => {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
+    debugLog(
+      "req.body.hims_d_patient_type_id",
+      req.body.hims_d_patient_type_id
+    );
     deleteRecord(
       {
         db: req.db,

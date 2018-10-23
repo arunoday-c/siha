@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import "./breadcrumb.css";
-import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import { SearchDetails } from "./BreadCurmbFunctionality";
 import Tooltip from "@material-ui/core/Tooltip";
 class BreadCrumb extends PureComponent {
@@ -41,58 +41,30 @@ class BreadCrumb extends PureComponent {
   showSpotlightSearch() {
     if (this.props.soptlightSearch !== undefined) {
       return (
-        <div className="col-lg-5">
-          <ul className="actions-area">
-            <li>
-              <span>
-                <Tooltip title="First">
-                  <i className="fas fa-step-backward" />
-                </Tooltip>
-                <Tooltip title="Previous">
-                  <i className="fas fa-chevron-left" />
-                </Tooltip>
-              </span>
-            </li>
-            <li className="action-input-area">
-              <AlagehFormGroup
-                label={{
-                  forceLabel: this.props.soptlightSearch.label,
-                  className: "internal-label"
-                }}
-                div={{ className: "col-lg-9" }}
-                textBox={{
-                  value: this.state.value,
-                  className: "txt-fld",
-                  events: {
-                    onChange: this.Handle.bind(this)
-                  },
-                  others: {
-                    placeholder: "*** NEW ***",
-                    disabled: true
-                  }
-                }}
+        <div className="col  margin-top-15">
+          <div
+            className="row"
+            style={{
+              border: " 1px solid #ced4d9",
+              borderRadius: 5,
+              marginLeft: 0
+            }}
+          >
+            <div className="col-lg-9">
+              {" "}
+              <AlgaehLabel
+                label={{ forceLabel: this.props.soptlightSearch.label }}
               />
-            </li>
-            <li>
-              <span>
-                <Tooltip title="Next">
-                  <i className="fas fa-chevron-right" />
-                </Tooltip>
-                <Tooltip title="Last">
-                  <i className="fas fa-step-forward" />
-                </Tooltip>
-              </span>
-            </li>
-            <li>
-              <Tooltip title="Search">
-                <img
-                  className="finderImg"
-                  src={require("../BreadCrumb/images/search.png")}
-                  onClick={SearchDetails.bind(this, this)}
-                />
-              </Tooltip>
-            </li>
-          </ul>
+              <h6>{this.state.value ? this.state.value : "New Patient"}</h6>
+            </div>
+            <div className="col" style={{ borderLeft: "1px solid #ced4d8" }}>
+              <i
+                className="fas fa-search fa-lg"
+                style={{ paddingTop: 17, paddingLeft: 3, cursor: "pointer" }}
+                onClick={SearchDetails.bind(this, this)}
+              />
+            </div>
+          </div>
         </div>
       );
     }
@@ -173,7 +145,7 @@ class BreadCrumb extends PureComponent {
             </div>
 
             {this.showSpotlightSearch()}
-            <div className="col-lg-2 third-position">{this.showUserArea()}</div>
+            <div className="col margin-top-15">{this.showUserArea()}</div>
             {this.showPrintArea()}
           </div>
         </div>

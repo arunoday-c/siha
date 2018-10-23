@@ -10,6 +10,10 @@ var _httpStatus = require("../utils/httpStatus");
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
+var _moment = require("moment");
+
+var _moment2 = _interopRequireDefault(_moment);
+
 var _logging = require("../utils/logging");
 
 var _bluebird = require("bluebird");
@@ -43,7 +47,7 @@ var addEmployee = function addEmployee(req, res, next) {
           full_name,arabic_name,employee_designation_id,license_number,sex,date_of_birth,date_of_joining,date_of_leaving,address,\
           address2,pincode,city_id,state_id,country_id,primary_contact_no,secondary_contact_no,email,emergancy_contact_person,emergancy_contact_no,\
           blood_group,isdoctor,employee_status,effective_start_date,effective_end_date,created_date,created_by,updated_date,updated_by) values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [input.employee_code, input.title_id, input.first_name, input.middle_name, input.last_name, input.full_name, input.arabic_name, input.employee_designation_id, input.license_number, input.sex, input.date_of_birth, input.date_of_joining, input.date_of_leaving, input.address, input.address2, input.pincode, input.city_id, input.state_id, input.country_id, input.primary_contact_no, input.secondary_contact_no, input.email, input.emergancy_contact_person, input.emergancy_contact_no, input.blood_group, input.isdoctor, input.employee_status, input.effective_start_date, input.effective_end_date, new Date(), input.created_by, new Date(), input.updated_by], function (error, result) {
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [input.employee_code, input.title_id, input.first_name, input.middle_name, input.last_name, input.full_name, input.arabic_name, input.employee_designation_id, input.license_number, input.sex, input.date_of_birth != null ? new Date(input.date_of_birth) : input.date_of_birth, input.date_of_joining, input.date_of_leaving, input.address, input.address2, input.pincode, input.city_id, input.state_id, input.country_id, input.primary_contact_no, input.secondary_contact_no, input.email, input.emergancy_contact_person, input.emergancy_contact_no, input.blood_group, input.isdoctor, input.employee_status, input.effective_start_date != null ? new Date(input.effective_start_date) : input.effective_start_date, input.effective_end_date != null ? new Date(input.effective_end_date) : input.effective_end_date, new Date(), input.created_by, new Date(), input.updated_by], function (error, result) {
           if (error) {
             connection.rollback(function () {
               (0, _utils.releaseDBConnection)(db, connection);
@@ -115,6 +119,7 @@ var addEmployee = function addEmployee(req, res, next) {
                           next(error);
                         });
                       }
+                      (0, _utils.releaseDBConnection)(db, connection);
                       req.records = serviceTypeCommResult;
                       next();
                     });
@@ -127,6 +132,7 @@ var addEmployee = function addEmployee(req, res, next) {
                         next(error);
                       });
                     }
+                    (0, _utils.releaseDBConnection)(db, connection);
                     req.records = results;
                     next();
                   });
@@ -135,6 +141,7 @@ var addEmployee = function addEmployee(req, res, next) {
             });
           } else {
             req.records = result;
+            (0, _utils.releaseDBConnection)(db, connection);
             next();
           }
 
@@ -189,6 +196,10 @@ var getEmployee = function getEmployee(req, res, next) {
       query: "SELECT * FROM hims_d_employee WHERE record_status ='A' AND " + condition.condition + " " + pagePaging,
       values: condition.values
     }, function (result) {
+      for (var i = 0; i < result.length; i++) {
+        result[i].employee_id = result[i].hims_d_employee_id;
+      }
+
       req.records = result;
       next();
     }, function (error) {
@@ -370,12 +381,14 @@ var updateEmployee = function updateEmployee(req, res, next) {
                     next(error);
                   });
                 }
+                (0, _utils.releaseDBConnection)(db, connection);
                 req.records = result;
                 next();
               });
             });
           } else {
             req.records = result;
+            (0, _utils.releaseDBConnection)(db, connection);
             next();
           }
         });
@@ -418,8 +431,8 @@ var getEmployeeDetails = function getEmployeeDetails(req, res, next) {
         CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date\
         from hims_d_employee E,hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
          Where E.record_status='A' and ED.record_status='A' and CS.record_status='A' and E.hims_d_employee_id=ED.employee_id and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id AND " + where.condition, where.values, function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
         if (error) {
-          (0, _utils.releaseDBConnection)(db, connection);
           next(error);
         }
         req.records = result;
@@ -443,8 +456,8 @@ var getEmployeeCategory = function getEmployeeCategory(req, res, next) {
       connection.query("select hims_m_category_speciality_mappings_id, category_id, speciality_id ,C.hims_employee_category_id,C.employee_category_code,C.employee_category_name,\
         C.employee_category_desc from hims_m_category_speciality_mappings CS,hims_d_employee_category C\
          where CS.record_status='A' and C.record_status='A' and  CS.category_id=C.hims_employee_category_id and speciality_id=?", [req.query.speciality_id], function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
         if (error) {
-          (0, _utils.releaseDBConnection)(db, connection);
           next(error);
         }
         req.records = result;
@@ -470,8 +483,8 @@ var getDoctorServiceCommission = function getDoctorServiceCommission(req, res, n
       connection.query("select hims_m_doctor_service_commission_id,provider_id,services_id,service_type_id,op_cash_commission_percent,\
         op_credit_commission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
          from hims_m_doctor_service_commission where record_status='A'and provider_id=?", [input.provider_id], function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
         if (error) {
-          (0, _utils.releaseDBConnection)(db, connection);
           next(error);
         }
         req.records = result;
@@ -497,8 +510,8 @@ var getDoctorServiceTypeCommission = function getDoctorServiceTypeCommission(req
       connection.query("select hims_m_doctor_service_type_commission_id,provider_id,service_type_id,\
         op_cash_comission_percent,op_credit_comission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
          from hims_m_doctor_service_type_commission where record_status='A' and provider_id=?", [input.provider_id], function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
         if (error) {
-          (0, _utils.releaseDBConnection)(db, connection);
           next(error);
         }
         req.records = result;

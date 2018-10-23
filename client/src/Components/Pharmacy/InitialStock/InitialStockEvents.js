@@ -108,6 +108,7 @@ const AddItems = $this => {
       MandatoryMsg: "Invalid Input. Recipt Number(GRN) cannot be blank."
     });
   } else {
+    debugger;
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     let itemObj = {
       location_id: $this.state.location_id,
@@ -130,24 +131,29 @@ const AddItems = $this => {
     };
 
     pharmacy_stock_detail.push(itemObj);
-    $this.setState({
-      pharmacy_stock_detail: pharmacy_stock_detail,
+    $this.setState(
+      {
+        pharmacy_stock_detail: pharmacy_stock_detail,
 
-      location_id: null,
-      item_category_id: null,
-      item_group_id: null,
-      item_id: null,
-      batchno: null,
-      expiry_date: null,
-      quantity: 0,
-      unit_cost: 0,
-      uom_id: null,
-      conversion_fact: null,
-      extended_cost: 0,
-      saveEnable: false,
-      grn_number: null,
-      sales_uom: null
-    });
+        location_id: null,
+        item_category_id: null,
+        item_group_id: null,
+        item_id: null,
+        batchno: null,
+        expiry_date: null,
+        quantity: 0,
+        unit_cost: 0,
+        uom_id: null,
+        conversion_fact: null,
+        extended_cost: 0,
+        saveEnable: false,
+        grn_number: null,
+        sales_uom: null
+      },
+      () => {
+        debugger;
+      }
+    );
   }
 };
 
@@ -157,10 +163,11 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const dateFormater = ({ value }) => {
+const dateFormater = value => {
   if (value !== null) {
-    return moment(value).format(Options.dateFormat);
+    return String(moment(value).format(Options.dateFormat));
   }
+  // "DD-MM-YYYY"
 };
 
 const getCtrlCode = ($this, docNumber) => {

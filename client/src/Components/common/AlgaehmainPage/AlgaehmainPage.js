@@ -324,7 +324,13 @@ class PersistentDrawer extends React.Component {
 
                   <h5>{this.state.title}</h5>
                 </div>
-                <span style={{ float: "right", fontSize: "0.9rem" }}>
+                <span
+                  style={{
+                    float: "right",
+                    fontSize: "0.9rem",
+                    marginRight: 10
+                  }}
+                >
                   {this.state.languageName}
                 </span>
                 <button
@@ -378,7 +384,7 @@ class PersistentDrawer extends React.Component {
                   <div className="menuBar-title">
                     {/* <span style={titleStyles.title}>ALGAEH</span>
                     <span style={titleStyles.organisation}>ERP</span> */}
-                    <div className="appLogoOnly"></div>
+                    <div className="appLogoOnly" />
                     <i
                       onClick={this.handleDrawerClose}
                       className="fas fa-times-circle sideBarClose"

@@ -86,7 +86,7 @@ var insertPatientVisitData = function insertPatientVisitData(req, res, next) {
 `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
 `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
 `created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`,`appointment_id`)\
-VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);", [inputParam.patient_id, inputParam.visit_type, inputParam.age_in_years, inputParam.age_in_months, inputParam.age_in_days, inputParam.insured, inputParam.sec_insured, inputParam.visit_date, inputParam.department_id, inputParam.sub_department_id, inputParam.doctor_id, inputParam.maternity_patient, inputParam.is_mlc, inputParam.mlc_accident_reg_no, inputParam.mlc_police_station, inputParam.mlc_wound_certified_date, inputParam.created_by, new Date(), inputParam.visit_code, inputParam.visit_expiery_date, inputParam.episode_id, inputParam.appointment_id], function (error, visitresult) {
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);", [inputParam.patient_id, inputParam.visit_type, inputParam.age_in_years, inputParam.age_in_months, inputParam.age_in_days, inputParam.insured, inputParam.sec_insured, new Date(), inputParam.department_id, inputParam.sub_department_id, inputParam.doctor_id, inputParam.maternity_patient, inputParam.is_mlc, inputParam.mlc_accident_reg_no, inputParam.mlc_police_station, inputParam.mlc_wound_certified_date != null ? new Date(inputParam.mlc_wound_certified_date) : inputParam.mlc_wound_certified_date, inputParam.created_by, new Date(), inputParam.visit_code, inputParam.visit_expiery_date != null ? new Date(inputParam.visit_expiery_date) : inputParam.visit_expiery_date, inputParam.episode_id, inputParam.appointment_id], function (error, visitresult) {
         if (error) {
           if (req.options == null) {
             db.rollback(function () {
@@ -245,16 +245,19 @@ var addVisit = function addVisit(req, res, next) {
           insertVisitData(connection, req, res, function (error, result) {
             if (error) {
               connection.rollback(function () {
+                (0, _utils.releaseDBConnection)(req.db, connection);
                 next(error);
               });
             }
             connection.commit(function (error) {
               if (error) {
                 connection.rollback(function () {
+                  (0, _utils.releaseDBConnection)(req.db, connection);
                   next(error);
                 });
               }
               req.records = result;
+              (0, _utils.releaseDBConnection)(req.db, connection);
               next();
             });
           });
@@ -275,15 +278,18 @@ var addVisit = function addVisit(req, res, next) {
               insertVisitData(connection, req, res, function (error, result) {
                 if (error) {
                   connection.rollback(function () {
+                    (0, _utils.releaseDBConnection)(req.db, connection);
                     next(error);
                   });
                 }
                 connection.commit(function (error) {
                   if (error) {
                     connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(req.db, connection);
                       next(error);
                     });
                   }
+                  (0, _utils.releaseDBConnection)(req.db, connection);
                   req.records = result;
                   next();
                 });

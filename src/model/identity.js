@@ -92,6 +92,7 @@ let updateIdentity = (req, res, next) => {
     hims_d_identity_document_id: null,
     identity_document_code: null,
     identity_document_name: null,
+    arabic_identity_document_name: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
     updated_by: req.userIdentity.algaeh_d_app_user_id
   };
@@ -102,6 +103,7 @@ let updateIdentity = (req, res, next) => {
     }
     let db = req.db;
     let updateIdentityDoc = extend(identityDoc, req.body);
+    debugLog("updateIdentityDoc", updateIdentityDoc);
     db.getConnection((error, connection) => {
       if (error) {
         releaseDBConnection(db, connection);
@@ -109,11 +111,12 @@ let updateIdentity = (req, res, next) => {
       }
       connection.query(
         "UPDATE `hims_d_identity_document`\
-    SET  `identity_document_name`=?, `updated_by`=?, `updated_date`=? \
+    SET  `identity_document_name`=?, `arabic_identity_document_name` = ?,`updated_by`=?, `updated_date`=? \
     ,`identity_status` = ? \
     WHERE `record_status`='A' AND `hims_d_identity_document_id`=?;",
         [
           updateIdentityDoc.identity_document_name,
+          updateIdentityDoc.arabic_identity_document_name,
           updateIdentityDoc.updated_by,
           new Date(),
           updateIdentityDoc.identity_status,

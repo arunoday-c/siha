@@ -33,9 +33,6 @@ class AddReciptForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Cashchecked: true,
-      Cardchecked: false,
-      Checkchecked: false,
       errorInCash: false,
       errorInCard: false,
       errorInCheck: false
@@ -101,6 +98,9 @@ class AddReciptForm extends Component {
                         valueField: "value",
                         data: variableJson.FORMAT_COUNTER
                       },
+                      others: {
+                        disabled: this.state.Billexists
+                      },
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
@@ -123,6 +123,9 @@ class AddReciptForm extends Component {
                         valueField: "value",
                         data: variableJson.FORMAT_SHIFT
                       },
+                      others: {
+                        disabled: this.state.Billexists
+                      },
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
@@ -142,6 +145,7 @@ class AddReciptForm extends Component {
                         name="Pay by Cash"
                         checked={this.state.Cashchecked}
                         onChange={checkcashhandaler.bind(this, this, context)}
+                        disabled={this.state.Billexists}
                       />
 
                       <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
@@ -164,7 +168,10 @@ class AddReciptForm extends Component {
                         onChange: cashtexthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: !this.state.Cashchecked,
+                        disabled:
+                          this.state.Billexists === true
+                            ? true
+                            : !this.state.Cashchecked,
                         placeholder: "0.00"
                       }
                     }}
@@ -182,6 +189,7 @@ class AddReciptForm extends Component {
                         name="Pay by Card"
                         checked={this.state.Cardchecked}
                         onChange={checkcardhandaler.bind(this, this, context)}
+                        disabled={this.state.Billexists}
                       />
                       <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
                     </label>
@@ -257,6 +265,7 @@ class AddReciptForm extends Component {
                         name="Pay by Cheque"
                         checked={this.state.Checkchecked}
                         onChange={checkcheckhandaler.bind(this, this, context)}
+                        disabled={this.state.Billexists}
                       />
                       <span style={{ fontSize: "0.8rem" }}>Pay by Cheque</span>
                     </label>
