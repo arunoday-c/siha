@@ -43,6 +43,7 @@ import mrd from "../controller/mrd";
 import requisitionEntry from "../Pharmacy/controller/requisitionEntry";
 import salesReturn from "../Pharmacy/controller/salesReturn";
 import transferEntry from "../Pharmacy/controller/transferEntry";
+import shiftAndCounter from "../controller/shiftAndCounter";
 
 let router = express();
 
@@ -94,7 +95,8 @@ initializedDb(db => {
   router.use("/mrd", mrd({ config, db }));
   router.use("/requisitionEntry", requisitionEntry({ config, db }));
   router.use("/salesReturn", salesReturn({ config, db }));
-  router.use("/transferEntry", transferEntry({ config, db }));
+  router.use("/transferEntry", transferEntry({ config, db }));  
+  router.use("/shiftAndCounter", shiftAndCounter({ config, db }));
 });
 
 export default router;
