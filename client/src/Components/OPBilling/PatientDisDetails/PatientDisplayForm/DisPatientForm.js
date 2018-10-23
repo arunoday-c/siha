@@ -90,7 +90,7 @@ class DisPatientForm extends Component {
                       <h6>
                         {this.state.full_name
                           ? this.state.full_name
-                          : "Patient Name"}
+                          : "--------"}
                       </h6>
                     </div>
 
@@ -103,7 +103,7 @@ class DisPatientForm extends Component {
                       <h6>
                         {this.state.patient_type
                           ? this.state.patient_type
-                          : "Patient Type"}
+                          : "--------"}
                       </h6>
                     </div>
 
@@ -116,7 +116,7 @@ class DisPatientForm extends Component {
                       <h6>
                         {this.state.mode_of_pay
                           ? this.state.mode_of_pay
-                          : "Mode of Payment"}
+                          : "--------"}
                       </h6>
                     </div>
                   </div>

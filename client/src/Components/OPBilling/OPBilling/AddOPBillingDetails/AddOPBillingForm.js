@@ -117,6 +117,7 @@ class AddOPBillingForm extends Component {
           mappingName: "xxx"
         },
         afterSuccess: data => {
+          let applydiscount = false;
           if (data.billdetails[0].pre_approval === "Y") {
             successfulMessage({
               message:
@@ -129,11 +130,18 @@ class AddOPBillingForm extends Component {
 
             if (data.billdetails.length !== 0) {
               data.billdetails[0].ordered_date = new Date();
+
               existingservices.splice(0, 0, data.billdetails[0]);
             }
 
+            if (this.state.mode_of_pay === "Insurance") {
+              applydiscount = true;
+            }
             if (context != null) {
-              context.updateState({ billdetails: existingservices });
+              context.updateState({
+                billdetails: existingservices,
+                applydiscount: applydiscount
+              });
             }
 
             $this.props.billingCalculations({
@@ -270,7 +278,9 @@ class AddOPBillingForm extends Component {
           cheque_date: null,
           cheque_amount: 0,
           total_amount: 0,
-          unbalanced_amount: 0
+          unbalanced_amount: 0,
+          saveEnable: true,
+          applydiscount: true
         });
       }
     } else {
@@ -592,7 +602,7 @@ class AddOPBillingForm extends Component {
                       dataSource={{
                         data: this.state.billdetails
                       }}
-                      isEditable={true}
+                      isEditable={!this.state.Billexists}
                       paging={{ page: 0, rowsPerPage: 5 }}
                       events={{
                         onDelete: this.deleteBillDetail.bind(this, context),
@@ -882,7 +892,10 @@ class AddOPBillingForm extends Component {
                             className: "txt-fld",
                             name: "sheet_discount_percentage",
                             others: {
-                              disabled: this.state.Billexists
+                              disabled:
+                                this.state.Billexists === true
+                                  ? true
+                                  : this.state.applydiscount
                             },
                             events: {
                               onChange: discounthandle.bind(this, this, context)
@@ -901,7 +914,10 @@ class AddOPBillingForm extends Component {
                             className: "txt-fld",
                             name: "sheet_discount_amount",
                             others: {
-                              disabled: this.state.Billexists
+                              disabled:
+                                this.state.Billexists === true
+                                  ? true
+                                  : this.state.applydiscount
                             },
                             events: {
                               onChange: discounthandle.bind(this, this, context)
