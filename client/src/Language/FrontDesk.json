@@ -111,7 +111,7 @@
     "target": "رقم الهاتف"
   },
   "secondary_contact_number": {
-    "english": "Secondary Contact Number",
+    "english": "Secondary Contact No.",
     "target": "رقم الاتصال الثانوي"
   },
   "emergency_contact_name": {
@@ -119,7 +119,7 @@
     "target": "اسم جهة الاتصال في حالات الطوارئ"
   },
   "emergency_contact_number": {
-    "english": "Emergency Contact Number",
+    "english": "Emergency Contact No.",
     "target": "رقم الاتصال في حالات الطوارئ"
   },
   "relationship_with_patient": {

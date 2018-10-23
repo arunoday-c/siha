@@ -51,7 +51,9 @@ class OtherInfo extends Component {
                       ).numbertexthandle.bind(this)
                     },
                     others: {
-                      disabled: this.state.existingPatient
+                      disabled: this.state.existingPatient,
+                      placeHolder: "(+01)123-456-7890",
+                      type: "number"
                     }
                   }}
                 />
@@ -72,7 +74,9 @@ class OtherInfo extends Component {
                       ).numbertexthandle.bind(this)
                     },
                     others: {
-                      disabled: this.state.existingPatient
+                      disabled: this.state.existingPatient,
+                      placeHolder: "(+01)123-456-7890",
+                      type: "number"
                     }
                   }}
                 />
@@ -134,7 +138,9 @@ class OtherInfo extends Component {
                       ).texthandle.bind(this)
                     },
                     others: {
-                      disabled: this.state.existingPatient
+                      disabled: this.state.existingPatient,
+                      placeHolder: "Enter Email Address",
+                      type: "email"
                     }
                   }}
                 />
@@ -176,7 +182,8 @@ class OtherInfo extends Component {
                       ).texthandle.bind(this)
                     },
                     others: {
-                      disabled: this.state.existingPatient
+                      disabled: this.state.existingPatient,
+                      placeHolder: "Enter Full Address 2"
                     }
                   }}
                 />
