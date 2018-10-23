@@ -653,6 +653,8 @@ label {
 
 input[type="text"],
 input[type="number"],
+input[type="tel"],
+input[type="email"],
 input[type="time"] {
   font-size: $textFontSize;
   padding: 4px 6px 4px;
@@ -753,7 +755,7 @@ textarea {
 
   input[type="date"]:disabled {
     background: #fffdfa;
-    border: 1px dashed #d3d3d3;
+    border: 1px dashed #d3d3d3 !important;
     color: #000;
     font-weight: bold;
   }
@@ -803,6 +805,8 @@ textarea {
 .mandatory {
   input[type="text"],
   input[type="number"],
+  input[type="tel"],
+  input[type="email"],
   input.autoselect-input,
   .algaeh-datePicker input[type="date"] {
     background-color: none;
@@ -811,7 +815,11 @@ textarea {
 }
 
 //input field disabled style
-input[type="text"]:disabled {
+input[type="text"]:disabled,
+input[type="number"]:disabled,
+input[type="tel"]:disabled,
+input[type="email"]:disabled,
+input[type="time"]:disabled {
   background: #fffdfa;
   border: 1px dashed #d3d3d3;
   color: #000;
@@ -1120,7 +1128,10 @@ th {
   }
 
   .mandatory {
-    input[type="text"] {
+    input[type="text"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="email"] {
       background-color: none;
       border: 1px solid #d9ae58;
       text-align: right;
@@ -1131,7 +1142,11 @@ th {
     border: none !important;
   }
 
-  input[type="text"]:disabled {
+  input[type="text"]:disabled,
+  input[type="number"]:disabled,
+  input[type="tel"]:disabled,
+  input[type="email"]:disabled,
+  input[type="time"]:disabled {
     background: #f0f0f0;
     border: 1px solid #d3d3d3;
     color: #000;
