@@ -29,7 +29,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import variableJson from "../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import Paper from "@material-ui/core/Paper";
 
 class AddBillingForm extends Component {
   constructor(props) {
@@ -70,22 +69,24 @@ class AddBillingForm extends Component {
                 <div className="row">
                   <div className="col-lg-4 primary-details">
                     {/* <div className="container-fluid"> */}
-                    <Paper className="Paper">
+                    <div className="Paper">
                       <div className="row primary-box-container">
                         <div className="col-lg-6">
                           <button
-                            className="btn btn-primary btn-sm"
+                            className="btn btn-default btn-sm"
                             type="button"
                             onClick={ProcessInsurance.bind(this, this, context)}
+                            disabled={this.state.ProcessInsure}
                           >
                             Process Insurance
                           </button>
                         </div>
                         <div className="col-lg-6">
                           <button
-                            className="btn btn-primary btn-sm"
+                            className="btn btn-default btn-sm"
                             type="button"
                             onClick={this.ShowBillDetails.bind(this)}
+                            disabled={this.state.billdetail}
                           >
                             Bill Details
                           </button>
@@ -100,6 +101,7 @@ class AddBillingForm extends Component {
                               />
                             }
                             BillingIOputs={{
+                              frontDesk: true,
                               selectedLang: this.state.selectedLang,
                               billdetails: this.state.billdetails
                             }}
@@ -300,12 +302,12 @@ class AddBillingForm extends Component {
                           </h6>
                         </div>
                       </div>
-                    </Paper>
+                    </div>
                     {/* </div> */}
                   </div>
                   <div className="col-lg-8 secondary-details">
                     {/* <div className="container-fluid"> */}
-                    <Paper className="Paper">
+                    <div className="Paper">
                       <div className="row secondary-box-container">
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3 mandatory" }}
@@ -655,7 +657,7 @@ class AddBillingForm extends Component {
                           </h6>
                         </div>
                       </div>
-                    </Paper>
+                    </div>
                     {/* </div> */}
                   </div>
                 </div>

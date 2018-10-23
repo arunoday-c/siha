@@ -244,7 +244,8 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "2"
+                            tabIndex: "2",
+                            placeHolder: "Enter Full Name"
                           }
                           // error: this.state.open
                           // helperText: this.state.MandatoryMsg
@@ -266,7 +267,8 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "3"
+                            tabIndex: "3",
+                            placeHolder: "أدخل الاسم العربي"
                           }
                         }}
                       />
@@ -324,7 +326,12 @@ class AddPatientForm extends PureComponent {
                         value={this.state.hijiri_date}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-1 mandatory" }}
+                        div={{
+                          className: "col mandatory",
+                          others: {
+                            style: { paddingRight: 0 }
+                          }
+                        }}
                         label={{
                           fieldName: "age",
                           isImp: true
@@ -341,13 +348,19 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "7"
+                            tabIndex: "7",
+                            placeHolder: "Y"
                           }
                         }}
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-1 mandatory" }}
+                        div={{
+                          className: "col mandatory",
+                          others: {
+                            style: { paddingLeft: 5, paddingRight: 5 }
+                          }
+                        }}
                         label={{
                           fieldName: "AGEMM",
                           forceLabel: "&nbsp;",
@@ -365,13 +378,19 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "8"
+                            tabIndex: "8",
+                            placeHolder: "M"
                           }
                         }}
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-1 mandatory" }}
+                        div={{
+                          className: "col mandatory",
+                          others: {
+                            style: { paddingLeft: 0 }
+                          }
+                        }}
                         label={{
                           fieldName: "AGEDD",
                           forceLabel: "&nbsp;",
@@ -389,12 +408,14 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "9"
+                            tabIndex: "9",
+                            placeHolder: "D"
                           }
                         }}
                       />
+
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3 mandatory" }}
+                        div={{ className: "col-3 mandatory" }}
                         label={{
                           fieldName: "contact_number",
                           isImp: true
@@ -409,7 +430,9 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "10"
+                            tabIndex: "11",
+                            placeHolder: "(+01)123-456-7890",
+                            type: "number"
                           }
                         }}
                       />
@@ -437,7 +460,7 @@ class AddPatientForm extends PureComponent {
                           onChange: texthandle.bind(this, this, context),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "11"
+                            tabIndex: "12"
                           }
                         }}
                       />
@@ -463,7 +486,7 @@ class AddPatientForm extends PureComponent {
                           onChange: nationalityhandle.bind(this, this, context),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "12"
+                            tabIndex: "13"
                           }
                         }}
                       />
@@ -492,7 +515,7 @@ class AddPatientForm extends PureComponent {
                           ),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "13"
+                            tabIndex: "14"
                           }
                         }}
                       />
@@ -564,7 +587,8 @@ class AddPatientForm extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            disabled: this.state.existingPatient
+                            disabled: this.state.existingPatient,
+                            placeHolder: "Enter Full Address 1"
                           }
                         }}
                       />
@@ -637,7 +661,8 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "15"
+                            tabIndex: "15",
+                            placeHolder: "Enter ID Number"
                           }
                         }}
                       />

@@ -16,6 +16,8 @@
   "address1": "Address 1",
   "address2": "Address 2",
   "contact_number": "Mobile Number",
+  "mobile": "Mobile",
+  "number": "Number",
   "email": "Email Address",
   "visa_type_id": "Visa Type",
   "nationality_id": "Nationality",
@@ -27,9 +29,9 @@
   "primary_id_no": "Primary ID Number",
   "secondary_identity_id": "Secondary ID",
   "secondary_id_no": "Number",
-  "secondary_contact_number": "Secondary Contact Number",
+  "secondary_contact_number": "Secondary Contact No.",
   "emergency_contact_name": "Emergency Contact Name",
-  "emergency_contact_number": "Emergency Contact Number",
+  "emergency_contact_number": "Emergency Contact No.",
   "relationship_with_patient": "Relationship With Patient",
   "visit_type": "Visit Type",
   "visit_date": "Visit Date",
@@ -143,5 +145,8 @@
   "card_number": "Card Number",
   "bill_date": "Bill Date",
   "bill_details": "Bill Details",
-  "patient_type": "Patient Type"
+  "patient_type": "Patient Type",
+  "payby_cash": "Pay By Cash",
+  "payby_card": "Pay By Card",
+  "payby_check": "Pay By Cheque"
 }

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
+
 import LinearProgress from "@material-ui/core/LinearProgress";
 import "./visatype.css";
-import Button from "@material-ui/core/Button";
+
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
@@ -237,8 +237,7 @@ class VisaType extends Component {
         <LinearProgress id="myProg" style={{ display: "none" }} />
         <div className="container-fluid">
           <form>
-            <div
-              className="row">
+            <div className="row">
               {/* <AlgaehOptions
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -310,16 +309,14 @@ class VisaType extends Component {
                 }}
               />
 
-                <div
-                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
-                >
-                  <button
+              <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+                <button
                   onClick={this.addVisaType.bind(this)}
-                    className="btn btn-primary"
-                  >
-                    {this.state.buttonText}
-                  </button>
-                </div>
+                  className="btn btn-primary"
+                >
+                  {this.state.buttonText}
+                </button>
+              </div>
             </div>
           </form>
 

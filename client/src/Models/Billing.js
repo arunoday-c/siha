@@ -87,7 +87,9 @@ export default {
 
       Cashchecked: true,
       Cardchecked: false,
-      Checkchecked: false
+      Checkchecked: false,
+      billdetail: true,
+      ProcessInsure: true
     };
     return output;
   }

@@ -156,5 +156,9 @@
 
   "bill_details": "تفاصيل الفاتورة",
 
-  "patient_type": "نوع المريض"
+  "patient_type": "نوع المريض",
+
+  "payby_cash": "Pay By Cash",
+  "payby_card": "Pay By Card",
+  "payby_check": "Pay By Cheque"
 }

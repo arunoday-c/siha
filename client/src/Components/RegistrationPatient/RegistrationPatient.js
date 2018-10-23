@@ -27,7 +27,6 @@ import AddAdvanceModal from "../Advance/AdvanceModal";
 import { imageToByteArray } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import AlgaehReport from "../Wrapper/printReports";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
@@ -326,13 +325,12 @@ class RegistrationPatient extends Component {
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.existingPatient = true;
-          debugger;
+
           data.patientRegistration.provider_id = this.props.provider_id || null;
           data.patientRegistration.doctor_id = this.props.provider_id || null;
           data.patientRegistration.sub_department_id =
             this.props.sub_department_id || null;
 
-          // this.props.provider_id
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
           $this.setState(data.patientRegistration, () => {
@@ -354,10 +352,12 @@ class RegistrationPatient extends Component {
             data.patientRegistration.patient_id =
               data.patientRegistration.hims_d_patient_id;
             data.patientRegistration.existingPatient = true;
+
             data.patientRegistration.provider_id =
               this.props.provider_id || null;
-
             data.patientRegistration.doctor_id = this.props.provider_id || null;
+            data.patientRegistration.sub_department_id =
+              this.props.sub_department_id || null;
 
             data.patientRegistration.filePreview =
               "data:image/png;base64, " + data.patient_Image;

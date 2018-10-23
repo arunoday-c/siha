@@ -515,6 +515,8 @@ label {
 
 input[type="text"],
 input[type="number"],
+input[type="tel"],
+input[type="email"],
 input[type="time"] {
   font-size: 0.85rem;
   padding: 4px 6px 4px;
@@ -602,7 +604,7 @@ textarea {
     background-size: 60%; }
   .algaeh-datePicker input[type="date"]:disabled {
     background: #fffdfa;
-    border: 1px dashed #d3d3d3;
+    border: 1px dashed #d3d3d3 !important;
     color: #000;
     font-weight: bold; }
   .algaeh-datePicker button {
@@ -641,12 +643,18 @@ textarea {
 
 .mandatory input[type="text"],
 .mandatory input[type="number"],
+.mandatory input[type="tel"],
+.mandatory input[type="email"],
 .mandatory input.autoselect-input,
 .mandatory .algaeh-datePicker input[type="date"] {
   background-color: none;
   border: 1px solid #d9ae58; }
 
-input[type="text"]:disabled {
+input[type="text"]:disabled,
+input[type="number"]:disabled,
+input[type="tel"]:disabled,
+input[type="email"]:disabled,
+input[type="time"]:disabled {
   background: #fffdfa;
   border: 1px dashed #d3d3d3;
   color: #000;
@@ -872,13 +880,20 @@ th {
     text-align: right;
     display: block;
     font-size: 0.9rem; }
-  .algaeh_Arabic_Version .mandatory input[type="text"] {
+  .algaeh_Arabic_Version .mandatory input[type="text"],
+  .algaeh_Arabic_Version .mandatory input[type="number"],
+  .algaeh_Arabic_Version .mandatory input[type="tel"],
+  .algaeh_Arabic_Version .mandatory input[type="email"] {
     background-color: none;
     border: 1px solid #d9ae58;
     text-align: right; }
   .algaeh_Arabic_Version .MuiInput-underline-90:before {
     border: none !important; }
-  .algaeh_Arabic_Version input[type="text"]:disabled {
+  .algaeh_Arabic_Version input[type="text"]:disabled,
+  .algaeh_Arabic_Version input[type="number"]:disabled,
+  .algaeh_Arabic_Version input[type="tel"]:disabled,
+  .algaeh_Arabic_Version input[type="email"]:disabled,
+  .algaeh_Arabic_Version input[type="time"]:disabled {
     background: #f0f0f0;
     border: 1px solid #d3d3d3;
     color: #000;

@@ -28,6 +28,7 @@ import Enumerable from "linq";
 import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
 import { Line } from "rc-progress";
 import noImage from "../../../../../assets/images/images.png";
+import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 class PersonalDetails extends PureComponent {
   constructor(props) {
     super(props);
@@ -68,6 +69,23 @@ class PersonalDetails extends PureComponent {
         }
       });
     }
+    this.getImage(this);
+  }
+
+  getImage($this, context) {
+    algaehApiCall({
+      uri: "/masters/getFile",
+      method: "get",
+      onSuccess: data => {
+        debugger;
+
+        const _data =
+          "data:" + data.headers["content-type"] + ";base64," + data.data;
+        console.log(_data);
+        $this.setState({ filePreview: _data });
+        // context.updateState({ filePreview: _data });
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -481,12 +499,11 @@ class PersonalDetails extends PureComponent {
                             multiple={false}
                             name="image"
                           >
-                            <img
-                              src={
-                                this.state.filePreview
+                            {/* this.state.filePreview
                                   ? this.state.filePreview
-                                  : noImage
-                              }
+                                  : noImage */}
+                            <img
+                              src={this.state.filePreview}
                               alt="Employee Profile Picture"
                               onError={e => {
                                 e.target.src = noImage;

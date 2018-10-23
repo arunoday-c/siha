@@ -111,9 +111,9 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const dateFormater = ({ value }) => {
+const dateFormater = value => {
   if (value !== null) {
-    return moment(value).format(Options.dateFormat);
+    return String(moment(value).format(Options.dateFormat));
   }
 };
 

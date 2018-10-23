@@ -6,8 +6,10 @@ import swal from "sweetalert2";
 
 import config from "../utils/config.json";
 import axiosCancel from "axios-cancel";
+const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
 export function algaehApiCall(options) {
   // "baseUrl": "http://192.168.0.149:3000/api/v1",
+
   if (!window.navigator.onLine) {
     swalMessage({
       title:
@@ -57,7 +59,7 @@ export function algaehApiCall(options) {
       options
     );
     let queryParametres = "";
-
+    settings.data = JSON.parse(JSON.stringify(settings.data), valueReviver);
     if (String(settings.method).toUpperCase() === "GET") {
       let str = [];
       for (let p in settings.data) {
@@ -172,7 +174,12 @@ export function algaehApiCall(options) {
             if (typeof settings.onFailure === "function")
               settings.onFailure(err);
             else {
-              if (err.response.data !== undefined) {
+              debugger;
+
+              if (
+                err.response !== undefined &&
+                err.response.data !== undefined
+              ) {
                 swalMessage({
                   title: err.response.data.message,
                   type: "error",
@@ -312,9 +319,15 @@ export function getCookie(cname) {
   }
   return "";
 }
+export function valueReviver(key, value) {
+  if (typeof value === "string" && dateFormat.test(value)) {
+    return new Date(value);
+  }
 
+  return value;
+}
 export function getLocalIP(callback) {
-  if (window.myIP !== undefined) {
+  if (window.myIP !== undefined && window.myIP !== "") {
     callback(window.myIP);
     return;
   }
