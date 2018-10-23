@@ -209,6 +209,7 @@ class MRDList extends Component {
                     return (
                       <span
                         onClick={() => {
+                          debugger;
                           setGlobal({
                             "MRD-STD": "PatientMRD",
                             mrd_patient: row.hims_d_patient_id,

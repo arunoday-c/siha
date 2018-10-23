@@ -344,11 +344,10 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
 };
 
 const checkcashhandaler = ($this, context, e) => {
-  debugger;
-
+  let Cashchecked = e.target.checked;
   $this.setState(
     {
-      Cashchecked: e.target.checked,
+      Cashchecked: Cashchecked,
       cash_amount: 0
     },
     () => {
@@ -360,7 +359,8 @@ const checkcashhandaler = ($this, context, e) => {
   texthandlerInterval = setInterval(() => {
     if (context !== undefined) {
       context.updateState({
-        cash_amount: 0
+        cash_amount: 0,
+        Cashchecked: Cashchecked
       });
     }
     clearInterval(texthandlerInterval);
@@ -368,13 +368,12 @@ const checkcashhandaler = ($this, context, e) => {
 };
 
 const checkcardhandaler = ($this, context, e) => {
-  debugger;
-
+  let Cardchecked = e.target.checked;
   $this.setState(
     {
-      Cardchecked: e.target.checked,
+      Cardchecked: Cardchecked,
       card_amount: 0,
-      card_number: null,
+      card_check_number: null,
       expiry_date: null
     },
     () => {
@@ -387,8 +386,9 @@ const checkcardhandaler = ($this, context, e) => {
     if (context !== undefined) {
       context.updateState({
         card_amount: 0,
-        card_number: null,
-        expiry_date: null
+        card_check_number: null,
+        expiry_date: null,
+        Cardchecked: Cardchecked
       });
     }
     clearInterval(texthandlerInterval);
@@ -396,11 +396,10 @@ const checkcardhandaler = ($this, context, e) => {
 };
 
 const checkcheckhandaler = ($this, context, e) => {
-  debugger;
-
+  let Checkchecked = e.target.checked;
   $this.setState(
     {
-      Checkchecked: e.target.checked,
+      Checkchecked: Checkchecked,
       cheque_amount: 0,
       cheque_number: null,
       cheque_date: null
@@ -416,7 +415,8 @@ const checkcheckhandaler = ($this, context, e) => {
       context.updateState({
         cheque_amount: 0,
         cheque_number: null,
-        cheque_date: null
+        cheque_date: null,
+        Checkchecked: Checkchecked
       });
     }
     clearInterval(texthandlerInterval);

@@ -108,36 +108,49 @@ class RegistrationPatient extends Component {
   }
 
   GenerateReciept(callback) {
-    if (this.state.total_amount > 0) {
-      let obj = [];
+    let obj = [];
 
-      if (this.state.cash_amount > 0) {
+    if (
+      this.state.Cashchecked === false &&
+      this.state.Cardchecked === false &&
+      this.state.Checkchecked === false
+    ) {
+      swalMessage({
+        title: "Invalid Input. Please select receipt type.",
+        type: "error"
+      });
+    } else {
+      if (this.state.cash_amount > 0 || this.state.Cashchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: null,
           expiry_date: null,
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
+          updated_date: null,
           card_type: null
         });
       }
-      if (this.state.card_amount > 0) {
+
+      if (this.state.card_amount > 0 || this.state.Cardchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
-          card_check_number: this.state.card_number,
+          card_check_number: this.state.card_check_number,
           expiry_date: this.state.card_date,
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
+          updated_date: null,
           card_type: null
         });
       }
-      if (this.state.cheque_amount > 0) {
+      if (this.state.cheque_amount > 0 || this.state.Checkchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: this.state.cheque_number,
           expiry_date: this.state.cheque_date,
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
+          updated_date: null,
           card_type: null
         });
       }
@@ -152,79 +165,87 @@ class RegistrationPatient extends Component {
       );
     }
   }
+
   SavePatientDetails(e) {
     const err = Validations(this);
 
     if (!err) {
-      this.GenerateReciept($this => {
-        AlgaehLoader({ show: true });
-        if ($this.state.hims_d_patient_id === null) {
-          let patientdata = {};
+      if (this.state.unbalanced_amount === 0) {
+        this.GenerateReciept($this => {
+          AlgaehLoader({ show: true });
+          if ($this.state.hims_d_patient_id === null) {
+            let patientdata = {};
 
-          if ($this.state.filePreview !== null) {
-            patientdata = {
-              ...$this.state,
-              patient_Image: imageToByteArray(this.state.filePreview)
-            };
+            if ($this.state.filePreview !== null) {
+              patientdata = {
+                ...$this.state,
+                patient_Image: imageToByteArray(this.state.filePreview)
+              };
+            } else {
+              patientdata = $this.state;
+            }
+            algaehApiCall({
+              uri: "/frontDesk/add",
+              data: patientdata,
+              method: "POST",
+              onSuccess: response => {
+                AlgaehLoader({ show: false });
+                if (response.data.success) {
+                  $this.setState({
+                    patient_code: response.data.records.patient_code,
+                    bill_number: response.data.records.bill_number,
+                    receipt_number: response.data.records.receipt_number,
+                    saveEnable: true
+                  });
+                  swalMessage({
+                    title: "Done Successfully",
+                    type: "success"
+                  });
+                }
+              },
+              onFailure: error => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
           } else {
-            patientdata = $this.state;
+            algaehApiCall({
+              uri: "/frontDesk/update",
+              data: $this.state,
+              method: "POST",
+              onSuccess: response => {
+                AlgaehLoader({ show: false });
+                if (response.data.success) {
+                  $this.setState({
+                    bill_number: response.data.records.bill_number,
+                    receipt_number: response.data.records.receipt_number,
+                    saveEnable: true
+                  });
+                  swalMessage({
+                    title: "Done Successfully",
+                    type: "success"
+                  });
+                }
+              },
+              onFailure: error => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
           }
-          algaehApiCall({
-            uri: "/frontDesk/add",
-            data: patientdata,
-            method: "POST",
-            onSuccess: response => {
-              AlgaehLoader({ show: false });
-              if (response.data.success) {
-                $this.setState({
-                  patient_code: response.data.records.patient_code,
-                  bill_number: response.data.records.bill_number,
-                  receipt_number: response.data.records.receipt_number,
-                  saveEnable: true
-                });
-                swalMessage({
-                  title: "Done Successfully",
-                  type: "success"
-                });
-              }
-            },
-            onFailure: error => {
-              AlgaehLoader({ show: false });
-              swalMessage({
-                title: error.message,
-                type: "error"
-              });
-            }
-          });
-        } else {
-          algaehApiCall({
-            uri: "/frontDesk/update",
-            data: $this.state,
-            method: "POST",
-            onSuccess: response => {
-              AlgaehLoader({ show: false });
-              if (response.data.success) {
-                $this.setState({
-                  bill_number: response.data.records.bill_number,
-                  receipt_number: response.data.records.receipt_number,
-                  saveEnable: true
-                });
-                swalMessage({
-                  title: "Done Successfully",
-                  type: "success"
-                });
-              }
-            },
-            onFailure: error => {
-              AlgaehLoader({ show: false });
-              swalMessage({
-                title: error.message,
-                type: "error"
-              });
-            }
-          });
-        }
-      });
+        });
+      } else {
+        swalMessage({
+          title: "Invalid Input. Please recive the amount.",
+          type: "error"
+        });
+      }
     }
   }
 
@@ -274,7 +295,12 @@ class RegistrationPatient extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
+    debugger;
+    if (
+      nextProps.genbill !== undefined &&
+      nextProps.genbill.length !== 0 &&
+      this.state.doctor_id !== null
+    ) {
       this.setState({ ...this.state, ...nextProps.genbill });
     }
     AlgaehLoader({ show: false });

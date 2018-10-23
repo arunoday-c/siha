@@ -204,10 +204,22 @@ class PatientDisplayDetails extends Component {
   }
 
   GenerateReciept(callback) {
-    if (this.state.total_amount > 0) {
-      let obj = [];
+    debugger;
 
-      if (this.state.cash_amount > 0) {
+    let obj = [];
+
+    if (
+      this.state.Cashchecked === false &&
+      this.state.Cardchecked === false &&
+      this.state.Checkchecked === false
+    ) {
+      successfulMessage({
+        message: "Invalid Input. Please select receipt type.",
+        title: "Error",
+        icon: "error"
+      });
+    } else {
+      if (this.state.cash_amount > 0 || this.state.Cashchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: null,
@@ -218,7 +230,8 @@ class PatientDisplayDetails extends Component {
           card_type: null
         });
       }
-      if (this.state.card_amount > 0) {
+
+      if (this.state.card_amount > 0 || this.state.Cardchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: this.state.card_check_number,
@@ -229,7 +242,7 @@ class PatientDisplayDetails extends Component {
           card_type: null
         });
       }
-      if (this.state.cheque_amount > 0) {
+      if (this.state.cheque_amount > 0 || this.state.Checkchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: this.state.cheque_number,
@@ -253,40 +266,49 @@ class PatientDisplayDetails extends Component {
   }
 
   SaveBill(e) {
-    this.GenerateReciept($this => {
-      let Inputobj = $this.state;
-      debugger;
-      Inputobj.patient_payable = $this.state.patient_payable_h;
-      AlgaehLoader({ show: true });
-      algaehApiCall({
-        uri: "/opBilling/addOpBIlling",
-        data: Inputobj,
-        method: "POST",
-        onSuccess: response => {
-          AlgaehLoader({ show: false });
-          if (response.data.success) {
-            $this.setState({
-              bill_number: response.data.records.bill_number,
-              receipt_number: response.data.records.receipt_number,
-              saveEnable: true
-            });
+    debugger;
+    if (this.state.unbalanced_amount === 0) {
+      this.GenerateReciept($this => {
+        let Inputobj = $this.state;
+        debugger;
+        Inputobj.patient_payable = $this.state.patient_payable_h;
+        AlgaehLoader({ show: true });
+        algaehApiCall({
+          uri: "/opBilling/addOpBIlling",
+          data: Inputobj,
+          method: "POST",
+          onSuccess: response => {
+            AlgaehLoader({ show: false });
+            if (response.data.success) {
+              $this.setState({
+                bill_number: response.data.records.bill_number,
+                receipt_number: response.data.records.receipt_number,
+                saveEnable: true
+              });
+              successfulMessage({
+                message: "Done Successfully",
+                title: "Success",
+                icon: "success"
+              });
+            }
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
             successfulMessage({
-              message: "Done Successfully",
-              title: "Success",
-              icon: "success"
+              message: error.message,
+              title: "Error",
+              icon: "error"
             });
           }
-        },
-        onFailure: error => {
-          AlgaehLoader({ show: false });
-          successfulMessage({
-            message: error.message,
-            title: "Error",
-            icon: "error"
-          });
-        }
+        });
       });
-    });
+    } else {
+      successfulMessage({
+        message: "Invalid Input. Please recive the amount.",
+        title: "Error",
+        icon: "error"
+      });
+    }
   }
 
   render() {

@@ -38,9 +38,6 @@ class AddBillingForm extends Component {
       isOpen: false,
       bill_number: "",
 
-      Cashchecked: true,
-      Cardchecked: false,
-      Checkchecked: false,
       errorInCash: false,
       errorInCard: false,
       errorInCheck: false
