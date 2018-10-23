@@ -76,13 +76,13 @@ class PersonalDetails extends PureComponent {
     algaehApiCall({
       uri: "/masters/getFile",
       method: "get",
-      onSuccess: data => {
+      onSuccess: response => {
         debugger;
 
-        const _data =
-          "data:" + data.headers["content-type"] + ";base64," + data.data;
-        console.log(_data);
-        $this.setState({ filePreview: _data });
+        // const _data =
+        //   "data:" + data.headers["content-type"] + ";base64," + data.data;
+        // console.log(_data);
+        // $this.setState({ filePreview: _data });
         // context.updateState({ filePreview: _data });
       }
     });
