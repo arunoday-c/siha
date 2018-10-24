@@ -1,9 +1,14 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import "./front_desk.css";
 import Appointment from "../Appointment/Appointment";
 import RegistrationPatient from "../RegistrationPatient/RegistrationPatient";
 import { getCookie } from "../../utils/algaehApiCall";
 import { removeGlobal, setGlobal } from "../../utils/GlobalFunctions";
+import { AlgaehActions } from "../../actions/algaehActions";
 
 class FrontDesk extends Component {
   constructor(props) {
@@ -15,17 +20,34 @@ class FrontDesk extends Component {
   }
 
   routeComponents() {
-    this.setState(
-      {
-        FD_Screen: Window.global["FD-STD"],
-        patient_code: Window.global["appt-pat-code"],
-        provider_id: Window.global["appt-provider-id"],
+    debugger;
+    this.props.getEmployeeServiceID({
+      uri: "/appointment/getEmployeeServiceID",
+      method: "GET",
+      data: {
+        employee_id: Window.global["appt-provider-id"],
         sub_department_id: Window.global["appt-dept-id"]
       },
-      () => {
-        this.changeDisplays(Window.global["FD-STD"]);
+      redux: {
+        type: "SERV_DTLS_GET_DATA",
+        mappingName: "employeeSerDetails"
+      },
+      afterSuccess: data => {
+        debugger;
+        this.setState(
+          {
+            FD_Screen: Window.global["FD-STD"],
+            patient_code: Window.global["appt-pat-code"],
+            provider_id: Window.global["appt-provider-id"],
+            sub_department_id: Window.global["appt-dept-id"],
+            hims_d_services_id: data[0].services_id
+          },
+          () => {
+            this.changeDisplays(Window.global["FD-STD"]);
+          }
+        );
       }
-    );
+    });
   }
 
   componentWillUnmount() {
@@ -40,6 +62,9 @@ class FrontDesk extends Component {
           patient_code={this.state.patient_code}
           provider_id={this.state.provider_id}
           sub_department_id={this.state.sub_department_id}
+          visit_type={10}
+          fromAppoinment={true}
+          hims_d_services_id={this.state.hims_d_services_id}
         />
       )
     };
@@ -81,4 +106,24 @@ class FrontDesk extends Component {
   }
 }
 
-export default FrontDesk;
+function mapStateToProps(state) {
+  return {
+    employeeSerDetails: state.employeeSerDetails
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getEmployeeServiceID: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(FrontDesk)
+);

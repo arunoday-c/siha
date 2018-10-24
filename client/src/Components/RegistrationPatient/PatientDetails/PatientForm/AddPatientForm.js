@@ -111,6 +111,9 @@ class AddPatientForm extends PureComponent {
         redux: {
           type: "CTRY_GET_DATA",
           mappingName: "countries"
+        },
+        afterSuccess: data => {
+          debugger;
         }
       });
     }
@@ -151,31 +154,36 @@ class AddPatientForm extends PureComponent {
           .where(w => w.hims_d_country_id === this.state.country_id)
           .firstOrDefault();
         let states = country !== undefined ? country.states : [];
-        if (nextProps.state_id !== this.state.state_id) {
-          let cities = Enumerable.from(states)
-            .where(w => w.hims_d_state_id === this.state.state_id)
-            .firstOrDefault();
+        debugger;
 
-          this.props.getStates({
-            redux: {
-              data: states,
-              type: "STATE_GET_DATA",
-              mappingName: "countrystates"
-            },
-            afterSuccess: callback => {
-              this.setState({
-                state_id: this.state.state_id
-              });
-            }
-          });
-          if (cities !== undefined) {
-            this.props.getCities({
+        if (this.props.countries !== undefined) {
+          if (nextProps.state_id !== this.state.state_id) {
+            let cities = Enumerable.from(states)
+              .where(w => w.hims_d_state_id === this.state.state_id)
+              .firstOrDefault();
+
+            this.props.getStates({
               redux: {
-                data: cities.cities,
-                type: "CITY_GET_DATA",
-                mappingName: "cities"
+                data: states,
+                type: "STATE_GET_DATA",
+                mappingName: "countrystates"
+              },
+              afterSuccess: callback => {
+                this.setState({
+                  state_id: this.state.state_id
+                });
               }
             });
+
+            if (cities !== undefined) {
+              this.props.getCities({
+                redux: {
+                  data: cities.cities,
+                  type: "CITY_GET_DATA",
+                  mappingName: "cities"
+                }
+              });
+            }
           }
         }
       }
@@ -245,7 +253,7 @@ class AddPatientForm extends PureComponent {
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "2",
-                            placeHolder: "Enter Full Name"
+                            placeholder: "Enter Full Name"
                           }
                           // error: this.state.open
                           // helperText: this.state.MandatoryMsg
@@ -268,7 +276,7 @@ class AddPatientForm extends PureComponent {
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "3",
-                            placeHolder: "أدخل الاسم العربي"
+                            placeholder: "أدخل الاسم العربي"
                           }
                         }}
                       />
@@ -348,8 +356,8 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "7",
-                            placeHolder: "Y"
+                            tabIndex: "7"
+                            // placeholder: "Y"
                           }
                         }}
                       />
@@ -378,8 +386,8 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "8",
-                            placeHolder: "M"
+                            tabIndex: "8"
+                            // placeholder: "M"
                           }
                         }}
                       />
@@ -408,8 +416,8 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "9",
-                            placeHolder: "D"
+                            tabIndex: "9"
+                            // placeholder: "D"
                           }
                         }}
                       />
@@ -431,7 +439,7 @@ class AddPatientForm extends PureComponent {
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "11",
-                            placeHolder: "(+01)123-456-7890",
+                            placeholder: "(+01)123-456-7890",
                             type: "number"
                           }
                         }}
@@ -588,7 +596,7 @@ class AddPatientForm extends PureComponent {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            placeHolder: "Enter Full Address 1"
+                            placeholder: "Enter Full Address 1"
                           }
                         }}
                       />
@@ -662,7 +670,7 @@ class AddPatientForm extends PureComponent {
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "15",
-                            placeHolder: "Enter ID Number"
+                            placeholder: "Enter ID Number"
                           }
                         }}
                       />
