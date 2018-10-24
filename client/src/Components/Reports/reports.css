@@ -1,16 +1,15 @@
-.reports .reportList_Ul {
-  margin: 0;
-  padding: 0;
-  list-style: none; }
-  .reports .reportList_Ul li {
-    border: 1px solid #c3c3c3;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 0.8rem;
-    display: inline-block;
-    margin: 0 2px 2px 0; }
-    .reports .reportList_Ul li i {
-      margin-right: 10px; }
-  .reports .reportList_Ul li:hover {
-    cursor: pointer;
-    background: #c3c3c3; }
+.reports .reportList {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px 5px 3px;
+  text-align: center;
+  font-size: 0.8rem; }
+  .reports .reportList i {
+    text-align: center;
+    font-size: 2rem;
+    color: #33b7bc;
+    margin-bottom: 10px; }
+
+.reports .reportList:hover {
+  background: #f2ffff;
+  cursor: pointer; }

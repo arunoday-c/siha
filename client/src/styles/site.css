@@ -6,6 +6,9 @@ body {
 :global .header {
   max-height: 50px; }
 
+:global #hisapp {
+  padding-bottom: 5px; }
+
 :global .appLogoOnly {
   background: url(../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center;
   height: 40px;
