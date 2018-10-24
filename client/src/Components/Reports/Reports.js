@@ -14,15 +14,20 @@ class Reports extends Component {
     };
   }
 
-  loadItemList(e) {
-    e.preventDefault();
+  // loadItemList(e) {
+  //   e.preventDefault();
 
-    if (this.state.module.length === 0) {
-      swalMessage({
-        title: "Please Select a Category",
-        type: "warning"
-      });
-    } else {
+  //   if (this.state.module.length === 0) {
+  //     swalMessage({
+  //       title: "Please Select a Category",
+  //       type: "warning"
+  //     });
+  //   } else {
+  //   }
+  // }
+
+  dropDownHandler(value) {
+    this.setState({ [value.name]: value.value }, () => {
       let SelectedItem = Enumerable.from(data)
         .where(w => w.name === this.state.module)
         .firstOrDefault();
@@ -30,11 +35,7 @@ class Reports extends Component {
       this.setState({
         itemList: SelectedItem !== undefined ? SelectedItem.submenu : []
       });
-    }
-  }
-
-  dropDownHandler(value) {
-    this.setState({ [value.name]: value.value }, () => {});
+    });
   }
 
   render() {
@@ -62,7 +63,7 @@ class Reports extends Component {
                 }}
               />
 
-              <div className="col-lg-1">
+              {/* <div className="col-lg-1">
                 <button
                   style={{
                     cursor: "pointer",
@@ -75,7 +76,7 @@ class Reports extends Component {
                   onClick={this.loadItemList.bind(this)}
                   className="fas fa-search fa-2x"
                 />
-              </div>
+              </div> */}
             </div>
           </form>
         </div>
