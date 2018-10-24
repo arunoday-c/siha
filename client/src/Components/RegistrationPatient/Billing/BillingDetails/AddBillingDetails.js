@@ -94,7 +94,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
   let card_amount = parseFloat(e.target.value);
   let cheque_amount = parseFloat($this.state.cheque_amount);
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
-  debugger;
+
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
     successfulMessage({
       message: "Invalid Input. Sum of all amount to be equal to Receivable.",
@@ -195,7 +195,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
 
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  debugger;
+
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
@@ -234,7 +234,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 
 const billheaderCalculation = ($this, context) => {
   var intervalId;
-  debugger;
+
   let serviceInput = {
     isReceipt: false,
     intCalculateall: false,
@@ -433,7 +433,6 @@ const credittexthandle = ($this, context, ctrl, e) => {
       icon: "warning"
     });
   } else {
-    debugger;
     $this.setState(
       {
         [e.target.name]: e.target.value
