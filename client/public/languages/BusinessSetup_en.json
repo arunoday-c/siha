@@ -37,5 +37,8 @@
   "shift_code": "Shift Code",
   "shift_description": "Shift Description",
   "arabic_name": "Arabic Description",
-  "shift_status": "Shift Status"
+  "shift_status": "Shift Status",
+  "counter_code": "Counter Code",
+  "counter_description": "Counter Description",
+  "counter_status": "Counter Status"
 }

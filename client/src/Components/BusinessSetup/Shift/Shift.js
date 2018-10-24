@@ -67,13 +67,13 @@ class Shift extends Component {
             type: "success"
           });
 
-          this.getShifts.bind(this);
+          this.getShifts();
           this.clearState();
         }
       },
       onFailure: error => {
         swalMessage({
-          title: error.message,
+          title: error.response.data.message,
           type: "error"
         });
       }
@@ -95,6 +95,7 @@ class Shift extends Component {
         algaehApiCall({
           uri: "/shiftAndCounter/updateShiftMaster",
           data: {
+            shift_code: data.shift_code,
             record_status: "I",
             shift_description: data.shift_description,
             arabic_name: data.arabic_name,
@@ -115,14 +116,14 @@ class Shift extends Component {
           onFailure: error => {
             swalMessage({
               title: error.message,
-              type: "danger"
+              type: "error"
             });
           }
         });
       } else {
         swalMessage({
           title: "Delete request cancelled",
-          type: "success"
+          type: "warning"
         });
       }
     });
@@ -132,7 +133,8 @@ class Shift extends Component {
     algaehApiCall({
       uri: "/shiftAndCounter/updateShiftMaster",
       data: {
-        record_status: data.record_status,
+        shift_code: data.shift_code,
+        record_status: "A",
         shift_description: data.shift_description,
         arabic_name: data.arabic_name,
         shift_status: data.shift_status,
@@ -152,7 +154,7 @@ class Shift extends Component {
       onFailure: error => {
         swalMessage({
           title: error.message,
-          type: "danger"
+          type: "error"
         });
       }
     });
