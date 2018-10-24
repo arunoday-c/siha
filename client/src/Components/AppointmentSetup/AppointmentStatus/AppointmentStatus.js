@@ -65,7 +65,6 @@ class AppointmentStatus extends Component {
       cancelButtonText: "No",
       dangerMode: true
     }).then(willDelete => {
-      debugger;
       if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/updateAppointmentStatus",
