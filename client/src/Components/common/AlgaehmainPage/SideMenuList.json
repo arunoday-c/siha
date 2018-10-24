@@ -353,5 +353,18 @@
         "path": "/MRDList"
       }
     ]
+  },
+  {
+    "name": "Reports",
+    "label": "Reports",
+    "icon": "fas fa-file-contract",
+    "subMenu": [
+      {
+        "name": "Reports List",
+        "label": "Reports List",
+        "arlabel": "قائمة التقارير",
+        "path": "/ReportsList"
+      }
+    ]
   }
 ]
