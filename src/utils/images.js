@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import multer from "multer";
 import httpStatus from "../utils/httpStatus";
+import mkdirp from "mkdirp";
 let logDirectory = path.join(__dirname, "../../Documents");
 if (!fs.existsSync(logDirectory)) {
   fs.mkdirSync(logDirectory);
@@ -54,11 +55,15 @@ const storage = multer.diskStorage({
       }
 
       const _path = path.join(__dirname, _filePath);
-      if (!fs.existsSync(_path)) {
-        fs.mkdirSync(_path);
-      }
-
-      next(null, _path);
+      // if (!fs.existsSync(_path)) {
+      //   fs.mkdirSync(_path);
+      // }
+      mkdirp(_path, error => {
+        if (error) throw error;
+        else {
+          next(null, _path);
+        }
+      });
     } else {
       throw "Unknow client IP not recorded";
     }
@@ -67,11 +72,10 @@ const storage = multer.diskStorage({
     const _fileDetails = JSON.parse(req.headers["x-file-details"]);
     const _fileExtention = path.extname(file.originalname);
     let _fileName = _fileDetails.saveDirectly
-      ? _fileDetails.tempFileName + "." + _fileExtention
+      ? _fileDetails.tempFileName + _fileExtention
       : _fileDetails.pageName +
         "_" +
         _fileDetails.tempFileName +
-        "." +
         _fileExtention;
 
     next(null, _fileName);
@@ -92,9 +96,32 @@ const saveImageInTemp = (req, res, next) => {
     }
   });
 };
+let showFile = (req, res, next) => {
+  const _path = path.join(
+    __dirname,
+    "../../Documents/Employees/EMP00002/EMP00002.png"
+  );
+  debugLog("Path ", _path);
+  if (fs.existsSync(_path)) {
+    //  res.sendFile(_path);
+    fs.createReadStream(_path).pipe(res);
+    // request(_path).pipe(fs.createWriteStream("doodle.png"));
+  } else {
+    next(httpStatus.generateError(httpStatus.forbidden, "File not exits"));
+  }
+  // fs.readFile(_path, (err, content) => {
+  //   if (err) {
+  //     next(err);
+  //   }
+  //   debugLog("content", content);
+  //   res.writeHead(200, { "Content-type": "image/jpg" });
+  //   res.end(content);
+  // });
+};
 
 module.exports = {
   downloadImage,
   readFileToBase64,
+  showFile,
   saveImageInTemp
 };

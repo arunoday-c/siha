@@ -64,9 +64,7 @@ var wLogger = new _winston2.default.Logger({
 });
 var requestTracking = function requestTracking(message, Obj) {
   Obj = Obj || null;
-  console.log("Error Here Logger");
   wLogger.info(message + "%j", Obj);
-  console.log("after Error Here Logger");
 };
 
 //winston.add(winston.transports.Http, rotatingDate);

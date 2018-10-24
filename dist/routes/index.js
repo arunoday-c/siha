@@ -184,6 +184,10 @@ var _transferEntry = require("../Pharmacy/controller/transferEntry");
 
 var _transferEntry2 = _interopRequireDefault(_transferEntry);
 
+var _shiftAndCounter = require("../controller/shiftAndCounter");
+
+var _shiftAndCounter2 = _interopRequireDefault(_shiftAndCounter);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = (0, _express2.default)();
@@ -237,6 +241,7 @@ var router = (0, _express2.default)();
   router.use("/requisitionEntry", (0, _requisitionEntry2.default)({ config: _keys2.default, db: db }));
   router.use("/salesReturn", (0, _salesReturn2.default)({ config: _keys2.default, db: db }));
   router.use("/transferEntry", (0, _transferEntry2.default)({ config: _keys2.default, db: db }));
+  router.use("/shiftAndCounter", (0, _shiftAndCounter2.default)({ config: _keys2.default, db: db }));
 });
 
 exports.default = router;

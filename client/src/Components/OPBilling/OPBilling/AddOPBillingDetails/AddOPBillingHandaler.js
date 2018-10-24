@@ -61,28 +61,30 @@ const texthandle = ($this, context, ctrl, e) => {
 //New
 const adjustadvance = ($this, context, ctrl, e) => {
   e = e || ctrl;
-
-  if (e.target.value > $this.state.advance_amount) {
-    successfulMessage({
-      message:
-        "Invalid Input. Adjusted amount cannot be greater than Advance amount",
-      title: "Warning",
-      icon: "warning"
-    });
-  } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        billheaderCalculation($this, context);
-      }
-    );
-
-    if (context != null) {
-      context.updateState({
-        [e.target.name]: e.target.value
+  debugger;
+  if (e.target.value > 0) {
+    if (e.target.value > $this.state.advance_amount) {
+      successfulMessage({
+        message:
+          "Invalid Input. Adjusted amount cannot be greater than Advance amount",
+        title: "Warning",
+        icon: "warning"
       });
+    } else {
+      $this.setState(
+        {
+          [e.target.name]: e.target.value
+        },
+        () => {
+          billheaderCalculation($this, context);
+        }
+      );
+
+      if (context != null) {
+        context.updateState({
+          [e.target.name]: e.target.value
+        });
+      }
     }
   }
 };
