@@ -15,30 +15,36 @@ const examhandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  let exam_start_date_time = null;
-  let exam_end_date_time = null;
-  let report_type = "NS";
-  if (value === "ST") {
-    exam_start_date_time = moment(new Date())._d;
-  } else if (value === "CO") {
-    exam_start_date_time =
-      $this.state.exam_start_date_time || moment(new Date())._d;
-    exam_end_date_time = moment(new Date())._d;
-    report_type = "PR";
-  }
-
   if ($this.state.pre_exam_status === "CO") {
+    debugger;
+    $this.setState({
+      [name]: $this.state.exam_status
+    });
     swalMessage({
-      title: "Invalid Input. After Complete cant do any changes. .",
+      title: "Invalid Input. After Complete cant do any changes.",
       type: "warning"
     });
   } else {
+    let exam_start_date_time = null;
+    let exam_end_date_time = null;
+    let report_type = "NS";
+
+    if (value === "ST") {
+      exam_start_date_time = moment(new Date())._d;
+    } else if (value === "CO") {
+      exam_start_date_time =
+        $this.state.exam_start_date_time || moment(new Date())._d;
+      exam_end_date_time = moment(new Date())._d;
+      report_type = "PR";
+    }
+
     $this.setState(
       {
         [name]: value,
         exam_start_date_time: exam_start_date_time,
         exam_end_date_time: exam_end_date_time,
-        report_type: report_type
+        report_type: report_type,
+        changesDone: true
       },
       () => {
         UpdateRadOrder($this, "Exam");
@@ -104,15 +110,18 @@ const UpdateRadOrder = ($this, value) => {
 
   swal({
     title:
-      "Are you sure the patient" +
+      "Are you sure the patient " +
       $this.state.full_name +
-      "for the procedure" +
+      " for the procedure " +
       $this.state.service_name,
-    type: "success",
-    buttons: true,
-    dangerMode: true
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
   }).then(willProceed => {
-    if (willProceed) {
+    if (willProceed.value) {
       algaehApiCall({
         uri: "/radiology/updateRadOrderedServices",
         data: inputobj,
@@ -145,6 +154,11 @@ const UpdateRadOrder = ($this, value) => {
             type: "error"
           });
         }
+      });
+    } else {
+      swalMessage({
+        title: "Cancelled",
+        type: "warning"
       });
     }
   });
