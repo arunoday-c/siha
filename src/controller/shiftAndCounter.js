@@ -6,7 +6,9 @@ import {
     addShiftMaster,
     addCounterMaster,
     getCounterMaster,
-    getShiftMaster 
+    getShiftMaster,
+    updateShiftMaster,
+    updateCounterMaster
 } from "../model/shiftAndCounter";
 
 export default ({ config, db }) => {
@@ -44,9 +46,9 @@ export default ({ config, db }) => {
   );
 
 
-    getCounterMaster,
+    
     // created by irfan :to  getCounterMaster
-  api.post(
+  api.get(
     "/getCounterMaster",
     getCounterMaster,
     (req, res, next) => {
@@ -60,7 +62,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
   // created by irfan :to  getShiftMaster
-  api.post(
+  api.get(
     "/getShiftMaster",
     getShiftMaster,
     (req, res, next) => {
@@ -75,6 +77,39 @@ export default ({ config, db }) => {
   );
 
 
+  // created by irfan :to  updateCounterMaster
+  api.put(
+    "/updateCounterMaster",
+    updateCounterMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+
+  // created by irfan :to  updateShiftMaster
+  api.put(
+    "/updateShiftMaster",
+    updateShiftMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  
+  
 
   return api;
 };
