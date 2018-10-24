@@ -121,24 +121,29 @@ class Reports extends Component {
         </div>
 
         <div className="portlet portlet-bordered box-shadow-normal ">
-          <div className="portlet-title">
+          {/* <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Report List</h3>
             </div>
-          </div>
-          <div className="portlet-body">
-            <ul className="reportList_Ul">
-              {this.state.itemList.map((data, index) => (
-                <li
-                  onClick={() => {
-                    this.setState({ showSelector: true });
-                  }}
-                >
-                  <i className="fas fa-file-medical-alt" />
-                  <span>{data.subitem}</span>
-                </li>
-              ))}
-            </ul>
+          </div> */}
+          <div className="portlet-body" style={{ minHeight: "70vh" }}>
+            <div className="col-lg-12">
+              <div className="row">
+                {this.state.itemList.map((data, index) => (
+                  <div
+                    onClick={() => {
+                      this.setState({
+                        showSelector: true
+                      });
+                    }}
+                    className="col-lg-2 reportList"
+                  >
+                    <i className="fas fa-file-medical-alt" />
+                    <p>{data.subitem}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
