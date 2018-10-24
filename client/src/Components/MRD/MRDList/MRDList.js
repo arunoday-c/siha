@@ -15,14 +15,10 @@ class MRDList extends Component {
     super(props);
 
     this.state = {
-      full_name: null,
-      patient_code: null,
-      registration_date: null,
       date_of_birth: null,
-      contact_number: null,
+      registration_date: null,
       patientData: []
     };
-
     this.baseState = this.state;
   }
 
@@ -133,7 +129,7 @@ class MRDList extends Component {
                   className: "txt-fld",
                   name: "date_of_birth"
                 }}
-                maxDate={new Date()}
+                // maxDate={new Date()}
                 events={{
                   onChange: selectedDate => {
                     debugger;
@@ -152,7 +148,7 @@ class MRDList extends Component {
                   className: "txt-fld",
                   name: "registration_date"
                 }}
-                maxDate={new Date()}
+                //maxDate={new Date()}
                 events={{
                   onChange: selectedDate => {
                     debugger;
