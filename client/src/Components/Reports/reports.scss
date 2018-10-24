@@ -1,0 +1,23 @@
+.reports {
+  .reportList_Ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      border: 1px solid #c3c3c3;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      display: inline-block;
+      margin: 0 2px 2px 0;
+      i {
+        margin-right: 10px;
+      }
+    }
+    li:hover {
+      cursor: pointer;
+      background: #c3c3c3;
+    }
+  }
+}
