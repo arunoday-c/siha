@@ -135,8 +135,8 @@
   "payment_number": "Payment Number",
   "payment_date": "Payment Date",
 
-  "insurance_id": "Insurance Company",
-  "sub_insurance_id": "Sub Insurance Company",
+  "insurance_id": "Insurance Co.",
+  "sub_insurance_id": "Sub Insurance Co.",
   "plan_id": "Plan",
   "policy_id": "Policy",
   "effective_start_date": "Effective Start Date",

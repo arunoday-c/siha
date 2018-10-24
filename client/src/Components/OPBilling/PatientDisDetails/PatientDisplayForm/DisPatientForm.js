@@ -47,9 +47,9 @@ class DisPatientForm extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-display-patient-form">
-              <div className="row card-deck panel-layout">
+              <div className="row inner-top-search">
                 {/* Patient code */}
-                <div className="col-lg-4 card box-shadow-normal">
+                <div className="col-lg-4">
                   <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col-lg-8" }}
@@ -79,7 +79,7 @@ class DisPatientForm extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-8 card box-shadow-normal">
+                <div className="col-lg-8">
                   <div className="row">
                     <div className="col-lg-3">
                       <AlgaehLabel

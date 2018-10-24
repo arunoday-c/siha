@@ -55,7 +55,7 @@ class BreadCrumb extends PureComponent {
               <AlgaehLabel
                 label={{ forceLabel: this.props.soptlightSearch.label }}
               />
-              <h6>{this.state.value ? this.state.value : "New Patient"}</h6>
+              <h6>{this.state.value ? this.state.value : "*** New ***"}</h6>
             </div>
             <div className="col" style={{ borderLeft: "1px solid #ced4d8" }}>
               <i
