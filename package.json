@@ -9,7 +9,7 @@
     "client": "npm run start --prefix client",
     "api": "npm run internal_server",
     "dev": "concurrently \"npm run internal_server\" \"npm run client\"",
-    "start": "cross-env NODE_ENV=production pm2 start dist/server.js",
+    "start": "cross-env NODE_ENV=production pm2 start -i 5 dist/server.js",
     "npminstall": "npm install && npm install --prefix client",
     "prod_build": "npm run build --prefix client && npm run build",
     "lint": "eslint src && eslint test",

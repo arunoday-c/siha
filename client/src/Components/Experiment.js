@@ -116,6 +116,9 @@ class Experiment extends Component {
       .toArray();
     return (
       <div style={{ textAlign: "center" }}>
+        <br />
+        <br />
+        <br />
         Kill the connections by clicking on this button
         <br />
         <br />
