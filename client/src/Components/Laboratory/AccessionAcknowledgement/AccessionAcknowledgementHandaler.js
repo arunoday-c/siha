@@ -3,8 +3,7 @@ import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
 // import Enumerable from "linq";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -40,14 +39,35 @@ const PatientSearch = ($this, e) => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  $this.setState(
-    {
-      [e]: moment(ctrl)._d
-    },
-    () => {
-      getSampleCollectionDetails($this);
+  let intFailure = false;
+  if (e === "from_date") {
+    if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
+      intFailure = true;
+      swalMessage({
+        title: "Invalid Input. From Date cannot be grater than To Date.",
+        type: "warning"
+      });
     }
-  );
+  } else if (e === "to_date") {
+    if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.from_date)) {
+      intFailure = true;
+      swalMessage({
+        title: "Invalid Input. To Date cannot be less than From Date.",
+        type: "warning"
+      });
+    }
+  }
+
+  if (intFailure === false) {
+    $this.setState(
+      {
+        [e]: moment(ctrl)._d
+      },
+      () => {
+        getSampleCollectionDetails($this);
+      }
+    );
+  }
 };
 
 const getSampleCollectionDetails = $this => {
@@ -99,10 +119,9 @@ const getSampleCollectionDetails = $this => {
 const AcceptandRejectSample = ($this, row, AccRej) => {
   debugger;
   if (row.status === "O") {
-    successfulMessage({
-      message: "Invalid Input. Please collect the sample.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Please collect the sample.",
+      type: "warning"
     });
   } else {
     if (row.sample_status === "N") {
@@ -130,10 +149,9 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
             }
             debugger;
             $this.setState({ sample_collection: sample_collection }, () => {
-              successfulMessage({
-                message: "Accepted Successfully",
-                title: "Success",
-                icon: "success"
+              swalMessage({
+                title: "Accepted Successfully",
+                type: "success"
               });
             });
             getSampleCollectionDetails($this);
@@ -144,10 +162,9 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
         }
       });
     } else {
-      successfulMessage({
-        message: "Invalid Input. Already Accecpted/Rejected.",
-        title: "Warning",
-        icon: "warning"
+      swalMessage({
+        title: "Invalid Input. Already Accecpted/Rejected.",
+        type: "warning"
       });
     }
   }
@@ -162,7 +179,9 @@ const Refresh = $this => {
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
       to_date: new Date(),
       patient_id: null,
-      patient_code: null
+      patient_code: null,
+      proiorty: null,
+      status: null
     },
     () => {
       getSampleCollectionDetails($this);

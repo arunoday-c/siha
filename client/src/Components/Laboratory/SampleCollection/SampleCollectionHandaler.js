@@ -3,6 +3,7 @@ import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
 import Enumerable from "linq";
+import { swalMessage } from "../../../utils/algaehApiCall";
 // import { setLocaion } from "../../../utils/indexer";
 
 const texthandle = ($this, e) => {
@@ -43,14 +44,35 @@ const PatientSearch = ($this, e) => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  $this.setState(
-    {
-      [e]: moment(ctrl)._d
-    },
-    () => {
-      getSampleCollectionDetails($this);
+  let intFailure = false;
+  if (e === "from_date") {
+    if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
+      intFailure = true;
+      swalMessage({
+        title: "Invalid Input. From Date cannot be grater than To Date.",
+        type: "warning"
+      });
     }
-  );
+  } else if (e === "to_date") {
+    if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.from_date)) {
+      intFailure = true;
+      swalMessage({
+        title: "Invalid Input. To Date cannot be less than From Date.",
+        type: "warning"
+      });
+    }
+  }
+
+  if (intFailure === false) {
+    $this.setState(
+      {
+        [e]: moment(ctrl)._d
+      },
+      () => {
+        getSampleCollectionDetails($this);
+      }
+    );
+  }
 };
 
 const getSampleCollectionDetails = $this => {
@@ -108,7 +130,9 @@ const Refresh = $this => {
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
       to_date: new Date(),
       patient_id: null,
-      patient_code: null
+      patient_code: null,
+      proiorty: null,
+      status: null
     },
     () => {
       getSampleCollectionDetails($this);
