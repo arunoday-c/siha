@@ -1,20 +1,24 @@
 .reports {
   .reportList {
-    margin: 3px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px 5px 3px;
-    text-align: center;
-    font-size: 0.8rem;
-    i {
+    padding: 5px;
+    div {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px 5px 3px;
       text-align: center;
-      font-size: 2rem;
-      color: #33b7bc;
-      margin-bottom: 10px;
+      font-size: 0.8rem;
+      height: 120px;
+      cursor: pointer;
+      i {
+        text-align: center;
+        font-size: 2rem;
+        color: #33b7bc;
+        margin-bottom: 10px;
+      }
     }
-  }
-  .reportList:hover {
-    background: #f2ffff;
-    cursor: pointer;
+    div:hover {
+      background: #f2ffff;
+      box-shadow: 0 0 10px #eee;
+    }
   }
 }

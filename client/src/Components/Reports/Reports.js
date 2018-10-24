@@ -126,7 +126,10 @@ class Reports extends Component {
               <h3 className="caption-subject">Report List</h3>
             </div>
           </div> */}
-          <div className="portlet-body" style={{ minHeight: "70vh" }}>
+          <div
+            className="portlet-body"
+            style={{ height: "75vh", overflow: "auto" }}
+          >
             <div className="col-lg-12">
               <div className="row">
                 {this.state.itemList.map((data, index) => (
@@ -138,8 +141,10 @@ class Reports extends Component {
                     }}
                     className="col-lg-2 reportList"
                   >
-                    <i className="fas fa-file-medical-alt" />
-                    <p>{data.subitem}</p>
+                    <div>
+                      <i className="fas fa-file-medical-alt" />
+                      <p>{data.subitem}</p>
+                    </div>
                   </div>
                 ))}
               </div>
