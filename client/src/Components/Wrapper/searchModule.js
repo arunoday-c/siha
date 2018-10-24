@@ -35,11 +35,11 @@ class SearchModule extends Component {
   };
 
   componentDidMount() {
-    // document.addEventListener("keyup", function(e) {
-    //   if (e.keyCode == 27) {
-    //     document.getElementById("closeSearch").click();
-    //   }
-    // });
+    document.addEventListener("keyup", function(e) {
+      if (e.keyCode == 27) {
+        document.getElementById("closeSearch").click();
+      }
+    });
 
     this.getUserSelectedValue(
       { searchName: this.props.searchName },
@@ -228,8 +228,9 @@ class SearchModule extends Component {
         className={this.state.open === true ? "d-block" : "d-none"}
       >
         <div className="helpText">
-          {/* <span>press [esc] to close window</span> */}
+          <span className="helpTextEsc">press [esc] to close window</span>
           <span
+            id="closeSearch"
             className="globalSearch-Close"
             onClick={this.handleClose.bind()}
           >
