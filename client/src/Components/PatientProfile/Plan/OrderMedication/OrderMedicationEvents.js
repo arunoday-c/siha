@@ -1,6 +1,5 @@
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
-import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
 
@@ -16,7 +15,6 @@ const texthandle = ($this, ctrl, e) => {
 
 //Save Order
 const SaveMedication = ($this, e) => {
-  debugger;
   if ($this.state.medicationitems.length > 0) {
     let inputObj = {
       patient_id: $this.state.patient_id,
@@ -30,22 +28,24 @@ const SaveMedication = ($this, e) => {
       data: inputObj,
       method: "POST",
       onSuccess: response => {
+        debugger;
         if (response.data.success) {
-          this.setState({ savebutton: true });
-          successfulMessage({
-            message: "Ordered Successfully...",
-            title: "Success",
-            icon: "success"
+          swalMessage({
+            title: "Ordered Successfully...",
+            type: "success"
+          });
+          $this.setState({
+            saveMedicationEnable: true,
+            medicationitems: []
           });
         }
       },
       onFailure: error => {}
     });
   } else {
-    successfulMessage({
-      message: "Invalid Input. Please enter the items",
-      title: "Success",
-      icon: "success"
+    swalMessage({
+      title: "Invalid Input. Please enter the items",
+      type: "success"
     });
   }
 };
@@ -54,7 +54,7 @@ const genericnamehandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger;
+
   let items = Enumerable.from($this.props.itemlist)
     .where(w => w.generic_id == value)
     .toArray();
@@ -66,43 +66,78 @@ const genericnamehandle = ($this, ctrl, e) => {
 
 const itemhandle = ($this, ctrl, e) => {
   e = e || ctrl;
-  debugger;
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+
   $this.setState({
     [name]: value,
     generic_id: e.selected.generic_id,
     service_id: e.selected.service_id,
     uom_id: e.selected.sales_uom_id,
     item_category_id: e.selected.category_id,
-    item_group_id: e.selected.group_id
+    item_group_id: e.selected.group_id,
+    addItemEnable: false
   });
 };
 
 const AddItems = $this => {
   debugger;
-  let medicationitems = $this.state.medicationitems;
-  let medicationobj = {
-    item_id: $this.state.item_id,
-    generic_id: $this.state.generic_id,
-    dosage: $this.state.dosage,
-    frequency: $this.state.frequency,
-    no_of_days: $this.state.no_of_days,
-    dispense: $this.state.dispense,
-    frequency_type: $this.state.frequency_type,
-    frequency_time: $this.state.frequency_time,
-    start_date: $this.state.start_date,
-    uom_id: $this.state.uom_id,
-    service_id: $this.state.service_id,
-    item_category_id: $this.state.item_category_id,
-    item_group_id: $this.state.item_group_id,
-    item_status: "A"
-  };
-  medicationitems.push(medicationobj);
-  $this.setState({
-    medicationitems: medicationitems,
-    savebutton: false
-  });
+  if (
+    $this.state.item_id !== null &&
+    $this.state.generic_id !== null &&
+    $this.state.dosage !== null &&
+    $this.state.frequency !== null &&
+    $this.state.no_of_days !== null &&
+    $this.state.dispense !== null &&
+    $this.state.frequency_type !== null &&
+    $this.state.frequency_time !== null &&
+    $this.state.uom_id !== null &&
+    $this.state.service_id !== null &&
+    $this.state.item_category_id !== null &&
+    $this.state.item_group_id !== null
+  ) {
+    let medicationitems = $this.state.medicationitems;
+    let medicationobj = {
+      item_id: $this.state.item_id,
+      generic_id: $this.state.generic_id,
+      dosage: $this.state.dosage,
+      frequency: $this.state.frequency,
+      no_of_days: $this.state.no_of_days,
+      dispense: $this.state.dispense,
+      frequency_type: $this.state.frequency_type,
+      frequency_time: $this.state.frequency_time,
+      start_date: $this.state.start_date,
+      uom_id: $this.state.uom_id,
+      service_id: $this.state.service_id,
+      item_category_id: $this.state.item_category_id,
+      item_group_id: $this.state.item_group_id,
+      item_status: "A"
+    };
+    medicationitems.push(medicationobj);
+    $this.setState({
+      medicationitems: medicationitems,
+      saveMedicationEnable: false,
+      addItemEnable: true,
+      item_id: null,
+      generic_id: null,
+      dosage: null,
+      frequency: null,
+      no_of_days: null,
+      dispense: null,
+      frequency_type: null,
+      frequency_time: null,
+      uom_id: null,
+      service_id: null,
+      item_category_id: null,
+      item_group_id: null
+    });
+  } else {
+    swalMessage({
+      title: "Invalid Input. Please enter all detils of prescription",
+      type: "error"
+    });
+  }
 };
 
 const datehandle = ($this, ctrl, e) => {
