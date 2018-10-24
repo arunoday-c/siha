@@ -29,13 +29,10 @@
         "fieldName": "bill_number",
         "label": "Bill Number"
       },
+
       {
-        "fieldName": "visit_id",
-        "label": "Visit Id"
-      },
-      {
-        "fieldName": "patient_id",
-        "label": "Patient Id"
+        "fieldName": "patient_code",
+        "label": "Patient Code"
       },
       {
         "fieldName": "bill_date",
