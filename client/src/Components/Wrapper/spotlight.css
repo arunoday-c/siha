@@ -70,6 +70,10 @@
   margin: 0 auto;
   text-align: right;
   cursor: pointer; }
+  .helpText .helpTextEsc {
+    font-size: 0.7rem;
+    color: #fff;
+    margin-right: 10px; }
   .helpText .globalSearch-Close {
     background: #f7f5f4;
     border-radius: 5px 5px 0 0;

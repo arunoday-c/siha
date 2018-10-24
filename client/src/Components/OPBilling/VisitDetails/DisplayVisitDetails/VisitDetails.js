@@ -205,6 +205,11 @@ class DisplayVisitDetails extends Component {
                                 disabled={this.state.Billexists}
                               />
                             );
+                          },
+                          others: {
+                            maxWidth: 50,
+                            resizable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         {
