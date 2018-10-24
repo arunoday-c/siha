@@ -78,7 +78,7 @@ export default ({ config, db }) => {
 
 
   // created by irfan :to  updateCounterMaster
-  api.update(
+  api.put(
     "/updateCounterMaster",
     updateCounterMaster,
     (req, res, next) => {
@@ -94,7 +94,7 @@ export default ({ config, db }) => {
 
 
   // created by irfan :to  updateShiftMaster
-  api.update(
+  api.put(
     "/updateShiftMaster",
     updateShiftMaster,
     (req, res, next) => {
