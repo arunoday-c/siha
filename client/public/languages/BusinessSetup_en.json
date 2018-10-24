@@ -36,5 +36,6 @@
   "home": "Home",
   "shift_code": "Shift Code",
   "shift_description": "Shift Description",
-  "arabic_name": "Arabic Description"
+  "arabic_name": "Arabic Description",
+  "shift_status": "Shift Status"
 }

@@ -272,8 +272,7 @@ export default class DisplaySecondaryInsurance extends Component {
                   <div className="col-lg-4">
                     <AlgaehLabel
                       label={{
-                        // fieldName: "Co-Insurance"
-                        fieldName: "co-insurance"
+                        fieldName: "co_insurance"
                       }}
                     />
                   </div>

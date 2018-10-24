@@ -3,9 +3,12 @@ import "./shift.css";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
+import swal from "sweetalert2";
 
 class Shift extends Component {
   constructor(props) {
@@ -13,6 +16,14 @@ class Shift extends Component {
     this.state = {
       shifts: []
     };
+  }
+
+  clearState() {
+    this.setState({
+      shift_code: "",
+      shift_description: "",
+      arabic_name: ""
+    });
   }
 
   getShifts() {
@@ -38,7 +49,9 @@ class Shift extends Component {
     this.getShifts();
   }
 
-  addShift() {
+  addShift(e) {
+    e.preventDefault();
+
     algaehApiCall({
       uri: "/shiftAndCounter/addShiftMaster",
       method: "POST",
@@ -49,7 +62,13 @@ class Shift extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({ shifts: response.data.records });
+          swalMessage({
+            title: "Shift added Successfully",
+            type: "success"
+          });
+
+          this.getShifts.bind(this);
+          this.clearState();
         }
       },
       onFailure: error => {
@@ -61,9 +80,83 @@ class Shift extends Component {
     });
   }
 
-  deleteShifts() {}
+  deleteShifts(data) {
+    swal({
+      title: "Delete the Shift " + data.shift_description + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/shiftAndCounter/updateShiftMaster",
+          data: {
+            record_status: "I",
+            shift_description: data.shift_description,
+            arabic_name: data.arabic_name,
+            shift_status: data.shift_status,
+            hims_d_shift_id: data.hims_d_shift_id
+          },
+          method: "PUT",
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
+              });
 
-  updateShifts() {}
+              this.getShifts();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "danger"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "success"
+        });
+      }
+    });
+  }
+
+  updateShifts(data) {
+    algaehApiCall({
+      uri: "/shiftAndCounter/updateShiftMaster",
+      data: {
+        record_status: data.record_status,
+        shift_description: data.shift_description,
+        arabic_name: data.arabic_name,
+        shift_status: data.shift_status,
+        hims_d_shift_id: data.hims_d_shift_id
+      },
+      method: "PUT",
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully . .",
+            type: "success"
+          });
+
+          this.getShifts();
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "danger"
+        });
+      }
+    });
+  }
 
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
@@ -84,8 +177,8 @@ class Shift extends Component {
     return (
       <div className="shift">
         <div className="col-lg-12">
-          <form>
-            <div className="row" onSubmit={this.addShift.bind(this)}>
+          <form action="none">
+            <div className="row">
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -94,7 +187,7 @@ class Shift extends Component {
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "shft_code",
+                  name: "shift_code",
                   value: this.state.shift_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
@@ -109,7 +202,7 @@ class Shift extends Component {
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "shft_code",
+                  name: "shift_description",
                   value: this.state.shift_description,
                   events: {
                     onChange: this.changeTexts.bind(this)
@@ -133,94 +226,122 @@ class Shift extends Component {
               />
 
               <div className="col-lg-3 margin-top-15">
-                <button type="submit" className="btn btn-primary">
+                <button
+                  type="submit"
+                  onClick={this.addShift.bind(this)}
+                  className="btn btn-primary"
+                >
                   Add to List
                 </button>
               </div>
             </div>
-
-            <div className="form-details">
-              <AlgaehDataGrid
-                id="appt-status-grid"
-                columns={[
-                  {
-                    fieldName: "shift_code",
-                    label: <AlgaehLabel label={{ fieldName: "shift_code" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{ className: "col" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "shift_code",
-                            value: row.shift_code,
-                            events: {
-                              onChange: this.changeGridEditors.bind(this, row)
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "shift_description",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "shift_description" }} />
-                    ),
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{ className: "col" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "shift_description",
-                            value: row.shift_description,
-                            events: {
-                              onChange: this.changeGridEditors.bind(this, row)
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "arabic_name",
-                    label: <AlgaehLabel label={{ fieldName: "arabic_name" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{ className: "col" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "arabic_name",
-                            value: row.arabic_name,
-                            events: {
-                              onChange: this.changeGridEditors.bind(this, row)
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "shift_status",
-                    label: <AlgaehLabel label={{ fieldName: "shift_status" }} />
-                  }
-                ]}
-                keyId="hims_d_shift_id"
-                dataSource={{
-                  data: this.state.shifts
-                }}
-                isEditable={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onEdit: () => {},
-                  onDelete: this.deleteShifts.bind(this),
-                  onDone: this.updateShifts.bind(this)
-                }}
-              />
-            </div>
           </form>
+          <div className="form-details">
+            <AlgaehDataGrid
+              id="appt-status-grid"
+              columns={[
+                {
+                  fieldName: "shift_code",
+                  label: <AlgaehLabel label={{ fieldName: "shift_code" }} />,
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "shift_code",
+                          value: row.shift_code,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "shift_description",
+                  label: (
+                    <AlgaehLabel label={{ fieldName: "shift_description" }} />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "shift_description",
+                          value: row.shift_description,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "arabic_name",
+                  label: <AlgaehLabel label={{ fieldName: "arabic_name" }} />,
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "arabic_name",
+                          value: row.arabic_name,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "shift_status",
+                  label: <AlgaehLabel label={{ fieldName: "shift_status" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.shift_status === "A" ? "Active" : "Inactive"}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "shift_status",
+                          className: "select-fld",
+                          value: row.shift_status,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.FORMAT_STATUS
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                }
+              ]}
+              keyId="hims_d_shift_id"
+              dataSource={{
+                data: this.state.shifts
+              }}
+              isEditable={true}
+              paging={{ page: 0, rowsPerPage: 10 }}
+              events={{
+                onEdit: () => {},
+                onDelete: this.deleteShifts.bind(this),
+                onDone: this.updateShifts.bind(this)
+              }}
+            />
+          </div>
         </div>
       </div>
     );

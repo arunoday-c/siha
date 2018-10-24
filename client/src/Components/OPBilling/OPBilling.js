@@ -400,7 +400,7 @@ class PatientDisplayDetails extends Component {
           }}
           selectedLang={this.state.selectedLang}
         />
-        <div className="spacing-push">
+        <div style={{ marginTop: 75 }}>
           <MyContext.Provider
             value={{
               state: this.state,

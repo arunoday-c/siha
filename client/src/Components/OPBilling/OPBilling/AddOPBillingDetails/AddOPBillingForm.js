@@ -21,7 +21,6 @@ import {
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import Paper from "@material-ui/core/Paper";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 
 class AddOPBillingForm extends Component {
@@ -665,7 +664,14 @@ class AddOPBillingForm extends Component {
 
                 <div className="row">
                   <div className="col-lg-4">
-                    <Paper className="Paper">
+                    <div
+                      style={{
+                        margin: "15px 0",
+                        border: "1px solid #acaaaa",
+                        padding: 15,
+                        borderRadius: 10
+                      }}
+                    >
                       <div className="row">
                         <div className="col-lg-6">
                           <AlgaehLabel
@@ -862,11 +868,18 @@ class AddOPBillingForm extends Component {
                           </div>
                         </div>
                       </div>
-                    </Paper>
+                    </div>
                   </div>
 
                   <div className="col-lg-8">
-                    <Paper className="Paper">
+                    <div
+                      style={{
+                        margin: "15px 0",
+                        border: "1px solid #acaaaa",
+                        padding: 15,
+                        borderRadius: 10
+                      }}
+                    >
                       <div className="row secondary-box-container">
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
@@ -1001,7 +1014,7 @@ class AddOPBillingForm extends Component {
                         </div>
                       </div>
                       <ReciptForm BillingIOputs={this.props.BillingIOputs} />
-                    </Paper>
+                    </div>
                   </div>
                 </div>
               </div>
