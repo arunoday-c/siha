@@ -47,7 +47,7 @@ class OrderingServices extends Component {
       dummy_company_payble: 0,
       approval_limit_yesno: "N",
       insurance_service_name: null,
-      saved: false,
+      saved: true,
 
       insured: "N",
       primary_insurance_provider_id: null,
@@ -472,7 +472,7 @@ class OrderingServices extends Component {
                     }}
                   />
                   <h5>
-                    {this.state.sub_total_amount
+                    {this.state.company_payble
                       ? "₹" + this.state.company_payble
                       : "₹0.00"}
                   </h5>

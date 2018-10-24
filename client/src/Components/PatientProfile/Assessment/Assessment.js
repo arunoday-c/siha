@@ -42,6 +42,7 @@ class Assessment extends Component {
       icd_code: null,
       icd_description: null,
       finalICDS: [],
+      icd_id: null,
       f_icd_id: null,
       selectdIcd: [],
       insertInitialDiad: [],
