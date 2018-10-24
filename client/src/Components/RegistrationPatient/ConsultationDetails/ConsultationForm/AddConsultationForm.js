@@ -148,6 +148,9 @@ class AddConsultationForm extends Component {
                           valueField: "hims_d_visit_type_id",
                           data: this.props.visittypes
                         },
+                        others: {
+                          disabled: this.state.clearEnable
+                        },
                         onChange: selectedHandeler.bind(this, this, context)
                       }}
                     />
