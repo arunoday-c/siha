@@ -244,6 +244,7 @@ module.exports = {
     addShiftMaster,
     addCounterMaster,
     getCounterMaster,
-    getShiftMaster   ,
-    updateShiftMaster
+    getShiftMaster,
+    updateShiftMaster,
+    updateCounterMaster
   };

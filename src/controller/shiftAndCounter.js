@@ -6,7 +6,9 @@ import {
     addShiftMaster,
     addCounterMaster,
     getCounterMaster,
-    getShiftMaster 
+    getShiftMaster,
+    updateShiftMaster,
+    updateCounterMaster
 } from "../model/shiftAndCounter";
 
 export default ({ config, db }) => {
@@ -74,7 +76,8 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-
+  updateShiftMaster,
+  updateCounterMaster
 
   return api;
 };
