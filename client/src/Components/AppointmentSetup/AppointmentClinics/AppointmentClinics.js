@@ -158,7 +158,7 @@ class AppointmentClinics extends Component {
           onFailure: error => {
             swalMessage({
               title: error.message,
-              type: "danger"
+              type: "warning"
             });
           }
         });
