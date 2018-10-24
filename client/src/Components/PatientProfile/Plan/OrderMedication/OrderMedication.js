@@ -46,11 +46,23 @@ class OrderMedication extends Component {
       itemlist: [],
       medicationitems: [],
       start_date: moment(new Date())._d,
-      savebutton: true,
+      saveMedicationEnable: true,
       uom_id: null,
       service_id: null,
       item_category_id: null,
-      item_group_id: null
+      item_group_id: null,
+      addItemEnable: true,
+
+      item_id: null,
+      generic_id: null,
+      dosage: null,
+      frequency: null,
+      no_of_days: null,
+      dispense: null,
+
+      frequency_type: null,
+      frequency_time: null,
+      Instructions: null
     };
   }
 
@@ -83,7 +95,7 @@ class OrderMedication extends Component {
     return (
       <div className="hptl-phase1-order-medication-form">
         <div className="col-lg-12">
-          <div className="row paddin-bottom-5" style={{marginTop:5}}>
+          <div className="row paddin-bottom-5" style={{ marginTop: 5 }}>
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{ forceLabel: "Generic Name" }}
@@ -219,20 +231,22 @@ class OrderMedication extends Component {
               value={this.state.start_date}
             />
 
-
-            <div className="col-lg-2" style={{paddingTop:21,paddingLeft: 0}}>
+            <div
+              className="col-lg-2"
+              style={{ paddingTop: 21, paddingLeft: 0 }}
+            >
               <button
                 className="btn btn-default btn-sm"
                 type="button"
                 onClick={AddItems.bind(this, this)}
+                disabled={this.state.addItemEnable}
               >
                 Add Item
               </button>
             </div>
           </div>
           <div className="row">
-          <div className="col-lg-12" style={{marginTop:10}}>
-          
+            <div className="col-lg-12" style={{ marginTop: 10 }}>
               <AlgaehDataGrid
                 id="Order_Medication"
                 columns={[
@@ -362,20 +376,22 @@ class OrderMedication extends Component {
                   // onDone: this.updateBillDetail.bind(this)
                 }}
               />
+            </div>
           </div>
-          </div>
-          <div className="row" style={{marginTop:5,marginBottom:5}}>
-            <div className="col-lg-9">Instructions: {this.state.followup_comments} </div>
-         
+          <div className="row" style={{ marginTop: 5, marginBottom: 5 }}>
+            <div className="col-lg-9">
+              Instructions: {this.state.followup_comments}
+            </div>
+
             <div className="col-lg-3">
- <button
+              <button
                 className="btn btn-primary btn-sm"
                 type="button"
-                 onClick={SaveMedication.bind(this, this)}
-                  disabled={this.state.saved}
-              >Save Medication </button>
-
-
+                onClick={SaveMedication.bind(this, this)}
+                disabled={this.state.saveMedicationEnable}
+              >
+                Save Medication
+              </button>
             </div>
           </div>
         </div>

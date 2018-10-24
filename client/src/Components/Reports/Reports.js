@@ -1,28 +1,64 @@
 import React, { Component } from "react";
 import "./reports.css";
-import { AlagehFormGroup, AlgaehDateHandler } from "../Wrapper/algaehWrapper";
-import moment from "moment";
+import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
+import Enumerable from "linq";
+import data from "./reports_data";
+import { swalMessage } from "../../utils/algaehApiCall";
+
 class Reports extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      itemList: [],
+      module: ""
+    };
+  }
+
+  loadItemList(e) {
+    e.preventDefault();
+
+    if (this.state.module.length === 0) {
+      swalMessage({
+        title: "Please Select a Category",
+        type: "warning"
+      });
+    } else {
+      let SelectedItem = Enumerable.from(data)
+        .where(w => w.name === this.state.module)
+        .firstOrDefault();
+
+      this.setState({
+        itemList: SelectedItem !== undefined ? SelectedItem.submenu : []
+      });
+    }
+  }
+
+  dropDownHandler(value) {
+    this.setState({ [value.name]: value.value }, () => {});
+  }
+
   render() {
     return (
       <div className="reports">
         <div className="row inner-top-search">
-          <form>
+          <form action="none">
             <div className="row padding-10">
-              <AlagehFormGroup
+              <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Filter Report by Categories",
                   isImp: false
                 }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "",
-                  value: "",
-                  others: {
-                    type: "number"
+                selector={{
+                  name: "module",
+                  className: "select-fld",
+                  value: this.state.module,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "name",
+                    data: data
                   },
-                  events: {}
+                  onChange: this.dropDownHandler.bind(this)
                 }}
               />
 
@@ -36,7 +72,7 @@ class Reports extends Component {
                     background: "none",
                     border: "none"
                   }}
-                  type="submit"
+                  onClick={this.loadItemList.bind(this)}
                   className="fas fa-search fa-2x"
                 />
               </div>
@@ -52,62 +88,12 @@ class Reports extends Component {
           </div>
           <div className="portlet-body">
             <ul className="reportList_Ul">
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
-              <li>
-                <i className="fas fa-file-medical-alt" />
-                <span>Appointment Availability Report</span>
-              </li>
+              {this.state.itemList.map((data, index) => (
+                <li>
+                  <i className="fas fa-file-medical-alt" />
+                  <span>{data.subitem}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
