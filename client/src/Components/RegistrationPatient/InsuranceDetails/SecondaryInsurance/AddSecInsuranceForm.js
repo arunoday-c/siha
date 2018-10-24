@@ -87,7 +87,7 @@ class AddSecInsuranceForm extends Component {
                 <div className="row">
                   <div className="col-lg-8 primary-details">
                     <div className="row primary-box-container">
-                      <div className="col-lg-2">
+                      <div className="col-lg-2" style={{ paddingRight: 0 }}>
                         <label>Insurance</label>
                         <br />
                         <div className="customRadio">
@@ -143,7 +143,7 @@ class AddSecInsuranceForm extends Component {
                           })}
                         </div> */}
                       </div>
-                      <div className="col-lg-1">
+                      <div className="col-lg-1" style={{ paddingRight: 0 }}>
                         <Tooltip id="tooltip-icon" title="Add New">
                           <IconButton
                             className="go-button"

@@ -455,7 +455,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
+                          div={{ className: "col" }}
                           label={{
                             fieldName: "card_check_number"
                           }}
@@ -474,7 +474,7 @@ class AddBillingForm extends Component {
                         />
 
                         <AlgaehDateHandler
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col" }}
                           label={{
                             fieldName: "expiry_date"
                           }}
@@ -543,7 +543,7 @@ class AddBillingForm extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
+                          div={{ className: "col" }}
                           label={{
                             fieldName: "card_check_number"
                           }}
@@ -562,7 +562,7 @@ class AddBillingForm extends Component {
                         />
 
                         <AlgaehDateHandler
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col" }}
                           label={{
                             fieldName: "expiry_date"
                           }}
