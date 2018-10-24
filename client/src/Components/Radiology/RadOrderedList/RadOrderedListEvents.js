@@ -39,18 +39,41 @@ const PatientSearch = ($this, e) => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  $this.setState(
-    {
-      [e]: moment(ctrl)._d
-    },
-    () => {
-      getRadTestList($this);
+  debugger;
+  let intFailure = false;
+  if (e === "from_date") {
+    if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
+      intFailure = true;
+      swalMessage({
+        title: "Invalid Input. From Date cannot be grater than To Date.",
+        type: "warning"
+      });
     }
-  );
+  } else if (e === "to_date") {
+    if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.from_date)) {
+      intFailure = true;
+      swalMessage({
+        title: "Invalid Input. To Date cannot be less than From Date.",
+        type: "warning"
+      });
+    }
+  }
+
+  if (intFailure === false) {
+    $this.setState(
+      {
+        [e]: moment(ctrl)._d
+      },
+      () => {
+        getRadTestList($this);
+      }
+    );
+  }
 };
 
 const getRadTestList = $this => {
   let inputobj = {};
+  debugger;
 
   if ($this.state.from_date !== null) {
     inputobj.from_date = moment($this.state.from_date).format(
@@ -80,11 +103,6 @@ const getRadTestList = $this => {
 
 const UpdateRadOrder = ($this, row) => {
   let inputobj = row;
-  let strMessage =
-    "Are you sure the patient " +
-    row.full_name +
-    " has arrived for the procedure " +
-    row.service_name;
 
   if (inputobj.arrived === "N") {
     inputobj = {
@@ -112,11 +130,14 @@ const UpdateRadOrder = ($this, row) => {
         row.full_name +
         " has arrived for the procedure " +
         row.service_name,
-      type: "success",
-      buttons: true,
-      dangerMode: true
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willProceed => {
-      if (willProceed) {
+      if (willProceed.value) {
         algaehApiCall({
           uri: "/radiology/updateRadOrderedServices",
           data: inputobj,
@@ -137,6 +158,11 @@ const UpdateRadOrder = ($this, row) => {
             });
           }
         });
+      } else {
+        swalMessage({
+          title: "Cancelled",
+          type: "warning"
+        });
       }
     });
   } else {
@@ -156,7 +182,9 @@ const Refresh = $this => {
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
       to_date: new Date(),
       patient_id: null,
-      patient_code: null
+      patient_code: null,
+      category_id: null,
+      proiorty: null
     },
     () => {
       getRadTestList($this);

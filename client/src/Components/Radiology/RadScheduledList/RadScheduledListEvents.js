@@ -2,6 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -37,14 +38,36 @@ const PatientSearch = ($this, e) => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  $this.setState(
-    {
-      [e]: moment(ctrl)._d
-    },
-    () => {
-      getRadTestList($this);
+  debugger;
+  let intFailure = false;
+  if (e === "from_date") {
+    if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
+      intFailure = true;
+      swalMessage({
+        title: "Invalid Input. From Date cannot be grater than To Date.",
+        type: "warning"
+      });
     }
-  );
+  } else if (e === "to_date") {
+    if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.from_date)) {
+      intFailure = true;
+      swalMessage({
+        title: "Invalid Input. To Date cannot be less than From Date.",
+        type: "warning"
+      });
+    }
+  }
+
+  if (intFailure === false) {
+    $this.setState(
+      {
+        [e]: moment(ctrl)._d
+      },
+      () => {
+        getRadTestList($this);
+      }
+    );
+  }
 };
 
 const getRadTestList = $this => {
@@ -68,7 +91,7 @@ const getRadTestList = $this => {
   if ($this.state.status !== null) {
     inputobj.status = $this.state.status;
   }
- 
+
   $this.props.getRadiologyTestList({
     uri: "/radiology/getRadOrderedServices",
     method: "GET",
@@ -81,8 +104,6 @@ const getRadTestList = $this => {
 };
 
 const openResultEntry = ($this, row) => {
- 
-
   $this.props.getTemplateList({
     uri: "/radiology/getRadTemplateList",
     method: "GET",
@@ -92,7 +113,6 @@ const openResultEntry = ($this, row) => {
       mappingName: "templatelist"
     },
     afterSuccess: data => {
-     
       let Template = row;
       Template.Templatelist = data;
       $this.setState({
@@ -123,7 +143,9 @@ const Refresh = $this => {
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
       to_date: new Date(),
       patient_id: null,
-      patient_code: null
+      patient_code: null,
+      status: null,
+      proiorty: null
     },
     () => {
       getRadTestList($this);

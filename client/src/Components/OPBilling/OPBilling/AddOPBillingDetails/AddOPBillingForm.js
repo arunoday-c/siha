@@ -56,18 +56,23 @@ class AddOPBillingForm extends Component {
       });
     }
 
-    if (this.props.services === undefined || this.props.services.length === 0) {
+    if (
+      this.props.opbilservices === undefined ||
+      this.props.opbilservices.length === 0
+    ) {
       this.props.getServices({
         uri: "/serviceType/getService",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "services"
+          mappingName: "opbilservices"
         },
         afterSuccess: data => {
-          this.setState({
-            services: data
-          });
+          if (data.length !== 0) {
+            this.setState({
+              opbilservices: data
+            });
+          }
         }
       });
       this.props.getServices({
@@ -344,7 +349,7 @@ class AddOPBillingForm extends Component {
                             ? "service_name"
                             : "arabic_service_name",
                         valueField: "hims_d_services_id",
-                        data: this.state.services
+                        data: this.state.opbilservices
                       },
                       others: { disabled: this.state.Billexists },
                       onChange: serviceHandeler.bind(this, this, context)
@@ -479,7 +484,7 @@ class AddOPBillingForm extends Component {
                                   dataSource: {
                                     textField: "service_name",
                                     valueField: "hims_d_services_id",
-                                    data: this.props.services
+                                    data: this.props.opbilservices
                                   },
                                   others: {
                                     disabled: true
@@ -1011,7 +1016,7 @@ class AddOPBillingForm extends Component {
 function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
-    services: state.services,
+    opbilservices: state.opbilservices,
     genbill: state.genbill,
     serviceslist: state.serviceslist
   };

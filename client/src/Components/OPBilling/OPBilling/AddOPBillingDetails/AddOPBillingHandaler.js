@@ -12,11 +12,11 @@ const serviceTypeHandeler = ($this, context, e) => {
         data: { service_type_id: $this.state.s_service_type },
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "services"
+          mappingName: "opbilservices"
         },
         afterSuccess: data => {
           $this.setState({
-            services: data
+            opbilservices: data
           });
         }
       });
