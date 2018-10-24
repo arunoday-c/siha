@@ -34,6 +34,7 @@ exports.default = function () {
   var api = (0, _express.Router)();
 
   api.post("/imageSave", _images.saveImageInTemp);
+  api.get("/getFile", _images.showFile);
   api.get("/subDeptClinicalNonClinicalAll", function (req, res, next) {
     (0, _caching.getCacheData)({ key: "subDeptClinicalNonClinicalAll" }, function (result) {
       if (result != null) {
