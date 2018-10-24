@@ -46,9 +46,9 @@ export default ({ config, db }) => {
   );
 
 
-    getCounterMaster,
+    
     // created by irfan :to  getCounterMaster
-  api.post(
+  api.get(
     "/getCounterMaster",
     getCounterMaster,
     (req, res, next) => {
@@ -62,7 +62,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
   // created by irfan :to  getShiftMaster
-  api.post(
+  api.get(
     "/getShiftMaster",
     getShiftMaster,
     (req, res, next) => {
@@ -76,8 +76,40 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  updateShiftMaster,
-  updateCounterMaster
+
+  // created by irfan :to  updateCounterMaster
+  api.update(
+    "/updateCounterMaster",
+    updateCounterMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+
+  // created by irfan :to  updateShiftMaster
+  api.update(
+    "/updateShiftMaster",
+    updateShiftMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  
+  
 
   return api;
 };
