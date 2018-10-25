@@ -119,7 +119,7 @@ typings/
 .env
 
 # production
-/dist
+dist
 
 #ignore algaeh_users file
 algaeh_users.json
