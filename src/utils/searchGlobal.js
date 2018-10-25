@@ -47,7 +47,6 @@ let algaehSearchConfig = searchName => {
           pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A'",
         orderBy: "pv.hims_f_patient_visit_id desc"
       },
-
       {
         searchName: "initialstock",
         searchQuery:
@@ -68,7 +67,6 @@ let algaehSearchConfig = searchName => {
           "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'Y' and authorie2 = 'Y'",
         orderBy: "hims_f_pharamcy_material_header_id desc"
       },
-      //
       {
         searchName: "SalesReturn",
         searchQuery:
@@ -80,6 +78,12 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_transfer_header",
         orderBy: "hims_f_pharmacy_transfer_header_id desc"
+      },
+      {
+        searchName: "IcdCodes",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS hims_d_icd_id, icd_code, icd_description from hims_d_icd where record_status='A'",
+        orderBy: "hims_d_icd_id desc"
       }
 
       // visit

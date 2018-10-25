@@ -22,32 +22,19 @@ class LabResult extends Component {
   }
 
   componentDidMount() {
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "labservices"
-      }
-    });
-
-    this.props.getLabAnalytes({
-      uri: "/labmasters/selectAnalytes",
-      method: "GET",
-      redux: {
-        type: "ANALYTES_GET_DATA",
-        mappingName: "labanalytes"
-      }
-    });
-
-    this.props.getDepartmentsandDoctors({
-      uri: "/department/get/get_All_Doctors_DepartmentWise",
-      method: "GET",
-      redux: {
-        type: "LAB_DEPT_DOCTOR_GET_DATA",
-        mappingName: "labdeptanddoctors"
-      }
-    });
+    if (
+      this.props.labanalytes === undefined ||
+      this.props.labanalytes.length === 0
+    ) {
+      this.props.getLabAnalytes({
+        uri: "/labmasters/selectAnalytes",
+        method: "GET",
+        redux: {
+          type: "ANALYTES_GET_DATA",
+          mappingName: "labanalytes"
+        }
+      });
+    }
 
     getLabResult(this, this);
   }
@@ -92,9 +79,9 @@ class LabResult extends Component {
                       displayTemplate: row => {
                         debugger;
                         let display =
-                          this.props.labservices === undefined
+                          this.props.assservices === undefined
                             ? []
-                            : this.props.labservices.filter(
+                            : this.props.assservices.filter(
                                 f => f.hims_d_services_id === row.service_id
                               );
 
@@ -132,9 +119,9 @@ class LabResult extends Component {
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.labdeptanddoctors.doctors === undefined
+                          this.props.assdeptanddoctors.doctors === undefined
                             ? []
-                            : this.props.labdeptanddoctors.doctors.filter(
+                            : this.props.assdeptanddoctors.doctors.filter(
                                 f => f.employee_id === row.provider_id
                               );
 
@@ -293,10 +280,10 @@ class LabResult extends Component {
 function mapStateToProps(state) {
   return {
     labresult: state.labresult,
-    labservices: state.labservices,
+    assservices: state.assservices,
     testanalytes: state.testanalytes,
     labanalytes: state.labanalytes,
-    labdeptanddoctors: state.labdeptanddoctors
+    assdeptanddoctors: state.assdeptanddoctors
   };
 }
 
@@ -304,10 +291,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getLabResult: AlgaehActions,
-      getServices: AlgaehActions,
       getLabAnalytes: AlgaehActions,
-      getTestAnalytes: AlgaehActions,
-      getDepartmentsandDoctors: AlgaehActions
+      getTestAnalytes: AlgaehActions
     },
     dispatch
   );

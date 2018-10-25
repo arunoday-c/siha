@@ -475,7 +475,6 @@ class Appointment extends Component {
   }
 
   updatePatientAppointment() {
-    debugger;
     let edit_details = {
       hims_f_patient_appointment_id: this.state.edit_appointment_id,
       record_status: "A",
@@ -547,8 +546,8 @@ class Appointment extends Component {
     const appt_time = e.currentTarget.getAttribute("appt-time");
 
     if (
-      moment(appt_time, "HH:mm a").format("HHMM") <
-      moment(new Date()).format("HHMM")
+      moment(appt_time, "HH:mm a").format("HHmm") <
+      moment(new Date()).format("HHmm")
     ) {
       swalMessage({
         title: "Can't create schedule for past time",
