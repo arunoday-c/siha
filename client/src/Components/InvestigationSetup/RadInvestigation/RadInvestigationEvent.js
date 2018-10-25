@@ -96,6 +96,7 @@ const CloseTemplate = ($this, hims_d_rad_template_detail_id) => {
 };
 
 const deleteRadInvestigation = ($this, context, row, rowId) => {
+  debugger;
   let RadTemplate = $this.state.RadTemplate;
   let update_rad_temp = $this.state.update_rad_temp;
   let insert_rad_temp = $this.state.insert_rad_temp;
@@ -119,7 +120,13 @@ const deleteRadInvestigation = ($this, context, row, rowId) => {
       }
     }
   }
-  RadTemplate.splice(rowId, 1);
+
+  for (let i = 0; i < RadTemplate.length; i++) {
+    if (RadTemplate[i].template_name === row.template_name) {
+      RadTemplate.splice(i, 1);
+    }
+  }
+  // RadTemplate.splice(rowId, 1);
   $this.setState({
     RadTemplate: RadTemplate,
     insert_rad_temp: insert_rad_temp,

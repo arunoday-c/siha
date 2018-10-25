@@ -176,12 +176,20 @@ class RadInvestigation extends Component {
                                     row
                                   )}
                                 />
-                                ""
+                                <i
+                                  className="fas fa-trash-alt"
+                                  onClick={deleteRadInvestigation.bind(
+                                    this,
+                                    this,
+                                    context,
+                                    row
+                                  )}
+                                />
                               </span>
                             );
                           },
                           others: {
-                            maxWidth: 65,
+                            maxWidth: 90,
                             resizable: false,
                             style: { textAlign: "center" }
                           }

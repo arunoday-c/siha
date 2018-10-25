@@ -179,7 +179,7 @@ class NewInvestigation extends PureComponent {
                         dataSource: {
                           textField: "icd_code",
                           valueField: "hims_d_icd_id",
-                          data: this.props.cptcodes
+                          data: []
                         },
                         onChange: texthandle.bind(this, this)
                       }}
