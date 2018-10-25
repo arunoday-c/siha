@@ -667,6 +667,23 @@ input[type="time"] {
   width: 100%;
 }
 
+input:disabled::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: #fff;
+}
+input:disabled:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #fff;
+}
+input:disabled::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #fff;
+}
+input:disabled:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: #fff;
+}
+
 input[type="color"] {
   font-size: $textFontSize;
   -webkit-appearance: none;

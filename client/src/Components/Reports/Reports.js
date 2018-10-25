@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import "./reports.css";
-import { AlagehAutoComplete, Modal } from "../Wrapper/algaehWrapper";
+import {
+  AlagehAutoComplete,
+  Modal,
+  AlagehFormGroup
+} from "../Wrapper/algaehWrapper";
 import Enumerable from "linq";
 import data from "./reports_data";
 import { swalMessage } from "../../utils/algaehApiCall";
@@ -81,14 +85,10 @@ class Reports extends Component {
         </Modal>
 
         <div className="row inner-top-search">
-          <form action="none">
+          <form action="none" style={{ width: "100%" }}>
             <div className="row padding-10">
               <AlagehAutoComplete
                 div={{ className: "col" }}
-                label={{
-                  forceLabel: "Filter Report by Categories",
-                  isImp: false
-                }}
                 selector={{
                   name: "module",
                   className: "select-fld",
@@ -98,24 +98,27 @@ class Reports extends Component {
                     valueField: "name",
                     data: data
                   },
+                  others: {
+                    style: { padding: 10 }
+                  },
                   onChange: this.dropDownHandler.bind(this)
                 }}
               />
-
-              {/* <div className="col-lg-1">
-                <button
-                  style={{
-                    cursor: "pointer",
-                    fontSize: " 1.4rem",
-                    margin: " 24px 0 0",
-                    padding: 0,
-                    background: "none",
-                    border: "none"
-                  }}
-                  onClick={this.loadItemList.bind(this)}
-                  className="fas fa-search fa-2x"
-                />
-              </div> */}
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "",
+                  value: "",
+                  others: {
+                    style: { padding: 10 },
+                    placeholder: "Search for reports"
+                  },
+                  events: {
+                    onChange: ""
+                  }
+                }}
+              />
             </div>
           </form>
         </div>
@@ -131,6 +134,9 @@ class Reports extends Component {
             style={{ height: "75vh", overflow: "auto" }}
           >
             <div className="col-lg-12">
+              <div className="row">
+                <h6>Appointments</h6>
+              </div>
               <div className="row">
                 {this.state.itemList.map((data, index) => (
                   <div
