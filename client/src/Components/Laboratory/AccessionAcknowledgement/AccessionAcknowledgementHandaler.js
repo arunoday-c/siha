@@ -110,14 +110,13 @@ const getSampleCollectionDetails = $this => {
       //     };
       //   })
       //   .toArray();
-      debugger;
+
       $this.setState({ sample_collection: data });
     }
   });
 };
 
 const AcceptandRejectSample = ($this, row, AccRej) => {
-  debugger;
   if (row.status === "O") {
     swalMessage({
       title: "Invalid Input. Please collect the sample.",
@@ -125,7 +124,6 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
     });
   } else {
     if (row.sample_status === "N") {
-      debugger;
       let inputobj = {
         hims_d_lab_sample_id: row.hims_d_lab_sample_id,
         order_id: row.hims_f_lab_order_id,
@@ -136,7 +134,6 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
         data: inputobj,
         method: "PUT",
         onSuccess: response => {
-          debugger;
           if (response.data.success === true) {
             let sample_collection = $this.state.sample_collection;
             for (let i = 0; i < sample_collection.length; i++) {
@@ -147,7 +144,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
                 sample_collection[i].status = AccRej;
               }
             }
-            debugger;
+
             $this.setState({ sample_collection: sample_collection }, () => {
               swalMessage({
                 title: "Accepted Successfully",

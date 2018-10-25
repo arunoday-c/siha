@@ -40,8 +40,6 @@ const calculateTotalAmount = ($this, e) => {
 };
 
 const checkcashhandaler = ($this, e) => {
-  debugger;
-
   $this.setState(
     {
       Cashchecked: e.target.checked,
@@ -54,8 +52,6 @@ const checkcashhandaler = ($this, e) => {
 };
 
 const checkcardhandaler = ($this, e) => {
-  debugger;
-
   $this.setState(
     {
       Cardchecked: e.target.checked,
@@ -70,8 +66,6 @@ const checkcardhandaler = ($this, e) => {
 };
 
 const checkcheckhandaler = ($this, e) => {
-  debugger;
-
   $this.setState(
     {
       Checkchecked: e.target.checked,

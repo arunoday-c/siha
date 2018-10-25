@@ -15,8 +15,6 @@ const texthandle = ($this, e) => {
 };
 
 const getInvestigations = $this => {
-  debugger;
-
   let Obj = {};
 
   if ($this.state.category_id !== null) {
@@ -45,7 +43,6 @@ const getInvestigations = $this => {
       mappingName: "investigationdetails"
     },
     afterSuccess: data => {
-      debugger;
       let Investigations = Enumerable.from(data)
         .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();

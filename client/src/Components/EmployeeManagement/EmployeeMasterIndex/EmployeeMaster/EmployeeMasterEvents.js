@@ -3,7 +3,7 @@ import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 
 const Validations = $this => {
   let isError = false;
-  debugger;
+
   if ($this.state.employee_code.length <= 0) {
     isError = true;
     $this.setState({

@@ -44,7 +44,6 @@ const stockingtexthandle = ($this, ctrl, e) => {
 };
 
 const AddUom = ($this, context) => {
-  debugger;
   let isError = false;
   let StockingExit = false;
   let stocking_uom_id = null;
@@ -72,7 +71,7 @@ const AddUom = ($this, context) => {
   } else {
     let detail_item_uom = $this.state.detail_item_uom;
     let insertItemUomMap = $this.state.insertItemUomMap;
-    debugger;
+
     for (let x = 0; x < detail_item_uom.length; x++) {
       if (detail_item_uom[x].stocking_uom === $this.state.stocking_uom) {
         StockingExit = true;
@@ -112,7 +111,7 @@ const AddUom = ($this, context) => {
         stocking_uom_id: stocking_uom_id,
         convertEnable: false
       });
-      debugger;
+
       if (context !== undefined) {
         context.updateState({
           detail_item_uom: detail_item_uom,
@@ -135,7 +134,6 @@ const AddUom = ($this, context) => {
 };
 
 const updateUOM = ($this, context, row) => {
-  debugger;
   let detail_item_uom = $this.state.detail_item_uom;
   let updateUomMapResult = $this.state.updateUomMapResult;
 
@@ -169,7 +167,7 @@ const updateUOM = ($this, context, row) => {
       updateUomMapResult.push(Updateobj);
     }
   }
-  debugger;
+
   for (let l = 0; l < detail_item_uom.length; l++) {
     if (detail_item_uom[l].uom_id === row.uom_id) {
       detail_item_uom[l] = row;
@@ -237,7 +235,6 @@ const deleteUOM = ($this, context, row, rowId) => {
 };
 
 const stockonchangegridcol = ($this, context, row, e) => {
-  debugger;
   let StockingUnit = "N";
   let detail_item_uom = $this.state.detail_item_uom;
   let name = e.name || e.target.name;
@@ -273,7 +270,6 @@ const stockonchangegridcol = ($this, context, row, e) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
-  debugger;
   let detail_item_uom = $this.state.detail_item_uom;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;

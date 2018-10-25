@@ -32,7 +32,6 @@ class NewInvestigation extends PureComponent {
     };
   }
   componentWillMount() {
-    debugger;
     let IOputs = InvestigationIOputs.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
@@ -76,7 +75,6 @@ class NewInvestigation extends PureComponent {
   };
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-investigation-form">

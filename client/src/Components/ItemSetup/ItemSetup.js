@@ -87,7 +87,6 @@ class ItemSetup extends Component {
       this.props.itemservices === undefined ||
       this.props.itemservices.length === 0
     ) {
-      debugger;
       this.props.getServices({
         uri: "/serviceType/getService",
         method: "GET",

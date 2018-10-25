@@ -122,29 +122,27 @@ const InsuranceDetails = ($this, context, e) => {
 };
 
 const radioChange = ($this, context, e) => {
+  debugger;
   if ($this.state.doctor_id !== null) {
     let PatType = null;
     let saveEnable = false;
     let ProcessInsure = false;
     let value = e.target.value;
     let radioNo, radioYes;
-    if ((value = "Y")) {
-      PatType = "I";
-    } else {
-      PatType = "S";
-    }
-    // this.state.saveEnable === false &&
     if (value === "Y") {
+      PatType = "I";
       saveEnable = true;
       ProcessInsure = false;
       radioNo = false;
       radioYes = true;
     } else {
+      PatType = "S";
       saveEnable = false;
       ProcessInsure = true;
       radioNo = true;
       radioYes = false;
     }
+
     $this.setState({
       [e.target.name]: e.target.value,
       insuranceYes: !$this.state.insuranceYes,
@@ -159,7 +157,9 @@ const radioChange = ($this, context, e) => {
         insuranceYes: !$this.state.insuranceYes,
         payment_type: PatType,
         saveEnable: saveEnable,
-        ProcessInsure: ProcessInsure
+        ProcessInsure: ProcessInsure,
+        radioNo: radioNo,
+        radioYes: radioYes
       });
     }
   } else {

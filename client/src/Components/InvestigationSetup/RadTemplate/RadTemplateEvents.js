@@ -4,7 +4,6 @@ const texthandle = ($this, context, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  debugger;
   $this.setState({
     [name]: value,
     dataEnter: true

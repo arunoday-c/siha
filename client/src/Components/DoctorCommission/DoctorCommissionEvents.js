@@ -8,7 +8,6 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 
 var intervalId;
 const changeTexts = ($this, ctrl, e) => {
-  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -211,7 +210,6 @@ const LoadBills = $this => {
       service_type_id: $this.state.select_service
     };
 
-    debugger;
     $this.props.getDoctorsCommission({
       uri: "/doctorsCommission/getDoctorsCommission",
       method: "GET",
@@ -221,7 +219,6 @@ const LoadBills = $this => {
         mappingName: "billscommission"
       },
       afterSuccess: data => {
-        debugger;
         // let providers = Enumerable.from(data)
         //   .where(w => w.isdoctor === "Y")
         //   .toArray();

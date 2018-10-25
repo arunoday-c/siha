@@ -118,30 +118,30 @@ const InsuranceDetails = ($this, context, e) => {
 };
 
 const radioChange = ($this, context, e) => {
-  if ($this.state.insured == "Y") {
+  if ($this.state.insured === "Y") {
     let saveEnable = false;
     let ProcessInsure = false;
     let value = e.target.value;
-    let radioNo, radioYes;
+    let radioSecNo, radioSecYes;
 
     // this.state.saveEnable === false &&
     if (value === "Y") {
       saveEnable = true;
       ProcessInsure = false;
-      radioNo = false;
-      radioYes = true;
+      radioSecNo = false;
+      radioSecYes = true;
     } else {
       saveEnable = false;
       ProcessInsure = true;
-      radioNo = true;
-      radioYes = false;
+      radioSecNo = true;
+      radioSecYes = false;
     }
     $this.setState({
       [e.target.name]: e.target.value,
       sec_insuranceYes: !$this.state.sec_insuranceYes,
       saveEnable: saveEnable,
-      radioNo: radioNo,
-      radioYes: radioYes
+      radioSecNo: radioSecNo,
+      radioSecYes: radioSecYes
     });
 
     if (context != null) {
@@ -149,7 +149,9 @@ const radioChange = ($this, context, e) => {
         [e.target.name]: e.target.value,
         sec_insuranceYes: !$this.state.sec_insuranceYes,
         saveEnable: saveEnable,
-        ProcessInsure: ProcessInsure
+        ProcessInsure: ProcessInsure,
+        radioSecNo: radioSecNo,
+        radioSecYes: radioSecYes
       });
     }
   } else {

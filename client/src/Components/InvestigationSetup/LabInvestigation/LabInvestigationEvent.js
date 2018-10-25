@@ -105,7 +105,6 @@ const AddAnalytes = ($this, context) => {
 };
 
 const updateLabInvestigation = ($this, context, row) => {
-  debugger;
   let analytes = $this.state.analytes;
   let update_analytes = $this.state.update_analytes;
 
@@ -139,7 +138,7 @@ const updateLabInvestigation = ($this, context, row) => {
       update_analytes.push(Updateobj);
     }
   }
-  debugger;
+
   for (let l = 0; l < analytes.length; l++) {
     if (analytes[l].analyte_id === row.analyte_id) {
       analytes[l] = row;
@@ -198,7 +197,6 @@ const deleteLabInvestigation = ($this, context, row, rowId) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-  debugger;
   let analytes = $this.state.analytes;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;

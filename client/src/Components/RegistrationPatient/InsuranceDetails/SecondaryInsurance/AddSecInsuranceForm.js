@@ -33,9 +33,7 @@ class AddSecInsuranceForm extends Component {
     super(props);
     this.state = {
       frontSide: null,
-      backSide: null,
-      radioNo: true,
-      radioYes: false
+      backSide: null
     };
   }
 
@@ -96,8 +94,13 @@ class AddSecInsuranceForm extends Component {
                               type="radio"
                               name="sec_insured"
                               value="Y"
-                              checked={this.state.radioYes}
+                              checked={this.state.radioSecYes}
                               onChange={radioChange.bind(this, this, context)}
+                              disabled={
+                                this.state.sec_insured === "Y"
+                                  ? this.state.hideSecInsurance
+                                  : false
+                              }
                             />
                             <span>Yes</span>
                           </label>
@@ -106,8 +109,13 @@ class AddSecInsuranceForm extends Component {
                               type="radio"
                               name="sec_insured"
                               value="N"
-                              checked={this.state.radioNo}
+                              checked={this.state.radioSecNo}
                               onChange={radioChange.bind(this, this, context)}
+                              disabled={
+                                this.state.sec_insured === "Y"
+                                  ? this.state.hideSecInsurance
+                                  : false
+                              }
                             />
                             <span>No</span>
                           </label>

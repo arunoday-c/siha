@@ -45,7 +45,7 @@ class HospitalServiceSetup extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    debugger;
+
     if (
       this.props.hospitalservices === undefined ||
       this.props.hospitalservices.length === 0
@@ -153,7 +153,6 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
-    debugger;
     row.addNew = false;
     this.setState({
       isOpen: !this.state.isOpen,

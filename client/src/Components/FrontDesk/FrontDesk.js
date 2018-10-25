@@ -20,7 +20,6 @@ class FrontDesk extends Component {
   }
 
   routeComponents() {
-    debugger;
     this.props.getEmployeeServiceID({
       uri: "/appointment/getEmployeeServiceID",
       method: "GET",
@@ -33,7 +32,6 @@ class FrontDesk extends Component {
         mappingName: "employeeSerDetails"
       },
       afterSuccess: data => {
-        debugger;
         this.setState(
           {
             FD_Screen: Window.global["FD-STD"],

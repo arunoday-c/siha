@@ -72,7 +72,6 @@ class InsuranceSetup extends Component {
   };
 
   setUpdateComponent(row, e) {
-    debugger;
     this.setState({
       opencomponent: e.value,
       buttonenable: true,

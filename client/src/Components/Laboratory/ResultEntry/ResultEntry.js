@@ -67,7 +67,6 @@ class ResultEntry extends Component {
     });
   }
   componentWillReceiveProps(newProps) {
-    debugger;
     if (
       newProps.selectedPatient !== undefined &&
       newProps.selectedPatient.open === true

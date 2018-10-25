@@ -340,7 +340,6 @@ class LabInvestigation extends Component {
                               />
                             ),
                             displayTemplate: row => {
-                              debugger;
                               let display =
                                 this.props.labanalytes === undefined
                                   ? []

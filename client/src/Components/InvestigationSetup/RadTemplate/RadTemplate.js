@@ -28,7 +28,6 @@ export default class RadTemplate extends PureComponent {
   };
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (
       newProps.radTempobj !== null &&
       this.state.hims_d_rad_template_detail_id === null &&

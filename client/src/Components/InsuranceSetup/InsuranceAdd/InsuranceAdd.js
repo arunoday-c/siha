@@ -77,7 +77,6 @@ class InsuranceAdd extends PureComponent {
   }
 
   componentDidMount() {
-    debugger;
     let prevLang = getCookie("Language");
 
     setGlobal({ selectedLang: prevLang });
