@@ -72,7 +72,7 @@ const AddUom = ($this, context) => {
   } else {
     let detail_item_uom = $this.state.detail_item_uom;
     let insertItemUomMap = $this.state.insertItemUomMap;
-
+    debugger;
     for (let x = 0; x < detail_item_uom.length; x++) {
       if (detail_item_uom[x].stocking_uom === $this.state.stocking_uom) {
         StockingExit = true;
@@ -81,6 +81,8 @@ const AddUom = ($this, context) => {
     if (StockingExit === false) {
       if ($this.state.stocking_uom === "Y") {
         stocking_uom_id = $this.state.uom_id;
+      } else {
+        stocking_uom_id = $this.state.stocking_uom_id;
       }
       if ($this.state.hims_d_item_master_id !== null) {
         let Insertobj = {
@@ -107,7 +109,8 @@ const AddUom = ($this, context) => {
         uom_id: null,
         stocking_uom: null,
         conversion_factor: null,
-        stocking_uom_id: stocking_uom_id
+        stocking_uom_id: stocking_uom_id,
+        convertEnable: false
       });
       debugger;
       if (context !== undefined) {
