@@ -42,7 +42,7 @@ let addAppointmentStatus = (req, res, next) => {
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
-          if (error) {           
+          if (error) {
             next(error);
           }
           req.records = result;
@@ -82,7 +82,6 @@ let addAppointmentRoom = (req, res, next) => {
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
-          
             next(error);
           }
           req.records = result;
@@ -125,7 +124,6 @@ let addAppointmentClinic = (req, res, next) => {
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
-           
             next(error);
           }
           req.records = result;
@@ -159,7 +157,6 @@ let getAppointmentStatus = (req, res, next) => {
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
-          
             next(error);
           }
           req.records = result;
@@ -193,7 +190,6 @@ let getAppointmentRoom = (req, res, next) => {
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
-           
             next(error);
           }
           req.records = result;
@@ -227,7 +223,6 @@ let getAppointmentClinic = (req, res, next) => {
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
-           
             next(error);
           }
           req.records = result;
@@ -294,14 +289,13 @@ let updateAppointmentStatus = (req, res, next) => {
                   }
 
                   connection.commit(error => {
-                   
                     if (error) {
-                      connection.rollback(() => { 
-                        releaseDBConnection(db, connection);                      
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
                         next(error);
                       });
                     }
-                   
+
                     req.records = result;
                     next();
                   });
@@ -1015,7 +1009,6 @@ let addLeaveOrModifySchedule = (req, res, next) => {
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
-            
             next(error);
           }
           req.records = result;
@@ -1463,7 +1456,6 @@ let deleteDoctorFromSchedule = (req, res, next) => {
         (error, result) => {
           if (error) {
             connection.rollback(() => {
-             
               next(error);
             });
           }
@@ -1532,7 +1524,6 @@ let updateSchedule = (req, res, next) => {
         (error, result) => {
           if (error) {
             connection.rollback(() => {
-              
               next(error);
             });
           }
@@ -2021,7 +2012,7 @@ let addPatientAppointment = (req, res, next) => {
           input.patient_code,
           input.provider_id,
           input.sub_department_id,
-         input.appointment_date,
+          input.appointment_date,
           input.appointment_from_time,
           input.appointment_to_time,
           input.appointment_status_id,
@@ -2043,7 +2034,6 @@ let addPatientAppointment = (req, res, next) => {
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
-            
             next(error);
           }
           req.records = result;
@@ -2107,7 +2097,6 @@ let updatePatientAppointment = (req, res, next) => {
         (error, results) => {
           releaseDBConnection(db, connection);
           if (error) {
-         
             next(error);
           }
           req.records = results;
@@ -2154,7 +2143,42 @@ let getPatientAppointment = (req, res, next) => {
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
-           
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Patient Appointment
+let getEmployeeServiceID = (req, res, next) => {
+  let selectWhere = {
+    employee_id: "ALL",
+    sub_department_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    delete req.query.provider_id;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select * from hims_m_employee_department_mappings where record_status='A' and " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
             next(error);
           }
           req.records = result;
@@ -2188,5 +2212,6 @@ module.exports = {
   addDoctorToExistingSchedule,
   addPatientAppointment,
   getPatientAppointment,
-  updatePatientAppointment
+  updatePatientAppointment,
+  getEmployeeServiceID
 };

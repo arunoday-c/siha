@@ -62,7 +62,7 @@ const insertInitialICDS = $this => {
       .firstOrDefault();
     if (_initalId !== undefined) {
       swalMessage({
-        title: "Invalid Input. Selected diagnosis already exists",
+        title: "Invalid Input. Selected diagnosis already exists.",
         type: "warning"
       });
       return;
@@ -82,7 +82,7 @@ const insertInitialICDS = $this => {
     saveDiagnosis($this, insertInitialDiad);
   } else {
     swalMessage({
-      title: "Invalid Input. Please select Diagnosis",
+      title: "Invalid Input. Please select Diagnosis.",
       type: "warning"
     });
   }

@@ -61,20 +61,7 @@ class BusinessSetup extends Component {
                 />
               }
             </li>
-            <li
-              algaehtabs={"Holiday"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "holidays_list"
-                  }}
-                />
-              }
-            </li>
+
             <li
               algaehtabs={"Shift"}
               style={{ marginRight: 2 }}
@@ -99,6 +86,21 @@ class BusinessSetup extends Component {
                 <AlgaehLabel
                   label={{
                     fieldName: "counter"
+                  }}
+                />
+              }
+            </li>
+
+            <li
+              algaehtabs={"Holiday"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button"}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "holidays_list"
                   }}
                 />
               }

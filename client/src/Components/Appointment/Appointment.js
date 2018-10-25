@@ -475,6 +475,7 @@ class Appointment extends Component {
   }
 
   updatePatientAppointment() {
+    debugger;
     let edit_details = {
       hims_f_patient_appointment_id: this.state.edit_appointment_id,
       record_status: "A",
@@ -516,7 +517,8 @@ class Appointment extends Component {
               "FD-STD": "RegistrationPatient",
               "appt-pat-code": this.state.patient_code,
               "appt-provider-id": this.state.edit_provider_id,
-              "appt-dept-id": this.state.edit_sub_dep_id
+              "appt-dept-id": this.state.edit_sub_dep_id,
+              "appt-hims_d_services_id-id": this.state.hims_d_services_id
             });
 
             document.getElementById("fd-router").click();

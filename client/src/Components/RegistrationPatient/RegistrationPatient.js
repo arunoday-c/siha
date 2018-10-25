@@ -31,19 +31,25 @@ import AlgaehReport from "../Wrapper/printReports";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import Options from "../../Options.json";
-
+import {
+  generateBillDetails,
+  ShowRefundScreen,
+  ClearData,
+  ShowAdvanceScreen
+} from "./RegistrationPatientEvent";
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
   BillingIOputs.inputParam()
 );
-var intervalId;
+
 class RegistrationPatient extends Component {
   constructor(props) {
     super(props);
     this.state = {
       AdvanceOpen: false,
       RefundOpen: false,
-      visittypeselect: true
+      visittypeselect: true,
+      clearEnable: false
     };
   }
 
@@ -69,6 +75,20 @@ class RegistrationPatient extends Component {
       });
     }
 
+    if (
+      this.props.countries === undefined ||
+      this.props.countries.length === 0
+    ) {
+      this.props.getCountries({
+        uri: "/masters/get/countryStateCity",
+        method: "GET",
+        redux: {
+          type: "CTRY_GET_DATA",
+          mappingName: "countries"
+        }
+      });
+    }
+
     if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
       this.props.initialbillingCalculations({
         redux: {
@@ -85,25 +105,6 @@ class RegistrationPatient extends Component {
     ) {
       this.getCtrlCode(this.props.patient_code);
     }
-    // if (
-    //   this.props.provider_id !== undefined &&
-    //   this.props.provider_id.length !== 0
-    // ) {
-    //   this.setState({ provider_id: this.props.provider_id });
-    // }
-
-    // if (
-    //   this.props.sub_department_id !== undefined &&
-    //   this.props.sub_department_id.length !== 0
-    // ) {
-    //   this.setState({ sub_department_id: this.props.sub_department_id });
-    // }
-  }
-
-  ClearData(e) {
-    let IOputs = emptyObject;
-    IOputs.visittypeselect = true;
-    this.setState(IOputs);
   }
 
   GenerateReciept(callback) {
@@ -252,49 +253,7 @@ class RegistrationPatient extends Component {
     this.setState({ open: false });
   };
 
-  ShowAdvanceScreen(e) {
-    if (
-      this.state.patient_code !== undefined &&
-      this.state.patient_code !== ""
-    ) {
-      this.setState({
-        ...this.state,
-        AdvanceOpen: !this.state.AdvanceOpen
-      });
-    } else {
-      swalMessage({
-        title: "Select Patient",
-        type: "error"
-      });
-    }
-  }
-
-  ShowRefundScreen(e) {
-    if (
-      this.state.patient_code !== undefined &&
-      this.state.patient_code !== ""
-    ) {
-      this.setState({
-        ...this.state,
-        RefundOpen: !this.state.RefundOpen
-      });
-    } else {
-      swalMessage({
-        title: "Select Patient",
-        type: "error"
-      });
-    }
-  }
-
-  SideMenuBarOpen(sidOpen) {
-    this.setState({
-      sidBarOpen: sidOpen,
-      breadCrumbWidth: sidOpen === true ? null : "98%"
-    });
-  }
-
   componentWillReceiveProps(nextProps) {
-    debugger;
     if (
       nextProps.genbill !== undefined &&
       nextProps.genbill.length !== 0 &&
@@ -304,9 +263,17 @@ class RegistrationPatient extends Component {
     }
     AlgaehLoader({ show: false });
   }
+
   getCtrlCode(patcode) {
-    debugger;
     let $this = this;
+    let provider_id = this.props.provider_id || null;
+    let sub_department_id = this.props.sub_department_id || null;
+    let visit_type = this.props.visit_type || null;
+    let hims_d_services_id = this.props.hims_d_services_id || null;
+    let fromAppoinment =
+      this.props.fromAppoinment === undefined
+        ? false
+        : this.props.fromAppoinment;
 
     AlgaehLoader({ show: true });
     this.props.getPatientDetails({
@@ -319,22 +286,31 @@ class RegistrationPatient extends Component {
         mappingName: "patients"
       },
       afterSuccess: data => {
-        debugger;
         if (data.response === undefined) {
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.existingPatient = true;
 
-          data.patientRegistration.provider_id = this.props.provider_id || null;
-          data.patientRegistration.doctor_id = this.props.provider_id || null;
-          data.patientRegistration.sub_department_id =
-            this.props.sub_department_id || null;
+          //Appoinment Start
 
+          if (fromAppoinment === true) {
+            data.patientRegistration.provider_id = provider_id;
+            data.patientRegistration.doctor_id = provider_id;
+            data.patientRegistration.sub_department_id = sub_department_id;
+
+            data.patientRegistration.visit_type = visit_type;
+            data.patientRegistration.saveEnable = false;
+            data.patientRegistration.clearEnable = true;
+            data.patientRegistration.hims_d_services_id = hims_d_services_id;
+          }
+          //Appoinment End
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
           $this.setState(data.patientRegistration, () => {
-            debugger;
+            if (fromAppoinment === true) {
+              generateBillDetails(this, this);
+            }
           });
 
           $this.props.getPatientInsurance({
@@ -353,16 +329,26 @@ class RegistrationPatient extends Component {
               data.patientRegistration.hims_d_patient_id;
             data.patientRegistration.existingPatient = true;
 
-            data.patientRegistration.provider_id =
-              this.props.provider_id || null;
-            data.patientRegistration.doctor_id = this.props.provider_id || null;
-            data.patientRegistration.sub_department_id =
-              this.props.sub_department_id || null;
+            //Appoinment Start
+            if (fromAppoinment === true) {
+              data.patientRegistration.provider_id = provider_id;
+              data.patientRegistration.doctor_id = provider_id;
+              data.patientRegistration.sub_department_id = sub_department_id;
 
+              data.patientRegistration.visit_type = visit_type;
+              data.patientRegistration.saveEnable = false;
+              data.patientRegistration.clearEnable = true;
+              data.patientRegistration.hims_d_services_id = hims_d_services_id;
+            }
+            //Appoinment End
             data.patientRegistration.filePreview =
               "data:image/png;base64, " + data.patient_Image;
             data.patientRegistration.arabic_name = "No Name";
-            $this.setState(data.patientRegistration);
+            $this.setState(data.patientRegistration, () => {
+              if (fromAppoinment === true) {
+                generateBillDetails(this, this);
+              }
+            });
 
             $this.props.getPatientInsurance({
               uri: "/insurance/getPatientInsurance",
@@ -546,7 +532,8 @@ class RegistrationPatient extends Component {
                     <button
                       type="button"
                       className="btn btn-default"
-                      onClick={this.ClearData.bind(this)}
+                      onClick={ClearData.bind(this, this)}
+                      disabled={this.state.clearEnable}
                     >
                       <AlgaehLabel
                         label={{ fieldName: "btn_clear", returnText: true }}
@@ -556,7 +543,7 @@ class RegistrationPatient extends Component {
                     <button
                       type="button"
                       className="btn btn-other"
-                      onClick={this.ShowRefundScreen.bind(this)}
+                      onClick={ShowRefundScreen.bind(this, this)}
                     >
                       <AlgaehLabel
                         label={{
@@ -568,7 +555,7 @@ class RegistrationPatient extends Component {
 
                     <AddAdvanceModal
                       show={this.state.RefundOpen}
-                      onClose={this.ShowRefundScreen.bind(this)}
+                      onClose={ShowRefundScreen.bind(this, this)}
                       selectedLang={this.state.selectedLang}
                       HeaderCaption={
                         <AlgaehLabel
@@ -592,7 +579,7 @@ class RegistrationPatient extends Component {
                     <button
                       type="button"
                       className="btn btn-other"
-                      onClick={this.ShowAdvanceScreen.bind(this)}
+                      onClick={ShowAdvanceScreen.bind(this, this)}
                     >
                       <AlgaehLabel
                         label={{
@@ -604,7 +591,7 @@ class RegistrationPatient extends Component {
 
                     <AddAdvanceModal
                       show={this.state.AdvanceOpen}
-                      onClose={this.ShowAdvanceScreen.bind(this)}
+                      onClose={ShowAdvanceScreen.bind(this, this)}
                       selectedLang={this.state.selectedLang}
                       HeaderCaption={
                         <AlgaehLabel
@@ -640,7 +627,8 @@ function mapStateToProps(state) {
   return {
     patients: state.patients,
     genbill: state.genbill,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
+    countries: state.countries
   };
 }
 
@@ -654,7 +642,9 @@ function mapDispatchToProps(dispatch) {
       generateBill: AlgaehActions,
       initialStateBillGen: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      initialbillingCalculations: AlgaehActions
+      initialbillingCalculations: AlgaehActions,
+      billingCalculations: AlgaehActions,
+      getCountries: AlgaehActions
     },
     dispatch
   );

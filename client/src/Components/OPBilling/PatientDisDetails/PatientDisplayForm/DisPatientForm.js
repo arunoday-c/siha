@@ -78,7 +78,9 @@ class DisPatientForm extends Component {
                         style={{
                           paddingTop: 17,
                           paddingLeft: 3,
-                          cursor: "pointer"
+                          cursor: "pointer",
+                          pointerEvents:
+                            this.state.Billexists === true ? "none" : ""
                         }}
                         onClick={PatientSearch.bind(this, this, context)}
                       />

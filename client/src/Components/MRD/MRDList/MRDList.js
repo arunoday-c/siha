@@ -186,110 +186,114 @@ class MRDList extends Component {
             </div>
           </div>
           <div className="portlet-body" id="mrdList-Cntr">
-            <AlgaehDataGrid
-              id="index"
-              columns={[
-                {
-                  fieldName: "registration_date",
-                  label: "Registration Date",
-                  others: {
-                    maxWidth: 150,
-                    resizable: false,
-                    style: { textAlign: "center" }
-                  }
-                },
-                {
-                  fieldName: "patient_code",
-                  label: "Patient Code",
-                  displayTemplate: row => {
-                    return (
-                      <span
-                        onClick={() => {
-                          debugger;
-                          setGlobal({
-                            "MRD-STD": "PatientMRD",
-                            mrd_patient: row.hims_d_patient_id,
-                            nationality: row.nationality,
-                            primary_id: row.primary_document_name,
-                            primary_id_number: row.primary_id_no,
-                            gender: row.gender,
-                            age: row.age,
-                            date_of_birth: row.date_of_birth,
-                            patient_code: row.patient_code,
-                            contact_number: row.contact_number,
-                            pat_name: row.full_name
-                          });
-                          document.getElementById("mrd-router").click();
-                        }}
-                        className="pat-code"
-                      >
-                        {row.patient_code}
-                      </span>
-                    );
-                  },
-                  others: {
-                    maxWidth: 120,
-                    resizable: false,
-                    style: { textAlign: "center" }
-                  },
-                  className: drow => {
-                    return "greenCell";
-                  }
-                },
-                {
-                  fieldName: "full_name",
-                  label: "Patient Name",
-                  others: { resizable: false, style: { textAlign: "left" } }
-                },
-                {
-                  fieldName: "gender",
-                  label: "Gender",
-                  others: {
-                    maxWidth: 90,
-                    resizable: false,
-                    style: { textAlign: "center" }
-                  }
-                },
-                {
-                  fieldName: "date_of_birth",
-                  label: "Date of Birth",
-                  others: {
-                    maxWidth: 120,
-                    resizable: false,
-                    style: { textAlign: "center" }
-                  }
-                },
-                {
-                  fieldName: "age",
-                  label: "Age",
-                  others: {
-                    maxWidth: 60,
-                    resizable: false,
-                    style: { textAlign: "center" }
-                  }
-                },
-                {
-                  fieldName: "contact_number",
-                  label: "Phone Number",
-                  others: {
-                    maxWidth: 150,
-                    resizable: false,
-                    style: { textAlign: "center" }
-                  }
-                }
-              ]}
-              keyId="index"
-              dataSource={{
-                data: this.state.patientData
-              }}
-              isEditable={false}
-              paging={{ page: 0, rowsPerPage: 20 }}
-              events={{
-                onDelete: row => {},
-                onEdit: row => {},
-                onDone: row => {}
-              }}
-            />
+            <div className="row">
+              <div className="col-lg-12">
+                <AlgaehDataGrid
+                  id="index"
+                  columns={[
+                    {
+                      fieldName: "registration_date",
+                      label: "Registration Date",
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "patient_code",
+                      label: "Patient Code",
+                      displayTemplate: row => {
+                        return (
+                          <span
+                            onClick={() => {
+                              debugger;
+                              setGlobal({
+                                "MRD-STD": "PatientMRD",
+                                mrd_patient: row.hims_d_patient_id,
+                                nationality: row.nationality,
+                                primary_id: row.primary_document_name,
+                                primary_id_number: row.primary_id_no,
+                                gender: row.gender,
+                                age: row.age,
+                                date_of_birth: row.date_of_birth,
+                                patient_code: row.patient_code,
+                                contact_number: row.contact_number,
+                                pat_name: row.full_name
+                              });
+                              document.getElementById("mrd-router").click();
+                            }}
+                            className="pat-code"
+                          >
+                            {row.patient_code}
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 120,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      },
+                      className: drow => {
+                        return "greenCell";
+                      }
+                    },
+                    {
+                      fieldName: "full_name",
+                      label: "Patient Name",
+                      others: { resizable: false, style: { textAlign: "left" } }
+                    },
+                    {
+                      fieldName: "gender",
+                      label: "Gender",
+                      others: {
+                        maxWidth: 90,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "date_of_birth",
+                      label: "Date of Birth",
+                      others: {
+                        maxWidth: 120,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "age",
+                      label: "Age",
+                      others: {
+                        maxWidth: 60,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "contact_number",
+                      label: "Phone Number",
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    }
+                  ]}
+                  keyId="index"
+                  dataSource={{
+                    data: this.state.patientData
+                  }}
+                  isEditable={false}
+                  paging={{ page: 0, rowsPerPage: 20 }}
+                  events={{
+                    onDelete: row => {},
+                    onEdit: row => {},
+                    onDone: row => {}
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
