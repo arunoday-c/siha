@@ -145,7 +145,7 @@ export function displayFileFromServer(options) {
     onSuccess: response => {
       if (response.data) {
         const _data =
-          "data:i" +
+          "data:" +
           response.headers["content-type"] +
           ";base64," +
           new Buffer(response.data, "binary").toString("base64");

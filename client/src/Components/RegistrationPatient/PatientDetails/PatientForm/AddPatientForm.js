@@ -154,7 +154,6 @@ class AddPatientForm extends PureComponent {
           .where(w => w.hims_d_country_id === this.state.country_id)
           .firstOrDefault();
         let states = country !== undefined ? country.states : [];
-        debugger;
 
         if (this.props.countries !== undefined) {
           if (nextProps.state_id !== this.state.state_id) {

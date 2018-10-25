@@ -24,7 +24,6 @@ import {
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
-import { Line } from "rc-progress";
 import noImage from "../../../../../assets/images/images.png";
 import { displayFileFromServer } from "../../../../../utils/GlobalFunctions";
 
@@ -514,12 +513,19 @@ class PersonalDetails extends PureComponent {
                                 }}
                               />
                             </div>
-                            <Line
+                            <div
+                              style={{
+                                width: this.state.percent + "%",
+                                height: 3,
+                                backgroundColor: "#E1AE54"
+                              }}
+                            />
+                            {/* <Line
                               percent={this.state.percent}
                               strokeWidth="1"
                               strokeColor="#2db7f5"
                               strokeLinecap="square"
-                            />
+                            /> */}
                           </Dropzone>
                         </div>
                       </div>
