@@ -964,6 +964,17 @@ class ChiefComplaints extends Component {
                             maxDate={new Date()}
                             events={{
                               onChange: selectedDate => {
+                                if (
+                                  Date.parse(new Date()) <
+                                  Date.parse(selectedDate)
+                                ) {
+                                  swalMessage({
+                                    title:
+                                      "Invalid Input. Cannot be grater than Today's Date.",
+                                    type: "warning"
+                                  });
+                                  return;
+                                }
                                 let duration = 0;
                                 let interval = "D";
                                 if (moment().diff(selectedDate, "days") < 31) {

@@ -1,5 +1,5 @@
 import moment from "moment";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 
 const getAllAllergies = ($this, callBack) => {
@@ -60,16 +60,19 @@ const getPatientAllergies = $this => {
 };
 
 //Date Handaler Change
-const datehandle = ($this, data, ctrl, e) => {
-  let allAllergies = $this.state.allAllergies;
-  data[e] = moment(ctrl)._d;
-  for (let i = 0; i < allAllergies.length; i++) {
-    if (allAllergies[i].severity === data.severity) {
-      allAllergies[i] = data;
-    }
+const datehandle = ($this, ctrl, e) => {
+  debugger;
+
+  if (Date.parse(new Date()) < Date.parse(moment(ctrl)._d)) {
+    swalMessage({
+      title: "Invalid Input. Cannot be grater than Today's Date.",
+      type: "warning"
+    });
+    return;
   }
+
   $this.setState({
-    allAllergies: allAllergies
+    [e]: moment(ctrl)._d
   });
 };
 

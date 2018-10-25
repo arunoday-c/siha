@@ -458,9 +458,10 @@ class Examination extends Component {
                         data: this.state.patientPhysicalExamination
                       }}
                       isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 5 }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: this.deletePatientExamn.bind(this),
+                        onEdit: row => {},
                         onDone: this.updateExamination.bind(this)
                       }}
                     />

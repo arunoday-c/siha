@@ -23,6 +23,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
+import Options from "../../../Options.json";
 
 class Allergies extends Component {
   constructor(props) {
@@ -64,7 +65,10 @@ class Allergies extends Component {
         })
         .toArray();
 
-      this.setState({ patientAllergies: _allergies });
+      this.setState({
+        patientAllergies: _allergies,
+        allPatientAllergies: this.props.patient_allergies
+      });
     }
   }
 
@@ -238,28 +242,30 @@ class Allergies extends Component {
     this.reloadState();
   }
 
+  changeDateFormat = date => {
+    if (date != null) {
+      return moment(date).format(Options.dateFormat);
+    }
+  };
+
   render() {
     return (
       <React.Fragment>
         {/* Allergy Modal Start*/}
         <Modal open={this.state.openAllergyModal}>
           <div className="algaeh-modal">
-             <div className="popupHeader">
-                <div className="row">
-                  <div className="col-lg-8">
-                    <h4>Add Allergy</h4>
-                  </div>
-                  <div className="col-lg-4">
-                    <button
-                      type="button"
-                      className=""
-                       onClick={this.handleClose}
-                    >
-                      <i className="fas fa-times-circle" />
-                    </button>
-                  </div>
+            <div className="popupHeader">
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4>Add Allergy</h4>
+                </div>
+                <div className="col-lg-4">
+                  <button type="button" className="" onClick={this.handleClose}>
+                    <i className="fas fa-times-circle" />
+                  </button>
                 </div>
               </div>
+            </div>
             <div className="popupInner">
               <div className="col-lg-12">
                 <div className="row">
@@ -333,11 +339,7 @@ class Allergies extends Component {
                           }}
                           maxDate={new Date()}
                           events={{
-                            onChange: selectedDate => {
-                              this.setState({
-                                allergy_onset_date: selectedDate
-                              });
-                            }
+                            onChange: datehandle.bind(this, this)
                           }}
                           value={this.state.allergy_onset_date}
                         />
@@ -386,244 +388,258 @@ class Allergies extends Component {
 
                   <div className="col-lg-8 popRightDiv">
                     <h6> List of Allergies</h6>
-                    <hr /><div id="patient-allergy-grod-cntr">
-                    <AlgaehDataGrid
-                      id="patient-allergy-grid"
-                      columns={[
-                        {
-                          fieldName: "allergy_type",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Allergy Type" }}
-                            />
-                          ),
-                          disabled: true,
-                          displayTemplate: data => {
-                            return (
-                              <span>
-                                {data.allergy_type === "F" ? (
-                                  <span> Food</span>
-                                ) : data.allergy_type === "A" ? (
-                                  <span>Airborne </span>
-                                ) : data.allergy_type === "AI" ? (
-                                  <span>Animal and Insect </span>
-                                ) : data.allergy_type === "C" ? (
-                                  <span>Chemical and Others </span>
-                                ) : data.allergy_type === "N" ? (
-                                  <span>NKA </span>
-                                ) : data.allergy_type === "D" ? (
-                                  <span>Drug </span>
-                                ) : null}
-                              </span>
-                            );
-                          },
-                          editorTemplate: data => {
-                            return (
-                              <span>
-                                {data.allergy_type === "F" ? (
-                                  <span> Food</span>
-                                ) : data.allergy_type === "A" ? (
-                                  <span>Airborne </span>
-                                ) : data.allergy_type === "AI" ? (
-                                  <span>Animal and Insect </span>
-                                ) : data.allergy_type === "C" ? (
-                                  <span>Chemical and Others </span>
-                                ) : data.allergy_type === "N" ? (
-                                  <span>NKA </span>
-                                ) : data.allergy_type === "D" ? (
-                                  <span>Drug </span>
-                                ) : null}
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "allergy_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Allergy Name" }}
-                            />
-                          ),
-                          disabled: true,
-                          editorTemplate: data => {
-                            return <span>{data.allergy_name}</span>;
-                          }
-                        },
-                        {
-                          fieldName: "onset",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Onset" }} />
-                          ),
-                          displayTemplate: data => {
-                            return data.onset === "A" ? (
-                              <span>Adulthood</span>
-                            ) : data.onset === "T" ? (
-                              <span>Teenage</span>
-                            ) : data.onset === "P" ? (
-                              <span>Pre Terms</span>
-                            ) : data.onset === "C" ? (
-                              <span>Childhood</span>
-                            ) : data.onset === "O" ? (
-                              <span>Onset Date</span>
-                            ) : (
-                              ""
-                            );
-                          },
-                          editorTemplate: data => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "onset",
-                                  className: "select-fld",
-                                  value: data.onset,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.ALLERGY_ONSET
-                                  },
-                                  onChange: this.changeOnsetEdit.bind(
-                                    this,
-                                    data
-                                  )
-                                }}
+                    <hr />
+                    <div id="patient-allergy-grod-cntr">
+                      <AlgaehDataGrid
+                        id="patient-allergy-grid"
+                        columns={[
+                          {
+                            fieldName: "allergy_type",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Allergy Type" }}
                               />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "onset_date",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Onset Date" }} />
-                          ),
-                          displayTemplate: data => {
-                            return (
-                              <span>
-                                {data.onset_date !== null
-                                  ? moment(data.onset_date).format("DD-MM-YYYY")
-                                  : null}
-                              </span>
-                            );
+                            ),
+                            disabled: true,
+                            displayTemplate: data => {
+                              return (
+                                <span>
+                                  {data.allergy_type === "F" ? (
+                                    <span> Food</span>
+                                  ) : data.allergy_type === "A" ? (
+                                    <span>Airborne </span>
+                                  ) : data.allergy_type === "AI" ? (
+                                    <span>Animal and Insect </span>
+                                  ) : data.allergy_type === "C" ? (
+                                    <span>Chemical and Others </span>
+                                  ) : data.allergy_type === "N" ? (
+                                    <span>NKA </span>
+                                  ) : data.allergy_type === "D" ? (
+                                    <span>Drug </span>
+                                  ) : null}
+                                </span>
+                              );
+                            },
+                            editorTemplate: data => {
+                              return (
+                                <span>
+                                  {data.allergy_type === "F" ? (
+                                    <span> Food</span>
+                                  ) : data.allergy_type === "A" ? (
+                                    <span>Airborne </span>
+                                  ) : data.allergy_type === "AI" ? (
+                                    <span>Animal and Insect </span>
+                                  ) : data.allergy_type === "C" ? (
+                                    <span>Chemical and Others </span>
+                                  ) : data.allergy_type === "N" ? (
+                                    <span>NKA </span>
+                                  ) : data.allergy_type === "D" ? (
+                                    <span>Drug </span>
+                                  ) : null}
+                                </span>
+                              );
+                            }
                           },
-                          editorTemplate: data => {
-                            return (
-                              <AlgaehDateHandler
-                                div={{}}
-                                textBox={{
-                                  className: "txt-fld hidden",
-                                  name: "onset_date"
-                                }}
-                                minDate={new Date()}
-                                events={{
-                                  onChange: datehandle.bind(this, this, data)
-                                }}
-                                value={data.onset_date}
+                          {
+                            fieldName: "allergy_name",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Allergy Name" }}
                               />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "severity",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Severity" }} />
-                          ),
-                          displayTemplate: data => {
-                            return data.severity === "MI" ? (
-                              <span>Mild</span>
-                            ) : data.severity === "MO" ? (
-                              <span>Moderate</span>
-                            ) : data.severity === "SE" ? (
-                              <span>Severe</span>
-                            ) : (
-                              ""
-                            );
+                            ),
+                            disabled: true,
+                            editorTemplate: data => {
+                              return <span>{data.allergy_name}</span>;
+                            }
                           },
-                          editorTemplate: data => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "severity",
-                                  className: "select-fld",
-                                  value: data.severity,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.PAIN_SEVERITY
-                                  },
-                                  onChange: texthandle.bind(this, this, data)
-                                }}
+                          {
+                            fieldName: "onset",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Onset" }} />
+                            ),
+                            displayTemplate: data => {
+                              return data.onset === "A" ? (
+                                <span>Adulthood</span>
+                              ) : data.onset === "T" ? (
+                                <span>Teenage</span>
+                              ) : data.onset === "P" ? (
+                                <span>Pre Terms</span>
+                              ) : data.onset === "C" ? (
+                                <span>Childhood</span>
+                              ) : data.onset === "O" ? (
+                                <span>Onset Date</span>
+                              ) : (
+                                ""
+                              );
+                            },
+                            editorTemplate: data => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{}}
+                                  selector={{
+                                    name: "onset",
+                                    className: "select-fld",
+                                    value: data.onset,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: GlobalVariables.ALLERGY_ONSET
+                                    },
+                                    others: {
+                                      disabled: true
+                                    },
+
+                                    onChange: this.changeOnsetEdit.bind(
+                                      this,
+                                      data
+                                    )
+                                  }}
+                                />
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "onset_date",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Onset Date" }}
                               />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "comment",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Comment" }} />
-                          ),
-                          editorTemplate: data => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "comment",
-                                  value: data.comment,
-                                  events: {
+                            ),
+                            displayTemplate: data => {
+                              return (
+                                <span>
+                                  {this.changeDateFormat(data.onset_date)}
+                                </span>
+                              );
+                            },
+                            editorTemplate: data => {
+                              debugger;
+                              return (
+                                <AlgaehDateHandler
+                                  div={{}}
+                                  textBox={{
+                                    className: "txt-fld hidden",
+                                    name: "onset_date"
+                                  }}
+                                  minDate={new Date()}
+                                  events={{
+                                    onChange: datehandle.bind(this, this, data)
+                                  }}
+                                  // disabled={data.onset === "O" ? false : true}
+                                  disabled={true}
+                                  value={data.onset_date}
+                                />
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "severity",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Severity" }} />
+                            ),
+                            displayTemplate: data => {
+                              return data.severity === "MI" ? (
+                                <span>Mild</span>
+                              ) : data.severity === "MO" ? (
+                                <span>Moderate</span>
+                              ) : data.severity === "SE" ? (
+                                <span>Severe</span>
+                              ) : (
+                                ""
+                              );
+                            },
+                            editorTemplate: data => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{}}
+                                  selector={{
+                                    name: "severity",
+                                    className: "select-fld",
+                                    value: data.severity,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: GlobalVariables.PAIN_SEVERITY
+                                    },
                                     onChange: texthandle.bind(this, this, data)
-                                  }
-                                }}
-                              />
-                            );
+                                  }}
+                                />
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "comment",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Comment" }} />
+                            ),
+                            editorTemplate: data => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "comment",
+                                    value: data.comment,
+                                    events: {
+                                      onChange: texthandle.bind(
+                                        this,
+                                        this,
+                                        data
+                                      )
+                                    }
+                                  }}
+                                />
+                              );
+                            }
                           }
-                        }
-                      ]}
-                      keyId="hims_f_patient_allergy_id"
-                      dataSource={{
-                        data: this.state.allPatientAllergies
-                      }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onDelete: this.deleteAllergy.bind(this),
-                        onEdit: row => {},
-                        onDone: this.updatePatientAllergy.bind(this)
-                      }}
-                    />
-                  </div>
+                        ]}
+                        keyId="hims_f_patient_allergy_id"
+                        dataSource={{
+                          data: this.state.allPatientAllergies
+                        }}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onDelete: this.deleteAllergy.bind(this),
+                          onEdit: row => {},
+                          onDone: this.updatePatientAllergy.bind(this)
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <div className="popupFooter">
               <div className="col-lg-12">
-            <div className="row">
-              <div className="col-lg-4">
-                <button
-                  onClick={this.addAllergyToPatient.bind(this)}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  Add to Alergy List
-                </button>
-                <button
-                  onClick={this.resetAllergies.bind(this)}
-                  type="button"
-                  className="btn btn-default"
-                >
-                  Clear
-                </button>
+                <div className="row">
+                  <div className="col-lg-4">
+                    <button
+                      onClick={this.addAllergyToPatient.bind(this)}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      Add to Alergy List
+                    </button>
+                    <button
+                      onClick={this.resetAllergies.bind(this)}
+                      type="button"
+                      className="btn btn-default"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="col-lg-8">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={this.handleClose}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="col-lg-8">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.handleClose}
-                >
-                  Close
-                </button>
-              </div></div></div>
             </div>
           </div>
         </Modal>
