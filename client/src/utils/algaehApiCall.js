@@ -6,6 +6,7 @@ import swal from "sweetalert2";
 
 import config from "../utils/config.json";
 import axiosCancel from "axios-cancel";
+import { prototype } from "aws-sdk/clients/sagemakerruntime";
 const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
 export function algaehApiCall(options) {
   // "baseUrl": "http://192.168.0.149:3000/api/v1",
@@ -180,8 +181,21 @@ export function algaehApiCall(options) {
                 err.response !== undefined &&
                 err.response.data !== undefined
               ) {
+                if (
+                  Object.prototype.toString.call(err.response.data) ===
+                  "[object ArrayBuffer]"
+                ) {
+                  err = JSON.parse(
+                    new Buffer(err.response.data, "binary").toString()
+                  );
+                } else {
+                  err = {
+                    message: err.response.data.message
+                  };
+                }
+
                 swalMessage({
-                  title: err.response.data.message,
+                  title: err.message,
                   type: "error",
                   position: "top"
                 });

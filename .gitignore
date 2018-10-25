@@ -91,7 +91,7 @@ logs/
 Documents/
 
 # server dist directiory
-dist/
+dist
 
 # Typescript v1 declaration files
 typings/

@@ -62,7 +62,6 @@ export function imageToByteArray(src) {
   return canvas.toDataURL("image/png");
 }
 export function saveImageOnServer(options) {
-  debugger;
   const settings = {
     ...{
       fileControl: undefined,
@@ -125,63 +124,35 @@ export function saveImageOnServer(options) {
           }
         }
       });
-      // new Promise((resolve, reject) => {
-      //   getLocalIP(myIP => {
-      //     if (myIP !== undefined) {
-      //       resolve(myIP);
-      //     }
-      //   });
-      // }).then(myIP => {
-      //   axios
-      //     .post(config.baseUrl + "/masters/imageSave", formData, {
-      //       headers: {
-      //         "content-type": "multipart/form-data",
-      //         "x-api-key": headerToken,
-      //         "x-app-user-identity": x_app_user_identity,
-      //         "x-client-ip": myIP
-      //       },
-      //       onUploadProgress: progressEvent => {
-      //         let percentCompleted = Math.round(
-      //           (progressEvent.loaded * 100) / progressEvent.total
-      //         );
-
-      //         if (percentCompleted >= 100) {
-      //           settings.thisState.stateName.setState({
-      //             [settings.thisState.stateProgressName]: 100,
-      //             [settings.thisState.filePreview]: file.preview
-      //           });
-      //         } else {
-      //           settings.thisState.stateName.setState({
-      //             [settings.thisState.stateProgressName]: percentCompleted
-      //           });
-      //         }
-      //       }
-      //     })
-      //     .then(data => {
-      //       if (settings.onSuccess !== undefined) {
-      //         settings.onSuccess({
-      //           fileName: settings.thisState.filePreview,
-      //           preview: file.preview
-      //         });
-      //       }
-      //     })
-      //     .catch(error => {
-      //       if (settings.onFailure !== undefined) {
-      //         settings.onFailure(error);
-      //       } else {
-      //         console.error(
-      //           "Error in uploading file '" +
-      //             settings.thisState.filePreview +
-      //             "'",
-      //           error
-      //         );
-      //       }
-
-      //       settings.thisState.stateName.setState({
-      //         [settings.thisState.stateProgressName]: 0
-      //       });
-      //     });
-      // });
     });
   }
+}
+export function displayFileFromServer(options) {
+  const _resize =
+    options.resize !== undefined
+      ? { resize: JSON.stringify(options.resize) }
+      : {};
+  algaehApiCall({
+    uri: options.uri,
+    method: "get",
+    data: {
+      fileType: options.fileType,
+      destinationName: options.destinationName,
+      fileName: options.fileName,
+      ..._resize
+    },
+    others: { responseType: "arraybuffer" },
+    onSuccess: response => {
+      if (response.data) {
+        const _data =
+          "data:i" +
+          response.headers["content-type"] +
+          ";base64," +
+          new Buffer(response.data, "binary").toString("base64");
+        if (typeof options.onFileSuccess === "function") {
+          options.onFileSuccess(_data);
+        }
+      }
+    }
+  });
 }

@@ -1,9 +1,7 @@
 import React, { PureComponent } from "react";
 import "./PersonalDetails.css";
 import Dropzone from "react-dropzone";
-
 import { AlgaehActions } from "../../../../../actions/algaehActions";
-
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -28,7 +26,8 @@ import Enumerable from "linq";
 import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
 import { Line } from "rc-progress";
 import noImage from "../../../../../assets/images/images.png";
-import { algaehApiCall } from "../../../../../utils/algaehApiCall";
+import { displayFileFromServer } from "../../../../../utils/GlobalFunctions";
+
 class PersonalDetails extends PureComponent {
   constructor(props) {
     super(props);
@@ -73,17 +72,14 @@ class PersonalDetails extends PureComponent {
   }
 
   getImage($this, context) {
-    algaehApiCall({
+    displayFileFromServer({
       uri: "/masters/getFile",
-      method: "get",
-      onSuccess: response => {
-        debugger;
-
-        // const _data =
-        //   "data:" + data.headers["content-type"] + ";base64," + data.data;
-        // console.log(_data);
-        // $this.setState({ filePreview: _data });
-        // context.updateState({ filePreview: _data });
+      fileType: "Employees",
+      destinationName: $this.state.employee_code,
+      fileName: $this.state.employee_code,
+      resize: { width: 100, height: 100 },
+      onFileSuccess: data => {
+        $this.setState({ filePreview: data });
       }
     });
   }

@@ -4,6 +4,9 @@ import path from "path";
 import multer from "multer";
 import httpStatus from "../utils/httpStatus";
 import mkdirp from "mkdirp";
+import { LINQ } from "node-linq";
+import sharp from "sharp";
+import mime from "mime/lite";
 let logDirectory = path.join(__dirname, "../../Documents");
 if (!fs.existsSync(logDirectory)) {
   fs.mkdirSync(logDirectory);
@@ -97,28 +100,67 @@ const saveImageInTemp = (req, res, next) => {
   });
 };
 let showFile = (req, res, next) => {
-  const _path = path.join(
-    __dirname,
-    "../../Documents/Employees/EMP00002/EMP00002.png"
-  );
-  debugLog("Path ", _path);
-  if (fs.existsSync(_path)) {
-    //  res.sendFile(_path);
-    fs.createReadStream(_path).pipe(res);
-    // request(_path).pipe(fs.createWriteStream("doodle.png"));
+  const _body = req.query;
+  debugLog("Print Body ", _body);
+  const _path =
+    logDirectory + "/" + _body.fileType + "/" + _body.destinationName;
+
+  const _folders = fs.readdirSync(_path);
+
+  if (_folders) {
+    const _fileSelection = new LINQ(_folders)
+      .Where(w => w.includes(_body.fileName))
+      .FirstOrDefault();
+    if (_fileSelection != null) {
+      const _fileLocation = _path + "/" + _fileSelection;
+      if (fs.existsSync(_fileLocation)) {
+        const _resizeFormat = JSON.parse(_body.resize);
+        res.setHeader(
+          "content-type",
+          mime.getType(path.extname(_fileLocation).replace(".", ""))
+        );
+        if (
+          _resizeFormat != null &&
+          _resizeFormat.width != null &&
+          _resizeFormat.height != null
+        ) {
+          resizeImage(
+            _fileLocation,
+            _resizeFormat.format,
+            _resizeFormat.width,
+            _resizeFormat.height
+          ).pipe(res);
+        } else {
+          fs.createReadStream(_fileLocation).pipe(res);
+        }
+      } else {
+        next(httpStatus.generateError(httpStatus.forbidden, "File not exits"));
+      }
+    } else {
+      next(httpStatus.generateError(httpStatus.forbidden, "File not exits"));
+    }
   } else {
     next(httpStatus.generateError(httpStatus.forbidden, "File not exits"));
   }
-  // fs.readFile(_path, (err, content) => {
-  //   if (err) {
-  //     next(err);
-  //   }
-  //   debugLog("content", content);
-  //   res.writeHead(200, { "Content-type": "image/jpg" });
-  //   res.end(content);
-  // });
 };
-
+const resizeImage = (_filepath, format, width, height) => {
+  const readStream = fs.createReadStream(_filepath);
+  let transform = sharp();
+  let _format = "";
+  if (format === undefined || format === null || format === "") {
+    _format = path.extname(_filepath);
+  } else {
+    _format = format;
+  }
+  _format = _format.replace(".", "");
+  transform = transform.toFormat(_format);
+  if (width || height) {
+    transform = transform.resize(width, height, {
+      fit: sharp.fit.fill
+    });
+  }
+  return readStream.pipe(transform);
+};
 module.exports = {
   downloadImage,
   readFileToBase64,
