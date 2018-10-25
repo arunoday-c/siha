@@ -142,8 +142,43 @@ let getItemMoment = (req, res, next) => {
   }
 };
 
+//created by irfan: to get Uom Location Stock
+let getItemLocationStock = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    // let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT hims_m_item_location_id, item_id, pharmacy_location_id, item_location_status, batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,\
+        avgcost, last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom \
+        from hims_m_item_location where record_status='A'  and item_id=? and pharmacy_location_id=? \
+        and qtyhand>0  order by expirydt",
+        [req.query.item_id, req.query.location_id],
+        (error, result) => {
+          debugLog("uomResult", result);
+          releaseDBConnection(db, connection);
+
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getUomLocationStock,
   getVisitPrescriptionDetails,
-  getItemMoment
+  getItemMoment,
+  getItemLocationStock
 };

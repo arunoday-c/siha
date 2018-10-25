@@ -130,6 +130,19 @@ const itemchangeText = ($this, context, e) => {
               addItemButton: false
             });
           }
+
+          // $this.props.getItemLocationStock({
+          //   uri: "/pharmacyGlobal/getItemLocationStock",
+          //   method: "GET",
+          //   data: {
+          //     location_id: $this.state.location_id,
+          //     item_id: value
+          //   },
+          //   redux: {
+          //     type: "ITEMS_BATCH_GET_DATA",
+          //     mappingName: "itemBatch"
+          //   }
+          // });
         } else {
           successfulMessage({
             message: "Invalid Input. No Stock Avaiable for selected Item.",
@@ -319,7 +332,8 @@ const AddItems = ($this, context) => {
             service_id: null,
             conversion_factor: 1,
             grn_no: null,
-            item_group_id: null
+            item_group_id: null,
+            selectBatchButton: false
           });
 
           $this.props.PosHeaderCalculations({
@@ -546,6 +560,27 @@ const dateFormater = ({ $this, value }) => {
   }
 };
 
+const ShowItemBatch = ($this, e) => {
+  let rowSelected = {};
+  // let saveupdate = false,
+  //   btnupdate = true;
+  // if (
+  //   e.hims_d_insurance_network_id !== undefined &&
+  //   e.hims_d_insurance_network_id !== null
+  // ) {
+  //   rowSelected = e;
+  //   saveupdate = true;
+  //   btnupdate = false;
+  //   // addNewNetwork(this, this);
+  // }
+  $this.setState({
+    ...$this.state,
+    selectBatch: !$this.state.selectBatch
+
+    // ...rowSelected
+  });
+};
+
 export {
   discounthandle,
   UomchangeTexts,
@@ -557,5 +592,6 @@ export {
   updatePosDetail,
   calculateAmount,
   adjustadvance,
-  dateFormater
+  dateFormater,
+  ShowItemBatch
 };
