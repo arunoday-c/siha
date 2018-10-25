@@ -717,6 +717,7 @@ class DataGrid extends PureComponent {
         : false;
     const _manual =
       this.props.dataSource.uri !== undefined ? { manual: true } : {};
+    debugger;
     return (
       <React.Fragment>
         <ReactTableFixedColumns
