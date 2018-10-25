@@ -1147,7 +1147,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
             for (let i = 0; i < result.length; i++) {
               // if (provider_id != "") {
               connection.query(
-                "select hims_f_patient_appointment_id, patient_id,patient_code, provider_id, sub_department_id, appointment_date, appointment_from_time,\
+                "select hims_f_patient_appointment_id, patient_id,patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
     appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
     gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
     appointment_remarks, is_stand_by  from hims_f_patient_appointment where record_status='A' and sub_department_id=?\
@@ -2003,7 +2003,7 @@ let addPatientAppointment = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_patient_appointment` (patient_id,patient_code,provider_id,sub_department_id,appointment_date,appointment_from_time,appointment_to_time,\
+        "INSERT INTO `hims_f_patient_appointment` (patient_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
           appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
           created_date, created_by, updated_date, updated_by)\
           VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -2012,6 +2012,7 @@ let addPatientAppointment = (req, res, next) => {
           input.patient_code,
           input.provider_id,
           input.sub_department_id,
+          input.number_of_slot,
           input.appointment_date,
           input.appointment_from_time,
           input.appointment_to_time,
@@ -2059,7 +2060,7 @@ let updatePatientAppointment = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "UPDATE `hims_f_patient_appointment` SET patient_id=?,provider_id=?,sub_department_id=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
+        "UPDATE `hims_f_patient_appointment` SET patient_id=?,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
         appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
         send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
         cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
@@ -2068,6 +2069,7 @@ let updatePatientAppointment = (req, res, next) => {
           input.patient_id,
           input.provider_id,
           input.sub_department_id,
+          input.number_of_slot,
           input.appointment_date,
           input.appointment_from_time,
           input.appointment_to_time,
@@ -2131,7 +2133,7 @@ let getPatientAppointment = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_patient_appointment_id,patient_id,patient_code,provider_id,sub_department_id,appointment_date,\
+        "select hims_f_patient_appointment_id,patient_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,\
             appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,\
         contact_number,email,send_to_provider,gender,confirmed,\
         confirmed_by,comfirmed_date,cancelled,cancelled_by,cancelled_date,cancel_reason\
