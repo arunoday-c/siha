@@ -23,23 +23,6 @@ class LabResult extends Component {
   }
 
   componentDidMount() {
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "radservices"
-      }
-    });
-    this.props.getDepartmentsandDoctors({
-      uri: "/department/get/get_All_Doctors_DepartmentWise",
-      method: "GET",
-      redux: {
-        type: "RAD_DEPT_DOCTOR_GET_DATA",
-        mappingName: "raddeptanddoctors"
-      }
-    });
-
     getRadResult(this, this);
   }
 
@@ -84,9 +67,9 @@ class LabResult extends Component {
                       label: <AlgaehLabel label={{ forceLabel: "Test" }} />,
                       displayTemplate: row => {
                         let display =
-                          this.props.radservices === undefined
+                          this.props.assservices === undefined
                             ? []
-                            : this.props.radservices.filter(
+                            : this.props.assservices.filter(
                                 f => f.hims_d_services_id === row.service_id
                               );
 
@@ -121,9 +104,9 @@ class LabResult extends Component {
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.raddeptanddoctors.doctors === undefined
+                          this.props.assdeptanddoctors.doctors === undefined
                             ? []
-                            : this.props.raddeptanddoctors.doctors.filter(
+                            : this.props.assdeptanddoctors.doctors.filter(
                                 f => f.employee_id === row.provider_id
                               );
 
@@ -195,17 +178,15 @@ class LabResult extends Component {
 function mapStateToProps(state) {
   return {
     radresult: state.radresult,
-    radservices: state.radservices,
-    raddeptanddoctors: state.raddeptanddoctors
+    assservices: state.assservices,
+    assdeptanddoctors: state.assdeptanddoctors
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getRadResult: AlgaehActions,
-      getServices: AlgaehActions,
-      getDepartmentsandDoctors: AlgaehActions
+      getRadResult: AlgaehActions
     },
     dispatch
   );

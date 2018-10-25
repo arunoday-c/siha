@@ -123,5 +123,17 @@
         "label": "Transfer Number"
       }
     ]
+  },
+  "Diagnosis": {
+    "IcdCodes": [
+      {
+        "fieldName": "icd_code",
+        "label": "ICD Code"
+      },
+      {
+        "fieldName": "icd_description",
+        "label": "ICD Description"
+      }
+    ]
   }
 }
