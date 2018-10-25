@@ -4,14 +4,17 @@ const texthandle = ($this, context, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
+  debugger;
   $this.setState({
-    [name]: value
+    [name]: value,
+    dataEnter: true
   });
 
   if (context !== undefined) {
     context.updateState({
       [name]: value,
-      template_html: $this.state.template_html
+      dataEnter: true
+      // template_html: $this.state.template_html
     });
   }
 };

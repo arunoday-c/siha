@@ -20,7 +20,7 @@ export default class RadTemplate extends PureComponent {
       template_name: null,
       template_html: null,
       hims_d_rad_template_detail_id: null,
-      edited: false
+      dataEnter: false
     };
   }
   onClose = e => {
@@ -28,12 +28,23 @@ export default class RadTemplate extends PureComponent {
   };
 
   componentWillReceiveProps(newProps) {
+    debugger;
     if (
       newProps.radTempobj !== null &&
-      this.state.hims_d_rad_template_detail_id === null
+      this.state.hims_d_rad_template_detail_id === null &&
+      this.state.dataEnter === false
     ) {
       let InputOutput = newProps.radTempobj;
       this.setState({ ...this.state, ...InputOutput });
+    } else {
+      if (this.state.dataEnter === false) {
+        this.setState({
+          value: "",
+          template_name: null,
+          template_html: null,
+          hims_d_rad_template_detail_id: null
+        });
+      }
     }
   }
 
