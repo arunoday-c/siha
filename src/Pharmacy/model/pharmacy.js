@@ -351,6 +351,7 @@ let getItemMaster = (req, res, next) => {
     next(e);
   }
 };
+
 //created by irfan: to get ItemMaster And ItemUom
 let getItemMasterAndItemUom = (req, res, next) => {
   try {
@@ -364,8 +365,8 @@ let getItemMasterAndItemUom = (req, res, next) => {
         "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description, MIU.stocking_uom, MIU.conversion_factor, MIU.uom_status,\
         IM.hims_d_item_master_id, IM.item_code, IM.item_description, IM.structure_id, IM.generic_id, IM.category_id,\
         IM.group_id, IM.form_id, IM.storage_id, IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, IM.service_id\
-        from hims_d_item_master IM,hims_m_item_uom MIU,hims_d_pharmacy_uom PH  where IM.hims_d_item_master_id=MIU.item_master_id  and\
-         MIU.uom_id=PH.hims_d_pharmacy_uom_id and MIU.record_status='A'and IM.record_status='A'",
+        from  hims_d_item_master IM left join hims_m_item_uom MIU on IM.hims_d_item_master_id=MIU.item_master_id and IM.record_status='A'\
+        left join hims_d_pharmacy_uom PH  on  MIU.uom_id=PH.hims_d_pharmacy_uom_id   and MIU.record_status='A';",
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
