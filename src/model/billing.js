@@ -1499,7 +1499,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     sec_company_tax: 0,
                     sec_company_paybale: 0,
                     sec_copay_percntage: 0,
-                    sec_copay_amount: 0,
+                    sec_copay_amount: 0
                     // created_by: req.userIdentity.algaeh_d_app_user_id,
 
                     // updated_by: req.userIdentity.algaeh_d_app_user_id

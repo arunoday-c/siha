@@ -62,6 +62,7 @@ class DisplayVisitDetails extends Component {
   handleChange(row, context, e) {
     let $this = this;
     let mode_of_pay = "Self";
+    let applydiscount = false;
     let x = Enumerable.from(this.state.visitDetails)
       .where(w => w.radioselect == 1)
       .toArray();
@@ -86,6 +87,7 @@ class DisplayVisitDetails extends Component {
     this.state.visitDetails[index]["radioselect"] = 1;
     if (row.insured === "Y") {
       mode_of_pay = "Insurance";
+      applydiscount = true;
     }
     this.setState(
       {
@@ -124,34 +126,39 @@ class DisplayVisitDetails extends Component {
             mappingName: "orderlist"
           },
           afterSuccess: data => {
-            let pre_approval_Required = Enumerable.from(data)
-              .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
-              .toArray();
-            for (let i = 0; i < data.length; i++) {
-              data[i].ordered_date = data[i].created_date;
-            }
-
-            if (pre_approval_Required.length > 0) {
-              successfulMessage({
-                message:
-                  "Invalid Input. Some of the service is Pre-Approval required, Please wait for Approval.",
-                title: "Warning",
-                icon: "warning"
-              });
-            } else {
-              if (context != null) {
-                context.updateState({ billdetails: data });
+            if (data.length !== 0) {
+              let pre_approval_Required = Enumerable.from(data)
+                .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
+                .toArray();
+              for (let i = 0; i < data.length; i++) {
+                data[i].ordered_date = data[i].created_date;
               }
 
-              $this.props.billingCalculations({
-                uri: "/billing/billingCalculations",
-                method: "POST",
-                data: { billdetails: data },
-                redux: {
-                  type: "BILL_HEADER_GEN_GET_DATA",
-                  mappingName: "genbill"
+              if (pre_approval_Required.length > 0) {
+                successfulMessage({
+                  message:
+                    "Invalid Input. Some of the service is Pre-Approval required, Please wait for Approval.",
+                  title: "Warning",
+                  icon: "warning"
+                });
+              } else {
+                if (context != null) {
+                  context.updateState({
+                    billdetails: data,
+                    applydiscount: applydiscount
+                  });
                 }
-              });
+
+                $this.props.billingCalculations({
+                  uri: "/billing/billingCalculations",
+                  method: "POST",
+                  data: { billdetails: data },
+                  redux: {
+                    type: "BILL_HEADER_GEN_GET_DATA",
+                    mappingName: "genbill"
+                  }
+                });
+              }
             }
           }
         });
@@ -198,6 +205,11 @@ class DisplayVisitDetails extends Component {
                                 disabled={this.state.Billexists}
                               />
                             );
+                          },
+                          others: {
+                            maxWidth: 50,
+                            resizable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         {

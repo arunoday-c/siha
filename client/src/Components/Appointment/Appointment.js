@@ -35,7 +35,8 @@ class Appointment extends Component {
       patToEdit: {},
       openPatEdit: false,
       checkInId: null,
-      sub_department_id: null
+      sub_department_id: null,
+      date_of_birth: null
     };
   }
 
@@ -170,7 +171,7 @@ class Appointment extends Component {
       patient_code: "",
       patient_name: "",
       arabic_name: "",
-      date_of_birth: "",
+      date_of_birth: null,
       age: "",
       contact_number: "",
       email: "",
@@ -193,13 +194,6 @@ class Appointment extends Component {
         ? this.state.activeDateHeader
         : new Date();
 
-    //     if(from_time <new Date()){
-    // swalMessage ({
-    //   title: "Cannot create slot for pas ",
-    //   type: "success"
-    // })
-    //     }
-
     const send_data = {
       patient_id: this.state.patient_id,
       patient_code: this.state.patient_code,
@@ -219,7 +213,8 @@ class Appointment extends Component {
       email: this.state.email,
       send_to_provider: "Y",
       gender: this.state.gender,
-      appointment_remarks: this.state.appointment_remarks
+      appointment_remarks: this.state.appointment_remarks,
+      number_of_slot: this.state.no_of_slots
     };
     //console.log("Send Obj:", send_data);
 
@@ -469,7 +464,8 @@ class Appointment extends Component {
         edit_arabic_name: pat_edit.arabic_name,
         edit_sub_dep_id: pat_edit.sub_department_id,
         edit_appointment_date: pat_edit.appointment_date,
-        patient_code: pat_edit.patient_code
+        patient_code: pat_edit.patient_code,
+        edit_no_of_slots: pat_edit.number_of_slot
       });
     });
   }
@@ -516,7 +512,8 @@ class Appointment extends Component {
               "FD-STD": "RegistrationPatient",
               "appt-pat-code": this.state.patient_code,
               "appt-provider-id": this.state.edit_provider_id,
-              "appt-dept-id": this.state.edit_sub_dep_id
+              "appt-dept-id": this.state.edit_sub_dep_id,
+              "appt-hims_d_services_id-id": this.state.hims_d_services_id
             });
 
             document.getElementById("fd-router").click();
@@ -545,8 +542,8 @@ class Appointment extends Component {
     const appt_time = e.currentTarget.getAttribute("appt-time");
 
     if (
-      moment(appt_time, "HH:mm a").format("HHMM") <
-      moment(new Date()).format("HHMM")
+      moment(appt_time, "HH:mm a").format("HHmm") <
+      moment(new Date()).format("HHmm")
     ) {
       swalMessage({
         title: "Can't create schedule for past time",
@@ -619,6 +616,7 @@ class Appointment extends Component {
   }
 
   generateChilderns(data) {
+    debugger;
     const colspan = data.mark_as_break
       ? { colSpan: 2, style: { width: "240px" } }
       : {};
@@ -629,14 +627,22 @@ class Appointment extends Component {
       patients: data.patients
     });
 
-    let brk_bg_color = data.mark_as_break ? "#f2f2f2" : "#ffffff";
+    let brk_bg_color = data.mark_as_break
+      ? "#f2f2f2"
+      : moment(data.time, "HH:mm a").format("HHmm") <
+        moment(new Date()).format("HHmm")
+        ? "#fbfbfb"
+        : "#ffffff";
 
     let bg_color =
       patient !== null
         ? this.getColorCode(patient.appointment_status_id)
         : data.mark_as_break
           ? "#f2f2f2"
-          : "#ffffff";
+          : moment(data.time, "HH:mm a").format("HHm") <
+            moment(new Date()).format("HHm")
+            ? "#fbfbfb"
+            : "#ffffff";
 
     return (
       <tr

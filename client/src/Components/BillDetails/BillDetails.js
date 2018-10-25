@@ -56,7 +56,6 @@ class DisplayOPBilling extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     let InputOutput = nextProps.BillingIOputs;
     if (InputOutput.frontDesk === true) {
       // InputOutput.billdetails[0].frontDesk = InputOutput.frontDesk;

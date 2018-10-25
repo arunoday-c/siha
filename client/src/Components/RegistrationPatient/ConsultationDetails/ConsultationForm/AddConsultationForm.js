@@ -68,8 +68,6 @@ class AddConsultationForm extends Component {
         mappingName: "frontproviders"
       },
       afterSuccess: data => {
-        debugger;
-
         this.setState({
           doctors: data
         });
@@ -89,10 +87,29 @@ class AddConsultationForm extends Component {
         }
       });
     }
+
+    if (
+      this.props.deptanddoctors === undefined ||
+      this.props.deptanddoctors.length === 0
+    ) {
+      this.props.getDepartmentsandDoctors({
+        uri: "/department/get/get_All_Doctors_DepartmentWise",
+        method: "GET",
+        redux: {
+          type: "DEPT_DOCTOR_GET_DATA",
+          mappingName: "deptanddoctors"
+        },
+        afterSuccess: data => {
+          this.setState({
+            departments: data.departmets,
+            doctors: data.doctors
+          });
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState(nextProps.PatRegIOputs);
   }
 
@@ -130,6 +147,9 @@ class AddConsultationForm extends Component {
                               : "arabic_visit_type_desc",
                           valueField: "hims_d_visit_type_id",
                           data: this.props.visittypes
+                        },
+                        others: {
+                          disabled: this.state.clearEnable
                         },
                         onChange: selectedHandeler.bind(this, this, context)
                       }}

@@ -1,6 +1,7 @@
 
 # Created by https://www.gitignore.io/api/node,macos,linux,windows,visualstudiocode
-
+dist
+client/build
 ### ignore netbeans ###
 nbproject/
 
@@ -87,11 +88,13 @@ jspm_packages/
 
 # log directories
 logs/
+
+# server dist directory
+dist/
+
 # document directories
 Documents/
 
-# server dist directiory
-dist
 
 # Typescript v1 declaration files
 typings/
@@ -115,7 +118,7 @@ typings/
 .env
 
 # production
-/dist
+dist
 
 #ignore algaeh_users file
 algaeh_users.json

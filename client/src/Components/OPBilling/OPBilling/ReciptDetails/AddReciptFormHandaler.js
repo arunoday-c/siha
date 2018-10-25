@@ -54,76 +54,80 @@ const calculateRecipt = ($this, context) => {
 const cashtexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
-  let cash_amount = parseFloat(e.target.value);
-  let card_amount = parseFloat($this.state.card_amount);
-  let cheque_amount = parseFloat($this.state.cheque_amount);
-  let receiveable_amount = parseFloat($this.state.receiveable_amount);
+  if (e.target.value > 0) {
+    let cash_amount = parseFloat(e.target.value);
+    let card_amount = parseFloat($this.state.card_amount);
+    let cheque_amount = parseFloat($this.state.cheque_amount);
+    let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
-  if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
-    });
-    $this.setState(
-      {
-        [e.target.name]: 0,
-        errorInCash: true
-      },
-      () => {
-        $this.setState({ errorInCash: false });
-      }
-    );
-  } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        calculateRecipt($this, context);
-      }
-    );
+    if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
+      successfulMessage({
+        message: "Invalid Input. Sum of all amount to be equal to Receivable.",
+        title: "Warning",
+        icon: "warning"
+      });
+      $this.setState(
+        {
+          [e.target.name]: 0,
+          errorInCash: true
+        },
+        () => {
+          $this.setState({ errorInCash: false });
+        }
+      );
+    } else {
+      $this.setState(
+        {
+          [e.target.name]: e.target.value
+        },
+        () => {
+          calculateRecipt($this, context);
+        }
+      );
 
-    if (context != null) {
-      context.updateState({ [e.target.name]: e.target.value });
+      if (context != null) {
+        context.updateState({ [e.target.name]: e.target.value });
+      }
     }
   }
 };
 
 const cardtexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  let cash_amount = parseFloat($this.state.cash_amount);
-  let card_amount = parseFloat(e.target.value);
-  let cheque_amount = parseFloat($this.state.cheque_amount);
-  let receiveable_amount = parseFloat($this.state.receiveable_amount);
+  if (e.target.value > 0) {
+    let cash_amount = parseFloat($this.state.cash_amount);
+    let card_amount = parseFloat(e.target.value);
+    let cheque_amount = parseFloat($this.state.cheque_amount);
+    let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
-  if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
-    });
-    $this.setState(
-      {
-        [e.target.name]: 0,
-        errorInCard: true
-      },
-      () => {
-        $this.setState({ errorInCard: false });
-      }
-    );
-  } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        calculateRecipt($this, context);
-      }
-    );
+    if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
+      successfulMessage({
+        message: "Invalid Input. Sum of all amount to be equal to Receivable.",
+        title: "Warning",
+        icon: "warning"
+      });
+      $this.setState(
+        {
+          [e.target.name]: 0,
+          errorInCard: true
+        },
+        () => {
+          $this.setState({ errorInCard: false });
+        }
+      );
+    } else {
+      $this.setState(
+        {
+          [e.target.name]: e.target.value
+        },
+        () => {
+          calculateRecipt($this, context);
+        }
+      );
 
-    if (context != null) {
-      context.updateState({ [e.target.name]: e.target.value });
+      if (context != null) {
+        context.updateState({ [e.target.name]: e.target.value });
+      }
     }
   }
 };
@@ -131,38 +135,40 @@ const cardtexthandle = ($this, context, ctrl, e) => {
 const chequetexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
-  let cash_amount = parseFloat($this.state.cash_amount);
-  let card_amount = parseFloat($this.state.card_amount);
-  let cheque_amount = parseFloat(e.target.value);
-  let receiveable_amount = parseFloat($this.state.receiveable_amount);
+  if (e.target.value > 0) {
+    let cash_amount = parseFloat($this.state.cash_amount);
+    let card_amount = parseFloat($this.state.card_amount);
+    let cheque_amount = parseFloat(e.target.value);
+    let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
-  if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
-    });
-    $this.setState(
-      {
-        [e.target.name]: 0,
-        errorInCheck: true
-      },
-      () => {
-        $this.setState({ errorInCheck: false });
-      }
-    );
-  } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        calculateRecipt($this, context);
-      }
-    );
+    if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
+      successfulMessage({
+        message: "Invalid Input. Sum of all amount to be equal to Receivable.",
+        title: "Warning",
+        icon: "warning"
+      });
+      $this.setState(
+        {
+          [e.target.name]: 0,
+          errorInCheck: true
+        },
+        () => {
+          $this.setState({ errorInCheck: false });
+        }
+      );
+    } else {
+      $this.setState(
+        {
+          [e.target.name]: e.target.value
+        },
+        () => {
+          calculateRecipt($this, context);
+        }
+      );
 
-    if (context != null) {
-      context.updateState({ [e.target.name]: e.target.value });
+      if (context != null) {
+        context.updateState({ [e.target.name]: e.target.value });
+      }
     }
   }
 };

@@ -8,6 +8,9 @@ body {
   .header {
     max-height: 50px;
   }
+  #hisapp {
+    padding-bottom: 5px;
+  }
   .appLogoOnly {
     background: url(../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center;
     height: 40px;
@@ -662,6 +665,23 @@ input[type="time"] {
   border-radius: 4px;
   background: #fff;
   width: 100%;
+}
+
+input:disabled::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: #fff;
+}
+input:disabled:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #fff;
+}
+input:disabled::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #fff;
+}
+input:disabled:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: #fff;
 }
 
 input[type="color"] {

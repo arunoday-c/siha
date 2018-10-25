@@ -21,8 +21,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler,
-  Tooltip
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
 import {
@@ -30,7 +29,6 @@ import {
   FORMAT_TEST_STATUS
 } from "../../../utils/GlobalVariables.json";
 
-import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
@@ -119,200 +117,236 @@ class SampleCollection extends Component {
               }
             ]}
           />
-            <div className="row inner-top-search" style={{marginTop:"75px",paddingBottom:"10px"}}>
+          <div
+            className="row inner-top-search"
+            style={{ marginTop: "75px", paddingBottom: "10px" }}
+          >
             <div className="col-lg-6">
               <div className="row">
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{ fieldName: "from_date" }}
-                textBox={{ className: "txt-fld", name: "from_date" }}
-                events={{
-                  onChange: datehandle.bind(this, this)
-                }}
-                value={this.state.from_date}
-              />
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{ fieldName: "to_date" }}
-                textBox={{ className: "txt-fld", name: "to_date" }}
-                events={{
-                  onChange: datehandle.bind(this, this)
-                }}
-                value={this.state.to_date}
-              />
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "patient_code"
-                }}
-                textBox={{
-                  value: this.state.patient_code,
-                  className: "txt-fld",
-                  name: "patient_code",
-
-                  events: {
-                    onChange: texthandle.bind(this, this)
-                  },
-                  others: {
-                    disabled: true
-                  }
-                }}
-              />
-              <div className="col-lg-1 form-group">
-                <span
-                  className="fas fa-search fa-2x"style={{fontSize:" 1.2rem", marginTop: "6px",paddingBottom:"10px"}}
-                  onClick={PatientSearch.bind(this, this)}
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{ fieldName: "from_date" }}
+                  textBox={{ className: "txt-fld", name: "from_date" }}
+                  events={{
+                    onChange: datehandle.bind(this, this)
+                  }}
+                  value={this.state.from_date}
                 />
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{ fieldName: "to_date" }}
+                  textBox={{ className: "txt-fld", name: "to_date" }}
+                  events={{
+                    onChange: datehandle.bind(this, this)
+                  }}
+                  value={this.state.to_date}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "patient_code"
+                  }}
+                  textBox={{
+                    value: this.state.patient_code,
+                    className: "txt-fld",
+                    name: "patient_code",
+
+                    events: {
+                      onChange: texthandle.bind(this, this)
+                    },
+                    others: {
+                      disabled: true
+                    }
+                  }}
+                />
+                <div className="col-lg-1 form-group">
+                  <span
+                    className="fas fa-search fa-2x"
+                    style={{
+                      fontSize: " 1.2rem",
+                      marginTop: "6px",
+                      paddingBottom: "10px"
+                    }}
+                    onClick={PatientSearch.bind(this, this)}
+                  />
+                </div>
               </div>
             </div>
-            </div>
-<div className="col-lg-6">
-<div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "proiorty",
-                  isImp: false
-                }}
-                selector={{
-                  name: "proiorty",
-                  className: "select-fld",
-                  value: this.state.proiorty,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_PRIORITY
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "status",
-                  isImp: false
-                }}
-                selector={{
-                  name: "status",
-                  className: "select-fld",
-                  value: this.state.status,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_TEST_STATUS
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "location_id",
-                  isImp: false
-                }}
-                selector={{
-                  name: "location_id",
-                  className: "select-fld",
-                  value: this.state.location_id,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_TEST_STATUS
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-     <div className="col" style={{ paddingTop: "21px" }}>
-                <button
-                  className="btn btn-primary btn-sm"
-                  type="button"
-                   onClick={getSampleCollectionDetails.bind(this, this)}
-                >Load</button>
- <button
-                  className="btn btn-default btn-sm" style={{marginLeft:"10px"}}
-                  type="button"
-                  onClick={Refresh.bind(this, this)}
-                >Clear</button>
+            <div className="col-lg-6">
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "proiorty",
+                    isImp: false
+                  }}
+                  selector={{
+                    name: "proiorty",
+                    className: "select-fld",
+                    value: this.state.proiorty,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: FORMAT_PRIORITY
+                    },
+                    onChange: texthandle.bind(this, this)
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "status",
+                    isImp: false
+                  }}
+                  selector={{
+                    name: "status",
+                    className: "select-fld",
+                    value: this.state.status,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: FORMAT_TEST_STATUS
+                    },
+                    onChange: texthandle.bind(this, this)
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "location_id",
+                    isImp: false
+                  }}
+                  selector={{
+                    name: "location_id",
+                    className: "select-fld",
+                    value: this.state.location_id,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: FORMAT_TEST_STATUS
+                    },
+                    onChange: texthandle.bind(this, this)
+                  }}
+                />
+                <div className="col" style={{ paddingTop: "21px" }}>
+                  <button
+                    className="btn btn-primary btn-sm"
+                    type="button"
+                    onClick={getSampleCollectionDetails.bind(this, this)}
+                  >
+                    Load
+                  </button>
+                  <button
+                    className="btn btn-default btn-sm"
+                    style={{ marginLeft: "10px" }}
+                    type="button"
+                    onClick={Refresh.bind(this, this)}
+                  >
+                    Clear
+                  </button>
+                </div>
               </div>
+            </div>
+          </div>
 
-            
-            </div>
-            </div>
-            </div>
-
-           
-            <div className="row">
-              <div className="col-lg-12">
+          <div className="row">
+            <div className="col-lg-12">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                 {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
                 */}
-                 <div className="portlet-body">
-                <AlgaehDataGrid
-                  id="samplecollection_grid"
-                  columns={[
-                    {
-                      fieldName: "action",
-                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                          <i className="fas fa-flask" onClick={this.ShowCollectionModel.bind(
+                <div className="portlet-body">
+                  <AlgaehDataGrid
+                    id="samplecollection_grid"
+                    columns={[
+                      {
+                        fieldName: "action",
+                        label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                className="fas fa-flask"
+                                onClick={this.ShowCollectionModel.bind(
                                   this,
                                   row
-                                )}></i>
-                          </span>
-                        );
+                                )}
+                              />
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 70,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
                       },
-                       others:{maxWidth:70,resizable: false,style:{textAlign:"center"}}
-                    },
-                    {
-                      fieldName: "patient_code",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                      ),
-                      disabled: false,
-                       others:{maxWidth:200,resizable: false,style:{textAlign:"center"}}
-                    },
-                    {
-                      fieldName: "full_name",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
-                      ),
-                      disabled: true,
-                       others:{resizable: false,style:{textAlign:"left"}}
-                    },
-                    {
-                      fieldName: "ordered_date",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "ordered_date" }} />
-                      ),
-                      displayTemplate: row => {
-                        return (
-                          <span>{this.changeDateFormat(row.ordered_date)}</span>
-                        );
+                      {
+                        fieldName: "patient_code",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                        ),
+                        disabled: false,
+                        others: {
+                          maxWidth: 200,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
                       },
-                      disabled: true,
-                       others:{maxWidth:200,resizable: false,style:{textAlign:"center"}}
-                    },
-                    {
-                      fieldName: "number_of_tests",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "number_of_tests" }} />
-                      ),
-                       others:{maxWidth:200,resizable: false,style:{textAlign:"center"}}
-                    }
-                  ]}
-                  keyId="patient_code"
-                  dataSource={{
-                    data: this.state.sample_collection
-                  }}
-                  noDataText="No data available for selected period"
-                  paging={{ page: 0, rowsPerPage: 10 }}
-                />
+                      {
+                        fieldName: "full_name",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                        ),
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "left" }
+                        }
+                      },
+                      {
+                        fieldName: "ordered_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {this.changeDateFormat(row.ordered_date)}
+                            </span>
+                          );
+                        },
+                        disabled: true,
+                        others: {
+                          maxWidth: 200,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "number_of_tests",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "number_of_tests" }}
+                          />
+                        ),
+                        others: {
+                          maxWidth: 200,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      }
+                    ]}
+                    keyId="patient_code"
+                    dataSource={{
+                      data: this.state.sample_collection
+                    }}
+                    noDataText="No data available for selected period"
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                  />
+                </div>
               </div>
             </div>
-              </div>
-            </div>
+          </div>
 
           <MyContext.Provider
             value={{

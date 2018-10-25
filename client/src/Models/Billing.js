@@ -59,7 +59,7 @@ export default {
       unbalanced_amount: 0,
 
       receiptdetails: [],
-      services: [],
+      opbilservices: [],
 
       card_number: null,
       effective_end_date: null,
@@ -89,7 +89,8 @@ export default {
       Cardchecked: false,
       Checkchecked: false,
       billdetail: true,
-      ProcessInsure: true
+      ProcessInsure: true,
+      applydiscount: true
     };
     return output;
   }

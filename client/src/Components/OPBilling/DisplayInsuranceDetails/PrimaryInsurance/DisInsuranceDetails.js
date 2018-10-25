@@ -105,13 +105,11 @@ export default class AddInsuranceForm extends Component {
             <div className="col-lg-4 primary-details">
               <div className="row primary-box-container">
                 <div className="col-lg-4">
-                  <h6>
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "services"
-                      }}
-                    />
-                  </h6>
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "services"
+                    }}
+                  />
                 </div>
                 <div className="col-lg-4 centerAlign">
                   <AlgaehLabel

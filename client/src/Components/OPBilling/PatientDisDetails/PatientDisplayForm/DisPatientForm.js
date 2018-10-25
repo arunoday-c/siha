@@ -47,39 +47,47 @@ class DisPatientForm extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-display-patient-form">
-              <div className="row card-deck panel-layout">
+              <div
+                className="row inner-top-search"
+                style={{ paddingTop: 10, paddingBottom: 10 }}
+              >
                 {/* Patient code */}
-                <div className="col-lg-4 card box-shadow-normal">
-                  <div className="row">
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-8" }}
-                      label={{
-                        fieldName: "patient_code"
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "patient_code",
-                        value: this.state.patient_code,
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        },
-                        others: {
-                          disabled: true
-                        },
-                        error: this.state.open,
-                        helperText: this.state.userErrorText
-                      }}
-                    />
-
-                    <div className="col-lg-2 form-group print_actions">
-                      <span
-                        className="fas fa-search fa-2x"
+                <div className="col-lg-3">
+                  <div
+                    className="row"
+                    style={{
+                      border: " 1px solid #ced4d9",
+                      borderRadius: 5,
+                      marginLeft: 0
+                    }}
+                  >
+                    <div className="col">
+                      <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      <h6>
+                        {this.state.patient_code
+                          ? this.state.patient_code
+                          : "*** New ***"}
+                      </h6>
+                    </div>
+                    <div
+                      className="col-lg-3"
+                      style={{ borderLeft: "1px solid #ced4d8" }}
+                    >
+                      <i
+                        className="fas fa-search fa-lg"
+                        style={{
+                          paddingTop: 17,
+                          paddingLeft: 3,
+                          cursor: "pointer",
+                          pointerEvents:
+                            this.state.Billexists === true ? "none" : ""
+                        }}
                         onClick={PatientSearch.bind(this, this, context)}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-8 card box-shadow-normal">
+                <div className="col-lg-9">
                   <div className="row">
                     <div className="col-lg-3">
                       <AlgaehLabel
@@ -90,7 +98,7 @@ class DisPatientForm extends Component {
                       <h6>
                         {this.state.full_name
                           ? this.state.full_name
-                          : "Patient Name"}
+                          : "--------"}
                       </h6>
                     </div>
 
@@ -103,7 +111,7 @@ class DisPatientForm extends Component {
                       <h6>
                         {this.state.patient_type
                           ? this.state.patient_type
-                          : "Patient Type"}
+                          : "--------"}
                       </h6>
                     </div>
 
@@ -116,7 +124,7 @@ class DisPatientForm extends Component {
                       <h6>
                         {this.state.mode_of_pay
                           ? this.state.mode_of_pay
-                          : "Mode of Payment"}
+                          : "--------"}
                       </h6>
                     </div>
                   </div>

@@ -21,7 +21,6 @@ import {
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import Paper from "@material-ui/core/Paper";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 
 class AddOPBillingForm extends Component {
@@ -56,18 +55,23 @@ class AddOPBillingForm extends Component {
       });
     }
 
-    if (this.props.services === undefined || this.props.services.length === 0) {
+    if (
+      this.props.opbilservices === undefined ||
+      this.props.opbilservices.length === 0
+    ) {
       this.props.getServices({
         uri: "/serviceType/getService",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "services"
+          mappingName: "opbilservices"
         },
         afterSuccess: data => {
-          this.setState({
-            services: data
-          });
+          if (data.length !== 0) {
+            this.setState({
+              opbilservices: data
+            });
+          }
         }
       });
       this.props.getServices({
@@ -91,63 +95,82 @@ class AddOPBillingForm extends Component {
   ProcessToBill(context, e) {
     let $this = this;
     if (this.state.patient_id !== null && this.state.visit_id !== null) {
-      let serviceInput = [
-        {
-          insured: this.state.insured,
-          vat_applicable: this.state.vat_applicable,
-          hims_d_services_id: this.state.s_service,
-          primary_insurance_provider_id: this.state.insurance_provider_id,
-          primary_network_office_id: this.state
-            .hims_d_insurance_network_office_id,
-          primary_network_id: this.state.network_id,
-          sec_insured: this.state.sec_insured,
-          secondary_insurance_provider_id: this.state
-            .secondary_insurance_provider_id,
-          secondary_network_id: this.state.secondary_network_id,
-          secondary_network_office_id: this.state.secondary_network_office_id
-        }
-      ];
-
-      this.props.generateBill({
-        uri: "/billing/getBillDetails",
-        method: "POST",
-        data: serviceInput,
-        redux: {
-          type: "BILL_GEN_GET_DATA",
-          mappingName: "xxx"
-        },
-        afterSuccess: data => {
-          if (data.billdetails[0].pre_approval === "Y") {
-            successfulMessage({
-              message:
-                "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-              title: "Warning",
-              icon: "warning"
-            });
-          } else {
-            let existingservices = $this.state.billdetails;
-
-            if (data.billdetails.length !== 0) {
-              data.billdetails[0].ordered_date = new Date();
-              existingservices.splice(0, 0, data.billdetails[0]);
-            }
-
-            if (context != null) {
-              context.updateState({ billdetails: existingservices });
-            }
-
-            $this.props.billingCalculations({
-              uri: "/billing/billingCalculations",
-              method: "POST",
-              data: { billdetails: existingservices },
-              redux: {
-                type: "BILL_HEADER_GEN_GET_DATA",
-                mappingName: "genbill"
-              }
-            });
+      if (this.state.s_service_type !== null && this.state.s_service !== null) {
+        let serviceInput = [
+          {
+            insured: this.state.insured,
+            vat_applicable: this.state.vat_applicable,
+            hims_d_services_id: this.state.s_service,
+            primary_insurance_provider_id: this.state.insurance_provider_id,
+            primary_network_office_id: this.state
+              .hims_d_insurance_network_office_id,
+            primary_network_id: this.state.network_id,
+            sec_insured: this.state.sec_insured,
+            secondary_insurance_provider_id: this.state
+              .secondary_insurance_provider_id,
+            secondary_network_id: this.state.secondary_network_id,
+            secondary_network_office_id: this.state.secondary_network_office_id
           }
-        }
-      });
+        ];
+
+        this.props.generateBill({
+          uri: "/billing/getBillDetails",
+          method: "POST",
+          data: serviceInput,
+          redux: {
+            type: "BILL_GEN_GET_DATA",
+            mappingName: "xxx"
+          },
+          afterSuccess: data => {
+            let applydiscount = false;
+            if (data.billdetails[0].pre_approval === "Y") {
+              successfulMessage({
+                message:
+                  "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+                title: "Warning",
+                icon: "warning"
+              });
+            } else {
+              let existingservices = $this.state.billdetails;
+
+              if (data.billdetails.length !== 0) {
+                data.billdetails[0].ordered_date = new Date();
+
+                existingservices.splice(0, 0, data.billdetails[0]);
+              }
+
+              if (this.state.mode_of_pay === "Insurance") {
+                applydiscount = true;
+              }
+              if (context != null) {
+                context.updateState({
+                  billdetails: existingservices,
+                  applydiscount: applydiscount,
+                  s_service_type: null,
+                  s_service: null,
+                  saveEnable: false
+                });
+              }
+
+              $this.props.billingCalculations({
+                uri: "/billing/billingCalculations",
+                method: "POST",
+                data: { billdetails: existingservices },
+                redux: {
+                  type: "BILL_HEADER_GEN_GET_DATA",
+                  mappingName: "genbill"
+                }
+              });
+            }
+          }
+        });
+      } else {
+        successfulMessage({
+          message: "Invalid Input. Please select the Service and Service Type.",
+          title: "Warning",
+          icon: "warning"
+        });
+      }
     } else {
       successfulMessage({
         message: "Invalid Input. Please select the patient and visit.",
@@ -253,6 +276,7 @@ class AddOPBillingForm extends Component {
           company_res: 0,
           sec_company_res: 0,
           patient_payable: 0,
+          patient_payable_h: 0,
           company_payable: 0,
           sec_company_payable: 0,
           patient_tax: 0,
@@ -270,7 +294,9 @@ class AddOPBillingForm extends Component {
           cheque_date: null,
           cheque_amount: 0,
           total_amount: 0,
-          unbalanced_amount: 0
+          unbalanced_amount: 0,
+          saveEnable: true,
+          applydiscount: true
         });
       }
     } else {
@@ -290,13 +316,6 @@ class AddOPBillingForm extends Component {
             <div className="hptl-phase1-op-add-billing-form">
               <div className="container-fluid">
                 <div className="row margin-top-15">
-                  {/* <div className="col-lg-1">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "select_service"
-                      }}
-                    />
-                  </div> */}
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -334,7 +353,7 @@ class AddOPBillingForm extends Component {
                             ? "service_name"
                             : "arabic_service_name",
                         valueField: "hims_d_services_id",
-                        data: this.state.services
+                        data: this.state.opbilservices
                       },
                       others: { disabled: this.state.Billexists },
                       onChange: serviceHandeler.bind(this, this, context)
@@ -469,7 +488,7 @@ class AddOPBillingForm extends Component {
                                   dataSource: {
                                     textField: "service_name",
                                     valueField: "hims_d_services_id",
-                                    data: this.props.services
+                                    data: this.props.opbilservices
                                   },
                                   others: {
                                     disabled: true
@@ -592,7 +611,7 @@ class AddOPBillingForm extends Component {
                       dataSource={{
                         data: this.state.billdetails
                       }}
-                      isEditable={true}
+                      isEditable={!this.state.Billexists}
                       paging={{ page: 0, rowsPerPage: 5 }}
                       events={{
                         onDelete: this.deleteBillDetail.bind(this, context),
@@ -650,7 +669,14 @@ class AddOPBillingForm extends Component {
 
                 <div className="row">
                   <div className="col-lg-4">
-                    <Paper className="Paper">
+                    <div
+                      style={{
+                        margin: "15px 0",
+                        border: "1px solid #acaaaa",
+                        padding: 15,
+                        borderRadius: 10
+                      }}
+                    >
                       <div className="row">
                         <div className="col-lg-6">
                           <AlgaehLabel
@@ -847,11 +873,18 @@ class AddOPBillingForm extends Component {
                           </div>
                         </div>
                       </div>
-                    </Paper>
+                    </div>
                   </div>
 
                   <div className="col-lg-8">
-                    <Paper className="Paper">
+                    <div
+                      style={{
+                        margin: "15px 0",
+                        border: "1px solid #acaaaa",
+                        padding: 15,
+                        borderRadius: 10
+                      }}
+                    >
                       <div className="row secondary-box-container">
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
@@ -882,7 +915,10 @@ class AddOPBillingForm extends Component {
                             className: "txt-fld",
                             name: "sheet_discount_percentage",
                             others: {
-                              disabled: this.state.Billexists
+                              disabled:
+                                this.state.Billexists === true
+                                  ? true
+                                  : this.state.applydiscount
                             },
                             events: {
                               onChange: discounthandle.bind(this, this, context)
@@ -901,7 +937,10 @@ class AddOPBillingForm extends Component {
                             className: "txt-fld",
                             name: "sheet_discount_amount",
                             others: {
-                              disabled: this.state.Billexists
+                              disabled:
+                                this.state.Billexists === true
+                                  ? true
+                                  : this.state.applydiscount
                             },
                             events: {
                               onChange: discounthandle.bind(this, this, context)
@@ -980,7 +1019,7 @@ class AddOPBillingForm extends Component {
                         </div>
                       </div>
                       <ReciptForm BillingIOputs={this.props.BillingIOputs} />
-                    </Paper>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -995,7 +1034,7 @@ class AddOPBillingForm extends Component {
 function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
-    services: state.services,
+    opbilservices: state.opbilservices,
     genbill: state.genbill,
     serviceslist: state.serviceslist
   };

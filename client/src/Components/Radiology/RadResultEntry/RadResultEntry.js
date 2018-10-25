@@ -36,7 +36,10 @@ class RadResultEntry extends Component {
     this.state = {
       template_name: null,
       template_html: null,
-      pre_exam_status: null
+      pre_exam_status: null,
+      exam_start_date_time: null,
+      exam_end_date_time: null,
+      changesDone: false
     };
   }
 
@@ -51,13 +54,16 @@ class RadResultEntry extends Component {
     });
   }
   componentWillReceiveProps(newProps) {
+    debugger;
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
     ) {
-      newProps.selectedPatient.pre_exam_status =
-        newProps.selectedPatient.exam_status;
-      this.setState({ ...this.state, ...newProps.selectedPatient });
+      if (this.state.changesDone === false) {
+        newProps.selectedPatient.pre_exam_status =
+          newProps.selectedPatient.exam_status;
+        this.setState({ ...this.state, ...newProps.selectedPatient });
+      }
     } else {
       this.setState({ ...this.state, ...newProps.radschlist });
     }
@@ -74,10 +80,25 @@ class RadResultEntry extends Component {
   render() {
     return (
       <div>
-        <Modal open={this.props.open}>
+        <Modal className="model-set" open={this.props.open}>
           <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Result Entry</h4>
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4>Result Entry</h4>
+                </div>
+                <div className="col-lg-4">
+                  <button
+                    type="button"
+                    className=""
+                    onClick={e => {
+                      this.onClose(e);
+                    }}
+                  >
+                    <i className="fas fa-times-circle" />
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="popupInner">
               <div className="patientInfo-Top box-shadow-normal">
@@ -114,7 +135,7 @@ class RadResultEntry extends Component {
               </div>
               <div className="col-12">
                 <div className="row">
-                  <div className="col-3 popLeftDiv">
+                  <div className="col-4 popLeftDiv">
                     <div className="row form-row-gap">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12" }}
@@ -139,7 +160,7 @@ class RadResultEntry extends Component {
                     </div>
                     <div className="row form-row-gap">
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-6" }}
+                        div={{ className: "col-lg-7" }}
                         label={{ forceLabel: "Start Date" }}
                         textBox={{ className: "txt-fld" }}
                         events={{
@@ -149,13 +170,14 @@ class RadResultEntry extends Component {
                         value={this.state.exam_start_date_time}
                       />
 
-                      <div className="col-lg-6">
+                      <div className="col-lg-5">
                         <AlgaehLabel
                           label={{
                             forceLabel: "Start Time",
                             align: ""
                           }}
                         />
+                        <br />
                         <time>
                           {this.state.exam_start_date_time !== null
                             ? moment(this.state.exam_start_date_time).format(
@@ -167,7 +189,7 @@ class RadResultEntry extends Component {
                     </div>
                     <div className="row form-row-gap">
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-6" }}
+                        div={{ className: "col-lg-7" }}
                         label={{ forceLabel: "End Date" }}
                         textBox={{ className: "txt-fld" }}
                         events={{
@@ -177,13 +199,14 @@ class RadResultEntry extends Component {
                         value={this.state.exam_end_date_time}
                       />
 
-                      <div className="col-lg-6">
+                      <div className="col-lg-5">
                         <AlgaehLabel
                           label={{
                             forceLabel: "End Time    ",
                             align: ""
                           }}
                         />
+                        <br />
                         <time>
                           {this.state.exam_end_date_time !== null
                             ? moment(this.state.exam_end_date_time).format(
@@ -302,7 +325,7 @@ class RadResultEntry extends Component {
                       />
                     </div>
                   </div>
-                  <div className="col-9 popRightDiv">
+                  <div className="col-8 popRightDiv">
                     <h5 style={{ color: "gray" }}>
                       {this.state.service_code} - {this.state.service_name}
                     </h5>
@@ -366,6 +389,7 @@ class RadResultEntry extends Component {
                 type="button"
                 className="btn btn-primary"
                 onClick={onvalidate.bind(this, this)}
+                disabled={this.state.status === "RA" ? true : false}
               >
                 Validate
               </button>

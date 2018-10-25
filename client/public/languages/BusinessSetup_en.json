@@ -33,5 +33,12 @@
   "shift": "Shift",
   "counter": "Counter",
   "master_setup": "Master Setup",
-  "home": "Home"
+  "home": "Home",
+  "shift_code": "Shift Code",
+  "shift_description": "Shift Description",
+  "arabic_name": "Arabic Description",
+  "shift_status": "Shift Status",
+  "counter_code": "Counter Code",
+  "counter_description": "Counter Description",
+  "counter_status": "Counter Status"
 }

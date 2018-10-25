@@ -1,6 +1,8 @@
 import Enumerable from "linq";
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 const assnotetexthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -23,126 +25,88 @@ const texthandle = ($this, ctrl, e) => {
   });
 };
 
-const insertFinalICDS = $this => {
-  if ($this.state.f_icd_id !== null) {
-    let finalICDS = $this.state.finalICDS;
-    let diagnosis_type = "";
-    if (finalICDS.length > 0) {
-      diagnosis_type = "S";
-    } else {
-      diagnosis_type = "P";
-    }
-    let FinalICDSobj = {
-      daignosis_id: $this.state.f_icd_id,
-      diagnosis_type: diagnosis_type,
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"],
-      visit_id: Window.global["visit_id"],
-      final_daignosis: "Y"
-    };
-
-    finalICDS.push(FinalICDSobj);
-    saveDiagnosis($this, finalICDS);
-    $this.setState({
-      finalICDS: finalICDS,
-      showFinalDiagnosisLoader: true
-    });
+const insertFinalICDS = ($this, row) => {
+  let finalICDS = [];
+  let diagnosis_type = "";
+  if ($this.state.finalICDS.length > 0) {
+    diagnosis_type = "S";
   } else {
-    swalMessage({
-      title: "Invalid Input. Please select Diagnosis",
-      type: "warning"
-    });
+    diagnosis_type = "P";
   }
+
+  finalICDS.push({
+    daignosis_id: row.hims_d_icd_id,
+    diagnosis_type: diagnosis_type,
+    patient_id: Window.global["current_patient"],
+    episode_id: Window.global["episode_id"],
+    visit_id: Window.global["visit_id"],
+    final_daignosis: "Y"
+  });
+
+  saveDiagnosis($this, finalICDS);
 };
 
-const insertInitialICDS = $this => {
-  if ($this.state.icd_id !== null) {
-    const _initalId = Enumerable.from($this.state.InitialICDS)
-      .where(w => w.daignosis_id === $this.state.daignosis_id)
-      .firstOrDefault();
-    if (_initalId !== undefined) {
-      swalMessage({
-        title: "Invalid Input. Selected diagnosis already exists",
-        type: "warning"
-      });
-      return;
+const IcdsSearch = ($this, diagType) => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Diagnosis.IcdCodes
+    },
+    searchName: "IcdCodes",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      debugger;
+      if (diagType === "Final") {
+        insertFinalICDS($this, row);
+      } else if (diagType === "Intial") {
+        insertInitialICDS($this, row);
+      }
     }
-
-    let insertInitialDiad = [];
-    insertInitialDiad.push({
-      radioselect: 0,
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"],
-      visit_id: Window.global["visit_id"],
-      daignosis_id: $this.state.daignosis_id,
-      diagnosis_type: $this.state.InitialICDS.length > 0 ? "S" : "P",
-      final_daignosis: "N"
-    });
-
-    saveDiagnosis($this, insertInitialDiad);
-  } else {
-    swalMessage({
-      title: "Invalid Input. Please select Diagnosis",
-      type: "warning"
-    });
-  }
+  });
 };
 
-const selectdIcd = ($this, row, e) => {
+const insertInitialICDS = ($this, row) => {
   debugger;
-  // let x = Enumerable.from($this.state.InitialICDS)
-  //   .where(w => w.radioselect === 1)
-  //   .toArray();
-  // var index;
-
-  // if (x != null && x.length > 0) {
-  //   index = $this.state.InitialICDS.indexOf(x[0]);
-  //   if (index > -1) {
-  //     $this.state.InitialICDS[index]["radioselect"] = 0;
-  //   }
-  // }
-  // index = $this.state.InitialICDS.indexOf(row);
-  // $this.state.InitialICDS[index]["radioselect"] = 1;
-
-  // $this.setState({
-  //   selectdIcd: [row]
-  // });
-  const _finalList = Enumerable.from($this.state.finalICDS)
-    .where(w => w.daignosis_id === row.daignosis_id)
+  const _initalId = Enumerable.from($this.state.InitialICDS)
+    .where(w => w.daignosis_id === $this.state.daignosis_id)
     .firstOrDefault();
-  if (_finalList !== undefined) {
+  if (_initalId !== undefined) {
     swalMessage({
-      title:
-        "Diagnosis '" +
-        row.icd_description +
-        "' already exists in final diagnosis ",
+      title: "Invalid Input. Selected diagnosis already exists.",
       type: "warning"
     });
     return;
   }
-  updateDiagnosis($this, { ...row, ...{ final_daignosis: "Y" } });
+
+  let insertInitialDiad = [];
+  insertInitialDiad.push({
+    radioselect: 0,
+    patient_id: Window.global["current_patient"],
+    episode_id: Window.global["episode_id"],
+    visit_id: Window.global["visit_id"],
+    daignosis_id: row.hims_d_icd_id,
+    diagnosis_type: $this.state.InitialICDS.length > 0 ? "S" : "P",
+    final_daignosis: "N"
+  });
+
+  saveDiagnosis($this, insertInitialDiad);
 };
 
-const addFinalIcd = $this => {
-  let selecteddata = $this.state.selectdIcd;
+const addFinalIcd = ($this, row) => {
   let finalICDS = $this.state.finalICDS;
-  if (selecteddata.length > 0) {
-    if (finalICDS.length > 0) {
-      selecteddata[0].diagnosis_type = "S";
-    } else {
-      selecteddata[0].diagnosis_type = "P";
-    }
 
-    selecteddata[0].final_daignosis = "Y";
-    selecteddata[0].record_status = "A";
-    $this.setState({ showInitialDiagnosisLoader: true });
-    updateDiagnosis($this, selecteddata[0]);
+  if (finalICDS.length > 0) {
+    row.diagnosis_type = "S";
   } else {
-    swalMessage({
-      title: "Invalid Input. Please select Diagnosis",
-      type: "warning"
-    });
+    row.diagnosis_type = "P";
   }
+
+  row.final_daignosis = "Y";
+  row.record_status = "A";
+  $this.setState({ showInitialDiagnosisLoader: true });
+  updateDiagnosis($this, row);
 };
 
 const saveDiagnosis = ($this, data) => {
@@ -334,12 +298,12 @@ export {
   assnotetexthandle,
   insertInitialICDS,
   insertFinalICDS,
-  selectdIcd,
   addFinalIcd,
   getPatientDiagnosis,
   onchangegridcol,
   deleteDiagnosis,
   deleteFinalDiagnosis,
   updateDiagnosis,
-  searchByhandaler
+  searchByhandaler,
+  IcdsSearch
 };

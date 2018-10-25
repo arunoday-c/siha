@@ -93,12 +93,15 @@ class PatientDisplayDetails extends Component {
       nextProps.existinsurance !== undefined &&
       nextProps.existinsurance.length !== 0
     ) {
-      debugger;
       output = nextProps.existinsurance[0];
     }
-    if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
+    if (
+      nextProps.genbill !== undefined &&
+      nextProps.genbill.length !== 0 &&
+      this.state.billdetails.length !== 0
+    ) {
       nextProps.genbill.patient_payable_h = nextProps.genbill.patient_payable;
-      nextProps.genbill.saveEnable = false;
+      // nextProps.genbill.saveEnable = false;
       billOut = nextProps.genbill;
     }
 
@@ -121,7 +124,6 @@ class PatientDisplayDetails extends Component {
         },
         afterSuccess: data => {
           if ($this.state.visit_id !== null) {
-            debugger;
             for (let i = 0; i < data.visitDetails.length; i++) {
               if (
                 data.visitDetails[i].hims_f_patient_visit_id ===
@@ -196,7 +198,6 @@ class PatientDisplayDetails extends Component {
       afterSuccess: data => {
         data.saveEnable = true;
         $this.setState(data, () => {
-          debugger;
           this.getPatientDetails(this, data);
         });
       }
@@ -204,8 +205,6 @@ class PatientDisplayDetails extends Component {
   }
 
   GenerateReciept(callback) {
-    debugger;
-
     let obj = [];
 
     if (
@@ -266,11 +265,10 @@ class PatientDisplayDetails extends Component {
   }
 
   SaveBill(e) {
-    debugger;
     if (this.state.unbalanced_amount === 0) {
       this.GenerateReciept($this => {
         let Inputobj = $this.state;
-        debugger;
+
         Inputobj.patient_payable = $this.state.patient_payable_h;
         AlgaehLoader({ show: true });
         algaehApiCall({
@@ -396,7 +394,7 @@ class PatientDisplayDetails extends Component {
           }}
           selectedLang={this.state.selectedLang}
         />
-        <div className="spacing-push">
+        <div style={{ marginTop: 75 }}>
           <MyContext.Provider
             value={{
               state: this.state,

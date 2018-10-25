@@ -23,16 +23,20 @@ import {
   calculateAmount,
   adjustadvance,
   UomchangeTexts,
-  dateFormater
+  dateFormater,
+  ShowItemBatch
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Paper from "@material-ui/core/Paper";
-
+import ItemBatchs from "../ItemBatchs/ItemBatchs";
 class PosListItems extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      selectBatch: false,
+      selectBatchButton: true
+    };
   }
 
   componentWillMount() {
@@ -245,12 +249,23 @@ class PosListItems extends Component {
                         >
                           Add Item
                         </button>
-                        <button
+                        {/* <button
                           className="btn btn-default"
-                          //   onClick={processItems.bind(this, this)}
+                          onClick={ShowItemBatch.bind(this, this)}
+                          disabled={this.state.addItemButton}
                         >
                           Select Batch
-                        </button>
+                        </button> */}
+
+                        <ItemBatchs
+                          show={this.state.selectBatch}
+                          onClose={ShowItemBatch.bind(this, this)}
+                          selectedLang={this.state.selectedLang}
+                          inputsparameters={{
+                            item_id: this.state.item_id,
+                            location_id: this.state.location_id
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -967,6 +982,7 @@ function mapStateToProps(state) {
     itemuom: state.itemuom,
     posheader: state.posheader,
     itemgroup: state.itemgroup
+    // itemBatch: state.itemBatch
   };
 }
 
@@ -983,6 +999,7 @@ function mapDispatchToProps(dispatch) {
       getInsuranceServicesCost: AlgaehActions,
       generateBill: AlgaehActions,
       getItemGroup: AlgaehActions
+      // getItemLocationStock: AlgaehActions
     },
     dispatch
   );

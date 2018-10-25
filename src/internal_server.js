@@ -17,9 +17,9 @@ import jwtDecode from "jwt-decode";
 import { decryption } from "./utils/cryptography";
 
 let app = express();
-
-if (process.env.NODE_ENV === "production") {
-  console.log("Running prod....");
+const _port =keys.port;
+if (process.env.NODE_ENV == "production") {
+  console.log("Running prod...."+_port);
   console.log(process.env.NODE_ENV);
   app.use(express.static("client/build"));
 }
@@ -142,8 +142,8 @@ app.use((error, req, res, next) => {
   logger.log("error", "%j", _error);
 });
 
-app.server.listen(config.port);
-console.log(`started on port ${app.server.address().port}`);
+app.server.listen(_port);
+console.log(`started on port ${_port}`);
 
 export default app;
 module.exports = app;

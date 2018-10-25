@@ -150,7 +150,6 @@ export function algaehApiCall(options) {
             settings.onSuccess(response);
         })
         .catch(err => {
-          debugger;
           if (
             settings.cancelRequestId !== undefined ||
             settings.cancelRequestId !== null ||
