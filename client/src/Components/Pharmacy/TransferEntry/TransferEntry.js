@@ -11,7 +11,7 @@ import {
   AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-
+import moment from "moment";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   getCtrlCode,
@@ -25,7 +25,7 @@ import "./TransferEntry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
-
+import Options from "../../../Options.json";
 import TransferEntryItems from "./TransferEntryItems/TransferEntryItems";
 import MyContext from "../../../utils/MyContext";
 import TransferIOputs from "../../../Models/TransferEntry";
@@ -119,24 +119,40 @@ class TransferEntry extends Component {
               searchName: "TransferEntry"
             }}
             userArea={
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: (
-                    <AlgaehLabel label={{ forceLabel: "Transfer Date" }} />
-                  ),
-                  className: "internal-label"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "bread_registration_date"
-                }}
-                disabled={true}
-                events={{
-                  onChange: null
-                }}
-                value={this.state.pos_date}
-              />
+              <div className="row">
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Transfer Date"
+                    }}
+                  />
+                  <h6>
+                    {this.state.transfer_date
+                      ? moment(this.state.transfer_date).format(
+                          Options.dateFormat
+                        )
+                      : Options.dateFormat}
+                  </h6>
+                </div>
+              </div>
+              // <AlgaehDateHandler
+              //   div={{ className: "col" }}
+              //   label={{
+              //     forceLabel: (
+              //       <AlgaehLabel label={{ forceLabel: "Transfer Date" }} />
+              //     ),
+              //     className: "internal-label"
+              //   }}
+              //   textBox={{
+              //     className: "txt-fld",
+              //     name: "bread_registration_date"
+              //   }}
+              //   disabled={true}
+              //   events={{
+              //     onChange: null
+              //   }}
+              //   value={this.state.pos_date}
+              // />
             }
             selectedLang={this.state.selectedLang}
           />

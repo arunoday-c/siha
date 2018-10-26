@@ -449,8 +449,10 @@ class RegistrationPatient extends Component {
                 />
                 <h6>
                   {this.state.registration_date
-                    ? moment(this.state.registration_date).format("DD-MM-YYYY")
-                    : "DD/MM/YYYY"}
+                    ? moment(this.state.registration_date).format(
+                        Options.dateFormat
+                      )
+                    : Options.dateFormat}
                 </h6>
               </div>
             </div>

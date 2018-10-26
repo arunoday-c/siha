@@ -351,22 +351,20 @@ class PatientDisplayDetails extends Component {
             }
           }}
           userArea={
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{
-                forceLabel: <AlgaehLabel label={{ fieldName: "bill_date" }} />,
-                className: "internal-label"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "bread_bill_date"
-              }}
-              disabled={true}
-              events={{
-                onChange: null
-              }}
-              value={this.state.bill_date}
-            />
+            <div className="row">
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "bill_date"
+                  }}
+                />
+                <h6>
+                  {this.state.registration_date
+                    ? moment(this.state.bill_date).format("DD-MM-YYYY")
+                    : "DD/MM/YYYY"}
+                </h6>
+              </div>
+            </div>
           }
           printArea={{
             menuitems: [
