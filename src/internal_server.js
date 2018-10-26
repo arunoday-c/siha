@@ -17,9 +17,9 @@ import jwtDecode from "jwt-decode";
 import { decryption } from "./utils/cryptography";
 
 let app = express();
-const _port =keys.port;
+const _port = keys.port;
 if (process.env.NODE_ENV == "production") {
-  console.log("Running prod...."+_port);
+  console.log("Running prod...." + _port);
   console.log(process.env.NODE_ENV);
   app.use(express.static("client/build"));
 }
@@ -131,7 +131,8 @@ app.use((error, req, res, next) => {
   error.status = error.status || httpStatus.internalServer;
   res.status(error.status).json({
     success: false,
-    message: error.sqlMessage != null ? error.sqlMessage : error.message
+    message: error.sqlMessage != null ? error.sqlMessage : error.message,
+    isSql: error.sqlMessage != null ? true : false
   });
   const _error = {
     source: req.originalUrl,

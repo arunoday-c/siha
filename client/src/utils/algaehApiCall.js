@@ -6,7 +6,6 @@ import swal from "sweetalert2";
 
 import config from "../utils/config.json";
 import axiosCancel from "axios-cancel";
-import { prototype } from "aws-sdk/clients/sagemakerruntime";
 const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
 export function algaehApiCall(options) {
   // "baseUrl": "http://192.168.0.149:3000/api/v1",
@@ -118,7 +117,6 @@ export function algaehApiCall(options) {
               if (typeof settings.onSuccess === "function")
                 settings.onSuccess(response);
             } else {
-              debugger;
               const error = new Error(response.statusText);
               error.response = response;
               if (typeof settings.onFailure === "function")
@@ -150,6 +148,7 @@ export function algaehApiCall(options) {
             settings.onSuccess(response);
         })
         .catch(err => {
+          debugger;
           if (
             settings.cancelRequestId !== undefined ||
             settings.cancelRequestId !== null ||
@@ -159,6 +158,7 @@ export function algaehApiCall(options) {
               console.warn("Request canceled :", err.message);
             }
           }
+
           if (err.code === "ECONNABORTED") {
             console.error(
               "Error Message : \n" +
@@ -171,9 +171,12 @@ export function algaehApiCall(options) {
               type: "info"
             });
           } else {
-            if (typeof settings.onFailure === "function")
+            if (typeof settings.onFailure === "function") {
+              err.response.data.message = clearSqlMessage(
+                err.response.data.message
+              );
               settings.onFailure(err);
-            else {
+            } else {
               debugger;
 
               if (
@@ -192,15 +195,16 @@ export function algaehApiCall(options) {
                     message: err.response.data.message
                   };
                 }
-
+                const _message = clearSqlMessage(err.response.data.message);
                 swalMessage({
-                  title: err.message,
+                  title: _message,
                   type: "error",
                   position: "top"
                 });
               } else {
+                const _message = clearSqlMessage(err.message);
                 swalMessage({
-                  title: err.message,
+                  title: _message,
                   type: "error",
                   position: "top"
                 });
@@ -215,7 +219,29 @@ export function algaehApiCall(options) {
     }
   });
 }
-
+function clearSqlMessage(message) {
+  let mess = message.split("_");
+  const _prev = message.split("_");
+  const lastMessage = mess[mess.length - 1];
+  if (lastMessage === lastMessage.toUpperCase()) {
+    let newString = "";
+    for (let i = 0; i < mess.length - 1; i++) {
+      if (i !== 0) {
+        newString += " ";
+      }
+      newString += mess[i]
+        .replace(/\'\S/g, chara => {
+          return chara.toUpperCase();
+        })
+        .replace(/^\w/, c => {
+          return c.toUpperCase();
+        });
+    }
+    const prevString = _prev.join("_");
+    message = message.replace(prevString, newString + "'");
+  }
+  return message;
+}
 export function swalMessage(options) {
   const settings = {
     position: "top",
