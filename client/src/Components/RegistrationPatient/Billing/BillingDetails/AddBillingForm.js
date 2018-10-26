@@ -27,7 +27,6 @@ import MyContext from "../../../../utils/MyContext.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import variableJson from "../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
 class AddBillingForm extends Component {

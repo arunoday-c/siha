@@ -1,6 +1,8 @@
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 import AlgaehReport from "../../Wrapper/printReports";
+import Options from "../../../Options.json";
+import moment from "moment";
 
 const CollectSample = ($this, context, row) => {
   let inputobj = {
@@ -69,4 +71,11 @@ const printBarcode = ($this, row, e) => {
     }
   });
 };
-export { CollectSample, printBarcode };
+
+const dateFormater = value => {
+  if (value !== null) {
+    return moment(value).format(Options.dateFormat);
+  }
+};
+
+export { CollectSample, printBarcode, dateFormater };
