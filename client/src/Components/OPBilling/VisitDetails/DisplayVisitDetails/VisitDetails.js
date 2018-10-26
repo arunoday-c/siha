@@ -144,7 +144,8 @@ class DisplayVisitDetails extends Component {
                 if (context != null) {
                   context.updateState({
                     billdetails: data,
-                    applydiscount: applydiscount
+                    applydiscount: applydiscount,
+                    saveEnable: false
                   });
                 }
 

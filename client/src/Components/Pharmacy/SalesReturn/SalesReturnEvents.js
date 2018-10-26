@@ -3,8 +3,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import SalesReturnputs from "../../../Models/SalesReturn";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert2";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;
@@ -74,10 +73,9 @@ const SaveSalesReturn = $this => {
           saveEnable: true,
           postEnable: false
         });
-        swal("Saved successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Saved successfully . .",
+          type: "success"
         });
       }
     }
@@ -128,10 +126,9 @@ const PostSalesReturn = $this => {
         $this.setState({
           postEnable: true
         });
-        swal("Posted successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Posted successfully . .",
+          type: "success"
         });
       }
     }

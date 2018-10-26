@@ -424,7 +424,7 @@ class TransferEntryItems extends Component {
                               disabled: true
                             },
                             {
-                              fieldName: "item_uom",
+                              fieldName: "uom_requested_id",
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "UOM" }} />
                               ),
@@ -435,7 +435,7 @@ class TransferEntryItems extends Component {
                                     : this.props.itemuom.filter(
                                         f =>
                                           f.hims_d_pharmacy_uom_id ===
-                                          row.item_uom
+                                          row.uom_requested_id
                                       );
 
                                 return (
@@ -457,8 +457,8 @@ class TransferEntryItems extends Component {
 
                                       dataSource: {
                                         textField: "uom_description",
-                                        valueField: "uom_id",
-                                        data: this.state.ItemUOM
+                                        valueField: "hims_d_pharmacy_uom_id",
+                                        data: this.state.itemuom
                                       },
                                       onChange: null,
                                       others: {
@@ -472,10 +472,10 @@ class TransferEntryItems extends Component {
                             },
 
                             {
-                              fieldName: "quantity_required",
+                              fieldName: "quantity_requested",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Quantity Required" }}
+                                  label={{ forceLabel: "Quantity Requested" }}
                                 />
                               ),
                               editorTemplate: row => {
