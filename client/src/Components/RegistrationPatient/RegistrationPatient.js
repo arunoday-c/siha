@@ -98,12 +98,41 @@ class RegistrationPatient extends Component {
         }
       });
     }
+    debugger;
 
     if (
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
     ) {
       this.getCtrlCode(this.props.patient_code);
+    } else if (this.props.patient_details !== undefined) {
+      // Object.keys(patient_details).length === 0
+
+      // this.props.patient_details.patient_name !== undefined &&
+      //   this.props.patient_details.patient_name.length !== 0
+      this.setState(
+        {
+          full_name: this.props.patient_details.patient_name,
+          arabic_name: this.props.patient_details.arabic_patient_name,
+          date_of_birth: this.props.patient_details.date_of_birth,
+          age: this.props.patient_details.patient_age,
+          gender: this.props.patient_details.patient_gender,
+          contact_number: this.props.patient_details.patient_phone,
+          email: this.props.patient_details.patient_email,
+          sub_department_id: this.props.sub_department_id,
+          provider_id: this.props.provider_id,
+          doctor_id: this.props.provider_id,
+          visit_type: this.props.visit_type,
+          hims_d_services_id: this.props.hims_d_services_id,
+          saveEnable: false,
+          clearEnable: true
+        },
+        () => {
+          if (this.props.fromAppoinment === true) {
+            generateBillDetails(this, this);
+          }
+        }
+      );
     }
   }
 
