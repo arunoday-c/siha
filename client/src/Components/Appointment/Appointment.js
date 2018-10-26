@@ -182,7 +182,7 @@ class Appointment extends Component {
   addPatientAppointment(e) {
     debugger;
     e.preventDefault();
-
+ 
     let from_time = this.state.apptFromTime;
     let duration_minutes = this.state.apptSlot * this.state.no_of_slots;
     let to_time = moment(from_time, "hh:mm a")
@@ -441,33 +441,45 @@ class Appointment extends Component {
 
   openEditModal(patient, e) {
     debugger;
+
     console.log("Edit Pat Data:", patient);
-    this.setState({ patToEdit: patient, openPatEdit: true }, () => {
-      let pat_edit = this.state.patToEdit;
-      this.setState({
-        edit_appointment_status_id: pat_edit.appointment_status_id,
-        edit_appt_date: pat_edit.appointment_date,
-        edit_appt_time: pat_edit.appointment_from_time,
-        edit_contact_number: pat_edit.contact_number,
-        edit_patient_name: pat_edit.patient_name,
-        edit_arabic_name: pat_edit.arabic_name,
-        edit_date_of_birth: pat_edit.date_of_birth,
-        edit_age: pat_edit.age,
-        edit_gender: pat_edit.gender,
-        edit_email: pat_edit.email,
-        edit_appointment_remarks: pat_edit.appointment_remarks,
-        edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
-        edit_provider_id: pat_edit.provider_id,
-        edit_patient_id: pat_edit.patient_id,
-        edit_from_time: pat_edit.appointment_from_time,
-        edit_to_time: pat_edit.appointment_to_time,
-        edit_arabic_name: pat_edit.arabic_name,
-        edit_sub_dep_id: pat_edit.sub_department_id,
-        edit_appointment_date: pat_edit.appointment_date,
-        patient_code: pat_edit.patient_code,
-        edit_no_of_slots: pat_edit.number_of_slot
+
+    if (
+      moment(patient.appointment_from_time, "HH:mm a").format("HHmm") <
+      moment(new Date()).format("HHmm")
+    ) {
+      swalMessage({
+        title: "Can't edit past appointments",
+        type: "error"
       });
-    });
+    } else {
+      this.setState({ patToEdit: patient, openPatEdit: true }, () => {
+        let pat_edit = this.state.patToEdit;
+        this.setState({
+          edit_appointment_status_id: pat_edit.appointment_status_id,
+          edit_appt_date: pat_edit.appointment_date,
+          edit_appt_time: pat_edit.appointment_from_time,
+          edit_contact_number: pat_edit.contact_number,
+          edit_patient_name: pat_edit.patient_name,
+          edit_arabic_name: pat_edit.arabic_name,
+          edit_date_of_birth: pat_edit.date_of_birth,
+          edit_age: pat_edit.age,
+          edit_gender: pat_edit.gender,
+          edit_email: pat_edit.email,
+          edit_appointment_remarks: pat_edit.appointment_remarks,
+          edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
+          edit_provider_id: pat_edit.provider_id,
+          edit_patient_id: pat_edit.patient_id,
+          edit_from_time: pat_edit.appointment_from_time,
+          edit_to_time: pat_edit.appointment_to_time,
+          edit_arabic_name: pat_edit.arabic_name,
+          edit_sub_dep_id: pat_edit.sub_department_id,
+          edit_appointment_date: pat_edit.appointment_date,
+          patient_code: pat_edit.patient_code,
+          edit_no_of_slots: pat_edit.number_of_slot
+        });
+      });
+    }
   }
 
   updatePatientAppointment() {
@@ -513,7 +525,14 @@ class Appointment extends Component {
               "appt-pat-code": this.state.patient_code,
               "appt-provider-id": this.state.edit_provider_id,
               "appt-dept-id": this.state.edit_sub_dep_id,
-              "appt-hims_d_services_id-id": this.state.hims_d_services_id
+              "appt-hims_d_services_id-id": this.state.hims_d_services_id,
+              "appt-pat-name": this.state.edit_patient_name,
+              "appt-pat-arabic-name": this.state.edit_arabic_name,
+              "appt-pat-dob": this.state.edit_date_of_birth,
+              "appt-pat-age": this.state.edit_age,
+              "appt-pat-gender": this.state.edit_gender,
+              "appt-pat-ph-no": this.state.edit_contact_number,
+              "appt-pat-email": this.state.edit_email
             });
 
             document.getElementById("fd-router").click();
@@ -546,7 +565,7 @@ class Appointment extends Component {
       moment(new Date()).format("HHmm")
     ) {
       swalMessage({
-        title: "Can't create schedule for past time",
+        title: "Can't create appointment for past time",
         type: "error"
       });
       this.setState({
@@ -616,7 +635,6 @@ class Appointment extends Component {
   }
 
   generateChilderns(data) {
-    debugger;
     const colspan = data.mark_as_break
       ? { colSpan: 2, style: { width: "240px" } }
       : {};
