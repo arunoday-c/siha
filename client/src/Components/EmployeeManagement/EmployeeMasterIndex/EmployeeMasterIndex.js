@@ -90,7 +90,6 @@ class EmployeeMasterIndex extends Component {
   }
 
   EditItemMaster(row) {
-    debugger;
     row.addNew = false;
     this.setState({
       isOpen: !this.state.isOpen,

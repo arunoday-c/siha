@@ -15,37 +15,34 @@ const texthandle = ($this, e) => {
 };
 
 const getInvestigations = $this => {
-  let inputObj = {};
   let Obj = {};
 
   if ($this.state.category_id !== null) {
-    Obj = { category_id: $this.state.category_id };
+    Obj = { ...Obj, ...{ category_id: $this.state.category_id } };
   }
   if ($this.state.lab_section_id !== null) {
-    Obj = { lab_section_id: $this.state.lab_section_id };
+    Obj = { ...Obj, ...{ lab_section_id: $this.state.lab_section_id } };
   }
   if ($this.state.specimen_id !== null) {
-    Obj = { specimen_id: $this.state.specimen_id };
+    Obj = { ...Obj, ...{ specimen_id: $this.state.specimen_id } };
   }
 
   if ($this.state.investigation_type !== null) {
-    Obj = { investigation_type: $this.state.investigation_type };
+    Obj = { ...Obj, ...{ investigation_type: $this.state.investigation_type } };
   }
   if ($this.state.test_id !== null) {
-    Obj = { hims_d_investigation_test_id: $this.state.test_id };
+    Obj = { ...Obj, ...{ hims_d_investigation_test_id: $this.state.test_id } };
   }
-  inputObj = Obj;
 
   $this.props.getInvestigationDetails({
     uri: "/investigation/getInvestigTestList",
     method: "GET",
-    data: inputObj,
+    data: Obj,
     redux: {
       type: "INSURANCE_PROVIDER_GET_DATA",
       mappingName: "investigationdetails"
     },
     afterSuccess: data => {
-      debugger;
       let Investigations = Enumerable.from(data)
         .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();

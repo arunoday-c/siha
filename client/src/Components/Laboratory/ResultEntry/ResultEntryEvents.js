@@ -4,7 +4,6 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger;
 
   $this.setState({
     [name]: value
@@ -12,7 +11,6 @@ const texthandle = ($this, e) => {
 };
 
 const UpdateLabOrder = ($this, value, status) => {
-  debugger;
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     data: value,

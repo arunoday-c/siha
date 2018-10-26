@@ -22,7 +22,6 @@ class ItemDetails extends Component {
   }
 
   componentWillMount() {
-    debugger;
     let InputOutput = this.props.itemPop;
     this.setState({ ...this.state, ...InputOutput });
   }

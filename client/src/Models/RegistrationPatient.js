@@ -123,7 +123,14 @@ export default {
       secondary_effective_end_date: null,
       secondary_policy_num: null,
       secondary_card_number: null,
-      secondary_network_office_id: null
+      secondary_network_office_id: null,
+
+      radioNo: true,
+      radioYes: false,
+      radioSecNo: true,
+      radioSecYes: false,
+      hideInsurance: false,
+      hideSecInsurance: false
     };
     return output;
   }

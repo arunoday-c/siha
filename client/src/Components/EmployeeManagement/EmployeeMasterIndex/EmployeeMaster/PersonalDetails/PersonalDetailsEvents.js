@@ -140,7 +140,6 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const isDoctorChange = ($this, context, e) => {
-  debugger;
   let Applicable = false;
   let Value = "N";
   let name = e.target.name;

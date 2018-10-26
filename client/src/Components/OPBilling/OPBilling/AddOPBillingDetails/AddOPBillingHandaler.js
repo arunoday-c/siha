@@ -61,7 +61,7 @@ const texthandle = ($this, context, ctrl, e) => {
 //New
 const adjustadvance = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  debugger;
+
   if (e.target.value > 0) {
     if (e.target.value > $this.state.advance_amount) {
       successfulMessage({

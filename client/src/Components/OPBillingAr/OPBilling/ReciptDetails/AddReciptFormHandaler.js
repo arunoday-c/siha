@@ -178,8 +178,6 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const checkcashhandaler = ($this, context, e) => {
-  debugger;
-
   $this.setState(
     {
       Cashchecked: e.target.checked,
@@ -202,8 +200,6 @@ const checkcashhandaler = ($this, context, e) => {
 };
 
 const checkcardhandaler = ($this, context, e) => {
-  debugger;
-
   $this.setState(
     {
       Cardchecked: e.target.checked,
@@ -230,8 +226,6 @@ const checkcardhandaler = ($this, context, e) => {
 };
 
 const checkcheckhandaler = ($this, context, e) => {
-  debugger;
-
   $this.setState(
     {
       Checkchecked: e.target.checked,

@@ -13,7 +13,6 @@ const texthandle = ($this, e) => {
 };
 
 const getHospotalServices = $this => {
-  debugger;
   let inputObj = {};
 
   if ($this.state.service_name !== null) {

@@ -15,7 +15,6 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const radioChange = ($this, context, e) => {
-  debugger;
   let radioActive = true;
   let radioInactive = false;
   let item_status = "A";

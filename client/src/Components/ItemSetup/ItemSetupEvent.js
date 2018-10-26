@@ -9,7 +9,6 @@ const getItems = $this => {
       mappingName: "itemlist"
     },
     afterSuccess: data => {
-      debugger;
       let ItemList = Enumerable.from(data)
         .groupBy("$.hims_d_item_master_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();
@@ -40,7 +39,6 @@ const getItems = $this => {
 };
 
 const EditItemMaster = ($this, row) => {
-  debugger;
   row.addNew = false;
   $this.setState({
     isOpen: !$this.state.isOpen,

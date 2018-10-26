@@ -200,7 +200,7 @@ let addPatientInsuranceData = (req, res, next) => {
         input.secondary_effective_end_date != null
           ? new Date(input.secondary_effective_end_date)
           : input.secondary_effective_end_date,
-        ,
+
         input.secondary_card_number,
         input.secondary_inc_card_path,
         input.secondary_policy_num,

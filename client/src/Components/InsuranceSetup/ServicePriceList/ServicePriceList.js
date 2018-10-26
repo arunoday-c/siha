@@ -72,7 +72,6 @@ class SubInsurance extends PureComponent {
   }
 
   render() {
-    debugger;
     console.log("Name", this.state.insurance_provider_name);
     return (
       <React.Fragment>

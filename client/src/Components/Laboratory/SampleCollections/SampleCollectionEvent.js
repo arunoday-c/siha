@@ -18,7 +18,6 @@ const CollectSample = ($this, context, row) => {
     data: inputobj,
     method: "PUT",
     onSuccess: response => {
-      debugger;
       if (response.data.success === true) {
         let test_details = $this.state.test_details;
         for (let i = 0; i < test_details.length; i++) {
@@ -31,7 +30,7 @@ const CollectSample = ($this, context, row) => {
               response.data.records.collected_date;
           }
         }
-        debugger;
+
         $this.setState({ test_details: test_details }, () => {
           successfulMessage({
             message: "Collected Successfully",
@@ -52,7 +51,6 @@ const CollectSample = ($this, context, row) => {
 };
 
 const printBarcode = ($this, row, e) => {
-  debugger;
   AlgaehReport({
     report: {
       fileName: "sampleBarcode",

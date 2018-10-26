@@ -9,7 +9,6 @@ const getEmployeeDetails = $this => {
       mappingName: "employeedetails"
     },
     afterSuccess: data => {
-      debugger;
       let Employeedetails = Enumerable.from(data)
         .groupBy("$.hims_d_employee_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();

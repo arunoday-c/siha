@@ -18,7 +18,6 @@ export default class PatientDetails extends Component {
   onClose = e => {
     let IOputs = ItemSetup.inputParam();
     this.setState({ ...this.state, ...IOputs }, () => {
-      debugger;
       this.props.onClose && this.props.onClose(e);
     });
   };
@@ -29,7 +28,6 @@ export default class PatientDetails extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.itemPop.hims_d_item_master_id !== undefined) {
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });
@@ -69,7 +67,6 @@ export default class PatientDetails extends Component {
                   value={{
                     state: this.state,
                     updateState: obj => {
-                      debugger;
                       this.setState({ ...obj });
                     }
                   }}
