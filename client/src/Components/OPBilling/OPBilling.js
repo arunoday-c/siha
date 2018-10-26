@@ -18,11 +18,11 @@ import { getCookie } from "../../utils/algaehApiCall";
 import { ClearData, Validations } from "./OPBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
-import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import AlgaehReport from "../Wrapper/printReports";
+import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 
 import moment from "moment";
 import Options from "../../Options.json";
@@ -107,6 +107,10 @@ class PatientDisplayDetails extends Component {
 
     this.setState({ ...this.state, ...billOut, ...output });
   }
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
 
   getPatientDetails($this, output) {
     clearInterval(intervalId);
@@ -427,21 +431,27 @@ class PatientDisplayDetails extends Component {
                   onClick={this.SaveBill.bind(this)}
                   disabled={this.state.saveEnable}
                 >
-                  {/* <AlgaehLabel
+                  <AlgaehLabel
                     label={{ fieldName: "btn_save", returnText: true }}
-                  /> */}
-                  Save
+                  />
+                  {/* Save */}
                 </button>
+
+                <AHSnackbar
+                  open={this.state.open}
+                  handleClose={this.handleClose}
+                  MandatoryMsg={this.state.MandatoryMsg}
+                />
 
                 <button
                   type="button"
                   className="btn btn-default"
                   onClick={ClearData.bind(this, this)}
                 >
-                  {/* <AlgaehLabel
+                  <AlgaehLabel
                     label={{ fieldName: "btn_clear", returnText: true }}
-                  /> */}
-                  Clear
+                  />
+                  {/* Clear */}
                 </button>
               </div>
             </div>
