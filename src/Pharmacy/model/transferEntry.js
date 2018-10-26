@@ -119,6 +119,7 @@ let addtransferEntry = (req, res, next) => {
                   "quantity_recieved",
                   "uom_recieved_id",
                   "quantity_outstanding",
+                  "grnno",
                   "material_requisition_header_id",
                   "material_requisition_detail_id"
                 ];

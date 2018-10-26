@@ -4,9 +4,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import POSIOputs from "../../../Models/POS";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import swal from "sweetalert2";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;
@@ -165,10 +163,10 @@ const SavePosEnrty = $this => {
           saveEnable: true,
           postEnable: false
         });
-        swal("Saved successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+
+        swalMessage({
+          type: "success",
+          title: "Saved successfully . ."
         });
       }
     }
@@ -205,10 +203,9 @@ const PostPosEntry = $this => {
         $this.setState({
           postEnable: true
         });
-        swal("Posted successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          type: "success",
+          title: "Posted successfully . ."
         });
       }
     }
@@ -265,10 +262,9 @@ const VisitSearch = ($this, e) => {
       }
     });
   } else {
-    successfulMessage({
-      message: "Invalid Input. Please select Location.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Please select Location.",
+      type: "warning"
     });
   }
 };

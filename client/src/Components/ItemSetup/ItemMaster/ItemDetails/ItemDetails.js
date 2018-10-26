@@ -259,11 +259,13 @@ class ItemDetails extends Component {
                     <label className="checkbox" style={{ color: "#212529" }}>
                       <input
                         type="checkbox"
-                        name="Allow POS"
+                        name="Batchno Expiry"
                         checked={this.state.batchexpreq}
                         onChange={BatchExpRequired.bind(this, this)}
                       />
-                      <span style={{ fontSize: "0.8rem" }}>Allow POS</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        Req. Batch Expiry
+                      </span>
                     </label>
                   </div>
                   <div className="col-lg-2" style={{ marginTop: "23px" }}>
