@@ -75,20 +75,6 @@ class RegistrationPatient extends Component {
       });
     }
 
-    if (
-      this.props.countries === undefined ||
-      this.props.countries.length === 0
-    ) {
-      this.props.getCountries({
-        uri: "/masters/get/countryStateCity",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "countries"
-        }
-      });
-    }
-
     if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
       this.props.initialbillingCalculations({
         redux: {

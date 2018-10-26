@@ -15,7 +15,7 @@ import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/Billing";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import { getCookie } from "../../utils/algaehApiCall";
-import { ClearData } from "./OPBillingEvents";
+import { ClearData, Validations } from "./OPBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
@@ -265,47 +265,50 @@ class PatientDisplayDetails extends Component {
   }
 
   SaveBill(e) {
-    if (this.state.unbalanced_amount === 0) {
-      this.GenerateReciept($this => {
-        let Inputobj = $this.state;
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.unbalanced_amount === 0) {
+        this.GenerateReciept($this => {
+          let Inputobj = $this.state;
 
-        Inputobj.patient_payable = $this.state.patient_payable_h;
-        AlgaehLoader({ show: true });
-        algaehApiCall({
-          uri: "/opBilling/addOpBIlling",
-          data: Inputobj,
-          method: "POST",
-          onSuccess: response => {
-            AlgaehLoader({ show: false });
-            if (response.data.success) {
-              $this.setState({
-                bill_number: response.data.records.bill_number,
-                receipt_number: response.data.records.receipt_number,
-                saveEnable: true
-              });
+          Inputobj.patient_payable = $this.state.patient_payable_h;
+          AlgaehLoader({ show: true });
+          algaehApiCall({
+            uri: "/opBilling/addOpBIlling",
+            data: Inputobj,
+            method: "POST",
+            onSuccess: response => {
+              AlgaehLoader({ show: false });
+              if (response.data.success) {
+                $this.setState({
+                  bill_number: response.data.records.bill_number,
+                  receipt_number: response.data.records.receipt_number,
+                  saveEnable: true
+                });
+                successfulMessage({
+                  message: "Done Successfully",
+                  title: "Success",
+                  icon: "success"
+                });
+              }
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
               successfulMessage({
-                message: "Done Successfully",
-                title: "Success",
-                icon: "success"
+                message: error.message,
+                title: "Error",
+                icon: "error"
               });
             }
-          },
-          onFailure: error => {
-            AlgaehLoader({ show: false });
-            successfulMessage({
-              message: error.message,
-              title: "Error",
-              icon: "error"
-            });
-          }
+          });
         });
-      });
-    } else {
-      successfulMessage({
-        message: "Invalid Input. Please recive the amount.",
-        title: "Error",
-        icon: "error"
-      });
+      } else {
+        successfulMessage({
+          message: "Invalid Input. Please recive the amount.",
+          title: "Error",
+          icon: "error"
+        });
+      }
     }
   }
 

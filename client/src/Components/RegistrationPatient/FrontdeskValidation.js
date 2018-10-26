@@ -1,5 +1,3 @@
-import { successfulMessage } from "../../utils/GlobalFunctions";
-
 export function Validations(state) {
   let isError = false;
 
@@ -122,12 +120,18 @@ export function Validations(state) {
       state.state.primary_effective_end_date == null)
   ) {
     isError = true;
-    successfulMessage({
-      message:
-        "Invalid Input. Please select the primary insurance details properly.",
-      title: "Error",
-      icon: "error"
+
+    state.setState({
+      open: true,
+      MandatoryMsg:
+        "Invalid Input. Please select the primary insurance details properly."
     });
+    // successfulMessage({
+    //   message:
+    //     "Invalid Input. Please select the primary insurance details properly.",
+    //   title: "Error",
+    //   icon: "error"
+    // });
     return isError;
   } else if (
     state.state.sec_insured == "Y" &&
@@ -136,12 +140,17 @@ export function Validations(state) {
       state.state.secondary_network_id == null)
   ) {
     isError = true;
-    successfulMessage({
-      message:
-        "Invalid Input. Please select the secondary insurance details properly.",
-      title: "Error",
-      icon: "error"
+    state.setState({
+      open: true,
+      MandatoryMsg:
+        "Invalid Input. Please select the secondary insurance details properly."
     });
+    // successfulMessage({
+    //   message:
+    //     "Invalid Input. Please select the secondary insurance details properly.",
+    //   title: "Error",
+    //   icon: "error"
+    // });
     return isError;
   } else if (state.state.patient_type === null) {
     isError = true;
@@ -153,12 +162,43 @@ export function Validations(state) {
   } else if (state.state.unbalanced_amount > 0) {
     isError = true;
 
-    successfulMessage({
-      message:
-        "Invalid Input. Total receipt amount should be equal to reciveable amount.",
-      title: "Warning",
-      icon: "warning"
+    state.setState({
+      open: true,
+      MandatoryMsg:
+        "Invalid Input. Total receipt amount should be equal to reciveable amount."
     });
+    // successfulMessage({
+    //   message:
+    //     "Invalid Input. Total receipt amount should be equal to reciveable amount.",
+    //   title: "Warning",
+    //   icon: "warning"
+    // });
+    return isError;
+  } else if (state.state.shift_id === null) {
+    isError = true;
+
+    state.setState({
+      open: true,
+      MandatoryMsg: "Invalid Input. Shift is Mandatory."
+    });
+    // successfulMessage({
+    //   message: "Invalid Input. Shift is Mandatory.",
+    //   title: "Warning",
+    //   icon: "warning"
+    // });
+    return isError;
+  } else if (state.state.counter_id === null) {
+    isError = true;
+
+    state.setState({
+      open: true,
+      MandatoryMsg: "Invalid Input. Counter is Mandatory."
+    });
+    // successfulMessage({
+    //   message: "Invalid Input. Counter is Mandatory.",
+    //   title: "Warning",
+    //   icon: "warning"
+    // });
     return isError;
   }
 }
