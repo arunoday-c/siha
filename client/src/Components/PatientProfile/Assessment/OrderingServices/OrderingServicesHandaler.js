@@ -317,8 +317,8 @@ const deleteServices = ($this, row, rowId) => {
   }
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
-      for (var i = 0; i < preserviceInput.length; i++) {
-        preserviceInput[i].approval_limit_yesno = "N";
+      for (var k = 0; k < preserviceInput.length; k++) {
+        preserviceInput[k].approval_limit_yesno = "N";
       }
       $this.props.generateBill({
         uri: "/billing/getBillDetails",

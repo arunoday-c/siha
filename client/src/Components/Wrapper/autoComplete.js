@@ -14,7 +14,6 @@ class AutoComplete extends PureComponent {
   }
 
   componentWillReceiveProps(props) {
-    debugger;
     if (props.selector.dataSource.data !== undefined) {
       if (
         props.selector.value === null ||

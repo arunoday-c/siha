@@ -236,7 +236,7 @@ class Assessment extends Component {
                         onEdit: row => {},
                         onDone: updateDiagnosis.bind(this, this)
                       }}
-                      loading={this.state.showInitialDiagnosisLoader}
+                      // loading={this.state.showInitialDiagnosisLoader}
                       noDataText="No initial diagnosis added"
                     />
                   </div>
@@ -358,7 +358,7 @@ class Assessment extends Component {
 
                         onDone: updateDiagnosis.bind(this, this)
                       }}
-                      loading={this.state.showFinalDiagnosisLoader}
+                      // loading={this.state.showFinalDiagnosisLoader}
                     />
                   </div>
                 </div>
