@@ -606,6 +606,24 @@ class Appointment extends Component {
     }
   }
 
+  allowDrop(ev) {
+    ev.preventDefault();
+  }
+
+  drag(ev) {
+    debugger;
+    console.log("on drag", ev.target);
+    console.log("on drag", ev.target.parentElement);
+    ev.dataTransfer.setData("text", ev.target.id);
+  }
+
+  drop(ev) {
+    ev.preventDefault();
+    console.log("on drop", ev.target);
+    var data = ev.dataTransfer.getData("text");
+    ev.target.innerHtml = "ABC";
+  }
+
   plotPatients(data) {
     const newEndTime = new moment(data.time, "hh:mm a").add(
       data.slot,
@@ -667,7 +685,12 @@ class Appointment extends Component {
         style={{ background: brk_bg_color, cursor: "pointer" }}
         key={data.counter}
       >
-        <td className="tg-baqh" {...colspan} style={{ background: bg_color }}>
+        <td
+          className="tg-baqh"
+          {...colspan}
+          onDrop={this.drop.bind(this)}
+          onDragOver={this.allowDrop.bind(this)}
+        >
           {data.mark_as_break == false ? (
             <span className="dynSlot">{data.time}</span>
           ) : null}
@@ -691,17 +714,18 @@ class Appointment extends Component {
                   onClick={this.showModal.bind(this)}
                   className="fas fa-plus"
                 />
-              ) : (
-                <i
-                  className="fas fa-edit"
-                  onClick={this.openEditModal.bind(this, patient)}
-                />
-              )}
+              ) : null}
 
               {patient !== null ? (
-                <span className="dynPatient">
+                <div
+                  className="dynPatient"
+                  style={{ background: bg_color }}
+                  draggable={true}
+                  onDragStart={this.drag.bind(this)}
+                  onClick={this.openEditModal.bind(this, patient)}
+                >
                   {patient.patient_name}
-                  <span
+                  {/* <span
                     className="statusClr"
                     style={{
                       background:
@@ -709,8 +733,8 @@ class Appointment extends Component {
                           ? this.getColorCode(patient.appointment_status_id)
                           : null
                     }}
-                  />
-                </span>
+                  /> */}
+                </div>
               ) : null}
             </React.Fragment>
           ) : (
