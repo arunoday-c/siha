@@ -98,7 +98,6 @@ class RegistrationPatient extends Component {
         }
       });
     }
-    debugger;
 
     if (
       this.props.patient_code !== undefined &&

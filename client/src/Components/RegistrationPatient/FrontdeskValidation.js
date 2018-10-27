@@ -3,8 +3,6 @@ import { successfulMessage } from "../../utils/GlobalFunctions";
 export function Validations(state) {
   let isError = false;
 
-  debugger;
-
   if (state.state.full_name.length <= 0) {
     isError = true;
     state.setState({
