@@ -21,7 +21,6 @@ class OtherInfo extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     if (nextProps.patients !== undefined && nextProps.patients.length > 0) {
       this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
     }
@@ -197,7 +196,6 @@ class OtherInfo extends Component {
 }
 
 function AddPatientOtherHandlers(state, context) {
-  debugger;
   context = context || null;
 
   return {
