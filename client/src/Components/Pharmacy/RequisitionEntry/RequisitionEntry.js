@@ -5,12 +5,8 @@ import { bindActionCreators } from "redux";
 import Enumerable from "linq";
 import AppBar from "@material-ui/core/AppBar";
 
-import {
-  AlagehFormGroup,
-  AlgaehLabel,
-  AlagehAutoComplete,
-  AlgaehDateHandler
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
+import moment from "moment";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
@@ -29,6 +25,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import RequisitionItems from "./RequisitionItems/RequisitionItems";
 import MyContext from "../../../utils/MyContext";
 import RequisitionIOputs from "../../../Models/Requisition";
+import Options from "../../../Options.json";
 
 class RequisitionEntry extends Component {
   constructor(props) {
@@ -124,24 +121,22 @@ class RequisitionEntry extends Component {
               searchName: "REQEntry"
             }}
             userArea={
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: (
-                    <AlgaehLabel label={{ forceLabel: "Requisition Date" }} />
-                  ),
-                  className: "internal-label"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "bread_registration_date"
-                }}
-                disabled={true}
-                events={{
-                  onChange: null
-                }}
-                value={this.state.requistion_date}
-              />
+              <div className="row">
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Requisition Date"
+                    }}
+                  />
+                  <h6>
+                    {this.state.requistion_date
+                      ? moment(this.state.requistion_date).format(
+                          Options.dateFormat
+                        )
+                      : Options.dateFormat}
+                  </h6>
+                </div>
+              </div>
             }
             selectedLang={this.state.selectedLang}
           />

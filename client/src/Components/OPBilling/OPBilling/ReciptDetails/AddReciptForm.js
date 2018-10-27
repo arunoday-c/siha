@@ -23,12 +23,9 @@ import {
 import MyContext from "../../../../utils/MyContext";
 import "./AddReciptForm.css";
 import "./../../../../styles/site.css";
-import variableJson from "../../../../utils/GlobalVariables.json";
+
 import { AlgaehActions } from "../../../../actions/algaehActions";
-const locations = [
-  { name: "Pharmacy Main Store", value: "0" },
-  { name: "Day Clinics", value: "1" }
-];
+
 class AddReciptForm extends Component {
   constructor(props) {
     super(props);
@@ -46,6 +43,30 @@ class AddReciptForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.BillingIOputs);
+  }
+
+  componentDidMount() {
+    if (this.props.shifts === undefined || this.props.shifts.length === 0) {
+      this.props.getShifts({
+        uri: "/shiftAndCounter/getShiftMaster",
+        method: "GET",
+        redux: {
+          type: "CTRY_GET_DATA",
+          mappingName: "shifts"
+        }
+      });
+    }
+
+    if (this.props.counters === undefined || this.props.counters.length === 0) {
+      this.props.getCounters({
+        uri: "/shiftAndCounter/getCounterMaster",
+        method: "GET",
+        redux: {
+          type: "CTRY_GET_DATA",
+          mappingName: "counters"
+        }
+      });
+    }
   }
 
   render() {
@@ -93,10 +114,10 @@ class AddReciptForm extends Component {
                       dataSource: {
                         textField:
                           this.state.selectedLang == "en"
-                            ? "name"
+                            ? "counter_description"
                             : "arabic_name",
-                        valueField: "value",
-                        data: variableJson.FORMAT_COUNTER
+                        valueField: "hims_d_counter_id",
+                        data: this.props.counters
                       },
                       others: {
                         disabled: this.state.Billexists
@@ -118,10 +139,10 @@ class AddReciptForm extends Component {
                       dataSource: {
                         textField:
                           this.state.selectedLang == "en"
-                            ? "name"
+                            ? "shift_description"
                             : "arabic_name",
-                        valueField: "value",
-                        data: variableJson.FORMAT_SHIFT
+                        valueField: "hims_d_shift_id",
+                        data: this.props.shifts
                       },
                       others: {
                         disabled: this.state.Billexists
@@ -358,14 +379,18 @@ class AddReciptForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    genbill: state.genbill
+    genbill: state.genbill,
+    shifts: state.shifts,
+    counters: state.counters
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      billingCalculations: AlgaehActions
+      billingCalculations: AlgaehActions,
+      getShifts: AlgaehActions,
+      getCounters: AlgaehActions
     },
     dispatch
   );

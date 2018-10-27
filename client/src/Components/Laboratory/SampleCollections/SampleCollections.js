@@ -3,20 +3,18 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import Update from "@material-ui/icons/Update";
-import Print from "@material-ui/icons/Print";
 import MyContext from "../../../utils/MyContext.js";
 import "./SampleCollections.css";
 import "../../../styles/site.css";
-import { CollectSample, printBarcode } from "./SampleCollectionEvent";
+import {
+  CollectSample,
+  printBarcode,
+  dateFormater
+} from "./SampleCollectionEvent";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlagehFormGroup,
-  AlgaehDateHandler,
   Modal
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -299,6 +297,13 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "collected_date" }}
                                   />
                                 ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {dateFormater(this, row.collected_date)}
+                                    </span>
+                                  );
+                                },
                                 others: {
                                   resizable: false,
                                   style: { textAlign: "center" }

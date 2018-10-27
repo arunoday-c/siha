@@ -38,23 +38,40 @@ class StockEnquiry extends Component {
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
-      }
-    });
+    if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
+      this.props.getItems({
+        uri: "/pharmacy/getItemMaster",
+        method: "GET",
+        redux: {
+          type: "ITEM_GET_DATA",
+          mappingName: "itemlist"
+        }
+      });
+    }
 
-    this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      method: "GET",
-      redux: {
-        type: "ANALYTES_GET_DATA",
-        mappingName: "locations"
-      }
-    });
+    if (
+      this.props.locations === undefined ||
+      this.props.locations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/pharmacy/getPharmacyLocation",
+        method: "GET",
+        redux: {
+          type: "ANALYTES_GET_DATA",
+          mappingName: "locations"
+        }
+      });
+    }
+    if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
+      this.props.getItemUOM({
+        uri: "/pharmacy/getPharmacyUom",
+        method: "GET",
+        redux: {
+          type: "ITEM_UOM_GET_DATA",
+          mappingName: "itemuom"
+        }
+      });
+    }
   }
 
   render() {
@@ -127,139 +144,141 @@ class StockEnquiry extends Component {
               </div>
 
               <div className="row form-group">
-                <AlgaehDataGrid
-                  id="initial_stock"
-                  columns={[
-                    {
-                      fieldName: "location_id",
-                      label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
-                      displayTemplate: row => {
-                        let display =
-                          this.props.locations === undefined
-                            ? []
-                            : this.props.locations.filter(
-                                f =>
-                                  f.hims_d_pharmacy_location_id ===
-                                  row.location_id
-                              );
+                <div className="col-lg-12">
+                  <AlgaehDataGrid
+                    id="initial_stock"
+                    columns={[
+                      {
+                        fieldName: "pharmacy_location_id",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Location" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.locations === undefined
+                              ? []
+                              : this.props.locations.filter(
+                                  f =>
+                                    f.hims_d_pharmacy_location_id ===
+                                    row.pharmacy_location_id
+                                );
 
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].location_description
-                              : ""}
-                          </span>
-                        );
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].location_description
+                                : ""}
+                            </span>
+                          );
+                        },
+                        disabled: true
                       },
-                      disabled: true
-                    },
 
-                    {
-                      fieldName: "category_id",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Item Category" }} />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.itemcategory === undefined
-                            ? []
-                            : this.props.itemcategory.filter(
-                                f =>
-                                  f.hims_d_item_category_id === row.category_id
-                              );
+                      {
+                        fieldName: "item_id",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.itemlist === undefined
+                              ? []
+                              : this.props.itemlist.filter(
+                                  f => f.hims_d_item_master_id === row.item_id
+                                );
 
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].category_desc
-                              : ""}
-                          </span>
-                        );
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].item_description
+                                : ""}
+                            </span>
+                          );
+                        },
+                        disabled: true
                       },
-                      disabled: true
-                    },
+                      {
+                        fieldName: "sales_uom",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.itemuom === undefined
+                              ? []
+                              : this.props.itemuom.filter(
+                                  f =>
+                                    f.hims_d_pharmacy_uom_id === row.sales_uom
+                                );
 
-                    {
-                      fieldName: "group_id",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Item Group" }} />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.itemgroup === undefined
-                            ? []
-                            : this.props.itemgroup.filter(
-                                f => f.hims_d_item_group_id === row.group_id
-                              );
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].uom_description
+                                : ""}
+                            </span>
+                          );
+                        },
 
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].group_description
-                              : ""}
-                          </span>
-                        );
+                        disabled: true
                       },
-                      disabled: true
-                    },
-
-                    {
-                      fieldName: "item_id",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.itemlist === undefined
-                            ? []
-                            : this.props.itemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].item_description
-                              : ""}
-                          </span>
-                        );
+                      {
+                        fieldName: "batchno",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                        )
                       },
-                      disabled: true
-                    },
-                    {
-                      fieldName: "batch_no",
-                      label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
-                    },
-                    {
-                      fieldName: "expirt_date",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
-                      ),
-                      displayTemplate: row => {
-                        return <span>{dateFormater(row.expirt_date)}</span>;
+                      {
+                        fieldName: "expirt_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return <span>{dateFormater(row.expirt_date)}</span>;
+                        }
+                      },
+                      {
+                        fieldName: "qtyhand",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                        )
+                      },
+                      {
+                        fieldName: "avgcost",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Avrage Cost" }} />
+                        )
                       }
-                    },
-                    {
-                      fieldName: "quantity",
-                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                    },
-                    {
-                      fieldName: "unit_cost",
-                      label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
-                    }
-                  ]}
-                  keyId="item_id"
-                  dataSource={{
-                    data: this.state.ListItems
-                  }}
-                  // isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
-                  events={{
-                    //   onDelete: deleteServices.bind(this, this),
-                    onEdit: row => {}
-                    // onDone: this.updateBillDetail.bind(this)
-                  }}
-                />
+                    ]}
+                    keyId="item_id"
+                    dataSource={{
+                      data: this.props.itemBatch
+                    }}
+                    noDataText="No Stock available for selected Item in the selected Location"
+                    // isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      //   onDelete: deleteServices.bind(this, this),
+                      onEdit: row => {}
+                      // onDone: this.updateBillDetail.bind(this)
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-9"> &nbsp; </div>
+                <div className="col-lg-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Quantity"
+                    }}
+                  />
+                  <h6>
+                    {this.state.total_quantity
+                      ? "₹" + this.state.total_quantity
+                      : "₹0.00"}
+                  </h6>
+                </div>
               </div>
             </div>
           </div>
@@ -272,7 +291,9 @@ class StockEnquiry extends Component {
 function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
-    locations: state.locations
+    locations: state.locations,
+    itemBatch: state.itemBatch,
+    itemuom: state.itemuom
   };
 }
 
@@ -280,7 +301,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getItems: AlgaehActions,
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
+      getItemLocationStock: AlgaehActions,
+      getItemUOM: AlgaehActions
     },
     dispatch
   );

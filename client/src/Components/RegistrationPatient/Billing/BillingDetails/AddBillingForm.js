@@ -27,7 +27,6 @@ import MyContext from "../../../../utils/MyContext.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import variableJson from "../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
 class AddBillingForm extends Component {
@@ -46,6 +45,30 @@ class AddBillingForm extends Component {
   componentWillMount() {
     let InputOutput = this.props.PatRegIOputs;
     this.setState({ ...this.state, ...InputOutput });
+  }
+
+  componentDidMount() {
+    if (this.props.shifts === undefined || this.props.shifts.length === 0) {
+      this.props.getShifts({
+        uri: "/shiftAndCounter/getShiftMaster",
+        method: "GET",
+        redux: {
+          type: "CTRY_GET_DATA",
+          mappingName: "shifts"
+        }
+      });
+    }
+
+    if (this.props.counters === undefined || this.props.counters.length === 0) {
+      this.props.getCounters({
+        uri: "/shiftAndCounter/getCounterMaster",
+        method: "GET",
+        redux: {
+          type: "CTRY_GET_DATA",
+          mappingName: "counters"
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -322,10 +345,10 @@ class AddBillingForm extends Component {
                             dataSource: {
                               textField:
                                 this.state.selectedLang == "en"
-                                  ? "name"
+                                  ? "counter_description"
                                   : "arabic_name",
-                              valueField: "value",
-                              data: variableJson.FORMAT_COUNTER
+                              valueField: "hims_d_counter_id",
+                              data: this.props.counters
                             },
                             onChange: texthandle.bind(this, this, context)
                           }}
@@ -344,10 +367,10 @@ class AddBillingForm extends Component {
                             dataSource: {
                               textField:
                                 this.state.selectedLang == "en"
-                                  ? "name"
+                                  ? "shift_description"
                                   : "arabic_name",
-                              valueField: "value",
-                              data: variableJson.FORMAT_SHIFT
+                              valueField: "hims_d_shift_id",
+                              data: this.props.shifts
                             },
                             onChange: texthandle.bind(this, this, context)
                           }}
@@ -672,7 +695,9 @@ class AddBillingForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    genbill: state.genbill
+    genbill: state.genbill,
+    shifts: state.shifts,
+    counters: state.counters
   };
 }
 
@@ -680,7 +705,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       generateBill: AlgaehActions,
-      billingCalculations: AlgaehActions
+      billingCalculations: AlgaehActions,
+      getShifts: AlgaehActions,
+      getCounters: AlgaehActions
     },
     dispatch
   );
