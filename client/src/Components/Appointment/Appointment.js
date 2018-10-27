@@ -182,7 +182,7 @@ class Appointment extends Component {
   addPatientAppointment(e) {
     debugger;
     e.preventDefault();
- 
+
     let from_time = this.state.apptFromTime;
     let duration_minutes = this.state.apptSlot * this.state.no_of_slots;
     let to_time = moment(from_time, "hh:mm a")
@@ -326,7 +326,12 @@ class Appointment extends Component {
           algaehLoader({ show: false });
           if (response.data.success) {
             console.log("Appt Schedule:", response.data.records);
-            this.setState({ appointmentSchedule: response.data.records });
+            this.setState(
+              { appointmentSchedule: response.data.records },
+              () => {
+                this.setState({ slot: this.state.appointmentSchedule.slot });
+              }
+            );
           }
         },
         onFailure: error => {
@@ -441,11 +446,10 @@ class Appointment extends Component {
 
   openEditModal(patient, e) {
     debugger;
-
     console.log("Edit Pat Data:", patient);
 
     if (
-      moment(patient.appointment_from_time, "HH:mm a").format("HHmm") <
+      moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
       moment(new Date()).format("HHmm")
     ) {
       swalMessage({
@@ -483,6 +487,8 @@ class Appointment extends Component {
   }
 
   updatePatientAppointment() {
+    debugger;
+
     let edit_details = {
       hims_f_patient_appointment_id: this.state.edit_appointment_id,
       record_status: "A",
@@ -509,7 +515,8 @@ class Appointment extends Component {
       cancelled_date: null,
       cancel_reason: null,
       appointment_remarks: null,
-      is_stand_by: null
+      is_stand_by: null,
+      number_of_slot: this.state.edit_no_of_slots
     };
 
     algaehApiCall({
@@ -697,21 +704,6 @@ class Appointment extends Component {
                   onClick={this.openEditModal.bind(this, patient)}
                 />
               )}
-
-              {patient !== null ? (
-                <span className="dynPatient">
-                  {patient.patient_name}
-                  <span
-                    className="statusClr"
-                    style={{
-                      background:
-                        patient !== undefined
-                          ? this.getColorCode(patient.appointment_status_id)
-                          : null
-                    }}
-                  />
-                </span>
-              ) : null}
             </React.Fragment>
           ) : (
             <React.Fragment>
@@ -733,6 +725,21 @@ class Appointment extends Component {
       </tr>
     );
   }
+
+  // {patient !== null ? (
+  //   <span className="dynPatient">
+  //     {patient.patient_name}
+  //     <span
+  //       className="statusClr"
+  //       style={{
+  //         background:
+  //           patient !== undefined
+  //             ? this.getColorCode(patient.appointment_status_id)
+  //             : null
+  //       }}
+  //     />
+  //   </span>
+  // ) : null}
 
   generateTimeslots(data) {
     const clinic_id = data.clinic_id;
