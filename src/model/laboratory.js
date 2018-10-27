@@ -82,14 +82,14 @@ let getLabOrderedServices = (req, res, next) => {
 
 let insertLadOrderedServices = (req, res, next) => {
   const insurtColumns = [
+    "ordered_services_id",
     "patient_id",
     "visit_id",
     "provider_id",
     "service_id",
     "billed"
-   
   ];
-// "ordered_date"
+  // "ordered_date"
   const labServices = new LINQ(req.body.billdetails)
     .Where(
       w =>
@@ -97,11 +97,12 @@ let insertLadOrderedServices = (req, res, next) => {
     )
     .Select(s => {
       return {
+        ordered_services_id: req.body.ordered_services_id,
         patient_id: req.body.patient_id,
         provider_id: req.body.incharge_or_provider,
         visit_id: req.body.visit_id,
         service_id: s.services_id,
-        billed: "Y",
+        billed: "N",
         ordered_date: s.ordered_date
       };
     })
@@ -132,7 +133,6 @@ let insertLadOrderedServices = (req, res, next) => {
               req.userIdentity.algaeh_d_app_user_id,
               req.userIdentity.algaeh_d_app_user_id,
               new Date(labServices[0].ordered_date)
-
             ]
           })
         ],
@@ -274,7 +274,6 @@ let insertLadOrderedServices = (req, res, next) => {
       );
     });
   } else {
-    
     next();
   }
 };
