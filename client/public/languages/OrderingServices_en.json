@@ -3,7 +3,7 @@
   "patient_code": "Patient Code",
   "full_name": "Patient Name",
 
-  "select_service": "Select Service",
+  "select_service": "Select Service Type",
 
   "service_type_id": "Service Type",
   "services_id": "Service",
