@@ -5,8 +5,6 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import RequisitionIOputs from "../../../Models/Requisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import swal from "sweetalert2";
-// import { successfulMessage } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;
@@ -82,10 +80,10 @@ const SaveRequisitionEntry = $this => {
           saveEnable: true
           // authorizeEnable: false
         });
-        swal("Saved successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+
+        swalMessage({
+          title: "Saved successfully . .",
+          type: "success"
         });
       }
     }
@@ -98,7 +96,7 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
   if (authorize === "authorize1") {
     $this.state.authorize1 = "Y";
   } else if (authorize === "authorize2") {
-    $this.state.authorize = "Y";
+    $this.state.authorie2 = "Y";
   }
 
   debugger;
@@ -112,10 +110,9 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
         $this.setState({
           postEnable: true
         });
-        swal("Authorized successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Authorized successfully . .",
+          type: "success"
         });
       }
     }

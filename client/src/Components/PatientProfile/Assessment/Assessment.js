@@ -115,29 +115,24 @@ class Assessment extends Component {
         <div className="row margin-top-15">
           <div className="col-lg-6">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
-              <div className="row portlet-title">
-                <div className="col-lg-3 caption">
+              <div className="portlet-title">
+                <div className="caption">
                   <h3 className="caption-subject">Initial Diagnosis</h3>
                 </div>
-
-                <div className="col-lg-6" />
-                <div
-                  className="col-lg-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer"
-                    }}
+                <div className="actions">
+                  <a
+                    href="javascript:;"
+                    className="btn btn-primary btn-circle active"
                     onClick={IcdsSearch.bind(this, this, "Intial")}
-                  />
+                  >
+                    <i className="fas fa-plus" />
+                  </a>
                 </div>
               </div>
+
               <div className="portlet-body">
                 <div
+                  id="initalDioGrid"
                   className="row"
                   style={{ marginTop: 10, marginBottom: 10 }}
                 >
@@ -146,21 +141,20 @@ class Assessment extends Component {
                       id="intial_icd"
                       columns={[
                         {
-                          fieldName: "Select",
+                          fieldName: "Move",
                           label: (
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Select"
+                                forceLabel: "Move"
                               }}
                             />
                           ),
                           displayTemplate: row => {
                             return (
-                              <button
+                              <i
+                                className="fas fa-arrow-right"
                                 onClick={addFinalIcd.bind(this, this, row)}
-                              >
-                                Move to Final
-                              </button>
+                              />
                             );
                           },
                           disabled: true,
@@ -202,7 +196,8 @@ class Assessment extends Component {
                                 }}
                               />
                             );
-                          }
+                          },
+                          others: { maxWidth: 70, align: "center" }
                         },
                         {
                           fieldName: "icd_code",
@@ -214,7 +209,8 @@ class Assessment extends Component {
                             />
                           ),
 
-                          disabled: true
+                          disabled: true,
+                          others: { maxWidth: 70, align: "center" }
                         },
                         {
                           fieldName: "icd_description",
@@ -240,7 +236,7 @@ class Assessment extends Component {
                         onEdit: row => {},
                         onDone: updateDiagnosis.bind(this, this)
                       }}
-                      loading={this.state.showInitialDiagnosisLoader}
+                      // loading={this.state.showInitialDiagnosisLoader}
                       noDataText="No initial diagnosis added"
                     />
                   </div>
@@ -260,109 +256,112 @@ class Assessment extends Component {
           </div>
           <div className="col-lg-6">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
-              <div className="row portlet-title">
-                <div className="col-lg-3 caption">
+              <div className="portlet-title">
+                <div className="caption">
                   <h3 className="caption-subject">Final Diagnosis</h3>
                 </div>
-
-                <div className="col-lg-6" />
-                <div
-                  className="col-lg-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer"
-                    }}
+                <div className="actions">
+                  <a
+                    href="javascript:;"
+                    className="btn btn-primary btn-circle active"
                     onClick={IcdsSearch.bind(this, this, "Final")}
-                  />
+                  >
+                    <i className="fas fa-plus" />
+                  </a>
                 </div>
               </div>
+
               <div className="portlet-body">
-                <h4>
-                  <AlgaehDataGrid
-                    id="Finalintial_icd"
-                    columns={[
-                      {
-                        fieldName: "diagnosis_type",
-                        label: (
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Type"
-                            }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return row.diagnosis_type === "P"
-                            ? "Primary"
-                            : "Secondary";
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                name: "diagnosis_type",
-                                className: "select-fld",
-                                value: row.diagnosis_type,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: DIAG_TYPE
-                                },
-                                onChange: onchangegridcol.bind(
-                                  this,
-                                  this,
-                                  row,
-                                  "Final"
-                                )
+                {" "}
+                <div
+                  id="finalDioGrid"
+                  className="row"
+                  style={{ marginTop: 10, marginBottom: 10 }}
+                >
+                  <div className="col-lg-12">
+                    <AlgaehDataGrid
+                      id="Finalintial_icd"
+                      columns={[
+                        {
+                          fieldName: "diagnosis_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Type"
                               }}
                             />
-                          );
+                          ),
+                          displayTemplate: row => {
+                            return row.diagnosis_type === "P"
+                              ? "Primary"
+                              : "Secondary";
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "diagnosis_type",
+                                  className: "select-fld",
+                                  value: row.diagnosis_type,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: DIAG_TYPE
+                                  },
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    "Final"
+                                  )
+                                }}
+                              />
+                            );
+                          },
+                          others: { maxWidth: 70, align: "center" }
+                        },
+                        {
+                          fieldName: "icd_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "ICD Code"
+                              }}
+                            />
+                          ),
+                          disabled: false,
+                          others: { maxWidth: 70, align: "center" }
+                        },
+                        {
+                          fieldName: "icd_description",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Description"
+                              }}
+                            />
+                          ),
+                          disabled: false
                         }
-                      },
-                      {
-                        fieldName: "icd_code",
-                        label: (
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "ICD Code"
-                            }}
-                          />
-                        ),
-                        disabled: false
-                      },
-                      {
-                        fieldName: "icd_description",
-                        label: (
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Description"
-                            }}
-                          />
-                        ),
-                        disabled: false
-                      }
-                    ]}
-                    keyId="code"
-                    dataSource={{
-                      // data: _finalDiagnosis
-                      data: this.state.finalICDS
-                    }}
-                    isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 3 }}
-                    events={{
-                      onDelete: deleteFinalDiagnosis.bind(this, this),
-                      onEdit: row => {},
+                      ]}
+                      keyId="code"
+                      dataSource={{
+                        // data: _finalDiagnosis
+                        data: this.state.finalICDS
+                      }}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onDelete: deleteFinalDiagnosis.bind(this, this),
+                        onEdit: row => {},
 
-                      onDone: updateDiagnosis.bind(this, this)
-                    }}
-                    loading={this.state.showInitialDiagnosisLoader}
-                  />
-                </h4>
+                        onDone: updateDiagnosis.bind(this, this)
+                      }}
+                      // loading={this.state.showFinalDiagnosisLoader}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

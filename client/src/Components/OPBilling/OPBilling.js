@@ -15,14 +15,14 @@ import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/Billing";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import { getCookie } from "../../utils/algaehApiCall";
-import { ClearData } from "./OPBillingEvents";
+import { ClearData, Validations } from "./OPBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
-import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import AlgaehReport from "../Wrapper/printReports";
+import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 
 import moment from "moment";
 import Options from "../../Options.json";
@@ -107,6 +107,10 @@ class PatientDisplayDetails extends Component {
 
     this.setState({ ...this.state, ...billOut, ...output });
   }
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
 
   getPatientDetails($this, output) {
     clearInterval(intervalId);
@@ -265,47 +269,50 @@ class PatientDisplayDetails extends Component {
   }
 
   SaveBill(e) {
-    if (this.state.unbalanced_amount === 0) {
-      this.GenerateReciept($this => {
-        let Inputobj = $this.state;
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.unbalanced_amount === 0) {
+        this.GenerateReciept($this => {
+          let Inputobj = $this.state;
 
-        Inputobj.patient_payable = $this.state.patient_payable_h;
-        AlgaehLoader({ show: true });
-        algaehApiCall({
-          uri: "/opBilling/addOpBIlling",
-          data: Inputobj,
-          method: "POST",
-          onSuccess: response => {
-            AlgaehLoader({ show: false });
-            if (response.data.success) {
-              $this.setState({
-                bill_number: response.data.records.bill_number,
-                receipt_number: response.data.records.receipt_number,
-                saveEnable: true
-              });
+          Inputobj.patient_payable = $this.state.patient_payable_h;
+          AlgaehLoader({ show: true });
+          algaehApiCall({
+            uri: "/opBilling/addOpBIlling",
+            data: Inputobj,
+            method: "POST",
+            onSuccess: response => {
+              AlgaehLoader({ show: false });
+              if (response.data.success) {
+                $this.setState({
+                  bill_number: response.data.records.bill_number,
+                  receipt_number: response.data.records.receipt_number,
+                  saveEnable: true
+                });
+                successfulMessage({
+                  message: "Done Successfully",
+                  title: "Success",
+                  icon: "success"
+                });
+              }
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
               successfulMessage({
-                message: "Done Successfully",
-                title: "Success",
-                icon: "success"
+                message: error.message,
+                title: "Error",
+                icon: "error"
               });
             }
-          },
-          onFailure: error => {
-            AlgaehLoader({ show: false });
-            successfulMessage({
-              message: error.message,
-              title: "Error",
-              icon: "error"
-            });
-          }
+          });
         });
-      });
-    } else {
-      successfulMessage({
-        message: "Invalid Input. Please recive the amount.",
-        title: "Error",
-        icon: "error"
-      });
+      } else {
+        successfulMessage({
+          message: "Invalid Input. Please recive the amount.",
+          title: "Error",
+          icon: "error"
+        });
+      }
     }
   }
 
@@ -348,22 +355,20 @@ class PatientDisplayDetails extends Component {
             }
           }}
           userArea={
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{
-                forceLabel: <AlgaehLabel label={{ fieldName: "bill_date" }} />,
-                className: "internal-label"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "bread_bill_date"
-              }}
-              disabled={true}
-              events={{
-                onChange: null
-              }}
-              value={this.state.bill_date}
-            />
+            <div className="row">
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "bill_date"
+                  }}
+                />
+                <h6>
+                  {this.state.registration_date
+                    ? moment(this.state.bill_date).format("DD-MM-YYYY")
+                    : "DD/MM/YYYY"}
+                </h6>
+              </div>
+            </div>
           }
           printArea={{
             menuitems: [
@@ -426,21 +431,27 @@ class PatientDisplayDetails extends Component {
                   onClick={this.SaveBill.bind(this)}
                   disabled={this.state.saveEnable}
                 >
-                  {/* <AlgaehLabel
+                  <AlgaehLabel
                     label={{ fieldName: "btn_save", returnText: true }}
-                  /> */}
-                  Save
+                  />
+                  {/* Save */}
                 </button>
+
+                <AHSnackbar
+                  open={this.state.open}
+                  handleClose={this.handleClose}
+                  MandatoryMsg={this.state.MandatoryMsg}
+                />
 
                 <button
                   type="button"
                   className="btn btn-default"
                   onClick={ClearData.bind(this, this)}
                 >
-                  {/* <AlgaehLabel
+                  <AlgaehLabel
                     label={{ fieldName: "btn_clear", returnText: true }}
-                  /> */}
-                  Clear
+                  />
+                  {/* Clear */}
                 </button>
               </div>
             </div>

@@ -64,6 +64,12 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "REQEntry",
         searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header",
+        orderBy: "hims_f_pharamcy_material_header_id desc"
+      },
+      {
+        searchName: "REQTransEntry",
+        searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'Y' and authorie2 = 'Y'",
         orderBy: "hims_f_pharamcy_material_header_id desc"
       },

@@ -32,12 +32,22 @@ class FrontDesk extends Component {
         mappingName: "employeeSerDetails"
       },
       afterSuccess: data => {
+        debugger;
         this.setState(
           {
             FD_Screen: Window.global["FD-STD"],
             patient_code: Window.global["appt-pat-code"],
             provider_id: Window.global["appt-provider-id"],
             sub_department_id: Window.global["appt-dept-id"],
+
+            patient_name: Window.global["appt-pat-name"],
+            arabic_patient_name: Window.global["appt-pat-arabic-name"],
+            date_of_birth: Window.global["appt-pat-dob"],
+            patient_age: Window.global["appt-pat-age"],
+            patient_gender: Window.global["appt-pat-gender"],
+            patient_phone: Window.global["appt-pat-ph-no"],
+            patient_email: Window.global["appt-pat-email"],
+
             hims_d_services_id: data[0].services_id
           },
           () => {
@@ -60,6 +70,15 @@ class FrontDesk extends Component {
           patient_code={this.state.patient_code}
           provider_id={this.state.provider_id}
           sub_department_id={this.state.sub_department_id}
+          patient_details={{
+            patient_name: this.state.patient_name,
+            arabic_patient_name: this.state.arabic_patient_name,
+            date_of_birth: this.state.date_of_birth,
+            patient_age: this.state.patient_age,
+            patient_gender: this.state.patient_gender,
+            patient_phone: this.state.patient_phone,
+            patient_email: this.state.patient_email
+          }}
           visit_type={10}
           fromAppoinment={true}
           hims_d_services_id={this.state.hims_d_services_id}

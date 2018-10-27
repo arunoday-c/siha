@@ -22,7 +22,6 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 const ProcessItemMoment = $this => {
-  AlgaehLoader({ show: true });
   if ($this.state.location_id === null) {
     $this.setState({
       SnackbarOpen: true,
@@ -44,6 +43,7 @@ const ProcessItemMoment = $this => {
       MandatoryMsg: "Invalid Input. Please select To Date."
     });
   } else {
+    AlgaehLoader({ show: true });
     $this.props.getItemMoment({
       uri: "/pharmacyGlobal/getItemMoment",
       method: "GET",

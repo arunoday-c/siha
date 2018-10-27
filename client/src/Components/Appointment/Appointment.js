@@ -613,6 +613,24 @@ class Appointment extends Component {
     }
   }
 
+  allowDrop(ev) {
+    ev.preventDefault();
+  }
+
+  drag(ev) {
+    debugger;
+    console.log("on drag", ev.target);
+    console.log("on drag", ev.target.parentElement);
+    ev.dataTransfer.setData("text", ev.target.id);
+  }
+
+  drop(ev) {
+    ev.preventDefault();
+    console.log("on drop", ev.target);
+    var data = ev.dataTransfer.getData("text");
+    ev.target.innerHtml = "ABC";
+  }
+
   plotPatients(data) {
     const newEndTime = new moment(data.time, "hh:mm a").add(
       data.slot,
@@ -674,7 +692,12 @@ class Appointment extends Component {
         style={{ background: brk_bg_color, cursor: "pointer" }}
         key={data.counter}
       >
-        <td className="tg-baqh" {...colspan} style={{ background: bg_color }}>
+        <td
+          className="tg-baqh"
+          {...colspan}
+          onDrop={this.drop.bind(this)}
+          onDragOver={this.allowDrop.bind(this)}
+        >
           {data.mark_as_break == false ? (
             <span className="dynSlot">{data.time}</span>
           ) : null}
@@ -698,12 +721,28 @@ class Appointment extends Component {
                   onClick={this.showModal.bind(this)}
                   className="fas fa-plus"
                 />
-              ) : (
-                <i
-                  className="fas fa-edit"
+              ) : null}
+
+              {patient !== null ? (
+                <div
+                  className="dynPatient"
+                  style={{ background: bg_color }}
+                  draggable={true}
+                  onDragStart={this.drag.bind(this)}
                   onClick={this.openEditModal.bind(this, patient)}
-                />
-              )}
+                >
+                  {patient.patient_name}
+                  {/* <span
+                    className="statusClr"
+                    style={{
+                      background:
+                        patient !== undefined
+                          ? this.getColorCode(patient.appointment_status_id)
+                          : null
+                    }}
+                  /> */}
+                </div>
+              ) : null}
             </React.Fragment>
           ) : (
             <React.Fragment>
@@ -837,7 +876,7 @@ class Appointment extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
-                            forceLabel: "Select Status",
+                            forceLabel: "Select Status mandatory",
                             isImp: true
                           }}
                           selector={{
@@ -897,7 +936,7 @@ class Appointment extends Component {
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-3 mandatory" }}
                           label={{
                             forceLabel: "Select Slots",
                             isImp: true
@@ -918,7 +957,9 @@ class Appointment extends Component {
 
                       <div className="row">
                         <AlagehFormGroup
-                          div={{ className: "col-lg-6 margin-top-15" }}
+                          div={{
+                            className: "col-lg-6 mandatory margin-top-15"
+                          }}
                           label={{
                             forceLabel: "Patient Name",
                             isImp: true
@@ -933,7 +974,10 @@ class Appointment extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-lg-6 margin-top-15" }}
+                          div={{
+                            className:
+                              "col-lg-6 margin-top-15 mandatory arabic-txt-fld"
+                          }}
                           label={{
                             forceLabel: "Patient Name Arabic",
                             isImp: true
@@ -949,9 +993,12 @@ class Appointment extends Component {
                         />
 
                         <AlgaehDateHandler
-                          div={{ className: "col-lg-3 margin-top-15" }}
+                          div={{
+                            className: "col-lg-3 margin-top-15 mandatory"
+                          }}
                           label={{
-                            forceLabel: "Date of Birth"
+                            forceLabel: "Date of Birth",
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -976,10 +1023,12 @@ class Appointment extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-2 margin-top-15" }}
+                          div={{
+                            className: "col-lg-2 margin-top-15 mandatory"
+                          }}
                           label={{
                             forceLabel: "Age",
-                            isImp: false
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -995,7 +1044,9 @@ class Appointment extends Component {
                         />
 
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3 margin-top-15" }}
+                          div={{
+                            className: "col-lg-3 margin-top-15 mandatory"
+                          }}
                           label={{
                             forceLabel: "Gender",
                             isImp: true
@@ -1033,7 +1084,9 @@ class Appointment extends Component {
                         /> */}
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-6 margin-top-15" }}
+                          div={{
+                            className: "col-lg-6 margin-top-15 mandatory"
+                          }}
                           label={{
                             forceLabel: "Mobile No.",
                             isImp: true
@@ -1052,10 +1105,12 @@ class Appointment extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-6 margin-top-15" }}
+                          div={{
+                            className: "col-lg-6 margin-top-15 mandatory"
+                          }}
                           label={{
                             forceLabel: "Email Address",
-                            isImp: false
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1251,7 +1306,7 @@ class Appointment extends Component {
                           <h6>{this.state.apptFromTime}</h6>
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3 margin-top-15" }}
+                          div={{ className: "col-lg-3 margin-top-15 " }}
                           label={{
                             forceLabel: "Patient Code",
                             isImp: false
@@ -1281,7 +1336,9 @@ class Appointment extends Component {
                           />
                         </div>
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3 margin-top-15" }}
+                          div={{
+                            className: "col-lg-3 margin-top-15 mandatory"
+                          }}
                           label={{
                             forceLabel: "Select Slots",
                             isImp: true
@@ -1302,7 +1359,9 @@ class Appointment extends Component {
 
                       <div className="row">
                         <AlagehFormGroup
-                          div={{ className: "col-lg-6 margin-top-15" }}
+                          div={{
+                            className: "col-lg-6 margin-top-15 mandatory"
+                          }}
                           label={{
                             forceLabel: "Patient Name",
                             isImp: true
@@ -1317,7 +1376,10 @@ class Appointment extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-lg-6 margin-top-15" }}
+                          div={{
+                            className:
+                              "col-lg-6 margin-top-15 mandatory arabic-txt-fld"
+                          }}
                           label={{
                             forceLabel: "Patient Name Arabic",
                             isImp: true
@@ -1333,9 +1395,12 @@ class Appointment extends Component {
                         />
 
                         <AlgaehDateHandler
-                          div={{ className: "col-lg-3 margin-top-15" }}
+                          div={{
+                            className: "col-lg-3 margin-top-15 mandatory"
+                          }}
                           label={{
-                            forceLabel: "Date of Birth"
+                            forceLabel: "Date of Birth",
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1360,10 +1425,12 @@ class Appointment extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-2 margin-top-15" }}
+                          div={{
+                            className: "col-lg-2 margin-top-15 mandatory"
+                          }}
                           label={{
                             forceLabel: "Age",
-                            isImp: false
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1379,7 +1446,9 @@ class Appointment extends Component {
                         />
 
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3 margin-top-15" }}
+                          div={{
+                            className: "col-lg-3 margin-top-15 mandatory"
+                          }}
                           label={{
                             forceLabel: "Gender",
                             isImp: true
@@ -1398,7 +1467,7 @@ class Appointment extends Component {
                         />
 
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-3 mandatory" }}
                           label={{
                             forceLabel: "Select Status",
                             isImp: true
@@ -1417,7 +1486,9 @@ class Appointment extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-6 margin-top-15" }}
+                          div={{
+                            className: "col-lg-6 margin-top-15 mandatory"
+                          }}
                           label={{
                             forceLabel: "Mobile No.",
                             isImp: true
@@ -1436,10 +1507,12 @@ class Appointment extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-6 margin-top-15" }}
+                          div={{
+                            className: "col-lg-6 margin-top-15 mandatory"
+                          }}
                           label={{
                             forceLabel: "Email Address",
-                            isImp: false
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",

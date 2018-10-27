@@ -67,6 +67,7 @@ class AddOPBillingForm extends Component {
           mappingName: "opbilservices"
         },
         afterSuccess: data => {
+          debugger;
           if (data.length !== 0) {
             this.setState({
               opbilservices: data
@@ -488,7 +489,7 @@ class AddOPBillingForm extends Component {
                                   dataSource: {
                                     textField: "service_name",
                                     valueField: "hims_d_services_id",
-                                    data: this.props.opbilservices
+                                    data: this.state.opbilservices
                                   },
                                   others: {
                                     disabled: true

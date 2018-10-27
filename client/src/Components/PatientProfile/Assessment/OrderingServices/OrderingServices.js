@@ -157,7 +157,7 @@ class OrderingServices extends Component {
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{
-                fieldName: "select_service"
+                forceLabel: "Select Service Type"
               }}
               selector={{
                 name: "s_service_type",
@@ -178,7 +178,7 @@ class OrderingServices extends Component {
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{
-                forceLabel: "Select Service Type"
+                forceLabel: "Select Service"
               }}
               selector={{
                 name: "s_service",

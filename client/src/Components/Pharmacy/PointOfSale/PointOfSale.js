@@ -8,10 +8,9 @@ import AppBar from "@material-ui/core/AppBar";
 import {
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
-
+import moment from "moment";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
@@ -32,6 +31,7 @@ import PosListItems from "./PosListItems/PosListItems";
 import MyContext from "../../../utils/MyContext";
 import POSIOputs from "../../../Models/POS";
 import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails";
+import Options from "../../../Options.json";
 
 class PointOfSale extends Component {
   constructor(props) {
@@ -171,24 +171,20 @@ class PointOfSale extends Component {
               searchName: "POSEntry"
             }}
             userArea={
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: (
-                    <AlgaehLabel label={{ forceLabel: "POS Date" }} />
-                  ),
-                  className: "internal-label"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "bread_registration_date"
-                }}
-                disabled={true}
-                events={{
-                  onChange: null
-                }}
-                value={this.state.pos_date}
-              />
+              <div className="row">
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "POS Date"
+                    }}
+                  />
+                  <h6>
+                    {this.state.pos_date
+                      ? moment(this.state.pos_date).format(Options.dateFormat)
+                      : Options.dateFormat}
+                  </h6>
+                </div>
+              </div>
             }
             selectedLang={this.state.selectedLang}
           />

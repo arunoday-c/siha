@@ -169,8 +169,9 @@ class ItemMomentEnquiry extends Component {
                   </button>
                 </div>
               </div>
-              <div className="col-lg-12">
-                <div className="row form-group">
+
+              <div className="row form-group">
+                <div className="col-lg-12">
                   <AlgaehDataGrid
                     id="initial_stock"
                     columns={[

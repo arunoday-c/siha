@@ -69,6 +69,7 @@ let getRadOrderedServices = (req, res, next) => {
 
 let insertRadOrderedServices = (req, res, next) => {
   const insurtColumns = [
+    "ordered_services_id",
     "patient_id",
     "visit_id",
     "provider_id",
@@ -86,11 +87,12 @@ let insertRadOrderedServices = (req, res, next) => {
     )
     .Select(s => {
       return {
+        ordered_services_id: req.body.ordered_services_id,
         patient_id: req.body.patient_id,
         provider_id: req.body.incharge_or_provider,
         visit_id: req.body.visit_id,
         service_id: s.services_id,
-        billed: "Y",
+        billed: "N",
         ordered_date: s.ordered_date,
         ordered_by: req.body.incharge_or_provider
       };
@@ -136,7 +138,6 @@ let insertRadOrderedServices = (req, res, next) => {
       );
     });
   } else {
-  
     next();
   }
 };

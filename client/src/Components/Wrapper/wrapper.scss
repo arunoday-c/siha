@@ -37,7 +37,8 @@
   .fa-walking,
   .fa-file-export,
   .fa-sync-alt,
-  .fa-file-prescription {
+  .fa-file-prescription,
+  .fa-arrow-right {
     cursor: pointer;
     border: 1px solid #44b8bd;
     height: 28px;
@@ -63,7 +64,8 @@
   .fa-walking:hover,
   .fa-file-export:hover,
   .fa-sync-alt:hover,
-  .fa-file-prescription:hover {
+  .fa-file-prescription:hover,
+  .fa-arrow-right:hover {
     background: #44b8bd;
     color: #fff;
   }

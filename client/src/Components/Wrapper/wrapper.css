@@ -32,7 +32,8 @@
   .ReactTable .fa-walking,
   .ReactTable .fa-file-export,
   .ReactTable .fa-sync-alt,
-  .ReactTable .fa-file-prescription {
+  .ReactTable .fa-file-prescription,
+  .ReactTable .fa-arrow-right {
     cursor: pointer;
     border: 1px solid #44b8bd;
     height: 28px;
@@ -56,7 +57,8 @@
   .ReactTable .fa-walking:hover,
   .ReactTable .fa-file-export:hover,
   .ReactTable .fa-sync-alt:hover,
-  .ReactTable .fa-file-prescription:hover {
+  .ReactTable .fa-file-prescription:hover,
+  .ReactTable .fa-arrow-right:hover {
     background: #44b8bd;
     color: #fff; }
   .ReactTable .-pagination .-previous,

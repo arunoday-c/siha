@@ -94,7 +94,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
   let card_amount = parseFloat(e.target.value);
   let cheque_amount = parseFloat($this.state.cheque_amount);
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
-  debugger;
+
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
     successfulMessage({
       message: "Invalid Input. Sum of all amount to be equal to Receivable.",

@@ -4,8 +4,6 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import TransferIOputs from "../../../Models/TransferEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import swal from "sweetalert2";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;
@@ -31,7 +29,7 @@ const getCtrlCode = ($this, docNumber) => {
       debugger;
       data.saveEnable = true;
 
-      if (data.posted === "Y") {
+      if (data.completed === "Y") {
         data.postEnable = true;
       } else {
         data.postEnable = false;
@@ -62,10 +60,9 @@ const SaveTransferEntry = $this => {
           saveEnable: true,
           postEnable: false
         });
-        swal("Saved successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Saved successfully . .",
+          type: "success"
         });
       }
     }
@@ -90,6 +87,12 @@ const PostTransferEntry = $this => {
 
     $this.state.pharmacy_stock_detail[i].sales_uom =
       $this.state.pharmacy_stock_detail[i].uom_transferred_id;
+
+    $this.state.pharmacy_stock_detail[i].quantity =
+      $this.state.pharmacy_stock_detail[i].quantity_transferred;
+
+    $this.state.pharmacy_stock_detail[i].grn_number =
+      $this.state.pharmacy_stock_detail[i].grnno;
   }
   debugger;
   algaehApiCall({
@@ -102,10 +105,9 @@ const PostTransferEntry = $this => {
         $this.setState({
           postEnable: true
         });
-        swal("Posted successfully . .", {
-          icon: "success",
-          buttons: false,
-          timer: 2000
+        swalMessage({
+          title: "Posted successfully . .",
+          type: "success"
         });
       }
     }
@@ -118,7 +120,7 @@ const RequisitionSearch = ($this, e) => {
       searchGrid: {
         columns: spotlightSearch.RequisitionEntry.ReqEntry
       },
-      searchName: "REQEntry",
+      searchName: "REQTransEntry",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
@@ -142,13 +144,13 @@ const RequisitionSearch = ($this, e) => {
             AlgaehLoader({ show: true });
             data.saveEnable = false;
 
-            if (data.posted === "Y") {
+            if (data.completed === "Y") {
               data.postEnable = true;
             } else {
               data.postEnable = false;
             }
 
-            data.postEnable = true;
+            // data.postEnable = true;
 
             data.dataExitst = true;
 
@@ -161,6 +163,7 @@ const RequisitionSearch = ($this, e) => {
                   i
                 ].hims_f_pharmacy_material_detail_id;
 
+              // grnno
               data.pharmacy_stock_detail[i].quantity_transferred =
                 data.pharmacy_stock_detail[i].quantity_required;
 
@@ -184,10 +187,9 @@ const RequisitionSearch = ($this, e) => {
       }
     });
   } else {
-    successfulMessage({
-      message: "Invalid Input. Please select From Location.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Please select From Location.",
+      type: "warning"
     });
   }
 };

@@ -112,9 +112,7 @@ class AddPatientForm extends PureComponent {
           type: "CTRY_GET_DATA",
           mappingName: "countries"
         },
-        afterSuccess: data => {
-          debugger;
-        }
+        afterSuccess: data => {}
       });
     }
     if (
