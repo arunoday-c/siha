@@ -1,3 +1,9 @@
+.hptl-ehr-assetment-details #initalDioGrid .ReactTable {
+  height: 140px !important; }
+
+.hptl-ehr-assetment-details #finalDioGrid .ReactTable {
+  height: 140px !important; }
+
 .hptl-ehr-assetment-details .grid-section {
   background: #ffff;
   border: 1px solid #d3d3d3;
