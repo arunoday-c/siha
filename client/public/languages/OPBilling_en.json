@@ -17,6 +17,7 @@
   "full_name": "Patient Name",
 
   "select_service": "Select Service",
+  "select_service_type": "Select Service Type",
 
   "gross_total": "Gross Total",
   "advance": "Advance",

@@ -55,7 +55,8 @@
   .side-menu-title {
     padding: 5px 0;
     line-height: 35px;
-    border-bottom: 1px solid #000;
+    border-bottom: 2px solid #000000;
+    border-top: 1px solid #505050;
     cursor: pointer;
     font-size: 0.9rem;
   }
@@ -116,7 +117,7 @@
     height: 49px;
     background: #000;
     position: fixed;
-    width: 250px;
+    width: 255px;
     z-index: 9;
     border-bottom: 1px solid #3e3e3e;
   }

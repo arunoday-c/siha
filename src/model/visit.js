@@ -53,6 +53,7 @@ let insertPatientVisitData = (req, res, next) => {
     inputParam.patient_id = req.patient_id || req.body.patient_id;
     debugLog("Body:", req.body);
     const internalInsertPatientVisitData = () => {
+      debugFunction("1");
       if (inputParam.age_in_years == null) {
         let fromDate = moment(inputParam.date_of_birth);
         let toDate = new Date();
@@ -65,10 +66,12 @@ let insertPatientVisitData = (req, res, next) => {
         inputParam.age_in_months = months;
         inputParam.age_in_days = days;
       }
+      debugFunction("2");
       if (existingExparyDate != null || existingExparyDate != undefined) {
         inputParam.visit_expiery_date = existingExparyDate;
         inputParam.episode_id = currentPatientEpisodeNo;
       }
+      debugFunction("3");
       debugLog("inside internalInsertPatientVisitData");
       db.query(
         "INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
@@ -107,6 +110,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
         ],
         (error, visitresult) => {
           if (error) {
+            debugLog("error: ", error);
             if (req.options == null) {
               db.rollback(() => {
                 releaseDBConnection(req.db, db);

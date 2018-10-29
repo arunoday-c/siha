@@ -60,3 +60,8 @@
     }
   }
 }
+#PointSaleGrid {
+  .ReactTable {
+    max-height: 20vh !important;
+  }
+}

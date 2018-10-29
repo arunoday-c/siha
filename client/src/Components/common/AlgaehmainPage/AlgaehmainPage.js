@@ -261,16 +261,22 @@ class PersistentDrawer extends React.Component {
             onClick={this.openSubMenuSelection.bind(this, data)}
           >
             <div className="col-2" style={{ marginTop: "2px" }}>
-              <i className={icon} />
+              <i className={icon} style={{ textShadow: "0px 2px 0px #000" }} />
             </div>
             <div className="col-8 ">{data.label}</div>
 
             <div className="col-2" style={{ marginTop: "2px" }}>
               {this.state.menuSelected === data.name &&
               this.state.toggleSubMenu === false ? (
-                <i className="fas fa-angle-up" />
+                <i
+                  className="fas fa-angle-up"
+                  style={{ textShadow: "0px 2px 0px #000" }}
+                />
               ) : (
-                <i className="fas fa-angle-down" />
+                <i
+                  className="fas fa-angle-down"
+                  style={{ textShadow: "0px 2px 0px #000" }}
+                />
               )}
             </div>
           </div>
@@ -382,8 +388,6 @@ class PersistentDrawer extends React.Component {
               <div anchor={anchor} className="leftNavCntr">
                 <div className="hptl-phase1-sideMenuBar">
                   <div className="menuBar-title">
-                    {/* <span style={titleStyles.title}>ALGAEH</span>
-                    <span style={titleStyles.organisation}>ERP</span> */}
                     <div className="appLogoOnly" />
                     <i
                       onClick={this.handleDrawerClose}

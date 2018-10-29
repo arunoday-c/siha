@@ -1,94 +1,115 @@
 import React, { PureComponent } from "react";
-
 import Label from "../Wrapper/label";
-
-import Enumerable from "linq";
+import "../Wrapper/autoComplete.css";
+import Enumarable from "linq";
 
 class AutoComplete extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      single: "",
-      disabled: false
+      displayValue: "",
+      displayText: "",
+      disabled: false,
+      listState: "d-none",
+      arrowIcon: "fa-angle-down",
+      _sortData: []
     };
+    this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
   componentWillReceiveProps(props) {
-    if (props.selector.dataSource.data !== undefined) {
-      if (
-        props.selector.value === null ||
-        props.selector.value === undefined ||
-        props.selector.value === ""
-      ) {
-        this.setState({ single: "" });
-      } else {
-        const item = new Enumerable.from(props.selector.dataSource.data)
-          .where(
-            w =>
-              String(w[this.props.selector.dataSource.valueField])
-                .toUpperCase()
-                .trim() ===
-              String(props.selector.value)
-                .toUpperCase()
-                .trim()
-          )
-          .lastOrDefault();
+    const _text = this.getTextByValue(props.selector.value);
 
-        if (item !== undefined) {
-          this.setState({
-            single: item[this.props.selector.dataSource.textField]
-          });
-        }
-      }
+    this.setState({
+      displayValue: props.selector.value,
+      displayText: _text,
+      disabled: props.selector.disabled,
+      _sortData: this.dataSorting("")
+    });
+  }
+
+  onClickArrowIcon() {
+    let data = {};
+    if (this.state._sortData.length === 0) {
+      data = {
+        _sortData: this.dataSorting("")
+      };
+    }
+    if (this.state.listState === "d-block") {
+      this.setState({
+        listState: "d-none",
+        arrowIcon: "fa-angle-down",
+        ...data
+      });
+    } else {
+      this.setState({
+        listState: "d-block",
+        arrowIcon: "fa-angle-up",
+        ...data
+      });
+    }
+  }
+
+  onFocusTextbox(e) {
+    let data = {};
+    if (this.state._sortData.length === 0) {
+      data = {
+        _sortData: this.dataSorting("")
+      };
+    }
+    this.setState({
+      listState: "d-block",
+      arrowIcon: "fa-angle-up",
+      ...data
+    });
+  }
+  getTextByValue(value) {
+    const _data =
+      this.props.selector.dataSource.data === undefined
+        ? []
+        : this.props.selector.dataSource.data;
+    const _dtl = Enumarable.from(_data)
+      .where(
+        w =>
+          String(w[this.props.selector.dataSource.valueField]).trim() ===
+          String(value).trim()
+      )
+      .firstOrDefault();
+
+    if (_dtl !== undefined) {
+      return _dtl[this.props.selector.dataSource.textField];
+    } else {
+      return "";
     }
   }
 
   componentDidMount() {
-    if (this.props.selector.dataSource.data !== undefined) {
-      if (
-        this.props.selector.value === null ||
-        this.props.selector.value === undefined
-      ) {
-        this.setState({ single: "" });
-      } else {
-        const item = new Enumerable.from(this.props.selector.dataSource.data)
-          .where(
-            w =>
-              String(w[this.props.selector.dataSource.valueField])
-                .toUpperCase()
-                .trim() ===
-              String(this.props.selector.value)
-                .toUpperCase()
-                .trim()
-          )
-          .lastOrDefault();
-        if (item !== undefined) {
-          this.setState({
-            single: item[this.props.selector.dataSource.textField]
-          });
-        }
-      }
+    document.addEventListener("mousedown", this.handleClickOutside, false);
+    this.setState({
+      displayValue: this.props.selector.value,
+      displayText: this.getTextByValue(this.props.selector.value),
+      _sortData: this.dataSorting("")
+    });
+  }
+  componentWillUnmount() {
+    document.removeEventListener("mousedown", this.handleClickOutside, false);
+  }
+  handleClickOutside(event) {
+    if (!this.autoComp.contains(event.target)) {
+      this.setState({
+        listState: "d-none",
+        arrowIcon: "fa-angle-down"
+      });
     }
   }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (
-  //     nextProps.selector.value !== this.state.single ||
-  //     (nextProps.selector.others != null &&
-  //       nextProps.selector.others.disabled !== this.state.disabled) ||
-  //     nextState !== this.state.single
-  //   )
-  //     return true;
-  //   return false;
-  // }
 
   bluringEvent(e) {
     if (this.props.selector.userList !== undefined) {
       if (e.currentTarget.value !== "") {
         if (
-          this.state.single === undefined ||
-          this.state.single === null ||
-          this.state.single === ""
+          this.state.displayValue === undefined ||
+          this.state.displayValue === null ||
+          this.state.displayValue === ""
         ) {
           this.props.selector.userList(e.currentTarget.value.split(","));
         }
@@ -96,114 +117,105 @@ class AutoComplete extends PureComponent {
     }
   }
 
-  onChangeSelectedDropDown(e) {
-    const value = e.currentTarget.value;
-    const name = e.currentTarget.name;
-    const data = this.props.selector.dataSource.data;
-    const item = new Enumerable.from(data)
-      .where(
-        w =>
-          String(w[this.props.selector.dataSource.textField])
-            .toUpperCase()
-            .trim() ===
-          String(value)
-            .toUpperCase()
-            .trim()
-      )
-      .lastOrDefault();
-
-    if (item !== undefined) {
-      this.setState({ single: value }, () => {
-        this.props.selector.onChange({
-          selected: item,
-          value: item[this.props.selector.dataSource.valueField],
-          name: name
-        });
-      });
-    } else {
-      this.setState({ single: value });
-    }
+  onAutoCompleteTextHandler(e) {
+    const $this = this;
+    const _value = e.target.value;
+    $this.setState({
+      displayText: _value,
+      _sortData: $this.dataSorting(_value)
+    });
   }
+
+  dataSorting(text) {
+    const data =
+      this.props.selector.dataSource.data === undefined
+        ? []
+        : this.props.selector.dataSource.data;
+
+    return Enumarable.from(data)
+      .where(w =>
+        String(w[this.props.selector.dataSource.textField])
+          .toUpperCase()
+          .includes(String(text).toUpperCase())
+      )
+      .toArray();
+  }
+
   clearInput(e) {
-    this.setState({ single: "" }, () => {
+    this.setState({ displayText: "", displayValue: "" }, () => {
       if (this.props.selector.onClear !== undefined) {
         this.props.selector.onClear();
       }
     });
   }
+
+  onListSelected(item, e) {
+    const _value = item[this.props.selector.dataSource.valueField];
+    const _text = item[this.props.selector.dataSource.textField];
+    this.setState(
+      {
+        listState: "d-none",
+        displayValue: _value,
+        displayText: _text,
+        arrowIcon: "fa-angle-down"
+      },
+      () => {
+        this.props.selector.onChange({
+          selected: item,
+          value: _value,
+          name: this.props.selector.name
+        });
+      }
+    );
+  }
+
   renderAutoComplete = () => {
-    const data =
-      this.props.selector.dataSource.data === undefined
-        ? []
-        : this.props.selector.dataSource.data;
     const isDisable =
       this.props.selector.others !== undefined &&
       this.props.selector.others.disabled !== undefined
         ? this.props.selector.others.disabled
-        : false;
+        : this.state.disabled;
+    const _placeHolder =
+      this.props.selector.placeholder === undefined
+        ? "Select..."
+        : this.props.selector.placeholder;
     return (
-      <div className="autoselect-Div">
+      <div
+        className="autoselect-Div"
+        ref={autoComp => (this.autoComp = autoComp)}
+      >
         <span className="loadingSelect">
           <i className="fas fa-sync fa-spin" />
         </span>
-        <input
-          className="autoselect-input"
-          list={this.props.selector.name}
-          placeholder="Select.."
-          onChange={this.onChangeSelectedDropDown.bind(this)}
-          value={this.state.single}
-          name={this.props.selector.name}
-          {...this.props.selector.others}
-        />
-        {isDisable ? null : (
-          <i
-            className="fas fa-times-circle"
-            onClick={this.clearInput.bind(this)}
+        <div className="auto-suggestCntr">
+          <input
+            type="text"
+            className="myInput"
+            name={this.props.selector.name}
+            placeholder={_placeHolder}
+            title={_placeHolder}
+            onFocus={this.onFocusTextbox.bind(this)}
+            value={this.state.displayText}
+            disabled={isDisable}
+            onChange={this.onAutoCompleteTextHandler.bind(this)}
+            onBlur={this.bluringEvent.bind(this)}
+            {...this.props.selector.others}
+            autoComplete="off"
           />
-        )}
-
-        <datalist id={this.props.selector.name}>
-          {data.map((item, index) => (
-            <option
-              key={index}
-              data-index={index}
-              data-value={item[this.props.selector.dataSource.valueField]}
-            >
-              {this.props.selector.template === undefined
-                ? item[this.props.selector.dataSource.textField]
-                : this.props.selector.template}
-            </option>
-          ))}
-        </datalist>
+          <span className="showall" onClick={this.onClickArrowIcon.bind(this)}>
+            <i className={"fas " + this.state.arrowIcon} />
+          </span>
+          <ul className={"myUL " + this.state.listState}>
+            {this.state._sortData.map((item, index) => (
+              <li onClick={this.onListSelected.bind(this, item)} key={index}>
+                <span value={item[this.props.selector.dataSource.valueField]}>
+                  {item[this.props.selector.dataSource.textField]}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-      // <TextField
-      //   fullWidth
-      //   placeholder="Select multiple countries"
-      //   style={{ background: "#fbfbfb" }}
-      //   InputProps={{
-      //     inputComponent: () => {
-      //       return (
-      //         <Select
-      //           labelKey={this.props.selector.dataSource.textField}
-      //           valueKey={this.props.selector.dataSource.valueField}
-      //           name={this.props.selector.name}
-      //           onChange={this.handleChange.bind(this)}
-      //           value={this.state.single}
-      //           options={this.props.selector.dataSource.data}
-      //           multi={this.props.selector.multi}
-      //           valueComponent={this.props.selector.valueComponet}
-      //           optionComponent={this.props.selector.optionComponent}
-      //           selectedValue={this.props.selector.value}
-      //           onBlur={this.bluringEvent.bind(this)}
-      //           clearable={false}
-      //           {...this.props.selector.others}
-      //         />
-      //       );
-      //     }
-      //   }}
-      //   error={this.props.error}
-      //   helperText={this.props.helperText}
-      // />
     );
   };
 

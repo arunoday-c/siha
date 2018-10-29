@@ -23,7 +23,7 @@ import {
   AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-
+import { swalMessage } from "../../../utils/algaehApiCall";
 import {
   FORMAT_PRIORITY,
   FORMAT_TEST_STATUS
@@ -66,10 +66,17 @@ class SampleCollection extends Component {
   };
 
   ShowCollectionModel(row, e) {
-    this.setState({
-      isOpen: !this.state.isOpen,
-      selected_patient: row
-    });
+    if (row.billed === "Y") {
+      this.setState({
+        isOpen: !this.state.isOpen,
+        selected_patient: row
+      });
+    } else {
+      swalMessage({
+        title: "Invalid Input. Please make the pament.",
+        type: "warning"
+      });
+    }
   }
   CloseCollectionModel(e) {
     this.setState(

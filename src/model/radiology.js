@@ -46,7 +46,7 @@ let getRadOrderedServices = (req, res, next) => {
         validate_date_time,attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,\
         PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\
         from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
-        hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE SA.record_status='A' AND " +
+        hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE " +
           whereOrder +
           (where.condition == "" ? "" : " AND " + where.condition),
         where.values,
@@ -78,8 +78,10 @@ let insertRadOrderedServices = (req, res, next) => {
     "ordered_date",
     "ordered_by"
   ];
+  debugLog("ResultOfFetchOrderIds: ", req.records.ResultOfFetchOrderIds);
 
-  const radServices = new LINQ(req.body.billdetails)
+  let Services = req.records.ResultOfFetchOrderIds || req.body.billdetails;
+  const radServices = new LINQ(Services)
     .Where(
       w =>
         w.service_type_id ==
@@ -87,56 +89,52 @@ let insertRadOrderedServices = (req, res, next) => {
     )
     .Select(s => {
       return {
-        ordered_services_id: req.body.ordered_services_id,
+        ordered_services_id: s.hims_f_ordered_services_id || null,
         patient_id: req.body.patient_id,
-        provider_id: req.body.incharge_or_provider,
+        provider_id: req.body.provider_id,
         visit_id: req.body.visit_id,
         service_id: s.services_id,
-        billed: "N",
-        ordered_date: s.ordered_date,
-        ordered_by: req.body.incharge_or_provider
+        billed: req.body.billed,
+        ordered_date: s.created_date,
+        ordered_by: req.userIdentity.algaeh_d_app_user_id
       };
     })
     .ToArray();
   debugLog("radServices: ", radServices);
-
+  let connection = req.connection;
   if (radServices.length > 0) {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      debugLog("insurtColumns", insurtColumns.join(","));
-      debugLog("radServices", radServices);
-      connection.query(
-        "INSERT INTO hims_f_rad_order(" +
-          insurtColumns.join(",") +
-          ",created_by,updated_by)  VALUES ?",
-        [
-          jsonArrayToObject({
-            sampleInputObject: insurtColumns,
-            arrayObj: radServices,
-            req: req,
-            newFieldToInsert: [
-              req.userIdentity.algaeh_d_app_user_id,
-              req.userIdentity.algaeh_d_app_user_id
-            ]
-          })
-        ],
-        (error, result) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-          req.records = result;
+
+    debugLog("insurtColumns", insurtColumns.join(","));
+    debugLog("radServices", radServices);
+    connection.query(
+      "INSERT INTO hims_f_rad_order(" +
+        insurtColumns.join(",") +
+        ",created_by,updated_by)  VALUES ?",
+      [
+        jsonArrayToObject({
+          sampleInputObject: insurtColumns,
+          arrayObj: radServices,
+          req: req,
+          newFieldToInsert: [
+            req.userIdentity.algaeh_d_app_user_id,
+            req.userIdentity.algaeh_d_app_user_id
+          ]
+        })
+      ],
+      (error, result) => {
+        if (error) {
           releaseDBConnection(db, connection);
-          next();
+          next(error);
         }
-      );
-    });
+        req.records = result;
+        releaseDBConnection(db, connection);
+        next();
+      }
+    );
   } else {
     next();
   }
@@ -265,9 +263,74 @@ let getRadTemplateList = (req, res, next) => {
   }
 };
 
+let updateRadOrderedBilled = (req, res, next) => {
+  debugFunction("updateRadOrderedBilled");
+
+  debugLog("Bill Data: ", req.body.billdetails);
+  let OrderServices = new LINQ(req.body.billdetails)
+    .Where(
+      w =>
+        w.hims_f_ordered_services_id != null &&
+        w.service_type_id ==
+          appsettings.hims_d_service_type.service_type_id.Radiology
+    )
+    .Select(s => {
+      return {
+        ordered_services_id: s.hims_f_ordered_services_id,
+        billed: "Y",
+        updated_date: new Date(),
+        updated_by: req.userIdentity.algaeh_d_app_user_id
+      };
+    })
+    .ToArray();
+
+  debugLog("Rad Order Services: ", OrderServices);
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let connection = req.connection;
+
+    let qry = "";
+
+    for (let i = 0; i < OrderServices.length; i++) {
+      qry +=
+        " UPDATE `hims_f_rad_order` SET billed='" +
+        OrderServices[i].billed +
+        "',updated_date='" +
+        new Date().toLocaleString() +
+        "',updated_by='" +
+        OrderServices[i].updated_by +
+        "' WHERE ordered_services_id='" +
+        OrderServices[i].ordered_services_id +
+        "';";
+    }
+    debugLog("Query", qry);
+    if (qry != "") {
+      connection.query(qry, (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        debugLog("Query Result ", result);
+        req.records = { result, RAD: false };
+        next();
+      });
+    } else {
+      req.records = { RAD: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getRadOrderedServices,
   getRadTemplateList,
   insertRadOrderedServices,
-  updateRadOrderedServices
+  updateRadOrderedServices,
+  updateRadOrderedBilled
 };
