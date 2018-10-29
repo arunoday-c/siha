@@ -197,7 +197,7 @@ class ItemDetails extends Component {
                 </div>
                 <div className="row card-deck panel-layout">
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "form_id"
                     }}
@@ -215,7 +215,7 @@ class ItemDetails extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "storage_id"
                     }}
@@ -232,7 +232,7 @@ class ItemDetails extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "service_id"
                     }}
@@ -253,7 +253,7 @@ class ItemDetails extends Component {
                   />
 
                   <div
-                    className="customCheckbox col-lg-2"
+                    className="customCheckbox col-3"
                     style={{ border: "none", marginTop: "28px" }}
                   >
                     <label className="checkbox" style={{ color: "#212529" }}>
@@ -268,7 +268,7 @@ class ItemDetails extends Component {
                       </span>
                     </label>
                   </div>
-                  <div className="col-lg-2" style={{ marginTop: "23px" }}>
+                  <div className="col-3" style={{ marginTop: "23px" }}>
                     <div className="customRadio">
                       <label className="radio inline">
                         <input

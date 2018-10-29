@@ -55,10 +55,10 @@ class UOMAdditionalInfo extends Component {
             <div className="hptl-phase1-uom-Add-form">
               <div className="row card-deck panel-layout">
                 {/* Patient code */}
-                <div className="col-lg-6 card box-shadow-normal">
+                <div className="col-lg-8 card box-shadow-normal">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-4" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "uom_id"
                       }}
@@ -76,7 +76,7 @@ class UOMAdditionalInfo extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-4" }}
+                      div={{ className: "col-4" }}
                       label={{
                         fieldName: "conversion_factor"
                       }}
@@ -94,7 +94,7 @@ class UOMAdditionalInfo extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-4" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "stocking_uom"
                       }}
@@ -111,8 +111,9 @@ class UOMAdditionalInfo extends Component {
                       }}
                     />
 
-                    <div className="col-lg-1 actions">
+                    <div className="col actions">
                       <a
+                        style={{ marginTop: 23 }}
                         // href="javascript:;"
                         className="btn btn-primary btn-circle active"
                       >
@@ -125,7 +126,7 @@ class UOMAdditionalInfo extends Component {
                   </div>
 
                   <div className="row" style={{ marginTop: "10px" }}>
-                    <div className="col-lg-12">
+                    <div className="col-lg-12" id="itemSetupPopGrid">
                       <AlgaehDataGrid
                         id="UOM_stck"
                         columns={[
@@ -137,24 +138,24 @@ class UOMAdditionalInfo extends Component {
                             displayTemplate: row => {
                               return (
                                 <span>
-                                  <IconButton
-                                    color="primary"
-                                    title="Add Template"
-                                    style={{ maxHeight: "4vh" }}
-                                  >
-                                    <i
-                                      className="fa fa-trash"
-                                      aria-hidden="true"
-                                      onClick={deleteUOM.bind(
-                                        this,
-                                        this,
-                                        context,
-                                        row
-                                      )}
-                                    />
-                                  </IconButton>
+                                  <i
+                                    className="fa fa-trash-alt"
+                                    aria-hidden="true"
+                                    onClick={deleteUOM.bind(
+                                      this,
+                                      this,
+                                      context,
+                                      row
+                                    )}
+                                  />
                                 </span>
                               );
+                            },
+                            others: {
+                              maxWidth: 60,
+                              style: {
+                                textAlign: "center"
+                              }
                             }
                           },
                           {
@@ -204,6 +205,11 @@ class UOMAdditionalInfo extends Component {
                                   }}
                                 />
                               );
+                            },
+                            others: {
+                              style: {
+                                textAlign: "center"
+                              }
                             }
                           },
 
@@ -236,6 +242,11 @@ class UOMAdditionalInfo extends Component {
                                   }}
                                 />
                               );
+                            },
+                            others: {
+                              style: {
+                                textAlign: "center"
+                              }
                             }
                           },
                           {
@@ -273,6 +284,11 @@ class UOMAdditionalInfo extends Component {
                                   }}
                                 />
                               );
+                            },
+                            others: {
+                              style: {
+                                textAlign: "center"
+                              }
                             }
                           }
                         ]}
@@ -290,8 +306,10 @@ class UOMAdditionalInfo extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-6 card box-shadow-normal">
-                  <div className="row">Aditional Information</div>
+                <div className="col-lg-4 card box-shadow-normal">
+                  <div className="row">
+                    <p>Aditional Information</p>
+                  </div>
                 </div>
               </div>
               <AHSnackbar

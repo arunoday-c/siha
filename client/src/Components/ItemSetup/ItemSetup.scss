@@ -1,6 +1,12 @@
 .hims_item_setup {
   padding-top: 20px;
 
+  #itemSetupGrid {
+    .ReactTable {
+      max-height: 66vh !important;
+    }
+  }
+
   .toggle-section {
     margin: 10px;
     margin-bottom: 0px;
@@ -21,5 +27,11 @@
   th,
   td {
     border-right: 1px solid #e6e6e6;
+  }
+}
+
+#itemSetupPopGrid {
+  .ReactTable {
+    max-height: 25vh !important;
   }
 }

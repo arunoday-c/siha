@@ -420,117 +420,154 @@ class DoctorsWorkbench extends Component {
                     </Tooltip>
                   </div>
                 </div>
-                <AlgaehDataGrid
-                  id="encounter_table"
-                  //filter={true}
-                  columns={[
-                    {
-                      fieldName: "status",
-                      label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                      disabled: true,
-                      displayTemplate: data => {
-                        return (
-                          <span>
-                            {data.status === "W" ? <span>WIP </span> : ""}
-                          </span>
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "patient_code",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                      ),
-                      displayTemplate: data => {
-                        return (
-                          <span
-                            className="pat-code"
-                            onClick={() => {
-                              setGlobal({
-                                "EHR-STD": "PatientProfile",
-                                current_patient: data.patient_id,
-                                episode_id: data.episode_id,
-                                visit_id: data.visit_id,
-                                encounter_id: data.encounter_id,
-                                provider_id: data.provider_id
-                              });
-                              document.getElementById("ehr-router").click();
-                            }}
-                          >
-                            {data.patient_code}
-                          </span>
-                        );
-                      },
-                      className: drow => {
-                        if (drow.checked_in === "N") return "greenCell";
-                      }
-                    },
-                    {
-                      fieldName: "full_name",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
-                      )
-                    },
-                    {
-                      fieldName: "encountered_date",
-                      label: <AlgaehLabel label={{ fieldName: "date" }} />,
-                      displayTemplate: data => {
-                        return (
-                          <span>
-                            {moment(data.encountered_date).format("DD-MM-YYYY")}
-                          </span>
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "encountered_date",
-                      label: <AlgaehLabel label={{ fieldName: "time" }} />,
-                      displayTemplate: data => {
-                        return (
-                          <span>
-                            {moment(data.encountered_date).format("HH:mm A")}
-                          </span>
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "patient_type",
-                      label: <AlgaehLabel label={{ forceLabel: "Pay Type" }} />,
-                      displayTemplate: data => {
-                        return (
-                          <span>
-                            {data.payment_type === "I" ? "Insurance" : "Self"}
-                          </span>
-                        );
-                      }
-                    }
-                    // ,
-                    // {
-                    //   fieldName: "transfer_status",
-                    //   label: (
-                    //     <AlgaehLabel
-                    //       label={{ fieldName: "transfer_status" }}
-                    //     />
-                    //   )
-                    // }
-                  ]}
-                  rowClassName={row => {
-                    //return "greenCell";
-                  }}
-                  keyId="encounter_code"
-                  dataSource={{
-                    data: Enumerable.from(this.state.data)
-                      .where(w => w.status !== "V")
-                      .toArray()
-                  }}
-                  isEditable={false}
-                  paging={{ page: 0, rowsPerPage: 10 }}
-                  events={{
-                    onDelete: row => {},
-                    onEdit: row => {},
-                    onDone: row => {}
-                  }}
-                />
+                <div className="row">
+                  <div className="col-lg-12" id="encounter_table">
+                    <AlgaehDataGrid
+                      //filter={true}
+                      columns={[
+                        {
+                          fieldName: "status",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "status" }} />
+                          ),
+                          disabled: true,
+                          displayTemplate: data => {
+                            return (
+                              <span>
+                                {data.status === "W" ? <span>WIP </span> : ""}
+                              </span>
+                            );
+                          },
+                          others: {
+                            width: 70,
+                            style: { textAlign: "center" }
+                          }
+                        },
+                        {
+                          fieldName: "patient_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "patient_code" }}
+                            />
+                          ),
+                          displayTemplate: data => {
+                            return (
+                              <span
+                                className="pat-code"
+                                onClick={() => {
+                                  setGlobal({
+                                    "EHR-STD": "PatientProfile",
+                                    current_patient: data.patient_id,
+                                    episode_id: data.episode_id,
+                                    visit_id: data.visit_id,
+                                    encounter_id: data.encounter_id,
+                                    provider_id: data.provider_id
+                                  });
+                                  document.getElementById("ehr-router").click();
+                                }}
+                              >
+                                {data.patient_code}
+                              </span>
+                            );
+                          },
+                          className: drow => {
+                            if (drow.checked_in === "N") return "greenCell";
+                          },
+                          others: {
+                            width: 130,
+                            style: { textAlign: "center" }
+                          }
+                        },
+                        {
+                          fieldName: "full_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "patient_name" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "encountered_date",
+                          label: <AlgaehLabel label={{ fieldName: "date" }} />,
+                          displayTemplate: data => {
+                            return (
+                              <span>
+                                {moment(data.encountered_date).format(
+                                  "DD-MM-YYYY"
+                                )}
+                              </span>
+                            );
+                          },
+                          others: {
+                            width: 90,
+                            style: { textAlign: "center" }
+                          }
+                        },
+                        {
+                          fieldName: "encountered_date",
+                          label: <AlgaehLabel label={{ fieldName: "time" }} />,
+                          displayTemplate: data => {
+                            return (
+                              <span>
+                                {moment(data.encountered_date).format(
+                                  "HH:mm A"
+                                )}
+                              </span>
+                            );
+                          },
+                          others: {
+                            width: 70,
+                            style: { textAlign: "center" }
+                          }
+                        },
+                        {
+                          fieldName: "patient_type",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Pay Type" }} />
+                          ),
+                          displayTemplate: data => {
+                            return (
+                              <span>
+                                {data.payment_type === "I"
+                                  ? "Insurance"
+                                  : "Self"}
+                              </span>
+                            );
+                          },
+                          others: {
+                            width: 80,
+                            style: { textAlign: "center" }
+                          }
+                        }
+                        // ,
+                        // {
+                        //   fieldName: "transfer_status",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ fieldName: "transfer_status" }}
+                        //     />
+                        //   )
+                        // }
+                      ]}
+                      rowClassName={row => {
+                        //return "greenCell";
+                      }}
+                      keyId="encounter_code"
+                      dataSource={{
+                        data: Enumerable.from(this.state.data)
+                          .where(w => w.status !== "V")
+                          .toArray()
+                      }}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 20 }}
+                      events={{
+                        onDelete: row => {},
+                        onEdit: row => {},
+                        onDone: row => {}
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
