@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PatientDetails from "./PatientDetails/PatientDetails.js";
 import ConsultationDetails from "./ConsultationDetails/ConsultationDetails.js";
 import InsuranceDetails from "./InsuranceDetails/InsuranceDetails.js";
@@ -42,7 +42,7 @@ const emptyObject = extend(
   BillingIOputs.inputParam()
 );
 
-class RegistrationPatient extends Component {
+class RegistrationPatient extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -91,10 +91,8 @@ class RegistrationPatient extends Component {
     ) {
       this.getCtrlCode(this.props.patient_code);
     } else if (this.props.patient_details !== undefined) {
-      // Object.keys(patient_details).length === 0
+      debugger;
 
-      // this.props.patient_details.patient_name !== undefined &&
-      //   this.props.patient_details.patient_name.length !== 0
       this.setState(
         {
           full_name: this.props.patient_details.patient_name,
@@ -105,6 +103,7 @@ class RegistrationPatient extends Component {
           contact_number: this.props.patient_details.patient_phone,
           email: this.props.patient_details.patient_email,
           sub_department_id: this.props.sub_department_id,
+          department_id: this.props.department_id,
           provider_id: this.props.provider_id,
           doctor_id: this.props.provider_id,
           visit_type: this.props.visit_type,
@@ -289,6 +288,7 @@ class RegistrationPatient extends Component {
         ? false
         : this.props.fromAppoinment;
 
+    let department_id = this.props.department_id || null;
     AlgaehLoader({ show: true });
     this.props.getPatientDetails({
       uri: "/frontDesk/get",
@@ -317,6 +317,9 @@ class RegistrationPatient extends Component {
             data.patientRegistration.saveEnable = false;
             data.patientRegistration.clearEnable = true;
             data.patientRegistration.hims_d_services_id = hims_d_services_id;
+            data.patientRegistration.department_id = department_id;
+            data.patientRegistration.billdetail = false;
+            data.patientRegistration.consultation = "Y";
           }
           //Appoinment End
           data.patientRegistration.filePreview =
@@ -353,6 +356,9 @@ class RegistrationPatient extends Component {
               data.patientRegistration.saveEnable = false;
               data.patientRegistration.clearEnable = true;
               data.patientRegistration.hims_d_services_id = hims_d_services_id;
+              data.patientRegistration.department_id = department_id;
+              data.patientRegistration.billdetail = false;
+              data.patientRegistration.consultation = "Y";
             }
             //Appoinment End
             data.patientRegistration.filePreview =

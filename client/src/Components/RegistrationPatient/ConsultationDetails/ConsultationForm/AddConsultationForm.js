@@ -171,7 +171,10 @@ class AddConsultationForm extends Component {
                               ? "sub_department_name"
                               : "arabic_sub_department_name",
                           valueField: "sub_department_id",
-                          data: this.state.departments
+                          data:
+                            this.props.fromAppoinment === true
+                              ? this.props.deptanddoctors.departmets
+                              : this.state.departments
                         },
                         others: {
                           disabled: this.state.visittypeselect

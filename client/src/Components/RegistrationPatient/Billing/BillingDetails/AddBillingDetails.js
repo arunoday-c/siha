@@ -213,15 +213,14 @@ const discounthandle = ($this, context, ctrl, e) => {
       icon: "warning"
     });
   } else {
-    $this.setState(
-      {
-        sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
-      },
-      () => {
-        billheaderCalculation($this, context);
-      }
-    );
+    billheaderCalculation($this, {
+      sheet_discount_percentage,
+      sheet_discount_amount
+    });
+    $this.setState({
+      sheet_discount_percentage: sheet_discount_percentage,
+      sheet_discount_amount: sheet_discount_amount
+    });
 
     if (context != null) {
       context.updateState({
@@ -232,16 +231,21 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const billheaderCalculation = ($this, context) => {
+const billheaderCalculation = ($this, options) => {
+  if (options === undefined) {
+    options = {
+      sheet_discount_percentage: $this.state.sheet_discount_percentage,
+      sheet_discount_amount: $this.state.sheet_discount_amount
+    };
+  }
+  debugger;
   var intervalId;
 
   let serviceInput = {
     isReceipt: false,
     intCalculateall: false,
-    sheet_discount_percentage: parseFloat(
-      $this.state.sheet_discount_percentage
-    ),
-    sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
+    sheet_discount_percentage: parseFloat(options.sheet_discount_percentage),
+    sheet_discount_amount: parseFloat(options.sheet_discount_amount),
     advance_adjust: parseFloat($this.state.advance_adjust),
     gross_total: parseFloat($this.state.gross_total),
     credit_amount: parseFloat($this.state.credit_amount)

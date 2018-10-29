@@ -104,23 +104,30 @@ const getRadTestList = $this => {
 };
 
 const openResultEntry = ($this, row) => {
-  $this.props.getTemplateList({
-    uri: "/radiology/getRadTemplateList",
-    method: "GET",
-    data: { services_id: row.service_id },
-    redux: {
-      type: "TEMPLATE_LIST_GET_DATA",
-      mappingName: "templatelist"
-    },
-    afterSuccess: data => {
-      let Template = row;
-      Template.Templatelist = data;
-      $this.setState({
-        resultEntry: !$this.state.resultEntry,
-        selectedPatient: Template
-      });
-    }
-  });
+  if (row.billed === "Y") {
+    $this.props.getTemplateList({
+      uri: "/radiology/getRadTemplateList",
+      method: "GET",
+      data: { services_id: row.service_id },
+      redux: {
+        type: "TEMPLATE_LIST_GET_DATA",
+        mappingName: "templatelist"
+      },
+      afterSuccess: data => {
+        let Template = row;
+        Template.Templatelist = data;
+        $this.setState({
+          resultEntry: !$this.state.resultEntry,
+          selectedPatient: Template
+        });
+      }
+    });
+  } else {
+    swalMessage({
+      title: "Invalid Input. Please make the payment.",
+      type: "warning"
+    });
+  }
 };
 
 const closeResultEntry = $this => {

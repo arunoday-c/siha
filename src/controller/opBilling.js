@@ -1,12 +1,14 @@
 import { Router } from "express";
-import { releaseConnection } from "../utils";
+import { releaseConnection, generateDbConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import { addOpBIlling, selectBill, getPednigBills } from "../model/opBilling";
-import { insertLadOrderedServices } from "../model/laboratory";
 import { updateOrderedServicesBilled } from "../model/orderAndPreApproval";
-import { insertRadOrderedServices } from "../model/radiology";
 import { debugFunction, debugLog } from "../utils/logging";
+import { updateRadOrderedBilled } from "../model/radiology";
+import { updateLabOrderedBilled } from "../model/laboratory";
+import { insertRadOrderedServices } from "../model/radiology";
+import { insertLadOrderedServices } from "../model/laboratory";
 import extend from "extend";
 export default ({ config, db }) => {
   let api = Router();
@@ -15,19 +17,49 @@ export default ({ config, db }) => {
   //TODO change middle ware to promisify function --added by noor
   api.post(
     "/addOpBIlling",
+    generateDbConnection,
     addOpBIlling,
-    insertLadOrderedServices,
-    insertRadOrderedServices,
     updateOrderedServicesBilled,
+    updateLabOrderedBilled,
     (req, res, next) => {
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: req.body
+      if (req.records.LAB != null && req.records.LAB == true) {
+        insertLadOrderedServices(req, res, next);
+      } else {
+        next();
+      }
+    },
+    updateRadOrderedBilled,
+    (req, res, next) => {
+      if (req.records.RAD != null && req.records.RAD == true) {
+        insertRadOrderedServices(req, res, next);
+      } else {
+        next();
+      }
+    },
+
+    (req, res, next) => {
+      let connection = req.connection;
+      connection.commit(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        } else {
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: req.body
+          });
+          next();
+        }
       });
-      next();
     },
     releaseConnection
   );
+
+  // if(req.records.LAB != null && req.records.LAB = "false"){
+
+  // }
 
   // created by Nowshad: to  getPednigBills
   api.get(

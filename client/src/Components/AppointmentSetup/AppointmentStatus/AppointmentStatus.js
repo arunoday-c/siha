@@ -60,7 +60,7 @@ class AppointmentStatus extends Component {
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes!",
-      confirmButtonColor: "#",
+      confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No",
       dangerMode: true

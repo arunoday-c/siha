@@ -102,9 +102,10 @@ const getRadTestList = $this => {
 };
 
 const UpdateRadOrder = ($this, row) => {
-  let inputobj = row;
+  if (row.billed === "Y") {
+    let inputobj = row;
 
-  if (inputobj.arrived === "N") {
+    // if (inputobj.arrived === "N") {
     inputobj = {
       hims_f_rad_order_id: row.hims_f_rad_order_id,
       status: "S",
@@ -171,6 +172,12 @@ const UpdateRadOrder = ($this, row) => {
       type: "warning"
     });
   }
+  // } else {
+  //   swalMessage({
+  //     title: "Invalid Input. Please make the payment.",
+  //     type: "warning"
+  //   });
+  // }
 };
 
 const Refresh = $this => {
