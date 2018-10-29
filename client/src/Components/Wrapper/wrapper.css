@@ -92,23 +92,3 @@
     padding: 2px 5px !important; }
   .ReactTable .-pagination .-pageJump input {
     width: 45px !important; }
-
-.autoselect-Div {
-  font-size: 0.8rem; }
-  .autoselect-Div div input {
-    width: 100%;
-    border-radius: 5px;
-    padding: 5px 15px 4px 5px;
-    border: 1px solid #ccc;
-    background: url("../../assets/svg/search.svg") no-repeat center right;
-    background-size: contain; }
-  .autoselect-Div div div {
-    z-index: 999999;
-    background: #fff !important;
-    border: 1px solid #ccc; }
-    .autoselect-Div div div div {
-      padding: 5px;
-      border-bottom: 1px solid #ccc;
-      cursor: pointer; }
-    .autoselect-Div div div div :hover {
-      color: #d9fdff; }
