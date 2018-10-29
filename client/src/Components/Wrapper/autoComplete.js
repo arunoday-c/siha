@@ -29,23 +29,38 @@ class AutoComplete extends PureComponent {
   }
 
   onClickArrowIcon() {
+    let data = {};
+    if (this.state._sortData.length === 0) {
+      data = {
+        _sortData: this.dataSorting("")
+      };
+    }
     if (this.state.listState === "d-block") {
       this.setState({
         listState: "d-none",
-        arrowIcon: "fa-angle-down"
+        arrowIcon: "fa-angle-down",
+        ...data
       });
     } else {
       this.setState({
         listState: "d-block",
-        arrowIcon: "fa-angle-up"
+        arrowIcon: "fa-angle-up",
+        ...data
       });
     }
   }
 
   onFocusTextbox(e) {
+    let data = {};
+    if (this.state._sortData.length === 0) {
+      data = {
+        _sortData: this.dataSorting("")
+      };
+    }
     this.setState({
       listState: "d-block",
-      arrowIcon: "fa-angle-up"
+      arrowIcon: "fa-angle-up",
+      ...data
     });
   }
   getTextByValue(value) {
@@ -185,6 +200,7 @@ class AutoComplete extends PureComponent {
             onChange={this.onAutoCompleteTextHandler.bind(this)}
             onBlur={this.bluringEvent.bind(this)}
             {...this.props.selector.others}
+            autoComplete="off"
           />
           <span className="showall" onClick={this.onClickArrowIcon.bind(this)}>
             <i className={"fas " + this.state.arrowIcon} />
