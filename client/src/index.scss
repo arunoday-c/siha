@@ -1,6 +1,37 @@
 $forntSize: 0.7rem;
 
 :global {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  // :hover::-webkit-scrollbar {
+  //   width: 8px;
+  //   height: 8px;
+  // }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #ccc;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    //visibility: hidden;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #00bcb0;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #dcac66;
+  }
+
   .displayInlineBlock {
     display: inline-block;
   }
@@ -20,7 +51,7 @@ $forntSize: 0.7rem;
 
   .bordered-layout {
     border: 1px solid #c1c1c1;
-    height:18vh;
+    height: 18vh;
     overflow: auto;
     border-radius: 5px;
 
@@ -39,21 +70,18 @@ $forntSize: 0.7rem;
           background: #eafffd;
         }
 
-        span{
-
-    width: 80%;
-    font-size: 0.8rem;
+        span {
+          width: 80%;
+          font-size: 0.8rem;
         }
-        i{
-
-    cursor: pointer;
-    padding: 2px 5px 0 0;
-    color: #58595b;
-    font-size: 0.7rem;
+        i {
+          cursor: pointer;
+          padding: 2px 5px 0 0;
+          color: #58595b;
+          font-size: 0.7rem;
         }
-        i:hover{
-
-    color: red;
+        i:hover {
+          color: red;
         }
       }
 
@@ -133,31 +161,6 @@ $forntSize: 0.7rem;
       margin-top: 15%;
       color: #d3d3d3;
     }
-  }
-
-  ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-  }
-
-  // :hover::-webkit-scrollbar {
-  //   width: 10px;
-  //   height: 10px;
-  // }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #929292;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #00bcb0;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #dcac66;
   }
 
   .margin-top-15 {
@@ -654,7 +657,7 @@ $forntSize: 0.7rem;
     .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
-      .popSubHdg{
+      .popSubHdg {
         font-size: 0.9rem;
         font-weight: bold;
         color: #31afb2;
@@ -773,14 +776,14 @@ $forntSize: 0.7rem;
       border-bottom: 1px dashed #e5e5e5;
       padding: 10px 0;
       /* text-transform: uppercase; */
-      .popSubHdg{
+      .popSubHdg {
         font-size: 0.9rem;
         font-weight: bold;
         color: #31afb2;
         margin-top: 10px;
         border-bottom: 1px dashed #d3d3d3;
-        padding-bottom: 5px;}
-
+        padding-bottom: 5px;
+      }
 
       .popLeftDiv {
         border-right: 1px dashed #e0e0e0;

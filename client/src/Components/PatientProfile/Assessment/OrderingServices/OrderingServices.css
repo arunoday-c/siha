@@ -16,3 +16,5 @@
     cursor: pointer;
     margin-bottom: -15px;
     margin-top: -10px; }
+  .hptl-phase1-ordering-services-form #doctorOrder .ReactTable {
+    height: 10vh !important; }

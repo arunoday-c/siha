@@ -4,12 +4,18 @@
 
 .ReactTable {
   font-size: 0.8rem;
-  max-width: 95vw !important; }
+  max-width: 94vw !important; }
   .ReactTable .rt-table,
   .ReactTable .rt-thead,
   .ReactTable .rt-tr,
   .ReactTable .rt-tbody {
     flex: initial !important; }
+  .ReactTable .rt-thead.-filters {
+    top: 25px; }
+    .ReactTable .rt-thead.-filters .rt-tr .rt-th {
+      height: 40px; }
+  .ReactTable .rt-thead.-filters + div.rt-tbody {
+    margin-top: 65px; }
   .ReactTable .rt-tbody {
     margin-top: 30px; }
   .ReactTable .rt-th {

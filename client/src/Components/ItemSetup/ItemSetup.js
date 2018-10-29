@@ -330,7 +330,7 @@ class ItemSetup extends Component {
                 dataSource={{
                   data: this.state.ItemList
                 }}
-                // filter={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
               />
             </div>
