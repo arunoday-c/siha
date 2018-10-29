@@ -20,4 +20,9 @@
   td {
     border-right: 1px solid #e6e6e6;
   }
+  #radioResultGrid {
+    .ReactTable {
+      height: 28vh !important;
+    }
+  }
 }

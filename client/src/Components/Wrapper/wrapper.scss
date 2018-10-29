@@ -2,6 +2,7 @@
 .selected-grid-row.-even .rt-td {
   background-color: #d9fdff !important;
 }
+
 .ReactTable {
   font-size: 0.8rem;
   max-width: 95vw !important;
@@ -11,6 +12,20 @@
   .rt-tbody {
     flex: initial !important;
   }
+
+  .rt-thead.-filters {
+    top: 25px;
+    .rt-tr {
+      .rt-th {
+        height: 40px;
+      }
+    }
+  }
+
+  .rt-thead.-filters + div.rt-tbody {
+    margin-top: 65px;
+  }
+
   .rt-tbody {
     margin-top: 30px;
   }
@@ -37,7 +52,8 @@
   .fa-walking,
   .fa-file-export,
   .fa-sync-alt,
-  .fa-file-prescription {
+  .fa-file-prescription,
+  .fa-arrow-right {
     cursor: pointer;
     border: 1px solid #44b8bd;
     height: 28px;
@@ -63,7 +79,8 @@
   .fa-walking:hover,
   .fa-file-export:hover,
   .fa-sync-alt:hover,
-  .fa-file-prescription:hover {
+  .fa-file-prescription:hover,
+  .fa-arrow-right:hover {
     background: #44b8bd;
     color: #fff;
   }

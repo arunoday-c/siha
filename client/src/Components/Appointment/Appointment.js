@@ -15,6 +15,7 @@ import algaehLoader from "../Wrapper/fullPageLoader";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import FrontDesk from "../../Search/FrontDesk.json";
 import AlgaehSearch from "../Wrapper/globalSearch";
+import swal from "sweetalert2";
 
 class Appointment extends Component {
   constructor(props) {
@@ -211,7 +212,7 @@ class Appointment extends Component {
       age: this.state.age,
       contact_number: this.state.contact_number,
       email: this.state.email,
-      send_to_provider: "Y",
+      send_to_provider: "N",
       gender: this.state.gender,
       appointment_remarks: this.state.appointment_remarks,
       number_of_slot: this.state.no_of_slots
@@ -224,13 +225,30 @@ class Appointment extends Component {
       data: send_data,
       onSuccess: response => {
         if (response.data.success) {
-          this.clearSaveState();
-          swalMessage({
-            title: "Appointment Created Successfully",
-            type: "success"
-          });
-          this.setState({ showApt: false });
-          this.getAppointmentSchedule();
+          if (send_data.appointment_status_id === this.state.checkInId) {
+            setGlobal({
+              "FD-STD": "RegistrationPatient",
+              "appt-pat-code": this.state.patient_code,
+              "appt-provider-id": this.state.apptProvider,
+              "appt-dept-id": this.state.apptSubDept,
+              "appt-pat-name": this.state.patient_name,
+              "appt-pat-arabic-name": this.state.arabic_name,
+              "appt-pat-dob": this.state.date_of_birth,
+              "appt-pat-age": this.state.age,
+              "appt-pat-gender": this.state.gender,
+              "appt-pat-ph-no": this.state.contact_number,
+              "appt-pat-email": this.state.email
+            });
+            document.getElementById("fd-router").click();
+          } else {
+            this.clearSaveState();
+            swalMessage({
+              title: "Appointment Created Successfully",
+              type: "success"
+            });
+            this.setState({ showApt: false });
+            this.getAppointmentSchedule();
+          }
         }
       },
       onFailure: error => {
@@ -326,7 +344,13 @@ class Appointment extends Component {
           algaehLoader({ show: false });
           if (response.data.success) {
             console.log("Appt Schedule:", response.data.records);
-            this.setState({ appointmentSchedule: response.data.records });
+            this.setState(
+              { appointmentSchedule: response.data.records },
+              () => {
+                this.setState({ slot: this.state.appointmentSchedule[0].slot });
+                console.log("Slot:", this.state.slot);
+              }
+            );
           }
         },
         onFailure: error => {
@@ -341,12 +365,16 @@ class Appointment extends Component {
   }
 
   onSelectedDateHandler(e) {
-    this.setState({
-      activeDateHeader: e.target.getAttribute("date"),
-      fromDate: e.target.getAttribute("date"),
-      toDate: e.target.getAttribute("date")
-      // selectedHDate: e.target.getAttribute("date")
-    });
+    this.setState(
+      {
+        activeDateHeader: e.target.getAttribute("date"),
+        fromDate: e.target.getAttribute("date"),
+        toDate: e.target.getAttribute("date")
+      },
+      () => {
+        this.getAppointmentSchedule();
+      }
+    );
   }
   monthChangeHandler(e) {
     let dt = moment(e.target.value + "-01", "YYYY-MM-DD")._d;
@@ -402,8 +430,6 @@ class Appointment extends Component {
   }
 
   generateHorizontalDateBlocks() {
-    //let classesCurrentDate = moment().format("YYYYMMDD");
-
     return (
       <div className="calendar">
         <div className="col-12">
@@ -411,7 +437,6 @@ class Appointment extends Component {
             {this.liGenerate().map((row, index) => {
               return (
                 <div
-                  // className="col"
                   key={index}
                   date={row.currentdate}
                   className={
@@ -441,16 +466,18 @@ class Appointment extends Component {
 
   openEditModal(patient, e) {
     debugger;
-
-    console.log("Edit Pat Data:", patient);
-
     if (
-      moment(patient.appointment_from_time, "HH:mm a").format("HHmm") <
+      moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
       moment(new Date()).format("HHmm")
     ) {
       swalMessage({
         title: "Can't edit past appointments",
         type: "error"
+      });
+    } else if (patient.appointment_status_id === this.state.checkInId) {
+      swalMessage({
+        title: "Patient already checked in, cannot edit the appointment",
+        type: "warning"
       });
     } else {
       this.setState({ patToEdit: patient, openPatEdit: true }, () => {
@@ -483,6 +510,7 @@ class Appointment extends Component {
   }
 
   updatePatientAppointment() {
+    debugger;
     let edit_details = {
       hims_f_patient_appointment_id: this.state.edit_appointment_id,
       record_status: "A",
@@ -498,7 +526,7 @@ class Appointment extends Component {
       date_of_birth: this.state.edit_date_of_birth,
       age: this.state.edit_age,
       contact_number: this.state.edit_contact_number,
-      email: "",
+      email: this.state.edit_email,
       send_to_provider: null,
       gender: this.state.edit_gender,
       confirmed: null,
@@ -508,8 +536,9 @@ class Appointment extends Component {
       cancelled_by: null,
       cancelled_date: null,
       cancel_reason: null,
-      appointment_remarks: null,
-      is_stand_by: null
+      appointment_remarks: this.state.edit_appointment_remarks,
+      is_stand_by: "N",
+      number_of_slot: this.state.edit_no_of_slots
     };
 
     algaehApiCall({
@@ -518,14 +547,12 @@ class Appointment extends Component {
       data: edit_details,
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
           if (edit_details.appointment_status_id === this.state.checkInId) {
             setGlobal({
               "FD-STD": "RegistrationPatient",
               "appt-pat-code": this.state.patient_code,
               "appt-provider-id": this.state.edit_provider_id,
               "appt-dept-id": this.state.edit_sub_dep_id,
-              "appt-hims_d_services_id-id": this.state.hims_d_services_id,
               "appt-pat-name": this.state.edit_patient_name,
               "appt-pat-arabic-name": this.state.edit_arabic_name,
               "appt-pat-dob": this.state.edit_date_of_birth,
@@ -557,7 +584,6 @@ class Appointment extends Component {
   }
 
   showModal(e) {
-    debugger;
     const appt_time = e.currentTarget.getAttribute("appt-time");
 
     if (
@@ -604,6 +630,134 @@ class Appointment extends Component {
         apptProviderName: doc_name
       });
     }
+  }
+
+  allowDrop(ev) {
+    ev.preventDefault();
+  }
+
+  drag(ev) {
+    let pat = JSON.parse(ev.currentTarget.getAttribute("appt-pat"));
+
+    this.setState({ patToEdit: pat }, () => {
+      let pat_edit = this.state.patToEdit;
+      this.setState({
+        edit_appointment_status_id: pat_edit.appointment_status_id,
+        edit_appt_date: pat_edit.appointment_date,
+        // edit_appt_time: pat_edit.appointment_from_time,
+        edit_contact_number: pat_edit.contact_number,
+        edit_patient_name: pat_edit.patient_name,
+        edit_arabic_name: pat_edit.arabic_name,
+        edit_date_of_birth: pat_edit.date_of_birth,
+        edit_age: pat_edit.age,
+        edit_gender: pat_edit.gender,
+        edit_email: pat_edit.email,
+        edit_appointment_remarks: pat_edit.appointment_remarks,
+        edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
+        //edit_provider_id: pat_edit.provider_id,
+        edit_patient_id: pat_edit.patient_id,
+        //edit_from_time: pat_edit.appointment_from_time,
+        //edit_to_time: pat_edit.appointment_to_time,
+        edit_sub_dep_id: pat_edit.sub_department_id,
+        edit_appointment_date: pat_edit.appointment_date,
+        patient_code: pat_edit.patient_code,
+        edit_no_of_slots: pat_edit.number_of_slot
+      });
+    });
+  }
+
+  drop(ev) {
+    debugger;
+    ev.preventDefault();
+    let new_from_time = ev.currentTarget.children[1].getAttribute("appt-time");
+    let prov_id = ev.currentTarget.children[1].getAttribute("provider_id");
+    let slot = ev.currentTarget.children[1].getAttribute("slot");
+
+    let new_to_time = moment(new_from_time, "HH:mm a").add(
+      this.state.edit_no_of_slots * slot,
+      "minutes"
+    );
+
+    this.setState(
+      {
+        edit_appt_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
+        edit_from_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
+        edit_to_time: moment(new_to_time).format("HH:mm:ss"),
+        edit_provider_id: prov_id
+      },
+      () => {
+        swal({
+          title: "Are you sure you want to Re-Schedule the appointment?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes!",
+          confirmButtonColor: "#",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "No",
+          dangerMode: true
+        }).then(willUpdate => {
+          if (willUpdate.value) {
+            let edit_details = {
+              hims_f_patient_appointment_id: this.state.edit_appointment_id,
+              record_status: "A",
+              appointment_status_id: this.state.edit_appointment_status_id,
+              patient_id: this.state.edit_patient_id,
+              provider_id: this.state.edit_provider_id,
+              sub_department_id: this.state.edit_sub_dep_id,
+              appointment_date: this.state.edit_appointment_date,
+              appointment_from_time: this.state.edit_from_time,
+              appointment_to_time: this.state.edit_to_time,
+              patient_name: this.state.edit_patient_name,
+              arabic_name: this.state.edit_arabic_name,
+              date_of_birth: this.state.edit_date_of_birth,
+              age: this.state.edit_age,
+              contact_number: this.state.edit_contact_number,
+              email: this.state.edit_email,
+              send_to_provider: null,
+              gender: this.state.edit_gender,
+              confirmed: null,
+              confirmed_by: null,
+              comfirmed_date: null,
+              cancelled: null,
+              cancelled_by: null,
+              cancelled_date: null,
+              cancel_reason: null,
+              appointment_remarks: this.state.edit_appointment_remarks,
+              is_stand_by: "N",
+              number_of_slot: this.state.edit_no_of_slots
+            };
+
+            algaehApiCall({
+              uri: "/appointment/updatePatientAppointment",
+              method: "PUT",
+              data: edit_details,
+              onSuccess: response => {
+                if (response.data.success) {
+                  this.clearSaveState();
+                  swalMessage({
+                    title: "Appointment Updated Successfully",
+                    type: "success"
+                  });
+                  this.setState({ openPatEdit: false });
+                  this.getAppointmentSchedule();
+                }
+              },
+              onFailure: error => {
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
+          } else {
+            swalMessage({
+              title: "Re-Schedule Cancelled",
+              type: "error"
+            });
+          }
+        });
+      }
+    );
   }
 
   plotPatients(data) {
@@ -667,7 +821,12 @@ class Appointment extends Component {
         style={{ background: brk_bg_color, cursor: "pointer" }}
         key={data.counter}
       >
-        <td className="tg-baqh" {...colspan} style={{ background: bg_color }}>
+        <td
+          className="tg-baqh"
+          {...colspan}
+          onDrop={this.drop.bind(this)}
+          onDragOver={this.allowDrop.bind(this)}
+        >
           {data.mark_as_break == false ? (
             <span className="dynSlot">{data.time}</span>
           ) : null}
@@ -691,26 +850,21 @@ class Appointment extends Component {
                   onClick={this.showModal.bind(this)}
                   className="fas fa-plus"
                 />
-              ) : (
-                <i
-                  className="fas fa-edit"
-                  onClick={this.openEditModal.bind(this, patient)}
-                />
-              )}
+              ) : null}
 
               {patient !== null ? (
-                <span className="dynPatient">
+                <div
+                  appt-pat={JSON.stringify(patient)}
+                  className="dynPatient"
+                  style={{ background: bg_color }}
+                  draggable={true}
+                  onDragStart={this.drag.bind(this)}
+                  onClick={this.openEditModal.bind(this, patient)}
+                >
                   {patient.patient_name}
-                  <span
-                    className="statusClr"
-                    style={{
-                      background:
-                        patient !== undefined
-                          ? this.getColorCode(patient.appointment_status_id)
-                          : null
-                    }}
-                  />
-                </span>
+                  <br />
+                  {patient.contact_number}
+                </div>
               ) : null}
             </React.Fragment>
           ) : (
@@ -1128,115 +1282,6 @@ class Appointment extends Component {
                 <div className="col-lg-12">
                   <div className="row">
                     <div className="col-lg-12 popRightDiv">
-                      {/* <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          forceLabel: "Select Status",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "appointment_status_id",
-                          className: "select-fld",
-                          value: this.state.appointment_status_id,
-                          dataSource: {
-                            textField: "description",
-                            valueField: "hims_d_appointment_status_id",
-                            data: this.state.appointmentStatus
-                          },
-                          onChange: this.dropDownHandle.bind(this)
-                        }}
-                      />
-                      <AlgaehDateHandler
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          forceLabel: "APPOINTMENT Date"
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "date_of_birth"
-                        }}
-                        events={{
-                          onChange: selectedDate => {
-                            this.setState(
-                              { date_of_birth: selectedDate },
-                              () => {
-                                this.setState({
-                                  age: moment().diff(
-                                    this.state.date_of_birth,
-                                    "years"
-                                  )
-                                });
-                              }
-                            );
-                          }
-                        }}
-                        value={this.state.date_of_birth}
-                      />
-                      <AlgaehDateHandler
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          forceLabel: "APPOINTMENT TIME"
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "date_of_birth"
-                        }}
-                        events={{
-                          onChange: selectedDate => {
-                            this.setState(
-                              { date_of_birth: selectedDate },
-                              () => {
-                                this.setState({
-                                  age: moment().diff(
-                                    this.state.date_of_birth,
-                                    "years"
-                                  )
-                                });
-                              }
-                            );
-                          }
-                        }}
-                        value={this.state.date_of_birth}
-                      />
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          forceLabel: "Select Slots",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "no_of_slots",
-                          className: "select-fld",
-                          value: this.state.no_of_slots,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.NO_OF_SLOTS
-                          },
-                          onChange: this.dropDownHandle.bind(this)
-                        }}
-                      />
-                    </div> */}
-                      {/* <div className="row">
-                      <div className="col-lg-3 margin-top-15">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Department"
-                          }}
-                        />
-                        <h6>{this.state.apptSubDeptName}</h6>
-                      </div>
-
-                      <div className="col-lg-2 margin-top-15">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Doctor"
-                          }}
-                        />
-                        <h6>{this.state.apptProviderName}</h6>
-                      </div>
-                    </div> */}
                       <div className="row">
                         <div className="col-lg-3 margin-top-15">
                           <AlgaehLabel

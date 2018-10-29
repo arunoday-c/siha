@@ -113,8 +113,8 @@
       border: 1px solid lightgrey;
       text-align: center;
       position: relative;
-      padding: 15px 0 5px 4px;
-      height: 55px;
+      padding: 20px 0 5px 0;
+      height: auto;
       width: 120px; }
     .appointment .tg tbody td[colspan]:not([colspan="1"]) {
       width: 240px;
@@ -124,8 +124,9 @@
     .appointment .tg tbody .dynPatient {
       display: inline-block;
       text-align: left;
-      width: 100%;
-      padding-left: 5px; }
+      width: 90%;
+      border-radius: 5px;
+      padding: 5px; }
       .appointment .tg tbody .dynPatient .statusClr {
         width: 5px;
         position: absolute;

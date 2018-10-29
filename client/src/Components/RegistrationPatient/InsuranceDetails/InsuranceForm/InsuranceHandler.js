@@ -121,6 +121,7 @@ const InsuranceDetails = ($this, context, e) => {
 
 const radioChange = ($this, context, e) => {
   if ($this.state.doctor_id !== null) {
+    debugger;
     let PatType = null;
     let saveEnable = false;
     let ProcessInsure = false;

@@ -106,12 +106,14 @@
   -o-transition: All 0.3s ease;
 }
 
-
-#physicalExamination-grid-cntr{
-  .ReactTable{
-    max-height: 200px!important;
+#physicalExamination-grid-cntr {
+  .ReactTable {
+    max-height: 20vh !important;
   }
 }
-.pullRight{
-  button{float:right;    margin-left:15px; }
+.pullRight {
+  button {
+    float: right;
+    margin-left: 15px;
+  }
 }

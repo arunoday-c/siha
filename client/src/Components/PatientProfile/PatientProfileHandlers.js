@@ -13,7 +13,9 @@ const getPatientProfile = $this => {
       type: "PATIENT_PROFILE",
       mappingName: "patient_profile"
     },
-    afterSuccess: data => {}
+    afterSuccess: data => {
+      debugger;
+    }
   });
 };
 
