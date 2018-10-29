@@ -58,10 +58,23 @@ class LabResult extends Component {
         <div className="hptl-phase1-rad-result-form">
           <div className="container-fluid">
             <div className="row form-details">
-              <div className="col-lg-12">
+              <div className="col-lg-12" id="radioResultGrid">
                 <AlgaehDataGrid
                   id="Rad_result_grid"
                   columns={[
+                    {
+                      fieldName: "action",
+                      label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            <i className="fas fa-file-alt" />
+
+                            <i className="fas fa-file-image" />
+                          </span>
+                        );
+                      }
+                    },
                     {
                       fieldName: "services_id",
                       label: <AlgaehLabel label={{ forceLabel: "Test" }} />,
@@ -130,31 +143,6 @@ class LabResult extends Component {
                         );
                       },
                       disabled: true
-                    },
-                    {
-                      fieldName: "action",
-                      label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                            <IconButton
-                              color="primary"
-                              title="View Report"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <i className="fas fa-file-alt" />
-                            </IconButton>
-
-                            <IconButton
-                              color="primary"
-                              title="View PACS"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <i className="fas fa-file-image" />
-                            </IconButton>
-                          </span>
-                        );
-                      }
                     }
                   ]}
                   keyId="patient_code"

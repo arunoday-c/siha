@@ -455,7 +455,10 @@ class Assessment extends Component {
                         value: this.state.assesments_notes,
                         others: {
                           multiline: true,
-                          rows: "4"
+                          rows: "4",
+                          style: {
+                            height: "28vh"
+                          }
                         },
                         events: {
                           onChange: assnotetexthandle.bind(this, this)

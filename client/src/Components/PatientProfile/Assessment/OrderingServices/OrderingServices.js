@@ -153,7 +153,7 @@ class OrderingServices extends Component {
       <div className="hptl-phase1-ordering-services-form">
         {/* <div className="main-details" /> */}
         <div className="col-lg-12">
-          <div className="row form-details">
+          <div className="row">
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{
@@ -207,7 +207,7 @@ class OrderingServices extends Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-10 col-lg-12">
+            <div className="col-md-10 col-lg-12" id="doctorOrder">
               <AlgaehDataGrid
                 id="Services_Ordering"
                 columns={[

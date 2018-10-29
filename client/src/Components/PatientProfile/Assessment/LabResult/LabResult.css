@@ -13,3 +13,6 @@
   .hptl-phase1-lab-result-form th,
   .hptl-phase1-lab-result-form td {
     border-right: 1px solid #e6e6e6; }
+  .hptl-phase1-lab-result-form #LabTestResult .ReactTable,
+  .hptl-phase1-lab-result-form #LabTestName .ReactTable {
+    max-height: 28vh !important; }
