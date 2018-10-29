@@ -331,64 +331,65 @@ class PointOfSale extends Component {
             )}
           </div>
           <div className="hptl-phase1-pos-form">
-            <MyContext.Provider
-              value={{
-                state: this.state,
-                updateState: obj => {
-                  this.setState({ ...obj });
-                }
-              }}
-            >
-              <PosListItems POSIOputs={this.state} />
-            </MyContext.Provider>
-
-            <div className="hptl-phase1-footer">
-              <AppBar position="static" className="main">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={SavePosEnrty.bind(this, this)}
-                      disabled={this.state.saveEnable}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
-                      />
-                    </button>
-
-                    <AHSnackbar
-                      open={this.state.open}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
-                    />
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={ClearData.bind(this, this)}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Clear", returnText: true }}
-                      />
-                    </button>
-
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      onClick={PostPosEntry.bind(this, this)}
-                      disabled={this.state.postEnable}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Post",
-                          returnText: true
-                        }}
-                      />
-                    </button>
-                  </div>
-                </div>
-              </AppBar>
+            <div className="row">
+              <MyContext.Provider
+                value={{
+                  state: this.state,
+                  updateState: obj => {
+                    this.setState({ ...obj });
+                  }
+                }}
+              >
+                <PosListItems POSIOputs={this.state} />
+              </MyContext.Provider>
             </div>
+          </div>
+          <div className="hptl-phase1-footer">
+            <AppBar position="static" className="main">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SavePosEnrty.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Save", returnText: true }}
+                    />
+                  </button>
+
+                  <AHSnackbar
+                    open={this.state.open}
+                    handleClose={this.handleClose}
+                    MandatoryMsg={this.state.MandatoryMsg}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={ClearData.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={PostPosEntry.bind(this, this)}
+                    disabled={this.state.postEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Post",
+                        returnText: true
+                      }}
+                    />
+                  </button>
+                </div>
+              </div>
+            </AppBar>
           </div>
         </div>
       </React.Fragment>
