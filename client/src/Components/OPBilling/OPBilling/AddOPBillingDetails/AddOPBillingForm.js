@@ -27,7 +27,8 @@ class AddOPBillingForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      
     };
   }
 
@@ -182,11 +183,12 @@ class AddOPBillingForm extends Component {
   }
   //Calculate Row Detail
   calculateAmount(row, context, ctrl, e) {
+    debugger;
     e = e || ctrl;
     let $this = this;
     let billdetails = this.state.billdetails;
 
-    row[e.target.name] = parseFloat(e.target.value);
+    row[e.target.name] = parseFloat(e.target.value === "" ? 0 : e.target.value);
     let inputParam = [
       {
         hims_d_services_id: row.services_id,
@@ -320,7 +322,7 @@ class AddOPBillingForm extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "select_service"
+                      fieldName: "select_service_type"
                     }}
                     selector={{
                       name: "s_service_type",
@@ -342,7 +344,7 @@ class AddOPBillingForm extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      forceLabel: "Select Service Type"
+                      fieldName: "select_service"
                     }}
                     selector={{
                       name: "s_service",

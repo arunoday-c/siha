@@ -109,7 +109,8 @@ class RegistrationPatient extends PureComponent {
           visit_type: this.props.visit_type,
           hims_d_services_id: this.props.hims_d_services_id,
           saveEnable: false,
-          clearEnable: true
+          clearEnable: true,
+          consultation: "Y"
         },
         () => {
           if (this.props.fromAppoinment === true) {

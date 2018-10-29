@@ -89,6 +89,7 @@ class PatientDisplayDetails extends Component {
   componentWillReceiveProps(nextProps) {
     let output = {};
     let billOut = {};
+    debugger;
     if (
       nextProps.existinsurance !== undefined &&
       nextProps.existinsurance.length !== 0
@@ -100,7 +101,8 @@ class PatientDisplayDetails extends Component {
       nextProps.genbill.length !== 0 &&
       this.state.billdetails.length !== 0
     ) {
-      nextProps.genbill.patient_payable_h = nextProps.genbill.patient_payable;
+      nextProps.genbill.patient_payable_h =
+        nextProps.genbill.patient_payable || this.state.patient_payable;
       // nextProps.genbill.saveEnable = false;
       billOut = nextProps.genbill;
     }
