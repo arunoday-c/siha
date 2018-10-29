@@ -30,190 +30,103 @@ let addOpBIlling = (req, res, next) => {
     }
     let db = req.db;
 
-    debugLog("db:",req.db);
+    debugLog("db:", req.db);
     if (req.query["data"] != null) {
       req.query = JSON.parse(req.query["data"]);
       req.body = req.query;
     }
 
-    db.getConnection((error, connection) => {
+    let connection = req.connection;
+    connection.beginTransaction(error => {
       if (error) {
-        next(error);
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
       }
-      connection.beginTransaction(error => {
-        if (error) {
+      debugFunction("updateFrontDesk Promise");
+      return new Promise((resolve, reject) => {
+        runningNumberGen({
+          db: connection,
+          counter: billingCounter,
+          module_desc: ["PAT_BILL", "RECEIPT"],
+          onFailure: error => {
+            reject(error);
+          },
+          onSuccess: result => {
+            resolve(result);
+          }
+        });
+      })
+        .then(output => {
+          debugLog("Orver all records number gen", output);
+          debugLog("Data: ", output);
+          let bill = new LINQ(output)
+            .Where(w => w.module_desc == "PAT_BILL")
+            .FirstOrDefault();
+
+          debugLog("Data: ", bill);
+          req.bill_number = bill.completeNumber;
+          req.body.bill_number = bill.completeNumber;
+          //Bill generation
+          return new Promise((resolve, reject) => {
+            debugLog("Inside Billing");
+            req.options = {
+              db: connection,
+              onFailure: error => {
+                reject(error);
+              },
+              onSuccess: result => {
+                resolve(result);
+              }
+            };
+
+            addBillData(req, res, next);
+          }).then(billOutput => {
+            req.query.billing_header_id = billOutput.insertId;
+            req.body.billing_header_id = billOutput.insertId;
+
+            let receipt = new LINQ(output)
+              .Where(w => w.module_desc == "RECEIPT")
+              .FirstOrDefault();
+            req.body.receipt_number = receipt.completeNumber;
+            return (
+              new Promise((resolve, reject) => {
+                debugLog("Inside Receipts");
+                delete req["options"]["onFailure"];
+                delete req["options"]["onSuccess"];
+                req.options.onFailure = error => {
+                  reject(error);
+                };
+                req.options.onSuccess = records => {
+                  resolve(records);
+                };
+                newReceiptData(req, res, next);
+              })
+                // .then(receiptData => {
+                //   insertLadOrderedServices(req,res,next);
+                // })
+                .then(receiptData => {
+                  req.records = receiptData;
+                  if (billingCounter != 0) billingCounter = billingCounter - 1;
+                  releaseDBConnection(db, connection);
+                  next();
+                })
+            );
+          });
+        })
+
+        .catch(error => {
+          if (billingCounter != 0) billingCounter = billingCounter - 1;
           connection.rollback(() => {
             releaseDBConnection(db, connection);
             next(error);
           });
-        }
-        debugFunction("updateFrontDesk Promise");
-        return new Promise((resolve, reject) => {
-          runningNumberGen({
-            db: connection,
-            counter: billingCounter,
-            module_desc: ["PAT_BILL", "RECEIPT"],
-            onFailure: error => {
-              reject(error);
-            },
-            onSuccess: result => {
-              resolve(result);
-            }
-          });
-        })
-          .then(output => {
-            debugLog("Orver all records number gen", output);
-            debugLog("Data: ", output);
-            let bill = new LINQ(output)
-              .Where(w => w.module_desc == "PAT_BILL")
-              .FirstOrDefault();
-
-            debugLog("Data: ", bill);
-            req.bill_number = bill.completeNumber;
-            req.body.bill_number = bill.completeNumber;
-            //Bill generation
-            return new Promise((resolve, reject) => {
-              debugLog("Inside Billing");
-              req.options = {
-                db: connection,
-                onFailure: error => {
-                  reject(error);
-                },
-                onSuccess: result => {
-                  resolve(result);
-                }
-              };
-
-              addBillData(req, res, next);
-            }).then(billOutput => {
-              req.query.billing_header_id = billOutput.insertId;
-              req.body.billing_header_id = billOutput.insertId;
-
-              let receipt = new LINQ(output)
-                .Where(w => w.module_desc == "RECEIPT")
-                .FirstOrDefault();
-              req.body.receipt_number = receipt.completeNumber;
-              return (
-                new Promise((resolve, reject) => {
-                  debugLog("Inside Receipts");
-                  delete req["options"]["onFailure"];
-                  delete req["options"]["onSuccess"];
-                  req.options.onFailure = error => {
-                    reject(error);
-                  };
-                  req.options.onSuccess = records => {
-                    resolve(records);
-                  };
-                  newReceiptData(req, res, next);
-                })
-                  // .then(receiptData => {
-                  //   insertLadOrderedServices(req,res,next);
-                  // })
-                  .then(receiptData => {
-                    connection.commit(error => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
-                      }
-                      req.records = receiptData;
-                      if (billingCounter != 0)
-                        billingCounter = billingCounter - 1;
-                      releaseDBConnection(db, connection);
-                      next();
-                    });
-                  })
-              );
-            });
-          })
-
-          .catch(error => {
-            if (billingCounter != 0) billingCounter = billingCounter - 1;
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          });
-      });
+        });
     });
   } catch (e) {
     next(e);
   }
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-  //     connection.beginTransaction(error => {
-  //       if (error) {
-  //         connection.rollback(() => {
-  //           releaseDBConnection(db, connection);
-  //           next(error);
-  //         });
-  //       }
-
-  //       //add bill
-  //       addBill(
-  //         connection,
-  //         req,
-  //         res,
-  //         (error, result) => {
-  //           if (error) {
-  //             connection.rollback(() => {
-  //               releaseDBConnection(db, connection);
-  //               next(error);
-  //             });
-  //           }
-
-  //           if (result != null && result.length != 0) {
-  //             req.query.billing_header_id = result.insertId;
-  //             req.body.billing_header_id = result.insertId;
-
-  //             debugLog("  req.body.billing_header_id:" + result["insertId"]);
-
-  //             newReceipt(
-  //               connection,
-  //               req,
-  //               res,
-  //               (error, resultdata) => {
-  //                 if (error) {
-  //                   connection.rollback(() => {
-  //                     releaseDBConnection(db, connection);
-  //                     next(error);
-  //                   });
-  //                 }
-  //                 connection.commit(error => {
-  //                   releaseDBConnection(db, connection);
-  //                   if (error) {
-  //                     connection.rollback(() => {
-  //                       next(error);
-  //                     });
-  //                   }
-  //                   req.records = result;
-  //                   next();
-  //                 });
-
-  //                 debugLog("succes result of query 4 : ", resultdata);
-  //               },
-  //               next()
-  //             );
-  //           }
-  //         },
-
-  //         next
-  //       );
-  //     });
-  //     //bign tr
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 let selectBill = (req, res, next) => {

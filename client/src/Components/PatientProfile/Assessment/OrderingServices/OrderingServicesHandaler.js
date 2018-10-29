@@ -358,9 +358,16 @@ const deleteServices = ($this, row, rowId) => {
 //Save Order
 const SaveOrdersServices = ($this, e) => {
   debugger;
+  let inputObj = {
+    visit_id: $this.state.visit_id,
+    patient_id: $this.state.patient_id,
+    incharge_or_provider: Window.global["provider_id"],
+    billed: "N",
+    billdetails: $this.state.orderservicesdata
+  };
   algaehApiCall({
     uri: "/orderAndPreApproval/insertOrderedServices",
-    data: $this.state.orderservicesdata,
+    data: inputObj,
     method: "POST",
     onSuccess: response => {
       if (response.data.success) {

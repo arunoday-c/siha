@@ -237,7 +237,8 @@ class Appointment extends Component {
               "appt-pat-age": this.state.age,
               "appt-pat-gender": this.state.gender,
               "appt-pat-ph-no": this.state.contact_number,
-              "appt-pat-email": this.state.email
+              "appt-pat-email": this.state.email,
+              "appt-department-id": this.state.department_id
             });
             document.getElementById("fd-router").click();
           } else {
@@ -265,6 +266,7 @@ class Appointment extends Component {
       uri: "/department/selectDoctorsAndClinic",
       method: "GET",
       onSuccess: response => {
+        debugger;
         if (response.data.success) {
           this.setState({
             departments: response.data.records.departmets
@@ -382,11 +384,15 @@ class Appointment extends Component {
   }
 
   deptDropDownHandler(value) {
+    debugger;
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
         .where(w => w.sub_dept_id === this.state.sub_department_id)
         .firstOrDefault();
-      this.setState({ doctors: dept.doctors });
+      this.setState({
+        doctors: dept.doctors,
+        department_id: value.selected.department_id
+      });
     });
   }
 
@@ -474,12 +480,14 @@ class Appointment extends Component {
         title: "Can't edit past appointments",
         type: "error"
       });
-    } else if (patient.appointment_status_id === this.state.checkInId) {
-      swalMessage({
-        title: "Patient already checked in, cannot edit the appointment",
-        type: "warning"
-      });
-    } else {
+    }
+    // else if (patient.appointment_status_id === this.state.checkInId) {
+    //   swalMessage({
+    //     title: "Patient already checked in, cannot edit the appointment",
+    //     type: "warning"
+    //   });
+    // }
+    else {
       this.setState({ patToEdit: patient, openPatEdit: true }, () => {
         let pat_edit = this.state.patToEdit;
         this.setState({
@@ -559,7 +567,8 @@ class Appointment extends Component {
               "appt-pat-age": this.state.edit_age,
               "appt-pat-gender": this.state.edit_gender,
               "appt-pat-ph-no": this.state.edit_contact_number,
-              "appt-pat-email": this.state.edit_email
+              "appt-pat-email": this.state.edit_email,
+              "appt-department-id": this.state.department_id
             });
 
             document.getElementById("fd-router").click();

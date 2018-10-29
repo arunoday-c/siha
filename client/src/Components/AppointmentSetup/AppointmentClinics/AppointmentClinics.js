@@ -130,10 +130,14 @@ class AppointmentClinics extends Component {
     swal({
       title: "Are you sure you want to delete this Clinic?",
       type: "warning",
-      buttons: true,
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
       dangerMode: true
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/updateAppointmentClinic",
           data: {
@@ -165,7 +169,7 @@ class AppointmentClinics extends Component {
       } else {
         swalMessage({
           title: "Delete request cancelled",
-          type: "success"
+          type: "error"
         });
       }
     });
