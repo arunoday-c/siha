@@ -101,7 +101,7 @@ class PosListItems extends Component {
                     <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                       <div className="row">
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-4" }}
+                          div={{ className: "col-lg-3" }}
                           label={{ forceLabel: "Item Name" }}
                           selector={{
                             name: "item_id",
@@ -273,7 +273,7 @@ class PosListItems extends Component {
                   <div className="col-lg-12">
                     <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                       <div className="row">
-                        <div className="col-lg-12">
+                        <div className="col-lg-12" id="PointSaleGrid">
                           <AlgaehDataGrid
                             id="POS_details"
                             columns={[
