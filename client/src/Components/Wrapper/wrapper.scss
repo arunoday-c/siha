@@ -102,3 +102,29 @@
     }
   }
 }
+.autoselect-Div {
+  font-size: 0.8rem;
+  div {
+    input {
+      width: 100%;
+      border-radius: 5px;
+      padding: 5px 15px 4px 5px;
+      border: 1px solid #ccc;
+      background: url("../../assets/svg/search.svg") no-repeat center right;
+      background-size: contain;
+    }
+    div {
+      z-index: 999999;
+      background: #fff !important;
+      border: 1px solid #ccc;
+      div {
+        padding: 5px;
+        border-bottom: 1px solid #ccc;
+        cursor: pointer;
+      }
+      div :hover {
+        color: #d9fdff;
+      }
+    }
+  }
+}

@@ -27,6 +27,7 @@ export default class ReportUI extends Component {
       openPopup: false
     });
   };
+  renderProps() {}
   render() {
     return (
       <Modal open={this.state.openPopup}>
@@ -47,32 +48,10 @@ export default class ReportUI extends Component {
               </div>
             </div>
           </div>
-
+          <div />
           <div className="popupInner" ref={el => (this.algehPrintRef = el)}>
             {this.props.children ? this.props.children : null}
           </div>
-          {/* <div className="row popupFooter">
-            <Button
-              variant="raised"
-              onClick={this.handleClose.bind(this)}
-              style={{ backgroundColor: "#D5D5D5" }}
-              size="small"
-            >
-              Close
-            </Button>
-            <ReactToPrint
-              trigger={() => (
-                <Button
-                  variant="raised"
-                  style={{ backgroundColor: "#D5D5D5" }}
-                  size="small"
-                >
-                  Print
-                </Button>
-              )}
-              content={() => this.algehPrintRef}
-            />
-          </div> */}
 
           <div className="popupFooter">
             <div className="col-lg-12">
