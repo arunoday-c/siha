@@ -28,6 +28,7 @@ export default {
       net_amount: 0,
       patient_res: 0,
       company_res: 0,
+      billed: "Y",
 
       sec_company_res: 0,
       patient_payable: 0,

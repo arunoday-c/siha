@@ -542,7 +542,23 @@ let bulkMasters = (fileName, bulkObject) => {
   }
 };
 
+const generateDbConnection = (req, res, next) => {
+  const _db = req.db;
+  if (_db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  _db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+    req["connection"] = connection;
+    debugLog("connection", connection);
+    next();
+  });
+};
+
 module.exports = {
+  generateDbConnection,
   selectStatement,
   paging,
   whereCondition,

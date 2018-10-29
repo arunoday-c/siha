@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { releaseConnection } from "../utils";
+import { releaseConnection, generateDbConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
-
+import { debugFunction, debugLog } from "../utils/logging";
 import {
   insertOrderedServices,
   getPreAprovalList,
@@ -11,6 +11,8 @@ import {
   updateOrderedServices,
   updateOrderedServicesBilled
 } from "../model/orderAndPreApproval";
+import { insertRadOrderedServices } from "../model/radiology";
+import { insertLadOrderedServices } from "../model/laboratory";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -18,14 +20,27 @@ export default ({ config, db }) => {
   // created by irfan: to  insertOrderedServices
   api.post(
     "/insertOrderedServices",
+    generateDbConnection,
     insertOrderedServices,
+    insertLadOrderedServices,
+    insertRadOrderedServices,
     (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
+      let connection = req.connection;
+      connection.commit(error => {
+        debugLog("error", error);
+        if (error) {
+          connection.rollback(() => {
+            next(error);
+          });
+        } else {
+          let result = req.records;
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: result
+          });
+          next();
+        }
       });
-      next();
     },
     releaseConnection
   );
