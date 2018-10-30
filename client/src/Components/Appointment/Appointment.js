@@ -904,7 +904,9 @@ class Appointment extends Component {
         : data.mark_as_break
           ? "#f2f2f2"
           : moment(data.time, "HH:mm a").format("HHm") <
-            moment(new Date()).format("HHm")
+              moment(new Date()).format("HHm") &&
+            moment(this.state.activeDateHeader).format("YYYYMMDD") <
+              moment(new Date()).format("YYYYMMDD")
             ? "#fbfbfb"
             : "#ffffff";
 
@@ -1078,7 +1080,7 @@ class Appointment extends Component {
                           <AlagehAutoComplete
                             div={{ className: "col-lg-3" }}
                             label={{
-                              forceLabel: "Select Status mandatory",
+                              forceLabel: "Select Status",
                               isImp: true
                             }}
                             selector={{
