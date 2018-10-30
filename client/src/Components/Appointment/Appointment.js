@@ -19,12 +19,11 @@ import swal from "sweetalert2";
 
 class Appointment extends Component {
   constructor(props) {
+    debugger;
     super(props);
     let dateToday = moment().format("YYYY") + moment().format("MM") + "01";
     this.state = {
       selectedHDate: moment(dateToday, "YYYYMMDD")._d,
-      fromDate: new Date(),
-      toDate: new Date(),
       showApt: false,
       departments: [],
       doctors: [],
@@ -44,6 +43,27 @@ class Appointment extends Component {
   componentDidMount() {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
+    let appCriteria = JSON.parse(localStorage.getItem("ApptCriteria"));
+
+    this.setState(
+      {
+        sub_department_id:
+          appCriteria !== null ? appCriteria.sub_dept_id : null,
+        schedule_date: appCriteria !== null ? appCriteria.schedule_date : null,
+        provider_id: appCriteria !== null ? appCriteria.provider_id : null
+      },
+      () => {
+        this.getAppointmentSchedule();
+      }
+    );
+  }
+
+  componentDidCatch(error, info) {
+    // Display fallback UI
+    this.setState({ hasError: true });
+    // You can also log the error to an error reporting service
+    console.error("Appointment :", error.toString());
+    //logErrorToMyService(error, info);
   }
 
   getDoctorName(id) {
@@ -183,7 +203,6 @@ class Appointment extends Component {
   addPatientAppointment(e) {
     debugger;
     e.preventDefault();
-
     let from_time = this.state.apptFromTime;
     let duration_minutes = this.state.apptSlot * this.state.no_of_slots;
     let to_time = moment(from_time, "hh:mm a")
@@ -323,36 +342,66 @@ class Appointment extends Component {
   }
 
   getAppointmentSchedule(e) {
+    debugger;
     if (e !== undefined) e.preventDefault();
-
     if (this.state.sub_department_id === null) {
       swalMessage({
         title: "Please Select a Department",
         type: "warning"
       });
     } else {
-      algaehLoader({ show: true });
-      algaehApiCall({
-        uri: "/appointment/getDoctorScheduleDateWise",
-        method: "GET",
-        data: {
+      localStorage.setItem(
+        "ApptCriteria",
+        JSON.stringify({
           sub_dept_id: this.state.sub_department_id,
           schedule_date: moment(this.state.activeDateHeader).format(
             "YYYY-MM-DD"
           ),
           provider_id: this.state.provider_id
-        },
+        })
+      );
+
+      let send_data =
+        localStorage.getItem("ApptCriteria") !== null
+          ? JSON.parse(localStorage.getItem("ApptCriteria"))
+          : {
+              sub_dept_id: this.state.sub_department_id,
+              schedule_date: moment(this.state.activeDateHeader).format(
+                "YYYY-MM-DD"
+              ),
+              provider_id: this.state.provider_id
+            };
+
+      algaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/appointment/getDoctorScheduleDateWise",
+        method: "GET",
+        data: send_data,
         onSuccess: response => {
           algaehLoader({ show: false });
-          if (response.data.success) {
+          if (response.data.success && response.data.records.length > 0) {
             console.log("Appt Schedule:", response.data.records);
             this.setState(
               { appointmentSchedule: response.data.records },
               () => {
-                this.setState({ slot: this.state.appointmentSchedule[0].slot });
+                this.setState({
+                  slot:
+                    this.state.appointmentSchedule !== undefined
+                      ? this.state.appointmentSchedule[0].slot
+                      : null
+                });
                 console.log("Slot:", this.state.slot);
               }
             );
+          } else {
+            this.setState({
+              appointmentSchedule: []
+            });
+
+            swalMessage({
+              title: "No Schecule Available",
+              type: "warning"
+            });
           }
         },
         onFailure: error => {
@@ -369,9 +418,7 @@ class Appointment extends Component {
   onSelectedDateHandler(e) {
     this.setState(
       {
-        activeDateHeader: e.target.getAttribute("date"),
-        fromDate: e.target.getAttribute("date"),
-        toDate: e.target.getAttribute("date")
+        activeDateHeader: e.target.getAttribute("date")
       },
       () => {
         this.getAppointmentSchedule();
@@ -460,7 +507,13 @@ class Appointment extends Component {
                   onClick={this.onSelectedDateHandler.bind(this)}
                 >
                   {row.day}
-                  <span>{row.dayName}</span>
+                  <span
+                    date={row.currentdate}
+                    onClick={this.onSelectedDateHandler.bind(this)}
+                  >
+                    {" "}
+                    {row.dayName}
+                  </span>
                 </div>
               );
             })}
@@ -471,10 +524,11 @@ class Appointment extends Component {
   }
 
   openEditModal(patient, e) {
-    debugger;
     if (
       moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
-      moment(new Date()).format("HHmm")
+        moment(new Date()).format("HHmm") ||
+      moment(patient.appointment_date).format("YYYYMMDD") <
+        moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Can't edit past appointments",
@@ -597,7 +651,9 @@ class Appointment extends Component {
 
     if (
       moment(appt_time, "HH:mm a").format("HHmm") <
-      moment(new Date()).format("HHmm")
+        moment(new Date()).format("HHmm") ||
+      moment(this.state.activeDateHeader).format("YYYYMMDD") <
+        moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Can't create appointment for past time",
@@ -642,131 +698,158 @@ class Appointment extends Component {
   }
 
   allowDrop(ev) {
+    debugger;
     ev.preventDefault();
+    ev.currentTarget.children[1];
   }
 
   drag(ev) {
     let pat = JSON.parse(ev.currentTarget.getAttribute("appt-pat"));
 
-    this.setState({ patToEdit: pat }, () => {
-      let pat_edit = this.state.patToEdit;
-      this.setState({
-        edit_appointment_status_id: pat_edit.appointment_status_id,
-        edit_appt_date: pat_edit.appointment_date,
-        // edit_appt_time: pat_edit.appointment_from_time,
-        edit_contact_number: pat_edit.contact_number,
-        edit_patient_name: pat_edit.patient_name,
-        edit_arabic_name: pat_edit.arabic_name,
-        edit_date_of_birth: pat_edit.date_of_birth,
-        edit_age: pat_edit.age,
-        edit_gender: pat_edit.gender,
-        edit_email: pat_edit.email,
-        edit_appointment_remarks: pat_edit.appointment_remarks,
-        edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
-        //edit_provider_id: pat_edit.provider_id,
-        edit_patient_id: pat_edit.patient_id,
-        //edit_from_time: pat_edit.appointment_from_time,
-        //edit_to_time: pat_edit.appointment_to_time,
-        edit_sub_dep_id: pat_edit.sub_department_id,
-        edit_appointment_date: pat_edit.appointment_date,
-        patient_code: pat_edit.patient_code,
-        edit_no_of_slots: pat_edit.number_of_slot
+    let appt_date = pat.appointment_date;
+    let appt_time = pat.appointment_from_time;
+    if (
+      moment(appt_time, "HH:mm:ss").format("HHmm") <
+        moment(new Date()).format("HHmm") ||
+      moment(appt_date).format("YYYYMMDD") <
+        moment(new Date()).format("YYYYMMDD")
+    ) {
+      swalMessage({
+        title: "Cannot re-schedule past appointments",
+        type: "error"
       });
-    });
+    } else {
+      this.setState({ patToEdit: pat }, () => {
+        let pat_edit = this.state.patToEdit;
+        this.setState({
+          edit_appointment_status_id: pat_edit.appointment_status_id,
+          edit_appt_date: pat_edit.appointment_date,
+          // edit_appt_time: pat_edit.appointment_from_time,
+          edit_contact_number: pat_edit.contact_number,
+          edit_patient_name: pat_edit.patient_name,
+          edit_arabic_name: pat_edit.arabic_name,
+          edit_date_of_birth: pat_edit.date_of_birth,
+          edit_age: pat_edit.age,
+          edit_gender: pat_edit.gender,
+          edit_email: pat_edit.email,
+          edit_appointment_remarks: pat_edit.appointment_remarks,
+          edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
+          //edit_provider_id: pat_edit.provider_id,
+          edit_patient_id: pat_edit.patient_id,
+          //edit_from_time: pat_edit.appointment_from_time,
+          //edit_to_time: pat_edit.appointment_to_time,
+          edit_sub_dep_id: pat_edit.sub_department_id,
+          edit_appointment_date: pat_edit.appointment_date,
+          patient_code: pat_edit.patient_code,
+          edit_no_of_slots: pat_edit.number_of_slot
+        });
+      });
+    }
   }
 
   drop(ev) {
     debugger;
     ev.preventDefault();
     let new_from_time = ev.currentTarget.children[1].getAttribute("appt-time");
-    let prov_id = ev.currentTarget.children[1].getAttribute("provider_id");
-    let slot = ev.currentTarget.children[1].getAttribute("slot");
 
-    let new_to_time = moment(new_from_time, "HH:mm a").add(
-      this.state.edit_no_of_slots * slot,
-      "minutes"
-    );
+    if (
+      moment(new_from_time, "HH:mm a").format("HHmm") <
+      moment(new Date()).format("HHmm")
+    ) {
+      swalMessage({
+        title: "Cannot create schedule for past time",
+        type: "error"
+      });
+    } else {
+      let prov_id = ev.currentTarget.children[1].getAttribute("provider_id");
+      let slot = ev.currentTarget.children[1].getAttribute("slot");
 
-    this.setState(
-      {
-        edit_appt_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
-        edit_from_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
-        edit_to_time: moment(new_to_time).format("HH:mm:ss"),
-        edit_provider_id: prov_id
-      },
-      () => {
-        swal({
-          title: "Are you sure you want to Re-Schedule the appointment?",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Yes!",
-          confirmButtonColor: "#",
-          cancelButtonColor: "#d33",
-          cancelButtonText: "No",
-          dangerMode: true
-        }).then(willUpdate => {
-          if (willUpdate.value) {
-            let edit_details = {
-              hims_f_patient_appointment_id: this.state.edit_appointment_id,
-              record_status: "A",
-              appointment_status_id: this.state.edit_appointment_status_id,
-              patient_id: this.state.edit_patient_id,
-              provider_id: this.state.edit_provider_id,
-              sub_department_id: this.state.edit_sub_dep_id,
-              appointment_date: this.state.edit_appointment_date,
-              appointment_from_time: this.state.edit_from_time,
-              appointment_to_time: this.state.edit_to_time,
-              patient_name: this.state.edit_patient_name,
-              arabic_name: this.state.edit_arabic_name,
-              date_of_birth: this.state.edit_date_of_birth,
-              age: this.state.edit_age,
-              contact_number: this.state.edit_contact_number,
-              email: this.state.edit_email,
-              send_to_provider: null,
-              gender: this.state.edit_gender,
-              confirmed: null,
-              confirmed_by: null,
-              comfirmed_date: null,
-              cancelled: null,
-              cancelled_by: null,
-              cancelled_date: null,
-              cancel_reason: null,
-              appointment_remarks: this.state.edit_appointment_remarks,
-              is_stand_by: "N",
-              number_of_slot: this.state.edit_no_of_slots
-            };
+      let new_to_time = moment(new_from_time, "HH:mm a").add(
+        this.state.edit_no_of_slots * slot,
+        "minutes"
+      );
 
-            algaehApiCall({
-              uri: "/appointment/updatePatientAppointment",
-              method: "PUT",
-              data: edit_details,
-              onSuccess: response => {
-                if (response.data.success) {
-                  this.clearSaveState();
+      this.setState(
+        {
+          edit_appt_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
+          edit_from_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
+          edit_to_time: moment(new_to_time).format("HH:mm:ss"),
+          edit_provider_id: prov_id
+        },
+        () => {
+          swal({
+            title: "Are you sure you want to Re-Schedule the appointment?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes!",
+            confirmButtonColor: "#",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "No"
+          }).then(willUpdate => {
+            if (willUpdate.value) {
+              let edit_details = {
+                hims_f_patient_appointment_id: this.state.edit_appointment_id,
+                record_status: "A",
+                appointment_status_id: this.state.edit_appointment_status_id,
+                patient_id: this.state.edit_patient_id,
+                provider_id: this.state.edit_provider_id,
+                sub_department_id: this.state.edit_sub_dep_id,
+                appointment_date: this.state.edit_appointment_date,
+                appointment_from_time: this.state.edit_from_time,
+                appointment_to_time: this.state.edit_to_time,
+                patient_name: this.state.edit_patient_name,
+                arabic_name: this.state.edit_arabic_name,
+                date_of_birth: this.state.edit_date_of_birth,
+                age: this.state.edit_age,
+                contact_number: this.state.edit_contact_number,
+                email: this.state.edit_email,
+                send_to_provider: null,
+                gender: this.state.edit_gender,
+                confirmed: null,
+                confirmed_by: null,
+                comfirmed_date: null,
+                cancelled: null,
+                cancelled_by: null,
+                cancelled_date: null,
+                cancel_reason: null,
+                appointment_remarks: this.state.edit_appointment_remarks,
+                is_stand_by: "N",
+                number_of_slot: this.state.edit_no_of_slots
+              };
+
+              algaehApiCall({
+                uri: "/appointment/updatePatientAppointment",
+                method: "PUT",
+                data: edit_details,
+                onSuccess: response => {
+                  if (response.data.success) {
+                    this.clearSaveState();
+                    swalMessage({
+                      title: "Appointment Updated Successfully",
+                      type: "success"
+                    });
+                    this.setState({ openPatEdit: false });
+                    this.getAppointmentSchedule();
+                  }
+                },
+                onFailure: error => {
                   swalMessage({
-                    title: "Appointment Updated Successfully",
-                    type: "success"
+                    title:
+                      "Appointment already present for the selected time cannot re-schedule",
+                    type: "error"
                   });
-                  this.setState({ openPatEdit: false });
-                  this.getAppointmentSchedule();
                 }
-              },
-              onFailure: error => {
-                swalMessage({
-                  title: error.message,
-                  type: "error"
-                });
-              }
-            });
-          } else {
-            swalMessage({
-              title: "Re-Schedule Cancelled",
-              type: "error"
-            });
-          }
-        });
-      }
-    );
+              });
+            } else {
+              swalMessage({
+                title: "Re-Schedule Cancelled",
+                type: "error"
+              });
+            }
+          });
+        }
+      );
+    }
   }
 
   plotPatients(data) {
@@ -977,736 +1060,738 @@ class Appointment extends Component {
   render() {
     return (
       <div className="appointment">
-        {/* Appointment Module Start */}
-        <div id="appointment-module">
-          {/* Edit Pop up Start */}
-          <Modal open={this.state.openPatEdit}>
-            <div className="algaeh-modal" style={{ width: "55vw" }}>
-              <div className="popupHeader">
-                <h4>Edit Appointment</h4>
-              </div>
-              <div className="popupInner">
-                <div className="col-lg-12">
-                  <div className="row">
-                    <div className="col-lg-12 popRightDiv">
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            forceLabel: "Select Status mandatory",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "edit_appointment_status_id",
-                            className: "select-fld",
-                            value: this.state.edit_appointment_status_id,
-                            dataSource: {
-                              textField: "description",
-                              valueField: "hims_d_appointment_status_id",
-                              data: this.state.appointmentStatus
-                            },
-                            onChange: this.dropDownHandle.bind(this)
-                          }}
-                        />
-                        <AlgaehDateHandler
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            forceLabel: "APPOINTMENT Date"
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "edit_appt_date"
-                          }}
-                          events={{
-                            onChange: selectedDate => {
-                              this.setState(
-                                { edit_appt_date: selectedDate },
-                                () => {
-                                  this.setState({
-                                    edit_age: moment().diff(
-                                      this.state.edit_appt_date,
-                                      "years"
-                                    )
-                                  });
-                                }
-                              );
-                            }
-                          }}
-                          value={this.state.edit_appt_date}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            forceLabel: "Appointment Time"
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "edit_appt_time",
-                            value: this.state.edit_appt_time,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            },
-                            others: {
-                              type: "time",
-                              disabled: true
-                            }
-                          }}
-                        />
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3 mandatory" }}
-                          label={{
-                            forceLabel: "Select Slots",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "edit_no_of_slots",
-                            className: "select-fld",
-                            value: this.state.edit_no_of_slots,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.NO_OF_SLOTS
-                            },
-                            onChange: this.dropDownHandle.bind(this)
-                          }}
-                        />
-                      </div>
-
-                      <div className="row">
-                        <AlagehFormGroup
-                          div={{
-                            className: "col-lg-6 mandatory margin-top-15"
-                          }}
-                          label={{
-                            forceLabel: "Patient Name",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "edit_patient_name",
-                            value: this.state.edit_patient_name,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{
-                            className:
-                              "col-lg-6 margin-top-15 mandatory arabic-txt-fld"
-                          }}
-                          label={{
-                            forceLabel: "Patient Name Arabic",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "edit_arabic_name",
-                            value: this.state.edit_arabic_name,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
-
-                        <AlgaehDateHandler
-                          div={{
-                            className: "col-lg-3 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Date of Birth",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "edit_date_of_birth"
-                          }}
-                          events={{
-                            onChange: selectedDate => {
-                              this.setState(
-                                { date_of_birth: selectedDate },
-                                () => {
-                                  this.setState({
-                                    edit_age: moment().diff(
-                                      this.state.edit_date_of_birth,
-                                      "years"
-                                    )
-                                  });
-                                }
-                              );
-                            }
-                          }}
-                          value={this.state.edit_date_of_birth}
-                        />
-
-                        <AlagehFormGroup
-                          div={{
-                            className: "col-lg-2 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Age",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "edit_age",
-                            others: {
-                              type: "number"
-                            },
-                            value: this.state.edit_age,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
-
-                        <AlagehAutoComplete
-                          div={{
-                            className: "col-lg-3 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Gender",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "edit_gender",
-                            className: "select-fld",
-                            value: this.state.edit_gender,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_GENDER
-                            },
-                            onChange: this.dropDownHandle.bind(this)
-                          }}
-                        />
-
-                        {/* <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            forceLabel: "Select Status",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "appointment_status_id",
-                            className: "select-fld",
-                            value: this.state.appointment_status_id,
-                            dataSource: {
-                              textField: "description",
-                              valueField: "hims_d_appointment_status_id",
-                              data: this.state.appointmentStatus
-                            },
-                            onChange: this.dropDownHandle.bind(this)
-                          }}
-                        /> */}
-
-                        <AlagehFormGroup
-                          div={{
-                            className: "col-lg-6 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Mobile No.",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "edit_contact_number",
-                            others: {
-                              type: "number"
-                            },
-                            value: this.state.edit_contact_number,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{
-                            className: "col-lg-6 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Email Address",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "edit_email",
-                            value: this.state.edit_email,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-12 margin-top-15" }}
-                          label={{
-                            forceLabel: "Remarks",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "edit_appointment_remarks",
-                            value: this.state.edit_appointment_remarks,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
+        {this.state.hasError ? (
+          "OOPS Something went wrong , please refresh the page"
+        ) : (
+          <div id="appointment-module">
+            {/* Edit Pop up Start */}
+            <Modal open={this.state.openPatEdit}>
+              <div className="algaeh-modal" style={{ width: "55vw" }}>
+                <div className="popupHeader">
+                  <h4>Edit Appointment</h4>
                 </div>
-              </div>{" "}
-              <div className="popupFooter">
-                <div className="col-lg-12">
-                  <button
-                    onClick={this.updatePatientAppointment.bind(this)}
-                    type="button"
-                    className="btn btn-primary"
-                  >
-                    Update
-                  </button>
-                  <button
-                    onClick={this.handleClose.bind(this)}
-                    type="button"
-                    className="btn btn-other"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </Modal>
-          {/* Edit Pop up End */}
-
-          {/* Add Pop up start */}
-          <Modal open={this.state.showApt}>
-            <div className="algaeh-modal" style={{ width: "55vw" }}>
-              <div className="popupHeader">
-                <h4>Book an Appointment</h4>
-              </div>
-              <div className="popupInner">
-                <div className="col-lg-12">
-                  <div className="row">
-                    <div className="col-lg-12 popRightDiv">
-                      <div className="row">
-                        <div className="col-lg-3 margin-top-15">
-                          <AlgaehLabel
+                <div className="popupInner">
+                  <div className="col-lg-12">
+                    <div className="row">
+                      <div className="col-lg-12 popRightDiv">
+                        <div className="row">
+                          <AlagehAutoComplete
+                            div={{ className: "col-lg-3" }}
                             label={{
-                              forceLabel: "Appo. Date"
+                              forceLabel: "Select Status mandatory",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "edit_appointment_status_id",
+                              className: "select-fld",
+                              value: this.state.edit_appointment_status_id,
+                              dataSource: {
+                                textField: "description",
+                                valueField: "hims_d_appointment_status_id",
+                                data: this.state.appointmentStatus
+                              },
+                              onChange: this.dropDownHandle.bind(this)
                             }}
                           />
-                          <h6>
-                            {moment(this.state.activeDateHeader).format(
-                              "DD-MM-YYYY"
-                            )}
-                          </h6>
-                        </div>
-
-                        <div className="col-lg-2 margin-top-15">
-                          <AlgaehLabel
+                          <AlgaehDateHandler
+                            div={{ className: "col-lg-3" }}
                             label={{
-                              forceLabel: "Appo. Time"
+                              forceLabel: "APPOINTMENT Date"
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "edit_appt_date"
+                            }}
+                            events={{
+                              onChange: selectedDate => {
+                                this.setState(
+                                  { edit_appt_date: selectedDate },
+                                  () => {
+                                    this.setState({
+                                      edit_age: moment().diff(
+                                        this.state.edit_appt_date,
+                                        "years"
+                                      )
+                                    });
+                                  }
+                                );
+                              }
+                            }}
+                            value={this.state.edit_appt_date}
+                          />
+                          <AlagehFormGroup
+                            div={{ className: "col-lg-3" }}
+                            label={{
+                              forceLabel: "Appointment Time"
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "edit_appt_time",
+                              value: this.state.edit_appt_time,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              },
+                              others: {
+                                type: "time",
+                                disabled: true
+                              }
                             }}
                           />
-                          <h6>{this.state.apptFromTime}</h6>
-                        </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-3 margin-top-15 " }}
-                          label={{
-                            forceLabel: "Patient Code",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_code",
-                            others: {
-                              disabled: true
-                            },
-                            value: this.state.patient_code,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
-
-                        <div
-                          className="col-lg-1"
-                          style={{ paddingTop: "40px" }}
-                        >
-                          <i
-                            //onClick={this.getPatient.bind(this)}
-                            onClick={this.patientSearch.bind(this)}
-                            className="fas fa-search"
-                            style={{ marginLeft: "-75%", cursor: "pointer" }}
+                          <AlagehAutoComplete
+                            div={{ className: "col-lg-3 mandatory" }}
+                            label={{
+                              forceLabel: "Select Slots",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "edit_no_of_slots",
+                              className: "select-fld",
+                              value: this.state.edit_no_of_slots,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.NO_OF_SLOTS
+                              },
+                              onChange: this.dropDownHandle.bind(this)
+                            }}
                           />
                         </div>
-                        <AlagehAutoComplete
-                          div={{
-                            className: "col-lg-3 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Select Slots",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "no_of_slots",
-                            className: "select-fld",
-                            value: this.state.no_of_slots,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.NO_OF_SLOTS
-                            },
-                            onChange: this.dropDownHandle.bind(this)
-                          }}
-                        />
-                      </div>
 
-                      <div className="row">
-                        <AlagehFormGroup
-                          div={{
-                            className: "col-lg-6 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Patient Name",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_name",
-                            value: this.state.patient_name,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{
-                            className:
-                              "col-lg-6 margin-top-15 mandatory arabic-txt-fld"
-                          }}
-                          label={{
-                            forceLabel: "Patient Name Arabic",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "arabic_name",
-                            value: this.state.arabic_name,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
+                        <div className="row">
+                          <AlagehFormGroup
+                            div={{
+                              className: "col-lg-6 mandatory margin-top-15"
+                            }}
+                            label={{
+                              forceLabel: "Patient Name",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "edit_patient_name",
+                              value: this.state.edit_patient_name,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{
+                              className:
+                                "col-lg-6 margin-top-15 mandatory arabic-txt-fld"
+                            }}
+                            label={{
+                              forceLabel: "Patient Name Arabic",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "edit_arabic_name",
+                              value: this.state.edit_arabic_name,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
 
-                        <AlgaehDateHandler
-                          div={{
-                            className: "col-lg-3 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Date of Birth",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "date_of_birth"
-                          }}
-                          events={{
-                            onChange: selectedDate => {
-                              this.setState(
-                                { date_of_birth: selectedDate },
-                                () => {
-                                  this.setState({
-                                    age: moment().diff(
-                                      this.state.date_of_birth,
-                                      "years"
-                                    )
-                                  });
-                                }
-                              );
-                            }
-                          }}
-                          value={this.state.date_of_birth}
-                        />
+                          <AlgaehDateHandler
+                            div={{
+                              className: "col-lg-3 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Date of Birth",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "edit_date_of_birth"
+                            }}
+                            events={{
+                              onChange: selectedDate => {
+                                this.setState(
+                                  { date_of_birth: selectedDate },
+                                  () => {
+                                    this.setState({
+                                      edit_age: moment().diff(
+                                        this.state.edit_date_of_birth,
+                                        "years"
+                                      )
+                                    });
+                                  }
+                                );
+                              }
+                            }}
+                            value={this.state.edit_date_of_birth}
+                          />
 
-                        <AlagehFormGroup
-                          div={{
-                            className: "col-lg-2 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Age",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "age",
-                            others: {
-                              type: "number"
-                            },
-                            value: this.state.age,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
+                          <AlagehFormGroup
+                            div={{
+                              className: "col-lg-2 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Age",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "edit_age",
+                              others: {
+                                type: "number"
+                              },
+                              value: this.state.edit_age,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
 
-                        <AlagehAutoComplete
-                          div={{
-                            className: "col-lg-3 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Gender",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "gender",
-                            className: "select-fld",
-                            value: this.state.gender,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_GENDER
-                            },
-                            onChange: this.dropDownHandle.bind(this)
-                          }}
-                        />
+                          <AlagehAutoComplete
+                            div={{
+                              className: "col-lg-3 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Gender",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "edit_gender",
+                              className: "select-fld",
+                              value: this.state.edit_gender,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_GENDER
+                              },
+                              onChange: this.dropDownHandle.bind(this)
+                            }}
+                          />
 
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3 mandatory" }}
-                          label={{
-                            forceLabel: "Select Status",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "appointment_status_id",
-                            className: "select-fld",
-                            value: this.state.appointment_status_id,
-                            dataSource: {
-                              textField: "description",
-                              valueField: "hims_d_appointment_status_id",
-                              data: this.state.appointmentStatus
-                            },
-                            onChange: this.dropDownHandle.bind(this)
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{
-                            className: "col-lg-6 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Mobile No.",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "contact_number",
-                            others: {
-                              type: "number"
-                            },
-                            value: this.state.contact_number,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{
-                            className: "col-lg-6 margin-top-15 mandatory"
-                          }}
-                          label={{
-                            forceLabel: "Email Address",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "email",
-                            value: this.state.email,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-12 margin-top-15" }}
-                          label={{
-                            forceLabel: "Remarks",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "appointment_remarks",
-                            value: this.state.appointment_remarks,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-              <div className="popupFooter">
-                <div className="col-lg-12">
-                  <button
-                    onClick={this.addPatientAppointment.bind(this)}
-                    type="button"
-                    className="btn btn-primary"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={this.handleClose.bind(this)}
-                    type="button"
-                    className="btn btn-other"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </Modal>
-          {/* Add Pop up end */}
-
-          {/* Calendar Component Starts */}
-          <div className="row">
-            <div className="my-calendar col-lg-12">
-              <div style={{ height: "34px" }}>
-                <div className="myDay_date">
-                  <input
-                    type="month"
-                    onChange={this.monthChangeHandler.bind(this)}
-                    value={moment(this.state.selectedHDate).format("YYYY-MM")}
-                  />
-                </div>
-              </div>
-              {this.generateHorizontalDateBlocks()}
-            </div>
-          </div>
-          {/* Calendar Component Ends */}
-
-          {/* Filter Bar Start */}
-          {/* <form onSubmit={this.getAppointmentSchedule.bind(this)}> */}
-          <form action="none">
-            <div className="row inner-top-search">
-              <AlagehAutoComplete
+                          {/* <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
-                  fieldName: "department_name",
+                  forceLabel: "Select Status",
                   isImp: true
                 }}
                 selector={{
-                  name: "sub_department_id",
+                  name: "appointment_status_id",
                   className: "select-fld",
-                  value: this.state.sub_department_id,
+                  value: this.state.appointment_status_id,
                   dataSource: {
-                    textField: "sub_department_name",
-                    valueField: "sub_dept_id",
-                    data: this.state.departments
-                  },
-                  onChange: this.deptDropDownHandler.bind(this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
-                label={{
-                  forceLabel: "Filter by Doctor"
-                }}
-                selector={{
-                  name: "provider_id",
-                  className: "select-fld",
-                  value: this.state.provider_id,
-                  dataSource: {
-                    textField: "full_name",
-                    valueField: "provider_id",
-                    data: this.state.doctors
+                    textField: "description",
+                    valueField: "hims_d_appointment_status_id",
+                    data: this.state.appointmentStatus
                   },
                   onChange: this.dropDownHandle.bind(this)
                 }}
-              />
+              /> */}
 
-              <div className="col-lg-1 form-group" style={{ marginTop: 22 }}>
-                <button
-                  type="submit"
-                  onClick={this.getAppointmentSchedule.bind(this)}
-                  //onClick={this.getAppointmentSchedule.bind(this)}
-                  className="btn btn-primary"
-                >
-                  Load
-                </button>
-              </div>
-            </div>
-          </form>
-
-          {/* Filter Bar End */}
-
-          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-            {/* Portlet Top Bar Start */}
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Doctors Availability</h3>
-              </div>
-              <div className="actions">
-                <ul className="ul-legend">
-                  {this.state.appointmentStatus !== undefined
-                    ? this.state.appointmentStatus.map((data, index) => (
-                        <li key={index}>
-                          <span
-                            style={{
-                              backgroundColor: data.color_code
+                          <AlagehFormGroup
+                            div={{
+                              className: "col-lg-6 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Mobile No.",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "edit_contact_number",
+                              others: {
+                                type: "number"
+                              },
+                              value: this.state.edit_contact_number,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
                             }}
                           />
-                          {data.description}
-                        </li>
-                      ))
-                    : null}
-                </ul>
+
+                          <AlagehFormGroup
+                            div={{
+                              className: "col-lg-6 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Email Address",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "edit_email",
+                              value: this.state.edit_email,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
+
+                          <AlagehFormGroup
+                            div={{ className: "col-lg-12 margin-top-15" }}
+                            label={{
+                              forceLabel: "Remarks",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "edit_appointment_remarks",
+                              value: this.state.edit_appointment_remarks,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>{" "}
+                <div className="popupFooter">
+                  <div className="col-lg-12">
+                    <button
+                      onClick={this.updatePatientAppointment.bind(this)}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      Update
+                    </button>
+                    <button
+                      onClick={this.handleClose.bind(this)}
+                      type="button"
+                      className="btn btn-other"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </Modal>
+            {/* Edit Pop up End */}
+
+            {/* Add Pop up start */}
+            <Modal open={this.state.showApt}>
+              <div className="algaeh-modal" style={{ width: "55vw" }}>
+                <div className="popupHeader">
+                  <h4>Book an Appointment</h4>
+                </div>
+                <div className="popupInner">
+                  <div className="col-lg-12">
+                    <div className="row">
+                      <div className="col-lg-12 popRightDiv">
+                        <div className="row">
+                          <div className="col-lg-3 margin-top-15">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Appo. Date"
+                              }}
+                            />
+                            <h6>
+                              {moment(this.state.activeDateHeader).format(
+                                "DD-MM-YYYY"
+                              )}
+                            </h6>
+                          </div>
+
+                          <div className="col-lg-2 margin-top-15">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Appo. Time"
+                              }}
+                            />
+                            <h6>{this.state.apptFromTime}</h6>
+                          </div>
+                          <AlagehFormGroup
+                            div={{ className: "col-lg-3 margin-top-15 " }}
+                            label={{
+                              forceLabel: "Patient Code",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "patient_code",
+                              others: {
+                                disabled: true
+                              },
+                              value: this.state.patient_code,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
+
+                          <div
+                            className="col-lg-1"
+                            style={{ paddingTop: "40px" }}
+                          >
+                            <i
+                              //onClick={this.getPatient.bind(this)}
+                              onClick={this.patientSearch.bind(this)}
+                              className="fas fa-search"
+                              style={{ marginLeft: "-75%", cursor: "pointer" }}
+                            />
+                          </div>
+                          <AlagehAutoComplete
+                            div={{
+                              className: "col-lg-3 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Select Slots",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "no_of_slots",
+                              className: "select-fld",
+                              value: this.state.no_of_slots,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.NO_OF_SLOTS
+                              },
+                              onChange: this.dropDownHandle.bind(this)
+                            }}
+                          />
+                        </div>
+
+                        <div className="row">
+                          <AlagehFormGroup
+                            div={{
+                              className: "col-lg-6 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Patient Name",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "patient_name",
+                              value: this.state.patient_name,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{
+                              className:
+                                "col-lg-6 margin-top-15 mandatory arabic-txt-fld"
+                            }}
+                            label={{
+                              forceLabel: "Patient Name Arabic",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "arabic_name",
+                              value: this.state.arabic_name,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
+
+                          <AlgaehDateHandler
+                            div={{
+                              className: "col-lg-3 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Date of Birth",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "date_of_birth"
+                            }}
+                            events={{
+                              onChange: selectedDate => {
+                                this.setState(
+                                  { date_of_birth: selectedDate },
+                                  () => {
+                                    this.setState({
+                                      age: moment().diff(
+                                        this.state.date_of_birth,
+                                        "years"
+                                      )
+                                    });
+                                  }
+                                );
+                              }
+                            }}
+                            value={this.state.date_of_birth}
+                          />
+
+                          <AlagehFormGroup
+                            div={{
+                              className: "col-lg-2 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Age",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "age",
+                              others: {
+                                type: "number"
+                              },
+                              value: this.state.age,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
+
+                          <AlagehAutoComplete
+                            div={{
+                              className: "col-lg-3 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Gender",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "gender",
+                              className: "select-fld",
+                              value: this.state.gender,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_GENDER
+                              },
+                              onChange: this.dropDownHandle.bind(this)
+                            }}
+                          />
+
+                          <AlagehAutoComplete
+                            div={{ className: "col-lg-3 mandatory" }}
+                            label={{
+                              forceLabel: "Select Status",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "appointment_status_id",
+                              className: "select-fld",
+                              value: this.state.appointment_status_id,
+                              dataSource: {
+                                textField: "description",
+                                valueField: "hims_d_appointment_status_id",
+                                data: this.state.appointmentStatus
+                              },
+                              onChange: this.dropDownHandle.bind(this)
+                            }}
+                          />
+
+                          <AlagehFormGroup
+                            div={{
+                              className: "col-lg-6 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Mobile No.",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "contact_number",
+                              others: {
+                                type: "number"
+                              },
+                              value: this.state.contact_number,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
+
+                          <AlagehFormGroup
+                            div={{
+                              className: "col-lg-6 margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Email Address",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "email",
+                              value: this.state.email,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
+
+                          <AlagehFormGroup
+                            div={{ className: "col-lg-12 margin-top-15" }}
+                            label={{
+                              forceLabel: "Remarks",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "appointment_remarks",
+                              value: this.state.appointment_remarks,
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>{" "}
+                <div className="popupFooter">
+                  <div className="col-lg-12">
+                    <button
+                      onClick={this.addPatientAppointment.bind(this)}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={this.handleClose.bind(this)}
+                      type="button"
+                      className="btn btn-other"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </Modal>
+            {/* Add Pop up end */}
+
+            {/* Calendar Component Starts */}
+            <div className="row">
+              <div className="my-calendar col-lg-12">
+                <div style={{ height: "34px" }}>
+                  <div className="myDay_date">
+                    <input
+                      type="month"
+                      onChange={this.monthChangeHandler.bind(this)}
+                      value={moment(this.state.selectedHDate).format("YYYY-MM")}
+                    />
+                  </div>
+                </div>
+                {this.generateHorizontalDateBlocks()}
               </div>
             </div>
-            {/* Portlet Top Bar End */}
+            {/* Calendar Component Ends */}
 
-            <div className="portlet-body" style={{ maxHeight: "53vh" }}>
-              <div className="appointment-outer-cntr">
-                <div className="appointment-inner-cntr">
-                  {/* Table Start */}
-                  {this.state.appointmentSchedule.length !== 0 ? (
-                    this.state.appointmentSchedule.map((data, index) => (
-                      <table key={index} className="tg">
-                        <thead>
-                          <tr>
-                            {/* <th className="tg-c3ow">Time</th> */}
-                            <th className="tg-amwm" colSpan="2">
-                              {data.first_name + " " + data.last_name}
-                              {/* Dr. Norman John */}
-                            </th>
-                          </tr>
-                          <tr>
-                            {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
-                            <th className="tbl-subHdg">BOOKED</th>
-                            <th className="tbl-subHdg">STANDBY</th>
-                          </tr>
-                        </thead>
-                        <tbody>{this.generateTimeslots(data)}</tbody>
-                      </table>
-                    ))
-                  ) : (
-                    <span className="noDoctor">
-                      No Doctors available for the selected criteria
-                    </span>
-                  )}
+            {/* Filter Bar Start */}
+            {/* <form onSubmit={this.getAppointmentSchedule.bind(this)}> */}
+            <form action="none">
+              <div className="row inner-top-search">
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "department_name",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "sub_department_id",
+                    className: "select-fld",
+                    value: this.state.sub_department_id,
+                    dataSource: {
+                      textField: "sub_department_name",
+                      valueField: "sub_dept_id",
+                      data: this.state.departments
+                    },
+                    onChange: this.deptDropDownHandler.bind(this)
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    forceLabel: "Filter by Doctor"
+                  }}
+                  selector={{
+                    name: "provider_id",
+                    className: "select-fld",
+                    value: this.state.provider_id,
+                    dataSource: {
+                      textField: "full_name",
+                      valueField: "provider_id",
+                      data: this.state.doctors
+                    },
+                    onChange: this.dropDownHandle.bind(this)
+                  }}
+                />
+
+                <div className="col-lg-1 form-group" style={{ marginTop: 22 }}>
+                  <button
+                    type="submit"
+                    onClick={this.getAppointmentSchedule.bind(this)}
+                    //onClick={this.getAppointmentSchedule.bind(this)}
+                    className="btn btn-primary"
+                  >
+                    Load
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            {/* Filter Bar End */}
+
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              {/* Portlet Top Bar Start */}
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Doctors Availability</h3>
+                </div>
+                <div className="actions">
+                  <ul className="ul-legend">
+                    {this.state.appointmentStatus !== undefined
+                      ? this.state.appointmentStatus.map((data, index) => (
+                          <li key={index}>
+                            <span
+                              style={{
+                                backgroundColor: data.color_code
+                              }}
+                            />
+                            {data.description}
+                          </li>
+                        ))
+                      : null}
+                  </ul>
+                </div>
+              </div>
+              {/* Portlet Top Bar End */}
+
+              <div className="portlet-body" style={{ maxHeight: "53vh" }}>
+                <div className="appointment-outer-cntr">
+                  <div className="appointment-inner-cntr">
+                    {/* Table Start */}
+                    {this.state.appointmentSchedule.length !== 0 ? (
+                      this.state.appointmentSchedule.map((data, index) => (
+                        <table key={index} className="tg">
+                          <thead>
+                            <tr>
+                              {/* <th className="tg-c3ow">Time</th> */}
+                              <th className="tg-amwm" colSpan="2">
+                                {data.first_name + " " + data.last_name}
+                                {/* Dr. Norman John */}
+                              </th>
+                            </tr>
+                            <tr>
+                              {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
+                              <th className="tbl-subHdg">BOOKED</th>
+                              <th className="tbl-subHdg">STANDBY</th>
+                            </tr>
+                          </thead>
+                          <tbody>{this.generateTimeslots(data)}</tbody>
+                        </table>
+                      ))
+                    ) : (
+                      <span className="noDoctor">
+                        No Doctors available for the selected criteria
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        {/* Appointment Module End */}
+        )}
       </div>
     );
   }
