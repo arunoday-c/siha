@@ -1,8 +1,14 @@
+import ReportComponets from "./reportComponent";
+//import React from "react";
 export default [
   {
     name: "APPOINTMENTS",
     submenu: [
-      { subitem: "Appointment Availability Report" },
+      {
+        subitem: "Appointment Availability Report",
+        reportParamerts: () =>
+          ReportComponets().APPOINTMENTS.avilabilityReport()
+      },
       { subitem: "Appointment Details Patient Wise" },
       { subitem: "Appointment List" },
       { subitem: "Appointment List - Cancellations" },

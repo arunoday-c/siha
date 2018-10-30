@@ -4,7 +4,11 @@ import {
   selectIcdcptCodes,
   insertIcdcptCodes,
   updateIcdcptCodes,
-  deleteIcdcptCodes
+  deleteIcdcptCodes,
+  selectCptCodes,
+  insertCptCodes,
+  updateCptCodes,
+  deleteCptCodes
 } from "../model/icdcptcodes";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
@@ -58,6 +62,69 @@ export default ({ config, db }) => {
   api.put(
     "/updateIcdcptCodes",
     updateIcdcptCodes,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
+    },
+    releaseConnection
+  );
+
+  api.delete(
+    "/deleteCptCodes",
+    deleteCptCodes,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json(result);
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/selectCptCodes",
+    selectCptCodes,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.length == 0) {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+  api.post(
+    "/insertCptCodes",
+    insertCptCodes,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.length != 0) {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+        next();
+      } else {
+        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
+      }
+    },
+    releaseConnection
+  );
+  api.put(
+    "/updateCptCodes",
+    updateCptCodes,
     (req, res, next) => {
       let result = req.records;
       if (result.length != 0) {

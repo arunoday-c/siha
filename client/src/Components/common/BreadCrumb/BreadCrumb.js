@@ -1,8 +1,7 @@
 import React, { PureComponent } from "react";
 import "./breadcrumb.css";
-import { AlagehFormGroup, AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import { SearchDetails } from "./BreadCurmbFunctionality";
-import Tooltip from "@material-ui/core/Tooltip";
 class BreadCrumb extends PureComponent {
   constructor(props) {
     super(props);

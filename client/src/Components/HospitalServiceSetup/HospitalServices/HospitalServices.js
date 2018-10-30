@@ -14,9 +14,9 @@ import {
 import {
   texthandle,
   VatAppilicable,
-  InsertServices
+  InsertServices,
+  CptCodesSearch
 } from "./HospitalServicesEvent";
-import variableJson from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 // import { successfulMessage } from "../../../utils/GlobalFunctions";
@@ -43,7 +43,8 @@ class HospitalServices extends PureComponent {
 
       standard_fee: 0,
       vat_applicable: "N",
-      vat_percent: 0
+      vat_percent: 0,
+      cpt_code_data: null
     };
   }
 
@@ -80,7 +81,8 @@ class HospitalServices extends PureComponent {
 
         standard_fee: 0,
         vat_applicable: "N",
-        vat_percent: 0
+        vat_percent: 0,
+        cpt_code_data: null
       });
     }
   }
@@ -151,8 +153,27 @@ class HospitalServices extends PureComponent {
                         }
                       }}
                     />
-                    <AlagehAutoComplete
+
+                    <AlagehFormGroup
                       div={{ className: "col-lg-3" }}
+                      label={{
+                        fieldName: "cpt_code",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "cpt_code",
+                        value: this.state.cpt_code_data,
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        },
+                        others: {
+                          disabled: true
+                        }
+                      }}
+                    />
+                    {/* <AlagehAutoComplete
+                      div={{ className: "col-lg-2" }}
                       label={{
                         fieldName: "cpt_code",
                         isImp: true
@@ -164,14 +185,24 @@ class HospitalServices extends PureComponent {
                         dataSource: {
                           textField:
                             this.state.selectedLang === "en"
-                              ? "name"
-                              : "arabic_name",
-                          valueField: "value",
-                          data: variableJson.FORMAT_LAB_RAD
+                              ? "cpt_code"
+                              : "cpt_code",
+                          valueField: "hims_d_cpt_code_id",
+                          data: this.props.cptcodes
                         },
                         onChange: texthandle.bind(this, this)
                       }}
-                    />
+                    /> */}
+
+                    <div className="actions">
+                      <a
+                        href="javascript:;"
+                        className="btn btn-primary btn-circle active"
+                        onClick={CptCodesSearch.bind(this, this)}
+                      >
+                        <i className="fas fa-plus" />
+                      </a>
+                    </div>
 
                     <AlagehAutoComplete
                       div={{ className: "col-lg-3" }}
@@ -359,6 +390,7 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     subdepartments: state.subdepartments,
     hospitaldetails: state.hospitaldetails
+    // cptcodes: state.cptcodes
   };
 }
 
@@ -368,6 +400,7 @@ function mapDispatchToProps(dispatch) {
       getServiceTypes: AlgaehActions,
       getSubDepatments: AlgaehActions,
       getHospitalDetails: AlgaehActions
+      // getCptCodes: AlgaehActions
     },
     dispatch
   );

@@ -90,6 +90,12 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS hims_d_icd_id, icd_code, icd_description from hims_d_icd where record_status='A'",
         orderBy: "hims_d_icd_id desc"
+      },
+      {
+        searchName: "CptCodes",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS hims_d_cpt_code_id, cpt_code, cpt_desc from hims_d_cpt_code where record_status='A'",
+        orderBy: "hims_d_cpt_code_id desc"
       }
 
       // visit

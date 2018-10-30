@@ -29,6 +29,7 @@ let insertPatientVisitData = (req, res, next) => {
         mlc_accident_reg_no: null,
         mlc_police_station: null,
         mlc_wound_certified_date: null,
+        appointment_patient: null,
         created_by: req.userIdentity.algaeh_d_app_user_id,
 
         updated_by: req.userIdentity.algaeh_d_app_user_id,
@@ -78,8 +79,8 @@ let insertPatientVisitData = (req, res, next) => {
 `age_in_years`, `age_in_months`, `age_in_days`, `insured`,`sec_insured`,\
 `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
 `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
-`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`,`appointment_id`)\
-VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
+`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`,`appointment_id`, `appointment_patient`)\
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);",
         [
           inputParam.patient_id,
           inputParam.visit_type,
@@ -106,7 +107,8 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
             ? new Date(inputParam.visit_expiery_date)
             : inputParam.visit_expiery_date,
           inputParam.episode_id,
-          inputParam.appointment_id
+          inputParam.appointment_id,
+          inputParam.appointment_patient
         ],
         (error, visitresult) => {
           if (error) {
