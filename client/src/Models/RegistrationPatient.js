@@ -56,6 +56,7 @@ export default {
       hims_d_services_id: null,
       patient_visit_id: null,
       consultation: null,
+      appointment_patient: "N",
       doctor_name: null,
       service_name: null,
 

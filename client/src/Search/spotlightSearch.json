@@ -135,5 +135,17 @@
         "label": "ICD Description"
       }
     ]
+  },
+  "Services": {
+    "CptCodes": [
+      {
+        "fieldName": "cpt_code",
+        "label": "CPT Code"
+      },
+      {
+        "fieldName": "cpt_desc",
+        "label": "CPT Description"
+      }
+    ]
   }
 }
