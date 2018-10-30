@@ -27,21 +27,24 @@ const getMedicationList = $this => {
       mappingName: "medicationlist"
     },
     afterSuccess: data => {
-      let medication_list = Enumerable.from(data)
-        .groupBy("$.patient_id", null, (k, g) => {
-          let firstRecordSet = Enumerable.from(g).firstOrDefault();
-          return {
-            patient_code: firstRecordSet.patient_code,
-            full_name: firstRecordSet.full_name,
-            prescription_date: firstRecordSet.prescription_date,
-            number_of_items: g.getSource().length,
-            item_list: g.getSource(),
-            provider_id: firstRecordSet.provider_id
-          };
-        })
-        .toArray();
+      debugger;
+      if (data.length !== 0) {
+        let medication_list = Enumerable.from(data)
+          .groupBy("$.patient_id", null, (k, g) => {
+            let firstRecordSet = Enumerable.from(g).firstOrDefault();
+            return {
+              patient_code: firstRecordSet.patient_code,
+              full_name: firstRecordSet.full_name,
+              prescription_date: firstRecordSet.prescription_date,
+              number_of_items: g.getSource().length,
+              item_list: g.getSource(),
+              provider_id: firstRecordSet.provider_id
+            };
+          })
+          .toArray();
 
-      $this.setState({ medication_list: medication_list });
+        $this.setState({ medication_list: medication_list });
+      }
     }
   });
 };

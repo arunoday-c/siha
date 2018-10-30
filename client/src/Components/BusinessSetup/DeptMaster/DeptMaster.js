@@ -312,21 +312,21 @@ class DeptMaster extends Component {
                 }}
                 expanded={{
                   detailTemplate: row => {
-                    // return <Button> {JSON.stringify(row)}</Button>;
-                    return;
+                    return <Button>{row.department_name}</Button>;
+                  },
+                  events: {
+                    onExpandRow: row => {
+                      debugger;
+                      console.log("Expanded Event:", row);
+                    }
                   }
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
-                  // onDelete: this.deleteVisaType.bind(this),
                   onDelete: row => {},
                   onEdit: row => {},
                   onDone: row => {}
-                  // onDone: row => {
-                  //   alert(JSON.stringify(row));
-                  // }
-                  // onDone: this.updateVisaTypes.bind(this)
                 }}
               />
             </div>

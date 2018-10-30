@@ -15,9 +15,13 @@ const serviceTypeHandeler = ($this, context, e) => {
           mappingName: "opbilservices"
         },
         afterSuccess: data => {
+          debugger;
           $this.setState({
             opbilservices: data
           });
+          if (context != null) {
+            context.updateState({ opbilservices: data });
+          }
         }
       });
     }
@@ -28,10 +32,16 @@ const serviceTypeHandeler = ($this, context, e) => {
 };
 
 const serviceHandeler = ($this, context, e) => {
-  $this.setState({
-    [e.name]: e.value,
-    visittypeselect: false
-  });
+  debugger;
+  $this.setState(
+    {
+      [e.name]: e.value,
+      visittypeselect: false
+    },
+    () => {
+      debugger;
+    }
+  );
   if (context != null) {
     context.updateState({ [e.name]: e.value });
   }
