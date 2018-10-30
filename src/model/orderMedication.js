@@ -1,10 +1,8 @@
 "use strict";
 import extend from "extend";
 import {
-  selectStatement,
-  paging,
   whereCondition,
-  deleteRecord,
+  
   releaseDBConnection,
   jsonArrayToObject
 } from "../utils";

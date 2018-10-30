@@ -1,7 +1,7 @@
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction, logger } from "../utils/logging";
-import { whereCondition, runningNumber, releaseDBConnection } from "../utils";
+import {  runningNumber, releaseDBConnection } from "../utils";
 import moment from "moment";
 
 //Added by noor for code optimization aug-20-1018

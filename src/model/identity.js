@@ -7,7 +7,7 @@ import {
   deleteRecord
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
-import { debugLog, debugFunction } from "../utils/logging";
+import { debugLog } from "../utils/logging";
 
 let addIdentity = (req, res, next) => {
   let identityDoc = {

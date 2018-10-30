@@ -1,4 +1,4 @@
-import { runningNumber, releaseDBConnection, deleteRecord } from "../utils";
+import { releaseDBConnection, deleteRecord } from "../utils";
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { deleteFromCache } from "../utils/caching";
