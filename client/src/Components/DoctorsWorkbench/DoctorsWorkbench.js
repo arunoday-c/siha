@@ -204,7 +204,12 @@ class DoctorsWorkbench extends Component {
                   onClick={this.onSelectedDateHandler.bind(this)}
                 >
                   {row.day}
-                  <span>{row.dayName}</span>
+                  <span
+                    date={row.currentdate}
+                    onClick={this.onSelectedDateHandler.bind(this)}
+                  >
+                    {row.dayName}
+                  </span>
                 </div>
               );
             })}

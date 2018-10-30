@@ -7,7 +7,6 @@ import {
 } from "../Wrapper/algaehWrapper";
 import Enumerable from "linq";
 import data from "./reports_data";
-import { swalMessage } from "../../utils/algaehApiCall";
 
 class Reports extends Component {
   constructor(props) {

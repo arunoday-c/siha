@@ -7,10 +7,14 @@ import moment from "moment";
 import { AlgaehDateHandler, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import "../Wrapper/wrapper.css";
-const ReactTableFixedColumns = withFixedColumns(ReactTable);
+let ReactTableFixedColumns = withFixedColumns(ReactTable);
 class DataGrid extends PureComponent {
   constructor(props) {
+    if (props.expanded !== undefined) {
+      ReactTableFixedColumns = ReactTable;
+    }
     super(props);
+
     this.state = {
       columns: [],
       data: [],
@@ -22,6 +26,7 @@ class DataGrid extends PureComponent {
       recordsTotal: 0,
       inputParam: {}
     };
+
     this.tmp = new Set();
   }
   onTextHandleEditChange(e) {
@@ -690,7 +695,7 @@ class DataGrid extends PureComponent {
         ? this.props.expanded.detailTemplate !== undefined
           ? {
               SubComponent: row => {
-                return this.props.expanded.detailTemplate(row);
+                return this.props.expanded.detailTemplate(row.original);
               }
             }
           : {}
@@ -701,12 +706,14 @@ class DataGrid extends PureComponent {
           ? this.props.expanded.events.onExpandRow !== undefined
             ? {
                 onExpandRow: row => {
-                  this.props.expanded.events.onExpandRow(row);
+                  this.props.expanded.events.onExpandRow(row.original);
                 }
               }
             : {}
           : {}
         : {};
+    console.log("expand", _subComponent);
+    console.log("expand event", _onExpandRow);
     const _decissionShowPaging =
       this.state.recordsTotal >= 10
         ? this.props.paging !== undefined

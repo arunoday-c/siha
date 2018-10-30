@@ -505,7 +505,8 @@ class HistoricalData extends Component {
                       expanded={_data.map((data, index) => {
                         return { index: true };
                       })}
-                      data={_data}
+                      //data={_data}
+                      data={[]}
                       pivotBy={["date_doctor"]}
                       columns={[
                         {
@@ -583,7 +584,8 @@ class HistoricalData extends Component {
                           return { index: true };
                         }
                       )}
-                      data={this.state.patientMedication}
+                      //data={this.state.patientMedication}
+                      data={[]}
                       pivotBy={["prescription_date"]}
                       columns={[
                         {
