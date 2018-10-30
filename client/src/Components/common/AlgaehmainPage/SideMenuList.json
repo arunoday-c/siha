@@ -237,6 +237,24 @@
         "label": "Pre Approval",
         "arlabel": "قبل الموافقة",
         "path": "/PreApproval"
+      },
+      {
+        "name": "Insurance Statement",
+        "label": "Insurance Statement",
+        "arlabel": "بيان التأمين",
+        "path": "/InsuranceStatement"
+      },
+      {
+        "name": "Work List Generation",
+        "label": "Work List Generation",
+        "arlabel": "جيل قائمة العمل",
+        "path": "/WorkListGeneration"
+      },
+      {
+        "name": "RCM Desktop",
+        "label": "RCM Desktop",
+        "arlabel": "سطح المكتب RCM",
+        "path": "/RCMDesktop"
       }
     ]
   },
@@ -315,10 +333,66 @@
         "path": "/InitialStock"
       },
       {
-        "name": "Order Entry",
-        "label": "Order Entry",
-        "arlabel": "دخول POS",
-        "path": "/OrderEntry"
+        "name": "Requisition Entry",
+        "label": "Requisition Entry",
+        "arlabel": "طلب دخول",
+        "path": "/RequisitionEntry"
+      },
+      {
+        "name": "Requisition List",
+        "label": "Requisition List",
+        "arlabel": "قائمة الطلبات",
+        "path": "/RequisitionList"
+      },
+      {
+        "name": "Transfer Entry",
+        "label": "Transfer Entry",
+        "arlabel": "طلب دخول",
+        "path": "/TransferEntry"
+      }
+    ]
+  },
+  {
+    "name": "Procurement",
+    "label": "Procurement",
+    "icon": "fas fa-shopping-cart",
+    "subMenu": [
+      {
+        "name": "Purchase Order Entry",
+        "label": "Purchase Order Entry",
+        "arlabel": "إدخال طلب الشراء",
+        "path": "/PurchaseOederEntry"
+      },
+      {
+        "name": "Delivery Note Entry",
+        "label": "Delivery Note Entry",
+        "arlabel": "ملاحظة إدخال التسليم",
+        "path": "/DeliveryNoteEntry"
+      },
+
+      {
+        "name": "Receipt Entry",
+        "label": "Receipt Entry",
+        "arlabel": "دخول الإيصال",
+        "path": "/ReceiptEntry"
+      },
+      {
+        "name": "Purchase Return Entry",
+        "label": "Purchase Return Entry",
+        "arlabel": "شراء العودة الدخول",
+        "path": "/PurchaseReturnEntry"
+      },
+      {
+        "name": "Credit/Debit Note Entry",
+        "label": "Credit/Debit Note Entry",
+        "arlabel": "الائتمان / الخصم ملاحظة الدخول",
+        "path": "/CreditDebitNoteEntry"
+      },
+      {
+        "name": "Shipment Entry",
+        "label": "Shipment Entry",
+        "arlabel": "دخول الشحنة",
+        "path": "/ShipmentEntry"
       }
     ]
   },
@@ -328,16 +402,10 @@
     "icon": "fa fa-money-bill",
     "subMenu": [
       {
-        "name": "Account Payable",
-        "label": "Account Payable",
-        "arlabel": "دفع الحساب",
-        "path": "/InitialStock"
-      },
-      {
-        "name": "Account Receivable",
-        "label": "Account Receivable",
-        "arlabel": "حساب المستحق",
-        "path": "/OrderEntry"
+        "name": "Day End Process",
+        "label": "Day End Process",
+        "arlabel": "عملية نهاية اليوم",
+        "path": "/DayEndProcess"
       }
     ]
   },
