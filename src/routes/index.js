@@ -45,6 +45,8 @@ import salesReturn from "../Pharmacy/controller/salesReturn";
 import transferEntry from "../Pharmacy/controller/transferEntry";
 import shiftAndCounter from "../controller/shiftAndCounter";
 
+import ucaf from "../controller/ucaf";
+
 let router = express();
 
 //connect to DB
@@ -97,6 +99,7 @@ initializedDb(db => {
   router.use("/salesReturn", salesReturn({ config, db }));
   router.use("/transferEntry", transferEntry({ config, db }));  
   router.use("/shiftAndCounter", shiftAndCounter({ config, db }));
+  router.use("/ucaf", ucaf({ config, db }));
 });
 
 export default router;
