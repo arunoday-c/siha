@@ -33,23 +33,29 @@ class ListofItems extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/itemmaster/getItems",
-      method: "GET",
-      redux: {
-        type: "DIET_GET_DATA",
-        mappingName: "itemlist"
-      }
-    });
-
-    this.props.getGenerics({
-      uri: "/genericmaster/getGenerics",
-      method: "GET",
-      redux: {
-        type: "DIET_GET_DATA",
-        mappingName: "genericlist"
-      }
-    });
+    if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
+      this.props.getItems({
+        uri: "/pharmacy/getItemMaster",
+        method: "GET",
+        redux: {
+          type: "DIET_GET_DATA",
+          mappingName: "itemlist"
+        }
+      });
+    }
+    if (
+      this.props.genericlist === undefined ||
+      this.props.genericlist.length === 0
+    ) {
+      this.props.getGenerics({
+        uri: "/pharmacy/getItemGeneric",
+        method: "GET",
+        redux: {
+          type: "DIET_GET_DATA",
+          mappingName: "genericlist"
+        }
+      });
+    }
   }
 
   render() {
@@ -65,162 +71,206 @@ class ListofItems extends PureComponent {
           >
             <div className="algaeh-modal">
               <div className="popupHeader">
-                <h4> Medication Items </h4>
+                <div className="row">
+                  <div className="col-lg-8">
+                    <h4> Medication Items </h4>
+                  </div>
+
+                  <div className="col-lg-4">
+                    <button
+                      type="button"
+                      className=""
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      <i className="fas fa-times-circle" />
+                    </button>
+                  </div>
+                </div>
               </div>
               <div className="hptl-phase1-add-insurance-form">
                 <div className="container-fluid">
                   {/* Services Details */}
-
                   <div className="row">
-                    <AlgaehDataGrid
-                      id="Order_Medication"
-                      columns={[
-                        {
-                          fieldName: "generic_id",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Generic Name" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.genericlist === undefined
-                                ? []
-                                : this.props.genericlist.filter(
-                                    f =>
-                                      f.hims_d_item_generic_id ===
-                                      row.generic_id
-                                  );
+                    <div
+                      className="col-lg-12 popupInner"
+                      style={{ padding: "10px" }}
+                    >
+                      <AlgaehDataGrid
+                        id="Order_Medication"
+                        columns={[
+                          {
+                            fieldName: "generic_id",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Generic Name" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              let display =
+                                this.props.genericlist === undefined
+                                  ? []
+                                  : this.props.genericlist.filter(
+                                      f =>
+                                        f.hims_d_item_generic_id ===
+                                        row.generic_id
+                                    );
 
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? display[0].generic_name
-                                  : ""}
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "item_id",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                          ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.itemlist === undefined
-                                ? []
-                                : this.props.itemlist.filter(
-                                    f => f.hims_d_item_master_id === row.item_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? display[0].item_description
-                                  : ""}
-                              </span>
-                            );
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].generic_name
+                                    : ""}
+                                </span>
+                              );
+                            }
                           },
-                          disabled: true
-                        },
-                        {
-                          fieldName: "frequency",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Frequency" }} />
-                          ),
-                          displayTemplate: row => {
-                            return row.frequency === "0"
-                              ? "1-0-1"
-                              : row.frequency === "1"
-                                ? "1-0-0"
-                                : row.frequency === "2"
-                                  ? "0-0-1"
-                                  : row.frequency === "3"
-                                    ? "0-1-0"
-                                    : row.frequency === "4"
-                                      ? "1-1-0"
-                                      : row.frequency === "5"
-                                        ? "0-1-1"
-                                        : row.frequency === "6"
-                                          ? "1-1-1"
-                                          : null;
+                          {
+                            fieldName: "item_id",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Item Name" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              let display =
+                                this.props.itemlist === undefined
+                                  ? []
+                                  : this.props.itemlist.filter(
+                                      f =>
+                                        f.hims_d_item_master_id === row.item_id
+                                    );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].item_description
+                                    : ""}
+                                </span>
+                              );
+                            },
+                            disabled: true
+                          },
+                          {
+                            fieldName: "frequency",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Frequency" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return row.frequency === "0"
+                                ? "1-0-1"
+                                : row.frequency === "1"
+                                  ? "1-0-0"
+                                  : row.frequency === "2"
+                                    ? "0-0-1"
+                                    : row.frequency === "3"
+                                      ? "0-1-0"
+                                      : row.frequency === "4"
+                                        ? "1-1-0"
+                                        : row.frequency === "5"
+                                          ? "0-1-1"
+                                          : row.frequency === "6"
+                                            ? "1-1-1"
+                                            : null;
+                            }
+                          },
+                          {
+                            fieldName: "frequency_type",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Frequency Type" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return row.frequency_type === "PD"
+                                ? "Per Day"
+                                : row.frequency_type === "PH"
+                                  ? "Per Hour"
+                                  : row.frequency_type === "PW"
+                                    ? "Per Week"
+                                    : row.frequency_type === "PM"
+                                      ? "Per Month"
+                                      : row.frequency_type === "AD"
+                                        ? "Alternate Day"
+                                        : null;
+                            }
+                          },
+                          {
+                            fieldName: "frequency_time",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Frequency Time" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return row.frequency_time === "BM"
+                                ? "Before Meals"
+                                : row.frequency_time === "AM"
+                                  ? "After Meals"
+                                  : null;
+                            }
+                          },
+                          {
+                            fieldName: "dosage",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Dosage" }} />
+                            )
+                          },
+                          {
+                            fieldName: "no_of_days",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Duration (Days)" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "start_date",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Start Date" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>{this.dateFormater(row.start_date)}</span>
+                              );
+                            }
                           }
-                        },
-                        {
-                          fieldName: "frequency_type",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Frequency Type" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return row.frequency_type === "PD"
-                              ? "Per Day"
-                              : row.frequency_type === "PH"
-                                ? "Per Hour"
-                                : row.frequency_type === "PW"
-                                  ? "Per Week"
-                                  : row.frequency_type === "PM"
-                                    ? "Per Month"
-                                    : row.frequency_type === "AD"
-                                      ? "Alternate Day"
-                                      : null;
-                          }
-                        },
-                        {
-                          fieldName: "frequency_time",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Frequency Time" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return row.frequency_time === "BM"
-                              ? "Before Meals"
-                              : row.frequency_time === "AM"
-                                ? "After Meals"
-                                : null;
-                          }
-                        },
-                        {
-                          fieldName: "dosage",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Dosage" }} />
-                          )
-                        },
-                        {
-                          fieldName: "no_of_days",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Duration (Days)" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "start_date",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Start Date" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>{this.dateFormater(row.start_date)}</span>
-                            );
-                          }
-                        }
-                      ]}
-                      keyId="item_id"
-                      dataSource={{
-                        data: this.props.inputsparameters.item_list
-                      }}
-                      // isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        //   onDelete: deleteItems.bind(this, this),
-                        onEdit: row => {}
-                        // onDone: this.updateBillDetail.bind(this)
-                      }}
-                    />
+                        ]}
+                        keyId="item_id"
+                        dataSource={{
+                          data: this.props.inputsparameters.item_list
+                        }}
+                        // isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          //   onDelete: deleteItems.bind(this, this),
+                          onEdit: row => {}
+                          // onDone: this.updateBillDetail.bind(this)
+                        }}
+                      />
+                    </div>
+
+                    <div className=" popupFooter">
+                      <div className="col-lg-12">
+                        <div className="row">
+                          <div className="col-lg-12">
+                            <button
+                              className="htpl1-phase1-btn-secondary"
+                              onClick={e => {
+                                this.onClose(e);
+                              }}
+                            >
+                              <AlgaehLabel label={{ forceLabel: "Close" }} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

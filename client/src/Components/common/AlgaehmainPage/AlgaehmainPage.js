@@ -194,12 +194,13 @@ class PersistentDrawer extends React.Component {
 
   openSubMenuSelection(data) {
     let getMenuSelected = data.name;
-    if (this.state.menuSelected) {
+
+    if (this.state.menuSelected === getMenuSelected) {
       this.setState({
         menuSelected: "",
         toggleSubMenu: true
       });
-    } else if (this.state.menuSelected === "") {
+    } else {
       this.setState({
         menuSelected: getMenuSelected,
         toggleSubMenu: false

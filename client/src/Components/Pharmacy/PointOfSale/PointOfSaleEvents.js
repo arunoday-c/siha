@@ -88,23 +88,6 @@ const getPatientDetails = ($this, output) => {
     afterSuccess: data => {
       if (data.length !== 0) {
         debugger;
-        // if ($this.state.visit_id !== null) {
-        //   for (let i = 0; i < data.visitDetails.length; i++) {
-        //     if (
-        //       data.visitDetails[i].hims_f_patient_visit_id ===
-        //       $this.state.visit_id
-        //     ) {
-        //       data.visitDetails[i].radioselect = 1;
-        //     }
-        //   }
-        //   AlgaehLoader({ show: false });
-        // }
-        debugger;
-        // let x = Enumerable.from($this.props.patienttype)
-        //   .where(
-        //     w => w.hims_d_patient_type_id == data.patientRegistration.patient_type
-        //   )
-        //   .toArray();
 
         // data.patientRegistration.visitDetails = data.visitDetails;
         data.patientRegistration.patient_id =
@@ -324,7 +307,7 @@ const AddItems = ($this, ItemInput) => {
       afterSuccess: data => {
         debugger;
 
-        let existingservices = $this.state.pharmacy_stock_detail;
+        let existingservices = [];
 
         if (data.billdetails.length !== 0) {
           for (let i = 0; i < data.billdetails.length; i++) {

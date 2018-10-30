@@ -190,6 +190,21 @@
         "label": "قبل الموافقة",
         "arlabel": "ممرضة طاولة العمل",
         "path": "/PreApproval"
+      },
+      {
+        "name": "GenerateClaims",
+        "label": "توليد المطالبات",
+        "path": "/GenerateClaims"
+      },
+      {
+        "name": "VerifySubmitClaims",
+        "label": "تحقق من تقديم المطالبات",
+        "path": "/VerifySubmitClaims"
+      },
+      {
+        "name": "UploadRemittance",
+        "label": "رفع التحويلات",
+        "path": "/UploadRemittance"
       }
     ]
   },
@@ -257,9 +272,57 @@
         "path": "/InitialStock"
       },
       {
-        "name": "Order Entry",
-        "label": "دخول POS",
-        "path": "/OrderEntry"
+        "name": "Requisition Entry",
+        "label": "طلب دخول",
+        "path": "/RequisitionEntry"
+      },
+      {
+        "name": "Requisition List",
+        "label": "قائمة الطلبات",
+        "path": "/RequisitionList"
+      },
+      {
+        "name": "Transfer Entry",
+        "label": "طلب دخول",
+        "path": "/TransferEntry"
+      }
+    ]
+  },
+  {
+    "name": "Procurement",
+    "label": "تدبير",
+    "icon": "fas fa-shopping-cart",
+    "subMenu": [
+      {
+        "name": "Purchase Order Entry",
+        "label": "إدخال طلب الشراء",
+        "path": "/PurchaseOederEntry"
+      },
+      {
+        "name": "Delivery Note Entry",
+        "label": "ملاحظة إدخال التسليم",
+        "path": "/DeliveryNoteEntry"
+      },
+
+      {
+        "name": "Receipt Entry",
+        "label": "دخول الإيصال",
+        "path": "/ReceiptEntry"
+      },
+      {
+        "name": "Purchase Return Entry",
+        "label": "شراء العودة الدخول",
+        "path": "/PurchaseReturnEntry"
+      },
+      {
+        "name": "Credit/Debit Note Entry",
+        "label": "الائتمان / الخصم ملاحظة الدخول",
+        "path": "/CreditDebitNoteEntry"
+      },
+      {
+        "name": "Shipment Entry",
+        "label": "دخول الشحنة",
+        "path": "/ShipmentEntry"
       }
     ]
   },
@@ -269,14 +332,9 @@
     "icon": "fa fa-money-bill",
     "subMenu": [
       {
-        "name": "Account Payable",
-        "label": "دفع الحساب",
-        "path": "/InitialStock"
-      },
-      {
-        "name": "Account Receivable",
-        "label": "حساب المستحق",
-        "path": "/OrderEntry"
+        "name": "Day End Process",
+        "label": "عملية نهاية اليوم",
+        "path": "/DayEndProcess"
       }
     ]
   },
