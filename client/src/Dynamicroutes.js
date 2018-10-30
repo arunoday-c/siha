@@ -54,6 +54,9 @@ import FrontDeskAppt from "./Components/FrontDesk/FrontDesk";
 import RequisitionSwitch from "./Components/Pharmacy/RequisitionList/RequisitionSwitch";
 import Reports from "./Components/Reports/Reports";
 
+import WorkListGeneration from "./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration";
+import RCMDesktop from "./Components/InsuranceClaims/RCMDesktop/RCMDesktop";
+
 // function height() {
 //   let height =
 //     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -114,7 +117,9 @@ const componts = (selectedLang, breadStyle) => {
     ProcedureSetup: <ProcedureSetup SelectLanguage={selectedLang} />,
     TransferEntry: <TransferEntry SelectLanguage={selectedLang} />,
     RequisitionList: <RequisitionSwitch SelectLanguage={selectedLang} />,
-    ReportsList: <Reports SelectLanguage={selectedLang} />
+    ReportsList: <Reports SelectLanguage={selectedLang} />,
+    WorkListGeneration: <WorkListGeneration SelectLanguage={selectedLang} />,
+    RCMDesktop: <RCMDesktop SelectLanguage={selectedLang} />
   };
 };
 

@@ -195,6 +195,7 @@ class AutoComplete extends PureComponent {
             placeholder={_placeHolder}
             title={_placeHolder}
             onFocus={this.onFocusTextbox.bind(this)}
+            referencevalue={this.state.displayValue}
             value={this.state.displayText}
             disabled={isDisable}
             onChange={this.onAutoCompleteTextHandler.bind(this)}

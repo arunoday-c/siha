@@ -1,13 +1,9 @@
 import React, { Component } from "react";
 import "./reports.css";
-import {
-  AlagehAutoComplete,
-  Modal,
-  AlagehFormGroup
-} from "../Wrapper/algaehWrapper";
+import { AlagehAutoComplete, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import Enumerable from "linq";
 import data from "./reports_data";
-
+import AlgaehReport from "../Wrapper/printReports";
 class Reports extends Component {
   constructor(props) {
     super(props);
@@ -49,40 +45,6 @@ class Reports extends Component {
   render() {
     return (
       <div className="reports">
-        <Modal open={this.state.showSelector}>
-          <div className="algaeh-modal">
-            <div className="popupHeader">
-              <div className="row">
-                <div className="col-lg-8">
-                  <h4>Select Range</h4>
-                </div>
-                <div className="col-lg-4">
-                  <button type="button" onClick={this.handleClose.bind(this)}>
-                    <i className="fas fa-times-circle" />
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-12 popupInner">Range</div>
-
-            <div className="popupFooter">
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-8">
-                    {/* <button
-                      className="btn btn-default"
-                      onClick={this.handleClose.bind(this)}
-                    >
-                      Close
-                    </button> */}
-                  </div>
-                  <div className="col-lg-4" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Modal>
-
         <div className="row inner-top-search">
           <form action="none" style={{ width: "100%" }}>
             <div className="row padding-10">
@@ -114,7 +76,7 @@ class Reports extends Component {
                     placeholder: "Search for reports"
                   },
                   events: {
-                    onChange: ""
+                    onChange: () => {}
                   }
                 }}
               />
@@ -139,12 +101,18 @@ class Reports extends Component {
               <div className="row">
                 {this.state.itemList.map((data, index) => (
                   <div
+                    key={index}
+                    className="col-lg-2 reportList"
                     onClick={() => {
-                      this.setState({
-                        showSelector: true
+                      AlgaehReport({
+                        report: {
+                          fileName: "printreceipt"
+                        },
+                        plotUI: {
+                          paramters: data.reportParamerts
+                        }
                       });
                     }}
-                    className="col-lg-2 reportList"
                   >
                     <div>
                       <i className="fas fa-file-medical-alt" />

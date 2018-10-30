@@ -153,12 +153,43 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
-    row.addNew = false;
-    this.setState({
-      isOpen: !this.state.isOpen,
-      servicePop: row,
-      addNew: false
-    });
+    debugger;
+    if (row.cpt_code !== null) {
+      this.props.getCptCodes({
+        uri: "/icdcptcodes/selectCptCodes",
+        method: "GET",
+        data: { hims_d_cpt_code_id: row.cpt_code },
+        redux: {
+          type: "HOSPITAL_DETAILS_GET_DATA",
+          mappingName: "cptcodes"
+        },
+        afterSuccess: data => {
+          if (data.length !== undefined && data.length !== 0) {
+            row.addNew = false;
+            row.cpt_code_data = data[0].cpt_code;
+            this.setState({
+              isOpen: !this.state.isOpen,
+              servicePop: row,
+              addNew: false
+            });
+          } else {
+            row.addNew = false;
+            this.setState({
+              isOpen: !this.state.isOpen,
+              servicePop: row,
+              addNew: false
+            });
+          }
+        }
+      });
+    } else {
+      row.addNew = false;
+      this.setState({
+        isOpen: !this.state.isOpen,
+        servicePop: row,
+        addNew: false
+      });
+    }
   }
 
   clearData(e) {
@@ -511,7 +542,8 @@ function mapStateToProps(state) {
     hospitalservices: state.hospitalservices,
     servicetype: state.servicetype,
     subdepartments: state.subdepartments,
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
+    cptcodes: state.cptcodes
   };
 }
 
@@ -521,7 +553,8 @@ function mapDispatchToProps(dispatch) {
       getServices: AlgaehActions,
       getServiceTypes: AlgaehActions,
       getSubDepatments: AlgaehActions,
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
+      getCptCodes: AlgaehActions
     },
     dispatch
   );

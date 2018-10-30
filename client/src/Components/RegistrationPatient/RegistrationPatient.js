@@ -110,7 +110,8 @@ class RegistrationPatient extends PureComponent {
           hims_d_services_id: this.props.hims_d_services_id,
           saveEnable: false,
           clearEnable: true,
-          consultation: "Y"
+          consultation: "Y",
+          appointment_patient: "Y"
         },
         () => {
           if (this.props.fromAppoinment === true) {
@@ -321,6 +322,7 @@ class RegistrationPatient extends PureComponent {
             data.patientRegistration.department_id = department_id;
             data.patientRegistration.billdetail = false;
             data.patientRegistration.consultation = "Y";
+            data.patientRegistration.appointment_patient = "Y";
           }
           //Appoinment End
           data.patientRegistration.filePreview =
@@ -360,6 +362,7 @@ class RegistrationPatient extends PureComponent {
               data.patientRegistration.department_id = department_id;
               data.patientRegistration.billdetail = false;
               data.patientRegistration.consultation = "Y";
+              data.patientRegistration.appointment_patient = "Y";
             }
             //Appoinment End
             data.patientRegistration.filePreview =
