@@ -70,6 +70,7 @@ class SampleCollectionPatient extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
+      debugger;
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });
     }
@@ -217,6 +218,7 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
+                                  debugger;
                                   return row.billed === "N"
                                     ? "Not Billed"
                                     : "Billed";
@@ -258,6 +260,7 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
+                                  debugger;
                                   let display =
                                     this.props.labspecimen === undefined
                                       ? []
@@ -288,12 +291,13 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  return row.collected === "N" ? "No" : "Yes";
-                                },
-                                others: {
-                                  resizable: false,
-                                  style: { textAlign: "center" }
+                                  debugger;
+                                  return row.collected === "Y" ? "Yes" : "No";
                                 }
+                                // others: {
+                                //   resizable: false,
+                                //   style: { textAlign: "center" }
+                                // }
                               },
                               {
                                 fieldName: "collected_by",
