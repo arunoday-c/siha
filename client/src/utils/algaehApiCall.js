@@ -198,7 +198,7 @@ export function algaehApiCall(options) {
                     message: err.response.data.message
                   };
                 }
-                const _message = clearSqlMessage(err.response.data.message);
+                const _message = clearSqlMessage(err.response);
                 swalMessage({
                   title: _message,
                   type: "error",
