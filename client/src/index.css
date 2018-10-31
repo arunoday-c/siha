@@ -417,7 +417,7 @@
     padding: 0;
     border-radius: 5px;
     overflow: hidden;
-    width: 80%;
+    width: 90vw;
     box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.4); }
     :global .algaeh-modal .popupHeader {
       background: #dbad64;
@@ -501,7 +501,7 @@
     padding: 0;
     border-radius: 5px;
     overflow: hidden;
-    width: 80%;
+    width: 90vw;
     box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.4);
     direction: rtl;
     text-align: right; }
