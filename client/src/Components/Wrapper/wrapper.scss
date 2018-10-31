@@ -12,7 +12,9 @@
   .rt-tbody {
     flex: initial !important;
   }
-
+  .rt-td {
+    overflow: inherit !important;
+  }
   .rt-thead.-filters {
     top: 25px;
     .rt-tr {
