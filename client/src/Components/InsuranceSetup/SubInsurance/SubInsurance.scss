@@ -30,3 +30,9 @@
     border-right: 1px solid #e6e6e6;
   }
 }
+#subInsuranceGridCntr {
+  margin-top: 10px;
+  .ReactTable {
+    height: 38vh !important;
+  }
+}

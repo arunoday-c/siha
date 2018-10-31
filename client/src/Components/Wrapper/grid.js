@@ -297,7 +297,7 @@ class DataGrid extends PureComponent {
               width: undefined, // A hardcoded width for the column. This overrides both min and max width options
               minWidth: 100, // A minimum width for this column. If there is extra room, column will flex to fill available space (up to the max-width, if set)
               maxWidth: undefined, // A maximum width for this column.
-              style: { "white-space": "unset" },
+              style: { whiteSpace: "unset" },
               Cell: this.renderEditable.bind(this, {
                 displayTemp: s.displayTemplate,
                 editorTemp: s.editorTemplate
