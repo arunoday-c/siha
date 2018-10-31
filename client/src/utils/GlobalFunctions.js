@@ -201,9 +201,11 @@ export function AlgaehValidation(options) {
     alertTypeIcon: "warning",
     ...options
   };
-  let _rootValidationElement = document.querySelector(
-    "[" + settings.querySelector + "]"
-  );
+  let _rootValidationElement = null;
+  if (settings.querySelector !== undefined && settings.querySelector !== "")
+    _rootValidationElement = document.querySelector(
+      "[" + settings.querySelector + "]"
+    );
   if (_rootValidationElement === null) {
     _rootValidationElement = document.querySelector("[id='root']");
   }
