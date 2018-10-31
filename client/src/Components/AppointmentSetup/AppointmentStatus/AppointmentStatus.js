@@ -62,8 +62,7 @@ class AppointmentStatus extends Component {
       confirmButtonText: "Yes!",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-      dangerMode: true
+      cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
@@ -348,15 +347,9 @@ class AppointmentStatus extends Component {
                             },
                             others: {
                               type: "color"
-                            },
-
-                            error: row.color_code_error,
-                            helperText: row.color_code_error_text
+                            }
                           }}
                         />
-                        <span className="color-picker-icon col-lg-1">
-                          <i className="fas fa-palette" />
-                        </span>
                       </div>
                     );
                   }

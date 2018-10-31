@@ -547,7 +547,6 @@ input:disabled:-ms-input-placeholder {
 input[type="color"] {
   font-size: 0.85rem;
   -webkit-appearance: none;
-  width: 32px;
   height: 29px;
   padding: 0;
   margin: 0;

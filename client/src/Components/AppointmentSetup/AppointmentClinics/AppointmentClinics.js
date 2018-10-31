@@ -389,9 +389,6 @@ class AppointmentClinics extends Component {
                     return (
                       <AlagehAutoComplete
                         div={{ className: "col" }}
-                        label={{
-                          fieldName: "department_name"
-                        }}
                         selector={{
                           name: "sub_department_id",
                           className: "select-fld",
@@ -417,9 +414,6 @@ class AppointmentClinics extends Component {
                     return (
                       <AlagehAutoComplete
                         div={{ className: "col" }}
-                        label={{
-                          fieldName: "doctor"
-                        }}
                         selector={{
                           name: "provider_id",
                           className: "select-fld",
@@ -445,9 +439,6 @@ class AppointmentClinics extends Component {
                     return (
                       <AlagehAutoComplete
                         div={{ className: "col" }}
-                        label={{
-                          fieldName: "room"
-                        }}
                         selector={{
                           name: "room_id",
                           className: "select-fld",
