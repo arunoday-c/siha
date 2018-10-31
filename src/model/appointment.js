@@ -1141,7 +1141,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
             next(error);
           }
 
-
+          if (result.length > 0) {
           new Promise((resolve, reject) => {
             try{
 
@@ -1222,12 +1222,16 @@ let getDoctorScheduleDateWise = (req, res, next) => {
             next();
           }
         })
-          
+      }else {
+        releaseDBConnection(db, connection);
+        req.records = result;
+        next();
+      }   
 
 
 
 
-          ///----------------------------
+         
          
         }
       );
