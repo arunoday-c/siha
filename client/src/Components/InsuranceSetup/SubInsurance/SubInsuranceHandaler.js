@@ -42,38 +42,38 @@ const saveSubInsurance = ($this, context) => {
     };
     let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
     previous.push(obj);
-    if ($this.state.buttonenable === true) {
-      updatedata.push(obj);
-      algaehApiCall({
-        uri: "/insurance/addSubInsuranceProvider",
-        data: updatedata,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            swalMessage({
-              type: "success",
-              title: "Added successfully . ."
+    // if ($this.state.buttonenable === true) {
+    updatedata.push(obj);
+    algaehApiCall({
+      uri: "/insurance/addSubInsuranceProvider",
+      data: updatedata,
+      onSuccess: response => {
+        if (response.data.success === true) {
+          $this.setState({
+            insurance_sub_saved: true,
+            sub_insurance: previous
+          });
+
+          if (context !== undefined) {
+            context.updateState({
+              sub_insurance: previous
             });
           }
-        },
-        onFailure: error => {
+          addNewSubinsurance($this);
           swalMessage({
-            title: error.response.data.message,
-            type: "error"
+            type: "success",
+            title: "Added successfully . ."
           });
         }
-      });
-    }
-    $this.setState({
-      insurance_sub_saved: true,
-      sub_insurance: previous
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "error"
+        });
+      }
     });
-
-    if (context !== undefined) {
-      context.updateState({
-        sub_insurance: previous
-      });
-    }
-    addNewSubinsurance($this);
+    // }
   }
 };
 
