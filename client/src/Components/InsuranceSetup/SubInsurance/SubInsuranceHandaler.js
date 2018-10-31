@@ -114,6 +114,7 @@ const showconfirmDialog = ($this, id) => {
         method: "DELETE",
         onSuccess: response => {
           if (response.data.success) {
+            debugger;
             getSubInsuranceDetails($this);
             swalMessage({
               type: "success",

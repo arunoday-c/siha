@@ -228,14 +228,14 @@ class InsuranceAdd extends PureComponent {
                         <button
                           type="button"
                           className="btn btn-primary"
-                          onClick={handleNext.bind(this, this)}
+                          onClick={handleNext.bind(this, this, "Next")}
                         >
                           {activeStep === steps.length - 1
                             ? "Finish"
                             : "Save & Next"}
                         </button>
                         <button
-                          onClick={handleNext.bind(this, this)}
+                          onClick={handleNext.bind(this, this, "Close")}
                           type="button"
                           className="btn btn-default"
                         >

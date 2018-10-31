@@ -51,6 +51,17 @@ class InsuranceSetup extends Component {
   }
 
   ShowModel(e) {
+    this.setState({
+      ...this.state,
+      isOpen: !this.state.isOpen,
+      addfunctionality: true,
+      buttonenable: false,
+      insurance_provider_id: null,
+      insurance_provider_name: null
+    });
+  }
+
+  CloseModel(e) {
     this.setState(
       {
         ...this.state,
@@ -60,10 +71,18 @@ class InsuranceSetup extends Component {
         insurance_provider_id: null,
         insurance_provider_name: null
       },
-      () => {}
+      () => {
+        this.props.getInsuranceProviders({
+          uri: "/insurance/getListOfInsuranceProvider",
+          method: "GET",
+          redux: {
+            type: "INSURANCE_PROVIDER_GET_DATA",
+            mappingName: "insProviders"
+          }
+        });
+      }
     );
   }
-  getCtrlCode(insCode) {}
 
   changeDateFormat = date => {
     if (date != null) {
@@ -273,7 +292,7 @@ class InsuranceSetup extends Component {
                     />
                   }
                   open={this.state.isOpen}
-                  onClose={this.ShowModel.bind(this)}
+                  onClose={this.CloseModel.bind(this)}
                   opencomponent={this.state.opencomponent}
                   addfunctionality={this.state.addfunctionality}
                   buttonenable={this.state.buttonenable}

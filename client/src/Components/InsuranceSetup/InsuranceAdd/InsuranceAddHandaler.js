@@ -1,7 +1,8 @@
 import { Validations } from "./InsuranceAddValidation";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
-const handleNext = ($this, e) => {
+const handleNext = ($this, setp, e) => {
   debugger;
   const err = Validations($this);
   if (!err) {
@@ -13,45 +14,63 @@ const handleNext = ($this, e) => {
           data: $this.state,
           onSuccess: response => {
             if (response.data.success === true) {
-              setComponent($this, response.data.records);
+              if (setp === "Close") {
+                $this.onClose(e);
+              } else if (setp === "Next") {
+                setComponent($this, response.data.records);
+              }
             }
           }
         });
       } else {
-        setComponent($this, {});
+        if (setp === "Close") {
+          $this.onClose(e);
+        } else if (setp === "Next") {
+          setComponent($this, {});
+        }
       }
     } else if ($this.state.screenName === "SubInsurance") {
       //Save Sub
-
-      if ($this.state.insurance_sub_saved === false) {
-        algaehApiCall({
-          uri: "/insurance/addSubInsuranceProvider",
-          data: $this.state.sub_insurance,
-          onSuccess: response => {
-            if (response.data.success === true) {
-              setComponent($this, response.data.records);
-            }
-          }
-        });
-      } else {
+      if (setp === "Close") {
+        $this.onClose(e);
+      } else if (setp === "Next") {
         setComponent($this, {});
       }
+      // if ($this.state.insurance_sub_saved === false) {
+      //   algaehApiCall({
+      //     uri: "/insurance/addSubInsuranceProvider",
+      //     data: $this.state.sub_insurance,
+      //     onSuccess: response => {
+      //       if (response.data.success === true) {
+      //         setComponent($this, response.data.records);
+      //       }
+      //     }
+      //   });
+      // } else {
+      //   setComponent($this, {});
+      // }
     } else if ($this.state.screenName === "NetworkPlan") {
       //Save Network and Plan
 
-      if ($this.state.insurance_plan_saved === false) {
-        algaehApiCall({
-          uri: "/insurance/addPlanAndPolicy",
-          data: $this.state.network_plan,
-          onSuccess: response => {
-            if (response.data.success === true) {
-              setComponent($this, response.data.records);
-            }
-          }
-        });
-      } else {
+      if (setp === "Close") {
+        $this.onClose(e);
+      } else if (setp === "Next") {
         setComponent($this, {});
       }
+
+      // if ($this.state.insurance_plan_saved === false) {
+      //   algaehApiCall({
+      //     uri: "/insurance/addPlanAndPolicy",
+      //     data: $this.state.network_plan,
+      //     onSuccess: response => {
+      //       if (response.data.success === true) {
+      //         setComponent($this, response.data.records);
+      //       }
+      //     }
+      //   });
+      // } else {
+      //   setComponent($this, {});
+      // }
     } else if ($this.state.screenName === "Services") {
       //Save Services
 
@@ -128,20 +147,31 @@ const handleReset = ($this, e) => {
 
 const updatedata = ($this, e) => {
   if ($this.props.opencomponent === "1") {
-    algaehApiCall({
-      uri: "/insurance/updateInsuranceProvider",
-      method: "PUT",
-      data: $this.state,
-      onSuccess: response => {
-        if (response.data.success === true) {
-          swalMessage({
-            title: "Updated successfully . .",
-            type: "success"
-          });
-          $this.props.onClose && $this.props.onClose(e);
-        }
+    let isError = false;
+    AlgaehValidation({
+      querySelector: "data-validate='InsuranceProvider'", //if require section level
+      fetchFromFile: true, //if required arabic error
+      alertTypeIcon: "warning", // error icon
+      onCatch: () => {
+        isError = true;
       }
     });
+    if (isError === false) {
+      algaehApiCall({
+        uri: "/insurance/updateInsuranceProvider",
+        method: "PUT",
+        data: $this.state,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swalMessage({
+              title: "Updated successfully . .",
+              type: "success"
+            });
+            $this.props.onClose && $this.props.onClose(e);
+          }
+        }
+      });
+    }
   }
 };
 
