@@ -1,71 +1,131 @@
+import { swalMessage } from "../../../utils/algaehApiCall";
+import {
+  getLabelFromLanguage,
+  AlgaehValidation
+} from "../../../utils/GlobalFunctions";
+
 const Validations = ($this, e) => {
   let isError = false;
-
-  if ($this.state.screenName === "InsuranceProvider") {
-    if ($this.state.insurance_provider_code === null) {
+  AlgaehValidation({
+    querySelector: "data-validate='InsuranceProvider'", //if require section level
+    fetchFromFile: true, //if required arabic error
+    alertTypeIcon: "warning", // error icon
+    onCatch: () => {
       isError = true;
-      $this.setState({
-        snackeropen: true,
-        MandatoryMsg: "Invalid Input. Insurance Code Cannot be blank."
-      });
-      document.querySelector("[name='insurance_provider_code']").focus();
-      return isError;
-    } else if ($this.state.insurance_provider_name === null) {
-      isError = true;
-      $this.setState({
-        snackeropen: true,
-        MandatoryMsg: "Invalid Input. Insurance Name Cannot be blank."
-      });
-      document.querySelector("[name='insurance_provider_name']").focus();
-      return isError;
-    } else if ($this.state.insurance_type === null) {
-      isError = true;
-      $this.setState({
-        snackeropen: true,
-        MandatoryMsg: "Invalid Input. Insurance Type is Mandatory."
-      });
-      return isError;
-    } else if ($this.state.company_service_price_type === null) {
-      isError = true;
-      $this.setState({
-        snackeropen: true,
-        MandatoryMsg: "Invalid Input. Service Price Type Cannot be blank."
-      });
-      return isError;
-    } else if ($this.state.payment_type === null) {
-      isError = true;
-      $this.setState({
-        snackeropen: true,
-        MandatoryMsg: "Invalid Input. Payment Type Cannot be blank."
-      });
-
-      return isError;
-    } else if ($this.state.package_claim === null) {
-      isError = true;
-      $this.setState({
-        snackeropen: true,
-        MandatoryMsg: "Invalid Input. Package Claim Cannot be blank."
-      });
-
-      return isError;
-    } else if ($this.state.credit_period === null) {
-      isError = true;
-      $this.setState({
-        snackeropen: true,
-        MandatoryMsg: "Invalid Input. Credit Period Cannot be blank."
-      });
-
-      return isError;
-    } else if ($this.state.effective_end_date === null) {
-      isError = true;
-      $this.setState({
-        snackeropen: true,
-        MandatoryMsg: "Invalid Input. Valid Upto Cannot be blank."
-      });
-
-      return isError;
     }
+  });
+  return isError;
+  if ($this.state.screenName === "InsuranceProvider") {
+    // const _Validateerror = document.querySelectorAll("[validateerror]");
+    // for (let i = 0; i < _Validateerror.length; i++) {
+    //   let _checkVal = _Validateerror[i].getAttribute("checkvalidation");
+    //   if (_Validateerror[i].value === _checkVal) {
+    //     let _filedName = _Validateerror[i].getAttribute("validateerror");
+    //     swalMessage({
+    //       title:
+    //         getLabelFromLanguage({
+    //           fieldName: _filedName
+    //         }) +
+    //         " " +
+    //         getLabelFromLanguage({
+    //           fieldName: "Cannotbeblank"
+    //         }),
+    //       type: "warning"
+    //     });
+    //     isError = true;
+    //     _Validateerror[i].focus();
+    //     break;
+    //   }
+    // }
+    // return isError;
   }
+  // if ($this.state.screenName === "InsuranceProvider") {
+  //   if ($this.state.insurance_provider_code === null) {
+  //     isError = true;
+  //     swalMessage({
+  //       title:
+  //         getLabelFromLanguage({
+  //           fieldName: "insurance_provider_code"
+  //         }) +
+  //         " " +
+  //         getLabelFromLanguage({
+  //           fieldName: "Cannotbeblank"
+  //         }),
+  //       type: "warning"
+  //     });
+
+  //     document.querySelector("[name='insurance_provider_code']").focus();
+  //     return isError;
+  //   } else if ($this.state.insurance_provider_name === null) {
+  //     isError = true;
+  //     swalMessage({
+  //       title:
+  //         getLabelFromLanguage({
+  //           fieldName: "insurance_provider_name"
+  //         }) +
+  //         " " +
+  //         getLabelFromLanguage({
+  //           fieldName: "Cannotbeblank"
+  //         }),
+  //       type: "warning"
+  //     });
+  //     document.querySelector("[name='insurance_provider_name']").focus();
+  //     return isError;
+  //   } else if ($this.state.insurance_type === null) {
+  //     isError = true;
+  //     swalMessage({
+  //       title:
+  //         getLabelFromLanguage({
+  //           fieldName: "insurance_type"
+  //         }) +
+  //         " " +
+  //         getLabelFromLanguage({
+  //           fieldName: "Cannotbeblank"
+  //         }),
+  //       type: "warning"
+  //     });
+  //     return isError;
+  //   } else if ($this.state.company_service_price_type === null) {
+  //     isError = true;
+  //     $this.setState({
+  //       snackeropen: true,
+  //       MandatoryMsg: "Invalid Input. Service Price Type Cannot be blank."
+  //     });
+  //     return isError;
+  //   } else if ($this.state.payment_type === null) {
+  //     isError = true;
+  //     $this.setState({
+  //       snackeropen: true,
+  //       MandatoryMsg: "Invalid Input. Payment Type Cannot be blank."
+  //     });
+
+  //     return isError;
+  //   } else if ($this.state.package_claim === null) {
+  //     isError = true;
+  //     $this.setState({
+  //       snackeropen: true,
+  //       MandatoryMsg: "Invalid Input. Package Claim Cannot be blank."
+  //     });
+
+  //     return isError;
+  //   } else if ($this.state.credit_period === null) {
+  //     isError = true;
+  //     $this.setState({
+  //       snackeropen: true,
+  //       MandatoryMsg: "Invalid Input. Credit Period Cannot be blank."
+  //     });
+
+  //     return isError;
+  //   } else if ($this.state.effective_end_date === null) {
+  //     isError = true;
+  //     $this.setState({
+  //       snackeropen: true,
+  //       MandatoryMsg: "Invalid Input. Valid Upto Cannot be blank."
+  //     });
+
+  //     return isError;
+  //   }
+  // }
   //Sub Insurance
   else if ($this.state.screenName === "SubInsurance") {
     let obj = {};
@@ -128,49 +188,53 @@ const Validations = ($this, e) => {
     if ($this.state.network_plan.length === 0) {
       if (obj1.network_type === null) {
         isError = true;
-        $this.setState({
-          snackeropen: true,
-          MandatoryMsg: "Invalid Input. Network Type cannot be blank."
+        swalMessage({
+          title: "Network Type cannot be blank.",
+          type: "warning"
         });
+
         document.querySelector("[name='network_type']").focus();
         return isError;
       } else if (obj1.employer === null) {
         isError = true;
-        $this.setState({
-          snackeropen: true,
-          MandatoryMsg: "Invalid Input. Employer/Company cannot be blank."
+        swalMessage({
+          title: "Employer/Company cannot be blank.",
+          type: "warning"
         });
+
         document.querySelector("[name='employer']").focus();
         return isError;
       } else if (obj1.policy_number === null) {
         isError = true;
-        $this.setState({
-          snackeropen: true,
-          MandatoryMsg: "Invalid Input. Policy Number cannot be blank."
+
+        swalMessage({
+          title: "Policy Number cannot be blank.",
+          type: "warning"
         });
+
         document.querySelector("[name='policy_number']").focus();
         return isError;
       } else if (obj1.effective_start_date === null) {
         isError = true;
-        $this.setState({
-          snackeropen: true,
-          MandatoryMsg: "Invalid Input. Active From cannot be blank."
+        swalMessage({
+          title: "Active From cannot be blank.",
+          type: "warning"
         });
 
         return isError;
       } else if (obj1.effective_end_date === null) {
         isError = true;
-        $this.setState({
-          snackeropen: true,
-          MandatoryMsg: "Invalid Input. Valid Upto cannot be blank."
+        swalMessage({
+          title: "Valid Upto cannot be blank.",
+          type: "warning"
         });
 
         return isError;
       } else if (obj1.price_from === null) {
         isError = true;
-        $this.setState({
-          snackeropen: true,
-          MandatoryMsg: "Invalid Input. Price From cannot be blank."
+        swalMessage({
+          title: "Price From cannot be blank.",
+          type: "warning"
         });
 
         return isError;
