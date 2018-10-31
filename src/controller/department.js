@@ -20,15 +20,13 @@ export default ({ config, db }) => {
     addDepartment,
     (req, res, next) => {
       let resultTables = req.records;
-      if (resultTables.length != 0) {
+     
         res.status(httpStatus.ok).json({
           success: true,
           records: resultTables
         });
         next();
-      } else {
-        next(httpStatus.generateError(httpStatus.notFound, "No more records"));
-      }
+      
     },
     releaseConnection
   );
