@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import "./LabSection.css";
-import Button from "@material-ui/core/Button";
 
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -33,9 +31,6 @@ class LabSection extends Component {
     this.state = {
       hims_d_lab_section_id: "",
       description: "",
-
-      description_error: false,
-      description_error_txt: "",
       selectedLang: "en"
     };
     this.baseState = this.state;
@@ -66,12 +61,9 @@ class LabSection extends Component {
   render() {
     return (
       <div className="lab_section">
-        <LinearProgress id="myProg" style={{ display: "none" }} />
         <div className="container-fluid">
           <form>
-            <div
-              className="row"
-            >
+            <div className="row">
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -84,21 +76,17 @@ class LabSection extends Component {
                   value: this.state.description,
                   events: {
                     onChange: changeTexts.bind(this, this)
-                  },
-                  error: this.state.description_error,
-                  helperText: this.state.description_error_txt
+                  }
                 }}
               />
- <div
-                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
-                >
-                  <button
+              <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+                <button
                   onClick={insertLabSection.bind(this, this)}
-                    className="btn btn-primary"
-                  >
-                    Add to List
-                  </button>
-                </div>
+                  className="btn btn-primary"
+                >
+                  Add to List
+                </button>
+              </div>
             </div>
           </form>
 

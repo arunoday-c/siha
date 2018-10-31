@@ -32,7 +32,9 @@ const numberhandle = ($this, ctrl, e) => {
 };
 
 const saveNetworkPlan = ($this, context) => {
+  debugger;
   const err = Validations($this);
+
   let newdata = [];
   if (!err) {
     let obj = {
@@ -76,22 +78,22 @@ const saveNetworkPlan = ($this, context) => {
     let previous = $this.state.network_plan ? $this.state.network_plan : [];
     previous.push(obj);
 
-    if ($this.state.buttonenable === true) {
-      newdata.push(obj);
+    // if ($this.state.buttonenable === true) {
+    newdata.push(obj);
 
-      algaehApiCall({
-        uri: "/insurance/addPlanAndPolicy",
-        data: newdata,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            swalMessage({
-              type: "success",
-              title: "Added successfully . ."
-            });
-          }
+    algaehApiCall({
+      uri: "/insurance/addPlanAndPolicy",
+      data: newdata,
+      onSuccess: response => {
+        if (response.data.success === true) {
+          swalMessage({
+            type: "success",
+            title: "Added successfully . ."
+          });
         }
-      });
-    }
+      }
+    });
+    // }
 
     $this.setState({
       insurance_plan_saved: true,

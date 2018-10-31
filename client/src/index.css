@@ -466,7 +466,6 @@
         overflow: auto;
         padding: 15px; }
       :global .algaeh-modal .popupInner .popRightDiv {
-        border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
         max-height: 70vh;
         overflow: auto;
@@ -555,7 +554,6 @@
         overflow: auto;
         padding: 15px 15px 0; }
       :global .algaeh-modal-Ar .popupInner .popRightDiv {
-        border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
         max-height: 70vh;
         overflow: auto;

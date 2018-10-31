@@ -168,7 +168,7 @@ const UpdateRadOrder = ($this, row) => {
     });
   } else {
     swalMessage({
-      title: "Invalid Input. Already Arrived. .",
+      title: "Invalid Input. Payment is not done",
       type: "warning"
     });
   }

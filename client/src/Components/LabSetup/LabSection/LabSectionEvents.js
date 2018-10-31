@@ -1,5 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -48,10 +49,13 @@ const showconfirmDialog = ($this, id) => {
   swal({
     title: "Are you sure you want to delete this Section?",
     type: "warning",
-    buttons: true,
-    dangerMode: true
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
   }).then(willDelete => {
-    if (willDelete) {
+    if (willDelete.value) {
       let data = { hims_d_lab_section_id: id };
       algaehApiCall({
         uri: "/labmasters/deleteSection",
@@ -75,6 +79,11 @@ const showconfirmDialog = ($this, id) => {
         },
         onFailure: error => {}
       });
+    } else {
+      swalMessage({
+        title: "Delete request cancelled",
+        type: "error"
+      });
     }
   });
 };
@@ -85,42 +94,36 @@ const deleteLabSection = ($this, row) => {
 
 const insertLabSection = ($this, e) => {
   e.preventDefault();
-  if ($this.state.description.length == 0) {
-    $this.setState({
-      description_error: true,
-      description_error_txt: "Description cannot be blank"
-    });
-  } else {
-    $this.setState({
-      description_error: false,
-      description_error_txt: ""
-    });
 
-    algaehApiCall({
-      uri: "/labmasters/insertSection",
-      data: $this.state,
-      onSuccess: response => {
-        resetState($this);
-        if (response.data.success == true) {
-          //Handle Successful Add here
-          $this.props.getLabsection({
-            uri: "/labmasters/selectSection",
-            method: "GET",
-            redux: {
-              type: "SECTION_GET_DATA",
-              mappingName: "labsection"
-            }
-          });
-          swalMessage({
-            title: "Lab Section added successfully",
-            type: "success"
-          });
-        } else {
-          //Handle unsuccessful Add here.
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    onSuccess: () => {
+      algaehApiCall({
+        uri: "/labmasters/insertSection",
+        data: $this.state,
+        onSuccess: response => {
+          resetState($this);
+          if (response.data.success == true) {
+            //Handle Successful Add here
+            $this.props.getLabsection({
+              uri: "/labmasters/selectSection",
+              method: "GET",
+              redux: {
+                type: "SECTION_GET_DATA",
+                mappingName: "labsection"
+              }
+            });
+            swalMessage({
+              title: "Lab Section added successfully",
+              type: "success"
+            });
+          } else {
+            //Handle unsuccessful Add here.
+          }
         }
-      }
-    });
-  }
+      });
+    }
+  });
 };
 
 export {

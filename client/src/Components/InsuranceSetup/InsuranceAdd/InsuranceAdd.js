@@ -179,41 +179,42 @@ class InsuranceAdd extends PureComponent {
                     </div>
                   </div>
                 </div>
-                <MyContext.Provider
-                  value={{
-                    state: this.state,
-                    updateState: obj => {
-                      this.setState({ ...obj });
-                    }
-                  }}
-                >
-                  <div className="stepper-set">
-                    <Stepper
-                      activeStep={activeStep}
-                      alternativeLabel
-                      style={{
-                        backgroundColor: "#DFFFFD",
-                        borderBottom: "1px solid #E6E6E6"
-                      }}
-                    >
-                      {steps.map(label => {
-                        return (
-                          <Step key={label}>
-                            <StepLabel>{label}</StepLabel>
-                          </Step>
-                        );
-                      })}
-                    </Stepper>
-                  </div>
-                  <div className="container-fluid">
-                    <div>
-                      {this.state.activeStep === steps.length ? null : (
-                        <div>{getStepContent(activeStep, this)}</div>
-                      )}
+                <div className="popupInner">
+                  <MyContext.Provider
+                    value={{
+                      state: this.state,
+                      updateState: obj => {
+                        this.setState({ ...obj });
+                      }
+                    }}
+                  >
+                    <div className="stepper-set">
+                      <Stepper
+                        activeStep={activeStep}
+                        alternativeLabel
+                        style={{
+                          backgroundColor: "#DFFFFD",
+                          borderBottom: "1px solid #E6E6E6"
+                        }}
+                      >
+                        {steps.map(label => {
+                          return (
+                            <Step key={label}>
+                              <StepLabel>{label}</StepLabel>
+                            </Step>
+                          );
+                        })}
+                      </Stepper>
                     </div>
-                    <br />
+                    {this.state.activeStep === steps.length ? null : (
+                      <div>{getStepContent(activeStep, this)}</div>
+                    )}
+                  </MyContext.Provider>
+                </div>
 
-                    <div className="row popupFooter">
+                <div className="popupFooter">
+                  <div className="col-lg-12">
+                    <div className="row">
                       <div className="col-lg-4">
                         <button
                           disabled={activeStep === 0}
@@ -228,14 +229,14 @@ class InsuranceAdd extends PureComponent {
                         <button
                           type="button"
                           className="btn btn-primary"
-                          onClick={handleNext.bind(this, this)}
+                          onClick={handleNext.bind(this, this, "Next")}
                         >
                           {activeStep === steps.length - 1
                             ? "Finish"
                             : "Save & Next"}
                         </button>
                         <button
-                          onClick={handleNext.bind(this, this)}
+                          onClick={handleNext.bind(this, this, "Close")}
                           type="button"
                           className="btn btn-default"
                         >
@@ -258,7 +259,7 @@ class InsuranceAdd extends PureComponent {
                       </div>
                     </div>
                   </div>
-                </MyContext.Provider>
+                </div>
               </div>
             </Modal>
           ) : (

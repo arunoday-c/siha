@@ -1,6 +1,7 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { getCookie } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -51,10 +52,13 @@ const showconfirmDialog = ($this, id) => {
   swal({
     title: "Are you sure you want to delete this Coutainer?",
     type: "warning",
-    buttons: true,
-    dangerMode: true
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
   }).then(willDelete => {
-    if (willDelete) {
+    if (willDelete.value) {
       let data = {
         hims_d_lab_container_id: id,
         updated_by: getCookie("UserID")
@@ -81,6 +85,11 @@ const showconfirmDialog = ($this, id) => {
         },
         onFailure: error => {}
       });
+    } else {
+      swalMessage({
+        title: "Delete request cancelled",
+        type: "error"
+      });
     }
   });
 };
@@ -91,47 +100,36 @@ const deleteLabContainer = ($this, row) => {
 
 const insertLabContainer = ($this, e) => {
   e.preventDefault();
-  if ($this.state.description.length == 0) {
-    $this.setState({
-      description_error: true,
-      description_error_txt: "Description cannot be blank"
-    });
-  } else if ($this.state.container_id.length == 0) {
-    $this.setState({
-      container_id_error: true,
-      container_id_error_txt: "Container Code cannot be blank"
-    });
-  } else {
-    $this.setState({
-      description_error: false,
-      description_error_txt: ""
-    });
 
-    algaehApiCall({
-      uri: "/labmasters/insertContainer",
-      data: $this.state,
-      onSuccess: response => {
-        if (response.data.success == true) {
-          resetState($this);
-          //Handle Successful Add here
-          $this.props.getLabContainer({
-            uri: "/labmasters/selectContainer",
-            method: "GET",
-            redux: {
-              type: "CONTAINER_GET_DATA",
-              mappingName: "labcontainer"
-            }
-          });
-          swalMessage({
-            title: "Lab Container added successfully",
-            type: "success"
-          });
-        } else {
-          //Handle unsuccessful Add here.
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    onSuccess: () => {
+      algaehApiCall({
+        uri: "/labmasters/insertContainer",
+        data: $this.state,
+        onSuccess: response => {
+          if (response.data.success == true) {
+            resetState($this);
+            //Handle Successful Add here
+            $this.props.getLabContainer({
+              uri: "/labmasters/selectContainer",
+              method: "GET",
+              redux: {
+                type: "CONTAINER_GET_DATA",
+                mappingName: "labcontainer"
+              }
+            });
+            swalMessage({
+              title: "Lab Container added successfully",
+              type: "success"
+            });
+          } else {
+            //Handle unsuccessful Add here.
+          }
         }
-      }
-    });
-  }
+      });
+    }
+  });
 };
 
 export {

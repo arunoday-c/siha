@@ -1,5 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -41,10 +42,13 @@ const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this Analytes?",
     type: "warning",
-    buttons: true,
-    dangerMode: true
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
   }).then(willDelete => {
-    if (willDelete) {
+    if (willDelete.value) {
       let data = {
         hims_d_item_group_id: row.hims_d_item_group_id,
         group_description: row.group_description,
@@ -66,6 +70,11 @@ const showconfirmDialog = ($this, row) => {
           }
         }
       });
+    } else {
+      swalMessage({
+        title: "Delete request cancelled",
+        type: "error"
+      });
     }
   });
 };
@@ -76,40 +85,29 @@ const deleteItemGroup = ($this, row) => {
 
 const insertItemGroup = ($this, e) => {
   e.preventDefault();
-  if ($this.state.group_description.length == 0) {
-    $this.setState({
-      description_error: true,
-      description_error_txt: "Description cannot be blank"
-    });
-  } else if ($this.state.category_id == null) {
-    $this.setState({
-      category_error: true,
-      category_error_txt: "Select Category"
-    });
-  } else {
-    $this.setState({
-      description_error: false,
-      description_error_txt: ""
-    });
 
-    algaehApiCall({
-      uri: "/pharmacy/addItemGroup",
-      data: $this.state,
-      onSuccess: response => {
-        if (response.data.success == true) {
-          resetState($this);
-          //Handle Successful Add here
-          getItemGroup($this);
-          swalMessage({
-            title: "Group addedsuccessfully . .",
-            type: "success"
-          });
-        } else {
-          //Handle unsuccessful Add here.
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    onSuccess: () => {
+      algaehApiCall({
+        uri: "/pharmacy/addItemGroup",
+        data: $this.state,
+        onSuccess: response => {
+          if (response.data.success == true) {
+            resetState($this);
+            //Handle Successful Add here
+            getItemGroup($this);
+            swalMessage({
+              title: "Group addedsuccessfully . .",
+              type: "success"
+            });
+          } else {
+            //Handle unsuccessful Add here.
+          }
         }
-      }
-    });
-  }
+      });
+    }
+  });
 };
 
 const getItemGroup = $this => {

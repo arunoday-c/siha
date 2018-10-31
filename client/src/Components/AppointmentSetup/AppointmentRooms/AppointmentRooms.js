@@ -10,15 +10,14 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 class AppointmentRooms extends Component {
   constructor(props) {
     super(props);
     this.state = {
       appointmentRooms: [],
-      description: "",
-      description_error: false,
-      description_error_text: ""
+      description: ""
     };
     this.baseState = this.state;
   }
@@ -143,36 +142,34 @@ class AppointmentRooms extends Component {
   addAppointmentRooms(e) {
     e.preventDefault();
 
-    if (this.state.description.length === 0) {
-      this.setState({
-        description_error: true,
-        description_error_text: "Description cannot be empty"
-      });
-    } else {
-      algaehApiCall({
-        uri: "/appointment/addAppointmentRoom",
-        method: "POST",
-        data: {
-          description: this.state.description
-        },
-        onSuccess: response => {
-          if (response.data.success) {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/appointment/addAppointmentRoom",
+          method: "POST",
+          data: {
+            description: this.state.description
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record added successfully",
+                type: "success"
+              });
+              this.resetState();
+              this.getAppointmentRooms();
+            }
+          },
+          onFailure: error => {
             swalMessage({
-              title: "Record added successfully",
-              type: "success"
+              title: error.message,
+              type: "error"
             });
-            this.resetState();
-            this.getAppointmentRooms();
           }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
   render() {
@@ -232,28 +229,27 @@ class AppointmentRooms extends Component {
                     );
                   }
                 },
+                // {
+                //   fieldName: "created_by",
+                //   label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
+                //   displayTemplate: row => {
+                //     let display =
+                //       this.props.userdrtails === undefined
+                //         ? []
+                //         : this.props.userdrtails.filter(
+                //             f => f.algaeh_d_app_user_id === row.created_by
+                //           );
 
-                {
-                  fieldName: "created_by",
-                  label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                  displayTemplate: row => {
-                    let display =
-                      this.props.userdrtails === undefined
-                        ? []
-                        : this.props.userdrtails.filter(
-                            f => f.algaeh_d_app_user_id === row.created_by
-                          );
-
-                    return (
-                      <span>
-                        {display !== null && display.length !== 0
-                          ? display[0].user_displayname
-                          : ""}
-                      </span>
-                    );
-                  },
-                  disabled: true
-                },
+                //     return (
+                //       <span>
+                //         {display !== null && display.length !== 0
+                //           ? display[0].user_displayname
+                //           : ""}
+                //       </span>
+                //     );
+                //   },
+                //   disabled: true
+                // },
                 {
                   fieldName: "created_date",
                   label: <AlgaehLabel label={{ fieldName: "created_date" }} />,

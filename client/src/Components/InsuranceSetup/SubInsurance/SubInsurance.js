@@ -94,20 +94,22 @@ class SubInsurance extends PureComponent {
               className="hptl-phase1-add-sub-insurance-form"
               data-validate="InsuranceProvider"
             >
-              <div className="col-lg-12 popLeftDiv">
+              <div className="popRightDiv">
                 {/* Services Details */}
-                <div className="row insurance-details">
+                <div className="row">
                   <div className="col-lg-12">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Insurar Name"
+                      }}
+                    />
                     <h6>
-                      <label>
-                        <span>Selected Insurar:</span>
-                      </label>
-                      <br />
-                      {this.state.insurance_provider_name}
+                      {this.state.insurance_provider_name
+                        ? this.state.insurance_provider_name
+                        : "Insurar Name"}
                     </h6>
                   </div>
-                </div>
-                <div className="row">
+
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -186,39 +188,6 @@ class SubInsurance extends PureComponent {
 
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
-                    textBox={{
-                      value: this.state.effective_start_date,
-                      className: "txt-fld d-none",
-                      name: "effective_start_date",
-
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        "data-subdata": true
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    textBox={{
-                      value: this.state.effective_end_date,
-                      className: "txt-fld d-none",
-                      name: "effective_end_date",
-
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        "data-subdata": true
-                      }
-                    }}
-                  />
-                </div>
-
-                <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "card_format",
                       isImp: true
@@ -284,6 +253,36 @@ class SubInsurance extends PureComponent {
                       Add
                     </button>
                   </div>
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    textBox={{
+                      value: this.state.effective_start_date,
+                      className: "txt-fld d-none",
+                      name: "effective_start_date",
+
+                      events: {
+                        onChange: null
+                      },
+                      others: {
+                        "data-subdata": true
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    textBox={{
+                      value: this.state.effective_end_date,
+                      className: "txt-fld d-none",
+                      name: "effective_end_date",
+
+                      events: {
+                        onChange: null
+                      },
+                      others: {
+                        "data-subdata": true
+                      }
+                    }}
+                  />
                 </div>
 
                 <div className="row">

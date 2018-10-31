@@ -28,7 +28,6 @@ import {
   Refresh
 } from "./ServicePriceListHandaler";
 import GlobalVariables from "../../../utils/GlobalVariables";
-import Paper from "@material-ui/core/Paper";
 
 class SubInsurance extends PureComponent {
   constructor(props) {
@@ -78,158 +77,170 @@ class SubInsurance extends PureComponent {
         <div className="hptl-phase1-price-insurance-form">
           <div className="col-12 popLeftDiv">
             {/* Services Details */}
-            <div>
-              <Paper style={{ padding: "15px", border: "1px solid #5f5f5f" }}>
-                <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+
+            <div
+              style={{ paddingBottom: 15, borderBottom: "1px solid #5f5f5f" }}
+            >
+              <div className="row">
+                <div className="col-lg-6">
+                  <AlgaehLabel
                     label={{
-                      fieldName: "filter_by"
-                    }}
-                    selector={{
-                      name: "service_type_id",
-                      className: "select-fld",
-                      value: this.state.service_type_id,
-                      dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_type"
-                            : "arabic_service_type",
-                        valueField: "hims_d_service_type_id",
-                        data: this.props.servicetype
-                      },
-                      onChange: serviceTypeHandeler.bind(this, this)
+                      forceLabel: "Insurar Name"
                     }}
                   />
-
-                  <div className="col-lg-1">
-                    <Tooltip id="tooltip-icon" title="Refresh">
-                      <IconButton className="go-button" color="primary">
-                        <i
-                          className="fas fa-sync-alt"
-                          aria-hidden="true"
-                          onClick={Refresh.bind(this, this)}
-                        />
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                  <div className="col-lg-4" style={{ marginTop: "3vh" }}>
-                    <h5> INSURAR: {this.state.insurance_provider_name}</h5>
-                  </div>
+                  <h6>
+                    {this.state.insurance_provider_name
+                      ? this.state.insurance_provider_name
+                      : "Insurar Name"}
+                  </h6>
                 </div>
-              </Paper>
-            </div>
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-4" }}
+                  label={{
+                    fieldName: "filter_by"
+                  }}
+                  selector={{
+                    name: "service_type_id",
+                    className: "select-fld",
+                    value: this.state.service_type_id,
+                    dataSource: {
+                      textField:
+                        this.state.selectedLang === "en"
+                          ? "service_type"
+                          : "arabic_service_type",
+                      valueField: "hims_d_service_type_id",
+                      data: this.props.servicetype
+                    },
+                    onChange: serviceTypeHandeler.bind(this, this)
+                  }}
+                />
 
-            <div style={{ paddingTop: "10px" }}>
-              <Paper style={{ padding: "15px", border: "1px solid #5f5f5f" }}>
-                <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
-                    label={{
-                      fieldName: "corporate_discount"
-                    }}
-                    textBox={{
-                      value: this.state.corporate_discount,
-                      className: "txt-fld",
-                      name: "corporate_discount",
-                      events: {
+                <div className="col-lg-2">
+                  <button
+                    className="btn btn-default"
+                    style={{ marginTop: 22 }}
+                    onClick={Refresh.bind(this, this)}
+                  >
+                    Refresh List
+                  </button>
+                </div>
+                <div className="col-lg-6">
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "corporate_discount"
+                      }}
+                      textBox={{
+                        value: this.state.corporate_discount,
+                        className: "txt-fld",
+                        name: "corporate_discount",
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "applicable",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "applicable",
+                        className: "select-fld",
+                        value: this.state.applicable,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "name"
+                              : "arabic_name",
+                          valueField: "value",
+                          data: GlobalVariables.FORMAT_DISCOUNT
+                        },
                         onChange: texthandle.bind(this, this)
-                      }
-                    }}
-                  />
+                      }}
+                    />
 
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-2" }}
-                    label={{
-                      fieldName: "applicable",
-                      isImp: true
-                    }}
-                    selector={{
-                      name: "applicable",
-                      className: "select-fld",
-                      value: this.state.applicable,
-                      dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "name"
-                            : "arabic_name",
-                        valueField: "value",
-                        data: GlobalVariables.FORMAT_DISCOUNT
-                      },
-                      onChange: texthandle.bind(this, this)
-                    }}
-                  />
-                  <div className="col-lg-1">
-                    <Tooltip id="tooltip-icon" title="Apply">
-                      <IconButton className="go-button" color="primary">
-                        <PlayCircleFilled
-                          onClick={bulkUpdate.bind(
-                            this,
-                            this,
-                            "corporate_discount"
-                          )}
-                        />
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-2" }}
-                    label={{
-                      fieldName: "pre_approval",
-                      isImp: true
-                    }}
-                    selector={{
-                      name: "pre_approval",
-                      className: "select-fld",
-                      value: this.state.pre_approval,
-                      dataSource: {
-                        textField: "value",
-                        valueField: "value",
-                        data: GlobalVariables.FORMAT_YESNO
-                      },
-                      onChange: texthandle.bind(this, this)
-                    }}
-                  />
-                  <div className="col-lg-1">
-                    <Tooltip id="tooltip-icon" title="Apply">
-                      <IconButton className="go-button" color="primary">
-                        <PlayCircleFilled
-                          onClick={bulkUpdate.bind(this, this, "pre_approval")}
-                        />
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-2" }}
-                    label={{
-                      fieldName: "covered",
-                      isImp: true
-                    }}
-                    selector={{
-                      name: "covered",
-                      className: "select-fld",
-                      value: this.state.covered,
-                      dataSource: {
-                        textField: "value",
-                        valueField: "value",
-                        data: GlobalVariables.FORMAT_YESNO
-                      },
-                      onChange: texthandle.bind(this, this)
-                    }}
-                  />
-                  <div className="col-lg-1">
-                    <Tooltip id="tooltip-icon" title="Apply">
-                      <IconButton className="go-button" color="primary">
-                        <PlayCircleFilled
-                          onClick={bulkUpdate.bind(this, this, "covered")}
-                        />
-                      </IconButton>
-                    </Tooltip>
+                    <div className="col" style={{ padding: 0 }}>
+                      <button
+                        className="btn btn-default"
+                        style={{ marginTop: 22 }}
+                        onClick={bulkUpdate.bind(
+                          this,
+                          this,
+                          "corporate_discount"
+                        )}
+                      >
+                        Apply
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </Paper>
+                <div className="col-lg-3">
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "pre_approval",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "pre_approval",
+                        className: "select-fld",
+                        value: this.state.pre_approval,
+                        dataSource: {
+                          textField: "value",
+                          valueField: "value",
+                          data: GlobalVariables.FORMAT_YESNO
+                        },
+                        onChange: texthandle.bind(this, this)
+                      }}
+                    />{" "}
+                    <div className="col" style={{ padding: 0 }}>
+                      <button
+                        className="btn btn-default"
+                        style={{ marginTop: 22 }}
+                        onClick={bulkUpdate.bind(this, this, "pre_approval")}
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "covered",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "covered",
+                        className: "select-fld",
+                        value: this.state.covered,
+                        dataSource: {
+                          textField: "value",
+                          valueField: "value",
+                          data: GlobalVariables.FORMAT_YESNO
+                        },
+                        onChange: texthandle.bind(this, this)
+                      }}
+                    />
+
+                    <div className="col" style={{ padding: 0 }}>
+                      <button
+                        className="btn btn-default"
+                        style={{ marginTop: 22 }}
+                        onClick={bulkUpdate.bind(this, this, "covered")}
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="row form-details">

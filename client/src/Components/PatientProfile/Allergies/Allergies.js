@@ -38,6 +38,7 @@ class Allergies extends Component {
     };
     this.addAllergies = this.addAllergies.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.baseState = this.state;
   }
   componentDidMount() {
     if (
@@ -77,14 +78,16 @@ class Allergies extends Component {
       openAllergyModal: false
     });
   }
+
   resetAllergies() {
     this.setState({
       hims_d_allergy_id: "",
       allergy_comment: "",
-      allergy_inactive: "",
+      allergy_inactive: "N",
       allergy_onset: "",
       allergy_severity: "",
-      allergy_onset_date: ""
+      allergy_onset_date: null
+      //...this.baseState
     });
   }
 
@@ -171,12 +174,15 @@ class Allergies extends Component {
     // console.log("delete Allergy row:", row);
 
     swal({
-      title: "Are you sure you want to delete this Allergy?",
+      title: "Delete Allergy " + row.allergy_name + "?",
       type: "warning",
-      buttons: true,
-      dangerMode: true
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         let data = {
           allergy_inactive: row.allergy_inactive,
           comment: row.comment,
@@ -204,7 +210,7 @@ class Allergies extends Component {
       } else {
         swalMessage({
           title: "Delete request cancelled",
-          type: "success"
+          type: "error"
         });
       }
     });
@@ -400,7 +406,7 @@ class Allergies extends Component {
                                 label={{ forceLabel: "Allergy Type" }}
                               />
                             ),
-                            disabled: true,
+
                             displayTemplate: data => {
                               return (
                                 <span>

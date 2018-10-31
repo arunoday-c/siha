@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import "./TestCategory.css";
-import Button from "@material-ui/core/Button";
-
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -31,11 +28,7 @@ class TestCategory extends Component {
 
     this.state = {
       hims_d_test_category_id: "",
-      category_name: "",
-      // created_by: getCookie("UserID"),
-
-      description_error: false,
-      description_error_txt: ""
+      category_name: ""
     };
     this.baseState = this.state;
   }
@@ -65,43 +58,32 @@ class TestCategory extends Component {
   render() {
     return (
       <div className="lab_section">
-        <LinearProgress id="myProg" style={{ display: "none" }} />
         <div className="container-fluid">
-          <form>
-            <div
-              className="row"
-            >
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "category_name",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "category_name",
-                  value: this.state.category_name,
-                  error: this.state.description_error,
-                  helperText: this.state.description_error_txt,
-                  events: {
-                    onChange: changeTexts.bind(this, this)
-                  }
-                }}
-              />
-<div
-                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
-                >
-                  <button
-                  onClick={insertTestCategory.bind(this, this)}
-                    className="btn btn-primary"
-                  >
-                    Add to List
-                  </button>
-                </div>
-
-             
+          <div className="row">
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "category_name",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "category_name",
+                value: this.state.category_name,
+                events: {
+                  onChange: changeTexts.bind(this, this)
+                }
+              }}
+            />
+            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+              <button
+                onClick={insertTestCategory.bind(this, this)}
+                className="btn btn-primary"
+              >
+                Add to List
+              </button>
             </div>
-          </form>
+          </div>
 
           <div className="row form-details">
             <div className="col">
