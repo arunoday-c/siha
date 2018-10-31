@@ -7,10 +7,10 @@ import {
 } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
-import { logger, debugFunction, debugLog } from "../../utils/logging";
+import {  debugLog } from "../../utils/logging";
 import moment from "moment";
 import { LINQ } from "node-linq";
-import { insertItemHistory } from "./insertitemhistory";
+
 import { updateIntoItemLocation } from "./commonFunction";
 import Promise from "bluebird";
 

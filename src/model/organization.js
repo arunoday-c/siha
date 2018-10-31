@@ -1,12 +1,10 @@
 import {
   whereCondition,
-  releaseDBConnection,
-  selectStatement,
-  deleteRecord
+  selectStatement
 } from "../utils";
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
-import { logger, debugFunction, debugLog } from "../utils/logging";
+import {  debugLog } from "../utils/logging";
 
 let getOrganization = (req, res, next) => {
   let labSection = {

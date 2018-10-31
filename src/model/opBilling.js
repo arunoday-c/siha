@@ -1,23 +1,21 @@
 "use strict";
 import extend from "extend";
 import {
-  selectStatement,
-  paging,
+ 
   whereCondition,
-  deleteRecord,
+  
   runningNumberGen,
   releaseDBConnection
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
-import { logger, debugFunction, debugLog } from "../utils/logging";
+import {  debugFunction, debugLog } from "../utils/logging";
 import {
-  addBill,
-  newReceipt,
+  
   addBillData,
   newReceiptData
 } from "../model/billing";
 import { LINQ } from "node-linq";
-import { insertLadOrderedServices } from "../model/laboratory";
+//import { insertLadOrderedServices } from "../model/laboratory";
 
 let billingCounter = 0;
 //created by irfan :to save opbilling data

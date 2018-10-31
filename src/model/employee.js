@@ -7,8 +7,8 @@ import {
   jsonArrayToObject
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
-import moment from "moment";
-import { logger, debugFunction, debugLog } from "../utils/logging";
+
+import { debugLog } from "../utils/logging";
 import Promise from "bluebird";
 // api to add employee
 let addEmployee = (req, res, next) => {

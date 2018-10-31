@@ -2,12 +2,11 @@
 import extend from "extend";
 import {
   whereCondition,
-  releaseDBConnection,
-  jsonArrayToObject
+  releaseDBConnection
 } from "../../utils";
 
 import httpStatus from "../../utils/httpStatus";
-import { logger, debugFunction, debugLog } from "../../utils/logging";
+import {  debugLog } from "../../utils/logging";
 
 //created by irfan: to get Uom Location Stock
 let getUomLocationStock = (req, res, next) => {

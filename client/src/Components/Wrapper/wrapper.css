@@ -10,6 +10,8 @@
   .ReactTable .rt-tr,
   .ReactTable .rt-tbody {
     flex: initial !important; }
+  .ReactTable .rt-td {
+    overflow: inherit !important; }
   .ReactTable .rt-thead.-filters {
     top: 25px; }
     .ReactTable .rt-thead.-filters .rt-tr .rt-th {

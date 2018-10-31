@@ -1,6 +1,6 @@
 "use strict";
 import { LINQ } from "node-linq";
-import { logger, debugFunction, debugLog } from "../../utils/logging";
+import { debugLog } from "../../utils/logging";
 
 const createXmlString = Jobject => {
   if (Jobject != null) {

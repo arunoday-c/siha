@@ -7,13 +7,13 @@ import {
 } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
-import { logger, debugFunction, debugLog } from "../../utils/logging";
+import {  debugLog } from "../../utils/logging";
 import moment from "moment";
-import { getBillDetailsFunctionality } from "../../model/billing";
+//import { getBillDetailsFunctionality } from "../../model/billing";
 import { updateIntoItemLocation } from "./commonFunction";
-import Promise from "bluebird";
-import { connect } from "pm2";
-import { LINQ } from "node-linq";
+ import Promise from "bluebird";
+// import { connect } from "pm2";
+// import { LINQ } from "node-linq";
 
 //created by Nowshad: to Insert Sales Entry
 let addsalesReturn = (req, res, next) => {

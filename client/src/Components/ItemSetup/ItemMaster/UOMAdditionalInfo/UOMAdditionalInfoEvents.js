@@ -51,21 +51,21 @@ const AddUom = ($this, context) => {
     isError = true;
     $this.setState({
       open: true,
-      MandatoryMsg: "Invalid Input. Select Sales UOM."
+      MandatoryMsg: "Invalid Input. Select UOM."
     });
     return isError;
   } else if ($this.state.conversion_factor === 0) {
     isError = true;
     $this.setState({
       open: true,
-      MandatoryMsg: "Invalid Input. Select Sales UOM."
+      MandatoryMsg: "Invalid Input. Define Conversion Factor."
     });
     return isError;
   } else if ($this.state.stocking_uom === null) {
     isError = true;
     $this.setState({
       open: true,
-      MandatoryMsg: "Invalid Input. Select Sales UOM."
+      MandatoryMsg: "Invalid Input. Select Stocking Uom."
     });
     return isError;
   } else {
@@ -188,7 +188,8 @@ const updateUOM = ($this, context, row) => {
 };
 
 const deleteUOM = ($this, context, row, rowId) => {
-  if (row.hims_m_item_uom_id === undefined) {
+  debugger;
+  if (row.hims_m_item_uom_id !== undefined) {
     let detail_item_uom = $this.state.detail_item_uom;
     let updateUomMapResult = $this.state.updateUomMapResult;
     let insertItemUomMap = $this.state.insertItemUomMap;

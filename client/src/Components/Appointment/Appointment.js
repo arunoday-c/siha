@@ -526,22 +526,20 @@ class Appointment extends Component {
   openEditModal(patient, e) {
     if (
       moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
-        moment(new Date()).format("HHmm") ||
-      moment(patient.appointment_date).format("YYYYMMDD") <
+        moment(new Date()).format("HHmm") &&
+      moment(patient.appointment_date).format("YYYYMMDD") <=
         moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Can't edit past appointments",
         type: "error"
       });
-    }
-    // else if (patient.appointment_status_id === this.state.checkInId) {
-    //   swalMessage({
-    //     title: "Patient already checked in, cannot edit the appointment",
-    //     type: "warning"
-    //   });
-    // }
-    else {
+    } else if (patient.appointment_status_id === this.state.checkInId) {
+      swalMessage({
+        title: "Patient already checked in, cannot edit the appointment",
+        type: "warning"
+      });
+    } else {
       this.setState({ patToEdit: patient, openPatEdit: true }, () => {
         let pat_edit = this.state.patToEdit;
         this.setState({
@@ -647,12 +645,13 @@ class Appointment extends Component {
   }
 
   showModal(e) {
+    debugger;
     const appt_time = e.currentTarget.getAttribute("appt-time");
 
     if (
       moment(appt_time, "HH:mm a").format("HHmm") <
-        moment(new Date()).format("HHmm") ||
-      moment(this.state.activeDateHeader).format("YYYYMMDD") <
+        moment(new Date()).format("HHmm") &&
+      moment(this.state.activeDateHeader).format("YYYYMMDD") <=
         moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
@@ -983,6 +982,7 @@ class Appointment extends Component {
   }
 
   generateTimeslots(data) {
+    debugger;
     const clinic_id = data.clinic_id;
     const provider_id = data.provider_id;
     const sch_header_id = data.hims_d_appointment_schedule_header_id;
