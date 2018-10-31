@@ -102,7 +102,10 @@ class VisaType extends Component {
           }
         },
         onFailure: error => {
-          // Handle network error here.
+          swalMessage({
+            title: error.response.data.message,
+            type: "error"
+          });
         }
       });
     }
@@ -131,7 +134,12 @@ class VisaType extends Component {
           });
         }
       },
-      onFailure: error => {}
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "error"
+        });
+      }
     });
   }
 
@@ -209,7 +217,12 @@ class VisaType extends Component {
               });
             }
           },
-          onFailure: error => {}
+          onFailure: error => {
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       } else {
         swalMessage({

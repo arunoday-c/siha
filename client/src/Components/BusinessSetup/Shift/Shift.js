@@ -153,7 +153,7 @@ class Shift extends Component {
       },
       onFailure: error => {
         swalMessage({
-          title: error.message,
+          title: error.response.data.message,
           type: "error"
         });
       }
@@ -240,26 +240,27 @@ class Shift extends Component {
           </form>
           <div className="form-details">
             <AlgaehDataGrid
-              id="appt-status-grid"
+              id="shift-grid"
               columns={[
                 {
                   fieldName: "shift_code",
                   label: <AlgaehLabel label={{ fieldName: "shift_code" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "shift_code",
-                          value: row.shift_code,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
-                        }}
-                      />
-                    );
-                  }
+                  disabled: true
+                  // editorTemplate: row => {
+                  //   return (
+                  //     <AlagehFormGroup
+                  //       div={{ className: "col" }}
+                  //       textBox={{
+                  //         className: "txt-fld",
+                  //         name: "shift_code",
+                  //         value: row.shift_code,
+                  //         events: {
+                  //           onChange: this.changeGridEditors.bind(this, row)
+                  //         }
+                  //       }}
+                  //     />
+                  //   );
+                  // }
                 },
                 {
                   fieldName: "shift_description",

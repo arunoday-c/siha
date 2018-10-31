@@ -344,7 +344,7 @@ class Appointment extends Component {
   getAppointmentSchedule(e) {
     debugger;
     if (e !== undefined) e.preventDefault();
-    if (this.state.sub_department_id === null) {
+    if (e !== undefined && this.state.sub_department_id === null) {
       swalMessage({
         title: "Please Select a Department",
         type: "warning"
@@ -526,8 +526,8 @@ class Appointment extends Component {
   openEditModal(patient, e) {
     if (
       moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
-        moment(new Date()).format("HHmm") &&
-      moment(patient.appointment_date).format("YYYYMMDD") <=
+        moment(new Date()).format("HHmm") ||
+      moment(patient.appointment_date).format("YYYYMMDD") <
         moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
@@ -645,12 +645,12 @@ class Appointment extends Component {
   }
 
   showModal(e) {
-    debugger;
     const appt_time = e.currentTarget.getAttribute("appt-time");
-
     if (
-      moment(appt_time, "HH:mm a").format("HHmm") <
-        moment(new Date()).format("HHmm") &&
+      (moment(appt_time, "HH:mm a").format("HHmm") <
+        moment(new Date()).format("HHmm") ||
+        moment(this.state.activeDateHeader).format("YYYYMMDD") <
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
         moment(new Date()).format("YYYYMMDD")
     ) {
@@ -892,8 +892,12 @@ class Appointment extends Component {
 
     let brk_bg_color = data.mark_as_break
       ? "#f2f2f2"
-      : moment(data.time, "HH:mm a").format("HHmm") <
-        moment(new Date()).format("HHmm")
+      : (moment(data.time, "HH:mm a").format("HHmm") <
+          moment(new Date()).format("HHmm") &&
+          moment(this.state.activeDateHeader).format("YYYYMMDD") <=
+            moment(new Date()).format("YYYYMMDD")) ||
+        moment(this.state.activeDateHeader).format("YYYYMMDD") <
+          moment(new Date()).format("YYYYMMDD")
         ? "#fbfbfb"
         : "#ffffff";
 

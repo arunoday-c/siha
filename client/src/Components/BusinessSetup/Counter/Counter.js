@@ -153,7 +153,7 @@ class Counter extends Component {
       },
       onFailure: error => {
         swalMessage({
-          title: error.message,
+          title: error.response.data.message,
           type: "error"
         });
       }
@@ -245,21 +245,7 @@ class Counter extends Component {
                 {
                   fieldName: "counter_code",
                   label: <AlgaehLabel label={{ fieldName: "counter_code" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "counter_code",
-                          value: row.counter_code,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
-                        }}
-                      />
-                    );
-                  }
+                  disabled: true
                 },
                 {
                   fieldName: "counter_description",

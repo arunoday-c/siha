@@ -79,7 +79,8 @@
 
 .appointment .tg {
   display: inline-block;
-  margin-right: 5px; }
+  margin-right: 5px;
+  vertical-align: top; }
   .appointment .tg thead tr {
     text-align: center; }
     .appointment .tg thead tr th {
