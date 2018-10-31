@@ -70,611 +70,470 @@ class NetworkPlanList extends PureComponent {
   render() {
     return (
       <React.Fragment>
-        <div>
-          <div className="hptl-phase1-add-insurance-form">
-            <div className="popRightDiv">
-              {" "}
-              <div className="col-lg-12">
-                <AlgaehDataGrid
-                  id="pla_list_grid"
-                  columns={[
-                    {
-                      fieldName: "insurance_sub_id",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "insurance_sub_id" }}
-                        />
-                      ),
-                      displayTemplate: row => {
-                        debugger;
-                        let display =
-                          this.props.subinsuranceprovider === undefined
-                            ? []
-                            : this.props.subinsuranceprovider.filter(
-                                f =>
-                                  f.hims_d_insurance_sub_id ===
-                                  row.insurance_sub_id
-                              );
+        <AlgaehDataGrid
+          id="pla_list_grid"
+          columns={[
+            {
+              fieldName: "insurance_sub_id",
+              label: <AlgaehLabel label={{ fieldName: "insurance_sub_id" }} />,
+              displayTemplate: row => {
+                debugger;
+                let display =
+                  this.props.subinsuranceprovider === undefined
+                    ? []
+                    : this.props.subinsuranceprovider.filter(
+                        f => f.hims_d_insurance_sub_id === row.insurance_sub_id
+                      );
 
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? this.state.selectedLang === "en"
-                                ? display[0].insurance_sub_name
-                                : display[0].arabic_sub_name
-                              : ""}
-                          </span>
-                        );
-                      },
-                      disabled: true
-                    },
-                    {
-                      fieldName: "network_type",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "network_type" }} />
-                      ),
-                      disabled: true
-                    },
-                    {
-                      fieldName: "policy_number",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "policy_number" }} />
-                      )
-                    },
-                    {
-                      fieldName: "employer",
-                      label: <AlgaehLabel label={{ fieldName: "employer" }} />
-                    },
-                    {
-                      fieldName: "effective_start_date",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "effective_start_date" }}
-                        />
-                      ),
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                            {this.dateFormater(row.effective_start_date)}
-                          </span>
-                        );
-                      },
-                      disabled: true
-                    },
-                    {
-                      fieldName: "effective_end_date",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "effective_end_date" }}
-                        />
-                      ),
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                            {this.dateFormater(row.effective_end_date)}
-                          </span>
-                        );
-                      },
-                      disabled: true
-                    },
-                    {
-                      fieldName: "preapp_limit",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "preapp_limit" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.preapp_limit,
-                              className: "txt-fld",
-                              name: "preapp_limit",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                return (
+                  <span>
+                    {display !== null && display.length !== 0
+                      ? this.state.selectedLang === "en"
+                        ? display[0].insurance_sub_name
+                        : display[0].arabic_sub_name
+                      : ""}
+                  </span>
+                );
+              },
+              disabled: true
+            },
+            {
+              fieldName: "network_type",
+              label: <AlgaehLabel label={{ fieldName: "network_type" }} />,
+              disabled: true
+            },
+            {
+              fieldName: "policy_number",
+              label: <AlgaehLabel label={{ fieldName: "policy_number" }} />
+            },
+            {
+              fieldName: "employer",
+              label: <AlgaehLabel label={{ fieldName: "employer" }} />
+            },
+            {
+              fieldName: "effective_start_date",
+              label: (
+                <AlgaehLabel label={{ fieldName: "effective_start_date" }} />
+              ),
+              displayTemplate: row => {
+                return (
+                  <span>{this.dateFormater(row.effective_start_date)}</span>
+                );
+              },
+              disabled: true
+            },
+            {
+              fieldName: "effective_end_date",
+              label: (
+                <AlgaehLabel label={{ fieldName: "effective_end_date" }} />
+              ),
+              displayTemplate: row => {
+                return <span>{this.dateFormater(row.effective_end_date)}</span>;
+              },
+              disabled: true
+            },
+            {
+              fieldName: "preapp_limit",
+              label: <AlgaehLabel label={{ fieldName: "preapp_limit" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.preapp_limit,
+                      className: "txt-fld",
+                      name: "preapp_limit",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "price_from",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "price_from" }} />
-                      ),
-                      displayTemplate: row => {
-                        return row.price_from === "S"
-                          ? "Company Service Price"
-                          : "Policy Service Price ";
-                      },
-                      editorTemplate: row => {
-                        return row.price_from === "S"
-                          ? "Company Service Price"
-                          : "Policy Service Price ";
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "price_from",
+              label: <AlgaehLabel label={{ fieldName: "price_from" }} />,
+              displayTemplate: row => {
+                return row.price_from === "S"
+                  ? "Company Service Price"
+                  : "Policy Service Price ";
+              },
+              editorTemplate: row => {
+                return row.price_from === "S"
+                  ? "Company Service Price"
+                  : "Policy Service Price ";
+              }
+            },
+            ///Changes
+            {
+              fieldName: "deductible",
+              label: <AlgaehLabel label={{ fieldName: "deductible" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.deductible,
+                      className: "txt-fld",
+                      name: "deductible",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    ///Changes
-                    {
-                      fieldName: "deductible",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "deductible" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.deductible,
-                              className: "txt-fld",
-                              name: "deductible",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "copay_consultation",
+              label: (
+                <AlgaehLabel label={{ fieldName: "copay_consultation" }} />
+              ),
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.copay_consultation,
+                      className: "txt-fld",
+                      name: "copay_consultation",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "copay_consultation",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "copay_consultation" }}
-                        />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.copay_consultation,
-                              className: "txt-fld",
-                              name: "copay_consultation",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "max_value",
+              label: <AlgaehLabel label={{ fieldName: "con_max_limit" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.max_value,
+                      className: "txt-fld",
+                      name: "max_value",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "max_value",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "con_max_limit" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.max_value,
-                              className: "txt-fld",
-                              name: "max_value",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "deductible_lab",
+              label: <AlgaehLabel label={{ fieldName: "deductible_lab" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.deductible_lab,
+                      className: "txt-fld",
+                      name: "deductible_lab",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "deductible_lab",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "deductible_lab" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.deductible_lab,
-                              className: "txt-fld",
-                              name: "deductible_lab",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "copay_percent",
+              label: <AlgaehLabel label={{ fieldName: "copay_percent" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.copay_percent,
+                      className: "txt-fld",
+                      name: "copay_percent",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "copay_percent",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "copay_percent" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.copay_percent,
-                              className: "txt-fld",
-                              name: "copay_percent",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
-                      }
-                    },
+                    }}
+                  />
+                );
+              }
+            },
 
-                    //
-                    {
-                      fieldName: "lab_max",
-                      label: <AlgaehLabel label={{ fieldName: "lab_max" }} />,
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.lab_max,
-                              className: "txt-fld",
-                              name: "lab_max",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+            //
+            {
+              fieldName: "lab_max",
+              label: <AlgaehLabel label={{ fieldName: "lab_max" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.lab_max,
+                      className: "txt-fld",
+                      name: "lab_max",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "deductible_rad",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "deductible_rad" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.deductible_rad,
-                              className: "txt-fld",
-                              name: "deductible_rad",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "deductible_rad",
+              label: <AlgaehLabel label={{ fieldName: "deductible_rad" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.deductible_rad,
+                      className: "txt-fld",
+                      name: "deductible_rad",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
+                    }}
+                  />
+                );
+              }
+            },
 
-                    {
-                      fieldName: "copay_percent_rad",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "copay_percent_rad" }}
-                        />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.copay_percent_rad,
-                              className: "txt-fld",
-                              name: "copay_percent_rad",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+            {
+              fieldName: "copay_percent_rad",
+              label: <AlgaehLabel label={{ fieldName: "copay_percent_rad" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.copay_percent_rad,
+                      className: "txt-fld",
+                      name: "copay_percent_rad",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "rad_max",
-                      label: <AlgaehLabel label={{ fieldName: "rad_max" }} />,
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.rad_max,
-                              className: "txt-fld",
-                              name: "rad_max",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "rad_max",
+              label: <AlgaehLabel label={{ fieldName: "rad_max" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.rad_max,
+                      className: "txt-fld",
+                      name: "rad_max",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "deductible_trt",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "deductible_trt" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.deductible_trt,
-                              className: "txt-fld",
-                              name: "deductible_trt",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "deductible_trt",
+              label: <AlgaehLabel label={{ fieldName: "deductible_trt" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.deductible_trt,
+                      className: "txt-fld",
+                      name: "deductible_trt",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "copay_percent_trt",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "copay_percent_trt" }}
-                        />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.copay_percent_trt,
-                              className: "txt-fld",
-                              name: "copay_percent_trt",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "copay_percent_trt",
+              label: <AlgaehLabel label={{ fieldName: "copay_percent_trt" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.copay_percent_trt,
+                      className: "txt-fld",
+                      name: "copay_percent_trt",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "trt_max",
-                      label: <AlgaehLabel label={{ fieldName: "trt_max" }} />
-                    },
-                    {
-                      fieldName: "deductible_dental",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "deductible_dental" }}
-                        />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.deductible_dental,
-                              className: "txt-fld",
-                              name: "deductible_dental",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "trt_max",
+              label: <AlgaehLabel label={{ fieldName: "trt_max" }} />
+            },
+            {
+              fieldName: "deductible_dental",
+              label: <AlgaehLabel label={{ fieldName: "deductible_dental" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.deductible_dental,
+                      className: "txt-fld",
+                      name: "deductible_dental",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
+                    }}
+                  />
+                );
+              }
+            },
 
-                    {
-                      fieldName: "copay_percent_dental",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "copay_percent_dental" }}
-                        />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.copay_percent_dental,
-                              className: "txt-fld",
-                              name: "copay_percent_dental",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+            {
+              fieldName: "copay_percent_dental",
+              label: (
+                <AlgaehLabel label={{ fieldName: "copay_percent_dental" }} />
+              ),
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.copay_percent_dental,
+                      className: "txt-fld",
+                      name: "copay_percent_dental",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "dental_max",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "dental_max" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.dental_max,
-                              className: "txt-fld",
-                              name: "dental_max",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "dental_max",
+              label: <AlgaehLabel label={{ fieldName: "dental_max" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.dental_max,
+                      className: "txt-fld",
+                      name: "dental_max",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "deductible_medicine",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "deductible_medicine" }}
-                        />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.deductible_medicine,
-                              className: "txt-fld",
-                              name: "deductible_medicine",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "deductible_medicine",
+              label: (
+                <AlgaehLabel label={{ fieldName: "deductible_medicine" }} />
+              ),
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.deductible_medicine,
+                      className: "txt-fld",
+                      name: "deductible_medicine",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "copay_medicine",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "copay_medicine" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.copay_medicine,
-                              className: "txt-fld",
-                              name: "copay_medicine",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "copay_medicine",
+              label: <AlgaehLabel label={{ fieldName: "copay_medicine" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.copay_medicine,
+                      className: "txt-fld",
+                      name: "copay_medicine",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    },
-                    {
-                      fieldName: "medicine_max",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "medicine_max" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{}}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: row.medicine_max,
-                              className: "txt-fld",
-                              name: "medicine_max",
-                              events: {
-                                onChange: onchangegridnumber.bind(
-                                  this,
-                                  this,
-                                  row
-                                )
-                              }
-                            }}
-                          />
-                        );
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "medicine_max",
+              label: <AlgaehLabel label={{ fieldName: "medicine_max" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.medicine_max,
+                      className: "txt-fld",
+                      name: "medicine_max",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
                       }
-                    }
-                  ]}
-                  keyId="network_type"
-                  dataSource={{
-                    data: this.state.network_plan
-                  }}
-                  isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
-                  events={{
-                    onDelete: deleteNetWorkPlan.bind(this, this),
-                    onEdit: row => {},
-                    onDone: UpdateNetworkPlan.bind(this, this)
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+                    }}
+                  />
+                );
+              }
+            }
+          ]}
+          keyId="network_type"
+          dataSource={{
+            data: this.state.network_plan
+          }}
+          isEditable={true}
+          paging={{ page: 0, rowsPerPage: 10 }}
+          events={{
+            onDelete: deleteNetWorkPlan.bind(this, this),
+            onEdit: row => {},
+            onDone: UpdateNetworkPlan.bind(this, this)
+          }}
+        />
       </React.Fragment>
     );
   }
