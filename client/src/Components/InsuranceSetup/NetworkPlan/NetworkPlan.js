@@ -77,6 +77,7 @@ class NetworkPlan extends PureComponent {
   }
 
   componentWillMount() {
+    debugger;
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -95,37 +96,31 @@ class NetworkPlan extends PureComponent {
           mappingName: "subinsuranceprovider"
         }
       });
+
+      this.props.getNetworkPlans({
+        uri: "/insurance/getNetworkAndNetworkOfficRecords",
+        method: "GET",
+        printInput: true,
+        data: {
+          insuranceProviderId: this.state.insurance_provider_id
+        },
+        redux: {
+          type: "NETWORK_PLAN_GET_DATA",
+          mappingName: "networkandplans"
+        },
+        afterSuccess: data => {
+          debugger;
+          this.setState({
+            network_plan: data
+          });
+        }
+      });
     }
   }
 
   handleClose = () => {
     this.setState({ snackeropen: false });
   };
-
-  // ShowPlanListScreen(dataclear, e) {
-  //   let rowSelected = {};
-  //   let saveupdate = false,
-  //     btnupdate = true;
-  //   if (
-  //     e.hims_d_insurance_network_id !== undefined &&
-  //     e.hims_d_insurance_network_id !== null
-  //   ) {
-  //     rowSelected = e;
-  //     saveupdate = true;
-  //     btnupdate = false;
-  //     // addNewNetwork(this, this);
-  //   }
-  //   this.setState({
-  //     ...this.state,
-  //     PlanList: !this.state.PlanList,
-  //     saveupdate: saveupdate,
-  //     btnupdate: btnupdate,
-  //     ...rowSelected
-  //   });
-  //   if (dataclear === "Y") {
-  //     addNewNetwork(this, this);
-  //   }
-  // }
 
   render() {
     return (
@@ -755,6 +750,7 @@ class NetworkPlan extends PureComponent {
 
                 <NetworkPlanList
                   insurance_provider_id={this.state.insurance_provider_id}
+                  network_plan={this.state.network_plan}
                 />
                 <div className="row">
                   <div className="col-lg-12 button-details">
@@ -788,7 +784,6 @@ class NetworkPlan extends PureComponent {
 function mapStateToProps(state) {
   return {
     subinsuranceprovider: state.subinsuranceprovider,
-    // networkplan: state.networkplan,
     networkandplans: state.networkandplans
   };
 }

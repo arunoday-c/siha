@@ -17,7 +17,7 @@ import swal from "sweetalert2";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import { getCookie } from "../../../utils/algaehApiCall";
-import { setGlobal } from "../../../utils/GlobalFunctions";
+import { setGlobal, AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Options from "../../../Options.json";
 
 class VisitType extends Component {
@@ -145,22 +145,17 @@ class VisitType extends Component {
 
   addVisit(e) {
     e.preventDefault();
-    if (this.state.visit_type_code.length === 0) {
-      this.setState({
-        visit_type_code_error: true,
-        visit_type_code_error_txt: "Code Cannot be Empty"
-      });
-    } else if (this.state.visit_type_desc.length === 0) {
-      this.setState({
-        visit_type_error: true,
-        visit_type_error_txt: "Name Cannot be Empty"
-      });
-    } else if (this.state.arabic_visit_type_desc.length === 0) {
-      this.setState({
-        arabic_visit_type_error: true,
-        arabic_visit_type_error_txt: "Arabic Name Cannot be Empty"
-      });
-    } else {
+    let isError = false;
+    AlgaehValidation({
+      querySelector: "data-validate='InsuranceProvider'", //if require section level
+      fetchFromFile: true, //if required arabic error
+      alertTypeIcon: "warning", // error icon
+      onCatch: () => {
+        isError = true;
+      }
+    });
+
+    if (isError === false) {
       this.setState({
         visit_type_code_error: false,
         visit_type_code_error_txt: "",
