@@ -6,6 +6,7 @@ import { successfulMessage } from "../../utils/GlobalFunctions";
 const reportWindow = document.getElementById("reportWindow");
 export function accessReport(options) {
   try {
+    if (options.data === undefined) return;
     let getReport = options.report;
     let const_count = 0;
     let fileName = "./Reports/" + getReport.fileName + ".html";
@@ -44,6 +45,7 @@ export function accessReport(options) {
           }
         }
         let canvasElements = _html.querySelectorAll("[data-parameter]");
+
         for (let e = 0; e < canvasElements.length; e++) {
           canvasElements[e].innerHTML =
             options.data[canvasElements[e].getAttribute("data-parameter")];

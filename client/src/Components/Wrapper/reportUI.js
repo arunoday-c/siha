@@ -130,11 +130,17 @@ export default class ReportUI extends Component {
             {this.props.plotui !== undefined ? this.props.plotui : null}
           </div>
           <div
-            className="popupInner"
+            className="popupInner "
             ref={el => (this.algehPrintRef = el)}
             {...this.state._htmlString}
           >
-            {this.props.children ? this.props.children : null}
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-12 popRightDiv">
+                  {this.props.children ? this.props.children : null}
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="popupFooter">
