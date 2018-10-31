@@ -13,15 +13,35 @@ export default class AlgaehSnackBar extends PureComponent {
     this.state = {
       values: [],
       age: "",
-      SelectVal: ""
+      SelectVal: "",
+      isopen: false
     };
   }
-  renderSweetalert(message) {
-    if (message !== undefined && message !== "" && message !== null) {
-      swalMessage({
-        title: message,
-        type: "warning"
-      });
+  componentDidMount() {
+    debugger;
+    console.log("me", this.props.MandatoryMsg);
+    this.setState({
+      isopen: this.props.open
+    });
+  }
+  componentWillReceiveProps(props) {
+    debugger;
+    console.log("meP", this.props.MandatoryMsg);
+    this.setState({
+      isopen: props.open
+    });
+    //this.renderSweetalert();
+  }
+
+  renderSweetalert(message, isopen) {
+    debugger;
+    if (message !== null) {
+      console.log("MEssage", isopen);
+      if (isopen)
+        swalMessage({
+          title: message,
+          type: "warning"
+        });
     }
 
     return null;
@@ -29,7 +49,7 @@ export default class AlgaehSnackBar extends PureComponent {
   render() {
     return (
       <React.Fragment>
-        {this.renderSweetalert(this.props.MandatoryMsg)}
+        {this.renderSweetalert(this.props.MandatoryMsg, this.state.open)}
       </React.Fragment>
     );
   }

@@ -67,7 +67,10 @@ class InsuranceProvider extends PureComponent {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-insurance-provider-form">
+            <div
+              className="hptl-phase1-insurance-provider-form"
+              data-validate="InsuranceProvider"
+            >
               <div className="popRightDiv">
                 {/* Services Details */}
                 <div className="row">
@@ -140,6 +143,7 @@ class InsuranceProvider extends PureComponent {
                         valueField: "value",
                         data: FORMAT_INSURANCE_TYPE
                       },
+
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
@@ -217,6 +221,7 @@ class InsuranceProvider extends PureComponent {
                       isImp: true
                     }}
                     textBox={{
+                      decimal: { allowNegative: false },
                       value: this.state.credit_period,
                       className: "txt-fld",
                       name: "credit_period",

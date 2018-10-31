@@ -85,7 +85,10 @@ export default class FormGroup extends PureComponent {
       this.props.textBox.className !== undefined
         ? { className: this.props.textBox.className }
         : {};
-    const _value = this.state.value;
+    const _value =
+      this.state.value === undefined || this.state.value === null
+        ? ""
+        : this.state.value;
     if (this.props.textBox !== undefined) {
       const _disabled =
         this.props.textBox.disabled !== undefined

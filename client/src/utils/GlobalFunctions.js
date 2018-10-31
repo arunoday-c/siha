@@ -156,3 +156,110 @@ export function displayFileFromServer(options) {
     }
   });
 }
+
+export function getLabelFromLanguage(options) {
+  if (options.fieldName !== undefined && options.fieldName !== "") {
+    let langua = getCookie("Language");
+    let screenName = getCookie("ScreenName") + "_";
+    let fileName =
+      screenName + (langua === undefined || langua === "" ? "en" : langua);
+    let fileImport = "./languages/" + fileName + ".json";
+
+    let savePage = window.localStorage.getItem(fileName);
+    if (savePage !== null && savePage !== "") {
+      let getLanguageLables = JSON.parse(savePage);
+      return getLanguageLables[options.fieldName];
+    } else {
+      loadJSON(fileImport, data => {
+        window.localStorage.removeItem(fileName);
+        window.localStorage.setItem(fileName, JSON.stringify(data));
+        return data[options.fieldName];
+      });
+    }
+  } else {
+    console.error("Label is missing with 'fieldName'");
+  }
+}
+const loadJSON = (file, callback) => {
+  var xobj = new XMLHttpRequest();
+  xobj.overrideMimeType("application/json");
+  xobj.open("GET", file, true);
+  xobj.onreadystatechange = function() {
+    if (xobj.readyState === 4 && xobj.status === 200) {
+      callback(JSON.parse(xobj.responseText));
+    }
+  };
+  xobj.send(null);
+};
+
+export function AlgaehValidation(options) {
+  const settings = {
+    querySelector: "",
+    fetchFromFile: false,
+    multivalidate: false,
+    appendingFieldName: "Cannotbeblank",
+    alertTypeIcon: "warning",
+    ...options
+  };
+  let _rootValidationElement = document.querySelector(
+    "[" + settings.querySelector + "]"
+  );
+  if (_rootValidationElement === null) {
+    _rootValidationElement = document.querySelector("[id='root']");
+  }
+  let isError = false;
+  debugger;
+  const _Validateerror = _rootValidationElement.querySelectorAll("[required]");
+  for (let i = 0; i < _Validateerror.length; i++) {
+    let _checkVal = _Validateerror[i].getAttribute("checkvalidation");
+    _checkVal = _checkVal === null ? "" : _checkVal;
+    if (
+      _Validateerror[i].value === null ||
+      _Validateerror[i].value === _checkVal
+    ) {
+      let _filedName = _Validateerror[i].name;
+      let _title = _Validateerror[i].getAttribute("errormessage");
+      if (settings.fetchFromFile) {
+        const _changeappendingFieldName = _Validateerror[i].getAttribute(
+          "appendfieldname"
+        );
+        let changeField = _changeappendingFieldName;
+        if (_changeappendingFieldName === null) {
+          changeField = "Cannotbeblank";
+        }
+        _title =
+          getLabelFromLanguage({
+            fieldName: _filedName
+          }) +
+          " " +
+          getLabelFromLanguage({
+            fieldName: changeField
+          });
+      }
+      if (_title === null) {
+        if (_Validateerror[i].previousSibling.tagName === "LABEL")
+          _title =
+            _Validateerror[i].previousSibling.innerText.replace("*", "") +
+            " required";
+      }
+      swalMessage({
+        title: _title,
+        type: settings.alertTypeIcon
+      });
+      _Validateerror[i].focus();
+      if (settings.onCatch !== undefined)
+        settings.onCatch(_Validateerror[i].value);
+      if (!settings.multivalidate) {
+        isError = true;
+        break;
+      }
+    }
+  }
+  if (!isError) {
+    if (
+      settings.onSuccess !== undefined &&
+      typeof settings.onSuccess === "function"
+    )
+      settings.onSuccess();
+  }
+}

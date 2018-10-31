@@ -147,7 +147,10 @@ class NetworkPlan extends PureComponent {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-network-plan-form">
+            <div
+              className="hptl-phase1-network-plan-form"
+              data-validate="InsuranceProvider"
+            >
               <div className="col-12 popLeftDiv">
                 {/* Services Details */}
                 <div className="row insurance-details">

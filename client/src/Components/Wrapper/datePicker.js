@@ -58,6 +58,12 @@ export default class DateHandler extends PureComponent {
       this.props.textBox.name !== undefined
         ? { name: this.props.textBox.name }
         : {};
+    const _required =
+      this.props.label !== undefined
+        ? this.props.label.isImp !== undefined
+          ? { required: this.props.label.isImp }
+          : {}
+        : {};
     return (
       <div className="algaeh-datePicker">
         <input
@@ -69,6 +75,7 @@ export default class DateHandler extends PureComponent {
           disabled={this.props.disabled}
           onChange={this.onDayChange.bind(this)}
           {...this.props.textBox.others}
+          {..._required}
         />
         {/* <DayPickerInput
           value={this.state.value}

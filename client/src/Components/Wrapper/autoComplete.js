@@ -170,6 +170,12 @@ class AutoComplete extends PureComponent {
   }
 
   renderAutoComplete = () => {
+    const _required =
+      this.props.label !== undefined
+        ? this.props.label.isImp !== undefined
+          ? { required: this.props.label.isImp }
+          : {}
+        : {};
     const isDisable =
       this.props.selector.others !== undefined &&
       this.props.selector.others.disabled !== undefined
@@ -202,6 +208,7 @@ class AutoComplete extends PureComponent {
             onBlur={this.bluringEvent.bind(this)}
             {...this.props.selector.others}
             autoComplete="off"
+            {..._required}
           />
           <span className="showall" onClick={this.onClickArrowIcon.bind(this)}>
             <i className={"fas " + this.state.arrowIcon} />

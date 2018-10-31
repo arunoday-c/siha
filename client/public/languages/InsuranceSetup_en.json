@@ -73,5 +73,6 @@
   "filter_by": "Filter By",
 
   "edit_option": "Action",
-  "currency": "Currency"
+  "currency": "Currency",
+  "Cannotbeblank": "Cannot be blank."
 }
