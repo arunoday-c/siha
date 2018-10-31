@@ -79,7 +79,7 @@ class BreadCrumb extends PureComponent {
   showPrintArea() {
     if (this.props.printArea !== undefined) {
       return (
-        <div className="col print-area">
+        <div className="col-lg-2 print-area">
           <div>
             <ul>
               <li className="printMenuDisplay">

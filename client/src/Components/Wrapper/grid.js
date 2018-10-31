@@ -65,11 +65,16 @@ class DataGrid extends PureComponent {
       if (templates.displayTemp !== undefined) {
         return templates.displayTemp(rowDetail);
       } else {
-        return <span>{rowDetail[cellInfo.column.id]}</span>;
+        const _value = rowDetail[cellInfo.column.id];
+        //const _width = this.getTextWidth(_value);
+        return <span>{_value}</span>; // style={{ width: _width }}
       }
     } else {
       if (_disabled) {
-        return <span>{rowDetail[cellInfo.column.id]}</span>;
+        const _value = rowDetail[cellInfo.column.id];
+        //const _width = this.getTextWidth(_value);
+        return <span>{_value}</span>; //style={{ width: _width }}
+        // return <span>{rowDetail[cellInfo.column.id]}</span>;
       } else {
         if (templates.editorTemp !== undefined) {
           return templates.editorTemp(rowDetail);
@@ -267,7 +272,12 @@ class DataGrid extends PureComponent {
       }
     });
   };
-
+  getTextWidth(text, font) {
+    let element = document.createElement("canvas");
+    let context = element.getContext("2d");
+    // context.font = font;
+    return context.measureText(text).width + 24;
+  }
   componentDidMount() {
     if (this.state.columns.length == 0) {
       if (this.props.columns !== undefined && this.props.columns.length !== 0) {
@@ -284,6 +294,10 @@ class DataGrid extends PureComponent {
             return {
               Header: s.label,
               id: s.fieldName,
+              width: undefined, // A hardcoded width for the column. This overrides both min and max width options
+              minWidth: 100, // A minimum width for this column. If there is extra room, column will flex to fill available space (up to the max-width, if set)
+              maxWidth: undefined, // A maximum width for this column.
+              style: { "white-space": "unset" },
               Cell: this.renderEditable.bind(this, {
                 displayTemp: s.displayTemplate,
                 editorTemp: s.editorTemplate
@@ -316,6 +330,7 @@ class DataGrid extends PureComponent {
               Header: "Actions",
               headerClassName: "sticky",
               fixed: "left",
+              width: 100,
               Cell: ({ index }) => {
                 const edit =
                   this.state.editableRows[index] === undefined
@@ -727,6 +742,7 @@ class DataGrid extends PureComponent {
     return (
       <React.Fragment>
         <ReactTableFixedColumns
+          id={this.props.id}
           data={_data}
           columns={this.state.columns}
           className="-striped -highlight"
@@ -779,10 +795,17 @@ class DataGrid extends PureComponent {
           onPageChange={this.pageChangeHandler.bind(this)}
           {..._subComponent}
           {..._onExpandRow}
-          style={{ maxHeight: "400px", minHeight: "120px" }}
+          style={{
+            maxHeight: "400px",
+            minHeight: "120px"
+          }}
+          // width={{ undefined }}
+          // minWidth={"100"}
+          // maxWidth={{ undefined }}
           getTdProps={this.getTdHandler.bind(this)}
           getTrProps={this.getTrHandler.bind(this)}
           {..._manual}
+          {...this.props.others}
         />
       </React.Fragment>
     );

@@ -109,23 +109,23 @@
   ],
   "FORMAT_INSURANCE_EDIT_OPTION": [
     {
-      "name": "Insurance",
-      "arabic_name": "تأمين",
+      "name": "Edit",
+      "arabic_name": "تصحيح",
       "value": "1"
     },
     {
-      "name": "Sub Insurance",
-      "arabic_name": "التأمين الفرعي",
+      "name": "Add/Edit Sub Insurance",
+      "arabic_name": "إضافة أو تحرير التأمين الفرعي",
       "value": "2"
     },
     {
-      "name": "Network/Plan",
-      "arabic_name": "شبكة / خطة",
+      "name": "Add/ Edit Network/Plan",
+      "arabic_name": "إضافة أو تحرير الشبكة أو الخطة",
       "value": "3"
     },
     {
-      "name": "Price List",
-      "arabic_name": "قائمة الاسعار",
+      "name": "Add/Edit Price List",
+      "arabic_name": "إضافة أو تحرير قائمة الاسعار",
       "value": "4"
     }
   ],

@@ -117,7 +117,7 @@ class InsuranceSetup extends Component {
               </ul>
             </div> */}
 
-          <div className="col-lg-12">
+          <div className="col-lg-12" id="insuranceGridCntr">
             <AlgaehDataGrid
               id="insurance_grid"
               columns={[
@@ -142,6 +142,9 @@ class InsuranceSetup extends Component {
                         }}
                       />
                     );
+                  },
+                  others: {
+                    filterable: false
                   }
                 },
                 // {
@@ -167,12 +170,14 @@ class InsuranceSetup extends Component {
                 {
                   fieldName: "insurance_provider_name",
                   label: "Insurance Name",
-                  disabled: true
+                  disabled: true,
+                  id: "insuranceProviderName"
                 },
                 {
                   fieldName: "insurance_provider_code",
                   label: "Provider ID",
-                  disabled: true
+                  disabled: true,
+                  accessor: "providerID"
                 },
                 {
                   fieldName: "payment_type",
@@ -216,8 +221,17 @@ class InsuranceSetup extends Component {
                     ? []
                     : this.props.insProviders
               }}
+              filter={true}
               // isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}
+              others={{
+                defaultSorted: [
+                  {
+                    id: "insuranceProviderName",
+                    desc: false
+                  }
+                ]
+              }}
             />
           </div>
         </div>
@@ -235,7 +249,7 @@ class InsuranceSetup extends Component {
                   {/* <AlgaehLabel
                     label={{ fieldName: "btn_save", returnText: true }}
                   /> */}
-                  Add New
+                  Add New Insurance
                 </button>
 
                 <InsuranceAdd

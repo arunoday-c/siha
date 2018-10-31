@@ -28,7 +28,7 @@
   margin: 0;
   position: absolute;
   max-width: 22vw;
-  width: inherit;
+  min-width: -webkit-fill-available;
   top: 29px;
   left: 0;
   max-height: 20vh;
