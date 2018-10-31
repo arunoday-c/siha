@@ -1337,15 +1337,16 @@ let getNetworkAndNetworkOfficRecords = (req, res, next) => {
       }
       let insuranceProviderId = req.query.insuranceProviderId;
 
+      debugLog("insuranceProviderId: ", insuranceProviderId);
       connection.query(
         "SELECT hims_d_insurance_network_id,network_type,arabic_network_type,insurance_sub_id,insurance_provider_id,\
         netoff.hospital_id, netoff.hims_d_insurance_network_office_id, netoff.employer,netoff.policy_number,effective_start_date,effective_end_date,netoff.preapp_limit,netoff.price_from,netoff.deductible,\
         netoff.copay_consultation,netoff.max_value,netoff.deductible_lab,netoff.copay_percent,\
         netoff.lab_max,netoff.deductible_rad,netoff.copay_percent_rad,netoff.rad_max,netoff.deductible_trt,\
         netoff.copay_percent_trt,netoff.trt_max,netoff.deductible_dental,\
-        netoff.copay_percent_dental,netoff.dental_max,netoff.deductible_medicine,netoff.copay_medicine,netoff.medicine_max \
+        netoff.copay_percent_dental,netoff.dental_max,netoff.deductible_medicine,netoff.copay_medicine,netoff.medicine_max,netoff.invoice_max_deduct, netoff.preapp_limit_from \
         FROM hims_d_insurance_network net,hims_d_insurance_network_office netoff\
-        where insurance_provider_id=10 and netoff.network_id = net.hims_d_insurance_network_id \
+        where insurance_provider_id=? and netoff.network_id = net.hims_d_insurance_network_id \
         and net.record_status='A' and netoff.record_status='A';",
         [insuranceProviderId],
         (error, result) => {
@@ -1509,6 +1510,8 @@ let updateNetworkAndNetworkOffice = (req, res, next) => {
             next(error);
           });
         }
+
+        debugLog("inputparam: ", inputparam);
 
         connection.query(
           "update hims_d_insurance_network SET `network_type`=?,`arabic_network_type`=?,`insurance_provider_id`=?,`insurance_sub_id`=?,\
