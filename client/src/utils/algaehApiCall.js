@@ -172,9 +172,12 @@ export function algaehApiCall(options) {
             });
           } else {
             if (typeof settings.onFailure === "function") {
-              err.response.data.message = clearSqlMessage(
-                err.response.data.message
-              );
+              if (err.response !== undefined) {
+                err.response.data.message = clearSqlMessage(
+                  err.response.data.message
+                );
+              }
+
               settings.onFailure(err);
             } else {
               debugger;
@@ -195,8 +198,7 @@ export function algaehApiCall(options) {
                     message: err.response.data.message
                   };
                 }
-                debugger;
-                const _message = clearSqlMessage(err.response.data.message);
+                const _message = clearSqlMessage(err.response);
                 swalMessage({
                   title: _message,
                   type: "error",
@@ -221,27 +223,28 @@ export function algaehApiCall(options) {
   });
 }
 function clearSqlMessage(message) {
-  let mess = message.split("_");
-  const _prev = message.split("_");
-  const lastMessage = mess[mess.length - 1];
-  if (lastMessage === lastMessage.toUpperCase()) {
-    let newString = "";
-    for (let i = 0; i < mess.length - 1; i++) {
-      if (i !== 0) {
-        newString += " ";
-      }
-      newString += mess[i]
-        .replace(/\'\S/g, chara => {
-          return chara.toUpperCase();
-        })
-        .replace(/^\w/, c => {
-          return c.toUpperCase();
-        });
-    }
-    const prevString = _prev.join("_");
-    message = message.replace(prevString, newString + "'");
-  }
   return message;
+  // let mess = message.split("_");
+  // const _prev = message.split("_");
+  // const lastMessage = mess[mess.length - 1];
+  // if (lastMessage === lastMessage.toUpperCase()) {
+  //   let newString = "";
+  //   for (let i = 0; i < mess.length - 1; i++) {
+  //     if (i !== 0) {
+  //       newString += " ";
+  //     }
+  //     newString += mess[i]
+  //       .replace(/\'\S/g, chara => {
+  //         return chara.toUpperCase();
+  //       })
+  //       .replace(/^\w/, c => {
+  //         return c.toUpperCase();
+  //       });
+  //   }
+  //   const prevString = _prev.join("_");
+  //   message = message.replace(prevString, newString + "'");
+  // }
+  // return message;
 }
 export function swalMessage(options) {
   const settings = {

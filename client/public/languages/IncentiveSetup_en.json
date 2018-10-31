@@ -46,15 +46,26 @@
 
   "copay_consultation": "Consultation Copay",
   "con_max_limit": "Consultation Max Limit",
+
+  "deductible_lab": "Lab Deductible",
+  "lab_max": "Rad Max Limit",
   "copay_percent": "Lab Copay",
+
   "copay_percent_rad": "Rad Copay",
   "rad_max": "Rad Max Limit",
+  "deductible_rad": "Rad. Deductible",
+
   "copay_percent_trt": "OPD Copay",
   "trt_max": "OPD Max Limit",
+  "deductible_trt": "OPD Deductible",
+
   "copay_percent_dental": "Debtal Copay",
   "dental_max": "Dental Max Limit",
+  "deductible_dental": "Dental Deductible",
+
+  "deductible_medicine": "Medicine Deductible",
   "copay_medicine": "Medicine Cooay",
-  "medicine_max": "Max Limit",
+  "medicine_max": "Medicine Max Limit",
   "arabic_provider_name": "Arabic Name",
   "update_insurance": "Update",
 

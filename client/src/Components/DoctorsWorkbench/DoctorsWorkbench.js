@@ -79,13 +79,13 @@ class DoctorsWorkbench extends Component {
             }
           );
         }
-      },
-      onFailure: error => {}
+      }
     });
   }
 
   loadListofData() {
     algaehLoader({ show: true });
+
     const dateRange =
       localStorage.getItem("workbenchDateRange") !== null
         ? JSON.parse(localStorage.getItem("workbenchDateRange"))
@@ -105,8 +105,11 @@ class DoctorsWorkbench extends Component {
       cancelRequestId: "getMyDay",
       onSuccess: response => {
         if (response.data.success) {
+          const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
+
           this.setState(
             {
+              selectedHDate: _selecDate,
               data: response.data.records,
               activeDateHeader: dateRange.activeDateHeader
             },
@@ -146,6 +149,7 @@ class DoctorsWorkbench extends Component {
 
     while (initialDate <= endDate) {
       let dt = moment(initialDate);
+
       generatedLi.push({
         day: dt.format("DD"),
         currentdate: dt._d,
@@ -157,12 +161,12 @@ class DoctorsWorkbench extends Component {
     return generatedLi;
   }
   onSelectedDateHandler(e) {
-    const fromDate = e.target.getAttribute("date");
+    const fromDate = e.currentTarget.getAttribute("date");
     this.setState(
       {
-        activeDateHeader: e.target.getAttribute("date"),
-        fromDate: e.target.getAttribute("date"),
-        toDate: e.target.getAttribute("date")
+        activeDateHeader: e.currentTarget.getAttribute("date"),
+        fromDate: e.currentTarget.getAttribute("date"),
+        toDate: e.currentTarget.getAttribute("date")
       },
       () => {
         localStorage.setItem(
@@ -236,6 +240,7 @@ class DoctorsWorkbench extends Component {
                   type="month"
                   onChange={this.monthChangeHandler.bind(this)}
                   value={moment(this.state.selectedHDate).format("YYYY-MM")}
+                  max={moment(new Date()).format("YYYY-MM")}
                 />
               </div>
             </div>
@@ -261,6 +266,7 @@ class DoctorsWorkbench extends Component {
               <div className="portlet-body">
                 <div className="opPatientList">
                   <ul className="opList">
+                    {console.log("data", this.state.data)}
                     {Enumerable.from(this.state.data)
                       .where(w => w.status === "V")
                       .toArray().length !== 0 ? (
