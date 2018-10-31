@@ -12,7 +12,8 @@
     flex: initial !important; }
   .ReactTable .rt-td {
     overflow: inherit !important;
-    white-space: unset !important; }
+    white-space: unset !important;
+    color: red; }
   .ReactTable .rt-thead.-filters {
     top: 25px; }
     .ReactTable .rt-thead.-filters .rt-tr .rt-th {
