@@ -160,7 +160,6 @@ class AppointmentStatus extends Component {
 
     AlgaehValidation({
       querySelector: "", //"data-validate='InsuranceProvider'", //if require section level
-      fetchFromFile: true, //if required arabic error
       alertTypeIcon: "warning", // error icon
       onCatch: value => {
         //alert(value);
@@ -212,8 +211,8 @@ class AppointmentStatus extends Component {
                 others: {
                   type: "color",
                   required: true,
-                  checkvalidation: "#ffffff"
-                  // errormessage: "Color Select kro",
+                  checkvalidation: "#ffffff",
+                  errormessage: "Please Select a color"
                 }
               }}
             />

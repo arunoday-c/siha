@@ -17,7 +17,7 @@ import swal from "sweetalert2";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import { getCookie } from "../../../utils/algaehApiCall";
-import { setGlobal } from "../../../utils/GlobalFunctions";
+import { setGlobal, AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Options from "../../../Options.json";
 
 class VisitType extends Component {
@@ -28,13 +28,9 @@ class VisitType extends Component {
       open: false,
       visit_status: "A",
       visit_type_code: "",
-      visit_type_code_error: false,
-      visit_type_code_error_txt: "",
+
       visit_type_desc: "",
-      visit_type_error: false,
-      visit_type_error_txt: "",
-      hims_d_visit_type_error: false,
-      hims_d_visit_type_error_txt: "",
+
       arabic_visit_type_desc: "",
       buttonText: (
         <AlgaehLabel
@@ -56,10 +52,13 @@ class VisitType extends Component {
     swal({
       title: "Are you sure you want to delete this Visit Type?",
       type: "warning",
-      buttons: true,
-      dangerMode: true
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         let data = { hims_d_visit_type_id: id };
         algaehApiCall({
           uri: "/visitType/delete",
@@ -88,6 +87,11 @@ class VisitType extends Component {
               type: "error"
             });
           }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
         });
       }
     });
@@ -145,62 +149,42 @@ class VisitType extends Component {
 
   addVisit(e) {
     e.preventDefault();
-    if (this.state.visit_type_code.length === 0) {
-      this.setState({
-        visit_type_code_error: true,
-        visit_type_code_error_txt: "Code Cannot be Empty"
-      });
-    } else if (this.state.visit_type_desc.length === 0) {
-      this.setState({
-        visit_type_error: true,
-        visit_type_error_txt: "Name Cannot be Empty"
-      });
-    } else if (this.state.arabic_visit_type_desc.length === 0) {
-      this.setState({
-        arabic_visit_type_error: true,
-        arabic_visit_type_error_txt: "Arabic Name Cannot be Empty"
-      });
-    } else {
-      this.setState({
-        visit_type_code_error: false,
-        visit_type_code_error_txt: "",
-        visit_type_error: false,
-        visit_type_error_txt: "",
-        arabic_visit_type_error: false,
-        arabic_visit_type_error_txt: ""
-      });
 
-      algaehApiCall({
-        uri: "/visitType/add",
-        data: this.state,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            this.resetState();
-            //Handle Successful Add here
-            this.props.getVisittypes({
-              uri: "/visitType/get",
-              method: "GET",
-              redux: {
-                type: "VISITTYPE_GET_DATA",
-                mappingName: "visittypes"
-              }
-            });
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/visitType/add",
+          data: this.state,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              this.resetState();
+              //Handle Successful Add here
+              this.props.getVisittypes({
+                uri: "/visitType/get",
+                method: "GET",
+                redux: {
+                  type: "VISITTYPE_GET_DATA",
+                  mappingName: "visittypes"
+                }
+              });
+              swalMessage({
+                title: "Visa Type added successfully",
+                type: "success"
+              });
+            } else {
+              //Handle unsuccessful Add here.
+            }
+          },
+          onFailure: error => {
             swalMessage({
-              title: "Visa Type added successfully",
-              type: "success"
+              title: error.response.data.message,
+              type: "error"
             });
-          } else {
-            //Handle unsuccessful Add here.
           }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.response.data.message,
-            type: "error"
-          });
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
   editTexts(a, b) {
@@ -293,8 +277,6 @@ class VisitType extends Component {
                     className: "txt-fld",
                     name: "visit_type_code",
                     value: this.state.visit_type_code,
-                    error: this.state.visit_type_code_error,
-                    helperText: this.state.visit_type_code_error_txt,
                     events: {
                       onChange: this.changeTexts.bind(this)
                     }
@@ -311,8 +293,7 @@ class VisitType extends Component {
                     className: "txt-fld",
                     name: "visit_type_desc",
                     value: this.state.visit_type_desc,
-                    error: this.state.visit_type_error,
-                    helperText: this.state.visit_type_error_txt,
+
                     events: {
                       onChange: this.changeTexts.bind(this)
                     }
@@ -329,8 +310,7 @@ class VisitType extends Component {
                     className: "txt-fld",
                     name: "arabic_visit_type_desc",
                     value: this.state.arabic_visit_type_desc,
-                    error: this.state.arabic_visit_type_error,
-                    helperText: this.state.arabic_visit_type_error_txt,
+
                     events: {
                       onChange: this.changeTexts.bind(this)
                     }

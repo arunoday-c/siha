@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import "./Analyte.css";
-import Button from "@material-ui/core/Button";
-// import moment from "moment";
-// import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -15,7 +11,6 @@ import {
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
-// import swal from "sweetalert2";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall.js";
 import {
@@ -81,12 +76,9 @@ class LabAnalyte extends Component {
   render() {
     return (
       <div className="lab_section">
-        <LinearProgress id="myProg" style={{ display: "none" }} />
         <div className="container-fluid">
           <form>
-            <div
-              className="row"
-            >
+            <div className="row">
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -97,8 +89,6 @@ class LabAnalyte extends Component {
                   className: "txt-fld",
                   name: "description",
                   value: this.state.description,
-                  error: this.state.description_error,
-                  helperText: this.state.description_error_txt,
                   events: {
                     onChange: changeTexts.bind(this, this)
                   }
@@ -138,16 +128,14 @@ class LabAnalyte extends Component {
                   }
                 }}
               />
-              <div
-                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
-                >
-                  <button
+              <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+                <button
                   onClick={insertLabAnalytes.bind(this, this)}
-                    className="btn btn-primary"
-                  >
-                    Add to List
-                  </button>
-                </div>
+                  className="btn btn-primary"
+                >
+                  Add to List
+                </button>
+              </div>
             </div>
           </form>
 

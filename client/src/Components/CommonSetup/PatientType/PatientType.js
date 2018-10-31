@@ -16,6 +16,7 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import swal from "sweetalert2";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 // import { getCookie } from "../../../utils/algaehApiCall.js";
 
 class PatientType extends Component {
@@ -28,16 +29,6 @@ class PatientType extends Component {
       patitent_type_desc: "",
       arabic_patitent_type_desc: "",
       row: [],
-
-      patient_type_code_error: false,
-      patient_type_code_error_txt: "",
-
-      patient_type_error: false,
-      patient_type_error_txt: "",
-
-      patient_type_arabic_error: false,
-      patient_type_arabic_error_txt: "",
-
       gridrefresh: true
     };
     this.baseState = this.state;
@@ -70,10 +61,13 @@ class PatientType extends Component {
     swal({
       title: "Are you sure you want to delete this ID Types?",
       type: "warning",
-      buttons: true,
-      dangerMode: true
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         let data = { hims_d_identity_document_id: id };
         algaehApiCall({
           uri: "/patientType/delete",
@@ -106,7 +100,7 @@ class PatientType extends Component {
       } else {
         swalMessage({
           title: "Delete request cancelled",
-          type: "success"
+          type: "error"
         });
       }
     });
@@ -125,45 +119,34 @@ class PatientType extends Component {
 
   addPatientType(e) {
     e.preventDefault();
-    if (this.state.patient_type_code.length === 0) {
-      this.setState({
-        patient_type_code_error: true,
-        patient_type_code_error_txt: "Code cannot be empty"
-      });
-    } else if (this.state.patitent_type_desc.length === 0) {
-      this.setState({
-        patient_type_error: true,
-        patient_type_error_txt: "Name cannot be empty"
-      });
-    } else if (this.state.patitent_type_desc.length === 0) {
-      this.setState({
-        patient_type_arabic_error: true,
-        patient_type_arabic_error_txt: "Arabic Name cannot be empty"
-      });
-    } else {
-      algaehApiCall({
-        uri: "/patientType/add",
-        data: this.state,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            swalMessage({
-              title: "Patient Type added successfully",
-              type: "success"
-            });
 
-            this.resetState();
-          } else {
-            //Handle unsuccessful Add here.
+    AlgaehValidation({
+      alerTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/patientType/add",
+          data: this.state,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              swalMessage({
+                title: "Patient Type added successfully",
+                type: "success"
+              });
+
+              this.resetState();
+            } else {
+              //Handle unsuccessful Add here.
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
           }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.response.data.message,
-            type: "error"
-          });
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
   updatePatientType(data) {
@@ -218,9 +201,7 @@ class PatientType extends Component {
                   value: this.state.patient_type_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },
-                  error: this.state.patient_type_code_error,
-                  helperText: this.state.patient_type_code_error_txt
+                  }
                 }}
               />
 
@@ -236,9 +217,7 @@ class PatientType extends Component {
                   value: this.state.patitent_type_desc,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },
-                  error: this.state.patient_type_error,
-                  helperText: this.state.patient_type_error_txt
+                  }
                 }}
               />
 
@@ -254,9 +233,7 @@ class PatientType extends Component {
                   value: this.state.arabic_patitent_type_desc,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },
-                  error: this.state.patient_type_arabic_error,
-                  helperText: this.state.patient_type_arabic_error_txt
+                  }
                 }}
               />
               <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>

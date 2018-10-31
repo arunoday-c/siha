@@ -1,5 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -49,10 +50,13 @@ const showconfirmDialog = ($this, id) => {
   swal({
     title: "Are you sure you want to delete this Analytes?",
     type: "warning",
-    buttons: true,
-    dangerMode: true
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
   }).then(willDelete => {
-    if (willDelete) {
+    if (willDelete.value) {
       let data = {
         hims_d_lab_analytes_id: id
         // updated_by: getCookie("UserID")
@@ -79,6 +83,11 @@ const showconfirmDialog = ($this, id) => {
         },
         onFailure: error => {}
       });
+    } else {
+      swalMessage({
+        title: "Delete request cancelled",
+        type: "error"
+      });
     }
   });
 };
@@ -89,42 +98,49 @@ const deleteLabAnalytes = ($this, row) => {
 
 const insertLabAnalytes = ($this, e) => {
   e.preventDefault();
-  if ($this.state.description.length == 0) {
-    $this.setState({
-      description_error: true,
-      description_error_txt: "Description cannot be blank"
-    });
-  } else {
-    $this.setState({
-      description_error: false,
-      description_error_txt: ""
-    });
 
-    algaehApiCall({
-      uri: "/labmasters/insertAnalytes",
-      data: $this.state,
-      onSuccess: response => {
-        if (response.data.success == true) {
-          resetState($this);
-          //Handle Successful Add here
-          $this.props.getLabAnalytes({
-            uri: "/labmasters/selectAnalytes",
-            method: "GET",
-            redux: {
-              type: "ANALYTES_GET_DATA",
-              mappingName: "labanalytes"
-            }
-          });
-          swalMessage({
-            title: "Lab Analytes added successfully",
-            type: "success"
-          });
-        } else {
-          //Handle unsuccessful Add here.
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    onSuccess: () => {
+      algaehApiCall({
+        uri: "/labmasters/insertAnalytes",
+        data: $this.state,
+        onSuccess: response => {
+          if (response.data.success == true) {
+            resetState($this);
+            //Handle Successful Add here
+            $this.props.getLabAnalytes({
+              uri: "/labmasters/selectAnalytes",
+              method: "GET",
+              redux: {
+                type: "ANALYTES_GET_DATA",
+                mappingName: "labanalytes"
+              }
+            });
+            swalMessage({
+              title: "Lab Analytes added successfully",
+              type: "success"
+            });
+          } else {
+            //Handle unsuccessful Add here.
+          }
         }
-      }
-    });
-  }
+      });
+    }
+  });
+
+  // if ($this.state.description.length == 0) {
+  //   $this.setState({
+  //     description_error: true,
+  //     description_error_txt: "Description cannot be blank"
+  //   });
+  // } else {
+  //   $this.setState({
+  //     description_error: false,
+  //     description_error_txt: ""
+  //   });
+
+  // }
 };
 
 export {

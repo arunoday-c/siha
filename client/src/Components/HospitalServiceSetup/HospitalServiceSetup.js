@@ -23,6 +23,9 @@ import { getCookie } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { texthandle, getHospotalServices } from "./HospitalServiceSetupEvents";
 
+//TODO
+//Algaeh Validations
+
 class HospitalServiceSetup extends Component {
   constructor(props) {
     super(props);

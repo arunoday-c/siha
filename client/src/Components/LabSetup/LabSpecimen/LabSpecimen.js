@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import "./LabSpecimen.css";
-import Button from "@material-ui/core/Button";
-// import moment from "moment";
-// import { algaehApiCall } from "../../../utils/algaehApiCall";
-
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -35,11 +30,7 @@ class LabSpecimen extends Component {
     this.state = {
       hims_d_lab_specimen_id: "",
       description: "",
-      storage_type: null,
-      // created_by: getCookie("UserID"),
-
-      description_error: false,
-      description_error_txt: ""
+      storage_type: null
     };
     this.baseState = this.state;
   }
@@ -69,60 +60,51 @@ class LabSpecimen extends Component {
   render() {
     return (
       <div className="lab_section">
-        <LinearProgress id="myProg" style={{ display: "none" }} />
         <div className="container-fluid">
-          <form>
-            <div
-              className="row"
-            >
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "type_desc",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "description",
-                  value: this.state.description,
-                  error: this.state.description_error,
-                  helperText: this.state.description_error_txt,
-                  events: {
-                    onChange: changeTexts.bind(this, this)
-                  }
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "storage_type",
-                  isImp: true
-                }}
-                selector={{
-                  name: "storage_type",
-                  className: "select-fld",
-                  value: this.state.storage_type,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.FORMAT_STORAGE_TYPE
-                  },
+          <div className="row">
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "type_desc",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "description",
+                value: this.state.description,
+                events: {
                   onChange: changeTexts.bind(this, this)
-                }}
-              />
-<div
-                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
-                >
-                  <button
-                  onClick={insertLabSpecimen.bind(this, this)}
-                    className="btn btn-primary"
-                  >
-                    Add to List
-                  </button>
-                </div>
+                }
+              }}
+            />
+
+            <AlagehAutoComplete
+              div={{ className: "col-lg-2" }}
+              label={{
+                fieldName: "storage_type",
+                isImp: true
+              }}
+              selector={{
+                name: "storage_type",
+                className: "select-fld",
+                value: this.state.storage_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.FORMAT_STORAGE_TYPE
+                },
+                onChange: changeTexts.bind(this, this)
+              }}
+            />
+            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+              <button
+                onClick={insertLabSpecimen.bind(this, this)}
+                className="btn btn-primary"
+              >
+                Add to List
+              </button>
             </div>
-          </form>
+          </div>
 
           <div className="row form-details">
             <div className="col">

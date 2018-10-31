@@ -1,5 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, e) => {
   let name = e.name || e.target.name;
@@ -42,8 +43,11 @@ const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this UOM?",
     type: "warning",
-    buttons: true,
-    dangerMode: true
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete) {
       let data = {
@@ -66,6 +70,11 @@ const showconfirmDialog = ($this, row) => {
           }
         }
       });
+    } else {
+      swalMessage({
+        title: "Delete request cancelled",
+        type: "error"
+      });
     }
   });
 };
@@ -76,35 +85,29 @@ const deleteItemUOM = ($this, row) => {
 
 const insertItemUOM = ($this, e) => {
   e.preventDefault();
-  if ($this.state.uom_description.length == 0) {
-    $this.setState({
-      description_error: true,
-      description_error_txt: "Description cannot be blank"
-    });
-  } else {
-    $this.setState({
-      description_error: false,
-      description_error_txt: ""
-    });
 
-    algaehApiCall({
-      uri: "/pharmacy/addPharmacyUom",
-      data: $this.state,
-      onSuccess: response => {
-        if (response.data.success == true) {
-          resetState($this);
-          //Handle Successful Add here
-          getItemUOM($this);
-          swalMessage({
-            title: "UOM added successfully . .",
-            type: "success"
-          });
-        } else {
-          //Handle unsuccessful Add here.
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    onSuccess: () => {
+      algaehApiCall({
+        uri: "/pharmacy/addPharmacyUom",
+        data: $this.state,
+        onSuccess: response => {
+          if (response.data.success == true) {
+            resetState($this);
+            //Handle Successful Add here
+            getItemUOM($this);
+            swalMessage({
+              title: "UOM added successfully . .",
+              type: "success"
+            });
+          } else {
+            //Handle unsuccessful Add here.
+          }
         }
-      }
-    });
-  }
+      });
+    }
+  });
 };
 
 const getItemUOM = $this => {

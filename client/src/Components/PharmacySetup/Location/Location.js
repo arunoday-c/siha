@@ -37,9 +37,6 @@ class Location extends Component {
       hims_d_pharmacy_location_id: "",
       location_description: "",
       location_type: null,
-
-      description_error: false,
-      description_error_txt: "",
       allowpos: false
     };
     this.baseState = this.state;
@@ -63,81 +60,68 @@ class Location extends Component {
   render() {
     return (
       <div className="lab_section">
-        <LinearProgress id="myProg" style={{ display: "none" }} />
-        <Paper className="container-fluid">
-          <form>
-            <div
-              className="row"
-              style={{
-                padding: 20,
-                marginLeft: "auto",
-                marginRight: "auto"
+        <div className="container-fluid">
+          <div className="row">
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "type_desc",
+                isImp: true
               }}
-            >
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "type_desc",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "location_description",
-                  value: this.state.location_description,
-                  error: this.state.description_error,
-                  helperText: this.state.description_error_txt,
-                  events: {
-                    onChange: changeTexts.bind(this, this)
-                  }
-                }}
-              />
+              textBox={{
+                className: "txt-fld",
+                name: "location_description",
+                value: this.state.location_description,
 
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "location_type",
-                  isImp: true
-                }}
-                selector={{
-                  name: "location_type",
-                  className: "select-fld",
-                  value: this.state.location_type,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.FORMAT_PHARMACY_STORE
-                  },
+                events: {
                   onChange: changeTexts.bind(this, this)
-                }}
-              />
+                }
+              }}
+            />
 
-              <div
-                className="customCheckbox col-lg-3"
-                style={{ border: "none", marginTop: "28px" }}
-              >
-                <label className="checkbox" style={{ color: "#212529" }}>
-                  <input
-                    type="checkbox"
-                    name="Allow POS"
-                    checked={this.state.allowpos}
-                    onChange={allowPos.bind(this, this)}
-                  />
-                  <span style={{ fontSize: "0.8rem" }}>Allow POS</span>
-                </label>
-              </div>
+            <AlagehAutoComplete
+              div={{ className: "col-lg-2" }}
+              label={{
+                fieldName: "location_type",
+                isImp: true
+              }}
+              selector={{
+                name: "location_type",
+                className: "select-fld",
+                value: this.state.location_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.FORMAT_PHARMACY_STORE
+                },
+                onChange: changeTexts.bind(this, this)
+              }}
+            />
 
-              <div className="col-lg-3 align-middle">
-                <br />
-                <Button
-                  onClick={insertLocation.bind(this, this)}
-                  variant="raised"
-                  color="primary"
-                >
-                  <AlgaehLabel label={{ fieldName: "Addbutton" }} />
-                </Button>
-              </div>
+            <div
+              className="customCheckbox col-lg-3"
+              style={{ border: "none", marginTop: "28px" }}
+            >
+              <label className="checkbox" style={{ color: "#212529" }}>
+                <input
+                  type="checkbox"
+                  name="Allow POS"
+                  checked={this.state.allowpos}
+                  onChange={allowPos.bind(this, this)}
+                />
+                <span style={{ fontSize: "0.8rem" }}>Allow POS</span>
+              </label>
             </div>
-          </form>
+
+            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+              <button
+                onClick={insertLocation.bind(this, this)}
+                className="btn btn-primary"
+              >
+                <AlgaehLabel label={{ fieldName: "Addbutton" }} />
+              </button>
+            </div>
+          </div>
 
           <div className="row form-details">
             <div className="col">
@@ -298,7 +282,7 @@ class Location extends Component {
               />
             </div>
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }
