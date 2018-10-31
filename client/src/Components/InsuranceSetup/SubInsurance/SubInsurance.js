@@ -87,18 +87,25 @@ class SubInsurance extends PureComponent {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-add-sub-insurance-form">
-              <div className="container-fluid">
+              <div className="col-lg-12 popLeftDiv">
                 {/* Services Details */}
                 <div className="row insurance-details">
                   <div className="col-lg-12">
-                    <h5> INSURAR: {this.state.insurance_provider_name}</h5>
+                    <h6>
+                      <label>
+                        <span>Selected Insurar:</span>
+                      </label>
+                      <br />
+                      {this.state.insurance_provider_name}
+                    </h6>
                   </div>
                 </div>
                 <div className="row">
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "insurance_sub_code"
+                      fieldName: "insurance_sub_code",
+                      isImp: true
                     }}
                     textBox={{
                       value: this.state.insurance_sub_code,
@@ -116,7 +123,8 @@ class SubInsurance extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "insurance_sub_name"
+                      fieldName: "insurance_sub_name",
+                      isImp: true
                     }}
                     textBox={{
                       value: this.state.insurance_sub_name,
@@ -152,7 +160,8 @@ class SubInsurance extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "transaction_number"
+                      fieldName: "transaction_number",
+                      isImp: true
                     }}
                     textBox={{
                       value: this.state.transaction_number,
@@ -204,7 +213,8 @@ class SubInsurance extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "card_format"
+                      fieldName: "card_format",
+                      isImp: true
                     }}
                     textBox={{
                       value: this.state.card_format,
@@ -221,7 +231,10 @@ class SubInsurance extends PureComponent {
                   />
                   <AlgaehDateHandler
                     div={{ className: "col-lg-3" }}
-                    label={{ fieldName: "effective_start_date" }}
+                    label={{
+                      fieldName: "effective_start_date",
+                      isImp: true
+                    }}
                     textBox={{
                       className: "txt-fld hidden",
                       name: "effective_start_date"
@@ -254,10 +267,20 @@ class SubInsurance extends PureComponent {
                         : null
                     }
                   />
+
+                  <div className="col-lg-3">
+                    <button
+                      className="btn btn-primary"
+                      style={{ marginTop: 21 }}
+                      onClick={saveSubInsurance.bind(this, this, context)}
+                    >
+                      Add
+                    </button>
+                  </div>
                 </div>
 
-                <div className="row form-details">
-                  <div className="col-12 popLeftDiv">
+                <div className="row">
+                  <div className="col-12" id="subInsuranceGridCntr">
                     <AlgaehDataGrid
                       id="sub_insurance_grid"
                       columns={[
@@ -268,7 +291,13 @@ class SubInsurance extends PureComponent {
                               label={{ fieldName: "insurance_sub_code" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
+                          others: {
+                            maxWidth: 200,
+                            style: {
+                              textAlign: "center"
+                            }
+                          }
                         },
                         {
                           fieldName: "insurance_sub_name",
@@ -295,6 +324,12 @@ class SubInsurance extends PureComponent {
                                 }}
                               />
                             );
+                          },
+                          others: {
+                            maxWidth: 200,
+                            style: {
+                              textAlign: "center"
+                            }
                           }
                         },
                         {
@@ -322,6 +357,12 @@ class SubInsurance extends PureComponent {
                                 }}
                               />
                             );
+                          },
+                          others: {
+                            maxWidth: 200,
+                            style: {
+                              textAlign: "center"
+                            }
                           }
                         },
                         {
@@ -349,6 +390,12 @@ class SubInsurance extends PureComponent {
                                 }}
                               />
                             );
+                          },
+                          others: {
+                            maxWidth: 200,
+                            style: {
+                              textAlign: "center"
+                            }
                           }
                         },
                         {
@@ -419,31 +466,12 @@ class SubInsurance extends PureComponent {
                             : this.state.sub_insurance
                       }}
                       isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 5 }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteSubInsurance.bind(this, this),
                         onEdit: row => {},
                         onDone: updateSubInsurance.bind(this, this)
                       }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="primary"
-                      style={{ float: "right" }}
-                      onClick={saveSubInsurance.bind(this, this, context)}
-                    >
-                      Save
-                    </Button>
-
-                    <AHSnackbar
-                      open={this.state.snackeropen}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
                     />
                   </div>
                 </div>

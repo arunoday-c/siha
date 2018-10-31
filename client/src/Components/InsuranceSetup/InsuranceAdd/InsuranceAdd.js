@@ -159,7 +159,7 @@ class InsuranceAdd extends PureComponent {
       <React.Fragment>
         <div className="hptl-phase1-add-insurance-form">
           {this.props.addfunctionality === true ? (
-            <Modal className="model-set" open={this.props.open}>
+            <Modal open={this.props.open}>
               <div className="algaeh-modal">
                 <div className="popupHeader">
                   <div className="row">
@@ -262,7 +262,7 @@ class InsuranceAdd extends PureComponent {
               </div>
             </Modal>
           ) : (
-            <Modal className="model-set" open={this.props.open}>
+            <Modal open={this.props.open}>
               <div className="algaeh-modal">
                 <div className="popupHeader">
                   <div className="row">

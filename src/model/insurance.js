@@ -1,7 +1,6 @@
 "use strict";
 import extend from "extend";
 import {
- 
   whereCondition,
   releaseDBConnection,
   jsonArrayToObject
@@ -10,7 +9,7 @@ import moment from "moment";
 
 import httpStatus from "../utils/httpStatus";
 
-import {  debugFunction, debugLog } from "../utils/logging";
+import { debugFunction, debugLog } from "../utils/logging";
 
 //created by:irfan,to get patient insurence details by patient id
 let getPatientInsurance = (req, res, next) => {
@@ -591,6 +590,8 @@ let addSubInsuranceProvider = (req, res, next) => {
         next(error);
       }
 
+      // let inputObj = req.body;
+      debugLog("req.body: ", req.body);
       const insurtColumns = [
         "insurance_sub_code",
         "insurance_sub_name",
@@ -600,18 +601,20 @@ let addSubInsuranceProvider = (req, res, next) => {
         "transaction_number",
         "effective_start_date",
         "effective_end_date",
-        "created_by",
-        "updated_by"
+        "created_by"
       ];
 
+      debugLog("Test: ", req.body);
       connection.query(
         "INSERT INTO hims_d_insurance_sub(" +
           insurtColumns.join(",") +
-          ") VALUES ?",
+          ",`created_date`) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
-            arrayObj: req.body
+            arrayObj: req.body,
+            newFieldToInsert: [new Date()],
+            req: req
           })
         ],
         (error, result) => {

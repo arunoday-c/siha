@@ -25,3 +25,8 @@
     border-top-right-radius: 5px;
   }
 }
+#insuranceGridCntr {
+  .ReactTable {
+    max-height: 70vh !important;
+  }
+}

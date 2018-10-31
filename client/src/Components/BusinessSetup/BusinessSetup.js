@@ -91,7 +91,7 @@ class BusinessSetup extends Component {
               }
             </li>
 
-            <li
+            {/* <li
               algaehtabs={"Holiday"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button"}
@@ -153,7 +153,7 @@ class BusinessSetup extends Component {
               onClick={this.openTab.bind(this)}
             >
               QUEUE OPTION
-            </li>
+            </li> */}
           </ul>
         </div>
 

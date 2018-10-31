@@ -249,6 +249,13 @@ class AccessionAcknowledgement extends Component {
                                       ? ""
                                       : row.sample_status !== "N"
                                         ? "none"
+                                        : "",
+
+                                  opacity:
+                                    row.status === "O"
+                                      ? ""
+                                      : row.sample_status !== "N"
+                                        ? "0.1"
                                         : ""
                                 }}
                                 className="fa fa-check"
@@ -268,6 +275,13 @@ class AccessionAcknowledgement extends Component {
                                       ? ""
                                       : row.sample_status !== "N"
                                         ? "none"
+                                        : "",
+
+                                  opacity:
+                                    row.status === "O"
+                                      ? ""
+                                      : row.sample_status !== "N"
+                                        ? "0.1"
                                         : ""
                                 }}
                                 className="fa fa-times"
@@ -284,6 +298,41 @@ class AccessionAcknowledgement extends Component {
                         },
                         others: {
                           maxWidth: 120,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "sample_status",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Sample Status" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return row.sample_status == "N"
+                            ? "Not Done"
+                            : row.sample_status == "A"
+                              ? "Accepted"
+                              : row.sample_status == "R"
+                                ? "Rejected"
+                                : null;
+                        },
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "lab_id_number",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Lab ID Number" }}
+                          />
+                        ),
+                        disabled: true,
+                        others: {
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -355,41 +404,6 @@ class AccessionAcknowledgement extends Component {
                                 : row.status == "CF"
                                   ? "Confirmed"
                                   : "Validated";
-                        },
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "lab_id_number",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Lab ID Number" }}
-                          />
-                        ),
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "sample_status",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Sample Status" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return row.sample_status == "N"
-                            ? "Not Done"
-                            : row.sample_status == "A"
-                              ? "Accepted"
-                              : row.sample_status == "R"
-                                ? "Rejected"
-                                : null;
                         },
                         disabled: true,
                         others: {

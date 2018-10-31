@@ -1,5 +1,4 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AlgaehReport from "../../Wrapper/printReports";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -34,10 +33,9 @@ const CollectSample = ($this, context, row) => {
         }
 
         $this.setState({ test_details: test_details }, () => {
-          successfulMessage({
-            message: "Collected Successfully",
-            title: "Success",
-            icon: "success"
+          swalMessage({
+            title: "Collected Successfully",
+            type: "success"
           });
         });
 

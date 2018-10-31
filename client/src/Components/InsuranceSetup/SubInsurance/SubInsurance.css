@@ -7,7 +7,8 @@
   .hptl-phase1-add-sub-insurance-form .form-details {
     padding-top: 2px; }
   .hptl-phase1-add-sub-insurance-form .insurance-details {
-    border-bottom: 1px solid #e6e6e6; }
+    margin-top: 10px;
+    margin-bottom: 10px; }
   .hptl-phase1-add-sub-insurance-form .colorPrimary div {
     background-color: #dbad64; }
     .hptl-phase1-add-sub-insurance-form .colorPrimary div h2 {
@@ -16,3 +17,8 @@
   .hptl-phase1-add-sub-insurance-form td {
     font-size: 11px;
     border-right: 1px solid #e6e6e6; }
+
+#subInsuranceGridCntr {
+  margin-top: 10px; }
+  #subInsuranceGridCntr .ReactTable {
+    height: 38vh !important; }

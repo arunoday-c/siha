@@ -12,7 +12,7 @@ import { LINQ } from "node-linq";
 // import $ from "jquery";
 import { logger, debugFunction, debugLog } from "../utils/logging";
 
-let addDepartment = (req, res, next) => {
+let addDepartmentOLD = (req, res, next) => {
   let subDepartment = {
     hims_d_sub_department_id: null,
     sub_department_code: null,
@@ -130,6 +130,53 @@ let addDepartment = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to add departments
+let addDepartment = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_department` (department_code,department_name,arabic_department_name,\
+          department_desc,department_type,effective_start_date,effective_end_date,created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.department_code,
+          input.department_name,
+          input.arabic_department_name,
+          input.department_desc,
+          input.department_type,
+          input.effective_start_date,
+          input.effective_end_date,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 let updateDepartment = (req, res, next) => {
   let department = {
     hims_d_department_id: null,
@@ -251,21 +298,22 @@ let deleteDepartment = (req, res, next) => {
   }
 };
 
-let departWhereCondition = {
-  department_code: "ALL",
-  department_name: "ALL",
-  department_desc: "ALL",
-  department_type: "ALL",
-  effective_start_date: "ALL",
-  effective_end_date: "ALL",
-  department_status: "ALL"
-};
-
-let selectDepartment = (req, res, next) => {
+let selectDepartmentOLD = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
+
+    let departWhereCondition = {
+      department_code: "ALL",
+      department_name: "ALL",
+      department_desc: "ALL",
+      department_type: "ALL",
+      effective_start_date: "ALL",
+      effective_end_date: "ALL",
+      department_status: "ALL"
+    };
+    
     let pagePaging = "";
     if (req.paging != null) {
       let Page = paging(req.paging);
@@ -299,7 +347,42 @@ let selectDepartment = (req, res, next) => {
   }
 };
 
-let selectSubDepartment = (req, res, next) => {
+//created by irfan: to get Departments
+let selectDepartment = (req, res, next) => {
+  let selectWhere = {
+    hims_d_department_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_department_id, department_code, department_name, arabic_department_name,\
+        department_desc, department_type, effective_start_date, effective_end_date, department_status\
+        from hims_d_department where record_status='A' AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let selectSubDepartmentOLD = (req, res, next) => {
   let subDepartmentWhereCondition = {
     hims_d_sub_department_id: "ALL",
     sub_department_code: "ALL",
@@ -343,7 +426,43 @@ let selectSubDepartment = (req, res, next) => {
   }
 };
 
-let addSubDepartment = (req, res, next) => {
+
+//created by irfan: to get SUB-Departments
+let selectSubDepartment = (req, res, next) => {
+  let selectWhere = {
+    department_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_sub_department_id, sub_department_code, sub_department_name, arabic_sub_department_name,\
+        sub_department_desc, department_id, effective_start_date, effective_end_date, sub_department_status\
+        from  hims_d_sub_department where record_status='A' and " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let addSubDepartmentOLD = (req, res, next) => {
   // let subDepartment = {
   //   hims_d_sub_department_id: null,
   //   sub_department_code: null,
@@ -428,6 +547,56 @@ let addSubDepartment = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to add  SUB_departments
+let addSubDepartment = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_sub_department` (sub_department_code,sub_department_name,\
+          arabic_sub_department_name,sub_department_desc,department_id,effective_start_date,\
+          effective_end_date,created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.sub_department_code,
+          input.sub_department_name,
+          input.arabic_sub_department_name,
+          input.sub_department_desc,
+          input.department_id,
+          input.effective_start_date,
+          input.effective_end_date,      
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+
 let updateSubDepartment = (req, res, next) => {
   // let subDepartment = {
   //   hims_d_sub_department_id: null,

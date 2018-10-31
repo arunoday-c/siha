@@ -23,7 +23,7 @@ import {
   AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-import { swalMessage } from "../../../utils/algaehApiCall";
+
 import {
   FORMAT_PRIORITY,
   FORMAT_TEST_STATUS
@@ -32,7 +32,6 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
-// import SampleCollectionModal from "../SampleCollections/SampleCollectionModal";
 import SampleCollectionModal from "../SampleCollections/SampleCollections";
 import MyContext from "../../../utils/MyContext.js";
 
@@ -49,6 +48,7 @@ class SampleCollection extends Component {
       patient_id: null,
       sample_collection: [],
       selected_patient: null,
+      status: null,
       isOpen: false
     };
   }
@@ -66,17 +66,10 @@ class SampleCollection extends Component {
   };
 
   ShowCollectionModel(row, e) {
-    if (row.billed === "Y") {
-      this.setState({
-        isOpen: !this.state.isOpen,
-        selected_patient: row
-      });
-    } else {
-      swalMessage({
-        title: "Invalid Input. Please make the pament.",
-        type: "warning"
-      });
-    }
+    this.setState({
+      isOpen: !this.state.isOpen,
+      selected_patient: row
+    });
   }
   CloseCollectionModel(e) {
     this.setState(
@@ -217,7 +210,7 @@ class SampleCollection extends Component {
                     onChange: texthandle.bind(this, this)
                   }}
                 />
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
                     fieldName: "location_id",
@@ -234,7 +227,7 @@ class SampleCollection extends Component {
                     },
                     onChange: texthandle.bind(this, this)
                   }}
-                />
+                /> */}
                 <div className="col" style={{ paddingTop: "21px" }}>
                   <button
                     className="btn btn-primary btn-sm"
@@ -283,6 +276,38 @@ class SampleCollection extends Component {
                         },
                         others: {
                           maxWidth: 70,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "status",
+                        label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                        displayTemplate: row => {
+                          return row.status == "O"
+                            ? "Ordered"
+                            : row.status == "CL"
+                              ? "Collected"
+                              : row.status == "CN"
+                                ? "Cancelled"
+                                : row.status == "CF"
+                                  ? "Confirmed"
+                                  : "Validated";
+                        },
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "visit_code",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "visit_code" }} />
+                        ),
+                        disabled: false,
+                        others: {
+                          maxWidth: 200,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
