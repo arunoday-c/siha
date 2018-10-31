@@ -17,6 +17,11 @@
     "icon": "fas fa-cog",
     "subMenu": [
       {
+        "name": "Appointment Setup",
+        "label": "إعداد موعد",
+        "path": "/AppointmentSetup"
+      },
+      {
         "name": "Business Setup",
         "label": "إعداد الأعمال",
         "path": "/BusinessSetup"
@@ -27,14 +32,14 @@
         "path": "/CommonSetup"
       },
       {
+        "name": "Hospital Service Setup",
+        "label": "إعداد خدمة المستشفى",
+        "path": "/HospitalServiceSetup"
+      },
+      {
         "name": "Insurance Setup",
         "label": "إعداد التأمين",
         "path": "/InsuranceSetup"
-      },
-      {
-        "name": "Lab Setup",
-        "label": "إعداد مختبر",
-        "path": "/LabSetup"
       },
       {
         "name": "Investigation Setup",
@@ -42,19 +47,29 @@
         "path": "/InvestigationSetup"
       },
       {
-        "name": "Pharmacy Setup",
-        "label": "إعداد الصيدلة",
-        "path": "/PharmacySetup"
-      },
-      {
         "name": "Item Setup",
         "label": "إعداد العنصر",
         "path": "/ItemSetup"
       },
       {
-        "name": "Hospital Service Setup",
-        "label": "إعداد خدمة المستشفى",
-        "path": "/HospitalServiceSetup"
+        "name": "Lab Setup",
+        "label": "إعداد مختبر",
+        "path": "/LabSetup"
+      },
+      {
+        "name": "Medical Workbench Setup",
+        "label": "إعداد منضدة طبية",
+        "path": "/MedicalWorkbenchSetup"
+      },
+      {
+        "name": "Pharmacy Setup",
+        "label": "إعداد الصيدلة",
+        "path": "/PharmacySetup"
+      },
+      {
+        "name": "ProcedureSetup",
+        "label": "إعداد الإجراء",
+        "path": "/Procedure Setup"
       }
     ]
   },

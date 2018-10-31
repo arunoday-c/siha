@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import NetworkPlanList from "../NetworkPlanList/NetworkPlanList";
+// import NetworkPlanList from "../NetworkPlanList/NetworkPlanList";
 import AHSnackbar from "../../common/Inputs/AHSnackbar";
 import "./NetworkPlan.css";
 import "./../../../styles/site.css";
@@ -12,6 +12,7 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlagehAutoComplete,
+  AlgaehDataGrid,
   Button
 } from "../../Wrapper/algaehWrapper";
 
@@ -116,30 +117,30 @@ class NetworkPlan extends PureComponent {
     this.setState({ snackeropen: false });
   };
 
-  ShowPlanListScreen(dataclear, e) {
-    let rowSelected = {};
-    let saveupdate = false,
-      btnupdate = true;
-    if (
-      e.hims_d_insurance_network_id !== undefined &&
-      e.hims_d_insurance_network_id !== null
-    ) {
-      rowSelected = e;
-      saveupdate = true;
-      btnupdate = false;
-      // addNewNetwork(this, this);
-    }
-    this.setState({
-      ...this.state,
-      PlanList: !this.state.PlanList,
-      saveupdate: saveupdate,
-      btnupdate: btnupdate,
-      ...rowSelected
-    });
-    if (dataclear === "Y") {
-      addNewNetwork(this, this);
-    }
-  }
+  // ShowPlanListScreen(dataclear, e) {
+  //   let rowSelected = {};
+  //   let saveupdate = false,
+  //     btnupdate = true;
+  //   if (
+  //     e.hims_d_insurance_network_id !== undefined &&
+  //     e.hims_d_insurance_network_id !== null
+  //   ) {
+  //     rowSelected = e;
+  //     saveupdate = true;
+  //     btnupdate = false;
+  //     // addNewNetwork(this, this);
+  //   }
+  //   this.setState({
+  //     ...this.state,
+  //     PlanList: !this.state.PlanList,
+  //     saveupdate: saveupdate,
+  //     btnupdate: btnupdate,
+  //     ...rowSelected
+  //   });
+  //   if (dataclear === "Y") {
+  //     addNewNetwork(this, this);
+  //   }
+  // }
 
   render() {
     return (
@@ -321,6 +322,7 @@ class NetworkPlan extends PureComponent {
                     }}
                   />
                 </div>
+
                 <br />
                 <Paper className="Paper">
                   {/* Company */}
@@ -762,22 +764,81 @@ class NetworkPlan extends PureComponent {
                   </div>
                 </Paper>
                 <div className="row">
-                  <div className="col-lg-12 button-details">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="primary"
-                      style={{ float: "left" }}
-                      onClick={this.ShowPlanListScreen.bind(this, "Y")}
-                    >
-                      View Plans
-                    </Button>
-                    <NetworkPlanList
-                      show={this.state.PlanList}
-                      onClose={this.ShowPlanListScreen.bind(this, "N")}
-                      selectedLang={this.state.selectedLang}
-                      inputsparameters={this.state.network_plan}
+                  <div className="col-lg-12">
+                    <AlgaehDataGrid
+                      id="pla_list_grid"
+                      columns={[
+                        {
+                          fieldName: "network_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "network_type" }}
+                            />
+                          )
+                          // subinsuranceprovider
+                        },
+                        {
+                          fieldName: "policy_number",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "policy_number" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "employer",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "employer" }} />
+                          )
+                        },
+                        {
+                          fieldName: "insurance_sub_id",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "sub_insurance_id" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            let display =
+                              this.props.subinsuranceprovider === undefined
+                                ? []
+                                : this.props.subinsuranceprovider.filter(
+                                    f =>
+                                      f.hims_d_insurance_sub_id ===
+                                      row.insurance_sub_id
+                                  );
+
+                            return (
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? this.state.selectedLang === "en"
+                                    ? display[0].insurance_sub_name
+                                    : display[0].arabic_sub_name
+                                  : ""}
+                              </span>
+                            );
+                          }
+                        }
+                      ]}
+                      keyId="network_type"
+                      dataSource={{
+                        data:
+                          this.props.networkandplans === undefined
+                            ? []
+                            : this.props.networkandplans
+                      }}
+                      // algaehSearch={true}
+                      // isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      // onRowSelect={row => {
+                      //   this.onClose(row);
+                      // }}
                     />
+                  </div>
+                </div>
+                {/* <NetworkPlanList /> */}
+                <div className="row">
+                  <div className="col-lg-12 button-details">
                     <Button
                       variant="outlined"
                       size="small"
@@ -820,7 +881,8 @@ class NetworkPlan extends PureComponent {
 function mapStateToProps(state) {
   return {
     subinsuranceprovider: state.subinsuranceprovider,
-    networkplan: state.networkplan
+    // networkplan: state.networkplan,
+    networkandplans: state.networkandplans
   };
 }
 

@@ -4,15 +4,14 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import moment from "moment";
-import AHSnackbar from "../../common/Inputs/AHSnackbar";
+
 import "./SubInsurance.css";
 import "./../../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlgaehDataGrid,
-  Button
+  AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -23,10 +22,11 @@ import {
   datehandle,
   deleteSubInsurance,
   updateSubInsurance,
-  onchangegridcol
+  onchangegridcol,
+  getSubInsuranceDetails
 } from "./SubInsuranceHandaler";
 import MyContext from "../../../utils/MyContext";
-import { getCookie } from "../../../utils/algaehApiCall.js";
+
 import Options from "../../../Options.json";
 
 class SubInsurance extends PureComponent {
@@ -41,33 +41,37 @@ class SubInsurance extends PureComponent {
       card_format: null,
       effective_start_date: null,
       effective_end_date: null
+      // sub_insurance: []
       // created_by: getCookie("UserID")
     };
     this.baseState = this.state;
   }
 
   componentWillMount() {
+    debugger;
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
+    debugger;
     if (this.state.insurance_provider_id !== null) {
-      this.props.getSubInsuranceDetails({
-        uri: "/insurance/getSubInsurance",
-        method: "GET",
-        printInput: true,
-        data: {
-          insurance_provider_id: this.state.insurance_provider_id
-        },
-        redux: {
-          type: "SUB_INSURANCE_GET_DATA",
-          mappingName: "subinsuranceprovider"
-        },
-        afterSuccess: data => {
-          this.setState({ sub_insurance: data });
-        }
-      });
+      getSubInsuranceDetails(this, this);
+      // this.props.getSubInsuranceDetails({
+      //   uri: "/insurance/getSubInsurance",
+      //   method: "GET",
+      //   printInput: true,
+      //   data: {
+      //     insurance_provider_id: this.state.insurance_provider_id
+      //   },
+      //   redux: {
+      //     type: "SUB_INSURANCE_GET_DATA",
+      //     mappingName: "subinsuranceprovider"
+      //   },
+      //   afterSuccess: data => {
+      //     this.setState({ sub_insurance: data });
+      //   }
+      // });
     }
   }
   handleClose = () => {
@@ -81,7 +85,7 @@ class SubInsurance extends PureComponent {
   };
 
   render() {
-    console.log("Name", this.state.insurance_provider_id);
+    console.log("Sub Data: ", this.state.sub_insurance);
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -465,10 +469,7 @@ class SubInsurance extends PureComponent {
                         ]}
                         keyId="insurance_sub_code"
                         dataSource={{
-                          data:
-                            this.state.sub_insurance === undefined
-                              ? []
-                              : this.state.sub_insurance
+                          data: this.state.sub_insurance
                         }}
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}

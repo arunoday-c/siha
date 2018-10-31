@@ -94,7 +94,10 @@ class IDType extends Component {
           }
         },
         onFailure: error => {
-          console.error(error);
+          swalMessage({
+            title: error.response.data.message,
+            type: "error"
+          });
         }
       });
     }
@@ -130,7 +133,12 @@ class IDType extends Component {
               });
             }
           },
-          onFailure: error => {}
+          onFailure: error => {
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       } else {
         swalMessage({
@@ -187,7 +195,12 @@ class IDType extends Component {
           });
         }
       },
-      onFailure: error => {}
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "error"
+        });
+      }
     });
   }
 
