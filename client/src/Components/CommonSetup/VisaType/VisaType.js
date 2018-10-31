@@ -19,6 +19,7 @@ import GlobalVariables from "../../../utils/GlobalVariables";
 import swal from "sweetalert2";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall.js";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 class VisaType extends Component {
   constructor(props) {
@@ -28,10 +29,7 @@ class VisaType extends Component {
       hims_d_visa_type_id: "",
       visa_type: "",
       visa_status: "A",
-      visa_type_code_error: false,
-      visa_type_code_error_txt: "",
-      visa_type_error: false,
-      visa_type_error_txt: "",
+
       visa_type_code: "",
       visa_desc: "",
       record_Status: "",
@@ -39,9 +37,7 @@ class VisaType extends Component {
       row: [],
       id: "",
       openDialog: false,
-      buttonText: "ADD TO LIST",
-      visa_type_arabic_error: false,
-      visa_type_arabic_error_txt: ""
+      buttonText: "ADD TO LIST"
     };
     this.baseState = this.state;
   }
@@ -62,53 +58,42 @@ class VisaType extends Component {
 
   addVisaType(e) {
     e.preventDefault();
-    if (this.state.visa_type_code.length == 0) {
-      this.setState({
-        visa_type_code_error: true,
-        visa_type_code_error_txt: "Code cannot be empty"
-      });
-    } else if (this.state.visa_type.length == 0) {
-      this.setState({
-        visa_type_error: true,
-        visa_type_error_txt: "Name cannot be empty"
-      });
-    } else if (this.state.arabic_visa_type.length == 0) {
-      this.setState({
-        visa_type_arabic_error: true,
-        visa_type_arabic_error_txt: "Arabic Name cannot be empty"
-      });
-    } else {
-      algaehApiCall({
-        uri: "/masters/set/add/visa",
-        data: this.state,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            //Handle Successful Add here
-            this.props.getVisatypes({
-              uri: "/masters/get/visa",
-              method: "GET",
-              redux: {
-                type: "VISA_GET_DATA",
-                mappingName: "visatypes"
-              }
-            });
-            this.resetState();
+
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/masters/set/add/visa",
+          data: this.state,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              //Handle Successful Add here
+              this.props.getVisatypes({
+                uri: "/masters/get/visa",
+                method: "GET",
+                redux: {
+                  type: "VISA_GET_DATA",
+                  mappingName: "visatypes"
+                }
+              });
+              this.resetState();
+              swalMessage({
+                title: "Visa Type added successfully",
+                type: "success"
+              });
+            } else {
+              //Handle unsuccessful Add here.
+            }
+          },
+          onFailure: error => {
             swalMessage({
-              title: "Visa Type added successfully",
-              type: "success"
+              title: error.response.data.message,
+              type: "error"
             });
-          } else {
-            //Handle unsuccessful Add here.
           }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.response.data.message,
-            type: "error"
-          });
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
   updateVisaTypes(data) {
@@ -190,11 +175,14 @@ class VisaType extends Component {
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this Visa Type?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         let data = { hims_d_visa_type_id: id };
         algaehApiCall({
           uri: "/masters/set/delete/visa",
@@ -227,7 +215,7 @@ class VisaType extends Component {
       } else {
         swalMessage({
           title: "Delete request cancelled",
-          type: "success"
+          type: "error"
         });
       }
     });
@@ -281,9 +269,7 @@ class VisaType extends Component {
                   value: this.state.visa_type_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },
-                  error: this.state.visa_type_code_error,
-                  helperText: this.state.visa_type_code_error_txt
+                  }
                 }}
               />
 
@@ -299,9 +285,7 @@ class VisaType extends Component {
                   value: this.state.visa_type,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },
-                  error: this.state.visa_type_error,
-                  helperText: this.state.visa_type_error_txt
+                  }
                 }}
               />
               <AlagehFormGroup
@@ -316,9 +300,7 @@ class VisaType extends Component {
                   value: this.state.arabic_visa_type,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },
-                  error: this.state.visa_type_arabic_error,
-                  helperText: this.state.visa_type_arabic_error_txt
+                  }
                 }}
               />
 

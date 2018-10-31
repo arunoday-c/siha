@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import "./ItemForm.css";
-import Button from "@material-ui/core/Button";
-
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -14,7 +10,6 @@ import {
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
-
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import {
@@ -61,47 +56,35 @@ class ItemForm extends Component {
   render() {
     return (
       <div className="form_section">
-        <LinearProgress id="myProg" style={{ display: "none" }} />
-        <Paper className="container-fluid">
-          <form>
-            <div
-              className="row"
-              style={{
-                padding: 20,
-                marginLeft: "auto",
-                marginRight: "auto"
+        <div className="container-fluid">
+          <div className="row">
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "type_desc",
+                isImp: true
               }}
-            >
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "type_desc",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "form_description",
-                  value: this.state.form_description,
-                  error: this.state.description_error,
-                  helperText: this.state.description_error_txt,
-                  events: {
-                    onChange: changeTexts.bind(this, this)
-                  }
-                }}
-              />
+              textBox={{
+                className: "txt-fld",
+                name: "form_description",
+                value: this.state.form_description,
+                error: this.state.description_error,
+                helperText: this.state.description_error_txt,
+                events: {
+                  onChange: changeTexts.bind(this, this)
+                }
+              }}
+            />
 
-              <div className="col-lg-3 align-middle">
-                <br />
-                <Button
-                  onClick={insertItemForm.bind(this, this)}
-                  variant="raised"
-                  color="primary"
-                >
-                  <AlgaehLabel label={{ fieldName: "Addbutton" }} />
-                </Button>
-              </div>
+            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+              <button
+                onClick={insertItemForm.bind(this, this)}
+                className="btn btn-primary"
+              >
+                <AlgaehLabel label={{ fieldName: "Addbutton" }} />
+              </button>
             </div>
-          </form>
+          </div>
 
           <div className="row form-details">
             <div className="col">
@@ -202,7 +185,7 @@ class ItemForm extends Component {
               />
             </div>
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }

@@ -9,6 +9,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import swal from "sweetalert2";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 class Counter extends Component {
   constructor(props) {
@@ -52,29 +53,35 @@ class Counter extends Component {
   addCounter(e) {
     e.preventDefault();
 
-    algaehApiCall({
-      uri: "/shiftAndCounter/addCounterMaster",
-      method: "POST",
-      data: {
-        counter_code: this.state.counter_code,
-        counter_description: this.state.counter_description,
-        arabic_name: this.state.arabic_name
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          swalMessage({
-            title: "counter added Successfully",
-            type: "success"
-          });
+    AlgaehValidation({
+      alertTypeIcon: "warning",
 
-          this.getCounters();
-          this.clearState();
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.response.data.message,
-          type: "error"
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/shiftAndCounter/addCounterMaster",
+          method: "POST",
+          data: {
+            counter_code: this.state.counter_code,
+            counter_description: this.state.counter_description,
+            arabic_name: this.state.arabic_name
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "counter added Successfully",
+                type: "success"
+              });
+
+              this.getCounters();
+              this.clearState();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       }
     });

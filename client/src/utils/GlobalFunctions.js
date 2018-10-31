@@ -195,7 +195,6 @@ const loadJSON = (file, callback) => {
 export function AlgaehValidation(options) {
   const settings = {
     querySelector: "",
-    fetchFromFile: false,
     multivalidate: false,
     appendingFieldName: "Cannotbeblank",
     alertTypeIcon: "warning",
@@ -224,13 +223,27 @@ export function AlgaehValidation(options) {
       const _langua = getCookie("Language");
 
       if (_title === null) {
-        if (_Validateerror[i].previousSibling.tagName === "LABEL")
-          _title =
-            _langua === "en"
-              ? _Validateerror[i].previousSibling.innerText.replace("*", "") +
-                ",cannot be blank"
-              : _Validateerror[i].previousSibling.innerText.replace("*", "") +
-                ", لا يمكن أن يكون فارغا";
+        let _lable = null;
+        if (_Validateerror[i].previousSibling !== null) {
+          if (_Validateerror[i].previousSibling.tagName === "LABEL") {
+            _lable = _Validateerror[i].previousSibling;
+          }
+        } else {
+          _lable =
+            _Validateerror[i].parentElement.parentElement
+              .previousElementSibling;
+        }
+
+        _title =
+          _langua === "en"
+            ? _lable.innerText
+                .replace("*", "")
+                .toLowerCase()
+                .replace(/^\w/, c => {
+                  debugger;
+                  return c.toUpperCase();
+                }) + ",cannot be blank"
+            : _lable.innerText.replace("*", "") + ", لا يمكن أن يكون فارغا";
       }
       swalMessage({
         title: _title,

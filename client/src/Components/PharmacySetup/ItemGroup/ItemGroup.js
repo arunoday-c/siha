@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import "./ItemGroup.css";
-import Button from "@material-ui/core/Button";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -34,12 +31,7 @@ class ItemGroup extends Component {
     this.state = {
       hims_d_item_group_id: "",
       group_description: "",
-      category_id: null,
-
-      description_error: false,
-      description_error_txt: "",
-      category_error: false,
-      category_error_txt: ""
+      category_id: null
     };
     this.baseState = this.state;
   }
@@ -63,68 +55,52 @@ class ItemGroup extends Component {
   render() {
     return (
       <div className="lab_section">
-        <LinearProgress id="myProg" style={{ display: "none" }} />
-        <Paper className="container-fluid">
-          <form>
-            <div
-              className="row"
-              style={{
-                padding: 20,
-                marginLeft: "auto",
-                marginRight: "auto"
+        <div className="container-fluid">
+          <div className="row">
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "type_desc",
+                isImp: true
               }}
-            >
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "type_desc",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "group_description",
-                  value: this.state.group_description,
-                  error: this.state.description_error,
-                  helperText: this.state.description_error_txt,
-                  events: {
-                    onChange: changeTexts.bind(this, this)
-                  }
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "category_id",
-                  isImp: true
-                }}
-                selector={{
-                  name: "category_id",
-                  className: "select-fld",
-                  value: this.state.category_id,
-                  error: this.state.category_error,
-                  helperText: this.state.category_error_txt,
-                  dataSource: {
-                    textField: "category_desc",
-                    valueField: "hims_d_item_category_id",
-                    data: this.props.itemcategory
-                  },
+              textBox={{
+                className: "txt-fld",
+                name: "group_description",
+                value: this.state.group_description,
+                events: {
                   onChange: changeTexts.bind(this, this)
-                }}
-              />
+                }
+              }}
+            />
 
-              <div className="col-lg-3 align-middle">
-                <br />
-                <Button
-                  onClick={insertItemGroup.bind(this, this)}
-                  variant="raised"
-                  color="primary"
-                >
-                  <AlgaehLabel label={{ fieldName: "Addbutton" }} />
-                </Button>
-              </div>
+            <AlagehAutoComplete
+              div={{ className: "col-lg-2" }}
+              label={{
+                fieldName: "category_id",
+                isImp: true
+              }}
+              selector={{
+                name: "category_id",
+                className: "select-fld",
+                value: this.state.category_id,
+                dataSource: {
+                  textField: "category_desc",
+                  valueField: "hims_d_item_category_id",
+                  data: this.props.itemcategory
+                },
+                onChange: changeTexts.bind(this, this)
+              }}
+            />
+
+            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+              <button
+                onClick={insertItemGroup.bind(this, this)}
+                className="btn btn-primary"
+              >
+                <AlgaehLabel label={{ fieldName: "Addbutton" }} />
+              </button>
             </div>
-          </form>
+          </div>
 
           <div className="row form-details">
             <div className="col">
@@ -264,7 +240,7 @@ class ItemGroup extends Component {
               />
             </div>
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }

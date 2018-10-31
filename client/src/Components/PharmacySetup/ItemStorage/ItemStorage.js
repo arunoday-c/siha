@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import "./ItemStorage.css";
-import Button from "@material-ui/core/Button";
-
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -34,10 +30,7 @@ class ItemStorage extends Component {
 
     this.state = {
       hims_d_item_form_id: "",
-      form_description: "",
-
-      description_error: false,
-      description_error_txt: ""
+      form_description: ""
     };
     this.baseState = this.state;
   }
@@ -61,47 +54,34 @@ class ItemStorage extends Component {
   render() {
     return (
       <div className="lab_section">
-        <LinearProgress id="myProg" style={{ display: "none" }} />
-        <Paper className="container-fluid">
-          <form>
-            <div
-              className="row"
-              style={{
-                padding: 20,
-                marginLeft: "auto",
-                marginRight: "auto"
+        <div className="container-fluid">
+          <div className="row">
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "type_desc",
+                isImp: true
               }}
-            >
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "type_desc",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "storage_description",
-                  value: this.state.storage_description,
-                  error: this.state.description_error,
-                  helperText: this.state.description_error_txt,
-                  events: {
-                    onChange: changeTexts.bind(this, this)
-                  }
-                }}
-              />
+              textBox={{
+                className: "txt-fld",
+                name: "storage_description",
+                value: this.state.storage_description,
 
-              <div className="col-lg-3 align-middle">
-                <br />
-                <Button
-                  onClick={insertItemStorage.bind(this, this)}
-                  variant="raised"
-                  color="primary"
-                >
-                  <AlgaehLabel label={{ fieldName: "Addbutton" }} />
-                </Button>
-              </div>
+                events: {
+                  onChange: changeTexts.bind(this, this)
+                }
+              }}
+            />
+
+            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+              <button
+                onClick={insertItemStorage.bind(this, this)}
+                className="btn btn-primary"
+              >
+                <AlgaehLabel label={{ fieldName: "Addbutton" }} />
+              </button>
             </div>
-          </form>
+          </div>
 
           <div className="row form-details">
             <div className="col">
@@ -202,7 +182,7 @@ class ItemStorage extends Component {
               />
             </div>
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }

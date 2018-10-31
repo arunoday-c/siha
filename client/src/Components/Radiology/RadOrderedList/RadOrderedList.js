@@ -234,7 +234,18 @@ class RadOrderedList extends Component {
                                 // disabled={row.arrived === "N" ? false : true}
                                 style={{
                                   pointerEvents:
-                                    row.arrived !== "N" ? "none" : ""
+                                    row.arrived !== "N"
+                                      ? "none"
+                                      : row.billed === "N"
+                                        ? "none"
+                                        : "",
+
+                                  opacity:
+                                    row.arrived !== "N"
+                                      ? "0.1"
+                                      : row.billed === "N"
+                                        ? "0.1"
+                                        : ""
                                 }}
                                 className="fas fa-walking"
                                 onClick={UpdateRadOrder.bind(this, this, row)}
@@ -244,6 +255,18 @@ class RadOrderedList extends Component {
                         },
                         others: {
                           maxWidth: 70,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "billed",
+                        label: <AlgaehLabel label={{ fieldName: "billed" }} />,
+                        displayTemplate: row => {
+                          debugger;
+                          return row.billed === "N" ? "Not Billed" : "Billed";
+                        },
+                        others: {
                           resizable: false,
                           style: { textAlign: "center" }
                         }

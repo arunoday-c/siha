@@ -21,7 +21,7 @@
   "collected_date": "Collected Date",
   "collected": "Collect",
   "visit_code": "Visit Code",
-  "billed": "Billed",
+  "billed": "Billed/Not Billed",
 
   "btnclose": "Close",
   "form_name": "Sample Collection",

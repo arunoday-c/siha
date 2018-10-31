@@ -9,6 +9,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import Enumerable from "linq";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 class AppointmentClinics extends Component {
   constructor(props) {
@@ -134,8 +135,7 @@ class AppointmentClinics extends Component {
       confirmButtonText: "Yes!",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-      dangerMode: true
+      cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
@@ -209,28 +209,33 @@ class AppointmentClinics extends Component {
   addAppointmentClinics(e) {
     e.preventDefault();
 
-    algaehApiCall({
-      uri: "/appointment/addAppointmentClinic",
-      method: "POST",
-      data: {
-        description: this.state.description,
-        sub_department_id: this.state.sub_department_id,
-        provider_id: this.state.provider_id,
-        room_id: this.state.room_id
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          this.getAppointmentClinics();
-          swalMessage({
-            title: "Record Added Successfully",
-            type: "success"
-          });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/appointment/addAppointmentClinic",
+          method: "POST",
+          data: {
+            description: this.state.description,
+            sub_department_id: this.state.sub_department_id,
+            provider_id: this.state.provider_id,
+            room_id: this.state.room_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              this.getAppointmentClinics();
+              swalMessage({
+                title: "Record Added Successfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -292,7 +297,8 @@ class AppointmentClinics extends Component {
             <AlagehAutoComplete
               div={{ className: "col-lg-2" }}
               label={{
-                fieldName: "department_name"
+                fieldName: "department_name",
+                isImp: true
               }}
               selector={{
                 name: "sub_department_id",
@@ -310,7 +316,8 @@ class AppointmentClinics extends Component {
             <AlagehAutoComplete
               div={{ className: "col-lg-2" }}
               label={{
-                fieldName: "doctor"
+                fieldName: "doctor",
+                isImp: true
               }}
               selector={{
                 name: "provider_id",
@@ -328,7 +335,8 @@ class AppointmentClinics extends Component {
             <AlagehAutoComplete
               div={{ className: "col-lg-2" }}
               label={{
-                fieldName: "room"
+                fieldName: "room",
+                isImp: true
               }}
               selector={{
                 name: "room_id",

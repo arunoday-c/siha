@@ -14,6 +14,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 //TODO
 // Request for Sub Department Calling Doesn't stop
@@ -157,28 +158,33 @@ class DeptMaster extends Component {
   addDepartment(e) {
     e.preventDefault();
 
-    let send_data = {
-      department_code: this.state.department_code,
-      department_name: this.state.department_name,
-      arabic_department_name: this.state.department_name_arabic,
-      department_desc: this.state.department_name,
-      department_type: this.state.department_type,
-      effective_start_date: this.state.effective_start_date
-    };
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        let send_data = {
+          department_code: this.state.department_code,
+          department_name: this.state.department_name,
+          arabic_department_name: this.state.department_name_arabic,
+          department_desc: this.state.department_name,
+          department_type: this.state.department_type,
+          effective_start_date: this.state.effective_start_date
+        };
 
-    algaehApiCall({
-      uri: "/department/add",
-      method: "POST",
-      data: send_data,
-      onSuccess: response => {
-        if (response.data.success) {
-          swalMessage({
-            title: "Added Successfully",
-            type: "success"
-          });
-        }
-      },
-      onFailure: error => {}
+        algaehApiCall({
+          uri: "/department/add",
+          method: "POST",
+          data: send_data,
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Added Successfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: error => {}
+        });
+      }
     });
   }
 

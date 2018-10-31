@@ -9,6 +9,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import swal from "sweetalert2";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 class Shift extends Component {
   constructor(props) {
@@ -52,29 +53,34 @@ class Shift extends Component {
   addShift(e) {
     e.preventDefault();
 
-    algaehApiCall({
-      uri: "/shiftAndCounter/addShiftMaster",
-      method: "POST",
-      data: {
-        shift_code: this.state.shift_code,
-        shift_description: this.state.shift_description,
-        arabic_name: this.state.arabic_name
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          swalMessage({
-            title: "Shift added Successfully",
-            type: "success"
-          });
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/shiftAndCounter/addShiftMaster",
+          method: "POST",
+          data: {
+            shift_code: this.state.shift_code,
+            shift_description: this.state.shift_description,
+            arabic_name: this.state.arabic_name
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Shift added Successfully",
+                type: "success"
+              });
 
-          this.getShifts();
-          this.clearState();
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.response.data.message,
-          type: "error"
+              this.getShifts();
+              this.clearState();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       }
     });

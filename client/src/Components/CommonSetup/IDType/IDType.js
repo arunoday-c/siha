@@ -16,6 +16,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 class IDType extends Component {
   constructor(props) {
@@ -28,13 +29,7 @@ class IDType extends Component {
       identity_document_name: "",
       arabic_identity_document_name: "",
 
-      currentRowID: "",
-      id_code_error: false,
-      id_code_error_txt: "",
-      id_name_error: false,
-      id_name_error_txt: "",
-      arabic_id_name_error: false,
-      arabic_id_name_error_txt: ""
+      currentRowID: ""
     };
 
     this.baseState = this.state;
@@ -54,63 +49,55 @@ class IDType extends Component {
 
   addIDType(e) {
     e.preventDefault();
-    if (this.state.identity_document_code.length === 0) {
-      this.setState({
-        id_code_error: true,
-        id_code_error_txt: "Code cannot be empty"
-      });
-    } else if (this.state.identity_document_name.length === 0) {
-      this.setState({
-        id_name_error: true,
-        id_name_error_txt: "Name cannot be empty"
-      });
-    } else if (this.state.arabic_identity_document_name.length === 0) {
-      this.setState({
-        arabic_id_name_error: true,
-        arabic_id_name_error_txt: "Arabic Name cannot be empty"
-      });
-    } else {
-      algaehApiCall({
-        uri: "/identity/add",
-        data: this.state,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            // this.props.getIDTypes();
 
-            this.props.getIDTypes({
-              uri: "/identity/get",
-              method: "GET",
-              redux: {
-                type: "IDTYPE_GET_DATA",
-                mappingName: "idtypes"
-              }
-            });
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/identity/add",
+          data: this.state,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              // this.props.getIDTypes();
 
-            this.resetState();
+              this.props.getIDTypes({
+                uri: "/identity/get",
+                method: "GET",
+                redux: {
+                  type: "IDTYPE_GET_DATA",
+                  mappingName: "idtypes"
+                }
+              });
+
+              this.resetState();
+              swalMessage({
+                title: "ID Type added successfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: error => {
             swalMessage({
-              title: "ID Type added successfully",
-              type: "success"
+              title: error.response.data.message,
+              type: "error"
             });
           }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.response.data.message,
-            type: "error"
-          });
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this ID Types?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         let data = { hims_d_identity_document_id: id };
         algaehApiCall({
           uri: "/identity/delete",
@@ -143,7 +130,7 @@ class IDType extends Component {
       } else {
         swalMessage({
           title: "Delete request cancelled",
-          type: "success"
+          type: "error"
         });
       }
     });
@@ -247,10 +234,7 @@ class IDType extends Component {
                   value: this.state.identity_document_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },
-
-                  error: this.state.id_code_error,
-                  helperText: this.state.id_code_error_txt
+                  }
                 }}
               />
 
@@ -266,9 +250,7 @@ class IDType extends Component {
                   value: this.state.identity_document_name,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },
-                  error: this.state.id_name_error,
-                  helperText: this.state.id_name_error_txt
+                  }
                 }}
               />
 
@@ -284,9 +266,7 @@ class IDType extends Component {
                   value: this.state.arabic_identity_document_name,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },
-                  error: this.state.visa_type_error,
-                  helperText: this.state.visa_type_error_txt
+                  }
                 }}
               />
 

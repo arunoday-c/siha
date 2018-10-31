@@ -33,12 +33,7 @@ class LabContainer extends Component {
     this.state = {
       hims_d_lab_container_id: "",
       description: "",
-      container_id: null,
-
-      description_error: false,
-      description_error_txt: "",
-      container_id_error: false,
-      container_id_error_txt: ""
+      container_id: null
     };
     this.baseState = this.state;
   }
@@ -71,9 +66,7 @@ class LabContainer extends Component {
         <LinearProgress id="myProg" style={{ display: "none" }} />
         <div className="container-fluid">
           <form>
-            <div
-              className="row"
-            >
+            <div className="row">
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -84,8 +77,7 @@ class LabContainer extends Component {
                   className: "txt-fld",
                   name: "description",
                   value: this.state.description,
-                  error: this.state.description_error,
-                  helperText: this.state.description_error_txt,
+
                   events: {
                     onChange: changeTexts.bind(this, this)
                   }
@@ -102,24 +94,20 @@ class LabContainer extends Component {
                   className: "txt-fld",
                   name: "container_id",
                   value: this.state.container_id,
-                  error: this.state.container_id_error,
-                  helperText: this.state.container_id_error_txt,
+
                   events: {
                     onChange: changeTexts.bind(this, this)
                   }
                 }}
               />
-<div
-                  className="col-lg-2 align-middle" style={{paddingTop: 21}}
-                >
-                  <button
+              <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+                <button
                   onClick={insertLabContainer.bind(this, this)}
-                    className="btn btn-primary"
-                  >
-                    Add to List
-                  </button>
-                </div>
-              
+                  className="btn btn-primary"
+                >
+                  Add to List
+                </button>
+              </div>
             </div>
           </form>
 
