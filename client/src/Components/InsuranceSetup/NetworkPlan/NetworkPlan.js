@@ -136,24 +136,22 @@ class NetworkPlan extends PureComponent {
               className="hptl-phase1-network-plan-form"
               data-validate="InsuranceProvider"
             >
-              <div className="col-12 popLeftDiv">
+              <div className="popRightDiv">
                 {/* Services Details */}
-                <div className="row insurance-details">
-                  <div className="col-lg-12 button-details">
-                    <h5> INSURAR: {this.state.insurance_provider_name}</h5>
-
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="primary"
-                      style={{ float: "right", marginTop: "-4vh" }}
-                      onClick={addNewNetwork.bind(this, this)}
-                    >
-                      Add New
-                    </Button>
-                  </div>
-                </div>
                 <div className="row">
+                  <div className="col-lg-12">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Insurar Name"
+                      }}
+                    />
+                    <h6>
+                      {this.state.insurance_provider_name
+                        ? this.state.insurance_provider_name
+                        : "Insurar Name"}
+                    </h6>
+                  </div>
+
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -249,7 +247,6 @@ class NetworkPlan extends PureComponent {
                         : null
                     }
                   />
-
                   <AlgaehDateHandler
                     div={{ className: "col-lg-3" }}
                     label={{ fieldName: "effective_end_date", isImp: true }}
@@ -267,7 +264,6 @@ class NetworkPlan extends PureComponent {
                         : null
                     }
                   />
-
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -309,7 +305,16 @@ class NetworkPlan extends PureComponent {
                         "data-netdata": true
                       }
                     }}
-                  />
+                  />{" "}
+                  <div className="col-lg-3">
+                    <button
+                      className="btn btn-primary"
+                      style={{ marginTop: 21 }}
+                      onClick={addNewNetwork.bind(this, this)}
+                    >
+                      Add
+                    </button>
+                  </div>
                 </div>
 
                 <br />

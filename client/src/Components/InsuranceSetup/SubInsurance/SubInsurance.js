@@ -94,7 +94,7 @@ class SubInsurance extends PureComponent {
               className="hptl-phase1-add-sub-insurance-form"
               data-validate="InsuranceProvider"
             >
-              <div className="col-lg-12 popLeftDiv">
+              <div className="popRightDiv">
                 {/* Services Details */}
                 <div className="row">
                   <div className="col-lg-12">

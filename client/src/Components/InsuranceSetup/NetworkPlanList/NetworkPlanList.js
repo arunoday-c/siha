@@ -81,7 +81,8 @@ class NetworkPlanList extends PureComponent {
       <React.Fragment>
         <div>
           <div className="hptl-phase1-add-insurance-form">
-            <div className="container-fluid">
+            <div className="popRightDiv">
+              {" "}
               <div className="row">
                 <div className="col-lg-12">
                   <AlgaehDataGrid
