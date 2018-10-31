@@ -251,21 +251,23 @@ let deleteDepartment = (req, res, next) => {
   }
 };
 
-let departWhereCondition = {
-  department_code: "ALL",
-  department_name: "ALL",
-  department_desc: "ALL",
-  department_type: "ALL",
-  effective_start_date: "ALL",
-  effective_end_date: "ALL",
-  department_status: "ALL"
-};
 
-let selectDepartment = (req, res, next) => {
+let selectDepartmentOLD = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
+
+    let departWhereCondition = {
+      department_code: "ALL",
+      department_name: "ALL",
+      department_desc: "ALL",
+      department_type: "ALL",
+      effective_start_date: "ALL",
+      effective_end_date: "ALL",
+      department_status: "ALL"
+    };
+    
     let pagePaging = "";
     if (req.paging != null) {
       let Page = paging(req.paging);
@@ -299,7 +301,42 @@ let selectDepartment = (req, res, next) => {
   }
 };
 
-let selectSubDepartment = (req, res, next) => {
+//created by irfan: to get Departments
+let selectDepartment = (req, res, next) => {
+  let selectWhere = {
+    hims_d_department_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_department_id, department_code, department_name, arabic_department_name,\
+        department_desc, department_type, hospital_id, effective_start_date, effective_end_date, department_status\
+        from hims_d_department where record_status='A' AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let selectSubDepartmentOLD = (req, res, next) => {
   let subDepartmentWhereCondition = {
     hims_d_sub_department_id: "ALL",
     sub_department_code: "ALL",
@@ -338,6 +375,42 @@ let selectSubDepartment = (req, res, next) => {
       },
       true
     );
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+//created by irfan: to get SUB-Departments
+let selectSubDepartment = (req, res, next) => {
+  let selectWhere = {
+    department_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_sub_department_id, sub_department_code, sub_department_name, arabic_sub_department_name,\
+        sub_department_desc, department_id, effective_start_date, effective_end_date, sub_department_status\
+        from  hims_d_sub_department where record_status='A' and " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
   } catch (e) {
     next(e);
   }
