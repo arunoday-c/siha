@@ -5,14 +5,13 @@ import {
   releaseDBConnection,
   jsonArrayToObject
 } from "../utils";
-import moment from "moment";
 
-import { getBillDetails, getBillDetailsFunctionality } from "../model/billing";
+import { getBillDetailsFunctionality } from "../model/billing";
 
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 
-import { logger, debugFunction, debugLog } from "../utils/logging";
+import {  debugFunction, debugLog } from "../utils/logging";
 
 //created by irfan: check pre-aproval status and get PreAproval List
 let getPreAprovalList = (req, res, next) => {

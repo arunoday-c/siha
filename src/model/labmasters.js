@@ -6,7 +6,7 @@ import {
 } from "../utils";
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
-import { logger, debugFunction, debugLog } from "../utils/logging";
+import {  debugLog } from "../utils/logging";
 
 //Section
 let selectSection = (req, res, next) => {

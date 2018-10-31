@@ -1,12 +1,10 @@
 import extend from "extend";
 import {
   whereCondition,
-  releaseDBConnection,
-  checkIsNull,
-  uploadFile
+  releaseDBConnection
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
-import { logger, debugLog, debugFunction } from "../utils/logging";
+import {  debugLog, debugFunction } from "../utils/logging";
 
 let addPatientToRegisteration = (req, res, next) => {
   try {

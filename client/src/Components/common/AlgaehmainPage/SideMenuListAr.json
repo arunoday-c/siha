@@ -192,19 +192,14 @@
         "path": "/PreApproval"
       },
       {
-        "name": "GenerateClaims",
-        "label": "توليد المطالبات",
-        "path": "/GenerateClaims"
+        "name": "WorkListGeneration",
+        "label": "جيل قائمة العمل",
+        "path": "/WorkListGeneration"
       },
       {
-        "name": "VerifySubmitClaims",
-        "label": "تحقق من تقديم المطالبات",
-        "path": "/VerifySubmitClaims"
-      },
-      {
-        "name": "UploadRemittance",
-        "label": "رفع التحويلات",
-        "path": "/UploadRemittance"
+        "name": "RCM Desktop",
+        "label": "سطح المكتب RCM",
+        "path": "/RCMDesktop"
       }
     ]
   },

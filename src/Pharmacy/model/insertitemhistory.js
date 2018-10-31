@@ -1,13 +1,12 @@
 "use strict";
 import {
-  whereCondition,
+ 
   releaseDBConnection,
-  jsonArrayToObject,
-  runningNumberGen
+  jsonArrayToObject
 } from "../../utils";
 import extend from "extend";
-import httpStatus from "../../utils/httpStatus";
-import { logger, debugFunction, debugLog } from "../../utils/logging";
+
+import { debugLog } from "../../utils/logging";
 import { LINQ } from "node-linq";
 
 //created by nowshad: insert item moment history

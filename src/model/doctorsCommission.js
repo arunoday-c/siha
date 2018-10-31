@@ -1,18 +1,13 @@
 "use strict";
 import extend from "extend";
 import {
-  selectStatement,
-  paging,
-  whereCondition,
-  deleteRecord,
-  bulkInputArrayObject,
-  releaseDBConnection,
-  jsonArrayToObject
+  
+  releaseDBConnection
+
 } from "../utils";
-import moment from "moment";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
-import { logger, debugFunction, debugLog } from "../utils/logging";
+import {  debugLog } from "../utils/logging";
 
 //created by irfan: to get doctors commission
 let getDoctorsCommission = (req, res, next) => {

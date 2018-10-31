@@ -2,9 +2,8 @@
 import extend from "extend";
 import {
   
-  whereCondition, 
-  releaseDBConnection,
-  jsonArrayToObject
+ 
+  releaseDBConnection
 } from "../utils";
 
 import httpStatus from "../utils/httpStatus";

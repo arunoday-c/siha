@@ -238,12 +238,7 @@
         "arlabel": "قبل الموافقة",
         "path": "/PreApproval"
       },
-      {
-        "name": "Insurance Statement",
-        "label": "Insurance Statement",
-        "arlabel": "بيان التأمين",
-        "path": "/InsuranceStatement"
-      },
+
       {
         "name": "WorkListGeneration",
         "label": "Work List Generation",

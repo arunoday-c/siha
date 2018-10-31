@@ -55,6 +55,7 @@ import RequisitionSwitch from "./Components/Pharmacy/RequisitionList/Requisition
 import Reports from "./Components/Reports/Reports";
 
 import WorkListGeneration from "./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration";
+import RCMDesktop from "./Components/InsuranceClaims/RCMDesktop/RCMDesktop";
 
 // function height() {
 //   let height =
@@ -117,7 +118,8 @@ const componts = (selectedLang, breadStyle) => {
     TransferEntry: <TransferEntry SelectLanguage={selectedLang} />,
     RequisitionList: <RequisitionSwitch SelectLanguage={selectedLang} />,
     ReportsList: <Reports SelectLanguage={selectedLang} />,
-    WorkListGeneration: <WorkListGeneration SelectLanguage={selectedLang} />
+    WorkListGeneration: <WorkListGeneration SelectLanguage={selectedLang} />,
+    RCMDesktop: <RCMDesktop SelectLanguage={selectedLang} />
   };
 };
 

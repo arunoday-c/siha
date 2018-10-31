@@ -9,7 +9,7 @@ import {
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import appsettings from "../utils/appsettings.json";
-import { logger, debugFunction, debugLog } from "../utils/logging";
+import {  debugFunction, debugLog } from "../utils/logging";
 
 //created by nowshad: to get lad orders for sample collection
 let getRadOrderedServices = (req, res, next) => {

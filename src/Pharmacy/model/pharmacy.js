@@ -2,13 +2,12 @@
 import {
   whereCondition,
   releaseDBConnection,
-  jsonArrayToObject,
-  runningNumberGen
+  jsonArrayToObject
 } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
-import { logger, debugFunction, debugLog } from "../../utils/logging";
-import moment from "moment";
+import { debugFunction, debugLog } from "../../utils/logging";
+
 
 //created by irfan: to add in itemMaster
 let addItemMaster = (req, res, next) => {
