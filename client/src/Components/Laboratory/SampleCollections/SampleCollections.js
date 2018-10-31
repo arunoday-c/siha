@@ -40,15 +40,33 @@ class SampleCollectionPatient extends PureComponent {
         }
       });
     }
+    if (
+      this.props.labspecimen === undefined ||
+      this.props.labspecimen.length === 0
+    ) {
+      this.props.getLabSpecimen({
+        uri: "/labmasters/selectSpecimen",
+        method: "GET",
+        redux: {
+          type: "SPECIMEN_GET_DATA",
+          mappingName: "labspecimen"
+        }
+      });
+    }
 
-    this.props.getLabSpecimen({
-      uri: "/labmasters/selectSpecimen",
-      method: "GET",
-      redux: {
-        type: "SPECIMEN_GET_DATA",
-        mappingName: "labspecimen"
-      }
-    });
+    if (
+      this.props.userdrtails === undefined ||
+      this.props.userdrtails.length === 0
+    ) {
+      this.props.getUserDetails({
+        uri: "/algaehappuser/selectAppUsers",
+        method: "GET",
+        redux: {
+          type: "USER_DETAILS_GET_DATA",
+          mappingName: "userdrtails"
+        }
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
@@ -121,8 +139,8 @@ class SampleCollectionPatient extends PureComponent {
                           }}
                         />
                         <h6>
-                          {this.state.provider_id
-                            ? this.state.provider_id
+                          {this.state.doctor_name
+                            ? this.state.doctor_name
                             : "Ordered By"}
                         </h6>
                       </div>
@@ -138,30 +156,6 @@ class SampleCollectionPatient extends PureComponent {
                             : "Ordered Date"}
                         </h6>
                       </div>
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
-                        label={{
-                          fieldName: "ordered_by"
-                        }}
-                        selector={{
-                          name: "provider_id",
-                          className: "select-fld",
-                          value: this.state.provider_id,
-                          dataSource: {
-                            textField: "full_name",
-                            valueField: "employee_id",
-                            data:
-                              this.props.deptanddoctors === undefined
-                                ? []
-                                : this.props.deptanddoctors.doctors
-                          },
-                          others: {
-                            disabled: true
-                          },
-                          onChange: null
-                        }}
-                      />
                     </div>
 
                     <div className="row grid-details">
@@ -182,6 +176,12 @@ class SampleCollectionPatient extends PureComponent {
                                     <span>
                                       {row.collected === "N" ? (
                                         <i
+                                          style={{
+                                            pointerEvents:
+                                              row.billed === "N" ? "none" : "",
+                                            opacity:
+                                              row.billed === "N" ? "0.1" : ""
+                                          }}
                                           className="fas fa-check"
                                           onClick={CollectSample.bind(
                                             this,
@@ -205,6 +205,23 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                                 others: {
                                   maxWidth: 70,
+                                  resizable: false,
+                                  style: { textAlign: "center" }
+                                }
+                              },
+                              {
+                                fieldName: "billed",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "billed" }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return row.billed === "N"
+                                    ? "Not Billed"
+                                    : "Billed";
+                                },
+                                others: {
                                   resizable: false,
                                   style: { textAlign: "center" }
                                 }
@@ -285,6 +302,24 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "collected_by" }}
                                   />
                                 ),
+                                displayTemplate: row => {
+                                  let display =
+                                    this.props.userdrtails === undefined
+                                      ? []
+                                      : this.props.userdrtails.filter(
+                                          f =>
+                                            f.algaeh_d_app_user_id ===
+                                            row.collected_by
+                                        );
+
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].user_displayname
+                                        : ""}
+                                    </span>
+                                  );
+                                },
                                 others: {
                                   resizable: false,
                                   style: { textAlign: "center" }
@@ -351,7 +386,8 @@ class SampleCollectionPatient extends PureComponent {
 function mapStateToProps(state) {
   return {
     deptanddoctors: state.deptanddoctors,
-    labspecimen: state.labspecimen
+    labspecimen: state.labspecimen,
+    userdrtails: state.userdrtails
   };
 }
 
@@ -359,7 +395,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getDepartmentsandDoctors: AlgaehActions,
-      getLabSpecimen: AlgaehActions
+      getLabSpecimen: AlgaehActions,
+      getUserDetails: AlgaehActions
     },
     dispatch
   );

@@ -1,61 +1,59 @@
-<style type="text/css">
-    label {
-        text-transform: uppercase;
-        font-weight: 500;
-        font-size: 0.7rem;
-    }
-
-    #UCAF20_Report {
-        width: 100%;
-        padding: 0;
-        margin: 0;
-        font-size: 0.9rem;
-    }
-
-    #UCAF20_Report td {
-        border: 1px solid #f2f2f2;
-        padding: 2px 4px;
-        margin: 0;
-    }
-</style>
 <div class="">
-    <table id="UCAF20_Report">
+    <style>
+        label {
+            text-transform: uppercase;
+            font-weight: 500;
+            font-size: 0.7rem;
+        }
+
+        .UCAF20_Report {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .UCAF20_Report td {
+            border: 1px solid #f2f2f2;
+            padding: 2px 4px;
+            margin: 0;
+        }
+    </style>
+    <table class="UCAF20_Report">
         <tr>
             <th colspan="6">
                 <h4>UCAF 2.0</h4>
             </th>
         </tr>
         <tr>
-            <td colspan="5">To be completed by the reception/nurse</td>
-            <td rowspan="7"><img src="https://qph.fs.quoracdn.net/main-qimg-fa8ca55b5fc69716c7d86e4c2e00ad2f" height="200" /></td>
+            <td colspan="4">To be completed by the reception/nurse</td>
+            <td colspan="2" rowspan="7"><img src="https://qph.fs.quoracdn.net/main-qimg-fa8ca55b5fc69716c7d86e4c2e00ad2f"
+                    height="200" /></td>
         </tr>
         <tr>
             <td><label>Provider Name</label></td>
-            <td colspan="5" data-parameter="provider_name">Health Clinics</td>
+            <td colspan="5" data-parameter="hospital_name"></td>
         </tr>
         <tr>
-            <td><label>Insurance<br>Company Name</label></td>
-            <td colspan="2">BALSAM GOLD 104 - Policy 15278974</td>
-            <td><label>TPA Company Name</label></td>
-            <td>TAWUNIYA</td>
+            <td><label>Insurance Company Name</label></td>
+            <td data-parameter="pri_insurance_company"></td>
+            <td><label>TPA Company Name</label> </td>
+            <td data-parameter="pri_TPA_company_name"></td>
         </tr>
         <tr>
             <td><label>Patient File No</label></td>
-            <td>HC-01-006734</td>
-            <td></td>
+            <td data-parameter="patient_code"></td>
             <td><label>Department</label></td>
-            <td>INTERNAL<br>MEDICINE</td>
+            <td data-parameter="sub_department_name"></td>
         </tr>
         <tr>
             <td>Single</td>
             <td>Married</td>
             <td>Plan Type</td>
-            <td></td>
-            <td></td>
         </tr>
         <tr>
             <td>Date Of Visit</td>
-            <td>29-10-2018</td>
+            <td data-parameter="visit_date"> </td>
             <td></td>
             <td></td>
             <td></td>
@@ -74,10 +72,10 @@
             <td colspan="6">To be completed by Attending PHYSICIAN: Please tick (&#10004;)</td>
         </tr>
         <tr>
-            <td>Inpatient (<span>&nbsp;</span>)</td>
-            <td>Outpatient (<span>&nbsp;</span>)</td>
-            <td>Emergency Case (<span>&nbsp;</span>)</td>
-            <td colspan="3">Emergency Care Level 1(<span>&nbsp;</span>) | 2(<span>&nbsp;</span>) | 3(<span>&nbsp;</span>)</td>
+            <td>Inpatient (<span></span>)</td>
+            <td>Outpatient (<span></span>)</td>
+            <td>Emergency Case (<span></span>)</td>
+            <td colspan="3">Emergency Care Level 1(<span></span>) | 2(<span></span>) | 3(<span></span>)</td>
         </tr>
         <tr>
             <td>BP Sys: 108</td>
@@ -86,11 +84,11 @@
             <td>Temp: 37</td>
             <td colspan="2">Duration Of Illness:</td>
         </tr>
-
         <tr>
-            <td colspan="6">Chief Complaint & Main Symptoms: <span>patient complained of easy fatigability, low energy
-                    and
-                    weakness, cold intolerance and muscle cramps need to check again TSH and FT4 for dose of medicine</span></td>
+            <td colspan="6">Chief Complaint and Main Symptoms: <span>patient complained of easy fatigability, low
+                    energy
+                    and weakness, cold intolerance and muscle cramps need to check again TSH and FT4 for dose of
+                    medicine</span></td>
         </tr>
         <tr>
             <td colspan="6">Significant Signs: <span>patient complained of easy fatigability, low energy and weakness,
@@ -229,8 +227,8 @@
             <td colspan="3">I hereby certify that ALL information mentioned are correct and that the medical services
                 shown on
                 this form were medically indicated and necessary for the management of this case.</td>
-            <td colspan="3">I hereby certify that all statements & information provided concerning patient
-                Identification & the
+            <td colspan="3">I hereby certify that all statements and information provided concerning patient
+                Identification and the
                 present illness or injury are TRUE.
             </td>
         </tr>
@@ -240,7 +238,7 @@
             <td colspan="3">....................................................................</td>
         </tr>
         <tr>
-            <td colspan="3">Signature & Stamp</td>
+            <td colspan="3">Signature and Stamp</td>
             <td colspan="3">Name and Relationship(if Guardian) Signature</td>
         </tr>
         <tr>

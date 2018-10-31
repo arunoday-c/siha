@@ -97,15 +97,15 @@
     }
   ],
   "FORMAT_PRIORITY": [
-    { "name": "All", "value": "1" },
     { "name": "Stat", "value": "2" },
     { "name": "Routine", "value": "3" }
   ],
   "FORMAT_TEST_STATUS": [
-    { "name": "All", "value": "1" },
-    { "name": "Ordered", "value": "2" },
-    { "name": "Collected", "value": "3" },
-    { "name": "Cancelled", "value": "4" }
+    { "name": "Ordered", "value": "O" },
+    { "name": "Collected", "value": "CL" },
+    { "name": "Cancelled", "value": "CN" },
+    { "name": "Confirmed", "value": "CF" },
+    { "name": "Validated", "value": "V" }
   ],
   "FORMAT_INSURANCE_EDIT_OPTION": [
     {

@@ -15,11 +15,10 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import {
   getPatientProfile,
-  getPatientVitals,
-  getPatientDiet,
-  getPatientDiagnosis
+  getPatientVitals
   // getPatientChiefComplaints
 } from "./PatientProfileHandlers";
+import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
 
 class PatientProfile extends Component {
@@ -76,6 +75,30 @@ class PatientProfile extends Component {
     ) {
       getPatientVitals(this);
     }
+  }
+
+  openUCAFReport(e) {
+    algaehApiCall({
+      uri: "/ucaf/getPatientUCAF",
+      method: "GET",
+      data: {
+        patient_id: "580",
+        visit_date: "2018-09-15"
+      },
+      onSuccess: response => {
+        debugger;
+        if (response.data.success) {
+          const _dataG = response.data.records[0];
+          AlgaehReport({
+            report: {
+              fileName: "ucafReport"
+            },
+            data: _dataG
+          });
+        }
+        console.log("Report ", response);
+      }
+    });
   }
 
   render() {
@@ -275,7 +298,12 @@ class PatientProfile extends Component {
               More
             </button>
             <ul className="moreActionUl">
-              <li><span>Open MRD</span></li>
+              <li>
+                <span>Open MRD</span>
+              </li>
+              <li onClick={this.openUCAFReport.bind(this)}>
+                <span>UCAF Report</span>
+              </li>
             </ul>
           </div>
         </div>

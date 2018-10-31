@@ -1,5 +1,6 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
-import FrontDesk from "../../../Search/FrontDesk.json";
+
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 import moment from "moment";
 import Options from "../../../Options.json";
 import Enumerable from "linq";
@@ -10,9 +11,14 @@ const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  $this.setState({
-    [name]: value
-  });
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      getSampleCollectionDetails($this);
+    }
+  );
   if ((name = "location_id")) {
     //TODO chnge based on location --Added by nowshad
     // setLocaion(value.LabLocation);
@@ -22,7 +28,7 @@ const texthandle = ($this, e) => {
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: FrontDesk
+      columns: spotlightSearch.frontDesk.patients
     },
     searchName: "patients",
     uri: "/gloabelSearch/get",
@@ -30,6 +36,7 @@ const PatientSearch = ($this, e) => {
       callBack(text);
     },
     onRowSelect: row => {
+      debugger;
       $this.setState(
         {
           patient_code: row.patient_code,
@@ -91,6 +98,11 @@ const getSampleCollectionDetails = $this => {
 
   if ($this.state.patient_id !== null) {
     inputobj.patient_id = $this.state.patient_id;
+    // inputobj.visit_id = $this.state.visit_id;
+  }
+  if ($this.state.status !== null) {
+    inputobj.status = $this.state.status;
+    // inputobj.visit_id = $this.state.visit_id;
   }
 
   $this.props.getSampleCollection({
@@ -102,8 +114,9 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
+      debugger;
       let sample_collection = Enumerable.from(data)
-        .groupBy("$.patient_id", null, (k, g) => {
+        .groupBy("$.visit_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();
           return {
             patient_code: firstRecordSet.patient_code,
@@ -111,7 +124,11 @@ const getSampleCollectionDetails = $this => {
             ordered_date: firstRecordSet.ordered_date,
             number_of_tests: g.getSource().length,
             test_details: g.getSource(),
-            provider_id: firstRecordSet.provider_id
+            provider_id: firstRecordSet.provider_id,
+            billed: firstRecordSet.billed,
+            visit_code: firstRecordSet.visit_code,
+            doctor_name: firstRecordSet.doctor_name,
+            status: firstRecordSet.status
           };
         })
         .toArray();

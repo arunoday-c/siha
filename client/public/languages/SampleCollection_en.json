@@ -20,6 +20,8 @@
   "collected_by": "Collected By",
   "collected_date": "Collected Date",
   "collected": "Collect",
+  "visit_code": "Visit Code",
+  "billed": "Billed",
 
   "btnclose": "Close",
   "form_name": "Sample Collection",
