@@ -149,41 +149,34 @@ class VisitType extends Component {
 
   addVisit(e) {
     e.preventDefault();
-    let isError = false;
+
     AlgaehValidation({
-      querySelector: "data-validate='InsuranceProvider'", //if require section level
-      fetchFromFile: true, //if required arabic error
-      alertTypeIcon: "warning", // error icon
-      onCatch: () => {
-        isError = true;
-      }
-    });
-
-    if (isError === false) {
-      this.setState({
-        visit_type_code_error: false,
-        visit_type_code_error_txt: "",
-        visit_type_error: false,
-        visit_type_error_txt: "",
-        arabic_visit_type_error: false,
-        arabic_visit_type_error_txt: ""
-      });
-
-      algaehApiCall({
-        uri: "/visitType/add",
-        data: this.state,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            this.resetState();
-            //Handle Successful Add here
-            this.props.getVisittypes({
-              uri: "/visitType/get",
-              method: "GET",
-              redux: {
-                type: "VISITTYPE_GET_DATA",
-                mappingName: "visittypes"
-              }
-            });
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/visitType/add",
+          data: this.state,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              this.resetState();
+              //Handle Successful Add here
+              this.props.getVisittypes({
+                uri: "/visitType/get",
+                method: "GET",
+                redux: {
+                  type: "VISITTYPE_GET_DATA",
+                  mappingName: "visittypes"
+                }
+              });
+              swalMessage({
+                title: "Visa Type added successfully",
+                type: "success"
+              });
+            } else {
+              //Handle unsuccessful Add here.
+            }
+          },
+          onFailure: error => {
             swalMessage({
               title: error.response.data.message,
               type: "error"
