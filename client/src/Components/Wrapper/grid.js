@@ -712,8 +712,7 @@ class DataGrid extends PureComponent {
             : {}
           : {}
         : {};
-    console.log("expand", _subComponent);
-    console.log("expand event", _onExpandRow);
+
     const _decissionShowPaging =
       this.state.recordsTotal >= 10
         ? this.props.paging !== undefined

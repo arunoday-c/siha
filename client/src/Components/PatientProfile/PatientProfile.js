@@ -7,16 +7,17 @@ import Assesment from "./Assessment/Assessment";
 import Plan from "./Plan/Plan";
 import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
 import moment from "moment";
-import { setGlobal, removeGlobal } from "../../utils/GlobalFunctions";
-import algaehLoader from "../Wrapper/fullPageLoader";
+import { setGlobal } from "../../utils/GlobalFunctions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import {
   getPatientProfile,
-  getPatientVitals
-  // getPatientChiefComplaints
+  getPatientVitals,
+  getPatientDiet,
+  getPatientDiagnosis,
+  getPatientAllergies
 } from "./PatientProfileHandlers";
 import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
@@ -27,10 +28,6 @@ class PatientProfile extends Component {
 
     this.state = {
       pageDisplay: "subjective",
-      patientData: {},
-      patientVitals: {},
-      patientAllergies: [],
-      patientDiagnosis: [],
       patientDiet: []
     };
     this.changeTabs = this.changeTabs.bind(this);
@@ -53,28 +50,14 @@ class PatientProfile extends Component {
     cancelRequest("getPatientVitals");
     cancelRequest("getPatientDiet");
     cancelRequest("getPatientDiagnosis");
-    // removeGlobal("current_patient");
-    // removeGlobal("episode_id");
   }
 
   componentDidMount() {
     getPatientProfile(this);
-    // if (
-    //   this.props.patient_allergies === undefined ||
-    //   this.props.patient_allergies.length === 0
-    // ) {
-    //   getPatientAllergies(this);
-    // } else {
-    //   this.setState({
-    //     patientAllergies: this.props.patient_allergies
-    //   });
-    // }
-    if (
-      this.props.patient_vitals === undefined ||
-      this.props.patient_vitals.length === 0
-    ) {
-      getPatientVitals(this);
-    }
+    getPatientVitals(this);
+    getPatientAllergies(this, true);
+    getPatientDiet(this);
+    getPatientDiagnosis(this);
   }
 
   openUCAFReport(e) {
@@ -86,7 +69,6 @@ class PatientProfile extends Component {
         visit_date: "2018-09-15"
       },
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           const _dataG = response.data.records[0];
           AlgaehReport({
@@ -99,6 +81,11 @@ class PatientProfile extends Component {
         console.log("Report ", response);
       }
     });
+  }
+  renderBackButton(e) {
+    debugger;
+    setGlobal({ "EHR-STD": "DoctorsWorkbench" });
+    document.getElementById("ehr-router").click();
   }
 
   render() {
@@ -123,6 +110,12 @@ class PatientProfile extends Component {
               };
             })
             .toArray();
+    const _diagnosis =
+      this.props.patient_diagnosis === undefined
+        ? []
+        : this.props.patient_diagnosis;
+    const _diet =
+      this.props.patient_diet === undefined ? [] : this.props.patient_diet;
     return (
       <div className="row patientProfile">
         <div className="patientInfo-Top box-shadow-normal">
@@ -133,10 +126,7 @@ class PatientProfile extends Component {
               //  onClick={this.setPatientGlobalParameters.bind(this)}
             />
             <button
-              onClick={() => {
-                setGlobal({ "EHR-STD": "DoctorsWorkbench" });
-                document.getElementById("ehr-router").click();
-              }}
+              onClick={this.renderBackButton.bind(this)}
               type="button"
               className="btn btn-outline-secondary btn-sm"
             >
@@ -381,10 +371,17 @@ class PatientProfile extends Component {
                 <i className="fas fa-diagnoses" />
                 <p>
                   <b>Diagnosis:</b>
-                  {this.state.patientDiagnosis.map((data, index) => (
-                    <span key={index} className="listofA-D-D">
-                      {data.diagnosis_name}
-                    </span>
+                  {_diagnosis.map((item, index) => (
+                    <React.Fragment key={index}>
+                      <span>{item.icd_code}</span>
+                      <span key={index} className="listofA-D-D">
+                        {item.icd_description}
+                      </span>
+                      <span>
+                        {item.diagnosis_type === "S" ? "Secondary" : "Primary"}
+                      </span>
+                      <sapn>{item.final_daignosis}</sapn>
+                    </React.Fragment>
                   ))}
                 </p>
               </li>
@@ -392,9 +389,9 @@ class PatientProfile extends Component {
                 <i className="fas fa-utensils" />
                 <p>
                   <b>Diet:</b>
-                  {this.state.patientDiet.map((data, index) => (
+                  {_diet.map((data, index) => (
                     <span key={index} className="listofA-D-D">
-                      {data.hims_d_diet_description}
+                      {data.icd_description}
                     </span>
                   ))}
                 </p>

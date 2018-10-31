@@ -1,5 +1,4 @@
 import Enumerable from "linq";
-import { setGlobal } from "../../utils/GlobalFunctions.js";
 const getPatientProfile = $this => {
   $this.props.getPatientProfile({
     uri: "/doctorsWorkBench/getPatientProfile",
@@ -12,9 +11,6 @@ const getPatientProfile = $this => {
     redux: {
       type: "PATIENT_PROFILE",
       mappingName: "patient_profile"
-    },
-    afterSuccess: data => {
-      debugger;
     }
   });
 };
@@ -31,12 +27,11 @@ const getPatientVitals = $this => {
     redux: {
       type: "PATIENT_VITALS",
       mappingName: "patient_vitals"
-    },
-    afterSuccess: data => {}
+    }
   });
 };
 
-const getPatientAllergies = $this => {
+const getPatientAllergies = ($this, noFunctionCall) => {
   $this.props.getPatientAllergies({
     uri: "/doctorsWorkBench/getPatientAllergies",
     method: "GET",
@@ -49,26 +44,27 @@ const getPatientAllergies = $this => {
       mappingName: "patient_allergies"
     },
     afterSuccess: data => {
-      let _allergies = Enumerable.from(data)
-        .groupBy("$.allergy_type", null, (k, g) => {
-          return {
-            allergy_type: k,
-            allergy_type_desc:
-              k === "F"
-                ? "Food"
-                : k === "A"
-                  ? "Airborne"
-                  : k === "AI"
-                    ? "Animal  &  Insect"
-                    : k === "C"
-                      ? "Chemical & Others"
-                      : "",
-            allergyList: g.getSource()
-          };
-        })
-        .toArray();
-      $this.setState({ patientAllergies: _allergies });
-      // setGlobal({ patientAllergies: _allergies });
+      if (noFunctionCall === undefined) {
+        let _allergies = Enumerable.from(data)
+          .groupBy("$.allergy_type", null, (k, g) => {
+            return {
+              allergy_type: k,
+              allergy_type_desc:
+                k === "F"
+                  ? "Food"
+                  : k === "A"
+                    ? "Airborne"
+                    : k === "AI"
+                      ? "Animal  &  Insect"
+                      : k === "C"
+                        ? "Chemical & Others"
+                        : "",
+              allergyList: g.getSource()
+            };
+          })
+          .toArray();
+        $this.setState({ patientAllergies: _allergies });
+      }
     }
   });
 };
@@ -85,8 +81,7 @@ const getPatientDiet = $this => {
     redux: {
       type: "PATIENT_DIET",
       mappingName: "patient_diet"
-    },
-    afterSuccess: data => {}
+    }
   });
 };
 const getPatientDiagnosis = $this => {
@@ -101,8 +96,7 @@ const getPatientDiagnosis = $this => {
     redux: {
       type: "PATIENT_DIAGNOSIS",
       mappingName: "patient_diagnosis"
-    },
-    afterSuccess: data => {}
+    }
   });
 };
 
