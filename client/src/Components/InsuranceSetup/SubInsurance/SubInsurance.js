@@ -90,7 +90,10 @@ class SubInsurance extends PureComponent {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-add-sub-insurance-form">
+            <div
+              className="hptl-phase1-add-sub-insurance-form"
+              data-validate="InsuranceProvider"
+            >
               <div className="col-lg-12 popLeftDiv">
                 {/* Services Details */}
                 <div className="row insurance-details">

@@ -64,5 +64,6 @@
   "filter_by": "مصنف بواسطة",
 
   "edit_option": "عمل",
-  "currency": "دقة"
+  "currency": "دقة",
+  "Cannotbeblank": "لا يمكن أن يكون فارغا"
 }
