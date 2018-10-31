@@ -90,7 +90,7 @@ class IDType extends Component {
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this ID Types?",
-      icon: "warning",
+      type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes!",
       confirmButtonColor: "#44b8bd",

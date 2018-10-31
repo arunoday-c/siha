@@ -5,6 +5,7 @@
   "patient_name": "Patient Name",
   "proiorty": "Priority",
   "status": "Status",
+  "billed": "Billed/Not Billed",
 
   "investigation_code": "Investigation Code",
   "investigation_name": "Investigation Name",

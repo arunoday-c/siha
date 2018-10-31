@@ -9,7 +9,7 @@ import {
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import appsettings from "../utils/appsettings.json";
-import {  debugFunction, debugLog } from "../utils/logging";
+import { debugFunction, debugLog } from "../utils/logging";
 
 //created by nowshad: to get lad orders for sample collection
 let getRadOrderedServices = (req, res, next) => {
@@ -41,7 +41,7 @@ let getRadOrderedServices = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
+        "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, billed, service_id,SR.service_code,SR.service_name,\
         status, cancelled, ordered_by, ordered_date, test_type, technician_id, scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,\
         validate_date_time,attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,\
         PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\

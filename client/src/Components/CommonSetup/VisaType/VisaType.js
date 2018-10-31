@@ -175,7 +175,7 @@ class VisaType extends Component {
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this Visa Type?",
-      icon: "warning",
+      type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes!",
       confirmButtonColor: "#44b8bd",

@@ -68,7 +68,7 @@ class PatientType extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        let data = { hims_d_identity_document_id: id };
+        let data = { hims_d_patient_type_id: id };
         algaehApiCall({
           uri: "/patientType/delete",
           data: data,
@@ -161,10 +161,11 @@ class PatientType extends Component {
             type: "success"
           });
 
-          data.onDoneFinish();
+          // data.onDoneFinish();
         }
       },
       onFailure: error => {
+        debugger;
         swalMessage({
           title: error.response.data.message,
           type: "error"
