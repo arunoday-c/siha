@@ -227,10 +227,14 @@ class Encounters extends Component {
                           </span>
                         );
                       },
-                      others:{maxWidth:150,resizable: false,style:{textAlign:"center"}},
-                  className: drow => {
-                    return "greenCell";
-                  }
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      },
+                      className: drow => {
+                        return "greenCell";
+                      }
                     },
                     {
                       fieldName: "provider_name",

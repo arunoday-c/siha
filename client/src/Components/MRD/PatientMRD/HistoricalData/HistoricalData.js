@@ -89,7 +89,6 @@ class HistoricalData extends Component {
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
-          console.log("Vitals: ", response.data.records);
           this.setState({ patientVitals: response.data.records });
         }
       },
@@ -114,7 +113,6 @@ class HistoricalData extends Component {
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
-          console.log("Treatements: ", response.data.records);
           this.setState({ patientTreatements: response.data.records });
         }
       },
@@ -141,7 +139,6 @@ class HistoricalData extends Component {
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
-          console.log("Diagnosis: ", response.data.records);
           this.setState({ patientDiagnosis: response.data.records });
         }
       },
@@ -368,12 +365,16 @@ class HistoricalData extends Component {
                         },
 
                         {
+                          id: "diagnosis_type",
                           Header: "Diagnosis Type",
-                          accessor: "diagnosis_type"
+                          accessor: d =>
+                            d.diagnosis_type === "S" ? "Secondary" : "Primary"
                         },
                         {
+                          id: "final_daignosis",
                           Header: "Final Diagnosis",
-                          accessor: "final_daignosis"
+                          accessor: f =>
+                            f.final_daignosis === "Y" ? "Yes" : "No"
                         }
                       ]}
                       defaultPageSize={5}

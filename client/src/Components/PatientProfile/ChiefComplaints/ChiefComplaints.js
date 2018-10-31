@@ -26,7 +26,6 @@ import {
   swalMessage
 } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
-import algaehLoader from "../../Wrapper/fullPageLoader";
 import swal from "sweetalert2";
 
 // let patChiefComplain = [];
@@ -65,13 +64,21 @@ class ChiefComplaints extends Component {
   }
   componentDidMount() {
     this.mounted = true;
-    //getAllChiefComplaints(this);
-    //this.getPatientChiefComplaintsDetails();
     if (
       this.props.patient_chief_complaints === undefined ||
       this.props.patient_chief_complaints.length === 0
     ) {
       getPatientChiefComplaints(this);
+    } else {
+      const _patient = Enumerable.from(
+        this.props.patient_chief_complaints
+      ).firstOrDefault();
+      if (_patient !== undefined) {
+        const _patient_id = _patient.patient_id;
+        if (_patient_id !== Window.global.current_patient) {
+          getPatientChiefComplaints(this);
+        }
+      }
     }
   }
 
@@ -159,7 +166,10 @@ class ChiefComplaints extends Component {
                   score: 0,
                   severity: "MI",
                   patient_id: Window.global["current_patient"],
-                  recordState: "insert"
+                  recordState: "insert",
+                  chronic: "N",
+                  complaint_inactive: "N",
+                  complaint_inactive_date: null
                 });
                 if (_firstOrDef !== undefined)
                   _masterChief.splice(_firstOrDef, 1);
@@ -258,21 +268,45 @@ class ChiefComplaints extends Component {
       getAllChiefComplaints(this, master => {
         this.setState({
           openComplain: true,
+
           hims_f_episode_chief_complaint_id: data.chief_complaint_id,
           masterChiefComplaints: this.masterChiefComplaintsSortList(
             this.state.patientChiefComplains,
             master
-          )
+          ),
+          onset_date: data.onset_date,
+          chief_complaint_name: data.chief_complaint_name,
+          duration: data.duration,
+          interval: data.interval,
+          severity: data.severity,
+          score: data.score,
+          pain: data.pain,
+          comment: data.comment,
+          chronic: "N",
+          complaint_inactive: "N",
+          complaint_inactive_date: null
         });
       });
     } else {
       this.setState({
         openComplain: true,
+
         hims_f_episode_chief_complaint_id: data.chief_complaint_id,
         masterChiefComplaints: this.masterChiefComplaintsSortList(
           this.state.patientChiefComplains,
           this.props.allchiefcomplaints
-        )
+        ),
+        onset_date: data.onset_date,
+        chief_complaint_name: data.chief_complaint_name,
+        duration: data.duration,
+        interval: data.interval,
+        severity: data.severity,
+        score: data.score,
+        pain: data.pain,
+        comment: data.comment,
+        chronic: "N",
+        complaint_inactive: "N",
+        complaint_inactive_date: null
       });
     }
   }
@@ -327,7 +361,7 @@ class ChiefComplaints extends Component {
     const data = Enumerable.from(this.state.patientChiefComplains)
       .where(w => w.recordState === "update")
       .toArray();
-
+    debugger;
     if (data.length !== 0) {
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientChiefComplaints",
@@ -472,7 +506,10 @@ class ChiefComplaints extends Component {
           score: 0,
           severity: "MI",
           patient_id: Window.global["current_patient"],
-          recordState: "insert"
+          recordState: "insert",
+          chronic: "N",
+          complaint_inactive: "N",
+          complaint_inactive_date: null
         });
         swalMessage({
           title: "Added chief complaint",
@@ -516,6 +553,45 @@ class ChiefComplaints extends Component {
     }
   }
 
+  chronicCheckBoxHandler(e) {
+    const _chronic = e.currentTarget.checked ? "Y" : "N";
+    this.setState(
+      {
+        chronic: _chronic
+      },
+      () => {
+        this.settingUpdateChiefComplaints({
+          currentTarget: {
+            name: "chronic",
+            value: _chronic
+          }
+        });
+      }
+    );
+  }
+  inactiveCheckBoxHandler(e) {
+    const _inactive = e.currentTarget.checked ? "Y" : "N";
+    this.setState(
+      {
+        complaint_inactive_date: new Date(),
+        complaint_inactive: _inactive
+      },
+      () => {
+        this.settingUpdateChiefComplaints({
+          currentTarget: {
+            name: "complaint_inactive_date",
+            value: new Date()
+          }
+        });
+        this.settingUpdateChiefComplaints({
+          currentTarget: {
+            name: "complaint_inactive",
+            value: _inactive
+          }
+        });
+      }
+    );
+  }
   render() {
     const patChiefComplain =
       this.state.patientChiefComplains !== undefined
@@ -900,15 +976,25 @@ class ChiefComplaints extends Component {
                             {/* patientChiefComplains */}
 
                             {patChiefComplain.map((data, index) => (
-                              <li key={index}>
+                              <li
+                                key={index}
+                                className={
+                                  data.chief_complaint_id ===
+                                  this.state.hims_f_episode_chief_complaint_id
+                                    ? "selectedChiefComp"
+                                    : ""
+                                }
+                                onClick={this.fillComplainDetails.bind(
+                                  this,
+                                  data
+                                )}
+                              >
+                                <i className="fa fa-check-circle" />
+
                                 <span
                                   data-cpln-id={
                                     data.hims_f_episode_chief_complaint_id
                                   }
-                                  onClick={this.fillComplainDetails.bind(
-                                    this,
-                                    data
-                                  )}
                                   style={{
                                     width: "80%"
                                   }}
@@ -1034,9 +1120,7 @@ class ChiefComplaints extends Component {
                               textBox={{
                                 className: "txt-fld",
                                 name: "duration",
-                                others: {
-                                  type: "number"
-                                },
+                                number: true,
                                 value: this.state.duration,
                                 events: {
                                   onChange: this.calculateDurationDate.bind(
@@ -1148,8 +1232,8 @@ class ChiefComplaints extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "score",
+                                  number: true,
                                   others: {
-                                    type: "number",
                                     disabled: true
                                   },
                                   value: this.state.score,
@@ -1181,26 +1265,25 @@ class ChiefComplaints extends Component {
                     </div>
                     <hr />
                     <div className="row">
-                      <div className="col d-none">
-                        <input type="checkbox" id="chronic" />
-                        <label htmlFor="complaint_inactive_date">
-                          &nbsp;Chronic
-                        </label>
+                      <div className="col">
+                        <input
+                          type="checkbox"
+                          id="chronic"
+                          checked={this.state.chronic === "Y" ? true : false}
+                          onChange={this.chronicCheckBoxHandler.bind(this)}
+                        />
+                        <label htmlFor="chronic">&nbsp;Chronic</label>
                       </div>
                       <div className="col">
                         <input
                           type="checkbox"
-                          id="complaint_inactive_date"
-                          checked={this.state.chiefComplaints_Inactive}
-                          onChange={() => {
-                            this.setState({
-                              inactive_date: new Date(),
-                              chiefComplaints_Inactive: !this.state
-                                .chiefComplaints_Inactive
-                            });
-                          }}
+                          id="complaint_inactive"
+                          checked={
+                            this.state.complaint_inactive === "Y" ? true : false
+                          }
+                          onChange={this.inactiveCheckBoxHandler.bind(this)}
                         />
-                        <label htmlFor="complaint_inactive_date">
+                        <label htmlFor="complaint_inactive">
                           &nbsp;Inactive
                         </label>
                       </div>
@@ -1212,13 +1295,11 @@ class ChiefComplaints extends Component {
                           name: "inactive_date"
                         }}
                         maxDate={new Date()}
-                        disabled={!this.state.chiefComplaints_Inactive}
+                        disabled={true}
                         events={{
-                          onChange: selectedDate => {
-                            this.setState({ inactive_date: selectedDate });
-                          }
+                          onChange: () => {}
                         }}
-                        value={this.state.inactive_date}
+                        value={this.state.complaint_inactive_date}
                       />
 
                       <AlagehFormGroup
@@ -1399,6 +1480,7 @@ class ChiefComplaints extends Component {
                     }
                   }
                 ]}
+                noDataText="No More Chief Complaints"
                 keyId="patient_id"
                 dataSource={{
                   data: this.props.patient_chief_complaints

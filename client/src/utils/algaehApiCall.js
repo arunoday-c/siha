@@ -148,14 +148,14 @@ export function algaehApiCall(options) {
             settings.onSuccess(response);
         })
         .catch(err => {
-          debugger;
           if (
             settings.cancelRequestId !== undefined ||
             settings.cancelRequestId !== null ||
             settings.cancelRequestId !== ""
           ) {
             if (axios.isCancel(err)) {
-              console.warn("Request canceled :", err.message);
+              if (process.env.NODE_ENV === "development")
+                console.warn("Request canceled :", err.message);
             }
           }
 
@@ -180,8 +180,6 @@ export function algaehApiCall(options) {
 
               settings.onFailure(err);
             } else {
-              debugger;
-
               if (
                 err.response !== undefined &&
                 err.response.data !== undefined
@@ -364,7 +362,7 @@ export function getCookie(cname) {
 }
 export function valueReviver(key, value) {
   if (typeof value === "string" && dateFormat.test(value)) {
-    return moment(value).format("YYYY-MM-DD HH:MM:SS");
+    return moment(value).format("YYYY-MM-DD HH:MM:SS.S");
   }
 
   return value;

@@ -3,3 +3,6 @@
 
 #hpi-grid-popup-cntr .ReactTable {
   max-height: 315px !important; }
+
+.selectedChiefComp {
+  background-color: #dffbfd !important; }

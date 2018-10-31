@@ -29,17 +29,15 @@ export default class FormGroup extends PureComponent {
   };
 
   componentWillMount() {
-    let textTypeValue =
-      this.props.textBox.decimal !== undefined
-        ? 0.0
-        : this.props.textBox.number !== undefined
-          ? 0
-          : "";
+    // let textTypeValue =
+    //   this.props.textBox.decimal !== undefined
+    //     ? 0.0
+    //     : this.props.textBox.number !== undefined
+    //       ? 0
+    //       : "";
 
     this.setState({
-      value: this.props.textBox.value
-        ? this.props.textBox.value
-        : textTypeValue,
+      value: this.props.textBox.value,
       disabled:
         this.props.textBox.disabled !== undefined
           ? this.props.textBox.disabled
@@ -53,15 +51,15 @@ export default class FormGroup extends PureComponent {
       props.textBox.helperText !== this.state.helperText ||
       props.textBox.disabled !== this.state.disabled
     ) {
-      let textTypeValue =
-        props.textBox.decimal !== undefined
-          ? 0.0
-          : props.textBox.number !== undefined
-            ? 0
-            : "";
+      // let textTypeValue =
+      //   props.textBox.decimal !== undefined
+      //     ? 0.0
+      //     : props.textBox.number !== undefined
+      //       ? 0
+      //       : "";
 
       this.setState({
-        value: props.textBox.value ? props.textBox.value : textTypeValue,
+        value: props.textBox.value,
         error: props.textBox.error,
         helperText: props.textBox.helperText,
         disabled:

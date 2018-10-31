@@ -38,7 +38,7 @@ const getPatientAllergies = ($this, noFunctionCall) => {
     data: {
       patient_id: Window.global["current_patient"]
     },
-    cancelRequestId: "getPatientVitals",
+    cancelRequestId: "getPatientAllergies",
     redux: {
       type: "PATIENT_ALLERGIES",
       mappingName: "patient_allergies"
