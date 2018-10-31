@@ -26,7 +26,7 @@ class NetworkPlanList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      networkandplans: []
+      network_plan: []
     };
   }
 
@@ -50,24 +50,15 @@ class NetworkPlanList extends PureComponent {
           }
         });
       }
+    }
+  }
 
-      this.props.getNetworkPlans({
-        uri: "/insurance/getNetworkAndNetworkOfficRecords",
-        method: "GET",
-        printInput: true,
-        data: {
-          insuranceProviderId: this.props.insurance_provider_id
-        },
-        redux: {
-          type: "NETWORK_PLAN_GET_DATA",
-          mappingName: "networkandplans"
-        },
-        afterSuccess: data => {
-          this.setState({
-            networkandplans: data,
-            insurance_provider_id: this.props.insurance_provider_id
-          });
-        }
+  componentWillReceiveProps(newProps) {
+    debugger;
+    if (newProps.network_plan !== undefined) {
+      this.setState({
+        network_plan: newProps.network_plan,
+        insurance_provider_id: newProps.insurance_provider_id
       });
     }
   }
@@ -679,7 +670,7 @@ class NetworkPlanList extends PureComponent {
                     ]}
                     keyId="network_type"
                     dataSource={{
-                      data: this.state.networkandplans
+                      data: this.state.network_plan
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}

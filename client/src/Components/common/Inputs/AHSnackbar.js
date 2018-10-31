@@ -18,15 +18,11 @@ export default class AlgaehSnackBar extends PureComponent {
     };
   }
   componentDidMount() {
-    debugger;
-    console.log("me", this.props.MandatoryMsg);
     this.setState({
       isopen: this.props.open
     });
   }
   componentWillReceiveProps(props) {
-    debugger;
-    console.log("meP", this.props.MandatoryMsg);
     this.setState({
       isopen: props.open
     });

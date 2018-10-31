@@ -219,30 +219,18 @@ export function AlgaehValidation(options) {
       _Validateerror[i].value === null ||
       _Validateerror[i].value === _checkVal
     ) {
-      let _filedName = _Validateerror[i].name;
       let _title = _Validateerror[i].getAttribute("errormessage");
-      if (settings.fetchFromFile) {
-        const _changeappendingFieldName = _Validateerror[i].getAttribute(
-          "appendfieldname"
-        );
-        let changeField = _changeappendingFieldName;
-        if (_changeappendingFieldName === null) {
-          changeField = "Cannotbeblank";
-        }
-        _title =
-          getLabelFromLanguage({
-            fieldName: _filedName
-          }) +
-          " " +
-          getLabelFromLanguage({
-            fieldName: changeField
-          });
-      }
+
+      const _langua = getCookie("Language");
+
       if (_title === null) {
         if (_Validateerror[i].previousSibling.tagName === "LABEL")
           _title =
-            _Validateerror[i].previousSibling.innerText.replace("*", "") +
-            " required";
+            _langua === "en"
+              ? _Validateerror[i].previousSibling.innerText.replace("*", "") +
+                ",cannot be blank"
+              : _Validateerror[i].previousSibling.innerText.replace("*", "") +
+                ", لا يمكن أن يكون فارغا";
       }
       swalMessage({
         title: _title,

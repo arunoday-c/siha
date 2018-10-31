@@ -162,45 +162,31 @@ class AppointmentStatus extends Component {
       querySelector: "", //"data-validate='InsuranceProvider'", //if require section level
       fetchFromFile: true, //if required arabic error
       alertTypeIcon: "warning", // error icon
+      onCatch: value => {
+        //alert(value);
+      },
       onSuccess: () => {
-        if (this.state.color_code === "#FFFFFF") {
-          this.setState({
-            color_code_error: true,
-            color_code_error_text: "Color Code cannot be empty"
-          });
-        } else if (this.state.description.length === 0) {
-          this.setState({
-            description_error: true,
-            description_error_text: "Description cannot be empty"
-          });
-        } else if (this.state.default_status.length === 0) {
-          this.setState({
-            default_status_error: true,
-            default_status_error_text: "Status cannot be empty"
-          });
-        } else {
-          algaehApiCall({
-            uri: "/appointment/addAppointmentStatus",
-            method: "POST",
-            data: {
-              color_code: this.state.color_code,
-              description: this.state.description,
-              default_status: this.state.default_status
-            },
-            onSuccess: response => {
-              if (response.data.success) {
-                swalMessage({
-                  title: "Record added successfully",
-                  type: "success"
-                });
+        algaehApiCall({
+          uri: "/appointment/addAppointmentStatus",
+          method: "POST",
+          data: {
+            color_code: this.state.color_code,
+            description: this.state.description,
+            default_status: this.state.default_status
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record added successfully",
+                type: "success"
+              });
 
-                this.resetState();
-                this.getAppointmentStatus();
-              }
-            },
-            onFailure: error => {}
-          });
-        }
+              this.resetState();
+              this.getAppointmentStatus();
+            }
+          },
+          onFailure: error => {}
+        });
       }
     });
   }
@@ -224,10 +210,11 @@ class AppointmentStatus extends Component {
                   onChange: this.changeTexts.bind(this)
                 },
                 others: {
-                  type: "color"
-                },
-                error: this.state.color_code_error,
-                helperText: this.state.color_code_error_text
+                  type: "color",
+                  required: true,
+                  checkvalidation: "#ffffff"
+                  // errormessage: "Color Select kro",
+                }
               }}
             />
             {/* <span className="color-picker-icon col-lg-1">
@@ -247,10 +234,7 @@ class AppointmentStatus extends Component {
                 value: this.state.description,
                 events: {
                   onChange: this.changeTexts.bind(this)
-                },
-
-                error: this.state.description_error,
-                helperText: this.state.description_error_text
+                }
               }}
             />
 
