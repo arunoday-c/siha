@@ -155,12 +155,20 @@ class ReviewofSystems extends Component {
     // console.log("delete Allergy row:", row);
 
     swal({
-      title: "Are you sure you want to delete this Review of System?",
+      title:
+        "Delete Review of System for " +
+        row.header_description +
+        " with symptom " +
+        row.detail_description +
+        "?",
       type: "warning",
-      buttons: true,
-      dangerMode: true
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         let data = {
           patient_id: Window.global["current_patient"],
           episode_id: Window.global["episode_id"],
@@ -188,7 +196,7 @@ class ReviewofSystems extends Component {
       } else {
         swalMessage({
           title: "Delete request cancelled . .",
-          type: "success"
+          type: "error"
         });
       }
     });
@@ -200,22 +208,18 @@ class ReviewofSystems extends Component {
         {/* ROS Modal Start */}
         <Modal open={this.state.openROSModal}>
           <div className="algaeh-modal">
-              <div className="popupHeader">
-                <div className="row">
-                  <div className="col-lg-8">
-              <h4>Add Review Systems</h4>
-                  </div>
-                  <div className="col-lg-4">
-                    <button
-                      type="button"
-                      className=""
-                       onClick={this.handleClose}
-                    >
-                      <i className="fas fa-times-circle" />
-                    </button>
-                  </div>
+            <div className="popupHeader">
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4>Add Review Systems</h4>
+                </div>
+                <div className="col-lg-4">
+                  <button type="button" className="" onClick={this.handleClose}>
+                    <i className="fas fa-times-circle" />
+                  </button>
                 </div>
               </div>
+            </div>
             <div className="popupInner">
               <div className="col-lg-12">
                 <div className="row">
@@ -284,58 +288,57 @@ class ReviewofSystems extends Component {
                     <h6> List of Review Systems</h6>
                     <hr />
                     <div id="ros-grid-cntr">
-                    <AlgaehDataGrid
-                      id="ros-grid"
-                      columns={[
-                        {
-                          fieldName: "header_description",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "System" }} />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "detail_description",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Symptoms" }} />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "comment",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Remarks" }} />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  value: row.comment,
-                                  className: "txt-fld",
-                                  name: "comment",
-                                  events: {
-                                    onChange: this.texthandler.bind(this, row)
-                                  }
-                                }}
-                              />
-                            );
+                      <AlgaehDataGrid
+                        id="ros-grid"
+                        columns={[
+                          {
+                            fieldName: "header_description",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "System" }} />
+                            ),
+                            disabled: true
+                          },
+                          {
+                            fieldName: "detail_description",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Symptoms" }} />
+                            ),
+                            disabled: true
+                          },
+                          {
+                            fieldName: "comment",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Remarks" }} />
+                            ),
+                            editorTemplate: row => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    value: row.comment,
+                                    className: "txt-fld",
+                                    name: "comment",
+                                    events: {
+                                      onChange: this.texthandler.bind(this, row)
+                                    }
+                                  }}
+                                />
+                              );
+                            }
                           }
-                        }
-                      ]}
-                      keyId="ros"
-                      dataSource={{
-                        data: this.props.patientros
-                      }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onDelete: this.deleteROS.bind(this),
-                        onEdit: row => {},
-                        onDone: this.updatePatientROS.bind(this)
-                      }}
-                    />
-
+                        ]}
+                        keyId="ros"
+                        dataSource={{
+                          data: this.props.patientros
+                        }}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onDelete: this.deleteROS.bind(this),
+                          onEdit: row => {},
+                          onDone: this.updatePatientROS.bind(this)
+                        }}
+                      />
                     </div>
                     <div className="row">
                       <AlagehFormGroup
@@ -364,34 +367,34 @@ class ReviewofSystems extends Component {
             </div>
             <div className=" popupFooter">
               <div className="col-lg-12">
-              <div className="row">
-              <div className="col-lg-4">
-                <button
-                  onClick={this.addPatientROS.bind(this)}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  Add to Review List
-                </button>
-                <button
-                  onClick={this.resetPatientROS.bind(this)}
-                  type="button"
-                  className="btn btn-default"
-                >
-                  Clear
-                </button>
+                <div className="row">
+                  <div className="col-lg-4">
+                    <button
+                      onClick={this.addPatientROS.bind(this)}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      Add to Review List
+                    </button>
+                    <button
+                      onClick={this.resetPatientROS.bind(this)}
+                      type="button"
+                      className="btn btn-default"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="col-lg-8">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={this.handleClose}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="col-lg-8">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.handleClose}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-            </div>
             </div>
           </div>
         </Modal>

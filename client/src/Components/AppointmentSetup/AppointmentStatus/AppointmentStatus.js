@@ -9,6 +9,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 class AppointmentStatus extends Component {
   constructor(props) {
@@ -62,8 +63,7 @@ class AppointmentStatus extends Component {
       confirmButtonText: "Yes!",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-      dangerMode: true
+      cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
@@ -158,44 +158,51 @@ class AppointmentStatus extends Component {
   addAppointmentStatus(e) {
     e.preventDefault();
 
-    if (this.state.color_code === "#FFFFFF") {
-      this.setState({
-        color_code_error: true,
-        color_code_error_text: "Color Code cannot be empty"
-      });
-    } else if (this.state.description.length === 0) {
-      this.setState({
-        description_error: true,
-        description_error_text: "Description cannot be empty"
-      });
-    } else if (this.state.default_status.length === 0) {
-      this.setState({
-        default_status_error: true,
-        default_status_error_text: "Status cannot be empty"
-      });
-    } else {
-      algaehApiCall({
-        uri: "/appointment/addAppointmentStatus",
-        method: "POST",
-        data: {
-          color_code: this.state.color_code,
-          description: this.state.description,
-          default_status: this.state.default_status
-        },
-        onSuccess: response => {
-          if (response.data.success) {
-            swalMessage({
-              title: "Record added successfully",
-              type: "success"
-            });
+    AlgaehValidation({
+      querySelector: "", //"data-validate='InsuranceProvider'", //if require section level
+      fetchFromFile: true, //if required arabic error
+      alertTypeIcon: "warning", // error icon
+      onSuccess: () => {
+        if (this.state.color_code === "#FFFFFF") {
+          this.setState({
+            color_code_error: true,
+            color_code_error_text: "Color Code cannot be empty"
+          });
+        } else if (this.state.description.length === 0) {
+          this.setState({
+            description_error: true,
+            description_error_text: "Description cannot be empty"
+          });
+        } else if (this.state.default_status.length === 0) {
+          this.setState({
+            default_status_error: true,
+            default_status_error_text: "Status cannot be empty"
+          });
+        } else {
+          algaehApiCall({
+            uri: "/appointment/addAppointmentStatus",
+            method: "POST",
+            data: {
+              color_code: this.state.color_code,
+              description: this.state.description,
+              default_status: this.state.default_status
+            },
+            onSuccess: response => {
+              if (response.data.success) {
+                swalMessage({
+                  title: "Record added successfully",
+                  type: "success"
+                });
 
-            this.resetState();
-            this.getAppointmentStatus();
-          }
-        },
-        onFailure: error => {}
-      });
-    }
+                this.resetState();
+                this.getAppointmentStatus();
+              }
+            },
+            onFailure: error => {}
+          });
+        }
+      }
+    });
   }
 
   render() {
@@ -203,28 +210,6 @@ class AppointmentStatus extends Component {
       <div className="appointment_status">
         <div className="col-lg-12">
           <div className="row">
-            {/* <div className="col-lg-3">
-              <div className="row">
-                <div
-                  className="col"
-                  style={{
-                    backgroundColor: "" + this.state.color_code,
-                    width: "100px",
-                    height: "20px",
-                    margin: "auto"
-                  }}
-                  value={this.state.color_code}
-                />
-                <i
-                  className="fas fa-palette col"
-                  style={{ cursor: "pointer" }}
-                  name="color_code"
-                  onChange={this.changeTexts.bind(this)}
-                />
-              </div>
-            </div> */}
-            {/* <div className="col-lg-3">
-              <div className="row"> */}
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
@@ -268,24 +253,6 @@ class AppointmentStatus extends Component {
                 helperText: this.state.description_error_text
               }}
             />
-            {/* <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "default_status",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "default_status",
-                value: this.state.default_status,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                },
-
-                error: this.state.default_status_error,
-                helperText: this.state.default_status_error_text
-              }}
-            /> */}
 
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
@@ -348,15 +315,9 @@ class AppointmentStatus extends Component {
                             },
                             others: {
                               type: "color"
-                            },
-
-                            error: row.color_code_error,
-                            helperText: row.color_code_error_text
+                            }
                           }}
                         />
-                        <span className="color-picker-icon col-lg-1">
-                          <i className="fas fa-palette" />
-                        </span>
                       </div>
                     );
                   }
