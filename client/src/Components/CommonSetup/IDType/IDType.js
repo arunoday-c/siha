@@ -106,11 +106,14 @@ class IDType extends Component {
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this ID Types?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         let data = { hims_d_identity_document_id: id };
         algaehApiCall({
           uri: "/identity/delete",

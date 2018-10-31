@@ -56,10 +56,13 @@ class VisitType extends Component {
     swal({
       title: "Are you sure you want to delete this Visit Type?",
       type: "warning",
-      buttons: true,
-      dangerMode: true
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         let data = { hims_d_visit_type_id: id };
         algaehApiCall({
           uri: "/visitType/delete",
@@ -88,6 +91,11 @@ class VisitType extends Component {
               type: "error"
             });
           }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
         });
       }
     });

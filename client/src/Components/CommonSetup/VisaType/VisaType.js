@@ -190,11 +190,14 @@ class VisaType extends Component {
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this Visa Type?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         let data = { hims_d_visa_type_id: id };
         algaehApiCall({
           uri: "/masters/set/delete/visa",

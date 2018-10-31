@@ -70,11 +70,14 @@ class PatientType extends Component {
     swal({
       title: "Are you sure you want to delete this ID Types?",
       type: "warning",
-      buttons: true,
-      dangerMode: true
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
-        let data = { hims_d_identity_document_id: id };
+      if (willDelete.value) {
+        let data = { hims_d_patient_type_id: id };
         algaehApiCall({
           uri: "/patientType/delete",
           data: data,
@@ -178,10 +181,11 @@ class PatientType extends Component {
             type: "success"
           });
 
-          data.onDoneFinish();
+          // data.onDoneFinish();
         }
       },
       onFailure: error => {
+        debugger;
         swalMessage({
           title: error.response.data.message,
           type: "error"

@@ -188,6 +188,7 @@ class RegistrationPatient extends PureComponent {
       if (this.state.unbalanced_amount === 0) {
         this.GenerateReciept($this => {
           AlgaehLoader({ show: true });
+          debugger;
           if ($this.state.hims_d_patient_id === null) {
             let patientdata = {};
 
