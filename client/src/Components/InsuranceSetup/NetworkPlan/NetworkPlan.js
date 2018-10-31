@@ -24,8 +24,6 @@ import {
   numberhandle
 } from "./NetworkPlanHandaler";
 
-import Paper from "@material-ui/core/Paper";
-
 import { FORMAT_PRICE_FROM } from "../../../utils/GlobalVariables.json";
 import MyContext from "../../../utils/MyContext";
 
@@ -300,20 +298,9 @@ class NetworkPlan extends PureComponent {
                         "data-netdata": true
                       }
                     }}
-                  />{" "}
-                  <div className="col-lg-3">
-                    <button
-                      className="btn btn-primary"
-                      style={{ marginTop: 21 }}
-                      onClick={addNewNetwork.bind(this, this)}
-                    >
-                      Add
-                    </button>
-                  </div>
+                  />
                 </div>
-
-                <br />
-                <Paper className="Paper">
+                <div className="col-lg-12 networkPlanCntr">
                   {/* Company */}
                   <div className="row">
                     <div className="col-lg-3 label-pad">
@@ -751,31 +738,13 @@ class NetworkPlan extends PureComponent {
                       }}
                     />
                   </div>
-                </Paper>
+                </div>
 
-                <NetworkPlanList
-                  insurance_provider_id={this.state.insurance_provider_id}
-                  network_plan={this.state.network_plan}
-                />
                 <div className="row">
-                  <div className="col-lg-12 button-details">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="primary"
-                      style={{ float: "right" }}
-                      onClick={saveNetworkPlan.bind(this, this, context)}
-                      disabled={this.state.saveupdate}
-                    >
-                      Save
-                    </Button>
-
-                    <AHSnackbar
-                      open={this.state.snackeropen}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
-                    />
-                  </div>
+                  <NetworkPlanList
+                    insurance_provider_id={this.state.insurance_provider_id}
+                    network_plan={this.state.network_plan}
+                  />
                 </div>
               </div>
             </div>

@@ -15,3 +15,8 @@
     padding-top: 25px; }
   .hptl-phase1-network-plan-form .insurance-details {
     border-bottom: 1px solid #000; }
+  .hptl-phase1-network-plan-form .networkPlanCntr {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px; }
