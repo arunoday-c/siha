@@ -177,8 +177,6 @@ let addDepartment = (req, res, next) => {
   }
 };
 
-
-
 let updateDepartment = (req, res, next) => {
   let department = {
     hims_d_department_id: null,
@@ -299,7 +297,6 @@ let deleteDepartment = (req, res, next) => {
     next(e);
   }
 };
-
 
 let selectDepartmentOLD = (req, res, next) => {
   try {
@@ -465,7 +462,7 @@ let selectSubDepartment = (req, res, next) => {
   }
 };
 
-let addSubDepartment = (req, res, next) => {
+let addSubDepartmentOLD = (req, res, next) => {
   // let subDepartment = {
   //   hims_d_sub_department_id: null,
   //   sub_department_code: null,
@@ -550,6 +547,56 @@ let addSubDepartment = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to add  SUB_departments
+let addSubDepartment = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_sub_department` (sub_department_code,sub_department_name,\
+          arabic_sub_department_name,sub_department_desc,department_id,effective_start_date,\
+          effective_end_date,created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.sub_department_code,
+          input.sub_department_name,
+          input.arabic_sub_department_name,
+          input.sub_department_desc,
+          input.department_id,
+          input.effective_start_date,
+          input.effective_end_date,      
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+
 let updateSubDepartment = (req, res, next) => {
   // let subDepartment = {
   //   hims_d_sub_department_id: null,
