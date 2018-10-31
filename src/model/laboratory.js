@@ -8,7 +8,7 @@ import pad from "node-string-pad";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import appsettings from "../utils/appsettings.json";
-import {  debugFunction, debugLog } from "../utils/logging";
+import { debugFunction, debugLog } from "../utils/logging";
 import Promise from "bluebird";
 import moment from "moment";
 import extend from "extend";
@@ -19,7 +19,7 @@ let getLabOrderedServices = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    debugLog("Date: ", req.query.from_date);
+
     let whereOrder = "";
     if (req.query.from_date != undefined) {
       whereOrder =
@@ -28,15 +28,25 @@ let getLabOrderedServices = (req, res, next) => {
         "') AND date('" +
         req.query.to_date +
         "')";
-
-      debugLog("Date If: ", req.query.from_date);
     } else {
       whereOrder = "date(ordered_date) <= date(now())";
     }
 
-    debugLog("where Order:", whereOrder);
+    if (req.query.patient_id != undefined && req.query.patient_id != "null") {
+      req.query["LO.patient_id"] = req.query.patient_id;
+    }
+
+    if (req.query.status != undefined && req.query.status != "null") {
+      req.query["LO.status"] = req.query.status;
+    }
+
     delete req.query.from_date;
     delete req.query.to_date;
+    delete req.query.patient_id;
+    delete req.query.status;
+    debugLog("req.query: ", req.query);
+    debugLog("whereOrder: ", whereOrder);
+
     let where = whereCondition(req.query);
 
     debugLog("where conditn:", where);
@@ -54,12 +64,14 @@ let getLabOrderedServices = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT hims_f_lab_order_id,patient_id,visit_id,provider_id, service_id,SR.service_code,SR.service_name,\
-        SA.status, cancelled, provider_id, ordered_date, test_type, lab_id_number, run_type, PAT.patient_code,PAT.full_name,\
-        PAT.date_of_birth, PAT.gender, SP.sample_id,SP.collected,\
-        SP.collected_by, SP.collected_date,SP.hims_d_lab_sample_id,SP.status as sample_status from ((hims_f_lab_order SA inner join hims_f_patient PAT ON \
-        SA.patient_id=PAT.hims_d_patient_id) inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id) \
-        left outer join hims_f_lab_sample SP on SA.hims_f_lab_order_id = SP.order_id WHERE SA.record_status='A' AND " +
+        "select hims_f_lab_order_id,LO.patient_id, visit_id,V.visit_code, provider_id, E.full_name as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
+        cancelled, provider_id, ordered_date, test_type, lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender,\
+        LS.sample_id,LS.collected,LS.collected_by, LS.collected_date,LS.hims_d_lab_sample_id,LS.status as sample_status\
+        from hims_f_lab_order LO inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
+        inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id and  V.record_status='A'\
+        inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
+        inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
+        left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A' WHERE " +
           whereOrder +
           (where.condition == "" ? "" : " AND " + where.condition),
         where.values,

@@ -20,6 +20,7 @@ const texthandle = ($this, context, e) => {
 };
 
 const saveSubInsurance = ($this, context) => {
+  debugger;
   let updatedata = [];
   const err = Validations($this);
   if (!err) {
