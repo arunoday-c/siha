@@ -13,6 +13,24 @@ const texthandle = ($this, ctrl, e) => {
   });
 };
 
+const numberhandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  if (value >= 0) {
+    $this.setState({
+      [name]: value
+    });
+  } else {
+    swalMessage({
+      title: "Invalid Input. Cannot be less than zero.",
+      type: "warning"
+    });
+  }
+};
+
 const saveNetworkPlan = ($this, context) => {
   const err = Validations($this);
   let newdata = [];
@@ -99,24 +117,24 @@ const addNewNetwork = $this => {
 
     hims_d_insurance_network_office_id: null,
     network_id: null,
-    deductible: null,
-    copay_consultation: null,
-    max_value: null,
-    deductible_lab: null,
-    copay_percent: null,
-    lab_max: null,
-    deductible_rad: null,
-    copay_percent_rad: null,
-    rad_max: null,
-    deductible_trt: null,
-    copay_percent_trt: null,
-    trt_max: null,
-    deductible_dental: null,
-    copay_percent_dental: null,
-    dental_max: null,
-    deductible_medicine: null,
-    copay_medicine: null,
-    medicine_max: null,
+    deductible: 0,
+    copay_consultation: 0,
+    max_value: 0,
+    deductible_lab: 0,
+    copay_percent: 0,
+    lab_max: 0,
+    deductible_rad: 0,
+    copay_percent_rad: 0,
+    rad_max: 0,
+    deductible_trt: 0,
+    copay_percent_trt: 0,
+    trt_max: 0,
+    deductible_dental: 0,
+    copay_percent_dental: 0,
+    dental_max: 0,
+    deductible_medicine: 0,
+    copay_medicine: 0,
+    medicine_max: 0,
 
     price_from: null,
     employer: null,
@@ -201,5 +219,6 @@ export {
   saveNetworkPlan,
   datehandle,
   addNewNetwork,
-  UpdateNetworkPlan
+  UpdateNetworkPlan,
+  numberhandle
 };

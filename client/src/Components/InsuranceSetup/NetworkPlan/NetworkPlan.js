@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-// import NetworkPlanList from "../NetworkPlanList/NetworkPlanList";
+import NetworkPlanList from "../NetworkPlanList/NetworkPlanList";
 import AHSnackbar from "../../common/Inputs/AHSnackbar";
 import "./NetworkPlan.css";
 import "./../../../styles/site.css";
@@ -12,7 +12,6 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDataGrid,
   Button
 } from "../../Wrapper/algaehWrapper";
 
@@ -22,10 +21,9 @@ import {
   saveNetworkPlan,
   datehandle,
   addNewNetwork,
-  UpdateNetworkPlan
+  numberhandle
 } from "./NetworkPlanHandaler";
-// import { setGlobal } from "../../../utils/GlobalFunctions";
-// import { getCookie } from "../../../utils/algaehApiCall";
+
 import Paper from "@material-ui/core/Paper";
 
 import { FORMAT_PRICE_FROM } from "../../../utils/GlobalVariables.json";
@@ -45,30 +43,30 @@ class NetworkPlan extends PureComponent {
 
       hims_d_insurance_network_office_id: null,
       network_id: null,
-      deductible: null,
-      copay_consultation: null,
-      max_value: null,
-      deductible_lab: null,
-      copay_percent: null,
-      lab_max: null,
-      deductible_rad: null,
-      copay_percent_rad: null,
-      rad_max: null,
-      deductible_trt: null,
-      copay_percent_trt: null,
-      trt_max: null,
-      deductible_dental: null,
-      copay_percent_dental: null,
-      dental_max: null,
-      deductible_medicine: null,
-      copay_medicine: null,
-      medicine_max: null,
+      deductible: 0,
+      copay_consultation: 0,
+      max_value: 0,
+      deductible_lab: 0,
+      copay_percent: 0,
+      lab_max: 0,
+      deductible_rad: 0,
+      copay_percent_rad: 0,
+      rad_max: 0,
+      deductible_trt: 0,
+      copay_percent_trt: 0,
+      trt_max: 0,
+      deductible_dental: 0,
+      copay_percent_dental: 0,
+      dental_max: 0,
+      deductible_medicine: 0,
+      copay_medicine: 0,
+      medicine_max: 0,
       invoice_max_deduct: 0,
 
       price_from: null,
       employer: null,
       policy_number: null,
-      preapp_limit: null,
+      preapp_limit: 0,
       hospital_id: null,
       preapp_limit_from: "GROSS",
 
@@ -95,19 +93,6 @@ class NetworkPlan extends PureComponent {
         redux: {
           type: "SUB_INSURANCE_GET_DATA",
           mappingName: "subinsuranceprovider"
-        }
-      });
-
-      this.props.getNetworkPlans({
-        uri: "/insurance/getNetworkAndNetworkOfficRecords",
-        method: "GET",
-        printInput: true,
-        data: {
-          insuranceProviderId: this.state.insurance_provider_id
-        },
-        redux: {
-          type: "NETWORK_PLAN_GET_DATA",
-          mappingName: "networkandplans"
         }
       });
     }
@@ -289,12 +274,13 @@ class NetworkPlan extends PureComponent {
                       fieldName: "preapp_limit"
                     }}
                     textBox={{
+                      decimal: { allowNegative: false },
                       value: this.state.preapp_limit,
                       className: "txt-fld",
                       name: "preapp_limit",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: numberhandle.bind(this, this)
                       },
                       others: {
                         "data-netdata": true
@@ -347,7 +333,7 @@ class NetworkPlan extends PureComponent {
                         name: "deductible",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -365,7 +351,7 @@ class NetworkPlan extends PureComponent {
                         name: "copay_consultation",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -383,7 +369,7 @@ class NetworkPlan extends PureComponent {
                         name: "max_value",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         }
                       }}
                     />
@@ -406,7 +392,7 @@ class NetworkPlan extends PureComponent {
                         name: "deductible_lab",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -423,7 +409,7 @@ class NetworkPlan extends PureComponent {
                         name: "copay_percent",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         }
                       }}
                     />
@@ -437,7 +423,7 @@ class NetworkPlan extends PureComponent {
                         name: "lab_max",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -464,7 +450,7 @@ class NetworkPlan extends PureComponent {
                         name: "deductible_rad",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -481,7 +467,7 @@ class NetworkPlan extends PureComponent {
                         name: "copay_percent_rad",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -497,7 +483,7 @@ class NetworkPlan extends PureComponent {
                         name: "rad_max",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -603,7 +589,7 @@ class NetworkPlan extends PureComponent {
                         name: "deductible_trt",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -620,7 +606,7 @@ class NetworkPlan extends PureComponent {
                         name: "copay_percent_trt",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -637,7 +623,7 @@ class NetworkPlan extends PureComponent {
                         name: "trt_max",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -663,7 +649,7 @@ class NetworkPlan extends PureComponent {
                         name: "deductible_dental",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -680,7 +666,7 @@ class NetworkPlan extends PureComponent {
                         name: "copay_percent_dental",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -697,7 +683,7 @@ class NetworkPlan extends PureComponent {
                         name: "dental_max",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -723,7 +709,7 @@ class NetworkPlan extends PureComponent {
                         name: "deductible_medicine",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -740,7 +726,7 @@ class NetworkPlan extends PureComponent {
                         name: "copay_medicine",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -757,7 +743,7 @@ class NetworkPlan extends PureComponent {
                         name: "medicine_max",
 
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this)
                         },
                         others: {
                           "data-netdata": true
@@ -766,80 +752,10 @@ class NetworkPlan extends PureComponent {
                     />
                   </div>
                 </Paper>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <AlgaehDataGrid
-                      id="pla_list_grid"
-                      columns={[
-                        {
-                          fieldName: "network_type",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "network_type" }}
-                            />
-                          )
-                          // subinsuranceprovider
-                        },
-                        {
-                          fieldName: "policy_number",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "policy_number" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "employer",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "employer" }} />
-                          )
-                        },
-                        {
-                          fieldName: "insurance_sub_id",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "sub_insurance_id" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.subinsuranceprovider === undefined
-                                ? []
-                                : this.props.subinsuranceprovider.filter(
-                                    f =>
-                                      f.hims_d_insurance_sub_id ===
-                                      row.insurance_sub_id
-                                  );
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].insurance_sub_name
-                                    : display[0].arabic_sub_name
-                                  : ""}
-                              </span>
-                            );
-                          }
-                        }
-                      ]}
-                      keyId="network_type"
-                      dataSource={{
-                        data:
-                          this.props.networkandplans === undefined
-                            ? []
-                            : this.props.networkandplans
-                      }}
-                      // algaehSearch={true}
-                      // isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      // onRowSelect={row => {
-                      //   this.onClose(row);
-                      // }}
-                    />
-                  </div>
-                </div>
-                {/* <NetworkPlanList /> */}
+                <NetworkPlanList
+                  insurance_provider_id={this.state.insurance_provider_id}
+                />
                 <div className="row">
                   <div className="col-lg-12 button-details">
                     <Button
@@ -852,18 +768,6 @@ class NetworkPlan extends PureComponent {
                     >
                       Save
                     </Button>
-                    {this.state.buttonenable === true ? (
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        color="primary"
-                        style={{ float: "right" }}
-                        onClick={UpdateNetworkPlan.bind(this, this, context)}
-                        disabled={this.state.btnupdate}
-                      >
-                        Update
-                      </Button>
-                    ) : null}
 
                     <AHSnackbar
                       open={this.state.snackeropen}
