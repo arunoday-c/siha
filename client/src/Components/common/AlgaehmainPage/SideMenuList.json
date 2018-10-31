@@ -103,11 +103,6 @@
         "path": "/FrontDesk"
       },
       {
-        "name": "OrderingServices",
-        "label": "Ordering Services",
-        "path": "/OrderingServices"
-      },
-      {
         "name": "Patient Recall",
         "label": "Patient Recall",
 

@@ -2,6 +2,7 @@ import { Validations } from "./InsuranceAddValidation";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const handleNext = ($this, e) => {
+  debugger;
   const err = Validations($this);
   if (!err) {
     if ($this.state.screenName === "InsuranceProvider") {

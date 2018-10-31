@@ -81,6 +81,10 @@ export default class FormGroup extends PureComponent {
   }
 
   textBoxRender = () => {
+    const _class =
+      this.props.textBox.className !== undefined
+        ? { className: this.props.textBox.className }
+        : {};
     const _value = this.state.value;
     if (this.props.textBox !== undefined) {
       const _disabled =
@@ -115,6 +119,7 @@ export default class FormGroup extends PureComponent {
             {..._disabled}
             {..._required}
             {...this.props.textBox.others}
+            {..._class}
           />
         );
       } else if (this.props.textBox.number !== undefined) {
@@ -132,6 +137,7 @@ export default class FormGroup extends PureComponent {
             {..._required}
             {..._disabled}
             {...this.props.textBox.others}
+            {..._class}
           />
         );
       } else if (this.props.textBox.mask !== undefined) {
@@ -149,6 +155,7 @@ export default class FormGroup extends PureComponent {
             {..._disabled}
             {..._required}
             {...this.props.textBox.others}
+            {..._class}
           />
         );
       } else {
@@ -169,6 +176,7 @@ export default class FormGroup extends PureComponent {
               {..._required}
               {..._invalid}
               {...this.props.textBox.others}
+              {..._class}
             />
           );
         else {
@@ -185,6 +193,7 @@ export default class FormGroup extends PureComponent {
               {..._required}
               {..._invalid}
               {..._others}
+              {..._class}
             />
           );
         }

@@ -337,12 +337,10 @@ class PatientType extends Component {
                     disabled: true
                   },
                   {
-                    fieldName: "identity_status",
+                    fieldName: "patient_status",
                     label: <AlgaehLabel label={{ fieldName: "status" }} />,
                     displayTemplate: row => {
-                      return row.identity_status === "A"
-                        ? "Active"
-                        : "Inactive";
+                      return row.patient_status === "A" ? "Active" : "Inactive";
                     },
                     editorTemplate: row => {
                       return (
