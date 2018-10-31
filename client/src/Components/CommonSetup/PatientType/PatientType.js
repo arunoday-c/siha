@@ -96,7 +96,12 @@ class PatientType extends Component {
               });
             }
           },
-          onFailure: error => {}
+          onFailure: error => {
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       } else {
         swalMessage({
@@ -152,7 +157,10 @@ class PatientType extends Component {
           }
         },
         onFailure: error => {
-          // Handle network error here.
+          swalMessage({
+            title: error.response.data.message,
+            type: "error"
+          });
         }
       });
     }
@@ -173,7 +181,12 @@ class PatientType extends Component {
           data.onDoneFinish();
         }
       },
-      onFailure: error => {}
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "error"
+        });
+      }
     });
   }
 

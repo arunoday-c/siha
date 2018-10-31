@@ -27,6 +27,7 @@ const saveSubInsurance = ($this, context) => {
     let obj = {
       insurance_sub_code: $this.state.insurance_sub_code,
       insurance_sub_name: $this.state.insurance_sub_name,
+      arabic_sub_name: $this.state.arabic_sub_name,
       insurance_provider_id: $this.state.insurance_provider_id,
       transaction_number: $this.state.transaction_number,
       card_format: $this.state.card_format,
@@ -53,6 +54,12 @@ const saveSubInsurance = ($this, context) => {
               title: "Added successfully . ."
             });
           }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.response.data.message,
+            type: "error"
+          });
         }
       });
     }
@@ -87,12 +94,16 @@ const datehandle = ($this, ctrl, e) => {
 
 const showconfirmDialog = ($this, id) => {
   swal({
-    title: "Are you sure you want to delete this ID Types?",
+    title: "Are you sure you want to delete this Sub Insurance?",
     type: "warning",
-    buttons: true,
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
     dangerMode: true
   }).then(willDelete => {
-    if (willDelete) {
+    if (willDelete.value) {
       let data = {
         hims_d_insurance_sub_id: id
         //updated_by: getCookie("UserID")
@@ -103,33 +114,24 @@ const showconfirmDialog = ($this, id) => {
         method: "DELETE",
         onSuccess: response => {
           if (response.data.success) {
+            getSubInsuranceDetails($this);
             swalMessage({
               type: "success",
               title: "Record deleted successfully . ."
             });
-            $this.props.getSubInsuranceDetails({
-              uri: "/insurance/getSubInsurance",
-              method: "GET",
-              printInput: true,
-              data: {
-                insurance_provider_id: $this.state.insurance_provider_id
-              },
-              redux: {
-                type: "SUB_INSURANCE_GET_DATA",
-                mappingName: "subinsuranceprovider"
-              },
-              afterSuccess: data => {
-                $this.setState({ sub_insurance: data });
-              }
-            });
           }
         },
-        onFailure: error => {}
+        onFailure: error => {
+          swalMessage({
+            title: error.response.data.message,
+            type: "error"
+          });
+        }
       });
     } else {
       swalMessage({
         title: "Delete request cancelled",
-        type: "success"
+        type: "error"
       });
     }
   });
@@ -139,35 +141,45 @@ const deleteSubInsurance = ($this, row) => {
   showconfirmDialog($this, row.hims_d_insurance_sub_id);
 };
 
+const getSubInsuranceDetails = $this => {
+  $this.props.getSubInsuranceDetails({
+    uri: "/insurance/getSubInsurance",
+    method: "GET",
+    printInput: true,
+    data: {
+      insurance_provider_id: $this.state.insurance_provider_id
+    },
+    redux: {
+      type: "SUB_INSURANCE_GET_DATA",
+      mappingName: "subinsuranceprovider"
+    },
+    afterSuccess: data => {
+      $this.setState({ sub_insurance: data });
+    }
+  });
+};
 const updateSubInsurance = ($this, data) => {
+  debugger;
   algaehApiCall({
     uri: "/insurance/updateSubInsuranceProvider",
     data: data,
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
+        debugger;
+        getSubInsuranceDetails($this);
         swalMessage({
           type: "success",
           title: "Record updated successfully . ."
         });
-        $this.props.getSubInsuranceDetails({
-          uri: "/insurance/getSubInsurance",
-          method: "GET",
-          printInput: true,
-          data: {
-            insurance_provider_id: $this.state.insurance_provider_id
-          },
-          redux: {
-            type: "SUB_INSURANCE_GET_DATA",
-            mappingName: "subinsuranceprovider"
-          },
-          afterSuccess: data => {
-            $this.setState({ sub_insurance: data });
-          }
-        });
       }
     },
-    onFailure: error => {}
+    onFailure: error => {
+      swalMessage({
+        title: error.response.data.message,
+        type: "error"
+      });
+    }
   });
 };
 
@@ -176,10 +188,28 @@ const resetState = $this => {
 };
 
 const onchangegridcol = ($this, row, e) => {
+  let sub_insurance = $this.state.sub_insurance;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;
-  resetState($this);
+  // resetState($this);
+
+  for (let i = 0; i < sub_insurance.length; i++) {
+    debugger;
+    if (
+      sub_insurance[i].hims_d_insurance_sub_id === row.hims_d_insurance_sub_id
+    ) {
+      sub_insurance[i] = row;
+    }
+  }
+  $this.setState(
+    {
+      sub_insurance: sub_insurance
+    },
+    () => {
+      debugger;
+    }
+  );
 };
 
 export {
@@ -189,5 +219,6 @@ export {
   datehandle,
   deleteSubInsurance,
   updateSubInsurance,
-  onchangegridcol
+  onchangegridcol,
+  getSubInsuranceDetails
 };

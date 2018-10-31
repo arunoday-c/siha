@@ -18,6 +18,12 @@
     "icon": "fas fa-cog",
     "subMenu": [
       {
+        "name": "Appointment Setup",
+        "label": "Appointment Setup",
+        "arlabel": "إعداد موعد",
+        "path": "/AppointmentSetup"
+      },
+      {
         "name": "Business Setup",
         "label": "Business Setup",
         "arlabel": "إعداد الأعمال",
@@ -30,22 +36,34 @@
         "path": "/CommonSetup"
       },
       {
+        "name": "Hospital Service Setup",
+        "label": "Hospital Service Setup",
+        "arlabel": "إعداد خدمة المستشفى",
+        "path": "/HospitalServiceSetup"
+      },
+      {
         "name": "Insurance Setup",
         "label": "Insurance Setup",
         "arlabel": "إعداد التأمين",
         "path": "/InsuranceSetup"
       },
       {
-        "name": "Lab Setup",
-        "label": "Lab Setup",
-        "arlabel": "إعداد مختبر",
-        "path": "/LabSetup"
-      },
-      {
         "name": "Investigation Setup",
         "label": "Investigation Setup",
         "arlabel": "إعداد التحقيق",
         "path": "/InvestigationSetup"
+      },
+      {
+        "name": "Item Setup",
+        "label": "Item Setup",
+        "arlabel": "إعداد العنصر",
+        "path": "/ItemSetup"
+      },
+      {
+        "name": "Lab Setup",
+        "label": "Lab Setup",
+        "arlabel": "إعداد مختبر",
+        "path": "/LabSetup"
       },
       {
         "name": "Medical Workbench Setup",
@@ -58,24 +76,6 @@
         "label": "Pharmacy Setup",
         "arlabel": "إعداد الصيدلة",
         "path": "/PharmacySetup"
-      },
-      {
-        "name": "Appointment Setup",
-        "label": "Appointment Setup",
-        "arlabel": "إعداد موعد",
-        "path": "/AppointmentSetup"
-      },
-      {
-        "name": "Item Setup",
-        "label": "Item Setup",
-        "arlabel": "إعداد العنصر",
-        "path": "/ItemSetup"
-      },
-      {
-        "name": "Hospital Service Setup",
-        "label": "Hospital Service Setup",
-        "arlabel": "إعداد خدمة المستشفى",
-        "path": "/HospitalServiceSetup"
       },
       {
         "name": "ProcedureSetup",

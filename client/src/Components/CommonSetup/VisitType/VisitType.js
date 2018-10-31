@@ -82,7 +82,12 @@ class VisitType extends Component {
               });
             }
           },
-          onFailure: error => {}
+          onFailure: error => {
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -92,23 +97,6 @@ class VisitType extends Component {
     //console.log("Delete Row ID: ", row.hims_d_visit_type_id);
     this.showconfirmDialog(row.hims_d_visit_type_id);
   }
-
-  // handleConfirmDelete() {
-  //   const data = { hims_d_visit_type_id: this.state.deleteId };
-
-  //   algaehApiCall({
-  //     uri: "/visitType/delete",
-  //     data: data,
-  //     method: "DELETE",
-  //     onSuccess: response => {
-  //       this.setState({ open: false });
-  //       window.location.reload();
-  //     },
-  //     onFailure: error => {
-  //       this.setState({ open: false });
-  //     }
-  //   });
-  // }
 
   handleClose = () => {
     this.setState({ open: false });
@@ -206,7 +194,10 @@ class VisitType extends Component {
           }
         },
         onFailure: error => {
-          // Handle network error here.
+          swalMessage({
+            title: error.response.data.message,
+            type: "error"
+          });
         }
       });
     }
@@ -259,7 +250,12 @@ class VisitType extends Component {
           });
         }
       },
-      onFailure: error => {}
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "error"
+        });
+      }
     });
   }
 
