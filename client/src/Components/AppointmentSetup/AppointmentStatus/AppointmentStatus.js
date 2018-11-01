@@ -18,7 +18,8 @@ class AppointmentStatus extends Component {
       appointmentStatus: [],
       color_code: "#FFFFFF",
       description: "",
-      default_status: "N"
+      default_status: "N",
+      isEditable: true
     };
 
     this.baseState = this.state;
@@ -64,6 +65,9 @@ class AppointmentStatus extends Component {
           method: "PUT",
           onSuccess: response => {
             if (response.data.success) {
+              this.setState({
+                isEditable: false
+              });
               swalMessage({
                 title: "Status Authorized successfully . .",
                 type: "success"
@@ -417,7 +421,7 @@ class AppointmentStatus extends Component {
               dataSource={{
                 data: this.state.appointmentStatus
               }}
-              isEditable={true}
+              isEditable={this.state.isEditable}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onEdit: () => {},
