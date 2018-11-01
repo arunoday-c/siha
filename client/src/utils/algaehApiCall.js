@@ -6,6 +6,7 @@ import swal from "sweetalert2";
 
 import config from "../utils/config.json";
 import axiosCancel from "axios-cancel";
+import AlgaehLoader from "../Components/Wrapper/fullPageLoader.js";
 const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
 export function algaehApiCall(options) {
   // "baseUrl": "http://192.168.0.149:3000/api/v1",
@@ -156,6 +157,9 @@ export function algaehApiCall(options) {
             if (axios.isCancel(err)) {
               if (process.env.NODE_ENV === "development")
                 console.warn("Request canceled :", err.message);
+              AlgaehLoader({
+                show: false
+              });
             }
           }
 
@@ -362,7 +366,7 @@ export function getCookie(cname) {
 }
 export function valueReviver(key, value) {
   if (typeof value === "string" && dateFormat.test(value)) {
-    return moment(value).format("YYYY-MM-DD HH:MM:SS.S");
+    return moment(value).format("YYYY-MM-DD HH:MM:SS");
   }
 
   return value;

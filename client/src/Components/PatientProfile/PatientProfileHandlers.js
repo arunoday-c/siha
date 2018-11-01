@@ -84,7 +84,7 @@ const getPatientDiet = $this => {
     }
   });
 };
-const getPatientDiagnosis = $this => {
+const getPatientDiagnosis = ($this, isProcess) => {
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",
     method: "GET",
@@ -96,6 +96,20 @@ const getPatientDiagnosis = $this => {
     redux: {
       type: "PATIENT_DIAGNOSIS",
       mappingName: "patient_diagnosis"
+    },
+    afterSuccess: data => {
+      if (isProcess) {
+        // let finalICDS = Enumerable.from(data)
+        // .where(w => w.final_daignosis === "Y")
+        // .toArray();
+
+        $this.setState({
+          // InitialICDS: data,
+          // finalICDS: finalICDS,
+          showInitialDiagnosisLoader: false,
+          showFinalDiagnosisLoader: false
+        });
+      }
     }
   });
 };

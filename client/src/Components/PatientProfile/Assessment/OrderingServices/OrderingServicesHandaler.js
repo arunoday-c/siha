@@ -41,8 +41,6 @@ const serviceHandeler = ($this, e) => {
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
-  debugger;
-
   if ($this.state.s_service_type !== null && $this.state.s_service !== null) {
     let preserviceInput = $this.state.preserviceInput || [];
     let serviceInput = [
@@ -132,7 +130,7 @@ const ProcessService = ($this, e) => {
                     data.billdetails[i].requested_quantity =
                       data.billdetails[i].quantity;
                   }
-                  debugger;
+
                   $this.setState({
                     orderservicesdata: data.billdetails,
                     approval_amt: approval_amt,
@@ -357,7 +355,6 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
-  debugger;
   let inputObj = {
     visit_id: $this.state.visit_id,
     patient_id: $this.state.patient_id,

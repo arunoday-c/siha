@@ -74,17 +74,10 @@ class NetworkPlan extends PureComponent {
   }
 
   componentWillMount() {
-    debugger;
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  // shouldComponentUpdate(nextProps) {
-  //   debugger;
-  //   if (nextProps.networkandplans !== this.state.network_plan) {
-  //     return true;
-  //   }
-  // }
   componentDidMount() {
     if (this.state.insurance_provider_id !== null) {
       this.props.getSubInsuranceDetails({
@@ -111,12 +104,6 @@ class NetworkPlan extends PureComponent {
           type: "NETWORK_PLAN_GET_DATA",
           mappingName: "networkandplans"
         }
-        // afterSuccess: data => {
-        //   debugger;
-        //   this.setState({
-        //     network_plan: data
-        //   });
-        // }
       });
     }
   }

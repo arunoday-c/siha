@@ -361,7 +361,6 @@ class ChiefComplaints extends Component {
     const data = Enumerable.from(this.state.patientChiefComplains)
       .where(w => w.recordState === "update")
       .toArray();
-    debugger;
     if (data.length !== 0) {
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientChiefComplaints",
