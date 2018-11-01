@@ -240,7 +240,6 @@ export function AlgaehValidation(options) {
                 .replace("*", "")
                 .toLowerCase()
                 .replace(/^\w/, c => {
-                  debugger;
                   return c.toUpperCase();
                 }) + ",cannot be blank"
             : _lable.innerText.replace("*", "") + ", لا يمكن أن يكون فارغا";
