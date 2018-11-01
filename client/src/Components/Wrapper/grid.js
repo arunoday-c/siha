@@ -135,6 +135,7 @@ class DataGrid extends PureComponent {
     }
   };
   toggleRowEditable = index => {
+    debugger;
     let existsing = sessionStorage.getItem(this.props.id);
     existsing = existsing !== null ? JSON.parse(existsing)["collection"] : [];
     const prevStateIndexData = this.state.data[index];

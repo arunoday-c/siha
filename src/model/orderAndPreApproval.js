@@ -11,7 +11,7 @@ import { getBillDetailsFunctionality } from "../model/billing";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 
-import {  debugFunction, debugLog } from "../utils/logging";
+import { debugFunction, debugLog } from "../utils/logging";
 
 //created by irfan: check pre-aproval status and get PreAproval List
 let getPreAprovalList = (req, res, next) => {
@@ -410,6 +410,41 @@ let selectOrderServices = (req, res, next) => {
   }
 };
 
+let getOrderServices = (req, res, next) => {
+  let selectWhere = {
+    visit_id: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let where = whereCondition(extend(selectWhere, req.query));
+      connection.query(
+        "SELECT  * FROM `hims_f_ordered_services` \
+       WHERE `record_status`='A' AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 //ordered services update
 let updateOrderedServices = (req, res, next) => {
   debugFunction("updateOrderedServices");
@@ -558,5 +593,6 @@ module.exports = {
   updatePreApproval,
   selectOrderServices,
   updateOrderedServices,
-  updateOrderedServicesBilled
+  updateOrderedServicesBilled,
+  getOrderServices
 };

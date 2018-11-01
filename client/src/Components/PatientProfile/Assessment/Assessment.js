@@ -20,12 +20,13 @@ import {
   IcdsSearch
 } from "./AssessmentEvents";
 import { getPatientDiagnosis } from "../PatientProfileHandlers";
-import OrderingServices from "./OrderingServices/OrderingServices";
+
 import LabResults from "./LabResult/LabResult";
 import RadResults from "./RadResult/RadResult";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import { DIAG_TYPE } from "../../../utils/GlobalVariables.json";
+import OrderedList from "./OrderedList/OrderedList";
 
 class Assessment extends Component {
   constructor(props) {
@@ -38,11 +39,7 @@ class Assessment extends Component {
       daignosis_id: null,
       icd_code: null,
       icd_description: null,
-      finalICDS: [],
-      icd_id: null,
-      f_icd_id: null,
 
-      insertInitialDiad: [],
       patient_id: Window.global["current_patient"],
       episode_id: Window.global["episode_id"],
       search_by: "C",
@@ -67,7 +64,6 @@ class Assessment extends Component {
     const _type = e.currentTarget.getAttribute("search_by");
     this.setState({
       search_by: _type
-      // f_search_by: _type
     });
   }
   radioFinalDiagnosisChange(e) {
@@ -107,10 +103,12 @@ class Assessment extends Component {
     if (
       this.props.patient_diagnosis === undefined ||
       this.props.patient_diagnosis.length === 0
-    )
+    ) {
       getPatientDiagnosis(this, true);
+    }
   }
   render() {
+    debugger;
     const _diagnosis =
       this.props.patient_diagnosis !== undefined
         ? this.props.patient_diagnosis
@@ -118,7 +116,7 @@ class Assessment extends Component {
     const _finalDiagnosis = Enumerable.from(_diagnosis)
       .where(w => w.final_daignosis === "Y")
       .toArray();
-    console.log("initial", _diagnosis);
+
     return (
       <div className="hptl-ehr-assetment-details">
         <div className="row margin-top-15">
@@ -434,7 +432,7 @@ class Assessment extends Component {
                 ) */}
             <div className="grid-section">
               {this.state.pageDisplay === "Orders" ? (
-                <OrderingServices vat_applicable={this.props.vat_applicable} />
+                <OrderedList vat_applicable={this.props.vat_applicable} />
               ) : this.state.pageDisplay === "LabResults" ? (
                 <LabResults />
               ) : this.state.pageDisplay === "RisResults" ? (
@@ -477,8 +475,7 @@ class Assessment extends Component {
 
 function mapStateToProps(state) {
   return {
-    //  icdcodes: state.icdcodes,
-    patientdiagnosis: state.patient_diagnosis,
+    patient_diagnosis: state.patient_diagnosis,
     assservices: state.assservices,
     assdeptanddoctors: state.assdeptanddoctors
   };
@@ -487,7 +484,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      // getIcdCodes: AlgaehActions,
       getPatientDiagnosis: AlgaehActions,
       getServices: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions

@@ -47,7 +47,7 @@ let addAppointmentStatus = (req, res, next) => {
           new Date(),
           input.updated_by
         ],
-        (error, result) => {
+        (error,result) => {
          
           if (error) {
             connection.rollback(() => {
@@ -85,7 +85,36 @@ let addAppointmentStatus = (req, res, next) => {
                 });
               }
             );
-          } else {
+          }         
+          
+          else if(input.default_status == "C"){
+            connection.query(
+              "update hims_d_appointment_status set default_status='N' where default_status='C' and hims_d_appointment_status_id <>? ",
+              [result.insertId],
+              (error, crtRsult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  req.records = crtRsult;
+                  next();
+                });
+              }
+            );
+
+            
+          }else {
             connection.commit(error => {
               if (error) {
                 connection.rollback(() => {
@@ -312,12 +341,13 @@ let updateAppointmentStatus = (req, res, next) => {
           });
         }
         connection.query(
-          "UPDATE `hims_d_appointment_status` SET color_code=?, description=?, default_status=?,\
+          "UPDATE `hims_d_appointment_status` SET color_code=?, description=?, default_status=?,steps=?,\
            updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_status_id`=?;",
           [
             input.color_code,
             input.description,
             input.default_status,
+            input.steps,
             new Date(),
             input.updated_by,
             input.record_status,
@@ -331,10 +361,11 @@ let updateAppointmentStatus = (req, res, next) => {
               });
             }
 
-            if (input.default_status == "Y") {
+            if (input.default_status == "Y"&& input.record_status=="A") {
               connection.query(
-                "UPDATE `hims_d_appointment_status` SET  default_status='N',steps=null\
-            WHERE  record_status='A' and default_status='N' and  hims_d_appointment_status_id <> ?; \
+                "UPDATE `hims_d_appointment_status` SET  default_status='N'\
+            WHERE  record_status='A' and default_status!='C' and  hims_d_appointment_status_id <> ?; \
+            update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id>0;\
             update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A';",
                 [input.hims_d_appointment_status_id,input.hims_d_appointment_status_id,],
                 (error, defStatusRsult) => {
@@ -358,7 +389,60 @@ let updateAppointmentStatus = (req, res, next) => {
                   });
                 }
               );
-            } else {
+            }
+            else if(input.default_status == "C"&& input.record_status=="A"){
+              connection.query(
+                "update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ",
+                [input.hims_d_appointment_status_id],
+                (error, crtRsult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+  
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+  
+                    req.records = crtRsult;
+                    next();
+                  });
+                }
+              );
+            }
+            else if(input.record_status=="I"){
+              connection.query(
+                "update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id=?;\ ",
+                [input.hims_d_appointment_status_id,],
+                (error, deleteRsult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+
+                    req.records = deleteRsult;
+                    next();
+                  });
+                }
+              );
+            }
+            else {
               connection.commit(error => {
                 if (error) {
                   connection.rollback(() => {
