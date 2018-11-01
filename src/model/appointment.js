@@ -333,7 +333,7 @@ let updateAppointmentStatus = (req, res, next) => {
 
             if (input.default_status == "Y") {
               connection.query(
-                "UPDATE `hims_d_appointment_status` SET  default_status='N'\
+                "UPDATE `hims_d_appointment_status` SET  default_status='N',steps=null\
             WHERE  record_status='A' and hims_d_appointment_status_id <> ?;",
                 [input.hims_d_appointment_status_id],
                 (error, defStatusRsult) => {
@@ -372,6 +372,39 @@ let updateAppointmentStatus = (req, res, next) => {
             }
           }
         );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to apointment status Authorized
+let appointmentStatusAuthorized = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+    
+        connection.query(
+          "update hims_d_appointment_status  set authorized='Y',updated_date=?, updated_by=? where record_status='A' and hims_d_appointment_status_id>0 ;",
+           [
+            new Date(),
+            input.updated_by              
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();            
+       
       });
     });
   } catch (e) {
@@ -2428,5 +2461,6 @@ module.exports = {
   addPatientAppointment,
   getPatientAppointment,
   updatePatientAppointment,
-  getEmployeeServiceID
+  getEmployeeServiceID,
+  appointmentStatusAuthorized
 };
