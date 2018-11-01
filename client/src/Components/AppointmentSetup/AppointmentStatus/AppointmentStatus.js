@@ -17,16 +17,8 @@ class AppointmentStatus extends Component {
     this.state = {
       appointmentStatus: [],
       color_code: "#FFFFFF",
-      color_code_error: false,
-      color_code_error_text: "",
-
       description: "",
-      description_error: false,
-      description_error_text: "",
-
-      default_status: "",
-      default_status_error: false,
-      default_status_error_text: ""
+      default_status: "N"
     };
 
     this.baseState = this.state;
@@ -159,7 +151,7 @@ class AppointmentStatus extends Component {
     e.preventDefault();
 
     AlgaehValidation({
-      querySelector: "", //"data-validate='InsuranceProvider'", //if require section level
+      //querySelector: "", //"data-validate='InsuranceProvider'", //if require section level
       alertTypeIcon: "warning", // error icon
       onCatch: value => {
         //alert(value);
@@ -216,11 +208,6 @@ class AppointmentStatus extends Component {
                 }
               }}
             />
-            {/* <span className="color-picker-icon col-lg-1">
-                  <i className="fas fa-palette" />
-                </span>
-              </div>
-            </div> */}
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
@@ -240,7 +227,8 @@ class AppointmentStatus extends Component {
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{
-                fieldName: "default_status"
+                fieldName: "default_status",
+                isImp: true
               }}
               selector={{
                 name: "default_status",
@@ -265,9 +253,10 @@ class AppointmentStatus extends Component {
               </button>
             </div>
           </div>
-          <div className="form-details">
+          <div className="form-details" data-validate="apptStatusDiv">
             <AlgaehDataGrid
               id="appt-status-grid"
+              datavalidate="data-validate='apptStatusDiv'"
               columns={[
                 {
                   fieldName: "color_code",
@@ -297,7 +286,10 @@ class AppointmentStatus extends Component {
                               onChange: this.changeGridEditors.bind(this, row)
                             },
                             others: {
-                              type: "color"
+                              type: "color",
+                              checkvalidation: "#ffffff",
+                              errormessage: "Please Select a color",
+                              required: true
                             }
                           }}
                         />
@@ -318,6 +310,10 @@ class AppointmentStatus extends Component {
                           value: row.description,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Cannot be blank",
+                            required: true
                           }
                         }}
                       />
@@ -349,11 +345,23 @@ class AppointmentStatus extends Component {
                             valueField: "value",
                             data: GlobalVariables.FORMAT_APPT_STATUS
                           },
-                          onChange: this.changeGridEditors.bind(this, row)
+                          onChange: this.changeGridEditors.bind(this, row),
+                          others: {
+                            errormessage: "Cannot be blank",
+                            required: true
+                          }
                         }}
                       />
                     );
                   }
+                },
+                {
+                  fieldName: "steps",
+                  label: "Steps"
+                },
+                {
+                  fieldName: "authorized",
+                  label: "Authorized"
                 }
               ]}
               keyId="hims_d_appointment_status_id"
@@ -368,6 +376,9 @@ class AppointmentStatus extends Component {
                 onDone: this.updateAppointmentStatus.bind(this)
               }}
             />
+            <button style={{ margin: "10px" }} className="btn btn-primary">
+              Authorize
+            </button>
           </div>
         </div>
       </div>
