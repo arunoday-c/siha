@@ -194,7 +194,7 @@ let updateRadOrderedServices = (req, res, next) => {
      SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,`arrived`=?,\
      `validate_by`=?, `validate_date_time` = ?, `attended_by`=?,`attended_date_time`=?,`exam_start_date_time`=?, \
      `exam_end_date_time`=?, `exam_status`=?, `report_type`=?,`technician_id`=?\
-     WHERE `record_status`='A' and `hims_f_rad_order_id`=?",
+     WHERE `hims_f_rad_order_id`=?",
       [
         inputParam.status,
         inputParam.cancelled,
