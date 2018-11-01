@@ -1,6 +1,7 @@
 import moment from "moment";
 import { Validations } from "./NetworkPlanValidation";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -37,6 +38,7 @@ const saveNetworkPlan = ($this, context) => {
 
   let newdata = [];
   if (!err) {
+    AlgaehLoader({ show: true });
     let obj = {
       hims_d_insurance_network_id: null,
       network_type: $this.state.network_type,
@@ -86,25 +88,40 @@ const saveNetworkPlan = ($this, context) => {
       data: newdata,
       onSuccess: response => {
         if (response.data.success === true) {
-          swalMessage({
-            type: "success",
-            title: "Added successfully . ."
+          $this.props.getNetworkPlans({
+            uri: "/insurance/getNetworkAndNetworkOfficRecords",
+            method: "GET",
+            printInput: true,
+            data: {
+              insuranceProviderId: $this.state.insurance_provider_id
+            },
+            redux: {
+              type: "NETWORK_PLAN_GET_DATA",
+              mappingName: "networkandplans"
+            },
+            afterSuccess: data => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                type: "success",
+                title: "Added successfully . ."
+              });
+            }
           });
+
+          $this.setState({
+            insurance_plan_saved: true,
+            network_plan: previous
+          });
+          if (context !== undefined) {
+            context.updateState({
+              network_plan: previous
+            });
+          }
+          addNewNetwork($this);
         }
       }
     });
     // }
-
-    $this.setState({
-      insurance_plan_saved: true,
-      network_plan: previous
-    });
-    if (context !== undefined) {
-      context.updateState({
-        network_plan: previous
-      });
-    }
-    addNewNetwork($this);
   }
 };
 
@@ -141,7 +158,7 @@ const addNewNetwork = $this => {
     price_from: null,
     employer: null,
     policy_number: null,
-    preapp_limit: null,
+    preapp_limit: 0,
     hospital_id: null,
     saveupdate: false,
     btnupdate: true

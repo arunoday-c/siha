@@ -4,15 +4,14 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import NetworkPlanList from "../NetworkPlanList/NetworkPlanList";
-import AHSnackbar from "../../common/Inputs/AHSnackbar";
+
 import "./NetworkPlan.css";
 import "./../../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  Button
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -80,6 +79,12 @@ class NetworkPlan extends PureComponent {
     this.setState({ ...this.state, ...InputOutput });
   }
 
+  // shouldComponentUpdate(nextProps) {
+  //   debugger;
+  //   if (nextProps.networkandplans !== this.state.network_plan) {
+  //     return true;
+  //   }
+  // }
   componentDidMount() {
     if (this.state.insurance_provider_id !== null) {
       this.props.getSubInsuranceDetails({
@@ -105,13 +110,13 @@ class NetworkPlan extends PureComponent {
         redux: {
           type: "NETWORK_PLAN_GET_DATA",
           mappingName: "networkandplans"
-        },
-        afterSuccess: data => {
-          debugger;
-          this.setState({
-            network_plan: data
-          });
         }
+        // afterSuccess: data => {
+        //   debugger;
+        //   this.setState({
+        //     network_plan: data
+        //   });
+        // }
       });
     }
   }
@@ -148,7 +153,8 @@ class NetworkPlan extends PureComponent {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "insurance_sub_id"
+                      fieldName: "insurance_sub_id",
+                      isImp: true
                     }}
                     selector={{
                       name: "insurance_sub_id",
@@ -169,7 +175,8 @@ class NetworkPlan extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "network_type"
+                      fieldName: "network_type",
+                      isImp: true
                     }}
                     textBox={{
                       value: this.state.network_type,
@@ -188,7 +195,8 @@ class NetworkPlan extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "employer"
+                      fieldName: "employer",
+                      isImp: true
                     }}
                     textBox={{
                       value: this.state.employer,
@@ -206,7 +214,8 @@ class NetworkPlan extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "policy_number"
+                      fieldName: "policy_number",
+                      isImp: true
                     }}
                     textBox={{
                       value: this.state.policy_number,
@@ -277,7 +286,8 @@ class NetworkPlan extends PureComponent {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "price_from"
+                      fieldName: "price_from",
+                      isImp: true
                     }}
                     selector={{
                       name: "price_from",
@@ -736,7 +746,8 @@ class NetworkPlan extends PureComponent {
                   <div className="col-lg-12">
                     <NetworkPlanList
                       insurance_provider_id={this.state.insurance_provider_id}
-                      network_plan={this.state.network_plan}
+                      // network_plan={this.state.network_plan}
+                      selectedLang={this.state.selectedLang}
                     />
                   </div>
                 </div>
