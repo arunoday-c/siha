@@ -292,8 +292,7 @@ class AppointmentStatus extends Component {
               }}
             />
 
-            <div className="col-lg-3">
-              <label>.</label>
+            <div className="col-lg-3 margin-top-15">
               <button
                 onClick={this.addAppointmentStatus.bind(this)}
                 type="button"
@@ -407,7 +406,8 @@ class AppointmentStatus extends Component {
                 },
                 {
                   fieldName: "steps",
-                  label: "Step No."
+                  label: "Step No.",
+                  editorTemplate: row => {}
                 },
                 {
                   fieldName: "authorized",
