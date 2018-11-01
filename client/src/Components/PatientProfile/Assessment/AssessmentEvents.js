@@ -57,7 +57,6 @@ const IcdsSearch = ($this, diagType) => {
       callBack(text);
     },
     onRowSelect: row => {
-      debugger;
       if (diagType === "Final") {
         insertFinalICDS($this, row);
       } else if (diagType === "Intial") {
@@ -68,7 +67,6 @@ const IcdsSearch = ($this, diagType) => {
 };
 
 const insertInitialICDS = ($this, row) => {
-  debugger;
   const _initalId = Enumerable.from($this.state.InitialICDS)
     .where(w => w.daignosis_id === $this.state.daignosis_id)
     .firstOrDefault();

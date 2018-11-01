@@ -295,7 +295,8 @@ class AppointmentStatus extends Component {
               }}
             />
 
-            <div className="col-lg-3 margin-top-15">
+            <div className="col-lg-3">
+              <label>.</label>
               <button
                 onClick={this.addAppointmentStatus.bind(this)}
                 type="button"

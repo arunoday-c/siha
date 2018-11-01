@@ -4,47 +4,27 @@
 }
 
 .ReactTable {
-  font-size: 0.8rem;
   max-width: 95vw !important;
-  .rt-table,
-  .rt-thead,
-  .rt-tr,
-  .rt-tbody {
-    flex: initial !important;
+  font-size: 0.8rem;
+  background: #ffff !important;
+  .rt-th {
+    white-space: unset !important;
+    text-transform: uppercase !important;
+    background: #8c8c8c !important;
+    color: #fff !important;
+  }
+  .-filters {
+    .rt-th {
+      white-space: unset !important;
+      text-transform: uppercase !important;
+      background: #8c8c8c !important;
+      color: #fff !important;
+    }
   }
   .rt-td {
     overflow: inherit !important;
-    white-space: unset !important;
-  }
-  .rt-thead.-filters {
-    top: 25px;
-    position: relative;
-    .rt-tr {
-      .rt-th {
-        height: 40px;
-      }
-    }
   }
 
-  .rt-thead.-filters + div.rt-tbody {
-    margin-top: 65px;
-  }
-
-  .rt-tbody {
-    margin-top: 30px;
-  }
-  .rt-th {
-    background: #8c8c8c !important;
-    color: #fff !important;
-    text-transform: uppercase;
-    font-weight: normal !important;
-    font-size: 0.8rem;
-    min-height: 30px !important;
-  }
-
-  button {
-    margin-left: 0;
-  }
   i.fa-pen,
   i.fa-trash-alt,
   i.fa-save,
@@ -89,65 +69,5 @@
   .fa-plus:hover {
     background: #44b8bd;
     color: #fff;
-  }
-
-  i.fa-tooltip {
-    position: relative;
-  }
-
-  .tooltip-info {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-
-  i.fa-tooltip::before {
-    content: attr(data-tooltip);
-    position: absolute;
-    top: 1.5em;
-    font-size: 0.9em;
-    padding: 1px 5px;
-    display: none;
-    color: white;
-    background: rgba(0, 0, 0, 0.75);
-    border-radius: 4px;
-    transition: opacity 0.1s ease-out;
-    z-index: 99;
-    text-align: left;
-  }
-
-  .-pagination {
-    .-previous,
-    .-next {
-      flex: inherit !important;
-
-      .-btn {
-        height: 100%;
-        width: auto;
-        padding: 6px 16px;
-        border: 1px solid #44b8bd;
-        color: #3faeb3;
-        background: #fff;
-      }
-      .-btn:hover {
-        background-color: #fff;
-      }
-      .-btn[disabled] {
-        border-color: #e2dfde;
-        color: #c7c4c2;
-      }
-    }
-
-    .-center {
-      flex: none !important;
-    }
-
-    input,
-    select {
-      padding: 2px 5px !important;
-    }
-    .-pageJump input {
-      width: 45px !important;
-    }
   }
 }

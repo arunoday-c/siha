@@ -24,7 +24,8 @@ import {
   addPatientAppointment,
   getPatientAppointment,
   updatePatientAppointment,
-  getEmployeeServiceID
+  getEmployeeServiceID,
+  appointmentStatusAuthorized
 } from "../model/appointment";
 
 export default ({ config, db }) => {
@@ -357,6 +358,22 @@ export default ({ config, db }) => {
   api.get(
     "/getEmployeeServiceID",
     getEmployeeServiceID,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+
+  // created by irfan :to get Patient Appointment
+  api.put(
+    "/appointmentStatusAuthorized",
+    appointmentStatusAuthorized,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

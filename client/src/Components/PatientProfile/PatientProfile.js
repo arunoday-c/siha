@@ -80,7 +80,6 @@ class PatientProfile extends Component {
     });
   }
   renderBackButton(e) {
-    debugger;
     setGlobal({ "EHR-STD": "DoctorsWorkbench" });
     document.getElementById("ehr-router").click();
   }
