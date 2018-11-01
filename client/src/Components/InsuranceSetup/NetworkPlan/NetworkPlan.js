@@ -136,7 +136,22 @@ class NetworkPlan extends PureComponent {
                         : "Insurar Name"}
                     </h6>
                   </div>
-
+                </div>
+                <div className="row">
+                  <div className="col-lg-12">
+                    <NetworkPlanList
+                      insurance_provider_id={this.state.insurance_provider_id}
+                      // network_plan={this.state.network_plan}
+                      selectedLang={this.state.selectedLang}
+                    />
+                  </div>
+                </div>
+                <br />
+                <h6>
+                  Add NewNetwork/Plan
+                  <hr />
+                </h6>
+                <div className="row">
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -727,15 +742,6 @@ class NetworkPlan extends PureComponent {
                     >
                       Clear
                     </button>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <NetworkPlanList
-                      insurance_provider_id={this.state.insurance_provider_id}
-                      // network_plan={this.state.network_plan}
-                      selectedLang={this.state.selectedLang}
-                    />
                   </div>
                 </div>
               </div>

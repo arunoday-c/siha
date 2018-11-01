@@ -1,10 +1,9 @@
 .patientInfo-lab-Top {
   background: white;
-  height: 70px;
-  padding: 5px 0 0;
   width: 100%;
   position: relative;
-  z-index: 1; }
+  z-index: 1;
+  margin-bottom: 10px; }
   .patientInfo-lab-Top div {
     float: left;
     color: #858585; }
@@ -27,8 +26,8 @@
       border-radius: 4px;
       overflow: hidden; }
   .patientInfo-lab-Top .patientName {
-    max-width: 230px;
-    margin-top: 2px;
+    padding-top: 10px;
+    max-width: 400px;
     border-left: 1px solid #e1e1e1;
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
@@ -44,6 +43,7 @@
       margin: 0;
       padding: 0; }
   .patientInfo-lab-Top .patientDemographic {
+    padding-top: 10px;
     font-size: 0.8rem;
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
@@ -55,6 +55,7 @@
       .patientInfo-lab-Top .patientDemographic span b {
         color: #34b8bc; }
   .patientInfo-lab-Top .patientHospitalDetail {
+    padding-top: 10px;
     font-size: 0.8rem;
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
@@ -93,3 +94,8 @@
 .next_plain th,
 .next_plain td {
   border-right: 1px solid #e6e6e6; }
+
+#labResultGrid_Cntr {
+  margin-bottom: 10px; }
+  #labResultGrid_Cntr .ReactTable {
+    max-height: 55vh !important; }
