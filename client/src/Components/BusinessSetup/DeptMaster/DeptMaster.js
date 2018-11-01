@@ -333,7 +333,6 @@ class DeptMaster extends Component {
                     return (
                       <i
                         className="fas fa-plus"
-                        data-tooltip="some more information"
                         onClick={this.addSubDept(row)}
                       />
                     );
@@ -342,7 +341,6 @@ class DeptMaster extends Component {
                     return (
                       <i
                         className="fas fa-plus"
-                        data-tooltip="some more information"
                         onClick={this.addSubDept(row)}
                       />
                     );
