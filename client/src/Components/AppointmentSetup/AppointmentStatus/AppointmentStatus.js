@@ -47,6 +47,58 @@ class AppointmentStatus extends Component {
     this.setState({ [value.name]: value.value });
   }
 
+  authorizeApptStatus() {
+    swal({
+      title:
+        "Are you sure you want to authorize the Status for Appointment set?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        // algaehApiCall({
+        //   uri: "/appointment/updateAppointmentStatus",
+        //   data: {
+        //     hims_d_appointment_status_id: data.hims_d_appointment_status_id,
+        //     color_code: data.color_code,
+        //     description: data.description,
+        //     default_status: data.default_status,
+        //     record_status: "I"
+        //   },
+        //   method: "PUT",
+        //   onSuccess: response => {
+        //     if (response.data.success) {
+        //       swalMessage({
+        //         title: "Record deleted successfully . .",
+        //         type: "success"
+        //       });
+        //       this.getAppointmentStatus();
+        //     }
+        //   },
+        //   onFailure: error => {
+        //     swalMessage({
+        //       title: error.message,
+        //       type: "error"
+        //     });
+        //   }
+        // });
+
+        swalMessage({
+          title: "Authorized Successful",
+          type: "success"
+        });
+      } else {
+        swalMessage({
+          title: "Not authorized",
+          type: "error"
+        });
+      }
+    });
+  }
+
   deleteAppointmentStatus(data) {
     swal({
       title: "Are you sure you want to delete this Status?",
@@ -361,7 +413,11 @@ class AppointmentStatus extends Component {
                 },
                 {
                   fieldName: "authorized",
-                  label: "Authorized"
+                  label: "Authorized",
+                  disabled: true,
+                  displayTemplate: row => {
+                    return <span>{row.authorized === "Y" ? "Yes" : "No"}</span>;
+                  }
                 }
               ]}
               keyId="hims_d_appointment_status_id"
@@ -376,7 +432,11 @@ class AppointmentStatus extends Component {
                 onDone: this.updateAppointmentStatus.bind(this)
               }}
             />
-            <button style={{ margin: "10px" }} className="btn btn-primary">
+            <button
+              onClick={this.authorizeApptStatus.bind(this)}
+              style={{ margin: "10px" }}
+              className="btn btn-primary"
+            >
               Authorize
             </button>
           </div>
