@@ -117,58 +117,19 @@ const UpdateNetworkPlan = ($this, row) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-  let networkandplans = $this.state.networkandplans;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;
-  // resetState($this);
-  debugger;
-
-  for (let i = 0; i < networkandplans.length; i++) {
-    debugger;
-    if (
-      networkandplans[i].hims_d_insurance_network_office_id ===
-      row.hims_d_insurance_network_office_id
-    ) {
-      networkandplans[i] = row;
-    }
-  }
-  $this.setState(
-    {
-      networkandplans: networkandplans
-    },
-    () => {
-      debugger;
-    }
-  );
+  row.update();
 };
 
 const onchangegridnumber = ($this, row, e) => {
-  let networkandplans = $this.state.network_plan;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+
   if (value >= 0) {
     row[name] = value;
-    // resetState($this);
-    debugger;
-
-    for (let i = 0; i < networkandplans.length; i++) {
-      debugger;
-      if (
-        networkandplans[i].hims_d_insurance_network_office_id ===
-        row.hims_d_insurance_network_office_id
-      ) {
-        networkandplans[i] = row;
-      }
-    }
-    $this.setState(
-      {
-        network_plan: networkandplans
-      },
-      () => {
-        debugger;
-      }
-    );
+    row.update();
   } else {
     swalMessage({
       title: "Invalid Input. Cannot be less than zero.",

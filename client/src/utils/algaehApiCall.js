@@ -362,7 +362,7 @@ export function getCookie(cname) {
 }
 export function valueReviver(key, value) {
   if (typeof value === "string" && dateFormat.test(value)) {
-    return moment(value).format("YYYY-MM-DD HH:MM:SS.S");
+    return moment(value).format("YYYY-MM-DD HH:MM:SS");
   }
 
   return value;

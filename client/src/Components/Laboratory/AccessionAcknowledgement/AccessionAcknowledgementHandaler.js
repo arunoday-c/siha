@@ -97,20 +97,6 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
-      // let sample_collection = Enumerable.from(data)
-      //   .groupBy("$.patient_id", null, (k, g) => {
-      //     let firstRecordSet = Enumerable.from(g).firstOrDefault();
-      //     return {
-      //       patient_code: firstRecordSet.patient_code,
-      //       full_name: firstRecordSet.full_name,
-      //       ordered_date: firstRecordSet.ordered_date,
-      //       number_of_tests: g.getSource().length,
-      //       test_details: g.getSource(),
-      //       provider_id: firstRecordSet.provider_id
-      //     };
-      //   })
-      //   .toArray();
-
       $this.setState({ sample_collection: data });
     }
   });
@@ -135,27 +121,18 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success === true) {
-            let sample_collection = $this.state.sample_collection;
-            for (let i = 0; i < sample_collection.length; i++) {
-              if (
-                sample_collection[i].hims_d_lab_sample_id ===
-                row.hims_d_lab_sample_id
-              ) {
-                sample_collection[i].status = AccRej;
-              }
-            }
-
-            $this.setState({ sample_collection: sample_collection }, () => {
-              swalMessage({
-                title: "Accepted Successfully",
-                type: "success"
-              });
-            });
             getSampleCollectionDetails($this);
+            swalMessage({
+              title: "Accepted Successfully",
+              type: "success"
+            });
           }
         },
         onFailure: error => {
-          console.log(error);
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
       });
     } else {
