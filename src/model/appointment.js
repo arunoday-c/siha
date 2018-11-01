@@ -60,10 +60,10 @@ let addAppointmentStatus = (req, res, next) => {
           if (input.default_status == "Y") {
             connection.query(
               "UPDATE `hims_d_appointment_status` SET  default_status='N'\
-          WHERE  record_status='A' and hims_d_appointment_status_id <> ?;\
-          update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A';\
-          update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id <> ?; ",
-              [result[0].insertId,result[0].insertId,result[0].insertId],
+          WHERE  hims_d_appointment_status_id <> ?;\
+            update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id <> ?;\
+          update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A'; ",
+              [result.insertId,result.insertId,result.insertId],
               (error, defStatusRsult) => {
                 if (error) {
                   connection.rollback(() => {
