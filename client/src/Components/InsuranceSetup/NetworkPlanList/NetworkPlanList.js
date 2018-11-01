@@ -26,9 +26,23 @@ class NetworkPlanList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      network_plan: []
+      network_plan: [],
+      selectedLang: this.props.selectedLang
     };
   }
+
+  componentWillMount() {
+    debugger;
+    // let InputOutput = this.props.network_plan;
+    // this.setState({ ...this.state, ...InputOutput });
+  }
+
+  // shouldComponentUpdate(nextProps) {
+  //   debugger;
+  //   if (nextProps.networkandplans !== this.state.network_plan) {
+  //     return true;
+  //   }
+  // }
 
   componentDidMount() {
     debugger;
@@ -42,11 +56,25 @@ class NetworkPlanList extends PureComponent {
           method: "GET",
           printInput: true,
           data: {
-            insurance_provider_id: this.state.insurance_provider_id
+            insurance_provider_id: this.props.insurance_provider_id
           },
           redux: {
             type: "SUB_INSURANCE_GET_DATA",
             mappingName: "subinsuranceprovider"
+          }
+        });
+      }
+
+      if (
+        this.props.hospitaldetails === undefined ||
+        this.props.hospitaldetails.length === 0
+      ) {
+        this.props.getHospitalDetails({
+          uri: "/organization/getOrganization",
+          method: "GET",
+          redux: {
+            type: "HOSPITAL_DETAILS_GET_DATA",
+            mappingName: "hospitaldetails"
           }
         });
       }
@@ -55,9 +83,9 @@ class NetworkPlanList extends PureComponent {
 
   componentWillReceiveProps(newProps) {
     debugger;
-    if (newProps.network_plan !== undefined) {
+    if (newProps.insurance_provider_id !== undefined) {
       this.setState({
-        network_plan: newProps.network_plan,
+        network_plan: newProps.networkandplans,
         insurance_provider_id: newProps.insurance_provider_id
       });
     }
@@ -68,8 +96,9 @@ class NetworkPlanList extends PureComponent {
   }
 
   render() {
+    debugger;
     return (
-      <React.Fragment>
+      <div>
         <AlgaehDataGrid
           id="pla_list_grid"
           columns={[
@@ -91,6 +120,50 @@ class NetworkPlanList extends PureComponent {
                       ? this.state.selectedLang === "en"
                         ? display[0].insurance_sub_name
                         : display[0].arabic_sub_name
+                      : ""}
+                  </span>
+                );
+              },
+              disabled: true
+            },
+
+            {
+              fieldName: "hospital_id",
+              label: <AlgaehLabel label={{ fieldName: "hospital_id" }} />,
+              displayTemplate: row => {
+                debugger;
+                let display =
+                  this.props.hospitaldetails === undefined
+                    ? []
+                    : this.props.hospitaldetails.filter(
+                        f => f.hims_d_hospital_id === row.hospital_id
+                      );
+
+                return (
+                  <span>
+                    {display !== null && display.length !== 0
+                      ? this.state.selectedLang === "en"
+                        ? display[0].hospital_name
+                        : display[0].arabic_hospital_name
+                      : ""}
+                  </span>
+                );
+              },
+              editorTemplate: row => {
+                debugger;
+                let display =
+                  this.props.hospitaldetails === undefined
+                    ? []
+                    : this.props.hospitaldetails.filter(
+                        f => f.hims_d_hospital_id === row.hospital_id
+                      );
+
+                return (
+                  <span>
+                    {display !== null && display.length !== 0
+                      ? this.state.selectedLang === "en"
+                        ? display[0].hospital_name
+                        : display[0].arabic_hospital_name
                       : ""}
                   </span>
                 );
@@ -525,6 +598,9 @@ class NetworkPlanList extends PureComponent {
           keyId="network_type"
           dataSource={{
             data: this.state.network_plan
+            // this.props.networkandplans === undefined
+            //   ? []
+            //   : this.props.networkandplans
           }}
           isEditable={true}
           paging={{ page: 0, rowsPerPage: 10 }}
@@ -534,7 +610,7 @@ class NetworkPlanList extends PureComponent {
             onDone: UpdateNetworkPlan.bind(this, this)
           }}
         />
-      </React.Fragment>
+      </div>
     );
   }
 }
@@ -542,7 +618,8 @@ class NetworkPlanList extends PureComponent {
 function mapStateToProps(state) {
   return {
     networkandplans: state.networkandplans,
-    subinsuranceprovider: state.subinsuranceprovider
+    subinsuranceprovider: state.subinsuranceprovider,
+    hospitaldetails: state.hospitaldetails
   };
 }
 
@@ -550,7 +627,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getNetworkPlans: AlgaehActions,
-      getSubInsuranceDetails: AlgaehActions
+      getSubInsuranceDetails: AlgaehActions,
+      getHospitalDetails: AlgaehActions
     },
     dispatch
   );
