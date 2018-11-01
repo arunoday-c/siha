@@ -12,3 +12,6 @@
 .hptl-phase1-result-entry-form th,
 .hptl-phase1-result-entry-form td {
   border-right: 1px solid #e6e6e6; }
+
+#resultListEntryCntr .ReactTable {
+  max-height: 58vh !important; }

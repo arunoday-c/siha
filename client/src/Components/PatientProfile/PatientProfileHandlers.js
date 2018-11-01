@@ -98,6 +98,7 @@ const getPatientDiagnosis = ($this, isProcess) => {
       mappingName: "patient_diagnosis"
     },
     afterSuccess: data => {
+      debugger;
       if (isProcess) {
         // let finalICDS = Enumerable.from(data)
         // .where(w => w.final_daignosis === "Y")
