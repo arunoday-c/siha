@@ -26,6 +26,14 @@ let addAppointmentStatus = (req, res, next) => {
         next(error);
       }
 
+
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
       connection.query(
         "INSERT INTO `hims_d_appointment_status` (color_code, description, default_status, created_date, created_by, updated_date, updated_by)\
           VALUE(?,?,?,?,?,?,?)",
@@ -33,24 +41,68 @@ let addAppointmentStatus = (req, res, next) => {
           input.color_code,
           input.description,
           input.default_status,
+
           new Date(),
           input.created_by,
           new Date(),
           input.updated_by
         ],
         (error, result) => {
-          releaseDBConnection(db, connection);
+         
           if (error) {
-            next(error);
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
           }
 
 
+          if (input.default_status == "Y") {
+            connection.query(
+              "UPDATE `hims_d_appointment_status` SET  default_status='N'\
+          WHERE  record_status='A' and hims_d_appointment_status_id <> ?;\
+          update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A';\
+          update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id <> ?; ",
+              [result[0].insertId,result[0].insertId,result[0].insertId],
+              (error, defStatusRsult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  req.records = result;
+                  next();
+                });
+              }
+            );
+          } else {
+            connection.commit(error => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+              releaseDBConnection(db, connection);
+              req.records = result;
+              next();
+            });
+          }
 
 
-
-
-          req.records = result;
-          next();
+        });
+          // req.records = result;
+          // next();
         }
       );
     });
