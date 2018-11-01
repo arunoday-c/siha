@@ -144,7 +144,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const onchangegridnumber = ($this, row, e) => {
-  let networkandplans = $this.state.networkandplans;
+  let networkandplans = $this.state.network_plan;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value >= 0) {
@@ -163,7 +163,7 @@ const onchangegridnumber = ($this, row, e) => {
     }
     $this.setState(
       {
-        networkandplans: networkandplans
+        network_plan: networkandplans
       },
       () => {
         debugger;

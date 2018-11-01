@@ -43,19 +43,19 @@ class Appointment extends Component {
   componentDidMount() {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
-    let appCriteria = JSON.parse(localStorage.getItem("ApptCriteria"));
+    //let appCriteria = JSON.parse(localStorage.getItem("ApptCriteria"));
 
-    this.setState(
-      {
-        sub_department_id:
-          appCriteria !== null ? appCriteria.sub_dept_id : null,
-        schedule_date: appCriteria !== null ? appCriteria.schedule_date : null,
-        provider_id: appCriteria !== null ? appCriteria.provider_id : null
-      },
-      () => {
-        this.getAppointmentSchedule();
-      }
-    );
+    // this.setState(
+    //   {
+    //     sub_department_id:
+    //       appCriteria !== null ? appCriteria.sub_dept_id : null,
+    //     schedule_date: appCriteria !== null ? appCriteria.schedule_date : null,
+    //     provider_id: appCriteria !== null ? appCriteria.provider_id : null
+    //   },
+    //   () => {
+    //     this.getAppointmentSchedule();
+    //   }
+    // );
   }
 
   componentDidCatch(error, info) {
@@ -350,16 +350,16 @@ class Appointment extends Component {
         type: "warning"
       });
     } else {
-      localStorage.setItem(
-        "ApptCriteria",
-        JSON.stringify({
-          sub_dept_id: this.state.sub_department_id,
-          schedule_date: moment(this.state.activeDateHeader).format(
-            "YYYY-MM-DD"
-          ),
-          provider_id: this.state.provider_id
-        })
-      );
+      // localStorage.setItem(
+      //   "ApptCriteria",
+      //   JSON.stringify({
+      //     sub_dept_id: this.state.sub_department_id,
+      //     schedule_date: moment(this.state.activeDateHeader).format(
+      //       "YYYY-MM-DD"
+      //     ),
+      //     provider_id: this.state.provider_id
+      //   })
+      // );
 
       let send_data =
         localStorage.getItem("ApptCriteria") !== null

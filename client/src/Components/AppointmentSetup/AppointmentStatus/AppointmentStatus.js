@@ -17,16 +17,8 @@ class AppointmentStatus extends Component {
     this.state = {
       appointmentStatus: [],
       color_code: "#FFFFFF",
-      color_code_error: false,
-      color_code_error_text: "",
-
       description: "",
-      description_error: false,
-      description_error_text: "",
-
-      default_status: "",
-      default_status_error: false,
-      default_status_error_text: ""
+      default_status: "N"
     };
 
     this.baseState = this.state;
@@ -53,6 +45,58 @@ class AppointmentStatus extends Component {
 
   dropDownHandler(value) {
     this.setState({ [value.name]: value.value });
+  }
+
+  authorizeApptStatus() {
+    swal({
+      title:
+        "Are you sure you want to authorize the Status for Appointment set?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        // algaehApiCall({
+        //   uri: "/appointment/updateAppointmentStatus",
+        //   data: {
+        //     hims_d_appointment_status_id: data.hims_d_appointment_status_id,
+        //     color_code: data.color_code,
+        //     description: data.description,
+        //     default_status: data.default_status,
+        //     record_status: "I"
+        //   },
+        //   method: "PUT",
+        //   onSuccess: response => {
+        //     if (response.data.success) {
+        //       swalMessage({
+        //         title: "Record deleted successfully . .",
+        //         type: "success"
+        //       });
+        //       this.getAppointmentStatus();
+        //     }
+        //   },
+        //   onFailure: error => {
+        //     swalMessage({
+        //       title: error.message,
+        //       type: "error"
+        //     });
+        //   }
+        // });
+
+        swalMessage({
+          title: "Authorized Successful",
+          type: "success"
+        });
+      } else {
+        swalMessage({
+          title: "Not authorized",
+          type: "error"
+        });
+      }
+    });
   }
 
   deleteAppointmentStatus(data) {
@@ -159,7 +203,7 @@ class AppointmentStatus extends Component {
     e.preventDefault();
 
     AlgaehValidation({
-      querySelector: "", //"data-validate='InsuranceProvider'", //if require section level
+      //querySelector: "", //"data-validate='InsuranceProvider'", //if require section level
       alertTypeIcon: "warning", // error icon
       onCatch: value => {
         //alert(value);
@@ -216,11 +260,6 @@ class AppointmentStatus extends Component {
                 }
               }}
             />
-            {/* <span className="color-picker-icon col-lg-1">
-                  <i className="fas fa-palette" />
-                </span>
-              </div>
-            </div> */}
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
@@ -240,7 +279,8 @@ class AppointmentStatus extends Component {
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{
-                fieldName: "default_status"
+                fieldName: "default_status",
+                isImp: true
               }}
               selector={{
                 name: "default_status",
@@ -266,9 +306,10 @@ class AppointmentStatus extends Component {
               </button>
             </div>
           </div>
-          <div className="form-details">
+          <div className="form-details" data-validate="apptStatusDiv">
             <AlgaehDataGrid
               id="appt-status-grid"
+              datavalidate="data-validate='apptStatusDiv'"
               columns={[
                 {
                   fieldName: "color_code",
@@ -298,7 +339,10 @@ class AppointmentStatus extends Component {
                               onChange: this.changeGridEditors.bind(this, row)
                             },
                             others: {
-                              type: "color"
+                              type: "color",
+                              checkvalidation: "#ffffff",
+                              errormessage: "Please Select a color",
+                              required: true
                             }
                           }}
                         />
@@ -319,6 +363,10 @@ class AppointmentStatus extends Component {
                           value: row.description,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Cannot be blank",
+                            required: true
                           }
                         }}
                       />
@@ -350,10 +398,26 @@ class AppointmentStatus extends Component {
                             valueField: "value",
                             data: GlobalVariables.FORMAT_APPT_STATUS
                           },
-                          onChange: this.changeGridEditors.bind(this, row)
+                          onChange: this.changeGridEditors.bind(this, row),
+                          others: {
+                            errormessage: "Cannot be blank",
+                            required: true
+                          }
                         }}
                       />
                     );
+                  }
+                },
+                {
+                  fieldName: "steps",
+                  label: "Steps"
+                },
+                {
+                  fieldName: "authorized",
+                  label: "Authorized",
+                  disabled: true,
+                  displayTemplate: row => {
+                    return <span>{row.authorized === "Y" ? "Yes" : "No"}</span>;
                   }
                 }
               ]}
@@ -369,6 +433,13 @@ class AppointmentStatus extends Component {
                 onDone: this.updateAppointmentStatus.bind(this)
               }}
             />
+            <button
+              onClick={this.authorizeApptStatus.bind(this)}
+              style={{ margin: "10px" }}
+              className="btn btn-primary"
+            >
+              Authorize
+            </button>
           </div>
         </div>
       </div>
