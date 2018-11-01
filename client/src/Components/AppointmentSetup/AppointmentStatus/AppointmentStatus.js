@@ -296,8 +296,8 @@ class AppointmentStatus extends Component {
             />
 
             <div className="col-lg-3">
-              <label>.</label>
               <button
+                style={{ marginTop: 21 }}
                 onClick={this.addAppointmentStatus.bind(this)}
                 type="button"
                 className="btn btn-primary"
@@ -306,140 +306,150 @@ class AppointmentStatus extends Component {
               </button>
             </div>
           </div>
-          <div className="form-details" data-validate="apptStatusDiv">
-            <AlgaehDataGrid
-              id="appt-status-grid"
-              datavalidate="data-validate='apptStatusDiv'"
-              columns={[
-                {
-                  fieldName: "color_code",
-                  label: <AlgaehLabel label={{ fieldName: "color_code" }} />,
-                  displayTemplate: row => {
-                    return (
-                      <div
-                        className="col"
-                        style={{
-                          backgroundColor: "" + row.color_code,
-                          height: "20px",
-                          margin: "auto"
-                        }}
-                      />
-                    );
+          <div className="row">
+            <div
+              className="col-lg-12"
+              data-validate="apptStatusDiv"
+              id="apptStatusDivCntr"
+            >
+              <AlgaehDataGrid
+                id="appt-status-grid"
+                datavalidate="data-validate='apptStatusDiv'"
+                columns={[
+                  {
+                    fieldName: "color_code",
+                    label: <AlgaehLabel label={{ fieldName: "color_code" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <div
+                          className="col"
+                          style={{
+                            backgroundColor: "" + row.color_code,
+                            height: "20px",
+                            margin: "auto"
+                          }}
+                        />
+                      );
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <div className="row">
+                          <AlagehFormGroup
+                            div={{ className: "col-lg-11" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "color_code",
+                              value: row.color_code,
+                              events: {
+                                onChange: this.changeGridEditors.bind(this, row)
+                              },
+                              others: {
+                                type: "color",
+                                checkvalidation: "#ffffff",
+                                errormessage: "Please Select a color",
+                                required: true
+                              }
+                            }}
+                          />
+                        </div>
+                      );
+                    }
                   },
-                  editorTemplate: row => {
-                    return (
-                      <div className="row">
+                  {
+                    fieldName: "description",
+                    label: <AlgaehLabel label={{ fieldName: "description" }} />,
+                    editorTemplate: row => {
+                      return (
                         <AlagehFormGroup
-                          div={{ className: "col-lg-11" }}
+                          div={{ className: "col" }}
                           textBox={{
                             className: "txt-fld",
-                            name: "color_code",
-                            value: row.color_code,
+                            name: "description",
+                            value: row.description,
                             events: {
                               onChange: this.changeGridEditors.bind(this, row)
                             },
                             others: {
-                              type: "color",
-                              checkvalidation: "#ffffff",
-                              errormessage: "Please Select a color",
+                              errormessage: "Cannot be blank",
                               required: true
                             }
                           }}
                         />
-                      </div>
-                    );
-                  }
-                },
-                {
-                  fieldName: "description",
-                  label: <AlgaehLabel label={{ fieldName: "description" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "description",
-                          value: row.description,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "default_status",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "default_status" }} />
-                  ),
-                  displayTemplate: row => {
-                    return row.default_status === "Y"
-                      ? "Yes"
-                      : row.default_status === "N"
-                        ? "No"
-                        : "Create Visit";
+                      );
+                    }
                   },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "default_status",
-                          className: "select-fld",
-                          value: row.default_status,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.FORMAT_APPT_STATUS
-                          },
-                          onChange: this.changeGridEditors.bind(this, row),
-                          others: {
-                            errormessage: "Cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
+                  {
+                    fieldName: "default_status",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "default_status" }} />
+                    ),
+                    displayTemplate: row => {
+                      return row.default_status === "Y"
+                        ? "Yes"
+                        : row.default_status === "N"
+                          ? "No"
+                          : "Create Visit";
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          selector={{
+                            name: "default_status",
+                            className: "select-fld",
+                            value: row.default_status,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_APPT_STATUS
+                            },
+                            onChange: this.changeGridEditors.bind(this, row),
+                            others: {
+                              errormessage: "Cannot be blank",
+                              required: true
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "steps",
+                    label: "Steps"
+                  },
+                  {
+                    fieldName: "authorized",
+                    label: "Authorized",
+                    disabled: true,
+                    displayTemplate: row => {
+                      return (
+                        <span>{row.authorized === "Y" ? "Yes" : "No"}</span>
+                      );
+                    }
                   }
-                },
-                {
-                  fieldName: "steps",
-                  label: "Steps"
-                },
-                {
-                  fieldName: "authorized",
-                  label: "Authorized",
-                  disabled: true,
-                  displayTemplate: row => {
-                    return <span>{row.authorized === "Y" ? "Yes" : "No"}</span>;
-                  }
-                }
-              ]}
-              keyId="hims_d_appointment_status_id"
-              dataSource={{
-                data: this.state.appointmentStatus
-              }}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteAppointmentStatus.bind(this),
-                onDone: this.updateAppointmentStatus.bind(this)
-              }}
-            />
-            <button
-              onClick={this.authorizeApptStatus.bind(this)}
-              style={{ margin: "10px" }}
-              className="btn btn-primary"
-            >
-              Authorize
-            </button>
+                ]}
+                keyId="hims_d_appointment_status_id"
+                dataSource={{
+                  data: this.state.appointmentStatus
+                }}
+                isEditable={true}
+                paging={{ page: 0, rowsPerPage: 10 }}
+                events={{
+                  onEdit: () => {},
+                  onDelete: this.deleteAppointmentStatus.bind(this),
+                  onDone: this.updateAppointmentStatus.bind(this)
+                }}
+              />
+            </div>
+            <div className="col-lg-12" style={{ textAlign: "right" }}>
+              <button
+                onClick={this.authorizeApptStatus.bind(this)}
+                style={{ margin: "10px 0" }}
+                className="btn btn-primary"
+              >
+                Authorize
+              </button>
+            </div>
           </div>
         </div>
       </div>
