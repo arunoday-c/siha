@@ -353,11 +353,13 @@ class DataGrid extends PureComponent {
                     {_allowEditButton ? (
                       edit ? (
                         <i
+                          title="Save Edited"
                           className="fas fa-save"
                           onClick={() => this.toggleRowSave(index)}
                         />
                       ) : (
                         <i
+                          title="Edit Row"
                           className="fas fa-pen"
                           onClick={() => this.toggleRowEditable(index)}
                         />
@@ -366,11 +368,13 @@ class DataGrid extends PureComponent {
                     {_allowDeleteButton ? (
                       edit ? (
                         <i
+                          title="Cancel Edit"
                           className="fas fa-times"
                           onClick={() => this.toggleRowCancel(index)}
                         />
                       ) : (
                         <i
+                          title="Delete Row"
                           className="fas fa-trash-alt"
                           onClick={() => this.toggleRowDelete(index)}
                         />
