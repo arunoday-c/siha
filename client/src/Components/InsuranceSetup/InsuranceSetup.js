@@ -206,6 +206,24 @@ class InsuranceSetup extends Component {
                 {
                   fieldName: "payment_type",
                   label: <AlgaehLabel label={{ fieldName: "payment_type" }} />,
+
+                  displayTemplate: row => {
+                    debugger;
+                    let display = GlobalVariables.FORMAT_PAYMENT_TYPE.filter(
+                      f => f.value === row.payment_type
+                    );
+
+                    return (
+                      <span>
+                        {display !== null && display.length !== 0
+                          ? this.state.selectedLang === "en"
+                            ? display[0].name
+                            : display[0].arabic_name
+                          : ""}
+                      </span>
+                    );
+                  },
+
                   disabled: true
                 },
                 {

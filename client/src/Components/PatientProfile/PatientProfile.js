@@ -30,6 +30,11 @@ class PatientProfile extends Component {
       pageDisplay: "subjective",
       patientDiet: []
     };
+    getPatientProfile(this);
+    getPatientVitals(this);
+    getPatientAllergies(this, true);
+    getPatientDiet(this);
+    getPatientDiagnosis(this);
     this.changeTabs = this.changeTabs.bind(this);
   }
 
@@ -50,14 +55,6 @@ class PatientProfile extends Component {
     cancelRequest("getPatientVitals");
     cancelRequest("getPatientDiet");
     cancelRequest("getPatientDiagnosis");
-  }
-
-  componentDidMount() {
-    getPatientProfile(this);
-    getPatientVitals(this);
-    getPatientAllergies(this, true);
-    getPatientDiet(this);
-    getPatientDiagnosis(this);
   }
 
   openUCAFReport(e) {
@@ -380,7 +377,7 @@ class PatientProfile extends Component {
                       <span>
                         {item.diagnosis_type === "S" ? "Secondary" : "Primary"}
                       </span>
-                      <sapn>{item.final_daignosis}</sapn>
+                      <span>{item.final_daignosis}</span>
                     </React.Fragment>
                   ))}
                 </p>

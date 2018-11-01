@@ -7,7 +7,11 @@
     background: none;
     color: red; }
   .hptl-phase1-network-plan-form .button-details {
-    padding: 10px; }
+    margin-top: 10px;
+    margin-bottom: 10px; }
+    .hptl-phase1-network-plan-form .button-details button {
+      float: right;
+      margin-left: 10px; }
   .hptl-phase1-network-plan-form .Paper {
     border: 1px solid #5f5f5f;
     padding: 10px; }
@@ -15,3 +19,8 @@
     padding-top: 25px; }
   .hptl-phase1-network-plan-form .insurance-details {
     border-bottom: 1px solid #000; }
+  .hptl-phase1-network-plan-form .networkPlanCntr {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px; }

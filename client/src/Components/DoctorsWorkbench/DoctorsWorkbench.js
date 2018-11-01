@@ -147,7 +147,10 @@ class DoctorsWorkbench extends Component {
 
     let generatedLi = [];
 
-    while (initialDate <= endDate) {
+    while (
+      moment(initialDate).format("YYYYMMDD") <=
+      moment(endDate).format("YYYYMMDD")
+    ) {
       let dt = moment(initialDate);
 
       generatedLi.push({
@@ -266,7 +269,6 @@ class DoctorsWorkbench extends Component {
               <div className="portlet-body">
                 <div className="opPatientList">
                   <ul className="opList">
-                    {console.log("data", this.state.data)}
                     {Enumerable.from(this.state.data)
                       .where(w => w.status === "V")
                       .toArray().length !== 0 ? (

@@ -1,4 +1,5 @@
 const getVitalHistory = $this => {
+  console.log("Vitals");
   $this.props.getVitalHistory({
     uri: "/doctorsWorkBench/getPatientVitals",
     method: "GET",

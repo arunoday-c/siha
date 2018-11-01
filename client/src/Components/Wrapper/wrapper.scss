@@ -18,6 +18,7 @@
   }
   .rt-thead.-filters {
     top: 25px;
+    position: relative;
     .rt-tr {
       .rt-th {
         height: 40px;
@@ -56,7 +57,8 @@
   .fa-file-export,
   .fa-sync-alt,
   .fa-file-prescription,
-  .fa-arrow-right {
+  .fa-arrow-right,
+  .fa-plus {
     cursor: pointer;
     border: 1px solid #44b8bd;
     height: 28px;
@@ -83,10 +85,37 @@
   .fa-file-export:hover,
   .fa-sync-alt:hover,
   .fa-file-prescription:hover,
-  .fa-arrow-right:hover {
+  .fa-arrow-right:hover,
+  .fa-plus:hover {
     background: #44b8bd;
     color: #fff;
   }
+
+  i.fa-tooltip {
+    position: relative;
+  }
+
+  .tooltip-info {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  i.fa-tooltip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 1.5em;
+    font-size: 0.9em;
+    padding: 1px 5px;
+    display: none;
+    color: white;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 4px;
+    transition: opacity 0.1s ease-out;
+    z-index: 99;
+    text-align: left;
+  }
+
   .-pagination {
     .-previous,
     .-next {

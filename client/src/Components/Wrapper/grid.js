@@ -243,9 +243,10 @@ class DataGrid extends PureComponent {
   apiCallingFunction = ($this, page, callBack, inputProps, pageSizeP) => {
     inputProps = inputProps || $this.state.inputParam;
     pageSizeP = pageSizeP || $this.state.rowsPerPage;
+    const _page = pageSizeP * page;
     let input = {
       ...inputProps,
-      ...{ pageSize: pageSizeP, pageNo: page }
+      ...{ pageSize: pageSizeP, pageNo: _page }
     };
 
     new Promise((resolve, reject) => {

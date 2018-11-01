@@ -179,21 +179,17 @@ class Vitals extends Component {
         <Modal open={this.state.openVitalModal}>
           <div className="algaeh-modal">
             <div className="popupHeader">
-                <div className="row">
-                  <div className="col-lg-8">
-              <h4>Patient Vitals</h4>
-                  </div>
-                  <div className="col-lg-4">
-                    <button
-                      type="button"
-                      className=""
-                       onClick={this.handleClose}
-                    >
-                      <i className="fas fa-times-circle" />
-                    </button>
-                  </div>
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4>Patient Vitals</h4>
+                </div>
+                <div className="col-lg-4">
+                  <button type="button" className="" onClick={this.handleClose}>
+                    <i className="fas fa-times-circle" />
+                  </button>
                 </div>
               </div>
+            </div>
             <div className="col-lg-12 popupInner">
               <div
                 className="row"
@@ -303,21 +299,19 @@ class Vitals extends Component {
               </div>
             </div>
             <div className="popupFooter">
-            <div className="col-lg-12">
-            
-              <div className="row">  
-
               <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.handleClose}
-                >
-                  Close
-                </button>
+                <div className="row">
+                  <div className="col-lg-12">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={this.handleClose}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
               </div>
-              </div>
-            </div>
             </div>
           </div>
         </Modal>
@@ -339,315 +333,316 @@ class Vitals extends Component {
           </div>
 
           <div className="portlet-body">
-              <div className="row margin-bottom-15">
-                <AlagehFormGroup
-                  div={{ className: "col-lg-2" }}
-                  label={{
-                    forceLabel: "Weight(Kg)",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "weight",
-                    others: {
-                      type: "number"
-                    },
-                    value: this.state.weight,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-lg-2 vitalTopFld15" }}
-                  label={{
-                    forceLabel: "Height(Cms)",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "height",
-                    others: {
-                      type: "number"
-                    },
-                    value: this.state.height,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
+            <div className="row margin-bottom-15">
+              <AlagehFormGroup
+                div={{ className: "col-lg-2" }}
+                label={{
+                  forceLabel: "Weight(Kg)",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "weight",
+                  others: {
+                    type: "number"
+                  },
+                  value: this.state.weight,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-lg-2 vitalTopFld15" }}
+                label={{
+                  forceLabel: "Height(Cms)",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "height",
+                  others: {
+                    type: "number"
+                  },
+                  value: this.state.height,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
 
-                <AlagehFormGroup
-                  div={{ className: "col-lg-2 vitalTopFld15" }}
-                  label={{
-                    forceLabel: "BMI (Kg/m2)",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "bmi",
-                    others: {
-                      type: "number"
-                    },
-                    value: this.state.bmi,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
+              <AlagehFormGroup
+                div={{ className: "col-lg-2 vitalTopFld15" }}
+                label={{
+                  forceLabel: "BMI (Kg/m2)",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "bmi",
+                  others: {
+                    type: "number"
+                  },
+                  value: this.state.bmi,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
 
-                <AlagehFormGroup
-                  div={{ className: "col-lg-2 vitalTopFld20" }}
-                  label={{
-                    forceLabel: "O2 Sat(%)",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "oxysat",
-                    others: {
-                      type: "number"
-                    },
-                    value: this.state.oxysat,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-lg-2 vitalTopFld20" }}
-                  label={{
-                    forceLabel: "HR (bpm)",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "hr",
-                    others: {
-                      type: "number"
-                    },
-                    value: this.state.department_name,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-lg-2 vitalTopFld25" }}
-                  label={{
-                    forceLabel: "RR (rpm)",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "rr",
-                    others: {
-                      type: "number"
-                    },
-                    //value: this.state.department_name,
-                    events: {
-                      //  onChange: this.changeDeptName.bind(this)
-                    }
-                  }}
-                />
+              <AlagehFormGroup
+                div={{ className: "col-lg-2 vitalTopFld20" }}
+                label={{
+                  forceLabel: "O2 Sat(%)",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "oxysat",
+                  others: {
+                    type: "number"
+                  },
+                  value: this.state.oxysat,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-lg-2 vitalTopFld20" }}
+                label={{
+                  forceLabel: "HR (bpm)",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "hr",
+                  others: {
+                    type: "number"
+                  },
+                  value: this.state.department_name,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-lg-2 vitalTopFld25" }}
+                label={{
+                  forceLabel: "RR (rpm)",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "rr",
+                  others: {
+                    type: "number"
+                  },
+                  //value: this.state.department_name,
+                  events: {
+                    //  onChange: this.changeDeptName.bind(this)
+                  }
+                }}
+              />
+            </div>
+            <div className="row margin-bottom-15">
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3" }}
+                label={{
+                  forceLabel: "Temp. From"
+                }}
+                selector={{
+                  name: "temperature_from",
+                  className: "select-fld",
+                  value: this.state.temperature_from,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: GlobalVariables.TEMP_FROM
+                  },
+
+                  onChange: this.dropDownHandle.bind(this)
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "°C"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "temperature_celsisus",
+                  others: {
+                    type: "number"
+                  },
+                  value: this.state.temperature_celsisus,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3" }}
+                label={{
+                  forceLabel: "BP",
+                  fieldName: "sample"
+                }}
+                selector={{
+                  name: "bp_position",
+                  className: "select-fld",
+                  value: this.state.bp_position,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: GlobalVariables.BP_POSITION
+                  },
+                  onChange: this.dropDownHandle.bind(this)
+                }}
+              />
+
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Sys"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "systolic",
+                  others: {
+                    type: "number"
+                  },
+                  value: this.state.systolic,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+              {/* <span className="margin-top-15">/</span> */}
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Dia"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "diastolic",
+                  others: {
+                    type: "number"
+                  },
+                  value: this.state.diastolic,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+            </div>
+            <div className="row margin-bottom-15">
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "FBS"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "glucose_fbs",
+                  others: {
+                    type: "number"
+                  },
+                  value: this.state.diastolic,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "RBS"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "glucose_rbs",
+                  others: {
+                    type: "number"
+                  },
+                  value: this.state.diastolic,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "PBS"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "glucose_pbs",
+                  others: {
+                    type: "number"
+                  },
+                  value: this.state.diastolic,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+              <AlgaehDateHandler
+                div={{ className: "col-lg-3" }}
+                label={{ forceLabel: "Recorded Date", isImp: true }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "recorded_date"
+                }}
+                maxDate={new Date()}
+                events={{
+                  onChange: selectedDate => {
+                    this.setState({ recorded_date: selectedDate });
+                  }
+                }}
+                value={this.state.recorded_date}
+              />
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  isImp: true,
+                  forceLabel: "Recorded Time"
+                }}
+                textBox={{
+                  others: {
+                    type: "time"
+                  },
+                  className: "txt-fld",
+                  name: "recorded_time",
+                  value: this.state.recorded_time,
+                  events: {
+                    onChange: this.texthandle.bind(this)
+                  }
+                }}
+              />
+            </div>
+            <div className="row">
+              <div className="col margin-top-15 pullRight">
+                <button
+                  onClick={this.addPatientVitals.bind(this)}
+                  type="button"
+                  className="btn btn-primary"
+                  style={{ marginleft: 10 }}
+                >
+                  Add new Vitals
+                </button>
+                <button
+                  onClick={this.resetVitals.bind(this)}
+                  type="button"
+                  className="btn btn-default"
+                >
+                  Clear
+                </button>
               </div>
-              <div className="row margin-bottom-15">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Temp. From"
-                  }}
-                  selector={{
-                    name: "temperature_from",
-                    className: "select-fld",
-                    value: this.state.temperature_from,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.TEMP_FROM
-                    },
-
-                    onChange: this.dropDownHandle.bind(this)
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "°C"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "temperature_celsisus",
-                    others: {
-                      type: "number"
-                    },
-                    value: this.state.temperature_celsisus,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "BP",
-                    fieldName: "sample"
-                  }}
-                  selector={{
-                    name: "bp_position",
-                    className: "select-fld",
-                    value: this.state.bp_position,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.BP_POSITION
-                    },
-                    onChange: this.dropDownHandle.bind(this)
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "Sys"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "systolic",
-                    others: {
-                      type: "number"
-                    },
-                    value: this.state.systolic,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-                {/* <span className="margin-top-15">/</span> */}
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "Dia"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "diastolic",
-                    others: {
-                      type: "number"
-                    },
-                    value: this.state.diastolic,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-              </div>
-              <div className="row margin-bottom-15">
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "FBS"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "glucose_fbs",
-                    others: {
-                      type: "number"
-                    },
-                    value: this.state.diastolic,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "RBS"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "glucose_rbs",
-                    others: {
-                      type: "number"
-                    },
-                    value: this.state.diastolic,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "PBS"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "glucose_pbs",
-                    others: {
-                      type: "number"
-                    },
-                    value: this.state.diastolic,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Recorded Date", isImp: true }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "recorded_date"
-                  }}
-                  maxDate={new Date()}
-                  events={{
-                    onChange: selectedDate => {
-                      this.setState({ recorded_date: selectedDate });
-                    }
-                  }}
-                  value={this.state.recorded_date}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    isImp: true,
-                    forceLabel: "Recorded Time"
-                  }}
-                  textBox={{
-                    others: {
-                      type: "time"
-                    },
-                    className: "txt-fld",
-                    name: "recorded_time",
-                    value: this.state.recorded_time,
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-              </div>
-              <div className="row">
-                <div className="col margin-top-15 pullRight">
-                  <button
-                    onClick={this.addPatientVitals.bind(this)}
-                    type="button"
-                    className="btn btn-primary"
-                    style={{marginleft:10}}
-                  >
-                    Add new Vitals
-                  </button>
-                  <button
-                    onClick={this.resetVitals.bind(this)}
-                    type="button"
-                    className="btn btn-default" 
-                  >
-                    Clear
-                  </button>
-                </div></div>
+            </div>
           </div>
         </div>
       </React.Fragment>

@@ -4,15 +4,14 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import NetworkPlanList from "../NetworkPlanList/NetworkPlanList";
-import AHSnackbar from "../../common/Inputs/AHSnackbar";
+
 import "./NetworkPlan.css";
 import "./../../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  Button
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -23,8 +22,6 @@ import {
   addNewNetwork,
   numberhandle
 } from "./NetworkPlanHandaler";
-
-import Paper from "@material-ui/core/Paper";
 
 import { FORMAT_PRICE_FROM } from "../../../utils/GlobalVariables.json";
 import MyContext from "../../../utils/MyContext";
@@ -82,6 +79,12 @@ class NetworkPlan extends PureComponent {
     this.setState({ ...this.state, ...InputOutput });
   }
 
+  // shouldComponentUpdate(nextProps) {
+  //   debugger;
+  //   if (nextProps.networkandplans !== this.state.network_plan) {
+  //     return true;
+  //   }
+  // }
   componentDidMount() {
     if (this.state.insurance_provider_id !== null) {
       this.props.getSubInsuranceDetails({
@@ -107,13 +110,13 @@ class NetworkPlan extends PureComponent {
         redux: {
           type: "NETWORK_PLAN_GET_DATA",
           mappingName: "networkandplans"
-        },
-        afterSuccess: data => {
-          debugger;
-          this.setState({
-            network_plan: data
-          });
         }
+        // afterSuccess: data => {
+        //   debugger;
+        //   this.setState({
+        //     network_plan: data
+        //   });
+        // }
       });
     }
   }
@@ -131,28 +134,27 @@ class NetworkPlan extends PureComponent {
               className="hptl-phase1-network-plan-form"
               data-validate="InsuranceProvider"
             >
-              <div className="col-12 popLeftDiv">
+              <div className="popRightDiv">
                 {/* Services Details */}
-                <div className="row insurance-details">
-                  <div className="col-lg-12 button-details">
-                    <h5> INSURAR: {this.state.insurance_provider_name}</h5>
-
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="primary"
-                      style={{ float: "right", marginTop: "-4vh" }}
-                      onClick={addNewNetwork.bind(this, this)}
-                    >
-                      Add New
-                    </Button>
-                  </div>
-                </div>
                 <div className="row">
+                  <div className="col-lg-12">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Insurar Name"
+                      }}
+                    />
+                    <h6>
+                      {this.state.insurance_provider_name
+                        ? this.state.insurance_provider_name
+                        : "Insurar Name"}
+                    </h6>
+                  </div>
+
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "insurance_sub_id"
+                      fieldName: "insurance_sub_id",
+                      isImp: true
                     }}
                     selector={{
                       name: "insurance_sub_id",
@@ -173,7 +175,8 @@ class NetworkPlan extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "network_type"
+                      fieldName: "network_type",
+                      isImp: true
                     }}
                     textBox={{
                       value: this.state.network_type,
@@ -192,7 +195,8 @@ class NetworkPlan extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "employer"
+                      fieldName: "employer",
+                      isImp: true
                     }}
                     textBox={{
                       value: this.state.employer,
@@ -210,7 +214,8 @@ class NetworkPlan extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "policy_number"
+                      fieldName: "policy_number",
+                      isImp: true
                     }}
                     textBox={{
                       value: this.state.policy_number,
@@ -225,8 +230,6 @@ class NetworkPlan extends PureComponent {
                       }
                     }}
                   />
-                </div>
-                <div className="row">
                   <AlgaehDateHandler
                     div={{ className: "col-lg-3" }}
                     label={{ fieldName: "effective_start_date", isImp: true }}
@@ -244,7 +247,6 @@ class NetworkPlan extends PureComponent {
                         : null
                     }
                   />
-
                   <AlgaehDateHandler
                     div={{ className: "col-lg-3" }}
                     label={{ fieldName: "effective_end_date", isImp: true }}
@@ -262,7 +264,6 @@ class NetworkPlan extends PureComponent {
                         : null
                     }
                   />
-
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -285,7 +286,8 @@ class NetworkPlan extends PureComponent {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "price_from"
+                      fieldName: "price_from",
+                      isImp: true
                     }}
                     selector={{
                       name: "price_from",
@@ -306,21 +308,15 @@ class NetworkPlan extends PureComponent {
                     }}
                   />
                 </div>
-
-                <br />
-                <Paper className="Paper">
-                  {/* Company */}
+                <div className="col-lg-12 networkPlanCntr">
                   <div className="row">
-                    <div className="col-lg-3 label-pad">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "consultation"
-                        }}
-                      />
+                    <div className="col">
+                      <label style={{ marginTop: 26 }}>Deductible</label>
                     </div>
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      label={{ fieldName: "deductible" }}
+                      //consultation
+                      div={{ className: "col" }}
+                      label={{ forceLabel: "Consultation" }}
                       textBox={{
                         decimal: { allowNegative: false },
                         value: this.state.deductible,
@@ -337,49 +333,9 @@ class NetworkPlan extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      label={{ fieldName: "co_pay" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.copay_consultation,
-                        className: "txt-fld",
-                        name: "copay_consultation",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      label={{ fieldName: "max_limit" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.max_value,
-                        className: "txt-fld",
-                        name: "max_value",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        }
-                      }}
-                    />
-                  </div>
-                  {/* Lab */}
-                  <div className="row">
-                    <div className="col-lg-3">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "lab_desc"
-                        }}
-                      />
-                    </div>
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      //Lab
+                      div={{ className: "col" }}
+                      label={{ forceLabel: "Lab" }}
                       textBox={{
                         decimal: { allowNegative: false },
                         value: this.state.deductible_lab,
@@ -396,48 +352,9 @@ class NetworkPlan extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.copay_percent,
-                        className: "txt-fld",
-                        name: "copay_percent",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.lab_max,
-                        className: "txt-fld",
-                        name: "lab_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-                  </div>
-                  {/* Radiology */}
-                  <div className="row">
-                    <div className="col-lg-3">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "radiology"
-                        }}
-                      />
-                    </div>
-
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      //Radiology
+                      div={{ className: "col" }}
+                      label={{ forceLabel: "Radiology" }}
                       textBox={{
                         decimal: { allowNegative: false },
                         value: this.state.deductible_rad,
@@ -454,129 +371,9 @@ class NetworkPlan extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.copay_percent_rad,
-                        className: "txt-fld",
-                        name: "copay_percent_rad",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.rad_max,
-                        className: "txt-fld",
-                        name: "rad_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-                    {/* //Dummy Fields Starts Here*/}
-
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        value: this.state.insurance_sub_id,
-                        className: "txt-fld d-none",
-                        name: "insurance_sub_id",
-
-                        events: {
-                          onChange: null
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        value: this.state.effective_start_date,
-                        className: "txt-fld d-none",
-                        name: "effective_start_date",
-
-                        events: {
-                          onChange: null
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        value: this.state.effective_end_date,
-                        className: "txt-fld d-none",
-                        name: "effective_end_date",
-
-                        events: {
-                          onChange: null
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        value: this.state.insurance_sub_id,
-                        className: "txt-fld d-none",
-                        name: "insurance_sub_id",
-
-                        events: {
-                          onChange: null
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        value: this.state.price_from,
-                        className: "txt-fld d-none",
-                        name: "price_from",
-
-                        events: {
-                          onChange: null
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-                    {/* Ends here */}
-                  </div>
-                  {/* OPD Services */}
-                  <div className="row">
-                    <div className="col-lg-3">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "opd_services"
-                        }}
-                      />
-                    </div>
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      //OPD Services
+                      div={{ className: "col" }}
+                      label={{ forceLabel: "OPD Services" }}
                       textBox={{
                         decimal: { allowNegative: false },
                         value: this.state.deductible_trt,
@@ -593,7 +390,100 @@ class NetworkPlan extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      //Dental
+                      div={{ className: "col" }}
+                      label={{ forceLabel: "Dental" }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.deductible_dental,
+                        className: "txt-fld",
+                        name: "deductible_dental",
+
+                        events: {
+                          onChange: numberhandle.bind(this, this)
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      //Medicine
+                      div={{ className: "col" }}
+                      label={{ forceLabel: "Medicine" }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.deductible_medicine,
+                        className: "txt-fld",
+                        name: "deductible_medicine",
+
+                        events: {
+                          onChange: numberhandle.bind(this, this)
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="row">
+                    <div className="col">
+                      <label>Co Pay</label>
+                    </div>
+
+                    <AlagehFormGroup
+                      //consultation
+                      div={{ className: "col" }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.copay_consultation,
+                        className: "txt-fld",
+                        name: "copay_consultation",
+
+                        events: {
+                          onChange: numberhandle.bind(this, this)
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      //Lab
+                      div={{ className: "col" }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.copay_percent,
+                        className: "txt-fld",
+                        name: "copay_percent",
+
+                        events: {
+                          onChange: numberhandle.bind(this, this)
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      //Radiology
+                      div={{ className: "col" }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.copay_percent_rad,
+                        className: "txt-fld",
+                        name: "copay_percent_rad",
+
+                        events: {
+                          onChange: numberhandle.bind(this, this)
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      //OPD Services
+                      div={{ className: "col" }}
                       textBox={{
                         decimal: { allowNegative: false },
                         value: this.state.copay_percent_trt,
@@ -610,50 +500,8 @@ class NetworkPlan extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.trt_max,
-                        className: "txt-fld",
-                        name: "trt_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-                  </div>
-                  {/* Dental */}
-                  <div className="row">
-                    <div className="col-lg-3">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "dental_opd_services"
-                        }}
-                      />
-                    </div>
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.deductible_dental,
-                        className: "txt-fld",
-                        name: "deductible_dental",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      //Dental
+                      div={{ className: "col" }}
                       textBox={{
                         decimal: { allowNegative: false },
                         value: this.state.copay_percent_dental,
@@ -670,50 +518,8 @@ class NetworkPlan extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.dental_max,
-                        className: "txt-fld",
-                        name: "dental_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-                  </div>
-                  {/* medicine */}
-                  <div className="row">
-                    <div className="col-lg-3">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "medicine"
-                        }}
-                      />
-                    </div>
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.deductible_medicine,
-                        className: "txt-fld",
-                        name: "deductible_medicine",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      //Medicine
+                      div={{ className: "col" }}
                       textBox={{
                         decimal: { allowNegative: false },
                         value: this.state.copay_medicine,
@@ -728,9 +534,101 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
+                  </div>
+                  <div className="row">
+                    <div className="col">
+                      <label>Max-Limit</label>
+                    </div>
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      //consultation
+                      div={{ className: "col" }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.max_value,
+                        className: "txt-fld",
+                        name: "max_value",
+
+                        events: {
+                          onChange: numberhandle.bind(this, this)
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      //Lab
+                      div={{ className: "col" }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.lab_max,
+                        className: "txt-fld",
+                        name: "lab_max",
+
+                        events: {
+                          onChange: numberhandle.bind(this, this)
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      //Radiology
+                      div={{ className: "col" }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.rad_max,
+                        className: "txt-fld",
+                        name: "rad_max",
+
+                        events: {
+                          onChange: numberhandle.bind(this, this)
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      //OPD Services
+                      div={{ className: "col" }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.trt_max,
+                        className: "txt-fld",
+                        name: "trt_max",
+
+                        events: {
+                          onChange: numberhandle.bind(this, this)
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      //Dental
+                      div={{ className: "col" }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.dental_max,
+                        className: "txt-fld",
+                        name: "dental_max",
+
+                        events: {
+                          onChange: numberhandle.bind(this, this)
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      //Medicine
+                      div={{ className: "col" }}
                       textBox={{
                         decimal: { allowNegative: false },
                         value: this.state.medicine_max,
@@ -746,29 +644,110 @@ class NetworkPlan extends PureComponent {
                       }}
                     />
                   </div>
-                </Paper>
+                  <div className="row hidden">
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      textBox={{
+                        value: this.state.insurance_sub_id,
+                        className: "txt-fld d-none",
+                        name: "insurance_sub_id",
 
-                <NetworkPlanList
-                  insurance_provider_id={this.state.insurance_provider_id}
-                  network_plan={this.state.network_plan}
-                />
+                        events: {
+                          onChange: null
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      textBox={{
+                        value: this.state.effective_start_date,
+                        className: "txt-fld d-none",
+                        name: "effective_start_date",
+
+                        events: {
+                          onChange: null
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      textBox={{
+                        value: this.state.effective_end_date,
+                        className: "txt-fld d-none",
+                        name: "effective_end_date",
+
+                        events: {
+                          onChange: null
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      textBox={{
+                        value: this.state.insurance_sub_id,
+                        className: "txt-fld d-none",
+                        name: "insurance_sub_id",
+
+                        events: {
+                          onChange: null
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      textBox={{
+                        value: this.state.price_from,
+                        className: "txt-fld d-none",
+                        name: "price_from",
+
+                        events: {
+                          onChange: null
+                        },
+                        others: {
+                          "data-netdata": true
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
                 <div className="row">
                   <div className="col-lg-12 button-details">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="primary"
-                      style={{ float: "right" }}
+                    <button
+                      className="btn btn-primary"
                       onClick={saveNetworkPlan.bind(this, this, context)}
                       disabled={this.state.saveupdate}
                     >
-                      Save
-                    </Button>
-
-                    <AHSnackbar
-                      open={this.state.snackeropen}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
+                      Add
+                    </button>
+                    <button
+                      className="btn btn-default"
+                      onClick={addNewNetwork.bind(this, this)}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-12">
+                    <NetworkPlanList
+                      insurance_provider_id={this.state.insurance_provider_id}
+                      // network_plan={this.state.network_plan}
+                      selectedLang={this.state.selectedLang}
                     />
                   </div>
                 </div>

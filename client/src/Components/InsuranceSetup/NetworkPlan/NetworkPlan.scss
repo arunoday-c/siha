@@ -10,7 +10,12 @@
   }
 
   .button-details {
-    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    button {
+      float: right;
+      margin-left: 10px;
+    }
   }
 
   .Paper {
@@ -23,5 +28,11 @@
   }
   .insurance-details {
     border-bottom: 1px solid #000;
+  }
+  .networkPlanCntr {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 }

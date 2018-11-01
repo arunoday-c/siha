@@ -14,7 +14,8 @@
     overflow: inherit !important;
     white-space: unset !important; }
   .ReactTable .rt-thead.-filters {
-    top: 25px; }
+    top: 25px;
+    position: relative; }
     .ReactTable .rt-thead.-filters .rt-tr .rt-th {
       height: 40px; }
   .ReactTable .rt-thead.-filters + div.rt-tbody {
@@ -42,7 +43,8 @@
   .ReactTable .fa-file-export,
   .ReactTable .fa-sync-alt,
   .ReactTable .fa-file-prescription,
-  .ReactTable .fa-arrow-right {
+  .ReactTable .fa-arrow-right,
+  .ReactTable .fa-plus {
     cursor: pointer;
     border: 1px solid #44b8bd;
     height: 28px;
@@ -67,9 +69,29 @@
   .ReactTable .fa-file-export:hover,
   .ReactTable .fa-sync-alt:hover,
   .ReactTable .fa-file-prescription:hover,
-  .ReactTable .fa-arrow-right:hover {
+  .ReactTable .fa-arrow-right:hover,
+  .ReactTable .fa-plus:hover {
     background: #44b8bd;
     color: #fff; }
+  .ReactTable i.fa-tooltip {
+    position: relative; }
+  .ReactTable .tooltip-info {
+    position: absolute;
+    top: -9999px;
+    left: -9999px; }
+  .ReactTable i.fa-tooltip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 1.5em;
+    font-size: 0.9em;
+    padding: 1px 5px;
+    display: none;
+    color: white;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 4px;
+    transition: opacity 0.1s ease-out;
+    z-index: 99;
+    text-align: left; }
   .ReactTable .-pagination .-previous,
   .ReactTable .-pagination .-next {
     flex: inherit !important; }
