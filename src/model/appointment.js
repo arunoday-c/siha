@@ -43,6 +43,12 @@ let addAppointmentStatus = (req, res, next) => {
           if (error) {
             next(error);
           }
+
+
+
+
+
+
           req.records = result;
           next();
         }
@@ -149,7 +155,7 @@ let getAppointmentStatus = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_appointment_status_id, color_code, description, default_status FROM hims_d_appointment_status where record_status='A' AND" +
+        "select hims_d_appointment_status_id, color_code, description, default_status,steps,authorized FROM hims_d_appointment_status where record_status='A' AND" +
           where.condition,
         where.values,
         (error, result) => {
@@ -1121,6 +1127,8 @@ let getDoctorScheduleDateWise = (req, res, next) => {
     }
     delete req.query.provider_id;
 
+    debugLog("getDoctorScheduleDateWise");
+
     let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
@@ -1140,6 +1148,9 @@ let getDoctorScheduleDateWise = (req, res, next) => {
             releaseDBConnection(db, connection);
             next(error);
           }
+
+
+          debugLog("result:",result);
 
           if (result.length > 0) {
           new Promise((resolve, reject) => {
@@ -1165,17 +1176,18 @@ let getDoctorScheduleDateWise = (req, res, next) => {
                     releaseDBConnection(db, connection);
                     next(error);
                   }
-              
+                  debugLog("modifyResult:",modifyResult);
 
                 result[j]=modifyResult[0];               
                   resolve(modifyResult);
                  });
+          }else {
+
+            
+            resolve({});
           }
         }
-          // else{
-          //   doctor_schedule=result[0];
-          //   resolve({});
-          // }
+         
 
           } catch (e) {
             reject(e);
@@ -1205,7 +1217,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
                     ...result[i],
                     ...{ patientList: appResult }
                   };
-
+                 debugLog("appResult:",appResult);
                   outputArray.push(obj);
                   if (i == result.length - 1) {
                     req.records = outputArray;
