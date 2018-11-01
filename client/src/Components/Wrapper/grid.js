@@ -6,6 +6,7 @@ import Enumerable from "linq";
 import moment from "moment";
 import { AlgaehDateHandler, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall";
+import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import "../Wrapper/wrapper.css";
 let ReactTableFixedColumns = withFixedColumns(ReactTable);
 class DataGrid extends PureComponent {
@@ -198,6 +199,16 @@ class DataGrid extends PureComponent {
     }
   };
   toggleRowSave = index => {
+    let isError = false;
+    if (this.props.datavalidate !== undefined) {
+      AlgaehValidation({
+        querySelector: this.props.datavalidate,
+        onCatch: val => {
+          isError = true;
+        }
+      });
+    }
+    if (isError) return;
     this.settingPreviousRowData(index);
     if (this.props.events !== undefined) {
       if (this.props.events.onDone !== undefined) {
