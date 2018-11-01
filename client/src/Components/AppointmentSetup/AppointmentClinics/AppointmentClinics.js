@@ -351,8 +351,9 @@ class AppointmentClinics extends Component {
               }}
             />
 
-            <div className="col-lg-2 margin-top-15">
+            <div className="col-lg-2">
               <button
+                style={{ marginTop: 21 }}
                 onClick={this.addAppointmentClinics.bind(this)}
                 type="button"
                 className="btn btn-primary"
@@ -361,121 +362,119 @@ class AppointmentClinics extends Component {
               </button>
             </div>
           </div>
+        </div>
 
-          <div className="form-details">
-            <AlgaehDataGrid
-              id="appt-status-grid"
-              columns={[
-                {
-                  fieldName: "description",
-                  label: <AlgaehLabel label={{ fieldName: "description" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "description",
-                          value: row.description,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "sub_department_id",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "department_name" }} />
-                  ),
-                  displayTemplate: row => {
-                    return this.getDeptName(row.sub_department_id);
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "sub_department_id",
-                          className: "select-fld",
-                          value: row.sub_department_id,
-                          dataSource: {
-                            textField: "sub_department_name",
-                            valueField: "sub_department_id",
-                            data: this.state.departments
-                          },
+        <div className="col-lg-12" style={{ marginTop: 0 }}>
+          <AlgaehDataGrid
+            id="appt-status-grid"
+            columns={[
+              {
+                fieldName: "description",
+                label: <AlgaehLabel label={{ fieldName: "description" }} />,
+                editorTemplate: row => {
+                  return (
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "description",
+                        value: row.description,
+                        events: {
                           onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "provider_id",
-                  label: <AlgaehLabel label={{ fieldName: "doctor" }} />,
-                  displayTemplate: row => {
-                    return this.getDoctorName(row.provider_id);
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "provider_id",
-                          className: "select-fld",
-                          value: row.provider_id,
-                          dataSource: {
-                            textField: "full_name",
-                            valueField: "employee_id",
-                            data: this.state.doctors
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "room_id",
-                  label: <AlgaehLabel label={{ fieldName: "room" }} />,
-                  displayTemplate: row => {
-                    return this.getRoomName(row.room_id);
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "room_id",
-                          className: "select-fld",
-                          value: row.room_id,
-                          dataSource: {
-                            textField: "description",
-                            valueField: "hims_d_appointment_room_id",
-                            data: this.state.appointmentRooms
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
+                        }
+                      }}
+                    />
+                  );
                 }
-              ]}
-              keyId="hims_d_appointment_clinic_id"
-              dataSource={{
-                data: this.state.appointmentClinics
-              }}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteAppointmentClinics.bind(this),
-                onDone: this.updateAppointmentClinics.bind(this)
-              }}
-            />
-          </div>
+              },
+              {
+                fieldName: "sub_department_id",
+                label: <AlgaehLabel label={{ fieldName: "department_name" }} />,
+                displayTemplate: row => {
+                  return this.getDeptName(row.sub_department_id);
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      selector={{
+                        name: "sub_department_id",
+                        className: "select-fld",
+                        value: row.sub_department_id,
+                        dataSource: {
+                          textField: "sub_department_name",
+                          valueField: "sub_department_id",
+                          data: this.state.departments
+                        },
+                        onChange: this.changeGridEditors.bind(this, row)
+                      }}
+                    />
+                  );
+                }
+              },
+              {
+                fieldName: "provider_id",
+                label: <AlgaehLabel label={{ fieldName: "doctor" }} />,
+                displayTemplate: row => {
+                  return this.getDoctorName(row.provider_id);
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      selector={{
+                        name: "provider_id",
+                        className: "select-fld",
+                        value: row.provider_id,
+                        dataSource: {
+                          textField: "full_name",
+                          valueField: "employee_id",
+                          data: this.state.doctors
+                        },
+                        onChange: this.changeGridEditors.bind(this, row)
+                      }}
+                    />
+                  );
+                }
+              },
+              {
+                fieldName: "room_id",
+                label: <AlgaehLabel label={{ fieldName: "room" }} />,
+                displayTemplate: row => {
+                  return this.getRoomName(row.room_id);
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      selector={{
+                        name: "room_id",
+                        className: "select-fld",
+                        value: row.room_id,
+                        dataSource: {
+                          textField: "description",
+                          valueField: "hims_d_appointment_room_id",
+                          data: this.state.appointmentRooms
+                        },
+                        onChange: this.changeGridEditors.bind(this, row)
+                      }}
+                    />
+                  );
+                }
+              }
+            ]}
+            keyId="hims_d_appointment_clinic_id"
+            dataSource={{
+              data: this.state.appointmentClinics
+            }}
+            isEditable={true}
+            paging={{ page: 0, rowsPerPage: 10 }}
+            events={{
+              onEdit: () => {},
+              onDelete: this.deleteAppointmentClinics.bind(this),
+              onDone: this.updateAppointmentClinics.bind(this)
+            }}
+          />
         </div>
       </div>
     );

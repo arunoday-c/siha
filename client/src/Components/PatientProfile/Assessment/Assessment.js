@@ -13,18 +13,18 @@ import {
 import {
   assnotetexthandle,
   addFinalIcd,
-  getPatientDiagnosis,
   onchangegridcol,
   deleteDiagnosis,
   deleteFinalDiagnosis,
   updateDiagnosis,
   IcdsSearch
 } from "./AssessmentEvents";
+import { getPatientDiagnosis } from "../PatientProfileHandlers";
 import OrderingServices from "./OrderingServices/OrderingServices";
 import LabResults from "./LabResult/LabResult";
 import RadResults from "./RadResult/RadResult";
 import { AlgaehActions } from "../../../actions/algaehActions";
-
+import Enumerable from "linq";
 import { DIAG_TYPE } from "../../../utils/GlobalVariables.json";
 
 class Assessment extends Component {
@@ -77,8 +77,6 @@ class Assessment extends Component {
   }
 
   componentDidMount() {
-    debugger;
-
     if (
       this.props.assservices === undefined ||
       this.props.assservices.length === 0
@@ -106,10 +104,21 @@ class Assessment extends Component {
         }
       });
     }
-
-    getPatientDiagnosis(this);
+    if (
+      this.props.patient_diagnosis === undefined ||
+      this.props.patient_diagnosis.length === 0
+    )
+      getPatientDiagnosis(this, true);
   }
   render() {
+    const _diagnosis =
+      this.props.patient_diagnosis !== undefined
+        ? this.props.patient_diagnosis
+        : [];
+    const _finalDiagnosis = Enumerable.from(_diagnosis)
+      .where(w => w.final_daignosis === "Y")
+      .toArray();
+    console.log("initial", _diagnosis);
     return (
       <div className="hptl-ehr-assetment-details">
         <div className="row margin-top-15">
@@ -227,7 +236,7 @@ class Assessment extends Component {
                       ]}
                       keyId="code"
                       dataSource={{
-                        data: this.state.InitialICDS
+                        data: _diagnosis
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
@@ -241,16 +250,6 @@ class Assessment extends Component {
                     />
                   </div>
                 </div>
-                {/* <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      className="btn btn-default"
-                      onClick={addFinalIcd.bind(this, this)}
-                    >
-                      Add to Final Diagnosis
-                    </button>
-                  </div>
-                </div> */}
               </div>
             </div>
           </div>
@@ -348,7 +347,7 @@ class Assessment extends Component {
                       keyId="code"
                       dataSource={{
                         // data: _finalDiagnosis
-                        data: this.state.finalICDS
+                        data: _finalDiagnosis
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
@@ -478,8 +477,8 @@ class Assessment extends Component {
 
 function mapStateToProps(state) {
   return {
-    icdcodes: state.icdcodes,
-    patientdiagnosis: state.patientdiagnosis,
+    //  icdcodes: state.icdcodes,
+    patientdiagnosis: state.patient_diagnosis,
     assservices: state.assservices,
     assdeptanddoctors: state.assdeptanddoctors
   };

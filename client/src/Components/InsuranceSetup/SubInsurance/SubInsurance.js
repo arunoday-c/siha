@@ -312,7 +312,7 @@ class SubInsurance extends PureComponent {
                               label={{ fieldName: "insurance_sub_name" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row, rowId) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}

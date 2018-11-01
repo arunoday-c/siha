@@ -10,11 +10,8 @@ const texthandle = ($this, e) => {
   });
 };
 
-const resetState = $this => {
-  $this.setState({ dummy: !$this.state.dummy });
-};
-
-const onchangecalculation = ($this, row, ctrl, e) => {
+const onchangecalculation = ($this, row, e) => {
+  debugger;
   let netamount = 0;
   // let discountAmt =
   if (e.target.name === "corporate_discount_amt") {
@@ -32,14 +29,13 @@ const onchangecalculation = ($this, row, ctrl, e) => {
   }
   row["net_amount"] = parseFloat(netamount);
   row[e.target.name] = parseFloat(e.target.value);
-  resetState($this);
+  row.update();
 };
 const onchangegridcol = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;
-  // row.onChangeFinish(row);
-  resetState($this);
+  row.update();
 };
 
 const updatePriceList = ($this, data) => {
@@ -193,7 +189,6 @@ const Refresh = $this => {
 export {
   texthandle,
   onchangegridcol,
-  resetState,
   updatePriceList,
   onchangecalculation,
   bulkUpdate,

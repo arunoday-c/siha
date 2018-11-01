@@ -196,8 +196,9 @@ class AppointmentRooms extends Component {
               }}
             />
 
-            <div className="col-lg-3 margin-top-15">
+            <div className="col-lg-3">
               <button
+                style={{ marginTop: 21 }}
                 onClick={this.addAppointmentRooms.bind(this)}
                 type="button"
                 className="btn btn-primary"
@@ -206,101 +207,78 @@ class AppointmentRooms extends Component {
               </button>
             </div>
           </div>
-          <div className="form-details">
-            <AlgaehDataGrid
-              id="appt-room-grid"
-              columns={[
-                {
-                  fieldName: "description",
-                  label: <AlgaehLabel label={{ fieldName: "description" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{}}
-                        textBox={{
-                          value: row.description,
-                          className: "txt-fld",
-                          name: "description",
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                // {
-                //   fieldName: "created_by",
-                //   label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                //   displayTemplate: row => {
-                //     let display =
-                //       this.props.userdrtails === undefined
-                //         ? []
-                //         : this.props.userdrtails.filter(
-                //             f => f.algaeh_d_app_user_id === row.created_by
-                //           );
-
-                //     return (
-                //       <span>
-                //         {display !== null && display.length !== 0
-                //           ? display[0].user_displayname
-                //           : ""}
-                //       </span>
-                //     );
-                //   },
-                //   disabled: true
-                // },
-                {
-                  fieldName: "created_date",
-                  label: <AlgaehLabel label={{ fieldName: "created_date" }} />,
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {moment(row.created_date).format("DD-MM-YYYY")}
-                      </span>
-                    );
-                  },
-                  disabled: true
-                },
-                {
-                  fieldName: "room_active",
-                  label: <AlgaehLabel label={{ fieldName: "room_status" }} />,
-                  displayTemplate: row => {
-                    return row.room_active === "Y" ? "Active" : "Inactive";
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{}}
-                        selector={{
-                          name: "room_active",
-                          className: "select-fld",
-                          value: row.room_active,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.FORMAT_ACT_INACT
-                          },
+        </div>
+        <div className="col-lg-12" style={{ marginTop: 10 }}>
+          <AlgaehDataGrid
+            id="appt-room-grid"
+            columns={[
+              {
+                fieldName: "description",
+                label: <AlgaehLabel label={{ fieldName: "description" }} />,
+                editorTemplate: row => {
+                  return (
+                    <AlagehFormGroup
+                      div={{}}
+                      textBox={{
+                        value: row.description,
+                        className: "txt-fld",
+                        name: "description",
+                        events: {
                           onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
+                        }
+                      }}
+                    />
+                  );
                 }
-              ]}
-              keyId="hims_d_appointment_room_id"
-              dataSource={{
-                data: this.state.appointmentRooms
-              }}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteApptRooms.bind(this),
-                onDone: this.updateApptRooms.bind(this)
-              }}
-            />
-          </div>
+              },
+              {
+                fieldName: "created_date",
+                label: <AlgaehLabel label={{ fieldName: "created_date" }} />,
+                displayTemplate: row => {
+                  return (
+                    <span>{moment(row.created_date).format("DD-MM-YYYY")}</span>
+                  );
+                },
+                disabled: true
+              },
+              {
+                fieldName: "room_active",
+                label: <AlgaehLabel label={{ fieldName: "room_status" }} />,
+                displayTemplate: row => {
+                  return row.room_active === "Y" ? "Active" : "Inactive";
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      div={{}}
+                      selector={{
+                        name: "room_active",
+                        className: "select-fld",
+                        value: row.room_active,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.FORMAT_ACT_INACT
+                        },
+                        onChange: this.changeGridEditors.bind(this, row)
+                      }}
+                    />
+                  );
+                }
+              }
+            ]}
+            keyId="hims_d_appointment_room_id"
+            dataSource={{
+              data: this.state.appointmentRooms
+            }}
+            isEditable={true}
+            paging={{ page: 0, rowsPerPage: 10 }}
+            events={{
+              onEdit: () => {},
+              onDelete: this.deleteApptRooms.bind(this),
+              onDone: this.updateApptRooms.bind(this)
+            }}
+          />
         </div>
       </div>
     );

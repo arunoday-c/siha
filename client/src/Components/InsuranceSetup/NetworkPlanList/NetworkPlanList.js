@@ -31,21 +31,7 @@ class NetworkPlanList extends PureComponent {
     };
   }
 
-  componentWillMount() {
-    debugger;
-    // let InputOutput = this.props.network_plan;
-    // this.setState({ ...this.state, ...InputOutput });
-  }
-
-  // shouldComponentUpdate(nextProps) {
-  //   debugger;
-  //   if (nextProps.networkandplans !== this.state.network_plan) {
-  //     return true;
-  //   }
-  // }
-
   componentDidMount() {
-    debugger;
     if (this.props.insurance_provider_id !== null) {
       if (
         this.props.subinsuranceprovider === undefined ||
@@ -82,7 +68,6 @@ class NetworkPlanList extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.insurance_provider_id !== undefined) {
       this.setState({
         network_plan: newProps.networkandplans,
@@ -96,7 +81,6 @@ class NetworkPlanList extends PureComponent {
   }
 
   render() {
-    debugger;
     return (
       <div>
         <AlgaehDataGrid
@@ -106,7 +90,6 @@ class NetworkPlanList extends PureComponent {
               fieldName: "insurance_sub_id",
               label: <AlgaehLabel label={{ fieldName: "insurance_sub_id" }} />,
               displayTemplate: row => {
-                debugger;
                 let display =
                   this.props.subinsuranceprovider === undefined
                     ? []
@@ -131,7 +114,6 @@ class NetworkPlanList extends PureComponent {
               fieldName: "hospital_id",
               label: <AlgaehLabel label={{ fieldName: "hospital_id" }} />,
               displayTemplate: row => {
-                debugger;
                 let display =
                   this.props.hospitaldetails === undefined
                     ? []
@@ -150,7 +132,6 @@ class NetworkPlanList extends PureComponent {
                 );
               },
               editorTemplate: row => {
-                debugger;
                 let display =
                   this.props.hospitaldetails === undefined
                     ? []
@@ -177,11 +158,41 @@ class NetworkPlanList extends PureComponent {
             },
             {
               fieldName: "policy_number",
-              label: <AlgaehLabel label={{ fieldName: "policy_number" }} />
+              label: <AlgaehLabel label={{ fieldName: "policy_number" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      value: row.policy_number,
+                      className: "txt-fld",
+                      name: "policy_number",
+                      events: {
+                        onChange: onchangegridcol.bind(this, this, row)
+                      }
+                    }}
+                  />
+                );
+              }
             },
             {
               fieldName: "employer",
-              label: <AlgaehLabel label={{ fieldName: "employer" }} />
+              label: <AlgaehLabel label={{ fieldName: "employer" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      value: row.employer,
+                      className: "txt-fld",
+                      name: "employer",
+                      events: {
+                        onChange: onchangegridcol.bind(this, this, row)
+                      }
+                    }}
+                  />
+                );
+              }
             },
             {
               fieldName: "effective_start_date",

@@ -70,7 +70,6 @@ class SampleCollectionPatient extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
-      debugger;
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });
     }
@@ -194,11 +193,17 @@ class SampleCollectionPatient extends PureComponent {
                                       ) : (
                                         <i
                                           className="fas fa-barcode"
-                                          onClick={printBarcode.bind(
+                                          onClick={CollectSample.bind(
                                             this,
                                             this,
+                                            context,
                                             row
                                           )}
+                                          // onClick={printBarcode.bind(
+                                          //   this,
+                                          //   this,
+                                          //   row
+                                          // )}
                                         />
                                       )}
                                     </span>
@@ -218,7 +223,6 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  debugger;
                                   return row.billed === "N"
                                     ? "Not Billed"
                                     : "Billed";
@@ -260,7 +264,6 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  debugger;
                                   let display =
                                     this.props.labspecimen === undefined
                                       ? []
@@ -291,7 +294,6 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  debugger;
                                   return row.collected === "Y" ? "Yes" : "No";
                                 }
                                 // others: {

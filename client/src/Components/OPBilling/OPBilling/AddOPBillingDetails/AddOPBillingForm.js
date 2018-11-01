@@ -27,8 +27,7 @@ class AddOPBillingForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false,
-      
+      isOpen: false
     };
   }
 
@@ -66,14 +65,6 @@ class AddOPBillingForm extends Component {
         redux: {
           type: "SERVICES_GET_DATA",
           mappingName: "opbilservices"
-        },
-        afterSuccess: data => {
-          debugger;
-          if (data.length !== 0) {
-            this.setState({
-              opbilservices: data
-            });
-          }
         }
       });
       this.props.getServices({
@@ -136,8 +127,7 @@ class AddOPBillingForm extends Component {
               let existingservices = $this.state.billdetails;
 
               if (data.billdetails.length !== 0) {
-                data.billdetails[0].ordered_date = new Date();
-
+                data.billdetails[0].created_date = new Date();
                 existingservices.splice(0, 0, data.billdetails[0]);
               }
 
@@ -312,6 +302,8 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
+    const opbilservices =
+      this.props.opbilservices === undefined ? [] : this.props.opbilservices;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -356,7 +348,7 @@ class AddOPBillingForm extends Component {
                             ? "service_name"
                             : "arabic_service_name",
                         valueField: "hims_d_services_id",
-                        data: this.state.opbilservices
+                        data: opbilservices
                       },
                       others: { disabled: this.state.Billexists },
                       onChange: serviceHandeler.bind(this, this, context)
@@ -491,7 +483,7 @@ class AddOPBillingForm extends Component {
                                   dataSource: {
                                     textField: "service_name",
                                     valueField: "hims_d_services_id",
-                                    data: this.state.opbilservices
+                                    data: opbilservices
                                   },
                                   others: {
                                     disabled: true

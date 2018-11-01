@@ -13,15 +13,6 @@ const serviceTypeHandeler = ($this, context, e) => {
         redux: {
           type: "SERVICES_GET_DATA",
           mappingName: "opbilservices"
-        },
-        afterSuccess: data => {
-          debugger;
-          $this.setState({
-            opbilservices: data
-          });
-          if (context != null) {
-            context.updateState({ opbilservices: data });
-          }
         }
       });
     }

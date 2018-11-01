@@ -184,33 +184,11 @@ const updateSubInsurance = ($this, data) => {
   });
 };
 
-const resetState = $this => {
-  $this.setState($this.baseState);
-};
-
 const onchangegridcol = ($this, row, e) => {
-  let sub_insurance = $this.state.sub_insurance;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;
-  // resetState($this);
-
-  for (let i = 0; i < sub_insurance.length; i++) {
-    debugger;
-    if (
-      sub_insurance[i].hims_d_insurance_sub_id === row.hims_d_insurance_sub_id
-    ) {
-      sub_insurance[i] = row;
-    }
-  }
-  $this.setState(
-    {
-      sub_insurance: sub_insurance
-    },
-    () => {
-      debugger;
-    }
-  );
+  row.update();
 };
 
 export {
