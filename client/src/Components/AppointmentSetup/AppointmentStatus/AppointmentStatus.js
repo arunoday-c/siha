@@ -59,37 +59,30 @@ class AppointmentStatus extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        // algaehApiCall({
-        //   uri: "/appointment/updateAppointmentStatus",
-        //   data: {
-        //     hims_d_appointment_status_id: data.hims_d_appointment_status_id,
-        //     color_code: data.color_code,
-        //     description: data.description,
-        //     default_status: data.default_status,
-        //     record_status: "I"
-        //   },
-        //   method: "PUT",
-        //   onSuccess: response => {
-        //     if (response.data.success) {
-        //       swalMessage({
-        //         title: "Record deleted successfully . .",
-        //         type: "success"
-        //       });
-        //       this.getAppointmentStatus();
-        //     }
-        //   },
-        //   onFailure: error => {
-        //     swalMessage({
-        //       title: error.message,
-        //       type: "error"
-        //     });
-        //   }
-        // });
-
-        swalMessage({
-          title: "Authorized Successful",
-          type: "success"
+        algaehApiCall({
+          uri: "/appointment/appointmentStatusAuthorized",
+          method: "PUT",
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Status Authorized successfully . .",
+                type: "success"
+              });
+              this.getAppointmentStatus();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
+
+        // swalMessage({
+        //   title: "Authorized Successful",
+        //   type: "success"
+        // });
       } else {
         swalMessage({
           title: "Not authorized",
@@ -409,7 +402,7 @@ class AppointmentStatus extends Component {
                 },
                 {
                   fieldName: "steps",
-                  label: "Steps"
+                  label: "Step No."
                 },
                 {
                   fieldName: "authorized",
