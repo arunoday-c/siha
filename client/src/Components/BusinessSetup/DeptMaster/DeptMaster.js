@@ -331,22 +331,20 @@ class DeptMaster extends Component {
                   label: "Sub Dept.",
                   displayTemplate: row => {
                     return (
-                      <a
+                      <i
+                        className="fas fa-plus"
+                        data-tooltip="some more information"
                         onClick={this.addSubDept(row)}
-                        className="btn btn-primary btn-circle"
-                      >
-                        <i className="fas fa-plus" />
-                      </a>
+                      />
                     );
                   },
                   editorTemplate: row => {
                     return (
-                      <a
+                      <i
+                        className="fas fa-plus"
+                        data-tooltip="some more information"
                         onClick={this.addSubDept(row)}
-                        className="btn btn-primary btn-circle"
-                      >
-                        <i className="fas fa-plus" />
-                      </a>
+                      />
                     );
                   },
                   others: {

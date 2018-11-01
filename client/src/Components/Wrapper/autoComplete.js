@@ -85,6 +85,7 @@ class AutoComplete extends PureComponent {
 
   componentDidMount() {
     document.addEventListener("mousedown", this.handleClickOutside, false);
+    //document.addEventListener("mousedown", this.dropDownKeyDown, false);
     this.setState({
       displayValue: this.props.selector.value,
       displayText: this.getTextByValue(this.props.selector.value),
@@ -93,6 +94,7 @@ class AutoComplete extends PureComponent {
   }
   componentWillUnmount() {
     document.removeEventListener("mousedown", this.handleClickOutside, false);
+    //document.removeEventListener("mousedown", this.dropDownKeyDown, false);
   }
   handleClickOutside(event) {
     if (!this.autoComp.contains(event.target)) {
@@ -100,6 +102,25 @@ class AutoComplete extends PureComponent {
         listState: "d-none",
         arrowIcon: "fa-angle-down"
       });
+    }
+  }
+
+  dropDownKeyDown(e) {
+    if (e.keyCode == 38) {
+      // up
+      var selected = document.getElementsByClassName("myUL");
+      document.getElementsByClassName("myUL li").removeClass("selected");
+
+      // if there is no element before the selected one, we select the last one
+      if (selected.prev().length == 0) {
+        selected
+          .siblings()
+          .last()
+          .addClass("selected");
+      } else {
+        // otherwise we just select the next one
+        selected.prev().addClass("selected");
+      }
     }
   }
 
@@ -124,6 +145,13 @@ class AutoComplete extends PureComponent {
       displayText: _value,
       _sortData: $this.dataSorting(_value)
     });
+  }
+
+  renderTemplate(item, key) {
+    if (this.props.selector.displayTemplate !== undefined) {
+      return this.props.selector.displayTemplate(item, key);
+    }
+    return null;
   }
 
   dataSorting(text) {
@@ -213,15 +241,17 @@ class AutoComplete extends PureComponent {
           <span className="showall" onClick={this.onClickArrowIcon.bind(this)}>
             <i className={"fas " + this.state.arrowIcon} />
           </span>
-          <ul className={"myUL " + this.state.listState}>
+          <ol className={"myUL " + this.state.listState}>
             {this.state._sortData.map((item, index) => (
               <li onClick={this.onListSelected.bind(this, item)} key={index}>
                 <span value={item[this.props.selector.dataSource.valueField]}>
-                  {item[this.props.selector.dataSource.textField]}
+                  {this.props.selector.displayTemplate !== undefined
+                    ? this.renderTemplate.bind(this, item, index)
+                    : item[this.props.selector.dataSource.textField]}
                 </span>
               </li>
             ))}
-          </ul>
+          </ol>
         </div>
       </div>
     );
