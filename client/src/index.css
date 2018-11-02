@@ -13,6 +13,10 @@
   :global ::-webkit-scrollbar {
     width: 8px;
     height: 8px; }
+  :global .btn-green {
+    background: #8add52;
+    color: #fff;
+    border: 1px solid #fff; }
   :global ::-webkit-scrollbar-track {
     background: #ccc;
     -webkit-border-radius: 3px;

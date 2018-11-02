@@ -10,5 +10,6 @@
   "room": "Room",
   "room_status": "Room Status",
   "created_by": "Created By",
-  "created_date": "Created Date"
+  "created_date": "Created Date",
+  "steps": "Order"
 }

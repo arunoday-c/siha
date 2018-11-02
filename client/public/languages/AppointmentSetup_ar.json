@@ -10,5 +10,6 @@
   "room": "مجال",
   "room_status": "حالة الغرفة",
   "created_by": "صنع من قبل",
-  "created_date": "تاريخ الإنشاء"
+  "created_date": "تاريخ الإنشاء",
+  "steps": "طلب"
 }

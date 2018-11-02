@@ -1675,7 +1675,7 @@ let updatePriceListBulk = (req, res, next) => {
     SET `covered`=?,`updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
     `insurance_id`=?";
     parameters = [
-      inputParam.pre_approval,
+      inputParam.covered,
       inputParam.updated_by,
       new Date(),
       inputParam.insurance_id
