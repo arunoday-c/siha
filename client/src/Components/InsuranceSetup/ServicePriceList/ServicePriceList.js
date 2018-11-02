@@ -71,7 +71,6 @@ class SubInsurance extends PureComponent {
   }
 
   render() {
-    console.log("Name", this.state.insurance_provider_name);
     return (
       <React.Fragment>
         <div className="hptl-phase1-price-insurance-form">
@@ -190,7 +189,7 @@ class SubInsurance extends PureComponent {
                         className: "select-fld",
                         value: this.state.pre_approval,
                         dataSource: {
-                          textField: "value",
+                          textField: "name",
                           valueField: "value",
                           data: GlobalVariables.FORMAT_YESNO
                         },
@@ -221,7 +220,7 @@ class SubInsurance extends PureComponent {
                         className: "select-fld",
                         value: this.state.covered,
                         dataSource: {
-                          textField: "value",
+                          textField: "name",
                           valueField: "value",
                           data: GlobalVariables.FORMAT_YESNO
                         },
