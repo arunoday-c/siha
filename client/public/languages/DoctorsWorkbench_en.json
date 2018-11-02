@@ -25,6 +25,7 @@
   "pain": "Pain",
   "severity": "Severity",
   "interval": "Interval",
+  "created_date": "Ordered Date",
 
   "visit_code": "Visit Code",
   "select_service": "Select Service",

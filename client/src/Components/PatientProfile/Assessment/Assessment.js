@@ -100,12 +100,12 @@ class Assessment extends Component {
         }
       });
     }
-    if (
-      this.props.patient_diagnosis === undefined ||
-      this.props.patient_diagnosis.length === 0
-    ) {
-      getPatientDiagnosis(this, true);
-    }
+    // if (
+    //   this.props.patient_diagnosis === undefined ||
+    //   this.props.patient_diagnosis.length === 0
+    // ) {
+    getPatientDiagnosis(this, true);
+    // }
   }
   render() {
     debugger;

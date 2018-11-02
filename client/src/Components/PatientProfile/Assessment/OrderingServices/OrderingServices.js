@@ -264,27 +264,25 @@ class OrderingServices extends Component {
                             );
                           },
                           editorTemplate: row => {
+                            let display =
+                              this.props.servicetype === undefined
+                                ? []
+                                : this.props.servicetype.filter(
+                                    f =>
+                                      f.hims_d_service_type_id ===
+                                      row.service_type_id
+                                  );
+
                             return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "service_type_id",
-                                  className: "select-fld",
-                                  value: row.service_type_id,
-                                  dataSource: {
-                                    textField: "service_type",
-                                    valueField: "hims_d_service_type_id",
-                                    data: this.props.servicetype
-                                  },
-                                  others: {
-                                    disabled: true
-                                  },
-                                  onChange: null
-                                }}
-                              />
+                              <span>
+                                {display !== undefined && display.length !== 0
+                                  ? this.state.selectedLang === "en"
+                                    ? display[0].service_type
+                                    : display[0].arabic_service_type
+                                  : ""}
+                              </span>
                             );
-                          },
-                          disabled: true
+                          }
                         },
 
                         {
@@ -312,27 +310,24 @@ class OrderingServices extends Component {
                             );
                           },
                           editorTemplate: row => {
+                            let display =
+                              this.props.serviceslist === undefined
+                                ? []
+                                : this.props.serviceslist.filter(
+                                    f =>
+                                      f.hims_d_services_id === row.services_id
+                                  );
+
                             return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "services_id",
-                                  className: "select-fld",
-                                  value: row.services_id,
-                                  dataSource: {
-                                    textField: "service_name",
-                                    valueField: "hims_d_services_id",
-                                    data: this.props.services
-                                  },
-                                  others: {
-                                    disabled: true
-                                  },
-                                  onChange: null
-                                }}
-                              />
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? this.state.selectedLang === "en"
+                                    ? display[0].service_name
+                                    : display[0].arabic_service_name
+                                  : ""}
+                              </span>
                             );
-                          },
-                          disabled: true
+                          }
                         },
                         {
                           fieldName: "unit_cost",
@@ -450,7 +445,11 @@ class OrderingServices extends Component {
                               ? "Covered"
                               : "Not Covered";
                           },
-                          disabled: true
+                          editorTemplate: row => {
+                            return row.insurance_yesno === "Y"
+                              ? "Covered"
+                              : "Not Covered";
+                          }
                         },
                         {
                           fieldName: "pre_approval",
@@ -478,7 +477,25 @@ class OrderingServices extends Component {
                               </span>
                             );
                           },
-                          disabled: true
+                          editorTemplate: row => {
+                            return (
+                              <span>
+                                {row.pre_approval === "Y"
+                                  ? "Required"
+                                  : "Not Required"}
+                                {row.pre_approval === "Y" ? (
+                                  <IconButton
+                                    className="go-button"
+                                    color="primary"
+                                  >
+                                    <PlayCircleFilled
+                                      onClick={this.playclick.bind(this)}
+                                    />
+                                  </IconButton>
+                                ) : null}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "patient_payable",

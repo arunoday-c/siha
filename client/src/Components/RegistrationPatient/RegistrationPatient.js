@@ -111,7 +111,8 @@ class RegistrationPatient extends PureComponent {
           saveEnable: false,
           clearEnable: true,
           consultation: "Y",
-          appointment_patient: "Y"
+          appointment_patient: "Y",
+          billdetail: false
         },
         () => {
           if (this.props.fromAppoinment === true) {
