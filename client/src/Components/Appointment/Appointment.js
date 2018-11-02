@@ -36,7 +36,8 @@ class Appointment extends Component {
       openPatEdit: false,
       checkInId: null,
       sub_department_id: null,
-      date_of_birth: null
+      date_of_birth: null,
+      activeDateHeader: moment()._d
     };
   }
 
@@ -470,8 +471,12 @@ class Appointment extends Component {
 
     let generatedLi = [];
 
-    while (initialDate <= endDate) {
+    while (
+      moment(initialDate).format("YYYYMMDD") <=
+      moment(endDate).format("YYYYMMDD")
+    ) {
       let dt = moment(initialDate);
+
       generatedLi.push({
         day: dt.format("DD"),
         currentdate: dt._d,
@@ -482,25 +487,67 @@ class Appointment extends Component {
     return generatedLi;
   }
 
+  // generateHorizontalDateBlocks() {
+  //   return (
+  //     <div className="calendar">
+  //       <div className="col-12">
+  //         <div className="row">
+  //           {this.liGenerate().map((row, index) => {
+  //             return (
+  //               <div
+  //                 key={index}
+  //                 date={row.currentdate}
+  //                 className={
+  //                   moment(row.currentdate).format("YYYYMMDD") ===
+  //                   moment(this.state.activeDateHeader).format("YYYYMMDD")
+  //                     ? moment(row.currentdate).format("YYYYMMDD") ===
+  //                       moment().format("YYYYMMDD")
+  //                       ? "col activeDate CurrentDate"
+  //                       : "col activeDate"
+  //                     : moment(row.currentdate).format("YYYYMMDD") ===
+  //                       moment().format("YYYYMMDD")
+  //                       ? "col CurrentDate"
+  //                       : "col"
+  //                 }
+  //                 onClick={this.onSelectedDateHandler.bind(this)}
+  //               >
+  //                 {row.day}
+  //                 <span
+  //                   date={row.currentdate}
+  //                   onClick={this.onSelectedDateHandler.bind(this)}
+  //                 >
+  //                   {" "}
+  //                   {row.dayName}
+  //                 </span>
+  //               </div>
+  //             );
+  //           })}
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   generateHorizontalDateBlocks() {
+    const act_date = new Date(this.state.activeDateHeader);
     return (
       <div className="calendar">
         <div className="col-12">
           <div className="row">
             {this.liGenerate().map((row, index) => {
+              const _currDate = moment(row.currentdate).format("YYYYMMDD");
+              const _activeDate = moment(act_date).format("YYYYMMDD");
               return (
                 <div
+                  // className="col"
                   key={index}
                   date={row.currentdate}
                   className={
-                    moment(row.currentdate).format("YYYYMMDD") ===
-                    moment(this.state.activeDateHeader).format("YYYYMMDD")
-                      ? moment(row.currentdate).format("YYYYMMDD") ===
-                        moment().format("YYYYMMDD")
+                    _currDate === _activeDate
+                      ? _currDate === moment().format("YYYYMMDD")
                         ? "col activeDate CurrentDate"
                         : "col activeDate"
-                      : moment(row.currentdate).format("YYYYMMDD") ===
-                        moment().format("YYYYMMDD")
+                      : _currDate === moment().format("YYYYMMDD")
                         ? "col CurrentDate"
                         : "col"
                   }
@@ -511,7 +558,6 @@ class Appointment extends Component {
                     date={row.currentdate}
                     onClick={this.onSelectedDateHandler.bind(this)}
                   >
-                    {" "}
                     {row.dayName}
                   </span>
                 </div>
