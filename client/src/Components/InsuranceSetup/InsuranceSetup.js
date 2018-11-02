@@ -208,7 +208,6 @@ class InsuranceSetup extends Component {
                   label: <AlgaehLabel label={{ fieldName: "payment_type" }} />,
 
                   displayTemplate: row => {
-                    debugger;
                     let display = GlobalVariables.FORMAT_PAYMENT_TYPE.filter(
                       f => f.value === row.payment_type
                     );

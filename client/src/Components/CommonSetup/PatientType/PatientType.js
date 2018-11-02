@@ -128,12 +128,19 @@ class PatientType extends Component {
           data: this.state,
           onSuccess: response => {
             if (response.data.success === true) {
+              this.props.getPatienttypes({
+                uri: "/patientType/getPatientType",
+                method: "GET",
+                redux: {
+                  type: "PAT_TYP_GET_DATA",
+                  mappingName: "patienttypes"
+                }
+              });
+              this.resetState();
               swalMessage({
                 title: "Patient Type added successfully",
                 type: "success"
               });
-
-              this.resetState();
             } else {
               //Handle unsuccessful Add here.
             }
@@ -317,7 +324,22 @@ class PatientType extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "created_date",
@@ -325,7 +347,9 @@ class PatientType extends Component {
                     displayTemplate: row => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    }
                   },
                   {
                     fieldName: "patient_status",
@@ -338,9 +362,9 @@ class PatientType extends Component {
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "identity_status",
+                            name: "patient_status",
                             className: "select-fld",
-                            value: row.identity_status,
+                            value: row.patient_status,
                             dataSource: {
                               textField: "name",
                               valueField: "value",

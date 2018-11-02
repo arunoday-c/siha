@@ -6,7 +6,7 @@ export default {
       hims_d_insurance_provider_id: null,
       insurance_provider_code: null,
       insurance_provider_name: null,
-      company_service_price_type: "G",
+      company_service_price_type: null,
       insurance_type: null,
       package_claim: null,
       credit_period: null,

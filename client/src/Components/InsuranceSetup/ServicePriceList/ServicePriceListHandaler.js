@@ -1,4 +1,4 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { successfulMessage } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, e) => {
@@ -11,7 +11,6 @@ const texthandle = ($this, e) => {
 };
 
 const onchangecalculation = ($this, row, e) => {
-  debugger;
   let netamount = 0;
   // let discountAmt =
   if (e.target.name === "corporate_discount_amt") {
@@ -55,25 +54,28 @@ const updatePriceList = ($this, data) => {
         getPriceList($this);
       }
     },
-    onFailure: error => {}
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
   });
 };
 
 const bulkUpdate = ($this, data) => {
   let updateobj = {};
-
+  debugger;
   if (data === "pre_approval") {
     updateobj = {
       update: data,
       pre_approval: $this.state.pre_approval,
-      // updated_by: getCookie("UserID"),
       insurance_id: $this.state.insurance_provider_id
     };
   } else if (data === "covered") {
     updateobj = {
       update: data,
       covered: $this.state.covered,
-      // updated_by: getCookie("UserID"),
       insurance_id: $this.state.insurance_provider_id
     };
   } else if (data === "corporate_discount") {
@@ -90,7 +92,6 @@ const bulkUpdate = ($this, data) => {
           discountType: $this.state.applicable,
           update: data,
           corporate_discount: $this.state.corporate_discount,
-          // updated_by: getCookie("UserID"),
           insurance_id: $this.state.insurance_provider_id
         };
       } else if ($this.state.applicable === "A") {
@@ -98,7 +99,6 @@ const bulkUpdate = ($this, data) => {
           discountType: $this.state.applicable,
           update: data,
           corporate_discount: $this.state.corporate_discount,
-          // updated_by: getCookie("UserID"),
           insurance_id: $this.state.insurance_provider_id
         };
       }
@@ -110,16 +110,35 @@ const bulkUpdate = ($this, data) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
+        if (data === "pre_approval") {
+          $this.setState({
+            pre_approval: null
+          });
+        } else if (data === "covered") {
+          $this.setState({
+            covered: null
+          });
+        } else if (data === "corporate_discount") {
+          $this.setState({
+            corporate_discount: 0,
+            applicable: null
+          });
+        }
+
+        getPriceList($this);
         successfulMessage({
           message: "Records updated successfully . .",
           title: "Success",
           icon: "success"
         });
-
-        getPriceList($this);
       }
     },
-    onFailure: error => {}
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
   });
 };
 
@@ -132,31 +151,21 @@ const serviceTypeHandeler = ($this, e) => {
       [name]: value
     },
     () => {
-      $this.props.getPriceList({
-        uri: "/insurance/getPriceList",
-        method: "GET",
-        printInput: true,
-        data: {
-          insurance_id: $this.state.insurance_provider_id,
-          service_type_id: $this.state.service_type_id
-        },
-        redux: {
-          type: "PRICE_LIST_GET_DATA",
-          mappingName: "pricelist"
-        }
-      });
+      getPriceList($this);
     }
   );
 };
 
 const getPriceList = $this => {
+  let inputObj = { insurance_id: $this.state.insurance_provider_id };
+  if ($this.state.service_type_id !== null) {
+    inputObj.service_type_id = $this.state.service_type_id;
+  }
+
   $this.props.getPriceList({
     uri: "/insurance/getPriceList",
     method: "GET",
-    printInput: true,
-    data: {
-      insurance_id: $this.state.insurance_provider_id
-    },
+    data: inputObj,
     redux: {
       type: "PRICE_LIST_GET_DATA",
       mappingName: "pricelist"
@@ -170,18 +179,7 @@ const Refresh = $this => {
       service_type_id: null
     },
     () => {
-      $this.props.getPriceList({
-        uri: "/insurance/getPriceList",
-        method: "GET",
-        printInput: true,
-        data: {
-          insurance_id: $this.state.insurance_provider_id
-        },
-        redux: {
-          type: "PRICE_LIST_GET_DATA",
-          mappingName: "pricelist"
-        }
-      });
+      getPriceList($this);
     }
   );
 };

@@ -77,7 +77,7 @@ class NetworkPlanList extends PureComponent {
   }
 
   dateFormater(value) {
-    return String(moment(value).format(Options.dateFormatYear));
+    return String(moment(value).format(Options.dateFormat));
   }
 
   render() {
@@ -107,7 +107,24 @@ class NetworkPlanList extends PureComponent {
                   </span>
                 );
               },
-              disabled: true
+              editorTemplate: row => {
+                let display =
+                  this.props.subinsuranceprovider === undefined
+                    ? []
+                    : this.props.subinsuranceprovider.filter(
+                        f => f.hims_d_insurance_sub_id === row.insurance_sub_id
+                      );
+
+                return (
+                  <span>
+                    {display !== null && display.length !== 0
+                      ? this.state.selectedLang === "en"
+                        ? display[0].insurance_sub_name
+                        : display[0].arabic_sub_name
+                      : ""}
+                  </span>
+                );
+              }
             },
 
             {
@@ -148,8 +165,7 @@ class NetworkPlanList extends PureComponent {
                       : ""}
                   </span>
                 );
-              },
-              disabled: true
+              }
             },
             {
               fieldName: "network_type",
@@ -204,7 +220,11 @@ class NetworkPlanList extends PureComponent {
                   <span>{this.dateFormater(row.effective_start_date)}</span>
                 );
               },
-              disabled: true
+              editorTemplate: row => {
+                return (
+                  <span>{this.dateFormater(row.effective_start_date)}</span>
+                );
+              }
             },
             {
               fieldName: "effective_end_date",
@@ -214,7 +234,9 @@ class NetworkPlanList extends PureComponent {
               displayTemplate: row => {
                 return <span>{this.dateFormater(row.effective_end_date)}</span>;
               },
-              disabled: true
+              editorTemplate: row => {
+                return <span>{this.dateFormater(row.effective_end_date)}</span>;
+              }
             },
             {
               fieldName: "preapp_limit",
@@ -241,13 +263,13 @@ class NetworkPlanList extends PureComponent {
               label: <AlgaehLabel label={{ fieldName: "price_from" }} />,
               displayTemplate: row => {
                 return row.price_from === "S"
-                  ? "Company Service Price"
-                  : "Policy Service Price ";
+                  ? "Company Level Service Price"
+                  : "Policy Level Service Price ";
               },
               editorTemplate: row => {
                 return row.price_from === "S"
-                  ? "Company Service Price"
-                  : "Policy Service Price ";
+                  ? "Company Level Service Price"
+                  : "Policy Level Service Price ";
               }
             },
             ///Changes

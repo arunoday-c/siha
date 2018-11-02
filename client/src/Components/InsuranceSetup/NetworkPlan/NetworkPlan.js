@@ -20,7 +20,8 @@ import {
   saveNetworkPlan,
   datehandle,
   addNewNetwork,
-  numberhandle
+  numberhandle,
+  prenumberhandle
 } from "./NetworkPlanHandaler";
 
 import { FORMAT_PRICE_FROM } from "../../../utils/GlobalVariables.json";
@@ -37,6 +38,7 @@ class NetworkPlan extends PureComponent {
 
       effective_start_date: null,
       effective_end_date: null,
+      maxDate_end_date: null,
 
       hims_d_insurance_network_office_id: null,
       network_id: null,
@@ -257,6 +259,7 @@ class NetworkPlan extends PureComponent {
                       name: "effective_end_date"
                     }}
                     minDate={new Date()}
+                    maxDate={this.state.maxDate_end_date}
                     events={{
                       onChange: datehandle.bind(this, this)
                     }}
@@ -278,7 +281,7 @@ class NetworkPlan extends PureComponent {
                       name: "preapp_limit",
 
                       events: {
-                        onChange: numberhandle.bind(this, this)
+                        onChange: prenumberhandle.bind(this, this)
                       },
                       others: {
                         "data-netdata": true

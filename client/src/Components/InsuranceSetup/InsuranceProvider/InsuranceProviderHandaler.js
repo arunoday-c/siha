@@ -1,4 +1,6 @@
 import moment from "moment";
+import { swalMessage } from "../../../utils/algaehApiCall";
+
 let texthandlerInterval = null;
 
 const texthandle = ($this, context, e) => {
@@ -18,18 +20,29 @@ const texthandle = ($this, context, e) => {
   }, 500);
 };
 
-const numtexthandle = ($this, context, e) => {
-  $this.setState({
-    insurance_limit: e.value
-  });
+const numtexthandle = ($this, context, ctrl, e) => {
+  debugger;
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  if (value < 0) {
+    swalMessage({
+      title: "Invalid Input. Cannot be greater than zero.",
+      type: "warning"
+    });
+  } else {
+    $this.setState({
+      [name]: value
+    });
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({ insurance_limit: e.value });
-    }
     clearInterval(texthandlerInterval);
-  }, 500);
+    texthandlerInterval = setInterval(() => {
+      if (context !== undefined) {
+        context.updateState({ insurance_limit: value });
+      }
+      clearInterval(texthandlerInterval);
+    }, 500);
+  }
 };
 
 const datehandle = ($this, context, ctrl, e) => {
