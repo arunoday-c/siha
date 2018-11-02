@@ -82,6 +82,7 @@ const addNewSubinsurance = $this => {
     insurance_sub_code: null,
     insurance_sub_name: null,
     transaction_number: null,
+    arabic_sub_name: null,
     card_format: null
   });
 };
@@ -100,8 +101,7 @@ const showconfirmDialog = ($this, id) => {
     confirmButtonText: "Yes!",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No",
-    dangerMode: true
+    cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
       let data = {
@@ -146,7 +146,7 @@ const getSubInsuranceDetails = $this => {
   $this.props.getSubInsuranceDetails({
     uri: "/insurance/getSubInsurance",
     method: "GET",
-    printInput: true,
+    // printInput: true,
     data: {
       insurance_provider_id: $this.state.insurance_provider_id
     },

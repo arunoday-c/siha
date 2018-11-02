@@ -88,8 +88,7 @@ const ProcessService = ($this, e) => {
             title:
               "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pro aproved and will be as cash.",
             type: "warning",
-            buttons: true,
-            dangerMode: true
+            buttons: true
           }).then(willProceed => {
             if (willProceed) {
               let approval_amt = data.billdetails[0].approval_amt;

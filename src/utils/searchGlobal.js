@@ -17,7 +17,7 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "bills",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, patient_id, billing_type_id, visit_id, bill_number,\
+          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, patient_id, visit_id, bill_number,\
           incharge_or_provider, bill_date, BH.advance_amount, advance_adjust, discount_amount, sub_total_amount, total_tax, \
           net_total, billing_status, copay_amount, deductable_amount, sec_copay_amount, sec_deductable_amount, gross_total, \
           sheet_discount_amount, sheet_discount_percentage, net_amount, patient_res, company_res, sec_company_res, \

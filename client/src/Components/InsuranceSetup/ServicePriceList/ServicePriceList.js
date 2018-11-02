@@ -374,6 +374,9 @@ class SubInsurance extends PureComponent {
                       label: (
                         <AlgaehLabel label={{ fieldName: "pre_approval" }} />
                       ),
+                      displayTemplate: row => {
+                        return row.pre_approval === "N" ? "No" : "Yes";
+                      },
                       editorTemplate: row => {
                         return (
                           <AlagehAutoComplete
@@ -396,6 +399,9 @@ class SubInsurance extends PureComponent {
                     {
                       fieldName: "covered",
                       label: <AlgaehLabel label={{ fieldName: "covered" }} />,
+                      displayTemplate: row => {
+                        return row.covered === "N" ? "No" : "Yes";
+                      },
                       editorTemplate: row => {
                         return (
                           <AlagehAutoComplete

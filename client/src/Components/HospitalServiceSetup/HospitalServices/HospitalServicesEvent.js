@@ -1,6 +1,7 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -33,24 +34,27 @@ const VatAppilicable = ($this, e) => {
 const Validations = $this => {
   let isError = false;
 
-  if ($this.state.description === null) {
-    isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Test Name Cannot be blank."
-    });
-    document.querySelector("[name='description']").focus();
-    return isError;
-  }
+  AlgaehValidation({
+    querySelector: "data-validate='HospitalServices'", //if require section level
+    fetchFromFile: true, //if required arabic error
+    alertTypeIcon: "warning", // error icon
+    onCatch: () => {
+      isError = true;
+    }
+  });
 
-  if ($this.state.services_id === null) {
+  if (
+    $this.state.vat_applicable === "Y" &&
+    isError === false &&
+    ($this.state.vat_percent === 0 || $this.state.vat_percent === "")
+  ) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Service Cannot be blank."
+    swalMessage({
+      title: "Invalid Input. Vat Percentage is mandatory , if Vat Applicable",
+      type: "warning"
     });
-    return isError;
   }
+  return isError;
 };
 
 const InsertServices = $this => {
@@ -63,6 +67,7 @@ const InsertServices = $this => {
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
+            clearData($this);
             swalMessage({
               title: "Saved successfully . .",
               type: "success"
@@ -88,6 +93,25 @@ const InsertServices = $this => {
   }
 };
 
+const CptCodesSearch = $this => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Services.CptCodes
+    },
+    searchName: "CptCodes",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      $this.setState({
+        cpt_code: row.hims_d_cpt_code_id,
+        cpt_code_data: row.cpt_code
+      });
+    }
+  });
+};
+
 const clearData = $this => {
   $this.setState({
     open: false,
@@ -103,28 +127,10 @@ const clearData = $this => {
     service_type_id: null,
 
     standard_fee: 0,
-    vat_applicable: null,
-    vat_percent: 0
-  });
-};
-
-const CptCodesSearch = $this => {
-  AlgaehSearch({
-    searchGrid: {
-      columns: spotlightSearch.Services.CptCodes
-    },
-    searchName: "CptCodes",
-    uri: "/gloabelSearch/get",
-    onContainsChange: (text, serchBy, callBack) => {
-      callBack(text);
-    },
-    onRowSelect: row => {
-      debugger;
-      $this.setState({
-        cpt_code: row.hims_d_cpt_code_id,
-        cpt_code_data: row.cpt_code
-      });
-    }
+    vat_applicable: "N",
+    vat_percent: 0,
+    cpt_code_data: null,
+    sub_department_id: null
   });
 };
 

@@ -132,31 +132,22 @@ const serviceTypeHandeler = ($this, e) => {
       [name]: value
     },
     () => {
-      $this.props.getPriceList({
-        uri: "/insurance/getPriceList",
-        method: "GET",
-        printInput: true,
-        data: {
-          insurance_id: $this.state.insurance_provider_id,
-          service_type_id: $this.state.service_type_id
-        },
-        redux: {
-          type: "PRICE_LIST_GET_DATA",
-          mappingName: "pricelist"
-        }
-      });
+      getPriceList($this);
     }
   );
 };
 
 const getPriceList = $this => {
+  let inputObj = { insurance_id: $this.state.insurance_provider_id };
+  if ($this.state.service_type_id !== null) {
+    inputObj.service_type_id = $this.state.service_type_id;
+  }
+  debugger;
   $this.props.getPriceList({
     uri: "/insurance/getPriceList",
     method: "GET",
     printInput: true,
-    data: {
-      insurance_id: $this.state.insurance_provider_id
-    },
+    data: inputObj,
     redux: {
       type: "PRICE_LIST_GET_DATA",
       mappingName: "pricelist"

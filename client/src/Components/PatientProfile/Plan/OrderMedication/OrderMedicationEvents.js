@@ -153,6 +153,40 @@ const dateFormater = value => {
 };
 
 const deleteItems = $this => {};
+
+const calcuateQuantity = $this => {
+  let frequency = 0;
+  let frequency_type = 0;
+  if (
+    $this.state.frequency === "0" ||
+    $this.state.frequency === "4" ||
+    $this.state.frequency === "5"
+  ) {
+    frequency = 2;
+  } else if ($this.state.frequency === "0") {
+    frequency = 1;
+  } else if (
+    $this.state.frequency === "1" ||
+    $this.state.frequency === "2" ||
+    $this.state.frequency === "3"
+  ) {
+    frequency = 1;
+  } else if ($this.state.frequency === "6") {
+    frequency = 3;
+  }
+
+  if ($this.state.frequency_type === "PD") {
+    frequency_type = 2;
+  } else if ($this.state.frequency_type === "PH") {
+    frequency_type = 1;
+  } else if ($this.state.frequency_type === "PW") {
+    frequency_type = 1;
+  } else if ($this.state.frequency_type === "PM") {
+    frequency_type = 3;
+  } else if ($this.state.frequency_type === "AD") {
+    frequency_type = 3;
+  }
+};
 export {
   texthandle,
   SaveMedication,

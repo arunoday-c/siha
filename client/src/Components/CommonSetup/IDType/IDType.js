@@ -350,7 +350,22 @@ class IDType extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "created_date",
@@ -358,7 +373,9 @@ class IDType extends Component {
                     displayTemplate: row => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    }
                   },
                   {
                     fieldName: "identity_status",

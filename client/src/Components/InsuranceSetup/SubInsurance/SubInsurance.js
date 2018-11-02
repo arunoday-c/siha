@@ -40,7 +40,8 @@ class SubInsurance extends PureComponent {
       transaction_number: null,
       card_format: null,
       effective_start_date: null,
-      effective_end_date: null
+      effective_end_date: null,
+      maxDate_end_date: null
       // sub_insurance: []
       // created_by: getCookie("UserID")
     };
@@ -50,6 +51,7 @@ class SubInsurance extends PureComponent {
   componentWillMount() {
     debugger;
     let InputOutput = this.props.InsuranceSetup;
+    InputOutput.maxDate_end_date = InputOutput.effective_end_date;
     this.setState({ ...this.state, ...InputOutput });
   }
 
@@ -234,6 +236,7 @@ class SubInsurance extends PureComponent {
                       name: "effective_end_date"
                     }}
                     minDate={new Date()}
+                    maxDate={this.state.maxDate_end_date}
                     events={{
                       onChange: datehandle.bind(this, this)
                     }}
