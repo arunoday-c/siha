@@ -35,14 +35,11 @@ class AppointmentRooms extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/appointment/updateAppointmentRoom",
+          uri: "/appointment/deleteAppointmentRoom",
           data: {
-            record_status: "I",
-            hims_d_appointment_room_id: data.hims_d_appointment_room_id,
-            description: data.description,
-            room_active: data.room_active
+            hims_d_appointment_room_id: data.hims_d_appointment_room_id
           },
-          method: "PUT",
+          method: "DELETE",
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({
@@ -124,7 +121,6 @@ class AppointmentRooms extends Component {
     algaehApiCall({
       uri: "/appointment/getAppointmentRoom",
       method: "GET",
-      data: {},
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ appointmentRooms: response.data.records });

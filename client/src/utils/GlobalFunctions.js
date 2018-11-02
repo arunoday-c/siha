@@ -241,8 +241,8 @@ export function AlgaehValidation(options) {
                 .toLowerCase()
                 .replace(/^\w/, c => {
                   return c.toUpperCase();
-                }) + ",cannot be blank"
-            : _lable.innerText.replace("*", "") + ", لا يمكن أن يكون فارغا";
+                }) + "-cannot be blank"
+            : _lable.innerText.replace("*", "") + "- لا يمكن أن يكون فارغا";
       }
       swalMessage({
         title: _title,

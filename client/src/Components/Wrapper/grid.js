@@ -301,6 +301,7 @@ class DataGrid extends PureComponent {
     // context.font = font;
     return context.measureText(text).width + 24;
   }
+
   componentDidMount() {
     if (this.state.columns.length == 0) {
       if (this.props.columns !== undefined && this.props.columns.length !== 0) {

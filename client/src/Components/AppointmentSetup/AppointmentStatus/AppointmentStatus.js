@@ -19,8 +19,9 @@ class AppointmentStatus extends Component {
       appointmentStatus: [],
       color_code: "#FFFFFF",
       description: "",
-      default_status: "N",
-      isEditable: true
+      default_status: "",
+      isEditable: true,
+      disableAdd: null
     };
 
     this.baseState = this.state;
@@ -43,10 +44,36 @@ class AppointmentStatus extends Component {
 
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
+
+    e.target.name === "description"
+      ? this.setState({ steps: this.state.appointmentStatus.length + 1 })
+      : null;
+
+    e.target.name === "steps" && e.target.value === "1"
+      ? this.setState({ default_status: "Y" })
+      : null;
   }
 
   dropDownHandler(value) {
-    this.setState({ [value.name]: value.value });
+    this.setState({ [value.name]: value.value }, () => {
+      this.state.default_status === "Y"
+        ? this.setState({ steps: 1 })
+        : this.setState({
+            steps: this.state.appointmentStatus.length + 1
+          });
+    });
+  }
+
+  hasDuplicates(array) {
+    var valuesSoFar = Object.create(null);
+    for (var i = 0; i < array.length; ++i) {
+      var value = array[i];
+      if (value in valuesSoFar) {
+        return true;
+      }
+      valuesSoFar[value] = true;
+    }
+    return false;
   }
 
   authorizeApptStatus() {
@@ -61,28 +88,34 @@ class AppointmentStatus extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        algaehApiCall({
-          uri: "/appointment/appointmentStatusAuthorized",
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.success) {
-              this.setState({
-                isEditable: false
-              });
-              swalMessage({
-                title: "Status Authorized successfully . .",
-                type: "success"
-              });
-              this.getAppointmentStatus();
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
+        this.hasDuplicates(this.state.steps_list)
+          ? swalMessage({
+              title: "There are repeated values, please re-check the status",
+              type: "warning",
+              timer: 5000
+            })
+          : algaehApiCall({
+              uri: "/appointment/appointmentStatusAuthorized",
+              method: "PUT",
+              onSuccess: response => {
+                if (response.data.success) {
+                  this.setState({
+                    isEditable: false
+                  });
+                  swalMessage({
+                    title: "Status Authorized successfully . .",
+                    type: "success"
+                  });
+                  this.getAppointmentStatus();
+                }
+              },
+              onFailure: error => {
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
             });
-          }
-        });
 
         // swalMessage({
         //   title: "Authorized Successful",
@@ -145,6 +178,14 @@ class AppointmentStatus extends Component {
   }
 
   updateAppointmentStatus(data) {
+    debugger;
+    // this.state.steps_list.includes(parseInt(data.steps))
+    //   ? swalMessage({
+    //       title: "Order already exists please select a unique order number?",
+    //       type: "warning"
+    //     })
+    //   :
+
     algaehApiCall({
       uri: "/appointment/updateAppointmentStatus",
       data: {
@@ -187,18 +228,34 @@ class AppointmentStatus extends Component {
               appointmentStatus: response.data.records
             },
             () => {
+              this.setState({
+                //steps: this.state.appointmentStatus.length + 1,
+                min_steps: this.state.appointmentStatus.length + 1
+              });
+
+              let steps_list = Enumerable.from(this.state.appointmentStatus)
+                .select(w => w.steps)
+                .toArray();
+
+              this.setState({ steps_list: steps_list });
+
               let authCount = Enumerable.from(this.state.appointmentStatus)
                 .where(w => w.authorized === "Y")
                 .toArray().length;
 
-              if (authCount === this.state.appointmentStatus.length) {
+              if (
+                authCount > 0 &&
+                authCount === this.state.appointmentStatus.length
+              ) {
                 debugger;
-                this.setState({ isEditable: false }, () => {
-                  console.log("isEditable:", this.state.isEditable);
-                });
+                this.setState(
+                  {
+                    isEditable: false,
+                    disableAdd: "none"
+                  },
+                  () => {}
+                );
               }
-
-              console.log("Auth Count:", authCount);
             }
           );
         }
@@ -218,6 +275,7 @@ class AppointmentStatus extends Component {
 
   addAppointmentStatus(e) {
     e.preventDefault();
+    //Enumerable.from(this.state.steps_list).where(w => )
 
     AlgaehValidation({
       //querySelector: "", //"data-validate='InsuranceProvider'", //if require section level
@@ -226,27 +284,35 @@ class AppointmentStatus extends Component {
         //alert(value);
       },
       onSuccess: () => {
-        algaehApiCall({
-          uri: "/appointment/addAppointmentStatus",
-          method: "POST",
-          data: {
-            color_code: this.state.color_code,
-            description: this.state.description,
-            default_status: this.state.default_status
-          },
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record added successfully",
-                type: "success"
-              });
+        debugger;
+        this.state.steps_list.includes(parseInt(this.state.steps))
+          ? swalMessage({
+              title:
+                "Order already exists please select a unique order number?",
+              type: "warning"
+            })
+          : algaehApiCall({
+              uri: "/appointment/addAppointmentStatus",
+              method: "POST",
+              data: {
+                color_code: this.state.color_code,
+                description: this.state.description,
+                default_status: this.state.default_status,
+                steps: this.state.steps
+              },
+              onSuccess: response => {
+                if (response.data.success) {
+                  swalMessage({
+                    title: "Record added successfully",
+                    type: "success"
+                  });
 
-              this.resetState();
-              this.getAppointmentStatus();
-            }
-          },
-          onFailure: error => {}
-        });
+                  this.resetState();
+                  this.getAppointmentStatus();
+                }
+              },
+              onFailure: error => {}
+            });
       }
     });
   }
@@ -255,9 +321,9 @@ class AppointmentStatus extends Component {
     return (
       <div className="appointment_status">
         <div className="col-lg-12">
-          <div className="row">
+          <div className="row" style={{ display: this.state.disableAdd }}>
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-lg-2" }}
               label={{
                 fieldName: "color_code",
                 isImp: true
@@ -278,7 +344,7 @@ class AppointmentStatus extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-lg-2" }}
               label={{
                 fieldName: "description",
                 isImp: true
@@ -294,7 +360,7 @@ class AppointmentStatus extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-lg-2" }}
               label={{
                 fieldName: "default_status",
                 isImp: true
@@ -312,14 +378,43 @@ class AppointmentStatus extends Component {
               }}
             />
 
-            <div className="col-lg-3">
+            <AlagehFormGroup
+              div={{ className: "col-lg-1" }}
+              label={{
+                fieldName: "steps",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "steps",
+                value: this.state.steps,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                },
+                others: {
+                  type: "number",
+                  disabled: true,
+                  min: this.state.min_steps
+                }
+              }}
+            />
+
+            <div className="col-lg-2">
               <button
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 21, pointerEvents: this.state.disableAdd }}
                 onClick={this.addAppointmentStatus.bind(this)}
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-default"
               >
                 Add to List
+              </button>
+            </div>
+            <div className="col" style={{ textAlign: "right", marginTop: 21 }}>
+              <button
+                onClick={this.authorizeApptStatus.bind(this)}
+                className="btn btn-primary"
+              >
+                Authorize Status
               </button>
             </div>
           </div>
@@ -459,8 +554,13 @@ class AppointmentStatus extends Component {
                   {
                     fieldName: "authorized",
                     label: "Authorized",
-                    disabled: true,
+                    disabled: false,
                     displayTemplate: row => {
+                      return (
+                        <span>{row.authorized === "Y" ? "Yes" : "No"}</span>
+                      );
+                    },
+                    editorTemplate: row => {
                       return (
                         <span>{row.authorized === "Y" ? "Yes" : "No"}</span>
                       );
@@ -474,13 +574,37 @@ class AppointmentStatus extends Component {
                 isEditable={this.state.isEditable}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
-                  onEdit: () => {},
-                  onDelete: this.deleteAppointmentStatus.bind(this),
-                  onDone: this.updateAppointmentStatus.bind(this)
+                  onEdit: () => {
+                    // this.state.disableAdd !== null
+                    //   ? swalMessage({
+                    //       title: "Already Authorized Cannot Edit/Delete",
+                    //       type: "error"
+                    //     })
+                    //   : null;
+                  },
+                  onDelete:
+                    this.state.disableAdd === null
+                      ? this.deleteAppointmentStatus.bind(this)
+                      : () => {
+                          swalMessage({
+                            title: "Already Authorized Cannot Edit/Delete",
+                            type: "error"
+                          });
+                        },
+                  onDone:
+                    this.state.disableAdd === null
+                      ? this.updateAppointmentStatus.bind(this)
+                      : () => {
+                          swalMessage({
+                            title: "Already Authorized Cannot Edit/Delete",
+                            type: "error"
+                          });
+                          this.getAppointmentStatus();
+                        }
                 }}
               />
             </div>
-            <div className="col-lg-12" style={{ textAlign: "right" }}>
+            {/* <div className="col-lg-12" style={{ textAlign: "right" }}>
               <button
                 onClick={this.authorizeApptStatus.bind(this)}
                 style={{ margin: "10px 0" }}
@@ -488,7 +612,7 @@ class AppointmentStatus extends Component {
               >
                 Authorize
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

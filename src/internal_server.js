@@ -129,11 +129,50 @@ process.on("uncaughtException", error => {
 //Error Handling MiddleWare
 app.use((error, req, res, next) => {
   error.status = error.status || httpStatus.internalServer;
-  res.status(error.status).json({
-    success: false,
-    message: error.sqlMessage != null ? error.sqlMessage : error.message,
-    isSql: error.sqlMessage != null ? true : false
-  });
+  if(req.db !=null){
+    let connection = req.connection;
+    if(connection!=null){
+      if (req.db._freeConnections.indexOf(connection) == -1) {
+        if(typeof  connection.rollback =="function"){
+          connection.rollback(() => {
+            if(typeof connection.release =="function" )
+            connection.release();
+            res.status(error.status).json({
+              success: false,
+              message: error.sqlMessage != null ? error.sqlMessage : error.message,
+              isSql: error.sqlMessage != null ? true : false
+            });
+          });
+        }else{
+          if(typeof connection.release =="function" )
+          connection.release();
+          res.status(error.status).json({
+            success: false,
+            message: error.sqlMessage != null ? error.sqlMessage : error.message,
+            isSql: error.sqlMessage != null ? true : false
+          });
+        }
+       
+       
+      }
+    
+     
+    }else{
+      res.status(error.status).json({
+        success: false,
+        message: error.sqlMessage != null ? error.sqlMessage : error.message,
+        isSql: error.sqlMessage != null ? true : false
+      });
+    }
+    
+  }else{
+    res.status(error.status).json({
+      success: false,
+      message: error.sqlMessage != null ? error.sqlMessage : error.message,
+      isSql: error.sqlMessage != null ? true : false
+    });
+  }
+ 
   const _error = {
     source: req.originalUrl,
     requestClient: req.headers["x-client-ip"],

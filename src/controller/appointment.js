@@ -25,7 +25,7 @@ import {
   getPatientAppointment,
   updatePatientAppointment,
   getEmployeeServiceID,
-  appointmentStatusAuthorized
+  appointmentStatusAuthorized,deleteAppointmentRoom
 } from "../model/appointment";
 
 export default ({ config, db }) => {
@@ -35,6 +35,21 @@ export default ({ config, db }) => {
   api.post(
     "/addAppointmentStatus",
     addAppointmentStatus,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to deleteAppointmentRoom
+  api.delete(
+    "/deleteAppointmentRoom",
+    deleteAppointmentRoom,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

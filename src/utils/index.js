@@ -72,7 +72,7 @@ let deleteRecord = (
   isreleaseConnection
 ) => {
   isreleaseConnection = isreleaseConnection || false;
-  debugFunction("deleteRecord");
+
   let db = options.db;
   db.getConnection((error, connection) => {
     let sqlQuery =
@@ -94,7 +94,7 @@ let deleteRecord = (
         }
         let records = "";
         let values = [];
-        debugLog("Existing table length : " + tables.length);
+       
 
         if (tables.length == 0) {
           connection.query(
@@ -131,7 +131,7 @@ let deleteRecord = (
             values.push(options.id);
           }
 
-          debugLog("rexords Query : " + records);
+        
           connection.query(records, values, (error, result) => {
             if (error) {
               if (isreleaseConnection) connection.release();
@@ -141,16 +141,26 @@ let deleteRecord = (
               }
             } else {
               var hasRecords = false;
+            
               for (var c = 0; c < result.length; c++) {
-                if (result[c][0] != null && result[c][0]["CNT"] == 1) {
+              if(result[c][0] != null){
+                if (result[c][0]["CNT"] >0) {
                   hasRecords = true;
                   break;
                 }
+              }else{
+              if(result[c]["CNT"] >0)
+              { hasRecords = true;
+                break;
               }
+              }
+               
+              }
+            
               if (hasRecords == true) {
                 result = {
                   success: false,
-                  message: "Record already exists.."
+                  message: "Record already in use.."
                 };
                 if (isreleaseConnection) connection.release();
                 if (typeof successCallback == "function") {
