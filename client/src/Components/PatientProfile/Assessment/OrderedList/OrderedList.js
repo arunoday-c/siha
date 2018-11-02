@@ -2,13 +2,14 @@ import React, { PureComponent } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import moment from "moment";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import OrderingServices from "../OrderingServices/OrderingServices";
 import "./OrderedList.css";
 import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
+import Options from "../../../../Options.json";
 
 class OrderedList extends PureComponent {
   constructor(props) {
@@ -27,10 +28,25 @@ class OrderedList extends PureComponent {
   }
 
   CloseModel(e) {
-    this.setState({
-      ...this.state,
-      isOpen: !this.state.isOpen
-    });
+    this.setState(
+      {
+        ...this.state,
+        isOpen: !this.state.isOpen
+      },
+      () => {
+        this.props.getOrderList({
+          uri: "/orderAndPreApproval/selectOrderServices",
+          method: "GET",
+          data: {
+            visit_id: Window.global["visit_id"]
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "orderedList"
+          }
+        });
+      }
+    );
   }
 
   componentDidMount() {
@@ -84,11 +100,14 @@ class OrderedList extends PureComponent {
         redux: {
           type: "ORDER_SERVICES_GET_DATA",
           mappingName: "orderedList"
-        },
-        afterSuccess: data => {
-          debugger;
         }
       });
+    }
+  }
+
+  dateFormater(value) {
+    if (value !== null) {
+      return moment(value).format(Options.dateFormat);
     }
   }
 
@@ -101,6 +120,15 @@ class OrderedList extends PureComponent {
               <AlgaehDataGrid
                 id="Orderd_list"
                 columns={[
+                  {
+                    fieldName: "created_date",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "created_date" }} />
+                    ),
+                    displayTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    }
+                  },
                   {
                     fieldName: "service_type_id",
                     label: (

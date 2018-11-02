@@ -371,16 +371,17 @@ const SaveOrdersServices = ($this, e) => {
           title: "Ordered Successfully...",
           type: "success"
         });
-        $this.setState({
-          saved: true,
-          orderservicesdata: [],
-          patient_payable: null,
-          company_payble: null,
-          sec_company_paybale: null,
-          sub_total_amount: null,
-          discount_amount: null,
-          net_total: null
-        });
+        $this.props.onClose && $this.props.onClose(e);
+        // $this.setState({
+        //   saved: true,
+        //   orderservicesdata: [],
+        //   patient_payable: null,
+        //   company_payble: null,
+        //   sec_company_paybale: null,
+        //   sub_total_amount: null,
+        //   discount_amount: null,
+        //   net_total: null
+        // });
       }
     },
     onFailure: error => {}
