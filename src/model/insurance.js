@@ -1727,6 +1727,42 @@ let updatePriceListBulk = (req, res, next) => {
   });
 };
 
+//delet sub insurance
+let deleteNetworkAndNetworkOfficRecords = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "UPDATE hims_d_insurance_network_office SET  record_status='I', \
+         updated_by=?,updated_date=? WHERE hims_d_insurance_network_office_id=?",
+        [
+          req.body.updated_by,
+          new Date(),
+          req.body.hims_d_insurance_network_office_id
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientInsurance,
   addPatientInsurance,
@@ -1745,7 +1781,7 @@ module.exports = {
   updatePriceList,
   updateNetworkAndNetworkOffice,
   updatePriceListBulk,
-  addPatientInsuranceData
-  // insertOrderedServices,
+  addPatientInsuranceData,
+  deleteNetworkAndNetworkOfficRecords
   // getPreAprovalList
 };

@@ -101,8 +101,7 @@ const showconfirmDialog = ($this, id) => {
     confirmButtonText: "Yes!",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No",
-    dangerMode: true
+    cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
       let data = {

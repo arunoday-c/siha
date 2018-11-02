@@ -58,8 +58,7 @@ const onvalidate = $this => {
     swal({
       title: "Are you sure want to Validate",
       type: "warning",
-      buttons: true,
-      dangerMode: true
+      buttons: true
     }).then(willProceed => {
       if (willProceed) {
         test_analytes.push({ run_type: $this.state.run_type });
@@ -223,8 +222,7 @@ const onconfirm = $this => {
     swal({
       title: "Are you sure want to Confirm",
       type: "warning",
-      buttons: true,
-      dangerMode: true
+      buttons: true
     }).then(willProceed => {
       if (willProceed) {
         test_analytes.push({ run_type: $this.state.run_type });
@@ -261,8 +259,7 @@ const onReRun = $this => {
     swal({
       title: "Are you sure want to Re-Run",
       type: "warning",
-      buttons: true,
-      dangerMode: true
+      buttons: true
     }).then(willProceed => {
       if (willProceed) {
         UpdateLabOrder($this, test_analytes, "N");
@@ -306,8 +303,7 @@ const onchangegridamended = ($this, row, e) => {
   swal({
     title: "Are you sure you want to Ammend?",
     type: "warning",
-    buttons: true,
-    dangerMode: true
+    buttons: true
   }).then(willProceed => {
     if (willProceed) {
       let name = e.name || e.target.name;

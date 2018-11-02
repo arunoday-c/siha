@@ -77,12 +77,12 @@
   "corporate_discount_percent": "Discount %",
   "corporate_discount_amt": "Discount Amount",
   "net_amount": "Claim Amount",
-  "pre_approval": "Pre Approval",
+  "pre_approval": "Pre Approval Required",
   "covered": "Covered",
 
   "corporate_discount": "Corporate Discount",
   "applicable": "Applicable",
-  "filter_by": "Filter By",
+  "filter_by": "Filter By Services Type",
 
   "edit_option": "Action",
   "currency": "Currency",
