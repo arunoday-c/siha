@@ -15,7 +15,8 @@ import {
   texthandle,
   VatAppilicable,
   InsertServices,
-  CptCodesSearch
+  CptCodesSearch,
+  clearData
 } from "./HospitalServicesEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
@@ -44,7 +45,8 @@ class HospitalServices extends PureComponent {
       standard_fee: 0,
       vat_applicable: "N",
       vat_percent: 0,
-      cpt_code_data: null
+      cpt_code_data: null,
+      sub_department_id: null
     };
   }
 
@@ -66,24 +68,7 @@ class HospitalServices extends PureComponent {
 
       this.setState({ ...this.state, ...IOputs });
     } else {
-      this.setState({
-        open: false,
-        MandatoryMsg: "",
-        selectedLang: "en",
-        Applicable: false,
-
-        hims_d_services_id: null,
-        service_code: null,
-        cpt_code: null,
-        service_name: null,
-        hospital_id: null,
-        service_type_id: null,
-
-        standard_fee: 0,
-        vat_applicable: "N",
-        vat_percent: 0,
-        cpt_code_data: null
-      });
+      clearData(this, this);
     }
   }
   onClose = e => {
@@ -99,7 +84,7 @@ class HospitalServices extends PureComponent {
       <React.Fragment>
         <div className="hptl-phase1-add-hospitalservies-form">
           <Modal open={this.props.open}>
-            <div className="algaeh-modal">
+            <div className="algaeh-modal" data-validate="HospitalServices">
               <div className="popupHeader">
                 <div className="row">
                   <div className="col-lg-8">
@@ -311,8 +296,7 @@ class HospitalServices extends PureComponent {
                         <AlagehFormGroup
                           div={{ className: "col-lg-7" }}
                           label={{
-                            fieldName: "vat_percent",
-                            isImp: true
+                            fieldName: "vat_percent"
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -361,13 +345,18 @@ class HospitalServices extends PureComponent {
                         <AlgaehLabel label={{ fieldName: "btnCancel" }} />
                       </button>
 
-                      {/* <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={clearData.bind(this, this)}
-                      >
-                        <AlgaehLabel label={{ fieldName: "btn_clear" }} />
-                      </button> */}
+                      {this.state.hims_d_services_id === null ? (
+                        <button
+                          type="button"
+                          className="btn btn-default"
+                          onClick={clearData.bind(this, this)}
+                        >
+                          <AlgaehLabel label={{ fieldName: "btn_clear" }} />
+                        </button>
+                      ) : (
+                        ""
+                      )}
+
                       <AHSnackbar
                         open={this.state.open}
                         handleClose={this.handleClose}

@@ -150,26 +150,11 @@ class InsuranceProvider extends PureComponent {
                 </div>
 
                 <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "payer_id"
-                    }}
-                    textBox={{
-                      value: this.state.payer_id,
-                      className: "txt-fld",
-                      name: "payer_id",
-
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
-                    }}
-                  />
-
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "company_service_price_type"
+                      fieldName: "company_service_price_type",
+                      isImp: true
                     }}
                     selector={{
                       name: "company_service_price_type",
@@ -211,6 +196,21 @@ class InsuranceProvider extends PureComponent {
                       onChange: datehandle.bind(this, this, context)
                     }}
                     value={this.state.effective_end_date}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "payer_id"
+                    }}
+                    textBox={{
+                      value: this.state.payer_id,
+                      className: "txt-fld",
+                      name: "payer_id",
+
+                      events: {
+                        onChange: texthandle.bind(this, this, context)
+                      }
+                    }}
                   />
                 </div>
                 <div className="row">

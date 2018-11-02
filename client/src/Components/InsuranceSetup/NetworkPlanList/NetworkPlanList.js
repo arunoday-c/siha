@@ -77,7 +77,7 @@ class NetworkPlanList extends PureComponent {
   }
 
   dateFormater(value) {
-    return String(moment(value).format(Options.dateFormatYear));
+    return String(moment(value).format(Options.dateFormat));
   }
 
   render() {
