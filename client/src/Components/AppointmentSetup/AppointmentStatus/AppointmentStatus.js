@@ -10,6 +10,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import Enumerable from "linq";
 
 class AppointmentStatus extends Component {
   constructor(props) {
@@ -18,7 +19,8 @@ class AppointmentStatus extends Component {
       appointmentStatus: [],
       color_code: "#FFFFFF",
       description: "",
-      default_status: "N"
+      default_status: "N",
+      isEditable: true
     };
 
     this.baseState = this.state;
@@ -50,7 +52,7 @@ class AppointmentStatus extends Component {
   authorizeApptStatus() {
     swal({
       title:
-        "Are you sure you want to authorize the Status for Appointment set?",
+        "This is a one time setup, are you sure you want to authorize the Status for Appointment set?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes!",
@@ -59,37 +61,33 @@ class AppointmentStatus extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        // algaehApiCall({
-        //   uri: "/appointment/updateAppointmentStatus",
-        //   data: {
-        //     hims_d_appointment_status_id: data.hims_d_appointment_status_id,
-        //     color_code: data.color_code,
-        //     description: data.description,
-        //     default_status: data.default_status,
-        //     record_status: "I"
-        //   },
-        //   method: "PUT",
-        //   onSuccess: response => {
-        //     if (response.data.success) {
-        //       swalMessage({
-        //         title: "Record deleted successfully . .",
-        //         type: "success"
-        //       });
-        //       this.getAppointmentStatus();
-        //     }
-        //   },
-        //   onFailure: error => {
-        //     swalMessage({
-        //       title: error.message,
-        //       type: "error"
-        //     });
-        //   }
-        // });
-
-        swalMessage({
-          title: "Authorized Successful",
-          type: "success"
+        algaehApiCall({
+          uri: "/appointment/appointmentStatusAuthorized",
+          method: "PUT",
+          onSuccess: response => {
+            if (response.data.success) {
+              this.setState({
+                isEditable: false
+              });
+              swalMessage({
+                title: "Status Authorized successfully . .",
+                type: "success"
+              });
+              this.getAppointmentStatus();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
+
+        // swalMessage({
+        //   title: "Authorized Successful",
+        //   type: "success"
+        // });
       } else {
         swalMessage({
           title: "Not authorized",
@@ -154,6 +152,7 @@ class AppointmentStatus extends Component {
         color_code: data.color_code,
         description: data.description,
         default_status: data.default_status,
+        steps: data.steps,
         record_status: "A"
       },
       method: "PUT",
@@ -169,9 +168,10 @@ class AppointmentStatus extends Component {
       },
       onFailure: error => {
         swalMessage({
-          title: error.message,
+          title: error.response.data.message,
           type: "error"
         });
+        this.getAppointmentStatus();
       }
     });
   }
@@ -180,10 +180,27 @@ class AppointmentStatus extends Component {
     algaehApiCall({
       uri: "/appointment/getAppointmentStatus",
       method: "GET",
-      data: {},
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({ appointmentStatus: response.data.records });
+          this.setState(
+            {
+              appointmentStatus: response.data.records
+            },
+            () => {
+              let authCount = Enumerable.from(this.state.appointmentStatus)
+                .where(w => w.authorized === "Y")
+                .toArray().length;
+
+              if (authCount === this.state.appointmentStatus.length) {
+                debugger;
+                this.setState({ isEditable: false }, () => {
+                  console.log("isEditable:", this.state.isEditable);
+                });
+              }
+
+              console.log("Auth Count:", authCount);
+            }
+          );
         }
       },
       onFailure: error => {
@@ -415,7 +432,29 @@ class AppointmentStatus extends Component {
                   },
                   {
                     fieldName: "steps",
-                    label: "Steps"
+                    label: "Steps",
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{ className: "col" }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "steps",
+                            value: row.steps,
+                            events: {
+                              onChange: this.changeGridEditors.bind(this, row)
+                            },
+                            others: {
+                              type: "number",
+                              errormessage: "Cannot be blank",
+                              required: true,
+                              max: this.state.appointmentStatus.length,
+                              min: 1
+                            }
+                          }}
+                        />
+                      );
+                    }
                   },
                   {
                     fieldName: "authorized",
@@ -432,7 +471,7 @@ class AppointmentStatus extends Component {
                 dataSource={{
                   data: this.state.appointmentStatus
                 }}
-                isEditable={true}
+                isEditable={this.state.isEditable}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onEdit: () => {},

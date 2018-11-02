@@ -82,7 +82,7 @@ class NetworkPlanList extends PureComponent {
 
   render() {
     return (
-      <div>
+      <div id="networkPlanListCntr">
         <AlgaehDataGrid
           id="pla_list_grid"
           columns={[
