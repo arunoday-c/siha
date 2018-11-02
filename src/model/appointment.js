@@ -3,6 +3,7 @@ import extend from "extend";
 import {
  
   whereCondition,
+  deleteRecord,
 
   releaseDBConnection,
   jsonArrayToObject
@@ -499,21 +500,14 @@ let updateAppointmentRoom = (req, res, next) => {
         next(error);
       }
 
-
-
-
-
-
-
       connection.query(
         "UPDATE `hims_d_appointment_room` SET  description=?,room_active=?,\
-           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_room_id`=?;",
+           updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_appointment_room_id`=?;",
         [
           input.description,
           input.room_active,
           new Date(),
-          input.updated_by,
-          input.record_status,
+          input.updated_by,      
           input.hims_d_appointment_room_id
         ],
         (error, result) => {
@@ -530,6 +524,41 @@ let updateAppointmentRoom = (req, res, next) => {
     next(e);
   }
 };
+
+
+
+//created by irfan: to delete Appointment Room
+let deleteAppointmentRoom = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    debugLog("delete rom")
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_d_appointment_room",
+        id: req.body.hims_d_appointment_room_id,
+        query:
+          "UPDATE hims_d_appointment_room SET  record_status='I' WHERE hims_d_appointment_room_id=?",
+        values: [req.body.hims_d_appointment_room_id]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+
 
 //created by irfan: to  update Appointment Clinic
 let updateAppointmentClinic = (req, res, next) => {
@@ -2543,5 +2572,6 @@ module.exports = {
   getPatientAppointment,
   updatePatientAppointment,
   getEmployeeServiceID,
-  appointmentStatusAuthorized
+  appointmentStatusAuthorized,
+  deleteAppointmentRoom
 };
