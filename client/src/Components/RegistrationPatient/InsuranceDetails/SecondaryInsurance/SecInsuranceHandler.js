@@ -24,19 +24,14 @@ const texthandle = ($this, context, e) => {
 };
 
 const insurancehandle = ($this, context, e) => {
-  $this.setState({
-    secondary_insurance_provider_id: e.selected.insurance_provider_id,
-    secondary_sub_id: e.selected.sub_insurance_provider_id,
-    secondary_network_id: e.selected.network_id,
-    secondary_policy_num: e.selected.policy_number,
-    secondary_card_number: e.selected.card_number,
-    secondary_effective_start_date: e.selected.effective_start_date,
-    secondary_effective_end_date: e.selected.effective_end_date,
-    secondary_network_office_id: e.selected.network_id
-  });
-
-  if (context != null) {
-    context.updateState({
+  if (e.selected.network_id === $this.state.primary_network_id) {
+    swalMessage({
+      title:
+        "Invalid Input. Primary and Secondary Insurance Plan cannot be same.",
+      type: "warning"
+    });
+  } else {
+    $this.setState({
       secondary_insurance_provider_id: e.selected.insurance_provider_id,
       secondary_sub_id: e.selected.sub_insurance_provider_id,
       secondary_network_id: e.selected.network_id,
@@ -46,6 +41,19 @@ const insurancehandle = ($this, context, e) => {
       secondary_effective_end_date: e.selected.effective_end_date,
       secondary_network_office_id: e.selected.network_id
     });
+
+    if (context != null) {
+      context.updateState({
+        secondary_insurance_provider_id: e.selected.insurance_provider_id,
+        secondary_sub_id: e.selected.sub_insurance_provider_id,
+        secondary_network_id: e.selected.network_id,
+        secondary_policy_num: e.selected.policy_number,
+        secondary_card_number: e.selected.card_number,
+        secondary_effective_start_date: e.selected.effective_start_date,
+        secondary_effective_end_date: e.selected.effective_end_date,
+        secondary_network_office_id: e.selected.network_id
+      });
+    }
   }
 };
 
@@ -70,48 +78,56 @@ const InsuranceDetails = ($this, context, e) => {
       callBack(text);
     },
     onRowSelect: row => {
-      let obj = {
-        insurance_provider_id: row.hims_d_insurance_provider_id,
-        insurance_provider_name: row.insurance_provider_name,
+      if (row.hims_d_insurance_network_id === $this.state.primary_network_id) {
+        swalMessage({
+          title:
+            "Invalid Input. Primary and Secondary Insurance Plan cannot be same.",
+          type: "warning"
+        });
+      } else {
+        let obj = {
+          insurance_provider_id: row.hims_d_insurance_provider_id,
+          insurance_provider_name: row.insurance_provider_name,
 
-        sub_insurance_provider_id: row.hims_d_insurance_sub_id,
-        sub_insurance_provider_name: row.insurance_sub_name,
+          sub_insurance_provider_id: row.hims_d_insurance_sub_id,
+          sub_insurance_provider_name: row.insurance_sub_name,
 
-        network_id: row.hims_d_insurance_network_id,
-        network_type: row.network_type,
+          network_id: row.hims_d_insurance_network_id,
+          network_type: row.network_type,
 
-        policy_number: row.policy_number
-      };
+          policy_number: row.policy_number
+        };
 
-      $this.props.setSelectedInsurance({
-        redux: {
-          type: "SECONDARY_INSURANCE_DATA",
-          mappingName: "secondaryinsurance",
-          data: [obj]
-        }
-      });
+        $this.props.setSelectedInsurance({
+          redux: {
+            type: "SECONDARY_INSURANCE_DATA",
+            mappingName: "secondaryinsurance",
+            data: [obj]
+          }
+        });
 
-      $this.setState({
-        secondary_insurance_provider_id: row.hims_d_insurance_provider_id,
-        secondary_sub_id: row.hims_d_insurance_sub_id,
-        secondary_network_id: row.hims_d_insurance_network_id,
-        secondary_policy_num: row.policy_number,
-        secondary_network_office_id: row.hims_d_insurance_network_office_id
-        // secondary_effective_start_date: e.selected.effective_start_date,
-        // secondary_effective_end_date: e.selected.effective_end_date
-      });
-
-      if (context != null) {
-        context.updateState({
+        $this.setState({
           secondary_insurance_provider_id: row.hims_d_insurance_provider_id,
           secondary_sub_id: row.hims_d_insurance_sub_id,
           secondary_network_id: row.hims_d_insurance_network_id,
           secondary_policy_num: row.policy_number,
           secondary_network_office_id: row.hims_d_insurance_network_office_id
-          // secondary_card_number: e.selected.card_number
           // secondary_effective_start_date: e.selected.effective_start_date,
           // secondary_effective_end_date: e.selected.effective_end_date
         });
+
+        if (context != null) {
+          context.updateState({
+            secondary_insurance_provider_id: row.hims_d_insurance_provider_id,
+            secondary_sub_id: row.hims_d_insurance_sub_id,
+            secondary_network_id: row.hims_d_insurance_network_id,
+            secondary_policy_num: row.policy_number,
+            secondary_network_office_id: row.hims_d_insurance_network_office_id
+            // secondary_card_number: e.selected.card_number
+            // secondary_effective_start_date: e.selected.effective_start_date,
+            // secondary_effective_end_date: e.selected.effective_end_date
+          });
+        }
       }
     }
   });

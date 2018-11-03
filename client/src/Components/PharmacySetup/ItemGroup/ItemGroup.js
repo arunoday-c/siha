@@ -103,8 +103,9 @@ class ItemGroup extends Component {
           </div>
 
           <div className="row form-details">
-            <div className="col">
+            <div className="col" data-validate="itemGrpDiv">
               <AlgaehDataGrid
+                datavalidate="data-validate='itemGrpDiv'"
                 id="item_group"
                 columns={[
                   {
@@ -120,6 +121,10 @@ class ItemGroup extends Component {
                             name: "group_description",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
+                            },
+                            others: {
+                              errormessage: "Description - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -158,7 +163,11 @@ class ItemGroup extends Component {
                               valueField: "hims_d_item_category_id",
                               data: this.props.itemcategory
                             },
-                            onChange: onchangegridcol.bind(this, this, row)
+                            onChange: onchangegridcol.bind(this, this, row),
+                            others: {
+                              errormessage: "Category - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );
@@ -184,7 +193,22 @@ class ItemGroup extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "created_date",
@@ -194,7 +218,9 @@ class ItemGroup extends Component {
                     displayTemplate: row => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    }
                   },
                   {
                     fieldName: "group_status",
@@ -205,7 +231,6 @@ class ItemGroup extends Component {
                     editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
-                          div={{}}
                           selector={{
                             name: "group_status",
                             className: "select-fld",
@@ -215,7 +240,11 @@ class ItemGroup extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: onchangegridcol.bind(this, this, row)
+                            onChange: onchangegridcol.bind(this, this, row),
+                            others: {
+                              errormessage: "Status - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );

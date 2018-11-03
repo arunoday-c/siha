@@ -17,7 +17,8 @@ const onchangegridcol = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;
-  resetState($this);
+  row.update();
+  //resetState($this);
 };
 
 const updateItemForm = ($this, data) => {

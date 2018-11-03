@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import "./LabContainer.css";
-import Button from "@material-ui/core/Button";
-
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -63,7 +60,6 @@ class LabContainer extends Component {
   render() {
     return (
       <div className="lab_section">
-        <LinearProgress id="myProg" style={{ display: "none" }} />
         <div className="container-fluid">
           <form>
             <div className="row">
@@ -111,9 +107,10 @@ class LabContainer extends Component {
             </div>
           </form>
 
-          <div className="row form-details">
+          <div className="row form-details" data-validate="labContainerDiv">
             <div className="col">
               <AlgaehDataGrid
+                datavalidate="data-validate='labContainerDiv'"
                 id="visa_grd"
                 columns={[
                   {
@@ -129,13 +126,16 @@ class LabContainer extends Component {
                             name: "description",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
+                            },
+                            others: {
+                              errormessage: "Description - cannot be blank",
+                              required: true
                             }
                           }}
                         />
                       );
                     }
                   },
-
                   {
                     fieldName: "container_id",
                     label: (
@@ -176,7 +176,22 @@ class LabContainer extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "created_date",
@@ -186,7 +201,10 @@ class LabContainer extends Component {
                     displayTemplate: row => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    }
+                    //disabled: true
                   },
                   {
                     fieldName: "container_status",
@@ -199,7 +217,6 @@ class LabContainer extends Component {
                     editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
-                          div={{}}
                           selector={{
                             name: "container_status",
                             className: "select-fld",
@@ -209,7 +226,11 @@ class LabContainer extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: onchangegridcol.bind(this, this, row)
+                            onChange: onchangegridcol.bind(this, this, row),
+                            others: {
+                              errormessage: "Status - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );
