@@ -2309,7 +2309,7 @@ let addEpisodeEncounterData = (req, res, next) => {
   db.query(
     "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,\
            episode_id,age,payment_type,created_date,created_by,updated_date,updated_by)values(\
-            ?,?,?,?,?,?,?,?,?,?,?)",
+            ?,?,?,?,?,?,?,?,?,?,?) ",
     [
       input.patient_id,
       input.provider_id,
@@ -2324,7 +2324,7 @@ let addEpisodeEncounterData = (req, res, next) => {
       input.updated_by
     ],
     (error, results) => {
-      debugLog("result:");
+    
       if (error) {
         debugLog("error", error);
         if (req.options == null) {
@@ -2334,13 +2334,27 @@ let addEpisodeEncounterData = (req, res, next) => {
           });
         }
       }
-      if (req.options == null) {
-        debugLog("error");
-        req.records = results;
-      } else {
-        debugLog("Success");
-        req.options.onSuccess(results);
-      }
+      db.query("update hims_f_patient_appointment set visit_created='Y',updated_date=?, \
+       updated_by=? where record_status='A' and hims_f_patient_appointment_id=?",[new Date(), 
+        input.updated_by,input.hims_f_patient_appointment_id],(error,patAppointment)=>{
+          if (error) {
+            debugLog("error", error);
+            if (req.options == null) {
+              connection.rollback(() => {
+                releaseDBConnection(req.db, db);
+                next(error);
+              });
+            }
+          }
+          if (req.options == null) {
+            req.records = results;
+          } else {
+            debugLog("Success");
+            req.options.onSuccess(results);
+          }
+        })
+
+
     }
   );
 
