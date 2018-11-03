@@ -40,6 +40,8 @@ export default {
       primary_id_file: "",
       secondary_id_file: "",
 
+      hims_f_patient_appointment_id: null,
+
       visit_type: null,
       visit_date: CurrentDate,
       department_id: null,

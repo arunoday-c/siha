@@ -43,6 +43,9 @@ class OrderedList extends PureComponent {
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
             mappingName: "orderedList"
+          },
+          afterSuccess: data => {
+            debugger;
           }
         });
       }
@@ -80,9 +83,6 @@ class OrderedList extends PureComponent {
         redux: {
           type: "SERVICES_GET_DATA",
           mappingName: "serviceslist"
-        },
-        afterSuccess: data => {
-          debugger;
         }
       });
     }
@@ -96,6 +96,9 @@ class OrderedList extends PureComponent {
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
         mappingName: "orderedList"
+      },
+      afterSuccess: data => {
+        debugger;
       }
     });
   }
@@ -123,6 +126,15 @@ class OrderedList extends PureComponent {
                     displayTemplate: row => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     }
+                  },
+                  {
+                    fieldName: "test_type",
+                    label: <AlgaehLabel label={{ fieldName: "test_type" }} />,
+                    displayTemplate: row => {
+                      return row.test_type === "S" ? "Stat" : "Routine";
+                    },
+
+                    disabled: true
                   },
                   {
                     fieldName: "service_type_id",
@@ -237,6 +249,7 @@ class OrderedList extends PureComponent {
           open={this.state.isOpen}
           onClose={this.CloseModel.bind(this)}
           vat_applicable={this.props.vat_applicable}
+          addNew={true}
         />
       </div>
     );

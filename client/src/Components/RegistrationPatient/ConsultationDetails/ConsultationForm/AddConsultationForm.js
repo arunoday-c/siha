@@ -64,12 +64,12 @@ class AddConsultationForm extends Component {
       redux: {
         type: "DOCTOR_GET_DATA",
         mappingName: "frontproviders"
+      },
+      afterSuccess: data => {
+        this.setState({
+          doctors: data
+        });
       }
-      // afterSuccess: data => {
-      //   this.setState({
-      //     doctors: data
-      //   });
-      // }
     });
 
     if (
