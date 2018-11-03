@@ -236,7 +236,10 @@ class Appointment extends Component {
       send_to_provider: "N",
       gender: this.state.gender,
       appointment_remarks: this.state.appointment_remarks,
-      number_of_slot: this.state.no_of_slots
+      number_of_slot: this.state.no_of_slots,
+      confirmed: "N",
+      cancelled: "N",
+      is_stand_by: "N"
     };
     //console.log("Send Obj:", send_data);
 
@@ -597,10 +600,10 @@ class Appointment extends Component {
       email: this.state.edit_email,
       send_to_provider: null,
       gender: this.state.edit_gender,
-      confirmed: null,
+      confirmed: "N",
       confirmed_by: null,
       comfirmed_date: null,
-      cancelled: null,
+      cancelled: "N",
       cancelled_by: null,
       cancelled_date: null,
       cancel_reason: null,
