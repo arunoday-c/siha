@@ -20,9 +20,9 @@
   background-color: #f8f5f4;
   overflow: hidden;
   opacity: 1;
-  animation: createBox 0.25s; }
+  animation: slideEffect 0.25s; }
 
-@keyframes createBox {
+@keyframes slideEffect {
   from {
     transform: scale(0); }
   to {
@@ -72,8 +72,11 @@
   cursor: pointer; }
   .helpText .helpTextEsc {
     font-size: 0.7rem;
-    color: #fff;
-    margin-right: 10px; }
+    color: #ffffff;
+    margin-right: 5px;
+    padding: 1px 8px 3px;
+    background: #8c8c8c;
+    border-radius: 10px; }
   .helpText .globalSearch-Close {
     background: #f7f5f4;
     border-radius: 5px 5px 0 0;
