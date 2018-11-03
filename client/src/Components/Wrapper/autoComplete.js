@@ -18,7 +18,10 @@ class AutoComplete extends PureComponent {
   }
 
   componentWillReceiveProps(props) {
-    const _text = this.getTextByValue(props.selector.value);
+    const _text = this.getTextByValue(
+      props.selector.value,
+      props.selector.dataSource.data
+    );
 
     this.setState({
       displayValue: props.selector.value,
@@ -70,11 +73,9 @@ class AutoComplete extends PureComponent {
       ...data
     });
   }
-  getTextByValue(value) {
-    const _data =
-      this.props.selector.dataSource.data === undefined
-        ? []
-        : this.props.selector.dataSource.data;
+  getTextByValue(value, passProps) {
+    passProps = passProps || this.props.selector.dataSource.data;
+    const _data = passProps === undefined ? [] : passProps;
     const _dtl = Enumarable.from(_data)
       .where(
         w =>

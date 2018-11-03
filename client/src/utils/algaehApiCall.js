@@ -369,11 +369,7 @@ export function valueReviver(key, value) {
     value = String(value).trim();
   }
   if (typeof value === "string" && dateFormat.test(value)) {
-<<<<<<< HEAD
     return moment(value).format("YYYY-MM-DD HH:MM");
-=======
-    return moment(value).format("YYYY-MM-DD HH:MM:SS");
->>>>>>> 2d47a4a4f3e522712a13a59d38b52ac0e17a9550
   }
 
   return value;
