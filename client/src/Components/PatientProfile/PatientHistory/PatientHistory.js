@@ -12,94 +12,99 @@ class PatientHistory extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  componentDidMount() {
+    this.accordianHistory();
+  }
+
+  accordianHistory() {
+    const acc = document.getElementsByClassName("accordion-btn");
+    let i;
+    for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.maxHeight) {
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+      });
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
         <div className="col-lg-12">
-          <div id="subjectAccordian">
-            <ul>
-              <li>
-                <input type="checkbox" checked readOnly />
-                <i />
-                <h2>What is Lorem Ipsum ?</h2>
-                <p>
-                  Medical History
-                  {/* <AlagehFormGroup
-                    div={{ className: "" }}
-                    label={{
-                      forceLabel: "",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "medical_history",
-                      value: this.state.medical_history,
-                      others: {
-                        multiline: true,
-                        rows: "6"
-                      },
-                      events: {
-                        onChange: this.textHandle.bind(this)
-                      }
-                    }}
-                  /> */}
-                </p>
-              </li>
-              <li>
-                <input type="checkbox" checked readOnly />
-                <i />
-                <h2>Why do we use it ?</h2>
-                <p>
-                  Social History
-                  {/* <AlagehFormGroup
-                    div={{ className: "" }}
-                    label={{
-                      forceLabel: "",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "social_history",
-                      value: this.state.social_history,
-                      others: {
-                        multiline: true,
-                        rows: "6"
-                      },
-                      events: {
-                        onChange: this.textHandle.bind(this)
-                      }
-                    }}
-                  /> */}
-                </p>
-              </li>
-              <li>
-                <input type="checkbox" checked readOnly />
-                <i />
-                <h2>Wher we can it ?</h2>
-                <p>
-                  Surgical History
-                  {/* <AlagehFormGroup
-                    div={{ className: "" }}
-                    label={{
-                      forceLabel: "",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "surgical_history",
-                      value: this.state.surgical_history,
-                      others: {
-                        multiline: true,
-                        rows: "6"
-                      },
-                      events: {
-                        onChange: this.textHandle.bind(this)
-                      }
-                    }}
-                  /> */}
-                </p>
-              </li>
-            </ul>
+          <div id="subjectAccordian" className="row">
+            <button className="accordion-btn">Section 1</button>
+            <div className="panel">
+              <AlagehFormGroup
+                div={{ className: "" }}
+                label={{
+                  forceLabel: "",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "social_history",
+                  value: this.state.social_history,
+                  others: {
+                    multiline: true,
+                    rows: "6"
+                  },
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  }
+                }}
+              />
+            </div>
+
+            <button className="accordion-btn">Section 2</button>
+            <div className="panel">
+              <AlagehFormGroup
+                div={{ className: "" }}
+                label={{
+                  forceLabel: "",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "medical_history",
+                  value: this.state.medical_history,
+                  others: {
+                    multiline: true,
+                    rows: "6"
+                  },
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  }
+                }}
+              />
+            </div>
+
+            <button className="accordion-btn">Section 3</button>
+            <div className="panel">
+              <AlagehFormGroup
+                div={{ className: "" }}
+                label={{
+                  forceLabel: "",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "surgical_history",
+                  value: this.state.surgical_history,
+                  others: {
+                    multiline: true,
+                    rows: "6"
+                  },
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  }
+                }}
+              />
+            </div>
           </div>
         </div>
 
